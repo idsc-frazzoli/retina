@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.app.AccumulateToGif;
 import ch.ethz.idsc.retina.supply.DatFileSupplier;
 import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.supply.ImagesDvsEventSupplier;
+import ch.ethz.idsc.retina.supply.ProceduralDvsEventSupplier;
 import ch.ethz.idsc.retina.supply.TxtFileSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 import ch.ethz.idsc.retina.util.io.UserHome;
@@ -34,19 +35,22 @@ class AccumulateToGifTest {
     AccumulateToGif.of(dvsEventSupplier, UserHome.Pictures(name + ".gif"), WINDOW_US, 20_000);
   }
 
-  public static void main(String[] args) throws Exception {
-    // _dat("jumping");
-    // _txt("shapes_6dof");
-    // _txt("shapes_translation");
-    // _txt("davis240c_line_scene");
-    // _procedural(new ProceduralDvsEventSupplier(ImageDimensions.UZ, 10_000_000), "firsttry2");
-    // _procedural(Waves.create(ImageDimensions.UZ), "firsttry3");
-    // /media/datahaki/media/ethz/slowmo/out
-    // File dir = new File("/media/datahaki/media/ethz/davis/shapes_translation/images");
+  static void demo() throws Exception {
     File dir = new File("/media/datahaki/media/ethz/slowmo/out");
     ImagesDvsEventSupplier imagesDvsEventSupplier = //
         new ImagesDvsEventSupplier(dir, ImageDimensions.UZ);
     // imagesDvsEventSupplier.limit = 100;
     _procedural(imagesDvsEventSupplier, "cat");
+  }
+
+  public static void main(String[] args) throws Exception {
+    // _dat("jumping");
+    // _txt("shapes_6dof");
+    // _txt("shapes_translation");
+    // _txt("davis240c_line_scene");
+    _procedural(new ProceduralDvsEventSupplier(ImageDimensions.IMPERIAL_COLLEGE, 10_000_000), "synth2");
+    _procedural(Waves.create(ImageDimensions.IMPERIAL_COLLEGE), "synth1");
+    // /media/datahaki/media/ethz/slowmo/out
+    // File dir = new File("/media/datahaki/media/ethz/davis/shapes_translation/images");
   }
 }
