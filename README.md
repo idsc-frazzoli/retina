@@ -1,5 +1,7 @@
 # ch.ethz.idsc.retina
 
+<a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+
 Java 8 code to prototype algorithms for DVS event processing
 
 ## streaming dat files
