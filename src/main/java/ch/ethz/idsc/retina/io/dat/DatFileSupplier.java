@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.supply;
+package ch.ethz.idsc.retina.io.dat;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -9,8 +9,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.core.DvsEvent;
+import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 
-/** The events are sequentially stored in a binary file.
+/** very efficient for postprocessing:
+ * playback rates of up to 43M [events/sec]
+ * 
+ * The events are sequentially stored in a binary file.
  * Each event is encoded into 8 bytes,
  * where the first 4 bytes stores the absolute time-stamp in microseconds and
  * the last 4 bytes stores the event-polarity (1 for positive, 0 for negative) and

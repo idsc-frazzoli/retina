@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.retina.supply.synth;
 
 import java.awt.Dimension;
 import java.util.Collection;
@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Norm;
 
-enum Waves {
+public enum Waves {
   ;
   public static DvsEventSupplier create(Dimension dimension) {
     Collection<DvsEvent> collection = new LinkedList<>();

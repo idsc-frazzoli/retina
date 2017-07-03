@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.supply;
+package ch.ethz.idsc.retina.io.txt;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.util.StringTokenizer;
 
 import ch.ethz.idsc.retina.core.DvsEvent;
+import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 
 public class TxtFileSupplier implements DvsEventSupplier, AutoCloseable {
   private final BufferedReader bufferedReader;

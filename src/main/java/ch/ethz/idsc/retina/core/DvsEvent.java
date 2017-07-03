@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.core;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** immutable */
@@ -32,10 +32,6 @@ public class DvsEvent implements Comparable<DvsEvent>, Serializable {
     return i == 1 ? 1 : -1;
   }
 
-  public Scalar weight(Scalar factor) {
-    return i == 1 ? factor : factor.negate();
-  }
-
   @Override
   public int compareTo(DvsEvent dvsPoint) {
     int cmp = Long.compare(time_us, dvsPoint.time_us);
@@ -48,6 +44,23 @@ public class DvsEvent implements Comparable<DvsEvent>, Serializable {
     if (cmp != 0)
       return cmp;
     return Integer.compare(i, dvsPoint.i);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(time_us, x, y, i);
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof DvsEvent) {
+      DvsEvent dvsEvent = (DvsEvent) object;
+      return time_us == dvsEvent.time_us //
+          && x == dvsEvent.x //
+          && y == dvsEvent.y //
+          && i == dvsEvent.i; //
+    }
+    return false;
   }
 
   @Override

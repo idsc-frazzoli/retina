@@ -4,11 +4,12 @@ package ch.ethz.idsc.retina.demo.jph;
 import java.io.File;
 
 import ch.ethz.idsc.retina.app.AccumulateToGif;
-import ch.ethz.idsc.retina.supply.DatFileSupplier;
+import ch.ethz.idsc.retina.io.dat.DatFileSupplier;
+import ch.ethz.idsc.retina.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.supply.ImagesDvsEventSupplier;
 import ch.ethz.idsc.retina.supply.ProceduralDvsEventSupplier;
-import ch.ethz.idsc.retina.supply.TxtFileSupplier;
+import ch.ethz.idsc.retina.supply.synth.Waves;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 import ch.ethz.idsc.retina.util.io.UserHome;
 

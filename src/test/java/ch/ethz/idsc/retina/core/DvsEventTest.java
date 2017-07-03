@@ -6,5 +6,6 @@ import junit.framework.TestCase;
 public class DvsEventTest extends TestCase {
   public void testSimple() {
     // TODO
+    assertTrue(true);
   }
 }

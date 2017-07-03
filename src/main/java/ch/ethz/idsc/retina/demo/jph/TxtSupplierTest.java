@@ -6,8 +6,8 @@ import java.io.File;
 import ch.ethz.idsc.retina.core.DvsEvent;
 import ch.ethz.idsc.retina.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.supply.DvsEventSupplier;
-import ch.ethz.idsc.retina.supply.TxtFileSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 class TxtSupplierTest {
