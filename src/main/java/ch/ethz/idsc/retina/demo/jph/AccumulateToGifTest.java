@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.supply.synth.Waves;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
+/** visualization of events in data sets as animated gif's */
 class AccumulateToGifTest {
   static void _dat(String name) throws Exception {
     File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //

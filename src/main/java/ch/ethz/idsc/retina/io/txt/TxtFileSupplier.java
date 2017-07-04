@@ -28,6 +28,13 @@ public class TxtFileSupplier implements DvsEventSupplier, AutoCloseable {
     int x = Integer.parseInt(stringTokenizer.nextToken()); // x
     int y = Integer.parseInt(stringTokenizer.nextToken()); // y
     int i = Integer.parseInt(stringTokenizer.nextToken()); // i
+    if (x < 0 || y < 0 || dimension.width <= x || dimension.height <= y) {
+      // System.out.println(new DvsEvent(time_us, x, y, i).toString());
+      // System.out.println(String.form);
+      throw new RuntimeException();
+      // x=0;
+      // y=0;
+    }
     return new DvsEvent(time_us, x, y, i);
   }
 

@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
+/** demo dat file read */
 class DatSupplierTest {
   public static void main(String[] args) throws Exception {
     DvsEventStatistics stats = new DvsEventStatistics();
