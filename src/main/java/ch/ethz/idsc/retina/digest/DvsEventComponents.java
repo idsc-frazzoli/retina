@@ -36,7 +36,11 @@ public class DvsEventComponents implements DvsEventDigest {
   }
 
   private void consider(int index, int x, int y) {
-    if (dvsEventLast.contains(x, y))
+    if (0 <= x && //
+        0 <= y && //
+        x < dimension.width && //
+        y < dimension.height && //
+        dvsEventLast.contains(x, y))
       disjointSet.union(index, indexOf(x, y));
   }
 
