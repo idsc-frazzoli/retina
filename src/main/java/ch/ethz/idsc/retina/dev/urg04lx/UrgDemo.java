@@ -20,14 +20,16 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 
+/** https://sourceforge.net/projects/urgnetwork/files/urg_library/ */
 public class UrgDemo {
-  public static final double SCALE = 0.1;
+  public static final double SCALE = 0.05;
   // ---
   Tensor alpha = Subdivide.of(-170 * Math.PI / 180, 170 * Math.PI / 180, 681).unmodifiable();
   Tensor range = Tensors.empty();
@@ -43,22 +45,38 @@ public class UrgDemo {
     @Override
     protected void paintComponent(Graphics g) {
       Graphics2D graphics = (Graphics2D) g;
-      graphics.setColor(new Color(128, 128, 128, 128));
-      Path2D path2d = new Path2D.Double();
       {
-        Point2D point2d = toPoint(Tensors.vector(0, 0));
-        path2d.moveTo(point2d.getX(), point2d.getY());
+        graphics.setColor(new Color(128, 128, 128, 128));
+        Path2D path2d = new Path2D.Double();
+        {
+          Point2D point2d = toPoint(Tensors.vector(0, 0));
+          path2d.moveTo(point2d.getX(), point2d.getY());
+        }
+        for (int index = 0; index < range.length(); ++index)
+          if (Scalars.nonZero(range.Get(index))) {
+            Tensor dir = RotationMatrix.of(alpha.Get(index)).get(Tensor.ALL, 0).multiply(range.Get(index));
+            Point2D p = toPoint(dir);
+            path2d.lineTo(p.getX(), p.getY());
+            Shape shape = new Rectangle2D.Double(p.getX(), p.getY(), 2, 2);
+            graphics.fill(shape);
+          }
+        graphics.setColor(new Color(128, 128 + 64, 128, 128));
+        graphics.fill(path2d);
       }
-      for (int index = 0; index < range.length(); ++index)
-        if (Scalars.nonZero(range.Get(index))) {
-          Tensor dir = RotationMatrix.of(alpha.Get(index)).get(Tensor.ALL, 0).multiply(range.Get(index));
+      {
+        Path2D path2d = new Path2D.Double();
+        {
+          Point2D point2d = toPoint(Tensors.vector(0, 0));
+          path2d.moveTo(point2d.getX(), point2d.getY());
+        }
+        for (int index : new int[] { 0, alpha.length() - 1 }) {
+          Tensor dir = RotationMatrix.of(alpha.Get(index)).get(Tensor.ALL, 0).multiply(RealScalar.of(1000));
           Point2D p = toPoint(dir);
           path2d.lineTo(p.getX(), p.getY());
-          Shape shape = new Rectangle2D.Double(p.getX(), p.getY(), 2, 2);
-          graphics.fill(shape);
         }
-      graphics.setColor(new Color(128, 128 + 64, 128, 128));
-      graphics.fill(path2d);
+        graphics.setColor(new Color(255, 128, 128, 128));
+        graphics.fill(path2d);
+      }
     }
   };
 
@@ -98,7 +116,7 @@ public class UrgDemo {
           if (line.startsWith("URG{"))
             urg.repaint(line);
         } else
-          Thread.sleep(10);
+          Thread.sleep(1);
       }
       System.out.println("urg process terminated");
     } catch (Exception exception) {
