@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne;
+package ch.ethz.idsc.retina.dev.hdl32e;
 
 public interface LaserPositionConsumer {
   /** @param position_data [x0, y0, z0, x1, y1, z1, ...]

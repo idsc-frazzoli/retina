@@ -1,13 +1,16 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne;
+package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.io.PacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
 public class HDL32EPacketConsumer implements PacketConsumer {
-  public static final int LASER_SIZE = 1248;
+  public static final int LASER_SIZE1 = 1248;
+  public static final int LASER_SIZE2 = 1206;
   // ---
   private final HDL32EFiringPacketConsumer firingPacketConsumer;
 
@@ -17,9 +20,19 @@ public class HDL32EPacketConsumer implements PacketConsumer {
 
   @Override
   public void parse(byte[] packet_data, int length) {
-    if (length == LASER_SIZE) {
-      firingPacketConsumer.lasers(packet_data);
+    ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    if (length == LASER_SIZE1) {
+      byteBuffer.position(42);
+      // System.out.println("ok");
+      firingPacketConsumer.lasers(byteBuffer);
+    } else //
+    if (length == LASER_SIZE2) {
+      // byteBuffer.position(42);
+      // System.out.println("ok");
+      firingPacketConsumer.lasers(byteBuffer);
     } else {
+      System.out.println("unhandled " + length);
       // 554 for GPS (?)
       // System.out.println(length);
     }

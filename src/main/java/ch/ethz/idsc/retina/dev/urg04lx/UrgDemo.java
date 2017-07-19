@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.hokuyo;
+package ch.ethz.idsc.retina.dev.urg04lx;
 
 import java.awt.Color;
 import java.awt.Graphics;

@@ -1,10 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne;
+package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
 public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
-  public static final int POINT_NUMEL = 45000; // TODO not final design
+  public static final int POINT_NUMEL = 25000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
