@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.hokuyo;
+package ch.ethz.idsc.retina.dev.hokuyo;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 
 public class UrgDemo {
   public static final double SCALE = 0.1;
+  // ---
   Tensor alpha = Subdivide.of(-170 * Math.PI / 180, 170 * Math.PI / 180, 681).unmodifiable();
   Tensor range = Tensors.empty();
 
@@ -53,10 +54,7 @@ public class UrgDemo {
           Tensor dir = RotationMatrix.of(alpha.Get(index)).get(Tensor.ALL, 0).multiply(range.Get(index));
           Point2D p = toPoint(dir);
           path2d.lineTo(p.getX(), p.getY());
-          Shape shape = new Rectangle2D.Double( //
-              p.getX(), //
-              p.getY(), //
-              2, 2);
+          Shape shape = new Rectangle2D.Double(p.getX(), p.getY(), 2, 2);
           graphics.fill(shape);
         }
       graphics.setColor(new Color(128, 128 + 64, 128, 128));
@@ -84,7 +82,7 @@ public class UrgDemo {
       UrgDemo urg = new UrgDemo();
       urg.jFrame.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(WindowEvent e) {
+        public void windowClosing(WindowEvent windowEvent) {
           try {
             outputStream.write("EXIT\n".getBytes());
             outputStream.flush();
@@ -92,10 +90,6 @@ public class UrgDemo {
           } catch (Exception exception) {
             exception.printStackTrace();
           }
-        }
-
-        @Override
-        public void windowClosed(WindowEvent e) {
         }
       });
       while (process.isAlive()) {
@@ -106,7 +100,7 @@ public class UrgDemo {
         } else
           Thread.sleep(10);
       }
-      System.out.println("clean exit");
+      System.out.println("urg process terminated");
     } catch (Exception exception) {
       exception.printStackTrace();
     }
