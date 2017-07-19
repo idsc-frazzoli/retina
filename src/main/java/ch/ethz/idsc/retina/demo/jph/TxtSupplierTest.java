@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
+/** demo txt file read */
 class TxtSupplierTest {
   public static void main(String[] args) throws Exception {
     DvsEventStatistics stats = new DvsEventStatistics();

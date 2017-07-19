@@ -2,7 +2,22 @@
 
 <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Java 8 code to prototype algorithms for DVS event processing
+Java 8 code to prototype algorithms for sensor interfacing and processing
+
+# LIDAR
+
+## HOKUYO URG 04LX
+
+![hokuyo_snapshot](https://user-images.githubusercontent.com/4012178/28366987-3f1baa66-6c8f-11e7-9d0d-aef26df649ff.png)
+
+our code builds upon 
+[urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
+
+## Velodyne HDL-32E
+
+[video](https://www.youtube.com/watch?v=abOYEIdBgRs)
+
+# DVS
 
 ## streaming dat files
 

@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.core;
 
+import java.awt.Point;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -30,6 +31,10 @@ public class DvsEvent implements Comparable<DvsEvent>, Serializable {
 
   public int signum() {
     return i == 1 ? 1 : -1;
+  }
+
+  public Point point() {
+    return new Point(x, y);
   }
 
   @Override

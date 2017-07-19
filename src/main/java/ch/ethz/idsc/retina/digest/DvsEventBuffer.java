@@ -8,9 +8,8 @@ import java.util.Queue;
 
 import ch.ethz.idsc.retina.core.DvsEvent;
 
-/**
- * 
- */
+/** the buffer holds the recent history of events
+ * the history goes back for a fixed window in time */
 public class DvsEventBuffer implements DvsEventDigest {
   private final int window_us;
   private final Queue<DvsEvent> queue = new LinkedList<>();

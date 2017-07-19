@@ -18,12 +18,15 @@ public class PerlinNoise extends ContinuousNoise {
     int B = perm[X + 1] + Y;
     int BA = perm[B] + Z;
     int BB = perm[B + 1] + Z;
-    return lerp(w, lerp(v, lerp(u, grad(perm[AA], x, y, z), // AND ADD
-        grad(perm[BA], x - 1, y, z)), // BLENDED
-        lerp(u, grad(perm[AB], x, y - 1, z), // RESULTS
-            grad(perm[BB], x - 1, y - 1, z))), // FROM 8
-        lerp(v, lerp(u, grad(perm[AA + 1], x, y, z - 1), // CORNERS
-            grad(perm[BA + 1], x - 1, y, z - 1)), // OF CUBE
+    return lerp(w,
+        lerp(v,
+            lerp(u, grad(perm[AA], x, y, z), // AND ADD
+                grad(perm[BA], x - 1, y, z)), // BLENDED
+            lerp(u, grad(perm[AB], x, y - 1, z), // RESULTS
+                grad(perm[BB], x - 1, y - 1, z))), // FROM 8
+        lerp(v,
+            lerp(u, grad(perm[AA + 1], x, y, z - 1), // CORNERS
+                grad(perm[BA + 1], x - 1, y, z - 1)), // OF CUBE
             lerp(u, grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1))));
   }
 

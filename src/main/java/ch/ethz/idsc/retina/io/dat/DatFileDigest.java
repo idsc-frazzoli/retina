@@ -36,6 +36,8 @@ public class DatFileDigest implements DvsEventDigest, AutoCloseable {
       }
       byteBuffer.position(0);
     }
+    if ((dvsEvent.time_us & 0xffffffffL) != dvsEvent.time_us)
+      throw new RuntimeException();
     byteBuffer.putInt((int) dvsEvent.time_us);
     int mx = dvsEvent.x;
     int my = dvsEvent.y << SHIFT_Y;

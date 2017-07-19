@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.digest;
 
 import ch.ethz.idsc.retina.core.DvsEvent;
+import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class DvsEventStatistics implements DvsEventDigest {
   private static final int INTERVAL = 1000000;
@@ -22,10 +24,14 @@ public class DvsEventStatistics implements DvsEventDigest {
     ++total;
   }
 
+  public long total() {
+    return total;
+  }
+
   public void printSummary() {
     long dif = System.currentTimeMillis() - first;
-    System.out.println("total= " + total);
-    System.out.println("time = " + (dif * 1e-3) + " [sec]");
+    System.out.println("total= " + total + " [events]");
+    System.out.println("time = " + DoubleScalar.of(dif * 1e-3).map(Round._4) + " [sec]");
     System.out.println("perf = " + Math.round(total / (dif)) + "k [events/sec]");
   }
 }
