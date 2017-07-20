@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -27,11 +28,15 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 
-/** https://sourceforge.net/projects/urgnetwork/files/urg_library/ */
+/** {@link UrgDemo} requires that the binary "urg_provider" is located at
+ * /home/{username}/Public/urg_provider
+ * 
+ * https://sourceforge.net/projects/urgnetwork/files/urg_library/ */
 public class UrgDemo {
-  public static final double SCALE = 0.05;
+  public static final double SCALE = 0.1;
   // ---
   Tensor alpha = Subdivide.of(-170 * Math.PI / 180, 170 * Math.PI / 180, 681).unmodifiable();
+  /** range contains distances in [mm] for 682 angles TODO confirm units */
   Tensor range = Tensors.empty();
 
   static Point2D toPoint(Tensor dir) {
@@ -87,8 +92,13 @@ public class UrgDemo {
     jFrame.setVisible(true);
   }
 
+  private void repaint(String line) {
+    range = Tensors.fromString(line.substring(3)); // <- removes "URG" prefix from line
+    jComponent.repaint();
+  }
+
   public static void main(String[] args) {
-    File dir = new File("/home/datahaki/3rdparty/urg_library-1.2.0/samples/c");
+    final File dir = UserHome.file("Public");
     ProcessBuilder processBuilder = //
         new ProcessBuilder(new File(dir, "urg_provider").toString());
     processBuilder.directory(dir);
@@ -122,10 +132,5 @@ public class UrgDemo {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
-  }
-
-  private void repaint(String line) {
-    range = Tensors.fromString(line.substring(3));
-    jComponent.repaint();
   }
 }
