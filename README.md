@@ -8,7 +8,7 @@ Java 8 code to prototype algorithms for sensor interfacing and processing
 
 ## HOKUYO URG 04LX
 
-![hokuyo_snapshot](https://user-images.githubusercontent.com/4012178/28366987-3f1baa66-6c8f-11e7-9d0d-aef26df649ff.png)
+![urgdemo](https://user-images.githubusercontent.com/4012178/28576818-3b0c2d0e-7155-11e7-917b-e97355969fd6.png)
 
 our code builds upon 
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
