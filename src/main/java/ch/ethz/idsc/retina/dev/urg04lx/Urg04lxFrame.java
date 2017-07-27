@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
 
-/** {@link UrgFrame} requires that the binary "urg_provider" is located at
+/** {@link Urg04lxFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
  * 
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
@@ -41,14 +41,15 @@ import ch.ethz.idsc.tensor.red.Min;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class UrgFrame implements UrgListener {
+// TODO use RamerDouglasPeucker
+public class Urg04lxFrame implements UrgListener {
   public static final double SCALE = 0.15;
   public static final Scalar THRESHOLD = RealScalar.of(30); // [mm]
   // ---
   /** p.2 Detection Area: 240 [deg] */
-  Tensor alpha = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, 681).unmodifiable();
+  private final Tensor alpha = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, 681).unmodifiable();
   /** range contains distances in [mm] for 682 angles TODO confirm units */
-  Tensor range = Tensors.empty();
+  private Tensor range = Tensors.empty();
 
   static Point2D toPoint(Tensor dir) {
     return new Point2D.Double( //
@@ -115,7 +116,7 @@ public class UrgFrame implements UrgListener {
     }
   };
 
-  public UrgFrame(UrgProvider urgProvider) {
+  public Urg04lxFrame(UrgProvider urgProvider) {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 800, 800);
     jFrame.setContentPane(jComponent);

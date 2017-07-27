@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.dev.urg04lx.FileUrgProvider;
 import ch.ethz.idsc.retina.dev.urg04lx.LiveUrgProvider;
-import ch.ethz.idsc.retina.dev.urg04lx.UrgFrame;
+import ch.ethz.idsc.retina.dev.urg04lx.Urg04lxFrame;
 import ch.ethz.idsc.retina.dev.urg04lx.UrgProvider;
 
 enum LiveUrgFrameDemo {
@@ -15,7 +15,7 @@ enum LiveUrgFrameDemo {
     urgProvider = new FileUrgProvider( //
         new File("/media/datahaki/media/ethz/urg04lx", "urg20170727T133009.txt"));
     // ---
-    UrgFrame urgFrame = new UrgFrame(urgProvider);
+    Urg04lxFrame urgFrame = new Urg04lxFrame(urgProvider);
     // LiveUrgProvider.INSTANCE.addListener(UrgRecorder.createDefault());
     urgProvider.addListener(urgFrame);
     urgProvider.start();
