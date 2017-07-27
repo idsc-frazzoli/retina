@@ -11,13 +11,18 @@ import java.util.Set;
 
 import ch.ethz.idsc.retina.util.io.UserHome;
 
-public enum LiveUrgProvider {
+public enum LiveUrgProvider implements UrgProvider {
   INSTANCE;
   // ---
-  public final Set<UrgListener> listeners = new LinkedHashSet<>();
+  private final Set<UrgListener> listeners = new LinkedHashSet<>();
   private OutputStream outputStream;
 
-  /** call once */
+  @Override
+  public void addListener(UrgListener urgListener) {
+    listeners.add(urgListener);
+  }
+
+  @Override
   public void start() {
     final File dir = UserHome.file("Public");
     ProcessBuilder processBuilder = //
@@ -36,10 +41,13 @@ public enum LiveUrgProvider {
             while (process.isAlive()) {
               String line = bufferedReader.readLine();
               if (line != null) {
-                if (line.startsWith("URG{"))
+                if (line.startsWith(URG_PREFIX))
                   listeners.forEach(urgListener -> urgListener.urg(line));
-              } else
+              } else {
+                System.out.println("readLine give up.");
+                // never here
                 Thread.sleep(1);
+              }
             }
           } catch (Exception exception) {
             exception.printStackTrace();
@@ -54,6 +62,7 @@ public enum LiveUrgProvider {
     }
   }
 
+  @Override
   public void stop() {
     try {
       outputStream.write("EXIT\n".getBytes());

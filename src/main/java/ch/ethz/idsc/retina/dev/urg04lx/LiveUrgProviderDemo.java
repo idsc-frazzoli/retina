@@ -5,13 +5,7 @@ package ch.ethz.idsc.retina.dev.urg04lx;
 enum LiveUrgProviderDemo {
   ;
   public static void main(String[] args) throws Exception {
-    UrgListener urgListener = new UrgListener() {
-      @Override
-      public void urg(String line) {
-        System.out.println(line);
-      }
-    };
-    LiveUrgProvider.INSTANCE.listeners.add(urgListener);
+    LiveUrgProvider.INSTANCE.addListener(System.out::println);
     LiveUrgProvider.INSTANCE.start();
     Thread.sleep(2500);
     LiveUrgProvider.INSTANCE.stop();

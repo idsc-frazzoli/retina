@@ -56,7 +56,7 @@ public class UrgFrame implements UrgListener {
         200 + dir.Get(0).number().doubleValue() * SCALE);
   }
 
-  JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
@@ -115,10 +115,16 @@ public class UrgFrame implements UrgListener {
     }
   };
 
-  public UrgFrame() {
+  public UrgFrame(UrgProvider urgProvider) {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 800, 800);
     jFrame.setContentPane(jComponent);
+    jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent windowEvent) {
+        urgProvider.stop();
+      }
+    });
     jFrame.setVisible(true);
   }
 
@@ -126,17 +132,5 @@ public class UrgFrame implements UrgListener {
   public void urg(String line) {
     range = Tensors.fromString(line.substring(3)); // <- removes "URG" prefix from line
     jComponent.repaint();
-  }
-
-  public static void main(String[] args) {
-    UrgFrame urgFrame = new UrgFrame();
-    urgFrame.jFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent windowEvent) {
-        LiveUrgProvider.INSTANCE.stop();
-      }
-    });
-    LiveUrgProvider.INSTANCE.listeners.add(urgFrame);
-    LiveUrgProvider.INSTANCE.start();
   }
 }
