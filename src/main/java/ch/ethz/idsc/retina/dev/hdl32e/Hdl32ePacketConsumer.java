@@ -8,13 +8,13 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.util.io.PacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-public class HDL32EPacketConsumer implements PacketConsumer {
+public class Hdl32ePacketConsumer implements PacketConsumer {
   public static final int LASER_SIZE1 = 1248;
   public static final int LASER_SIZE2 = 1206;
   // ---
-  private final HDL32EFiringPacketConsumer firingPacketConsumer;
+  private final Hdl32eFiringPacketConsumer firingPacketConsumer;
 
-  public HDL32EPacketConsumer(HDL32EFiringPacketConsumer firingPacketConsumer) {
+  public Hdl32ePacketConsumer(Hdl32eFiringPacketConsumer firingPacketConsumer) {
     this.firingPacketConsumer = firingPacketConsumer;
   }
 
@@ -39,14 +39,14 @@ public class HDL32EPacketConsumer implements PacketConsumer {
   }
 
   public static void main(String[] args) throws Exception {
-    LaserPositionConsumer laserPositionConsumer = new LaserPositionConsumer() {
+    Hdl32ePositionListener laserPositionConsumer = new Hdl32ePositionListener() {
       @Override
       public void digest(float[] position_data, int length) {
         // System.out.println("here");
       }
     };
-    PacketConsumer packetConsumer = new HDL32EPacketConsumer( //
-        new HDL32EFiringCollector(laserPositionConsumer));
+    PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
+        new Hdl32eFiringCollector(laserPositionConsumer));
     new PcapParse(
         new File( //
             "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //

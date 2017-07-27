@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
+public class Hdl32eFiringCollector extends AbstractHdl32eFiringPacketConsumer {
   public static final int POINT_NUMEL = 25000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -29,9 +29,9 @@ public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
-  private final LaserPositionConsumer laserPositionConsumer;
+  private final Hdl32ePositionListener laserPositionConsumer;
 
-  public HDL32EFiringCollector(LaserPositionConsumer laserPositionConsumer) {
+  public Hdl32eFiringCollector(Hdl32ePositionListener laserPositionConsumer) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
     for (int laser = 0; laser < 32; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
