@@ -11,17 +11,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -32,7 +26,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
 
-/** {@link UrgDemo} requires that the binary "urg_provider" is located at
+/** {@link UrgFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
  * 
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
@@ -47,7 +41,7 @@ import ch.ethz.idsc.tensor.red.Min;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class UrgDemo {
+public class UrgFrame implements UrgListener {
   public static final double SCALE = 0.15;
   public static final Scalar THRESHOLD = RealScalar.of(30); // [mm]
   // ---
@@ -121,52 +115,28 @@ public class UrgDemo {
     }
   };
 
-  public UrgDemo() {
+  public UrgFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 800, 800);
     jFrame.setContentPane(jComponent);
     jFrame.setVisible(true);
   }
 
-  private void repaint(String line) {
+  @Override
+  public void urg(String line) {
     range = Tensors.fromString(line.substring(3)); // <- removes "URG" prefix from line
     jComponent.repaint();
   }
 
   public static void main(String[] args) {
-    final File dir = UserHome.file("Public");
-    ProcessBuilder processBuilder = //
-        new ProcessBuilder(new File(dir, "urg_provider").toString());
-    processBuilder.directory(dir);
-    try {
-      Process process = processBuilder.start();
-      OutputStream outputStream = process.getOutputStream();
-      InputStream inputStream = process.getInputStream();
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-      UrgDemo urg = new UrgDemo();
-      urg.jFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent windowEvent) {
-          try {
-            outputStream.write("EXIT\n".getBytes());
-            outputStream.flush();
-            System.out.println("sent EXIT");
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
-        }
-      });
-      while (process.isAlive()) {
-        String line = bufferedReader.readLine();
-        if (line != null) {
-          if (line.startsWith("URG{"))
-            urg.repaint(line);
-        } else
-          Thread.sleep(1);
+    UrgFrame urgFrame = new UrgFrame();
+    urgFrame.jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent windowEvent) {
+        LiveUrgProvider.INSTANCE.stop();
       }
-      System.out.println("urg process terminated");
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+    });
+    LiveUrgProvider.INSTANCE.listeners.add(urgFrame);
+    LiveUrgProvider.INSTANCE.start();
   }
 }
