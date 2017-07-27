@@ -15,7 +15,10 @@ our code builds upon
 
 ## Velodyne HDL-32E
 
-[video](https://www.youtube.com/watch?v=abOYEIdBgRs)
+* 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=abOYEIdBgRs)
+* distance and intensity as panorama
+
+![hdl32e_panorama](https://user-images.githubusercontent.com/4012178/28677691-9d924630-72ee-11e7-8a49-6e60819cf7f1.png)
 
 # DVS
 

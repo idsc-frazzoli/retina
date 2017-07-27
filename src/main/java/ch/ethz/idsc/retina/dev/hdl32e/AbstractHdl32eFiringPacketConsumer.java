@@ -3,12 +3,12 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public abstract class AbstractHDL32EFiringPacketConsumer implements HDL32EFiringPacketConsumer {
+public abstract class AbstractHdl32eFiringPacketConsumer implements Hdl32eFiringPacketConsumer {
+  public static final int LASERS = 32;
+
   // private byte[] ethernet_header = new byte[42];
   @Override
   public final void lasers(ByteBuffer byteBuffer) {
-    // ByteBuffer byteBuffer = ByteBuffer.wrap(laser_data);
-    // byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     {
       int offset = byteBuffer.position();
       // byteBuffer.position(42); // begin of firing data
@@ -29,7 +29,12 @@ public abstract class AbstractHDL32EFiringPacketConsumer implements HDL32EFiring
     }
   }
 
-  /** implementations have to advance byteBuffer by 96 bytes
+  /** implementations have to advance byteBuffer by 96 bytes:
+   * 
+   * for (int laser = 0; laser < LASERS; ++laser) {
+   * int distance = byteBuffer.getShort() & 0xffff;
+   * int intensity = byteBuffer.get();
+   * }
    * 
    * @param firing ranges from [0, ..., 11]
    * @param rotational [0, ..., 35999]

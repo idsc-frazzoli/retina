@@ -11,17 +11,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -32,7 +26,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
 
-/** {@link UrgDemo} requires that the binary "urg_provider" is located at
+/** {@link Urg04lxFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
  * 
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
@@ -47,14 +41,15 @@ import ch.ethz.idsc.tensor.red.Min;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class UrgDemo {
+// TODO use RamerDouglasPeucker
+public class Urg04lxFrame implements UrgListener {
   public static final double SCALE = 0.15;
   public static final Scalar THRESHOLD = RealScalar.of(30); // [mm]
   // ---
   /** p.2 Detection Area: 240 [deg] */
-  Tensor alpha = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, 681).unmodifiable();
+  private final Tensor alpha = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, 681).unmodifiable();
   /** range contains distances in [mm] for 682 angles TODO confirm units */
-  Tensor range = Tensors.empty();
+  private Tensor range = Tensors.empty();
 
   static Point2D toPoint(Tensor dir) {
     return new Point2D.Double( //
@@ -62,7 +57,7 @@ public class UrgDemo {
         200 + dir.Get(0).number().doubleValue() * SCALE);
   }
 
-  JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
@@ -121,52 +116,22 @@ public class UrgDemo {
     }
   };
 
-  public UrgDemo() {
+  public Urg04lxFrame(UrgProvider urgProvider) {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 800, 800);
     jFrame.setContentPane(jComponent);
+    jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent windowEvent) {
+        urgProvider.stop();
+      }
+    });
     jFrame.setVisible(true);
   }
 
-  private void repaint(String line) {
+  @Override
+  public void urg(String line) {
     range = Tensors.fromString(line.substring(3)); // <- removes "URG" prefix from line
     jComponent.repaint();
-  }
-
-  public static void main(String[] args) {
-    final File dir = UserHome.file("Public");
-    ProcessBuilder processBuilder = //
-        new ProcessBuilder(new File(dir, "urg_provider").toString());
-    processBuilder.directory(dir);
-    try {
-      Process process = processBuilder.start();
-      OutputStream outputStream = process.getOutputStream();
-      InputStream inputStream = process.getInputStream();
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-      UrgDemo urg = new UrgDemo();
-      urg.jFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent windowEvent) {
-          try {
-            outputStream.write("EXIT\n".getBytes());
-            outputStream.flush();
-            System.out.println("sent EXIT");
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
-        }
-      });
-      while (process.isAlive()) {
-        String line = bufferedReader.readLine();
-        if (line != null) {
-          if (line.startsWith("URG{"))
-            urg.repaint(line);
-        } else
-          Thread.sleep(1);
-      }
-      System.out.println("urg process terminated");
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
   }
 }

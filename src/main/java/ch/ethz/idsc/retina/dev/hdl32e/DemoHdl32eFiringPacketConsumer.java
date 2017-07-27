@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public class DemoHDL32EFiringPacketConsumer implements HDL32EFiringPacketConsumer {
+public class DemoHdl32eFiringPacketConsumer implements Hdl32eFiringPacketConsumer {
   // private byte[] ethernet_header = new byte[42];
   @Override
   public void lasers(ByteBuffer byteBuffer) {

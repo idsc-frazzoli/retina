@@ -3,7 +3,9 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
+import ch.ethz.idsc.tensor.Tensors;
+
+public class Hdl32ePositionCollector extends AbstractHdl32eFiringPacketConsumer {
   public static final int POINT_NUMEL = 25000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -29,16 +31,16 @@ public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
-  private final LaserPositionConsumer laserPositionConsumer;
+  private final Hdl32ePositionListener hdl32ePositionListener;
 
-  public HDL32EFiringCollector(LaserPositionConsumer laserPositionConsumer) {
+  public Hdl32ePositionCollector(Hdl32ePositionListener hdl32ePositionListener) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
-    for (int laser = 0; laser < 32; ++laser) {
+    for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
       IR[laser] = (float) Math.cos(theta);
       IZ[laser] = (float) Math.sin(theta);
     }
-    this.laserPositionConsumer = laserPositionConsumer;
+    this.hdl32ePositionListener = hdl32ePositionListener;
   }
 
   int max = 0;
@@ -51,13 +53,14 @@ public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
     final double angle = rotational * ANGLE_FACTOR;
     float dx = (float) Math.cos(angle);
     float dy = (float) Math.sin(angle);
-    for (int laser = 0; laser < 32; ++laser) {
+    for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
       // System.out.println(distance);
       if (max < distance) {
         max = distance;
         // System.out.println(distance);
       }
+      @SuppressWarnings("unused")
       int intensity = byteBuffer.get(); // TODO
       // quote from the user's manual, p.8:
       // "the minimum return distance for the HDL-32E is approximately 1 meter.
@@ -73,10 +76,14 @@ public class HDL32EFiringCollector extends AbstractHDL32EFiringPacketConsumer {
         position_data[++position_index] = py;
         position_data[++position_index] = pz;
         if (position_index + 1 == position_data.length) {
-          laserPositionConsumer.digest(position_data, position_index + 1);
+          hdl32ePositionListener.digest(position_data, position_index + 1);
           position_index = -1;
         }
       } // else too close => ignore
     }
+  }
+
+  public static void main(String[] args) {
+    System.out.println(Tensors.vectorInt(ORDERING));
   }
 }
