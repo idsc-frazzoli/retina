@@ -11,14 +11,14 @@ import java.util.Set;
 
 import ch.ethz.idsc.retina.util.io.UserHome;
 
-public enum LiveUrgProvider implements UrgProvider {
+public enum LiveUrg04lxProvider implements Urg04lxProvider {
   INSTANCE;
   // ---
-  private final Set<UrgListener> listeners = new LinkedHashSet<>();
+  private final Set<Urg04lxListener> listeners = new LinkedHashSet<>();
   private OutputStream outputStream;
 
   @Override
-  public void addListener(UrgListener urgListener) {
+  public void addListener(Urg04lxListener urgListener) {
     listeners.add(urgListener);
   }
 

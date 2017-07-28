@@ -5,9 +5,9 @@ package ch.ethz.idsc.retina.dev.urg04lx;
 enum LiveUrgProviderDemo {
   ;
   public static void main(String[] args) throws Exception {
-    LiveUrgProvider.INSTANCE.addListener(System.out::println);
-    LiveUrgProvider.INSTANCE.start();
+    LiveUrg04lxProvider.INSTANCE.addListener(System.out::println);
+    LiveUrg04lxProvider.INSTANCE.start();
     Thread.sleep(2500);
-    LiveUrgProvider.INSTANCE.stop();
+    LiveUrg04lxProvider.INSTANCE.stop();
   }
 }

@@ -9,19 +9,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /** playback urg recordings */
-public class FileUrgProvider implements UrgProvider {
+public class FileUrg04lxProvider implements Urg04lxProvider {
   private static final int PERIOD_MILLIS = 100;
   // ---
-  private final Set<UrgListener> listeners = new LinkedHashSet<>();
+  private final Set<Urg04lxListener> listeners = new LinkedHashSet<>();
   private final BufferedReader bufferedReader;
   private boolean isLaunched = false;
 
-  public FileUrgProvider(File file) throws IOException {
+  public FileUrg04lxProvider(File file) throws IOException {
     bufferedReader = new BufferedReader(new FileReader(file));
   }
 
   @Override
-  public void addListener(UrgListener urgListener) {
+  public void addListener(Urg04lxListener urgListener) {
     listeners.add(urgListener);
   }
 

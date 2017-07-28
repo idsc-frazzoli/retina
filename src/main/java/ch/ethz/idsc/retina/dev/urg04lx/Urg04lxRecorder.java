@@ -11,15 +11,15 @@ import java.util.Date;
 
 import ch.ethz.idsc.retina.util.io.UserHome;
 
-public class UrgRecorder implements UrgListener, AutoCloseable {
-  public static UrgListener createDefault() throws IOException {
+public class Urg04lxRecorder implements Urg04lxListener, AutoCloseable {
+  public static Urg04lxListener createDefault() throws IOException {
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    return new UrgRecorder(UserHome.file("urg" + dateFormat.format(new Date()) + ".txt"));
+    return new Urg04lxRecorder(UserHome.file("urg" + dateFormat.format(new Date()) + ".txt"));
   }
 
   private final BufferedWriter bufferedWriter;
 
-  public UrgRecorder(File file) throws IOException {
+  public Urg04lxRecorder(File file) throws IOException {
     bufferedWriter = new BufferedWriter(new FileWriter(file));
   }
 
