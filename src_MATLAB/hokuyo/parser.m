@@ -2,6 +2,9 @@
 function numbers = parser(string)
 % get the number from the string
 
+% TODO can replace this function with str2num
+% str2num('[2,3,4,5]') == [2     3     4     5]
+
 N=length(string);
 currentNum = 0;
 numbers = [];
