@@ -3,11 +3,11 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.core.DvsEvent;
-import ch.ethz.idsc.retina.digest.DvsEventBuffer;
-import ch.ethz.idsc.retina.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.io.dat.DatFileSupplier;
-import ch.ethz.idsc.retina.supply.DvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.core.DvsEvent;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
+import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo dat file read */
