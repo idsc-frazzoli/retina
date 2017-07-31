@@ -20,6 +20,7 @@ class TxtSupplierTest {
         "events.txt");
     System.out.println(file.exists());
     try {
+      // TODO properly use AutoClosable
       DvsEventSupplier sup = new TxtFileSupplier(file, ImageDimensions.UZ);
       DvsEventBuffer buf = new DvsEventBuffer(10000);
       while (true) {

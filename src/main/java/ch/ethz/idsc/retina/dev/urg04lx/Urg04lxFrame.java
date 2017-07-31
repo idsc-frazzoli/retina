@@ -73,8 +73,8 @@ public class Urg04lxFrame implements Urg04lxListener {
 
     private Point2D toPoint(Tensor dir) {
       return new Point2D.Double( //
-          ofs_x - dir.Get(1).number().doubleValue() * METER_TO_PIXEL, //
-          ofs_y - dir.Get(0).number().doubleValue() * METER_TO_PIXEL);
+          ofs_x + dir.Get(0).number().doubleValue() * METER_TO_PIXEL, //
+          ofs_y - dir.Get(1).number().doubleValue() * METER_TO_PIXEL);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class Urg04lxFrame implements Urg04lxListener {
       Graphics2D graphics = (Graphics2D) g;
       { // set center of sensor in window
         Dimension dimension = getSize();
-        ofs_x = dimension.width / 2;
-        ofs_y = dimension.height * 3 / 4;
+        ofs_x = dimension.width * 1 / 4;
+        ofs_y = dimension.height / 2;
       }
       { // show blind spot
         Path2D path2d = TensorGraphics.polygonToPath( //
