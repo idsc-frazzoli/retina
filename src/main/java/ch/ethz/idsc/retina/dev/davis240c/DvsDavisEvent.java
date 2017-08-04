@@ -4,9 +4,13 @@ package ch.ethz.idsc.retina.dev.davis240c;
 public class DvsDavisEvent {
   /** time in [us] */
   public final int time;
+  /** left-right pixel location, x=0 corresponds to far left */
   public final int x;
+  /** up-down pixel location, y=0 corresponds to far up */
   public final int y;
-  /** polarity */
+  /** polarity:
+   * 0 represents a transition from bright to dark (jAERViewer shows 0 in red)
+   * 1 represents a transition from dark to bright (jAERViewer shows 1 in green) */
   public final int i;
 
   public DvsDavisEvent(int time, int x, int y, int i) {

@@ -2,11 +2,14 @@
 package ch.ethz.idsc.retina.demo.jph;
 
 import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventListener;
+import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEvent;
+import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEventListener;
 
-public class ConsoleDavisEventListener implements DavisEventListener {
+public class ConsoleDavisEventListener implements //
+    DvsDavisEventListener, ApsDavisEventListener, ImuDavisEventListener {
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
     // if (apsDavisEvent.x == 239)
