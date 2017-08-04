@@ -4,7 +4,9 @@ package ch.ethz.idsc.retina.dvs.io.aedat;
 import java.io.File;
 import java.util.Arrays;
 
+import ch.ethz.idsc.retina.dev.davis240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis240c.DavisImageProvider;
+import ch.ethz.idsc.retina.dvs.app.AccumulateDvsImage;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
 // TODO class name not final
@@ -18,7 +20,7 @@ public enum AedatLogConverter {
     directory.mkdir();
     GlobalAssert.that(directory.isDirectory());
     // ---
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat);
+    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, Davis240c.INSTANCE, Davis240c.INSTANCE);
     // ---
     EventsTextWriter eventsTextWriter = new EventsTextWriter(directory);
     aedatFileSupplier.addListener(eventsTextWriter);
@@ -27,6 +29,14 @@ public enum AedatLogConverter {
     PngImageWriter pngImageWriter = new PngImageWriter(directory);
     davisImageProvider.addListener(pngImageWriter);
     aedatFileSupplier.addListener(davisImageProvider);
+    // ---
+    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(10000);
+    {
+      File debug = new File(directory, "events_debug");
+      debug.mkdir();
+      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 100));
+      aedatFileSupplier.addListener(accumulateDvsImage);
+    }
     // ---
     aedatFileSupplier.start();
     aedatFileSupplier.stop();

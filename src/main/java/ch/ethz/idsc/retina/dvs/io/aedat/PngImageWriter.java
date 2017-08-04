@@ -8,9 +8,9 @@ import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.dev.davis240c.DavisImageListener;
+import ch.ethz.idsc.retina.dev.davis240c.TimedImageListener;
 
-public class PngImageWriter implements DavisImageListener, AutoCloseable {
+public class PngImageWriter implements TimedImageListener, AutoCloseable {
   private final File directory;
   private final BufferedWriter bufferedWriter;
   private int count = 0;
