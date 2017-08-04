@@ -20,6 +20,6 @@ public enum Davis240c implements DvsReference, ApsReference {
 
   @Override
   public ApsDavisEvent encodeAps(int time, int x, int y, int adc) {
-    return new ApsDavisEvent(time, x, y, ADC_MAX - adc);
+    return new ApsDavisEvent(time, x, LAST_Y - y, ADC_MAX - adc);
   }
 }

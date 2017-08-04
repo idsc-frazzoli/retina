@@ -54,9 +54,10 @@ public class AccumulateDvsImage implements DvsDavisEventListener {
       clearImage();
       last += interval;
     }
-    image.set(RealScalar.of(dvsDavisEvent.i == 0 ? 0 : 255), dvsDavisEvent.x, dvsDavisEvent.y);
+    int polarity = dvsDavisEvent.i == 0 ? 0 : 255;
+    image.set(RealScalar.of(polarity), dvsDavisEvent.x, dvsDavisEvent.y);
     int index = dvsDavisEvent.x + ((dvsDavisEvent.y) * WIDTH);
-    bytes[index] = (byte) (dvsDavisEvent.i == 0 ? 0 : 255);
+    bytes[index] = (byte) polarity;
   }
 
   private void clearImage() {

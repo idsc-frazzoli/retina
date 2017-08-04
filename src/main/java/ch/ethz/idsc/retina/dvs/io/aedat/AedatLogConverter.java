@@ -30,11 +30,11 @@ public enum AedatLogConverter {
     davisImageProvider.addListener(pngImageWriter);
     aedatFileSupplier.addListener(davisImageProvider);
     // ---
-    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(10000);
+    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(20000);
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();
-      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 100));
+      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 50));
       aedatFileSupplier.addListener(accumulateDvsImage);
     }
     // ---
