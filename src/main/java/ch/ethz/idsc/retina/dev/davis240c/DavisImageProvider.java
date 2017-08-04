@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.davis240c;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
@@ -18,12 +18,11 @@ public class DavisImageProvider implements DavisEventListener {
 
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
-    // TODO some aps conversion fails because of IMU?!
-    if (apsDavisEvent.x < 240 && apsDavisEvent.y < 180) {
-      image.set(DoubleScalar.of(apsDavisEvent.adc * 0.2490234375), apsDavisEvent.x, 179 - apsDavisEvent.y);
-      if (apsDavisEvent.x == 239 && apsDavisEvent.y == 0)
-        davisImageListeners.forEach(l -> l.image(apsDavisEvent.time, image));
-    }
+    image.set(RationalScalar.of(apsDavisEvent.adc >> 2, 1), apsDavisEvent.x, 179 - apsDavisEvent.y);
+    // if (apsDavisEvent.y == 0)
+    // System.out.println(apsDavisEvent);
+    if (apsDavisEvent.x == 239 && apsDavisEvent.y == 0)
+      davisImageListeners.forEach(l -> l.image(apsDavisEvent.time, image));
   }
 
   @Override

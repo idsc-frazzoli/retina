@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dvs.io.aedat;
 
 import java.io.File;
+import java.util.Arrays;
 
 import ch.ethz.idsc.retina.dev.davis240c.DavisImageProvider;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
@@ -14,6 +15,7 @@ public enum AedatLogConverter {
    * @throws Exception */
   public static void of(File aedat, File directory) throws Exception {
     GlobalAssert.that(aedat.isFile());
+    directory.mkdir();
     GlobalAssert.that(directory.isDirectory());
     // ---
     AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat);
@@ -32,11 +34,19 @@ public enum AedatLogConverter {
     pngImageWriter.close();
   }
 
-  // TODO remove later!
+  /** for use as a command line tool
+   * 
+   * @param args
+   * @throws Exception */
   public static void main(String[] args) throws Exception {
-    final File file1 = new File("/tmp", "DAVIS240C-2017-08-03T16-55-01+0200-02460045-0.aedat");
-    final File file2 = new File("/tmp", "DAVIS240C-2017-08-03T18-16-55+0200-02460045-0.aedat");
-    // File file = file1;
-    of(file1, new File("/media/datahaki/media/ethz/davis240c/rec1"));
+    if (args.length < 2) {
+      System.out.println(AedatLogConverter.class.getName());
+      System.out.println("specify two arguments: source_aedat_file target_directory");
+      System.out.println("your relative path is: " + new File("").getAbsolutePath());
+    } else {
+      Arrays.asList(args).forEach(System.out::println);
+      System.out.println("please wait...");
+      of(new File(args[0]), new File(args[1]));
+    }
   }
 }
