@@ -34,15 +34,12 @@ import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
  * 
  * http://wp.doc.ic.ac.uk/pb2114/datasets/ */
 public class DatFileSupplier implements DvsEventSupplier, AutoCloseable {
-  private static final int BUFFER_SIZE = 512;
   private static final int MASK_X = 0x1ff;
   private static final int MASK_Y = 0x1FE00;
-  private static final int SHIFT_Y = 9;
   private static final int MASK_I = 0x00020000;
-  private static final int SHIFT_I = 17;
   // ---
   private final Dimension dimension;
-  private final byte[] bytes = new byte[8 * BUFFER_SIZE];
+  private final byte[] bytes = new byte[8 * StaticHelper.BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
   private final InputStream inputStream;
   private int available = 0;
@@ -62,8 +59,8 @@ public class DatFileSupplier implements DvsEventSupplier, AutoCloseable {
     int time = byteBuffer.getInt(); // microseconds
     int ixy = byteBuffer.getInt();
     int x = ixy & MASK_X;
-    int y = (ixy & MASK_Y) >> SHIFT_Y;
-    int i = (ixy & MASK_I) >> SHIFT_I;
+    int y = (ixy & MASK_Y) >> StaticHelper.SHIFT_Y;
+    int i = (ixy & MASK_I) >> StaticHelper.SHIFT_I;
     available -= 8;
     return new DvsEvent(time, x, y, i);
   }

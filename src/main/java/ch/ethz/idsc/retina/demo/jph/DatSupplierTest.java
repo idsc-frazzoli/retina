@@ -11,7 +11,8 @@ import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo dat file read */
-class DatSupplierTest {
+enum DatSupplierTest {
+  ;
   public static void main(String[] args) throws Exception {
     DvsEventStatistics stats = new DvsEventStatistics();
     int maxx = 0;

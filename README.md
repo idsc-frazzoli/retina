@@ -24,7 +24,7 @@ our code builds upon
 
 ## IniLabs DAVIS 240C
 
-live stream
+parsing of .aedat files, conversion to text+png format
 
 # DVS
 
