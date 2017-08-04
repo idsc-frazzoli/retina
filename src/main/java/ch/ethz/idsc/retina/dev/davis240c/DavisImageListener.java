@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis240c;
 
-import ch.ethz.idsc.tensor.Tensor;
+import java.awt.image.BufferedImage;
 
 public interface DavisImageListener {
-  void image(int time, Tensor image); // TODO API not final
+  void image(int time, BufferedImage bufferedImage);
 }

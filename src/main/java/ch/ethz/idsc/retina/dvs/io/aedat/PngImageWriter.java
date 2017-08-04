@@ -1,13 +1,14 @@
 // code by jph
 package ch.ethz.idsc.retina.dvs.io.aedat;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import javax.imageio.ImageIO;
+
 import ch.ethz.idsc.retina.dev.davis240c.DavisImageListener;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.Export;
 
 public class PngImageWriter implements DavisImageListener, AutoCloseable {
   private final File directory;
@@ -24,11 +25,12 @@ public class PngImageWriter implements DavisImageListener, AutoCloseable {
   }
 
   @Override
-  public void image(int time, Tensor image) {
+  public void image(int time, BufferedImage bufferedImage) {
     try {
       final String string = String.format("images/frame_%08d.png", count);
       bufferedWriter.write(String.format("%.6f %s\n", time * 1e-6, string));
-      Export.of(new File(directory, string), image);
+      File file = new File(directory, string);
+      ImageIO.write(bufferedImage, "png", file);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
