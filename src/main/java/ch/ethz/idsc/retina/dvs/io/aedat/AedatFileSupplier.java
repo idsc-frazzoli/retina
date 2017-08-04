@@ -12,9 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.DavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.DavisEventProvider;
 import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEvent;
 
 /** Quotes from the iniLabs User Guide DAVIS240:
@@ -32,7 +34,8 @@ public class AedatFileSupplier implements DavisEventProvider {
   private final InputStream inputStream;
   private int available = 0;
   List<String> header = new LinkedList<>();
-  private List<DavisEventListener> davisEventListeners = new LinkedList<>();
+  private List<DvsDavisEventListener> dvsDavisEventListeners = new LinkedList<>();
+  private List<ApsDavisEventListener> apsDavisEventListeners = new LinkedList<>();
 
   public AedatFileSupplier(File file) throws Exception {
     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -53,7 +56,10 @@ public class AedatFileSupplier implements DavisEventProvider {
 
   @Override
   public void addListener(DavisEventListener davisEventListener) {
-    davisEventListeners.add(davisEventListener);
+    if (davisEventListener instanceof DvsDavisEventListener)
+      dvsDavisEventListeners.add((DvsDavisEventListener) davisEventListener);
+    if (davisEventListener instanceof ApsDavisEventListener)
+      apsDavisEventListeners.add((ApsDavisEventListener) davisEventListener);
   }
 
   @Override
@@ -74,20 +80,20 @@ public class AedatFileSupplier implements DavisEventProvider {
         if (isDvs) {
           int i = (many >> 11) & 1; // length 1 bit
           DvsDavisEvent dvsDavisEvent = new DvsDavisEvent(time, x, y, i);
-          davisEventListeners.forEach(l -> l.dvs(dvsDavisEvent));
+          dvsDavisEventListeners.forEach(l -> l.dvs(dvsDavisEvent));
         } else {
           int read = (many >> 10) & 0x3;
           if (read == 1) { // signal
             int adc = many & 0x3ff;
             ApsDavisEvent apsDavisEvent = new ApsDavisEvent(time, x, y, adc);
-            davisEventListeners.forEach(l -> l.aps(apsDavisEvent));
+            apsDavisEventListeners.forEach(l -> l.aps(apsDavisEvent));
           } else //
           if (read == 0) { // reset read
           } else //
           if (read == 3) { // imu
             // TODO
             ImuDavisEvent imuDavisEvent = new ImuDavisEvent();
-            davisEventListeners.forEach(l -> l.imu(imuDavisEvent));
+            dvsDavisEventListeners.forEach(l -> l.imu(imuDavisEvent));
           }
         }
         available -= 8;

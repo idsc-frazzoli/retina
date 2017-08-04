@@ -8,7 +8,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
-public class DavisImageProvider implements DavisEventListener {
+public class DavisImageProvider implements ApsDavisEventListener {
   private static final int WIDTH = 240;
   private static final int HEIGHT = 180;
   private static final int ADC_MAX = 1023;
@@ -35,13 +35,5 @@ public class DavisImageProvider implements DavisEventListener {
     bytes[index] = (byte) ((ADC_MAX - apsDavisEvent.adc) >> 2);
     if (apsDavisEvent.x == LAST_X && apsDavisEvent.y == 0)
       davisImageListeners.forEach(l -> l.image(apsDavisEvent.time, bufferedImage));
-  }
-
-  @Override
-  public void dvs(DvsDavisEvent apsDavisEvent) {
-  }
-
-  @Override
-  public void imu(ImuDavisEvent apsDavisEvent) {
   }
 }

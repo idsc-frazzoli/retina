@@ -5,21 +5,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEvent;
 
-public class EventsTextWriter implements DavisEventListener, AutoCloseable {
+public class EventsTextWriter implements DvsDavisEventListener, AutoCloseable {
   private final BufferedWriter bufferedWriter;
 
   public EventsTextWriter(File directory) throws Exception {
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "events.txt")));
-  }
-
-  @Override
-  public void aps(ApsDavisEvent apsDavisEvent) {
-    // ---
   }
 
   @Override
