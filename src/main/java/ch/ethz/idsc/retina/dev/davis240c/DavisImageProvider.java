@@ -18,7 +18,7 @@ public class DavisImageProvider implements DavisEventListener {
 
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
-    image.set(RationalScalar.of(apsDavisEvent.adc >> 2, 1), apsDavisEvent.x, 179 - apsDavisEvent.y);
+    image.set(RationalScalar.of((1023 - apsDavisEvent.adc) >> 2, 1), apsDavisEvent.x, 179 - apsDavisEvent.y);
     // if (apsDavisEvent.y == 0)
     // System.out.println(apsDavisEvent);
     if (apsDavisEvent.x == 239 && apsDavisEvent.y == 0)
