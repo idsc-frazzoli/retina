@@ -1,8 +1,8 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis240c;
+package ch.ethz.idsc.retina.dev.davis._240c;
 
-import ch.ethz.idsc.retina.dev.api.ApsReference;
-import ch.ethz.idsc.retina.dev.api.DvsReference;
+import ch.ethz.idsc.retina.dev.davis.ApsReference;
+import ch.ethz.idsc.retina.dev.davis.DvsReference;
 
 public enum Davis240c implements DvsReference, ApsReference {
   INSTANCE;

@@ -5,8 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
 
 /** lists the events in a text file */
 public class EventsTextWriter implements DvsDavisEventListener, AutoCloseable {

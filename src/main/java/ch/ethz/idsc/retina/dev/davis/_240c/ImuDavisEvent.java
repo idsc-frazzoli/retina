@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis240c;
+package ch.ethz.idsc.retina.dev.davis._240c;
 
 /** 7 different values:
  * 3 axes for accel, temperature, and 3 axes */

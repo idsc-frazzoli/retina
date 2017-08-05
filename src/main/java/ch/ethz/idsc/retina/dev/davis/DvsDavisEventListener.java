@@ -1,5 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis240c;
+package ch.ethz.idsc.retina.dev.davis;
+
+import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
 
 // TODO document
 public interface DvsDavisEventListener extends DavisEventListener {

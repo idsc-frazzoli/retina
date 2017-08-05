@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.dvs.app;
 import java.io.File;
 import java.util.Arrays;
 
-import ch.ethz.idsc.retina.dev.davis240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.dev.davis240c.DavisImageProvider;
+import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
 import ch.ethz.idsc.retina.dvs.io.png.PngImageWriter;
 import ch.ethz.idsc.retina.dvs.io.png.SimpleImageWriter;

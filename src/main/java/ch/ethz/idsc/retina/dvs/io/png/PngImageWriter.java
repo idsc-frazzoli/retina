@@ -8,7 +8,7 @@ import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.dev.davis240c.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis._240c.TimedImageListener;
 
 public class PngImageWriter implements TimedImageListener, AutoCloseable {
   private final File directory;

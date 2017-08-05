@@ -11,16 +11,16 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.api.ApsReference;
-import ch.ethz.idsc.retina.dev.api.DvsReference;
-import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.ApsReference;
+import ch.ethz.idsc.retina.dev.davis.DavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DvsReference;
+import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis._240c.ApsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis._240c.ImuDavisEvent;
 
 /** Quotes from the iniLabs User Guide DAVIS240:
  * 

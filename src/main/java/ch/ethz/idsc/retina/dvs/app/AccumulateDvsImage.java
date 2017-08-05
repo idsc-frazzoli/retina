@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis._240c.TimedImageListener;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
