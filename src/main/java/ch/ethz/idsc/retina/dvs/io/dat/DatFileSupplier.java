@@ -35,7 +35,7 @@ import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
  * http://wp.doc.ic.ac.uk/pb2114/datasets/ */
 public class DatFileSupplier implements DvsEventSupplier, AutoCloseable {
   private static final int MASK_X = 0x1ff;
-  private static final int MASK_Y = 0x1FE00;
+  private static final int MASK_Y = 0x1fe00;
   private static final int MASK_I = 0x00020000;
   // ---
   private final Dimension dimension;

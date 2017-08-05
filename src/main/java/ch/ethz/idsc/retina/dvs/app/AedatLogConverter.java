@@ -1,14 +1,19 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.io.aedat;
+package ch.ethz.idsc.retina.dvs.app;
 
 import java.io.File;
 import java.util.Arrays;
 
 import ch.ethz.idsc.retina.dev.davis240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis240c.DavisImageProvider;
-import ch.ethz.idsc.retina.dvs.app.AccumulateDvsImage;
+import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.dvs.io.png.PngImageWriter;
+import ch.ethz.idsc.retina.dvs.io.png.SimpleImageWriter;
+import ch.ethz.idsc.retina.dvs.io.txt.EventsTextWriter;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
+/** functionality is available as a command-line tool */
 // TODO class name not final
 public enum AedatLogConverter {
   ;
@@ -21,6 +26,8 @@ public enum AedatLogConverter {
     GlobalAssert.that(directory.isDirectory());
     // ---
     AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, Davis240c.INSTANCE, Davis240c.INSTANCE);
+    DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
+    aedatFileSupplier.addListener(davisEventStatistics);
     // ---
     EventsTextWriter eventsTextWriter = new EventsTextWriter(directory);
     aedatFileSupplier.addListener(eventsTextWriter);
@@ -42,6 +49,7 @@ public enum AedatLogConverter {
     aedatFileSupplier.stop();
     eventsTextWriter.close();
     pngImageWriter.close();
+    davisEventStatistics.print();
   }
 
   /** for use as a command line tool

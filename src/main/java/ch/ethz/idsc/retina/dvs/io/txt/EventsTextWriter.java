@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.io.aedat;
+package ch.ethz.idsc.retina.dvs.io.txt;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -32,9 +32,11 @@ import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEventListener;
  * these being 3 axes for accel, temperature, and 3 axes for gyro -
  * TODO look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements DavisEventProvider {
+  private static final int BUFFER_SIZE = 512;
+  // ---
   private final DvsReference dvsReference;
   private final ApsReference apsReference;
-  private final byte[] bytes = new byte[8 * StaticHelper.BUFFER_SIZE];
+  private final byte[] bytes = new byte[8 * BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
   private final InputStream inputStream;
   private int available = 0;
@@ -82,19 +84,19 @@ public class AedatFileSupplier implements DavisEventProvider {
             break;
           byteBuffer.position(0);
         }
-        final int many = byteBuffer.getInt();
+        final int data = byteBuffer.getInt();
         final int time = byteBuffer.getInt(); // microseconds
-        final int x = (many >> 12) & 0x3ff; // length 10 bit
-        final int y = (many >> 22) & 0x1ff; // length 09 bit
-        boolean isDvs = (many & 0x80000000) == 0;
+        final int x = (data >> 12) & 0x3ff; // length 10 bit
+        final int y = (data >> 22) & 0x1ff; // length 09 bit
+        boolean isDvs = (data & 0x80000000) == 0;
         if (isDvs) {
-          final int i = (many >> 11) & 1; // length 1 bit
+          final int i = (data >> 11) & 1; // length 1 bit
           DvsDavisEvent dvsDavisEvent = dvsReference.encodeDvs(time, x, y, i);
           dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
         } else {
-          final int read = (many >> 10) & 0x3;
+          final int read = (data >> 10) & 0x3;
           if (read == 1) { // signal
-            int adc = many & 0x3ff;
+            int adc = data & 0x3ff;
             ApsDavisEvent apsDavisEvent = apsReference.encodeAps(time, x, y, adc);
             apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
           } else //
@@ -102,7 +104,7 @@ public class AedatFileSupplier implements DavisEventProvider {
           } else //
           if (read == 3) { // imu
             // TODO
-            ImuDavisEvent imuDavisEvent = new ImuDavisEvent();
+            ImuDavisEvent imuDavisEvent = new ImuDavisEvent(time, data);
             imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
           }
         }
