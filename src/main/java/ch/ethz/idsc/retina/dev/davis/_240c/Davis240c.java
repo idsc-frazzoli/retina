@@ -1,11 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
-import ch.ethz.idsc.retina.dev.RasterInterface;
-import ch.ethz.idsc.retina.dev.davis.ApsReference;
-import ch.ethz.idsc.retina.dev.davis.DvsReference;
+import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 
-public enum Davis240c implements RasterInterface, DvsReference, ApsReference {
+public enum Davis240c implements DavisDevice {
   INSTANCE;
   // ---
   private static final int WIDTH = 240;
