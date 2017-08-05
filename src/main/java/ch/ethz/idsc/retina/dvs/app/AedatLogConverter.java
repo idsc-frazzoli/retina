@@ -32,7 +32,7 @@ public enum AedatLogConverter {
     EventsTextWriter eventsTextWriter = new EventsTextWriter(directory);
     aedatFileSupplier.addListener(eventsTextWriter);
     // ---
-    DavisImageProvider davisImageProvider = new DavisImageProvider();
+    DavisImageProvider davisImageProvider = new DavisImageProvider(Davis240c.INSTANCE);
     PngImageWriter pngImageWriter = new PngImageWriter(directory);
     davisImageProvider.addListener(pngImageWriter);
     aedatFileSupplier.addListener(davisImageProvider);
