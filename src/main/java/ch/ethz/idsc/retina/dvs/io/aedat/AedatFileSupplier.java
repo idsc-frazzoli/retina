@@ -1,15 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.dvs.io.aedat;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
@@ -25,40 +20,27 @@ import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
  * TODO look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements DavisEventProvider {
   private static final int BUFFER_SIZE = 512;
-  private static final String HEADER_TERMINATOR = "#End Of ASCII Header";
   // ---
-  private final DavisDecoder davisDecoder;
   private final byte[] bytes = new byte[8 * BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+  private final DavisDecoder davisDecoder;
   private final InputStream inputStream;
-  private int available = 0;
-  /** lines of header in log file */
-  private final List<String> header = new LinkedList<>();
 
   public AedatFileSupplier(File file, DavisDecoder davisDecoder) throws Exception {
     this.davisDecoder = davisDecoder;
-    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-    int skip = 0;
-    while (true) {
-      String string = bufferedReader.readLine();
-      header.add(string);
-      skip += string.length() + 2; // add 2 characters of line break
-      if (string.equals(HEADER_TERMINATOR))
-        break;
-    }
-    bufferedReader.close();
-    inputStream = new FileInputStream(file);
-    inputStream.skip(skip);
+    AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
+    inputStream = aedatFileHeader.getInputStream();
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
   }
 
   @Override
   public void start() {
     try {
+      int available = 0;
       while (true) {
         if (available == 0) {
           available += inputStream.read(bytes, 0, bytes.length);
-          if (available < 2)
+          if (available < 2) // end of file, at least 2 bytes are required for next decoding
             break;
           byteBuffer.position(0);
         }

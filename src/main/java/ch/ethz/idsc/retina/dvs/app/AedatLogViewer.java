@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.dev.davis._240c.RealtimeSleeper;
+import ch.ethz.idsc.retina.dev.davis._240c.EventRealtimeSleeper;
 import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
 
 public enum AedatLogViewer {
@@ -27,7 +27,7 @@ public enum AedatLogViewer {
     davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
-    davisDecoder.addListener(new RealtimeSleeper());
+    davisDecoder.addListener(new EventRealtimeSleeper());
     // ---
     aedatFileSupplier.start();
     aedatFileSupplier.stop();

@@ -1,27 +1,22 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
-import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
-
-/** slows down playback to realtime
- * 
- * is disguised as imu listener to be invoked as seldom as possible */
-public class RealtimeSleeper implements ImuDavisEventListener {
+/** slows down playback to realtime */
+public class RealtimeSleeper {
   private static final long MICRO = 1000000;
+  // ---
   private long ref = -1;
   private long tic;
   private long sleepTotal = 0;
 
-  @Override
-  public void imu(ImuDavisEvent imuDavisEvent) {
-    if (imuDavisEvent.index != 0)
-      return;
+  /** @param time in micro seconds */
+  public void now(int time) {
     if (ref == -1) {
       // initialize time
-      ref = imuDavisEvent.time;
+      ref = time;
       tic = System.nanoTime();
     } else {
-      long act = imuDavisEvent.time - ref;
+      long act = time - ref;
       act *= 1000;
       long toc = System.nanoTime() - tic;
       if (toc < act)
@@ -40,5 +35,9 @@ public class RealtimeSleeper implements ImuDavisEventListener {
   /** @return total sleep in nano seconds required to slow down to real time */
   public long getSleepTotal() {
     return sleepTotal;
+  }
+
+  public double getSleepTotalSec() {
+    return sleepTotal * 1e-9;
   }
 }
