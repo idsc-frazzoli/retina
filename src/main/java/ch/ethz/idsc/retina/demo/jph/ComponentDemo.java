@@ -14,7 +14,6 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
-import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
@@ -39,13 +38,12 @@ enum ComponentDemo {
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
     AnimationWriter gsw = null;
-    try {
+    File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
+        "events.txt");
+    try (TxtFileSupplier sup = new TxtFileSupplier(file, dimension)) {
       // File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
       // "jumping.dat");
-      File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
-          "events.txt");
       // DvsEventSupplier sup = new DatFileSupplier(file, dimension);
-      DvsEventSupplier sup = new TxtFileSupplier(file, dimension);
       // DvsEventBuffer buf = new DvsEventBuffer(10000);
       // DatFileDigest dfd = new DatFileDigest(UserHome.file("test.dat"));
       int count = 0;

@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.dvs.app.AedatLogConverter;
 
 enum AedatLogConverterDemo {
   ;
+  @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception {
     // TODO configure
     final File file1 = new File("/home/ale/Datasets", "DAVIS240C-2017-08-04T11-56-59+0200-02460038-0.aedat"); // input location

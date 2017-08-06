@@ -4,10 +4,8 @@ package ch.ethz.idsc.retina.demo.jph;
 import java.io.File;
 
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
-import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo dat file read */
@@ -17,11 +15,10 @@ enum DatSupplierTest {
     DvsEventStatistics stats = new DvsEventStatistics();
     int maxx = 0;
     int maxy = 0;
-    try {
-      File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
-          "jumping.dat");
-      DvsEventSupplier sup = new DatFileSupplier(file, ImageDimensions.IMPERIAL_COLLEGE);
-      DvsEventBuffer buf = new DvsEventBuffer(10000);
+    File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
+        "jumping.dat");
+    try (DatFileSupplier sup = new DatFileSupplier(file, ImageDimensions.IMPERIAL_COLLEGE)) {
+      // DvsEventBuffer buf = new DvsEventBuffer(10000);
       // DatFileDigest dfd = new DatFileDigest(UserHome.file("test.dat"));
       while (true) {
         DvsEvent dvsEvent = sup.next();

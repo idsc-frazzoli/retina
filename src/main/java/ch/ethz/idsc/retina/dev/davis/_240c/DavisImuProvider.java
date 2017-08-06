@@ -1,7 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.ImuRecordListener;
 
 public class DavisImuProvider implements ImuDavisEventListener {
   private static float accelSensitivityScaleFactorGPerLsb = 1f / 8192;
@@ -10,6 +14,7 @@ public class DavisImuProvider implements ImuDavisEventListener {
   private static float temperatureOffsetDegC = 35;
   // ---
   private final float[] values = new float[7];
+  private final List<ImuRecordListener> list = new LinkedList<>();
 
   @Override
   public void imu(ImuDavisEvent imuDavisEvent) {
@@ -37,7 +42,7 @@ public class DavisImuProvider implements ImuDavisEventListener {
     if (imuDavisEvent.index == 6) {
       // SIGNS ARE INTENTED
       ImuRecord imuRecord = new ImuRecord(-values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
-      // TODO publish to subscribers
+      list.forEach(listener -> listener.imuRecord(imuRecord));
       // imuRecord.print();
     }
   }

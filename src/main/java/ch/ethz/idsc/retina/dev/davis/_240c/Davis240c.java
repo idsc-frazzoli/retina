@@ -20,6 +20,7 @@ public enum Davis240c implements DavisDevice {
     return HEIGHT;
   }
 
+  @Override
   public DavisDecoder createDecoder() {
     return new Davis240cDecoder();
   }
