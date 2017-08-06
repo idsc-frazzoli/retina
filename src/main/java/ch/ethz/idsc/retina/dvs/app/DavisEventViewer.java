@@ -8,9 +8,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.dev.davis._240c.EventRealtimeSleeper;
 
-public enum AedatLogViewer {
+public enum DavisEventViewer {
   ;
   // TODO arguments not final ...
   public static void of(DavisEventProvider davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
@@ -25,7 +24,7 @@ public enum AedatLogViewer {
     davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
-    davisDecoder.addListener(new EventRealtimeSleeper(speed));
+    // davisDecoder.addListener(new EventRealtimeSleeper(speed));
     // ---
     davisEventProvider.start();
     davisEventProvider.stop();

@@ -43,7 +43,7 @@ public class DefaultDavisDisplay implements Runnable {
   public void run() {
     while (isLaunched) {
       long toc = System.nanoTime() - repaint_tic;
-      if (200e6 < toc) {
+      if (100e6 < toc) {
         System.err.println("image data lag");
         jComponent.repaint();
       }
@@ -59,14 +59,14 @@ public class DefaultDavisDisplay implements Runnable {
     @Override
     public void image(int time, BufferedImage bufferedImage) {
       setBufferedImage(bufferedImage);
-      jComponent.repaint();
+      // jComponent.repaint();
     }
   };
   public final TimedImageListener dvsRenderer = new TimedImageListener() {
     @Override
     public void image(int time, BufferedImage bufferedImage) {
       setDvsImage(bufferedImage);
-      jComponent.repaint();
+      // jComponent.repaint();
     }
   };
 

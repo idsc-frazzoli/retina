@@ -34,7 +34,7 @@ class Davis240cDecoder implements DavisDecoder {
 
   @Override
   public void read(ByteBuffer byteBuffer) {
-    final int data = byteBuffer.getInt();
+    final int data = byteBuffer.getInt(); // also referred to "address"
     final int time = byteBuffer.getInt(); // microseconds
     final int x = (data >> 12) & 0x3ff; // length 10 bit
     final int y = (data >> 22) & 0x1ff; // length 09 bit

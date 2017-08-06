@@ -9,7 +9,9 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 
-/** Quotes from the iniLabs User Guide DAVIS240:
+/** parser for aedat version 2.0
+ * 
+ * Quotes from the iniLabs User Guide DAVIS240:
  * 
  * "An .aedat file contains headers, where each header line starts with '#'
  * and ends with the hex characters 0x0D 0x0A (CRLF, windows line ending).
@@ -19,9 +21,9 @@ import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
  * these being 3 axes for accel, temperature, and 3 axes for gyro -
  * TODO look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements DavisEventProvider {
-  private static final int BUFFER_SIZE = 512;
+  private static final int BUFFER_SIZE = 8 * 512;
   // ---
-  private final byte[] bytes = new byte[8 * BUFFER_SIZE];
+  private final byte[] bytes = new byte[BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
   private final DavisDecoder davisDecoder;
   private final InputStream inputStream;

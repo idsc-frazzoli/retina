@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.RealtimeSleeper;
 
@@ -25,7 +24,7 @@ public class AedatFileSocket implements DavisEventProvider {
   private DatagramSocket datagramSocket;
   private final double speed;
 
-  public AedatFileSocket(File file, DavisDecoder davisDecoder, double speed) throws Exception {
+  public AedatFileSocket(File file, double speed) throws Exception {
     AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
     inputStream = aedatFileHeader.getInputStream();
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
