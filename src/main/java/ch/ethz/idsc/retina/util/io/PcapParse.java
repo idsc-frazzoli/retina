@@ -77,10 +77,8 @@ public class PcapParse {
       public void parse(byte[] packet_data, int length) {
       }
     };
-    new PcapParse(
-        new File( //
-            "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //
-            "HDL32-V2_Tunnel.pcap"), //
-        packetConsumer);
+    String dir = "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data";
+    String name = "HDL32-V2_Tunnel.pcap";
+    new PcapParse(new File(dir, name), packetConsumer);
   }
 }

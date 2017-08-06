@@ -1,7 +1,9 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis240c;
+package ch.ethz.idsc.retina.dev.davis._240c;
 
-public class DvsDavisEvent {
+import ch.ethz.idsc.retina.dev.davis.DavisEvent;
+
+public class DvsDavisEvent implements DavisEvent {
   /** time in [us] */
   public final int time;
   /** left-right pixel location, x=0 corresponds to far left */
@@ -18,6 +20,11 @@ public class DvsDavisEvent {
     this.x = x;
     this.y = y;
     this.i = i;
+  }
+
+  @Override
+  public int time() {
+    return time;
   }
 
   @Override

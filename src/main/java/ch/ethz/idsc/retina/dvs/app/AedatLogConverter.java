@@ -1,14 +1,21 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.io.aedat;
+package ch.ethz.idsc.retina.dvs.app;
 
 import java.io.File;
 import java.util.Arrays;
 
-import ch.ethz.idsc.retina.dev.davis240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis240c.DavisImageProvider;
-import ch.ethz.idsc.retina.dvs.app.AccumulateDvsImage;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.dev.davis.DavisDevice;
+import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
+import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.dvs.io.png.PngImageWriter;
+import ch.ethz.idsc.retina.dvs.io.png.SimpleImageWriter;
+import ch.ethz.idsc.retina.dvs.io.txt.EventsTextWriter;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
+/** functionality is available as a command-line tool */
 // TODO class name not final
 public enum AedatLogConverter {
   ;
@@ -20,28 +27,33 @@ public enum AedatLogConverter {
     directory.mkdir();
     GlobalAssert.that(directory.isDirectory());
     // ---
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, Davis240c.INSTANCE, Davis240c.INSTANCE);
+    DavisDevice davisDevice = Davis240c.INSTANCE;
+    DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
+    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
+    DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
+    davisDecoder.addListener(davisEventStatistics);
     // ---
     EventsTextWriter eventsTextWriter = new EventsTextWriter(directory);
-    aedatFileSupplier.addListener(eventsTextWriter);
+    davisDecoder.addListener(eventsTextWriter);
     // ---
-    DavisImageProvider davisImageProvider = new DavisImageProvider();
+    DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     PngImageWriter pngImageWriter = new PngImageWriter(directory);
     davisImageProvider.addListener(pngImageWriter);
-    aedatFileSupplier.addListener(davisImageProvider);
+    davisDecoder.addListener(davisImageProvider);
     // ---
-    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(20000);
+    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 20000);
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();
       accumulateDvsImage.addListener(new SimpleImageWriter(debug, 50));
-      aedatFileSupplier.addListener(accumulateDvsImage);
+      davisDecoder.addListener(accumulateDvsImage);
     }
     // ---
     aedatFileSupplier.start();
     aedatFileSupplier.stop();
     eventsTextWriter.close();
     pngImageWriter.close();
+    davisEventStatistics.print();
   }
 
   /** for use as a command line tool

@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.util.io.PcapParse;
 enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
+    @SuppressWarnings("unused")
     Hdl32ePositionListener hdl32ePositionListener = new Hdl32ePositionListener() {
       @Override
       public void digest(float[] position_data, int length) {
@@ -33,10 +34,8 @@ enum Hdl32ePacketConsumerDemo {
         // new Hdl32ePositionCollector(hdl32ePositionListener) //
         new Hdl32ePanoramaCollector(hdl32ePanoramaListener) //
     );
-    new PcapParse(
-        new File( //
-            "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //
-            "HDL32-V2_Tunnel.pcap"), //
-        packetConsumer);
+    String dir = "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data";
+    File file = new File(dir, "HDL32-V2_Tunnel.pcap");
+    new PcapParse(file, packetConsumer);
   }
 }

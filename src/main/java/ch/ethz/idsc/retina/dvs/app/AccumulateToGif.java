@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
-import ch.ethz.idsc.tensor.io.GifSequenceWriter;
+import ch.ethz.idsc.tensor.io.AnimationWriter;
 
 public enum AccumulateToGif {
   ;
@@ -23,7 +23,7 @@ public enum AccumulateToGif {
    * @throws Exception */
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us, int rate_us) throws Exception {
     DvsEventStatistics dvsEventStatistics = new DvsEventStatistics();
-    GifSequenceWriter gsw = GifSequenceWriter.of(gifFile, rate_us / 1000);
+    AnimationWriter gsw = AnimationWriter.of(gifFile, rate_us / 1000);
     try {
       DvsEventBuffer dvsEventBuffer = new DvsEventBuffer(window_us);
       long next = rate_us;

@@ -3,10 +3,12 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
+// TODO code is redundant to some other code
 public abstract class AbstractHdl32eFiringPacketConsumer implements Hdl32eFiringPacketConsumer {
   public static final int LASERS = 32;
 
   // private byte[] ethernet_header = new byte[42];
+  @SuppressWarnings("unused")
   @Override
   public final void lasers(ByteBuffer byteBuffer) {
     {

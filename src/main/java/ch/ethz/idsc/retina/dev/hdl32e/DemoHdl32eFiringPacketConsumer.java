@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 public class DemoHdl32eFiringPacketConsumer implements Hdl32eFiringPacketConsumer {
   // private byte[] ethernet_header = new byte[42];
+  @SuppressWarnings("unused")
   @Override
   public void lasers(ByteBuffer byteBuffer) {
     // ByteBuffer byteBuffer = ByteBuffer.wrap(laser_data);

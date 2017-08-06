@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.io.aedat;
+package ch.ethz.idsc.retina.dvs.io.png;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.dev.davis240c.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 
 public class SimpleImageWriter implements TimedImageListener {
   private final File directory;

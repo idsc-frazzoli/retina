@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
-import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo txt file read */
@@ -20,9 +19,7 @@ enum TxtSupplierTest {
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     System.out.println(file.exists());
-    try {
-      // TODO properly use AutoClosable
-      DvsEventSupplier sup = new TxtFileSupplier(file, ImageDimensions.UZ);
+    try (TxtFileSupplier sup = new TxtFileSupplier(file, ImageDimensions.UZ)) {
       DvsEventBuffer buf = new DvsEventBuffer(10000);
       while (true) {
         DvsEvent dvsEvent = sup.next();

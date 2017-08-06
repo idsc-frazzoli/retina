@@ -1,28 +1,17 @@
 // code by jph
 package ch.ethz.idsc.retina.dvs.io.aedat;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.List;
 
-import ch.ethz.idsc.retina.dev.api.ApsReference;
-import ch.ethz.idsc.retina.dev.api.DvsReference;
-import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.ApsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEvent;
-import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 
-/** Quotes from the iniLabs User Guide DAVIS240:
+/** parser for aedat version 2.0
+ * 
+ * Quotes from the iniLabs User Guide DAVIS240:
  * 
  * "An .aedat file contains headers, where each header line starts with '#'
  * and ends with the hex characters 0x0D 0x0A (CRLF, windows line ending).
@@ -32,80 +21,32 @@ import ch.ethz.idsc.retina.dev.davis240c.ImuDavisEventListener;
  * these being 3 axes for accel, temperature, and 3 axes for gyro -
  * TODO look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements DavisEventProvider {
-  private final DvsReference dvsReference;
-  private final ApsReference apsReference;
-  private final byte[] bytes = new byte[8 * StaticHelper.BUFFER_SIZE];
+  private static final int BUFFER_SIZE = 8 * 512;
+  // ---
+  private final byte[] bytes = new byte[BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+  private final DavisDecoder davisDecoder;
   private final InputStream inputStream;
-  private int available = 0;
-  List<String> header = new LinkedList<>();
-  private List<DvsDavisEventListener> dvsDavisEventListeners = new LinkedList<>();
-  private List<ApsDavisEventListener> apsDavisEventListeners = new LinkedList<>();
-  private List<ImuDavisEventListener> imuDavisEventListeners = new LinkedList<>();
 
-  public AedatFileSupplier(File file, DvsReference dvsReference, ApsReference apsReference) throws Exception {
-    this.dvsReference = dvsReference;
-    this.apsReference = apsReference;
-    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-    int skip = 0;
-    while (true) {
-      String string = bufferedReader.readLine();
-      header.add(string);
-      // System.out.println(string);
-      skip += string.length() + 2; // add line break
-      if (string.equals("#End Of ASCII Header"))
-        break;
-    }
-    bufferedReader.close();
-    inputStream = new FileInputStream(file);
-    inputStream.skip(skip);
+  public AedatFileSupplier(File file, DavisDecoder davisDecoder) throws Exception {
+    this.davisDecoder = davisDecoder;
+    AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
+    inputStream = aedatFileHeader.getInputStream();
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
-  }
-
-  @Override
-  public void addListener(DavisEventListener davisEventListener) {
-    if (davisEventListener instanceof DvsDavisEventListener)
-      dvsDavisEventListeners.add((DvsDavisEventListener) davisEventListener);
-    if (davisEventListener instanceof ApsDavisEventListener)
-      apsDavisEventListeners.add((ApsDavisEventListener) davisEventListener);
-    if (davisEventListener instanceof ImuDavisEventListener)
-      imuDavisEventListeners.add((ImuDavisEventListener) davisEventListener);
   }
 
   @Override
   public void start() {
     try {
+      int available = 0;
       while (true) {
         if (available == 0) {
           available += inputStream.read(bytes, 0, bytes.length);
-          if (available < 2)
+          if (available < 2) // end of file, at least 2 bytes are required for next decoding
             break;
           byteBuffer.position(0);
         }
-        final int many = byteBuffer.getInt();
-        final int time = byteBuffer.getInt(); // microseconds
-        final int x = (many >> 12) & 0x3ff; // length 10 bit
-        final int y = (many >> 22) & 0x1ff; // length 09 bit
-        boolean isDvs = (many & 0x80000000) == 0;
-        if (isDvs) {
-          final int i = (many >> 11) & 1; // length 1 bit
-          DvsDavisEvent dvsDavisEvent = dvsReference.encodeDvs(time, x, y, i);
-          dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
-        } else {
-          final int read = (many >> 10) & 0x3;
-          if (read == 1) { // signal
-            int adc = many & 0x3ff;
-            ApsDavisEvent apsDavisEvent = apsReference.encodeAps(time, x, y, adc);
-            apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
-          } else //
-          if (read == 0) { // reset read
-          } else //
-          if (read == 3) { // imu
-            // TODO
-            ImuDavisEvent imuDavisEvent = new ImuDavisEvent();
-            imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
-          }
-        }
+        davisDecoder.read(byteBuffer);
         available -= 8;
       }
     } catch (Exception exception) {

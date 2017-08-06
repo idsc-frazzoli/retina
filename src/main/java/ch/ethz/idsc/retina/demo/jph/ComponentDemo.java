@@ -14,7 +14,6 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
-import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
 import ch.ethz.idsc.retina.util.io.ImageDimensions;
@@ -23,7 +22,7 @@ import ch.ethz.idsc.retina.util.math.Constant;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.GifSequenceWriter;
+import ch.ethz.idsc.tensor.io.AnimationWriter;
 import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 enum ComponentDemo {
@@ -38,20 +37,19 @@ enum ComponentDemo {
         Tensors.vector(i -> Constant.GoldenAngle.value.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
-    GifSequenceWriter gsw = null;
-    try {
+    AnimationWriter gsw = null;
+    File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
+        "events.txt");
+    try (TxtFileSupplier sup = new TxtFileSupplier(file, dimension)) {
       // File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
       // "jumping.dat");
-      File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
-          "events.txt");
       // DvsEventSupplier sup = new DatFileSupplier(file, dimension);
-      DvsEventSupplier sup = new TxtFileSupplier(file, dimension);
       // DvsEventBuffer buf = new DvsEventBuffer(10000);
       // DatFileDigest dfd = new DatFileDigest(UserHome.file("test.dat"));
       int count = 0;
       final int rate_us = 30_000;
       long next = rate_us;
-      gsw = GifSequenceWriter.of(UserHome.Pictures("components2.gif"), rate_us / 1000);
+      gsw = AnimationWriter.of(UserHome.Pictures("components2.gif"), rate_us / 1000);
       while (count < 1000) {
         DvsEvent dvsEvent = sup.next();
         stats.digest(dvsEvent);

@@ -24,7 +24,10 @@ our code builds upon
 
 ## IniLabs DAVIS 240C
 
-parsing of .aedat files, conversion to text+png format
+.aedat files
+
+* parsing and visualization
+* conversion to text+png format
 
 # DVS
 

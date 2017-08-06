@@ -1,7 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.api;
+package ch.ethz.idsc.retina.dev.davis;
 
-import ch.ethz.idsc.retina.dev.davis240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
 
 /** maps the chip raw dvs data to the standard coordinate system (x,y) where
  * (0,0) corresponds to left-upper corner, and
