@@ -6,8 +6,9 @@ import java.awt.image.DataBufferByte;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.RasterInterface;
+import ch.ethz.idsc.retina.dev.DimensionInterface;
 import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
 public class DavisImageProvider implements ApsDavisEventListener {
@@ -21,7 +22,7 @@ public class DavisImageProvider implements ApsDavisEventListener {
   private final byte[] bytes;
   // private final Tensor image = Array.zeros(WIDTH, HEIGHT);
 
-  public DavisImageProvider(RasterInterface rasterDevice) {
+  public DavisImageProvider(DimensionInterface rasterDevice) {
     width = rasterDevice.getWidth();
     height = rasterDevice.getHeight();
     lastX = width - 1;

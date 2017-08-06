@@ -1,7 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
-public class ApsDavisEvent {
+import ch.ethz.idsc.retina.dev.davis.DavisEvent;
+
+public class ApsDavisEvent implements DavisEvent {
   public final int time;
   public final int x;
   public final int y;
@@ -18,6 +20,11 @@ public class ApsDavisEvent {
 
   public int grayscale() {
     return adc >> 2;
+  }
+
+  @Override
+  public int time() {
+    return time;
   }
 
   @Override

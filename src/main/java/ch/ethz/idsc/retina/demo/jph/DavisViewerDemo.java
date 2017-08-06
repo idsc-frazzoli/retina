@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
@@ -18,17 +19,18 @@ enum DavisViewerDemo {
     final File file2 = new File("/tmp", "DAVIS240C-2017-08-03T18-16-55+0200-02460045-0.aedat");
     final File file3 = new File("/tmp", "DAVIS240C-2017-08-04T10-13-29+0200-02460045-0.aedat");
     DavisDevice davisDevice = Davis240c.INSTANCE;
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(file1, davisDevice);
+    DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
+    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(file1, davisDecoder);
     // ---
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    aedatFileSupplier.addListener(davisEventStatistics);
+    davisDecoder.addListener(davisEventStatistics);
     DefaultDavisDisplay davisImageDisplay = new DefaultDavisDisplay();
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay.apsRenderer);
-    aedatFileSupplier.addListener(davisImageProvider);
+    davisDecoder.addListener(davisImageProvider);
     // ---
     AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 20000);
-    aedatFileSupplier.addListener(accumulateDvsImage);
+    davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
     aedatFileSupplier.start();

@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.davis._240c.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DefaultDavisDisplay {

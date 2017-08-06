@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.davis._240c;
 
 import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
 
@@ -17,18 +18,18 @@ public class DavisEventStatistics implements //
   private long aps = 0;
   private long imu = 0;
   private long frames = 0;
+  private long time_last = 0;
+  private long jump = 0;
 
   @Override
   public void dvs(DvsDavisEvent dvsDavisEvent) {
-    time_min = Math.min(dvsDavisEvent.time, time_min);
-    time_max = Math.max(dvsDavisEvent.time, time_max);
+    _trackTime(dvsDavisEvent);
     ++dvs;
   }
 
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
-    time_min = Math.min(apsDavisEvent.time, time_min);
-    time_max = Math.max(apsDavisEvent.time, time_max);
+    _trackTime(apsDavisEvent);
     ++aps;
     if (apsDavisEvent.x == 0 && apsDavisEvent.y == 0)
       ++frames;
@@ -36,11 +37,19 @@ public class DavisEventStatistics implements //
 
   @Override
   public void imu(ImuDavisEvent imuDavisEvent) {
-    time_min = Math.min(imuDavisEvent.time, time_min);
-    time_max = Math.max(imuDavisEvent.time, time_max);
+    _trackTime(imuDavisEvent);
     ++imu;
     // System.out.println(String.format("%08x", imuDavisEvent.data));
     // System.out.println(imuDavisEvent.time+" "+String.format("%08x %d", imuDavisEvent.data, imuDavisEvent.index));
+  }
+
+  private void _trackTime(DavisEvent davisEvent) {
+    int time = davisEvent.time();
+    time_min = Math.min(time, time_min);
+    time_max = Math.max(time, time_max);
+    if (time < time_last)
+      ++jump;
+    time_last = time;
   }
 
   public void print() {
@@ -53,6 +62,8 @@ public class DavisEventStatistics implements //
     System.out.println(String.format("aps:%10d", aps));
     System.out.println(String.format("imu:%10d", imu));
     System.out.println(String.format("img:%10d", frames));
+    if (0 < jump)
+      System.err.println(String.format("jmp:%10d", jump));
     System.out.println("---");
     System.out.println(String.format("eps:%10d", Math.round(dvs / total)));
     System.out.println(String.format("fps:%13.2f", frames / total));

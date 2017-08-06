@@ -33,10 +33,9 @@ enum Hdl32ePacketConsumerDemo {
         // new Hdl32ePositionCollector(hdl32ePositionListener) //
         new Hdl32ePanoramaCollector(hdl32ePanoramaListener) //
     );
-    new PcapParse(
-        new File( //
-            "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //
-            "HDL32-V2_Tunnel.pcap"), //
+    new PcapParse(new File( //
+        "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //
+        "HDL32-V2_Tunnel.pcap"), //
         packetConsumer);
   }
 }

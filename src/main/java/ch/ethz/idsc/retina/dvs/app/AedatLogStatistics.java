@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dvs.app;
 import java.io.File;
 import java.util.Arrays;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDevice;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImuProvider;
@@ -17,13 +17,13 @@ public enum AedatLogStatistics {
    * @param directory target
    * @throws Exception */
   public static void of(File aedat) throws Exception {
-    DavisDevice davisDevice = Davis240c.INSTANCE;
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDevice);
+    DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
+    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
     // ---
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    aedatFileSupplier.addListener(davisEventStatistics);
+    davisDecoder.addListener(davisEventStatistics);
     DavisImuProvider davisImuProvider = new DavisImuProvider();
-    aedatFileSupplier.addListener(davisImuProvider);
+    davisDecoder.addListener(davisImuProvider);
     // ---
     aedatFileSupplier.start();
     aedatFileSupplier.stop();

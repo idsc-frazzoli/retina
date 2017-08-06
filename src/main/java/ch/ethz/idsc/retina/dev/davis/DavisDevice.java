@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis;
 
-import ch.ethz.idsc.retina.dev.RasterInterface;
+import ch.ethz.idsc.retina.dev.DimensionInterface;
 
-public interface DavisDevice extends RasterInterface, DvsReference, ApsReference {
+public interface DavisDevice extends DimensionInterface {
   // ---
 }

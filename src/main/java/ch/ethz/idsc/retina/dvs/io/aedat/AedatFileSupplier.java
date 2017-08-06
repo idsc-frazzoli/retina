@@ -11,15 +11,8 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis.DavisDevice;
-import ch.ethz.idsc.retina.dev.davis.DavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis._240c.ApsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis._240c.ImuDavisEvent;
 
 /** Quotes from the iniLabs User Guide DAVIS240:
  * 
@@ -33,26 +26,22 @@ import ch.ethz.idsc.retina.dev.davis._240c.ImuDavisEvent;
 public class AedatFileSupplier implements DavisEventProvider {
   private static final int BUFFER_SIZE = 512;
   // ---
-  private final DavisDevice davisDevice;
+  private final DavisDecoder davisDecoder;
   private final byte[] bytes = new byte[8 * BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
   private final InputStream inputStream;
   private int available = 0;
-  List<String> header = new LinkedList<>();
-  private List<DvsDavisEventListener> dvsDavisEventListeners = new LinkedList<>();
-  private List<ApsDavisEventListener> apsDavisEventListeners = new LinkedList<>();
-  private List<ImuDavisEventListener> imuDavisEventListeners = new LinkedList<>();
+  /** lines of header in log file */
+  private final List<String> header = new LinkedList<>();
 
-  public AedatFileSupplier(File file, DavisDevice davisDevice) throws Exception {
-    this.davisDevice = davisDevice;
-    // this.apsReference = apsReference;
+  public AedatFileSupplier(File file, DavisDecoder davisDecoder) throws Exception {
+    this.davisDecoder = davisDecoder;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
     int skip = 0;
     while (true) {
       String string = bufferedReader.readLine();
       header.add(string);
-      // System.out.println(string);
-      skip += string.length() + 2; // add line break
+      skip += string.length() + 2; // add 2 characters of line break
       if (string.equals("#End Of ASCII Header"))
         break;
     }
@@ -60,16 +49,6 @@ public class AedatFileSupplier implements DavisEventProvider {
     inputStream = new FileInputStream(file);
     inputStream.skip(skip);
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
-  }
-
-  @Override
-  public void addListener(DavisEventListener davisEventListener) {
-    if (davisEventListener instanceof DvsDavisEventListener)
-      dvsDavisEventListeners.add((DvsDavisEventListener) davisEventListener);
-    if (davisEventListener instanceof ApsDavisEventListener)
-      apsDavisEventListeners.add((ApsDavisEventListener) davisEventListener);
-    if (davisEventListener instanceof ImuDavisEventListener)
-      imuDavisEventListeners.add((ImuDavisEventListener) davisEventListener);
   }
 
   @Override
@@ -82,30 +61,7 @@ public class AedatFileSupplier implements DavisEventProvider {
             break;
           byteBuffer.position(0);
         }
-        final int data = byteBuffer.getInt();
-        final int time = byteBuffer.getInt(); // microseconds
-        final int x = (data >> 12) & 0x3ff; // length 10 bit
-        final int y = (data >> 22) & 0x1ff; // length 09 bit
-        boolean isDvs = (data & 0x80000000) == 0;
-        if (isDvs) {
-          final int i = (data >> 11) & 1; // length 1 bit
-          DvsDavisEvent dvsDavisEvent = davisDevice.encodeDvs(time, x, y, i);
-          dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
-        } else {
-          final int read = (data >> 10) & 0x3;
-          if (read == 1) { // signal
-            int adc = data & 0x3ff;
-            ApsDavisEvent apsDavisEvent = davisDevice.encodeAps(time, x, y, adc);
-            apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
-          } else //
-          if (read == 0) { // reset read
-          } else //
-          if (read == 3) { // imu
-            // TODO
-            ImuDavisEvent imuDavisEvent = new ImuDavisEvent(time, data);
-            imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
-          }
-        }
+        davisDecoder.read(byteBuffer);
         available -= 8;
       }
     } catch (Exception exception) {

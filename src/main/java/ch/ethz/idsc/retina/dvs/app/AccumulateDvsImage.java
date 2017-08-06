@@ -9,14 +9,13 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
+import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.dev.davis._240c.TimedImageListener;
 import ch.ethz.idsc.retina.util.data.GlobalAssert;
 
 public class AccumulateDvsImage implements DvsDavisEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
-  // private final DavisDevice davisDevice;
   private final int WIDTH;
   private final int HEIGHT;
   private final List<TimedImageListener> timedImageListeners = new LinkedList<>();
@@ -29,7 +28,6 @@ public class AccumulateDvsImage implements DvsDavisEventListener {
 
   /** @param interval [us] */
   public AccumulateDvsImage(DavisDevice davisDevice, int interval) {
-    // this.davisDevice = davisDevice;
     WIDTH = davisDevice.getWidth();
     HEIGHT = davisDevice.getHeight();
     bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_GRAY);

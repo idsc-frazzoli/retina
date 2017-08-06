@@ -1,9 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
+import ch.ethz.idsc.retina.dev.davis.DavisEvent;
+
 /** 7 different values:
  * 3 axes for accel, temperature, and 3 axes */
-public class ImuDavisEvent {
+public class ImuDavisEvent implements DavisEvent {
   public final int time;
   public final int data;
   public final int index;
@@ -15,5 +17,10 @@ public class ImuDavisEvent {
     this.data = data;
     index = (data >> 28) & 0x7;
     value = (short) ((data >> 12) & 0xffff);
+  }
+
+  @Override
+  public int time() {
+    return time;
   }
 }
