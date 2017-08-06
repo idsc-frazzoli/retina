@@ -1,21 +1,19 @@
 // code by jph
 package ch.ethz.idsc.retina.dvs.app;
 
-import java.io.File;
+import java.io.IOException;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
+import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.EventRealtimeSleeper;
-import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
 
 public enum AedatLogViewer {
   ;
-  public static void of(File file, DavisDevice davisDevice) throws Exception {
-    DavisDecoder davisDecoder = davisDevice.createDecoder();
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(file, davisDecoder);
-    // ---
+  // TODO arguments not final ...
+  public static void of(DavisEventProvider davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     DefaultDavisDisplay davisImageDisplay = new DefaultDavisDisplay();
@@ -23,14 +21,14 @@ public enum AedatLogViewer {
     davisImageProvider.addListener(davisImageDisplay.apsRenderer);
     davisDecoder.addListener(davisImageProvider);
     // ---
-    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 20000);
+    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 50000);
     davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
-    davisDecoder.addListener(new EventRealtimeSleeper());
+    davisDecoder.addListener(new EventRealtimeSleeper(speed));
     // ---
-    aedatFileSupplier.start();
-    aedatFileSupplier.stop();
+    davisEventProvider.start();
+    davisEventProvider.stop();
     davisEventStatistics.print();
     davisImageDisplay.close();
   }

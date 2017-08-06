@@ -7,7 +7,11 @@ import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
  * 
  * is disguised as imu listener to be invoked as seldom as possible */
 public class EventRealtimeSleeper implements ImuDavisEventListener {
-  RealtimeSleeper realtimeSleeper = new RealtimeSleeper();
+  private final RealtimeSleeper realtimeSleeper;
+
+  public EventRealtimeSleeper(double speed) {
+    realtimeSleeper = new RealtimeSleeper(speed);
+  }
 
   @Override
   public void imu(ImuDavisEvent imuDavisEvent) {

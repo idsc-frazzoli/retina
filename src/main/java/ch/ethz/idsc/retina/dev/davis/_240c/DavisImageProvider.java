@@ -22,9 +22,9 @@ public class DavisImageProvider implements ApsDavisEventListener {
   private final byte[] bytes;
   // private final Tensor image = Array.zeros(WIDTH, HEIGHT);
 
-  public DavisImageProvider(DimensionInterface rasterDevice) {
-    width = rasterDevice.getWidth();
-    height = rasterDevice.getHeight();
+  public DavisImageProvider(DimensionInterface dimensionInterface) {
+    width = dimensionInterface.getWidth();
+    height = dimensionInterface.getHeight();
     lastX = width - 1;
     lastY = height - 1;
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);

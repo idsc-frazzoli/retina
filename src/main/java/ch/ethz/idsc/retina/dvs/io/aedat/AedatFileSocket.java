@@ -17,23 +17,25 @@ import ch.ethz.idsc.retina.dev.davis._240c.RealtimeSleeper;
 /** sends content of log file in realtime via DatagramSocket */
 public class AedatFileSocket implements DavisEventProvider {
   public static final int PORT = 14321;
-  private static final int BUFFER_SIZE = 512; // -> 8 * 512 == 4096 packet size seems to cause the max sleep time
+  public static final int BUFFER_SIZE = 8 * 512; // -> 8 * 512 == 4096 packet size seems to cause the max sleep time
   // ---
-  private final byte[] bytes = new byte[8 * BUFFER_SIZE];
+  private final byte[] bytes = new byte[BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
   private final InputStream inputStream;
   private DatagramSocket datagramSocket;
+  private final double speed;
 
-  public AedatFileSocket(File file, DavisDecoder davisDecoder) throws Exception {
+  public AedatFileSocket(File file, DavisDecoder davisDecoder, double speed) throws Exception {
     AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
     inputStream = aedatFileHeader.getInputStream();
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
+    this.speed = speed;
   }
 
   @Override
   public void start() {
     try {
-      RealtimeSleeper realtimeSleeper = new RealtimeSleeper();
+      RealtimeSleeper realtimeSleeper = new RealtimeSleeper(speed);
       datagramSocket = new DatagramSocket();
       DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length, InetAddress.getLocalHost(), PORT);
       long total = 0;
@@ -52,7 +54,7 @@ public class AedatFileSocket implements DavisEventProvider {
         total += available;
       }
       System.out.println(String.format("total sleep: %.3f", realtimeSleeper.getSleepTotalSec()));
-      // System.out.println(total);
+      System.out.println(total + " bytes");
     } catch (Exception exception) {
       exception.printStackTrace();
     }
