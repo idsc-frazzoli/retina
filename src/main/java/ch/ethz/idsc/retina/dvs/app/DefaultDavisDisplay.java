@@ -13,14 +13,17 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 
 // TODO redraw thread is independent of sync signal of images...!
-public class DefaultDavisDisplay {
+public class DefaultDavisDisplay implements Runnable {
   private final JLabel jLabel = new JLabel();
   private BufferedImage bufferedImage = null;
   private BufferedImage dvsImage = null;
   private final JFrame jFrame = new JFrame();
+  private boolean isLaunched = true;
+  long repaint_tic = System.nanoTime();
   public final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
+      repaint_tic = System.nanoTime();
       if (Objects.nonNull(bufferedImage))
         g.drawImage(bufferedImage, 0, 0, jLabel);
       if (Objects.nonNull(dvsImage))
@@ -33,6 +36,23 @@ public class DefaultDavisDisplay {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
     jFrame.setVisible(true);
+    new Thread(this).start();
+  }
+
+  @Override
+  public void run() {
+    while (isLaunched) {
+      long toc = System.nanoTime() - repaint_tic;
+      if (200e6 < toc) {
+        System.err.println("image data lag");
+        jComponent.repaint();
+      }
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException exception) {
+        exception.printStackTrace();
+      }
+    }
   }
 
   public final TimedImageListener apsRenderer = new TimedImageListener() {
@@ -40,11 +60,6 @@ public class DefaultDavisDisplay {
     public void image(int time, BufferedImage bufferedImage) {
       setBufferedImage(bufferedImage);
       jComponent.repaint();
-      try {
-        Thread.sleep(1); // TODO IMAGE(...) SHOULD NEVER BLOCK -> display has to happen in different thread
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
     }
   };
   public final TimedImageListener dvsRenderer = new TimedImageListener() {
@@ -52,15 +67,11 @@ public class DefaultDavisDisplay {
     public void image(int time, BufferedImage bufferedImage) {
       setDvsImage(bufferedImage);
       jComponent.repaint();
-      try {
-        Thread.sleep(1); // TODO IMAGE(...) SHOULD NEVER BLOCK -> display has to happen in different thread
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
     }
   };
 
   public void close() {
+    isLaunched = false;
     jFrame.setVisible(false);
     jFrame.dispose();
   }

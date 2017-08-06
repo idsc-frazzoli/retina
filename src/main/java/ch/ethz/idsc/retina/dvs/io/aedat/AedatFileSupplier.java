@@ -25,6 +25,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
  * TODO look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements DavisEventProvider {
   private static final int BUFFER_SIZE = 512;
+  private static final String HEADER_TERMINATOR = "#End Of ASCII Header";
   // ---
   private final DavisDecoder davisDecoder;
   private final byte[] bytes = new byte[8 * BUFFER_SIZE];
@@ -42,7 +43,7 @@ public class AedatFileSupplier implements DavisEventProvider {
       String string = bufferedReader.readLine();
       header.add(string);
       skip += string.length() + 2; // add 2 characters of line break
-      if (string.equals("#End Of ASCII Header"))
+      if (string.equals(HEADER_TERMINATOR))
         break;
     }
     bufferedReader.close();

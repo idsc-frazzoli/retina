@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 public class ImuDavisEvent implements DavisEvent {
   public final int time;
   public final int data;
+  /** index ranges from [0, 1, ..., 6] */
   public final int index;
   public final short value;
 
