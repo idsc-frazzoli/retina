@@ -33,11 +33,13 @@ public enum AedatLogConverter {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     // ---
-    EventsTextWriter eventsTextWriter = new EventsTextWriter(directory);
+    FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
+    EventsTextWriter eventsTextWriter = new EventsTextWriter(directory, fitec);
     davisDecoder.addListener(eventsTextWriter);
     // ---
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    PngImageWriter pngImageWriter = new PngImageWriter(directory);
+    PngImageWriter pngImageWriter = new PngImageWriter(directory, fitec);
+    davisImageProvider.addListener(fitec);
     davisImageProvider.addListener(pngImageWriter);
     davisDecoder.addListener(davisImageProvider);
     // ---
@@ -45,7 +47,7 @@ public enum AedatLogConverter {
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();
-      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 50));
+      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 50, fitec));
       davisDecoder.addListener(accumulateDvsImage);
     }
     // ---

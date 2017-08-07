@@ -7,26 +7,31 @@ import java.io.FileWriter;
 
 import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.dvs.io.ExportControl;
 
 /** lists the events in a text file */
 public class EventsTextWriter implements DvsDavisEventListener, AutoCloseable {
   private final BufferedWriter bufferedWriter;
+  private final ExportControl exportControl;
 
-  public EventsTextWriter(File directory) throws Exception {
+  public EventsTextWriter(File directory, ExportControl exportControl) throws Exception {
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "events.txt")));
+    this.exportControl = exportControl;
   }
 
   @Override
   public void dvs(DvsDavisEvent dvsDavisEvent) {
-    try {
-      bufferedWriter.write(String.format("%.6f %d %d %d\n", //
-          dvsDavisEvent.time * 1e-6, //
-          dvsDavisEvent.x, //
-          dvsDavisEvent.y, //
-          dvsDavisEvent.i));
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+    if (exportControl.isActive())
+      try {
+        int mapped = exportControl.mapTime(dvsDavisEvent.time);
+        bufferedWriter.write(String.format("%.6f %d %d %d\n", //
+            mapped * 1e-6, //
+            dvsDavisEvent.x, //
+            dvsDavisEvent.y, //
+            dvsDavisEvent.i));
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
   }
 
   @Override
