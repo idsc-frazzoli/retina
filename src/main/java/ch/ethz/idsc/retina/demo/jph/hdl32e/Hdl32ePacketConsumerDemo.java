@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaCollector;
@@ -31,10 +32,11 @@ enum Hdl32ePacketConsumerDemo {
         // ---
       }
     };
-    PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
-        // new Hdl32ePositionCollector(hdl32ePositionListener) //
-        new Hdl32ePanoramaCollector(hdl32ePanoramaListener) //
-    );
-    new PcapParse(Pcap.TUNNEL.file, packetConsumer);
+    Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
+    hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
+    Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
+    hdl32eFiringPacketConsumer.addListener(hdl32ePanoramaCollector);
+    PacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer);
+    PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }

@@ -1,13 +1,11 @@
 // code by jph
-package ch.ethz.idsc.retina.app.lidar;
+package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.JLabel;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanorama;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaListener;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
 public class Hdl32ePanoramaWriter implements Hdl32ePanoramaListener {

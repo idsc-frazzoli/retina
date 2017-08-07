@@ -12,12 +12,16 @@ import java.nio.ByteOrder;
 /** information taken from
  * "Hani's blog: A look at the pcap file format" */
 public class PcapParse {
-  final InputStream inputStream;
-  final byte[] packet_header = new byte[16];
-  int max_size;
-  byte[] packet_data;
+  public static void of(File file, PacketConsumer packetConsumer) throws Exception {
+    new PcapParse(file, packetConsumer);
+  }
 
-  public PcapParse(File file, PacketConsumer packetConsumer) throws Exception {
+  private final InputStream inputStream;
+  private final byte[] packet_header = new byte[16];
+  private int max_size;
+  private byte[] packet_data;
+
+  private PcapParse(File file, PacketConsumer packetConsumer) throws Exception {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();

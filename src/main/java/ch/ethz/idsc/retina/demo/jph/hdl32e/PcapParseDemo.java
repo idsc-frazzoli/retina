@@ -13,6 +13,6 @@ enum PcapParseDemo {
         System.out.println("" + length);
       }
     };
-    new PcapParse(Pcap.TUNNEL.file, packetConsumer);
+    PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }

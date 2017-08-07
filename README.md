@@ -10,7 +10,7 @@ Java 8 code to prototype algorithms for sensor interfacing and processing
 
 ![urg04lx](https://user-images.githubusercontent.com/4012178/29029959-c052da4c-7b89-11e7-8b01-1b4efc3593c0.gif)
 
-our code builds upon 
+our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
 ## Velodyne HDL-32E
@@ -25,26 +25,24 @@ intensity as 360[deg] panorama
 
 ![intensity](https://user-images.githubusercontent.com/4012178/29026760-c29ebbce-7b7d-11e7-9854-9280594cb462.gif)
 
-# DAVIS
+# DVS
 
-## IniLabs DAVIS 240C
+## IniLabs DAVIS240C
 
 .aedat files
 
 * parsing and visualization
 * conversion to text+png format
 
-# DVS
-
-## streaming dat files
+## streaming DAT files
 
 ![hdr](https://user-images.githubusercontent.com/4012178/27771907-a3bbcef4-5f58-11e7-8b0e-3dfb0cb0ecaf.gif)
 
-## streaming davis recordings
+## streaming DAVIS recordings
 
 ![shapes_6dof](https://user-images.githubusercontent.com/4012178/27771912-cb58ebb8-5f58-11e7-9566-79f3fbc5d9ba.gif)
 
-## generating dvs from video sequence
+## generating DVS from video sequence
 
 ![cat_final](https://user-images.githubusercontent.com/4012178/27771885-0eadb2aa-5f58-11e7-9f4d-78a57e610f56.gif)
 

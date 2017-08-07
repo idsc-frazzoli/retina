@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.tensor.Tensors;
 
-public class Hdl32ePositionCollector extends AbstractHdl32eFiringPacketConsumer {
+public class Hdl32ePositionCollector implements FiringPacketInterface {
   public static final int POINT_NUMEL = 10000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -81,6 +81,11 @@ public class Hdl32ePositionCollector extends AbstractHdl32eFiringPacketConsumer 
         }
       } // else too close => ignore
     }
+  }
+
+  @Override
+  public void status(int usec, byte type, byte value) {
+    // TODO Auto-generated method stub
   }
 
   public static void main(String[] args) {
