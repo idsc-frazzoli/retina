@@ -7,7 +7,7 @@ import java.util.List;
 
 import ch.ethz.idsc.tensor.RealScalar;
 
-public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer {
+public class Hdl32ePanoramaCollector implements FiringPacketInterface {
   public static final int[] INDEX = new int[] { //
       31, 15, //
       30, 14, //
