@@ -139,6 +139,5 @@ public class Urg04lxRender {
 
   public void setZoom(int zoom) {
     METER_TO_PIXEL = Power.of(4 / 3.0, zoom).multiply(RealScalar.of(100));
-    // System.out.println(METER_TO_PIXEL);
   }
 }

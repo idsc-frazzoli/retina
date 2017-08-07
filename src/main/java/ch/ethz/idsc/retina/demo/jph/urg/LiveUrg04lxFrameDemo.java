@@ -10,7 +10,7 @@ enum LiveUrg04lxFrameDemo {
   ;
   public static void main(String[] args) throws Exception {
     Urg04lxProvider urg04lxProvider = LiveUrg04lxProvider.INSTANCE;
-    urg04lxProvider = new FileUrg04lxProvider(Urg.LOG04.file);
+    urg04lxProvider = new FileUrg04lxProvider(Urg.LOG03.file);
     // ---
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame(urg04lxProvider);
     // LiveUrgProvider.INSTANCE.addListener(UrgRecorder.createDefault());

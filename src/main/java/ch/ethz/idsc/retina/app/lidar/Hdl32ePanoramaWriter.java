@@ -20,7 +20,7 @@ public class Hdl32ePanoramaWriter implements Hdl32ePanoramaListener {
   public Hdl32ePanoramaWriter(File file, int period, int width) throws Exception {
     animationWriter = AnimationWriter.of(file, period);
     this.width = width;
-    image = new BufferedImage(width, 64, BufferedImage.TYPE_INT_ARGB);
+    image = new BufferedImage(width, 64, BufferedImage.TYPE_INT_ARGB); // TODO MAGIC const
   }
 
   @Override
