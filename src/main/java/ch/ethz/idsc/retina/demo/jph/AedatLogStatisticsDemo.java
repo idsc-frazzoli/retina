@@ -6,6 +6,6 @@ import ch.ethz.idsc.retina.dvs.app.AedatLogStatistics;
 enum AedatLogStatisticsDemo {
   ;
   public static void main(String[] args) throws Exception {
-    AedatLogStatistics.of(Datahaki.LOG_03.file);
+    AedatLogStatistics.of(Aedat.LOG_03.file);
   }
 }

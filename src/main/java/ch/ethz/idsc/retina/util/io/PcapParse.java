@@ -32,6 +32,8 @@ public class PcapParse {
         int length = byteBuffer.getInt(); // size
         // The Fourth field is 4 bytes long too and contains the length of the packet as it was captured on the wire.
         int length_data = byteBuffer.getInt(); // size
+        if (length < length_data)
+          System.err.println(length + " " + length_data + " " + max_size);
         _assert(length_data <= length);
         _assert(length_data <= max_size);
         _assert(byteBuffer.position() == 16);

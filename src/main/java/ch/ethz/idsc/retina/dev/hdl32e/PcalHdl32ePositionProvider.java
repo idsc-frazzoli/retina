@@ -6,9 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.retina.util.io.PacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-/** new File( //
- * "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data", //
- * "HDL32-V2_R into Butterfield into Digital Drive.pcap") */
 public class PcalHdl32ePositionProvider implements Hdl32eFiringProvider {
   private final Hdl32ePositionListener hdl32ePositionListener;
   private final File file;

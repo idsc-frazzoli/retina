@@ -4,8 +4,6 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 
 public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer {
   public static final int[] INDEX = new int[] { //
@@ -28,10 +26,7 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
   // ---
   private int rotational_last = -1;
   private final Hdl32ePanoramaListener hdl32ePanoramaListener;
-  Hdl32ePanorama hdl32ePanorama = new Hdl32ePanorama();
-  // ---
-  private final Tensor row_d = Array.zeros(LASERS);
-  private final Tensor row_i = Array.zeros(LASERS);
+  private Hdl32ePanorama hdl32ePanorama = new Hdl32ePanorama();
 
   public Hdl32ePanoramaCollector(Hdl32ePanoramaListener hdl32ePanoramaListener) {
     this.hdl32ePanoramaListener = hdl32ePanoramaListener;
@@ -44,15 +39,19 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
       hdl32ePanorama = new Hdl32ePanorama();
     }
     rotational_last = rotational;
-    hdl32ePanorama.angle.append(RealScalar.of(rotational));
-    for (int laser = 0; laser < LASERS; ++laser) {
-      int distance = byteBuffer.getShort() & 0xffff;
-      int intensity = byteBuffer.get() & 0xff;
-      // ---
-      row_d.set(RealScalar.of(distance), INDEX[laser]);
-      row_i.set(RealScalar.of(intensity), INDEX[laser]);
+    final int x = hdl32ePanorama.angle.length();
+    if (x < Hdl32ePanorama.MAX_WIDTH) {
+      hdl32ePanorama.angle.append(RealScalar.of(rotational));
+      for (int laser = 0; laser < LASERS; ++laser) {
+        int distance = byteBuffer.getShort() & 0xffff;
+        byte intensity = byteBuffer.get();
+        // ---
+        final int y = INDEX[laser];
+        hdl32ePanorama.setDistance(x, y, (byte) (distance >> 8));
+        hdl32ePanorama.setIntensity(x, y, intensity);
+      }
+    } else {
+      System.err.println("2048 < width!");
     }
-    hdl32ePanorama.distances.append(row_d);
-    hdl32ePanorama.intensity.append(row_i);
   }
 }

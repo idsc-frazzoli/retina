@@ -3,19 +3,11 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.img.ImageResize;
-import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Min;
 
 public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener {
   public static final int SCALE_Y = 3;
@@ -26,19 +18,10 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener {
     protected void paintComponent(Graphics g) {
       Graphics2D graphics = (Graphics2D) g;
       Hdl32ePanorama hdl32ePanoramaRef = hdl32ePanorama;
-      {
-        Scalar max = hdl32ePanoramaRef.distances.flatten(-1).reduce(Max::of).get().Get();
-        Scalar fac = RealScalar.of(255.0).divide(max);
-        Tensor image = hdl32ePanoramaRef.distances.map(s -> max.subtract(s).multiply(fac));
-        image = ImageResize.nearest(image, 1, SCALE_Y);
-        BufferedImage bufferedImage = ImageFormat.of(image);
-        graphics.drawImage(bufferedImage, 0, 0, jFrame);
-      }
-      {
-        Tensor image = hdl32ePanoramaRef.intensity.map(s -> Min.of(RealScalar.of(255), s.multiply(RealScalar.of(2))));
-        image = ImageResize.nearest(image, 1, SCALE_Y);
-        BufferedImage bufferedImage = ImageFormat.of(image);
-        graphics.drawImage(bufferedImage, 0, 32 * SCALE_Y, jFrame);
+      if (Objects.nonNull(hdl32ePanoramaRef)) {
+        final int height = 32 * SCALE_Y;
+        graphics.drawImage(hdl32ePanoramaRef.distances(), 0, 0, 2048, height, jFrame);
+        graphics.drawImage(hdl32ePanoramaRef.intensity(), 0, 16 + height, 2048, height, jFrame);
       }
     }
   };
