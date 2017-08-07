@@ -125,7 +125,7 @@ public class Urg04lxFrame implements Urg04lxListener {
           Tensor points = range.pmul(direction);
           Tensor contour = Tensor.of(IntStream.range(0, range.length()) //
               .filter(index -> Scalars.lessThan(THRESHOLD, range.Get(index))) //
-              .boxed().map(points::get));
+              .mapToObj(points::get));
           // ---
           graphics.setColor(new Color(0, 128 + 64, 128, 255));
           graphics.draw(TensorGraphics.polygonToPath( //

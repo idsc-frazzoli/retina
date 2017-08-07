@@ -30,6 +30,9 @@ public class PcapParse {
         byteBuffer.getInt(); // msec
         // The third field is 4 bytes long and contains the size of the saved packet data in our file in bytes.
         int length = byteBuffer.getInt(); // size
+        if (max_size < length)
+          System.err.println(length + " " + max_size);
+        _assert(length <= max_size);
         // The Fourth field is 4 bytes long too and contains the length of the packet as it was captured on the wire.
         int length_data = byteBuffer.getInt(); // size
         _assert(length_data <= length);
@@ -69,16 +72,5 @@ public class PcapParse {
   private static void _assert(boolean check) {
     if (!check)
       throw new RuntimeException();
-  }
-
-  public static void main(String[] args) throws Exception {
-    PacketConsumer packetConsumer = new PacketConsumer() {
-      @Override
-      public void parse(byte[] packet_data, int length) {
-      }
-    };
-    String dir = "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data";
-    String name = "HDL32-V2_Tunnel.pcap";
-    new PcapParse(new File(dir, name), packetConsumer);
   }
 }

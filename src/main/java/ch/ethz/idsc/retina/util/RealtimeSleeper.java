@@ -1,12 +1,13 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis._240c;
+package ch.ethz.idsc.retina.util;
 
 /** slows down playback to realtime */
 public class RealtimeSleeper {
   private static final long MICRO = 1000000;
+  private static final int NOT_INITIALIZED = -1;
   // ---
   private final double speed;
-  private long ref = -1;
+  private long ref = NOT_INITIALIZED;
   private long tic;
   private long sleepTotal = 0;
 
@@ -20,13 +21,15 @@ public class RealtimeSleeper {
 
   /** @param time in micro seconds */
   public void now(int time) {
-    if (ref == -1) {
-      // initialize time
+    nowNano(time * 1000L);
+  }
+
+  public void nowNano(long time) {
+    if (notInitialized()) { // initialized?
       ref = time;
       tic = System.nanoTime();
     } else {
       long act = time - ref;
-      act *= 1000;
       long toc = System.nanoTime() - tic;
       final long sleep = Math.round(act - toc * speed);
       if (0 < sleep)
@@ -39,6 +42,10 @@ public class RealtimeSleeper {
           exception.printStackTrace();
         }
     }
+  }
+
+  private boolean notInitialized() {
+    return ref == NOT_INITIALIZED;
   }
 
   /** @return total sleep in nano seconds required to slow down to real time */

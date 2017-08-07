@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
-import ch.ethz.idsc.retina.util.io.ImageDimensions;
 import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.retina.util.math.Constant;
 import ch.ethz.idsc.tensor.DoubleScalar;

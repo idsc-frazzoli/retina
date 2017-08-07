@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph;
 
-import java.io.File;
-
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaCollector;
@@ -26,16 +24,17 @@ enum Hdl32ePacketConsumerDemo {
       @Override
       public void panorama(Hdl32ePanorama hdl32ePanorama) {
         // System.out.println(hdl32ePanorama.angle);
-        // System.out.println("here" + Dimensions.of(hdl32ePanorama.distances));
-        // System.out.println("here" + Dimensions.of(hdl32ePanorama.intensity));
+      }
+
+      @Override
+      public void close() {
+        // ---
       }
     };
     PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
         // new Hdl32ePositionCollector(hdl32ePositionListener) //
         new Hdl32ePanoramaCollector(hdl32ePanoramaListener) //
     );
-    String dir = "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data";
-    File file = new File(dir, "HDL32-V2_Tunnel.pcap");
-    new PcapParse(file, packetConsumer);
+    new PcapParse(Pcap.TUNNEL.file, packetConsumer);
   }
 }

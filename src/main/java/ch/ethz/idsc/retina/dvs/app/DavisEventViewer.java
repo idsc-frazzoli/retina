@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
+import ch.ethz.idsc.retina.dev.davis._240c.EventRealtimeSleeper;
 
 public enum DavisEventViewer {
   ;
@@ -24,7 +25,8 @@ public enum DavisEventViewer {
     davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
-    // davisDecoder.addListener(new EventRealtimeSleeper(speed));
+    if (0 < speed)
+      davisDecoder.addListener(new EventRealtimeSleeper(speed));
     // ---
     davisEventProvider.start();
     davisEventProvider.stop();

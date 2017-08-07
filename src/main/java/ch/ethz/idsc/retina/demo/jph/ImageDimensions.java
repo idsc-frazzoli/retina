@@ -1,9 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.util.io;
+package ch.ethz.idsc.retina.demo.jph;
 
 import java.awt.Dimension;
 
-public enum ImageDimensions {
+// TODO not final design
+enum ImageDimensions {
   ;
   // wp.doc.ic.ac.uk_pb2114_datasets
   public static final Dimension IMPERIAL_COLLEGE = new Dimension(128, 128);

@@ -6,7 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
-import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo dat file read */
 enum DatSupplierTest {

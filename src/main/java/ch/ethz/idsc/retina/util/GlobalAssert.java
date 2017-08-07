@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.retina.util.data;
+package ch.ethz.idsc.retina.util;
 
-// placement of class not final
 public enum GlobalAssert {
   ;
   /** throws an exception if valid == false

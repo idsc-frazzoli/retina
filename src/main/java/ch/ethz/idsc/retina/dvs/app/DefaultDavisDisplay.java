@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.davis.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 
 // TODO redraw thread is independent of sync signal of images...!
@@ -55,18 +56,18 @@ public class DefaultDavisDisplay implements Runnable {
     }
   }
 
-  public final TimedImageListener apsRenderer = new TimedImageListener() {
+  public final ColumnTimedImageListener apsRenderer = new ColumnTimedImageListener() {
     @Override
-    public void image(int time, BufferedImage bufferedImage) {
+    public void image(int[] time, BufferedImage bufferedImage) {
       setBufferedImage(bufferedImage);
-      // jComponent.repaint();
+      jComponent.repaint();
     }
   };
   public final TimedImageListener dvsRenderer = new TimedImageListener() {
     @Override
     public void image(int time, BufferedImage bufferedImage) {
       setDvsImage(bufferedImage);
-      // jComponent.repaint();
+      jComponent.repaint();
     }
   };
 

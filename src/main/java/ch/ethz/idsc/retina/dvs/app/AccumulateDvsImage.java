@@ -11,13 +11,13 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.util.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class AccumulateDvsImage implements DvsDavisEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
-  private final int WIDTH;
-  private final int HEIGHT;
+  private final int width;
+  private final int height;
   private final List<TimedImageListener> timedImageListeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
@@ -28,12 +28,12 @@ public class AccumulateDvsImage implements DvsDavisEventListener {
 
   /** @param interval [us] */
   public AccumulateDvsImage(DavisDevice davisDevice, int interval) {
-    WIDTH = davisDevice.getWidth();
-    HEIGHT = davisDevice.getHeight();
-    bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_GRAY);
+    width = davisDevice.getWidth();
+    height = davisDevice.getHeight();
+    bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    GlobalAssert.that(bytes.length == WIDTH * HEIGHT);
+    GlobalAssert.that(bytes.length == width * height);
     this.interval = interval;
     // ---
     clearImage();
@@ -56,7 +56,7 @@ public class AccumulateDvsImage implements DvsDavisEventListener {
     }
     int polarity = dvsDavisEvent.i == 0 ? 0 : 255;
     // image.set(RealScalar.of(polarity), dvsDavisEvent.x, dvsDavisEvent.y);
-    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * WIDTH;
+    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
     bytes[index] = (byte) polarity;
   }
 

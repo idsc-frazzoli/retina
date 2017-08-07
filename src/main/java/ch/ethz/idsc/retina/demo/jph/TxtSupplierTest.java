@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
-import ch.ethz.idsc.retina.util.io.ImageDimensions;
 
 /** demo txt file read */
 enum TxtSupplierTest {

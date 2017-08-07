@@ -1,11 +1,14 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e;
 
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
+import java.awt.image.BufferedImage;
 
-public class Hdl32ePanorama {
-  public Tensor angle = Tensors.empty();
-  public Tensor distances = Tensors.empty();
-  public Tensor intensity = Tensors.empty();
+public interface Hdl32ePanorama {
+  void setReading(int x, int y, int distance, byte intensity);
+
+  int getWidth();
+
+  BufferedImage distances();
+
+  BufferedImage intensity();
 }
