@@ -7,13 +7,13 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaFrame;
 import ch.ethz.idsc.retina.util.io.PacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-enum PcapHdl32eImage {
+enum PcapHdl32ePanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
     PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
         new Hdl32ePanoramaCollector(hdl32ePanoramaFrame) //
     );
-    new PcapParse(Pcap.BUTTERFIELD.file, packetConsumer);
+    new PcapParse(Pcap.HIGHWAY.file, packetConsumer);
   }
 }

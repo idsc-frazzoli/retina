@@ -8,9 +8,9 @@ import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis.ColumnTimedImageListener;
 
-public class PngImageWriter implements TimedImageListener, AutoCloseable {
+public class PngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   private final File directory;
   private final BufferedWriter bufferedWriter;
   private int count = 0;
@@ -25,10 +25,11 @@ public class PngImageWriter implements TimedImageListener, AutoCloseable {
   }
 
   @Override
-  public void image(int time, BufferedImage bufferedImage) {
+  public void image(int[] time, BufferedImage bufferedImage) {
     try {
+      final double stamp = time[time.length / 2] * 1e-6; // TODO which time
       final String string = String.format("images/frame_%08d.png", count);
-      bufferedWriter.write(String.format("%.6f %s\n", time * 1e-6, string));
+      bufferedWriter.write(String.format("%.6f %s\n", stamp, string));
       File file = new File(directory, string);
       ImageIO.write(bufferedImage, "png", file);
     } catch (Exception exception) {

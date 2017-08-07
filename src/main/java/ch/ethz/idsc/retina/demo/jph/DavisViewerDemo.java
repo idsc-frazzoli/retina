@@ -11,7 +11,7 @@ enum DavisViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
-    DavisEventProvider davisEventProvider = new AedatFileSupplier(Aedat.LOG_04.file, davisDecoder);
-    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, 1.0);
+    DavisEventProvider davisEventProvider = new AedatFileSupplier(Aedat.LOG_01.file, davisDecoder);
+    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, 0.5);
   }
 }

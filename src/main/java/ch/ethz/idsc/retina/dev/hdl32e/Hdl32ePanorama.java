@@ -7,6 +7,9 @@ import java.awt.image.DataBufferByte;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** [2048 x 32] grayscale images visualizing distance and intensity
+ * 
+ * size of each image is 65536 bytes */
 public class Hdl32ePanorama {
   /** 2 ^ 11, power of two enables bitshift for computing pixel address */
   public static final int MAX_WIDTH = 2048; // TODO prove that sufficient for slow rotation rate +- tolerance...

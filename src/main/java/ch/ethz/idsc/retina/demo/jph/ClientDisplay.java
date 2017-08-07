@@ -14,6 +14,6 @@ enum ClientDisplay {
   public static void main(String[] args) throws IOException {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     DavisEventProvider davisEventProvider = new AedatClientProvider(davisDecoder);
-    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, 0.5);
+    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, -1);
   }
 }

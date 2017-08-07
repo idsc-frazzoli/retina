@@ -8,7 +8,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.DimensionInterface;
 import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
-import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
+import ch.ethz.idsc.retina.dev.davis.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class DavisImageProvider implements ApsDavisEventListener {
@@ -17,10 +17,10 @@ public class DavisImageProvider implements ApsDavisEventListener {
   private final int lastX;
   private final int lastY;
   // ---
-  private final List<TimedImageListener> timedImageListeners = new LinkedList<>();
+  private final List<ColumnTimedImageListener> timedImageListeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
-  // private final Tensor image = Array.zeros(WIDTH, HEIGHT);
+  private final int[] time;
 
   public DavisImageProvider(DimensionInterface dimensionInterface) {
     width = dimensionInterface.getWidth();
@@ -31,23 +31,23 @@ public class DavisImageProvider implements ApsDavisEventListener {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     GlobalAssert.that(bytes.length == width * height);
+    time = new int[width];
   }
 
-  public void addListener(TimedImageListener timedImageListener) {
+  public void addListener(ColumnTimedImageListener timedImageListener) {
     timedImageListeners.add(timedImageListener);
   }
 
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
     int intensity = apsDavisEvent.grayscale();
-    // image.set(RealScalar.of(intensity), apsDavisEvent.x, apsDavisEvent.y);
     int index = apsDavisEvent.x + (apsDavisEvent.y * width); // TODO should precompute?
     bytes[index] = (byte) intensity;
-    // System.out.println(apsDavisEvent.x +" "+ apsDavisEvent.y);
-    if (apsDavisEvent.x == lastX && apsDavisEvent.y == lastY) {
-      // BufferedImage bi = ImageFormat.of(image);
-      // timedImageListeners.forEach(listener -> listener.image(apsDavisEvent.time, bi));
-      timedImageListeners.forEach(listener -> listener.image(apsDavisEvent.time, bufferedImage));
+    if (apsDavisEvent.y == lastY) {
+      time[apsDavisEvent.x] = apsDavisEvent.time;
+      if (apsDavisEvent.x == lastX)
+        // System.out.println(DeleteDuplicates.of(Differences.of(Tensors.vectorInt(time))));
+        timedImageListeners.forEach(listener -> listener.image(time, bufferedImage));
     }
   }
 }
