@@ -26,7 +26,7 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
   // ---
   private int rotational_last = -1;
   private final Hdl32ePanoramaListener hdl32ePanoramaListener;
-  private Hdl32ePanorama hdl32ePanorama = new Hdl32ePanorama();
+  private ColorPanorama hdl32ePanorama = new ColorPanorama();
 
   public Hdl32ePanoramaCollector(Hdl32ePanoramaListener hdl32ePanoramaListener) {
     this.hdl32ePanoramaListener = hdl32ePanoramaListener;
@@ -36,19 +36,24 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
   public void process(int firing, int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
       hdl32ePanoramaListener.panorama(hdl32ePanorama);
-      hdl32ePanorama = new Hdl32ePanorama();
+      hdl32ePanorama = new ColorPanorama();
     }
     rotational_last = rotational;
     final int x = hdl32ePanorama.angle.length();
-    if (x < Hdl32ePanorama.MAX_WIDTH) {
+    if (x < GrayscalePanorama.MAX_WIDTH) {
       hdl32ePanorama.angle.append(RealScalar.of(rotational));
       for (int laser = 0; laser < LASERS; ++laser) {
+        // in the outdoors the values for distance typically range from [0, ..., ~52592]
+        // 2 mm increments, i.e.
+        // distance == 500 corresponds to 1[m]
+        // distance == 50000 corresponds to 100[m]
+        // distance == 0 -> no return within 100[m]
+        // distance == 256 corresponds to 0.512[m]
         int distance = byteBuffer.getShort() & 0xffff;
-        byte intensity = byteBuffer.get();
+        byte intensity = byteBuffer.get(); // 255 == most intensive return
         // ---
         final int y = INDEX[laser];
-        hdl32ePanorama.setDistance(x, y, (byte) (distance >> 8));
-        hdl32ePanorama.setIntensity(x, y, intensity);
+        hdl32ePanorama.setReading(x, y, distance, intensity);
       }
     } else {
       System.err.println("2048 < width!");

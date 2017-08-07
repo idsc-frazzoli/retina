@@ -24,8 +24,11 @@ enum Hdl32ePacketConsumerDemo {
       @Override
       public void panorama(Hdl32ePanorama hdl32ePanorama) {
         // System.out.println(hdl32ePanorama.angle);
-        // System.out.println("here" + Dimensions.of(hdl32ePanorama.distances));
-        // System.out.println("here" + Dimensions.of(hdl32ePanorama.intensity));
+      }
+
+      @Override
+      public void close() {
+        // ---
       }
     };
     PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
