@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.retina.demo.jph.urg;
 
 import ch.ethz.idsc.retina.dev.urg04lx.LiveUrg04lxProvider;
 

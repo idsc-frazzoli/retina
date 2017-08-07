@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
 import ch.ethz.idsc.retina.app.lidar.Hdl32ePanoramaWriter;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;

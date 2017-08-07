@@ -16,9 +16,14 @@ our code builds upon
 ## Velodyne HDL-32E
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=abOYEIdBgRs)
-* distance and intensity as 360[deg] panorama
+
+distance as 360[deg] panorama
 
 ![velodyne distances](https://user-images.githubusercontent.com/4012178/29020149-581e9236-7b61-11e7-81eb-0fc4577b687d.gif)
+
+intensity as 360[deg] panorama
+
+![intensity](https://user-images.githubusercontent.com/4012178/29026760-c29ebbce-7b7d-11e7-9854-9280594cb462.gif)
 
 # DAVIS
 
