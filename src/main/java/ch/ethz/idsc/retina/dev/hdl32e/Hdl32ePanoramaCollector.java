@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.ethz.idsc.tensor.RealScalar;
 
@@ -25,17 +27,20 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
       16, 0 };
   // ---
   private int rotational_last = -1;
-  private final Hdl32ePanoramaListener hdl32ePanoramaListener;
+  private final List<Hdl32ePanoramaListener> hdl32ePanoramaListeners = new LinkedList<>();
   private ColorPanorama hdl32ePanorama = new ColorPanorama();
 
-  public Hdl32ePanoramaCollector(Hdl32ePanoramaListener hdl32ePanoramaListener) {
-    this.hdl32ePanoramaListener = hdl32ePanoramaListener;
+  public void addListener(Hdl32ePanoramaListener hdl32ePanoramaListener) {
+    hdl32ePanoramaListeners.add(hdl32ePanoramaListener);
   }
+
+  private int gpsTimestampUsec = -1;
 
   @Override
   public void process(int firing, int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
-      hdl32ePanoramaListener.panorama(hdl32ePanorama);
+      // System.out.println(gpsTimestampUsec*1e-6);
+      hdl32ePanoramaListeners.forEach(listener -> listener.panorama(hdl32ePanorama));
       hdl32ePanorama = new ColorPanorama();
     }
     rotational_last = rotational;
@@ -58,5 +63,10 @@ public class Hdl32ePanoramaCollector extends AbstractHdl32eFiringPacketConsumer 
     } else {
       System.err.println("2048 < width!");
     }
+  }
+
+  @Override
+  public void status(int usec, byte type, byte value) {
+    this.gpsTimestampUsec = usec;
   }
 }

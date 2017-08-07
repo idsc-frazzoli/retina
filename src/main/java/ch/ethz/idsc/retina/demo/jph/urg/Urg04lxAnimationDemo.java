@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.demo.jph.urg;
 
 import java.awt.Dimension;
 
-import ch.ethz.idsc.retina.app.lidar.UrgAnimationWriter;
 import ch.ethz.idsc.retina.dev.urg04lx.FileUrg04lxProvider;
+import ch.ethz.idsc.retina.dev.urg04lx.UrgAnimationWriter;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
 enum Urg04lxAnimationDemo {

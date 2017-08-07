@@ -27,7 +27,7 @@ public class PcalHdl32ePositionProvider implements Hdl32eFiringProvider {
         PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
             new Hdl32ePositionCollector(hdl32ePositionListener));
         try {
-          new PcapParse(file, packetConsumer);
+          PcapParse.of(file, packetConsumer);
         } catch (Exception exception) {
           exception.printStackTrace();
         }

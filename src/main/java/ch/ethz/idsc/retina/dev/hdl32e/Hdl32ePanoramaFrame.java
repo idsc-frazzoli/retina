@@ -31,7 +31,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener {
 
   public Hdl32ePanoramaFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 800, 800);
+    jFrame.setBounds(100, 100, 1700, 300);
     jFrame.setContentPane(jComponent);
     jFrame.setVisible(true);
     colorImage = new BufferedImage(2048, 32, BufferedImage.TYPE_INT_ARGB);
@@ -42,7 +42,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener {
     this.hdl32ePanorama = hdl32ePanorama;
     jComponent.repaint();
     try {
-      Thread.sleep(10);
+      Thread.sleep(1); // TODO should not block...
     } catch (Exception exception) {
       exception.printStackTrace();
     }

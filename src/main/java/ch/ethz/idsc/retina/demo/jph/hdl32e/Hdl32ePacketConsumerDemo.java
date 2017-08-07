@@ -31,10 +31,13 @@ enum Hdl32ePacketConsumerDemo {
         // ---
       }
     };
+    Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
+    hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
     PacketConsumer packetConsumer = new Hdl32ePacketConsumer( //
-        // new Hdl32ePositionCollector(hdl32ePositionListener) //
-        new Hdl32ePanoramaCollector(hdl32ePanoramaListener) //
+        hdl32ePanoramaCollector
+    // new Hdl32ePositionCollector(hdl32ePositionListener) //
+    //
     );
-    new PcapParse(Pcap.TUNNEL.file, packetConsumer);
+    PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }

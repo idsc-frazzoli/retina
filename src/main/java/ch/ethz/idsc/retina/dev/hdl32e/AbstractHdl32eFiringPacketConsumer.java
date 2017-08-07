@@ -3,20 +3,20 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-// TODO code is redundant to some other code
+import ch.ethz.idsc.retina.util.GlobalAssert;
+
+// TODO DO NOT extend from here but pass data to listeners
 public abstract class AbstractHdl32eFiringPacketConsumer implements Hdl32eFiringPacketConsumer {
   public static final int LASERS = 32;
 
-  // private byte[] ethernet_header = new byte[42];
   @SuppressWarnings("unused")
   @Override
   public final void lasers(ByteBuffer byteBuffer) {
     {
-      int offset = byteBuffer.position();
-      // byteBuffer.position(42); // begin of firing data
+      final int offset = byteBuffer.position();
       // 12 blocks of firing data
       for (int firing = 0; firing < 12; ++firing) {
-        _assert(byteBuffer.position() == offset + firing * 100);
+        GlobalAssert.that(byteBuffer.position() == offset + firing * 100);
         int blockId = byteBuffer.getShort() & 0xffff; // laser block ID, 61183 ?
         int rotational = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
         // ---
@@ -26,8 +26,10 @@ public abstract class AbstractHdl32eFiringPacketConsumer implements Hdl32eFiring
     }
     { // status data
       int gps_timestamp = byteBuffer.getInt();
+      // System.out.println("gps=" + gps_timestamp);
       byte type = byteBuffer.get(); // 55
       byte value = byteBuffer.get(); // 33
+      status(gps_timestamp, type, value);
     }
   }
 
@@ -43,8 +45,5 @@ public abstract class AbstractHdl32eFiringPacketConsumer implements Hdl32eFiring
    * @param byteBuffer */
   public abstract void process(int firing, int rotational, ByteBuffer byteBuffer);
 
-  private static void _assert(boolean check) {
-    if (!check)
-      throw new RuntimeException();
-  }
+  public abstract void status(int usec, byte type, byte value);
 }

@@ -10,8 +10,9 @@ enum LiveHdl32eImage {
   ;
   public static void main(String[] args) throws Exception {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
-    Hdl32eFiringProvider hdl32eFiringProvider = //
-        new LiveHdl32eFiringProvider(new Hdl32ePanoramaCollector(hdl32ePanoramaFrame));
+    Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
+    hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
+    Hdl32eFiringProvider hdl32eFiringProvider = new LiveHdl32eFiringProvider(hdl32ePanoramaCollector);
     hdl32eFiringProvider.start();
   }
 }

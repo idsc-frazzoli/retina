@@ -83,6 +83,11 @@ public class Hdl32ePositionCollector extends AbstractHdl32eFiringPacketConsumer 
     }
   }
 
+  @Override
+  public void status(int usec, byte type, byte value) {
+    // TODO Auto-generated method stub
+  }
+
   public static void main(String[] args) {
     System.out.println(Tensors.vectorInt(ORDERING));
   }
