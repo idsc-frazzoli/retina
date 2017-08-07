@@ -28,25 +28,22 @@ public class Hdl32ePanoramaCollector implements FiringPacketInterface {
   // ---
   private int rotational_last = -1;
   private final List<Hdl32ePanoramaListener> hdl32ePanoramaListeners = new LinkedList<>();
-  private ColorPanorama hdl32ePanorama = new ColorPanorama();
+  private HuePanorama hdl32ePanorama = new HuePanorama();
 
   public void addListener(Hdl32ePanoramaListener hdl32ePanoramaListener) {
     hdl32ePanoramaListeners.add(hdl32ePanoramaListener);
   }
 
-  private int gpsTimestampUsec = -1;
-
   @Override
   public void process(int firing, int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
-      // System.out.println(gpsTimestampUsec*1e-6);
       hdl32ePanoramaListeners.forEach(listener -> listener.panorama(hdl32ePanorama));
-      hdl32ePanorama = new ColorPanorama();
+      hdl32ePanorama = new HuePanorama();
     }
     rotational_last = rotational;
     final int x = hdl32ePanorama.angle.length();
-    if (x < GrayscalePanorama.MAX_WIDTH) {
-      hdl32ePanorama.angle.append(RealScalar.of(rotational));
+    hdl32ePanorama.angle.append(RealScalar.of(rotational));
+    if (x < Hdl32ePanorama.MAX_WIDTH) {
       for (int laser = 0; laser < LASERS; ++laser) {
         // in the outdoors the values for distance typically range from [0, ..., ~52592]
         // 2 mm increments, i.e.
@@ -61,12 +58,11 @@ public class Hdl32ePanoramaCollector implements FiringPacketInterface {
         hdl32ePanorama.setReading(x, y, distance, intensity);
       }
     } else {
-      System.err.println("2048 < width!");
+      System.err.println("width <= " + x);
     }
   }
 
   @Override
   public void status(int usec, byte type, byte value) {
-    this.gpsTimestampUsec = usec;
   }
 }

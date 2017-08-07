@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumerImpl;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaFrame;
@@ -17,10 +17,10 @@ enum PcapHdl32ePanoramaDemo {
   static void simple(File file, Hdl32ePanoramaListener hdl32ePanoramaListener) throws Exception {
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
-    Hdl32eFiringPacketConsumerImpl c = new Hdl32eFiringPacketConsumerImpl();
-    c.addListener(hdl32ePanoramaCollector);
-    c.addListener(new RealtimeFiringPacket(1.0));
-    PacketConsumer packetConsumer = new Hdl32ePacketConsumer(c);
+    Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
+    hdl32eFiringPacketConsumer.addListener(hdl32ePanoramaCollector);
+    hdl32eFiringPacketConsumer.addListener(new RealtimeFiringPacket(1.0));
+    PacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer);
     PcapParse.of(file, packetConsumer); // blocking
     hdl32ePanoramaListener.close();
   }

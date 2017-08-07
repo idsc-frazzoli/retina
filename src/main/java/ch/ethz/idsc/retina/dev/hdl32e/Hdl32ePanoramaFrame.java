@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 import javax.swing.JComponent;
@@ -20,21 +19,22 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener {
     protected void paintComponent(Graphics g) {
       Graphics2D graphics = (Graphics2D) g;
       Hdl32ePanorama hdl32ePanoramaRef = hdl32ePanorama;
+      // System.out.println(hdl32ePanoramaRef.getWidth());
       if (Objects.nonNull(hdl32ePanoramaRef)) {
         final int height = 32 * SCALE_Y;
-        graphics.drawImage(hdl32ePanoramaRef.distances(), 0, 0, 2048, height, jFrame);
-        graphics.drawImage(hdl32ePanoramaRef.intensity(), 0, 16 + height, 2048, height, jFrame);
+        graphics.drawImage(hdl32ePanoramaRef.distances(), 0, 0, Hdl32ePanorama.MAX_WIDTH, height, jFrame);
+        graphics.drawImage(hdl32ePanoramaRef.intensity(), 0, 16 + height, Hdl32ePanorama.MAX_WIDTH, height, jFrame);
       }
     }
   };
-  BufferedImage colorImage;
+  // BufferedImage colorImage;
 
   public Hdl32ePanoramaFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 1700, 300);
     jFrame.setContentPane(jComponent);
     jFrame.setVisible(true);
-    colorImage = new BufferedImage(2048, 32, BufferedImage.TYPE_INT_ARGB);
+    // colorImage = new BufferedImage(Hdl32ePanorama.MAX_WIDTH, 32, BufferedImage.TYPE_INT_ARGB);
   }
 
   @Override

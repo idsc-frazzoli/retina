@@ -11,9 +11,6 @@ import ch.ethz.idsc.tensor.Tensors;
  * 
  * size of each image is 65536 bytes */
 public class GrayscalePanorama implements Hdl32ePanorama {
-  /** 2 ^ 11, power of two enables bitshift for computing pixel address */
-  public static final int MAX_WIDTH = 2048; // TODO prove that sufficient for slow rotation rate +- tolerance...
-  // ---
   public final Tensor angle = Tensors.empty();
   // ---
   private final BufferedImage distancesImage = new BufferedImage(MAX_WIDTH, 32, BufferedImage.TYPE_BYTE_GRAY);
@@ -23,9 +20,10 @@ public class GrayscalePanorama implements Hdl32ePanorama {
   private final byte[] intensity = ((DataBufferByte) intensityImage.getRaster().getDataBuffer()).getData();
 
   @Override
-  public void setReading(int x, int y, int value, byte ivalue) {
-    int offset = y << 11;
-    distances[offset + x] = (byte) (value >> 8);
+  public void setReading(int x, int y, int distance, byte ivalue) {
+    int offset = y << BIT_WIDTH;
+    // int offset = y * MAX_WIDTH;
+    distances[offset + x] = (byte) (distance >> 8);
     intensity[offset + x] = ivalue;
   }
 
