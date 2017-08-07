@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
 import ch.ethz.idsc.retina.dvs.io.png.PngImageWriter;
 import ch.ethz.idsc.retina.dvs.io.png.SimpleImageWriter;
 import ch.ethz.idsc.retina.dvs.io.txt.EventsTextWriter;
-import ch.ethz.idsc.retina.util.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */
 // TODO class name not final

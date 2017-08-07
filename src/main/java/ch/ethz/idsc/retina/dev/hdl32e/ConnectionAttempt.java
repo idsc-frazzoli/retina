@@ -25,7 +25,7 @@ class ConnectionAttempt {
    * @throws Exception */
   public static void main(String[] args) throws Exception {
     // 2368
-    try (DatagramSocket datagramSocket = new DatagramSocket(8308)) {
+    try (DatagramSocket datagramSocket = new DatagramSocket(8308)) { // TODO magic const
       byte[] bytes = new byte[10000];
       byte[] nmea = new byte[72];
       ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
@@ -41,20 +41,20 @@ class ConnectionAttempt {
         // 512 for GPS
         /** information on p.21 of HDL-32E user's manual */
         byteBuffer.position(14); // first 14 not used
-        gyro1 = ShortUtils._24bit(byteBuffer.getShort());
-        int temp1 = ShortUtils._24bit(byteBuffer.getShort());
-        int acce1X = ShortUtils._24bit(byteBuffer.getShort());
-        int acce1Y = ShortUtils._24bit(byteBuffer.getShort());
+        gyro1 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int temp1 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce1X = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce1Y = ShortUtils.signed24bit(byteBuffer.getShort());
         // ---
-        gyro2 = ShortUtils._24bit(byteBuffer.getShort());
-        int temp2 = ShortUtils._24bit(byteBuffer.getShort());
-        int acce2X = ShortUtils._24bit(byteBuffer.getShort());
-        int acce2Y = ShortUtils._24bit(byteBuffer.getShort());
+        gyro2 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int temp2 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce2X = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce2Y = ShortUtils.signed24bit(byteBuffer.getShort());
         // ---
-        gyro3 = ShortUtils._24bit(byteBuffer.getShort());
-        int temp3 = ShortUtils._24bit(byteBuffer.getShort());
-        int acce3X = ShortUtils._24bit(byteBuffer.getShort());
-        int acce3Y = ShortUtils._24bit(byteBuffer.getShort());
+        gyro3 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int temp3 = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce3X = ShortUtils.signed24bit(byteBuffer.getShort());
+        int acce3Y = ShortUtils.signed24bit(byteBuffer.getShort());
         Tensor gyroRaw = Tensors.vector(gyro1, gyro2, gyro3);
         Tensor tempRaw = Tensors.vector(temp1, temp2, temp3);
         Tensor acceXRaw = Tensors.vector(acce1X, acce2X, acce3X);

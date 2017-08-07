@@ -70,15 +70,4 @@ public class PcapParse {
     if (!check)
       throw new RuntimeException();
   }
-
-  public static void main(String[] args) throws Exception {
-    PacketConsumer packetConsumer = new PacketConsumer() {
-      @Override
-      public void parse(byte[] packet_data, int length) {
-      }
-    };
-    String dir = "/media/datahaki/media/ethz/sensors/velodyne01/usb/Velodyne/HDL-32E Sample Data";
-    String name = "HDL32-V2_Tunnel.pcap";
-    new PcapParse(new File(dir, name), packetConsumer);
-  }
 }

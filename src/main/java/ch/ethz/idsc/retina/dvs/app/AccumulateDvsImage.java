@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DvsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DvsDavisEvent;
-import ch.ethz.idsc.retina.util.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class AccumulateDvsImage implements DvsDavisEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;

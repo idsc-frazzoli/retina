@@ -10,7 +10,6 @@ import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.dvs.supply.ImagesDvsEventSupplier;
 import ch.ethz.idsc.retina.dvs.supply.ProceduralDvsEventSupplier;
 import ch.ethz.idsc.retina.dvs.supply.synth.Waves;
-import ch.ethz.idsc.retina.util.io.ImageDimensions;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
 /** visualization of events in data sets as animated gif's */

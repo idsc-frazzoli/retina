@@ -9,7 +9,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.DimensionInterface;
 import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.TimedImageListener;
-import ch.ethz.idsc.retina.util.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class DavisImageProvider implements ApsDavisEventListener {
   private final int width;
