@@ -10,11 +10,12 @@ import java.util.Set;
 
 /** playback urg recordings */
 public class FileUrg04lxProvider implements Urg04lxProvider {
-  private static final int PERIOD_MILLIS = 100;
+  private static final int PERIOD_MILLIS = 10; // TODO probably should ...
   // ---
   private final Set<Urg04lxListener> listeners = new LinkedHashSet<>();
   private final BufferedReader bufferedReader;
   private boolean isLaunched = false;
+  private boolean isTerminated = false;
 
   public FileUrg04lxProvider(File file) throws IOException {
     bufferedReader = new BufferedReader(new FileReader(file));
@@ -38,10 +39,12 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
               listeners.forEach(urgListener -> urgListener.urg(line));
             Thread.sleep(PERIOD_MILLIS);
           }
+          Thread.sleep(100);
           bufferedReader.close();
         } catch (Exception exception) {
           exception.printStackTrace();
         }
+        isTerminated = true;
       }
     };
     Thread thread = new Thread(runnable);
@@ -51,5 +54,9 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
   @Override
   public void stop() {
     isLaunched = false;
+  }
+
+  public boolean isTerminated() {
+    return isTerminated;
   }
 }

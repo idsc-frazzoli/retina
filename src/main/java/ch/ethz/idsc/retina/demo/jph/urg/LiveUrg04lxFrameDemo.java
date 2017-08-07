@@ -1,7 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
-
-import java.io.File;
+package ch.ethz.idsc.retina.demo.jph.urg;
 
 import ch.ethz.idsc.retina.dev.urg04lx.FileUrg04lxProvider;
 import ch.ethz.idsc.retina.dev.urg04lx.LiveUrg04lxProvider;
@@ -12,12 +10,11 @@ enum LiveUrg04lxFrameDemo {
   ;
   public static void main(String[] args) throws Exception {
     Urg04lxProvider urg04lxProvider = LiveUrg04lxProvider.INSTANCE;
-    urg04lxProvider = new FileUrg04lxProvider( //
-        new File("/media/datahaki/media/ethz/urg04lx", "urg20170727T133009.txt"));
+    urg04lxProvider = new FileUrg04lxProvider(Urg.LOG03.file);
     // ---
-    Urg04lxFrame urgFrame = new Urg04lxFrame(urg04lxProvider);
+    Urg04lxFrame urg04lxFrame = new Urg04lxFrame(urg04lxProvider);
     // LiveUrgProvider.INSTANCE.addListener(UrgRecorder.createDefault());
-    urg04lxProvider.addListener(urgFrame);
+    urg04lxProvider.addListener(urg04lxFrame);
     urg04lxProvider.start();
   }
 }

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
 import ch.ethz.idsc.retina.util.io.PacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
