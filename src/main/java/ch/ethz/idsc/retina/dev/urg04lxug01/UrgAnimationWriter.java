@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.urg04lx;
+package ch.ethz.idsc.retina.dev.urg04lxug01;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

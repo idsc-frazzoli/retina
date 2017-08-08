@@ -1,16 +1,17 @@
 // code by jph
 package ch.ethz.idsc.retina.util;
 
+import java.util.Objects;
+
 /** slows down playback to realtime
  * 
  * 1) micro seconds
  * 2) int encoding */
 public class IntRealtimeSleeper {
   private static final long MICRO = 1000000;
-  private static final int NOT_INITIALIZED = -1;
   // ---
   private final double speed;
-  private int ref = NOT_INITIALIZED;
+  private Integer ref = null;
   private long tic;
   private long sleepTotal = 0;
 
@@ -44,7 +45,7 @@ public class IntRealtimeSleeper {
   }
 
   private boolean notInitialized() {
-    return ref == NOT_INITIALIZED;
+    return Objects.isNull(ref);
   }
 
   /** @return total sleep in nano seconds required to slow down to real time */

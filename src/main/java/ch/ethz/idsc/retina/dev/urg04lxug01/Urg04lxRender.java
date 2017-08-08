@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.urg04lx;
+package ch.ethz.idsc.retina.dev.urg04lxug01;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -114,9 +114,13 @@ public class Urg04lxRender {
             .mapToObj(points::get));
         // ---
         graphics.setColor(new Color(0, 128 + 64, 128, 255));
-        graphics.draw(TensorGraphics.polygonToPath( //
-            RamerDouglasPeucker.of(contour, RAMERDOUGLASPEUKER), this::toPoint));
-        // ---
+        try {
+          Tensor path = RamerDouglasPeucker.of(contour, RAMERDOUGLASPEUKER);
+          graphics.draw(TensorGraphics.polygonToPath(path, this::toPoint));
+        } catch (Exception exception) {
+          System.err.println("nono");
+          // ---
+        }
         contour.append(Array.zeros(2));
         graphics.setColor(new Color(128, 128 + 64, 128, 64));
         graphics.fill(TensorGraphics.polygonToPath(contour, this::toPoint));

@@ -6,7 +6,7 @@ Java 8 code to prototype algorithms for sensor interfacing and processing
 
 # LIDAR
 
-## HOKUYO URG 04LX
+## HOKUYO URG-04LX-UG01
 
 ![urg04lx](https://user-images.githubusercontent.com/4012178/29029959-c052da4c-7b89-11e7-8b01-1b4efc3593c0.gif)
 

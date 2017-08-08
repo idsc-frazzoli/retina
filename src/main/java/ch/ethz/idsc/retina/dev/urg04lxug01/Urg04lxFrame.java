@@ -1,12 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.urg04lx;
+package ch.ethz.idsc.retina.dev.urg04lxug01;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -29,25 +27,19 @@ import javax.swing.WindowConstants;
  * typically the distances up to 5[m] can be measured correctly. */
 public class Urg04lxFrame implements Urg04lxListener {
   public final JFrame jFrame = new JFrame();
-  private Urg04lxRender urg04lxRender = new Urg04lxRender();
+  private final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
-  private JComponent jComponent = new JComponent() {
+  private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
       urg04lxRender.render((Graphics2D) g, getSize());
     }
   };
 
-  public Urg04lxFrame(Urg04lxProvider urgProvider) {
+  public Urg04lxFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 600, 600);
     jFrame.setContentPane(jComponent);
-    jFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent windowEvent) {
-        urgProvider.stop();
-      }
-    });
     jComponent.addMouseWheelListener(new MouseWheelListener() {
       @Override
       public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
