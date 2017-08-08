@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.util.RealtimeSleeper;
+import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
 /** sends content of log file in realtime via DatagramSocket */
 public class AedatFileSocket implements DavisEventProvider {
@@ -34,7 +34,7 @@ public class AedatFileSocket implements DavisEventProvider {
   @Override
   public void start() {
     try {
-      RealtimeSleeper realtimeSleeper = new RealtimeSleeper(speed);
+      IntRealtimeSleeper realtimeSleeper = new IntRealtimeSleeper(speed);
       datagramSocket = new DatagramSocket();
       DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length, InetAddress.getLocalHost(), PORT);
       long total = 0;

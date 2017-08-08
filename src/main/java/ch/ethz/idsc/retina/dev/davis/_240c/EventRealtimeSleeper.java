@@ -2,16 +2,16 @@
 package ch.ethz.idsc.retina.dev.davis._240c;
 
 import ch.ethz.idsc.retina.dev.davis.ImuDavisEventListener;
-import ch.ethz.idsc.retina.util.RealtimeSleeper;
+import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
 /** slows down playback to realtime
  * 
  * is disguised as imu listener to be invoked as seldom as possible */
 public class EventRealtimeSleeper implements ImuDavisEventListener {
-  private final RealtimeSleeper realtimeSleeper;
+  private final IntRealtimeSleeper realtimeSleeper;
 
   public EventRealtimeSleeper(double speed) {
-    realtimeSleeper = new RealtimeSleeper(speed);
+    realtimeSleeper = new IntRealtimeSleeper(speed);
   }
 
   @Override

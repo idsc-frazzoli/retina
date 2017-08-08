@@ -18,5 +18,8 @@ public interface FiringPacketInterface {
    * @param byteBuffer */
   void process(int firing, int rotational, ByteBuffer byteBuffer);
 
+  /** @param usec gps timestamp in milliseconds
+   * @param type
+   * @param value */
   void status(int usec, byte type, byte value);
 }

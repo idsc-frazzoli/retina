@@ -3,14 +3,14 @@ package ch.ethz.idsc.retina.util;
 
 /** slows down playback to realtime
  * 
- * 1) nano seconds
- * 2) long encoding */
-public class RealtimeSleeper {
+ * 1) micro seconds
+ * 2) int encoding */
+public class IntRealtimeSleeper {
   private static final long MICRO = 1000000;
   private static final int NOT_INITIALIZED = -1;
   // ---
   private final double speed;
-  private long ref = NOT_INITIALIZED;
+  private int ref = NOT_INITIALIZED;
   private long tic;
   private long sleepTotal = 0;
 
@@ -18,17 +18,17 @@ public class RealtimeSleeper {
    * speed of 0.5 will slow down playback to half realtime speed
    * 
    * @param speed */
-  public RealtimeSleeper(double speed) {
+  public IntRealtimeSleeper(double speed) {
     this.speed = speed;
   }
 
-  /** @param time in nano seconds */
-  public void now(long time) {
+  /** @param time in micro seconds */
+  public void now(int time) {
     if (notInitialized()) { // initialized?
       ref = time;
       tic = System.nanoTime();
     } else {
-      long act = time - ref;
+      long act = (time - ref) * 1000L;
       long toc = System.nanoTime() - tic;
       final long sleep = Math.round(act - toc * speed);
       if (0 < sleep)

@@ -3,13 +3,13 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.RealtimeSleeper;
+import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
 public class RealtimeFiringPacket implements FiringPacketInterface {
-  private final RealtimeSleeper rs;
+  private final IntRealtimeSleeper rs;
 
   public RealtimeFiringPacket(double speed) {
-    rs = new RealtimeSleeper(speed);
+    rs = new IntRealtimeSleeper(speed);
   }
 
   @Override
