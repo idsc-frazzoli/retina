@@ -11,6 +11,8 @@ import ch.ethz.idsc.retina.dev.davis.ApsDavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
+/** for davis240c the raw image data arrives in the order
+ * (0,0), (0,1), ..., (0,179), (1,0), (1,1), ..., (239,179) */
 public class DavisImageProvider implements ApsDavisEventListener {
   private final int width;
   private final int height;
@@ -21,6 +23,7 @@ public class DavisImageProvider implements ApsDavisEventListener {
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int[] time;
+  private final ApsTracker apsTracker = new ApsTracker();
 
   public DavisImageProvider(DimensionInterface dimensionInterface) {
     width = dimensionInterface.getWidth();
@@ -40,14 +43,17 @@ public class DavisImageProvider implements ApsDavisEventListener {
 
   @Override
   public void aps(ApsDavisEvent apsDavisEvent) {
-    int intensity = apsDavisEvent.grayscale();
+    apsTracker.aps(apsDavisEvent, height);
+    byte intensity = apsDavisEvent.grayscale();
     int index = apsDavisEvent.x + (apsDavisEvent.y * width); // TODO should precompute?
-    bytes[index] = (byte) intensity;
+    bytes[index] = intensity;
     if (apsDavisEvent.y == lastY) {
       time[apsDavisEvent.x] = apsDavisEvent.time;
-      if (apsDavisEvent.x == lastX)
+      if (apsDavisEvent.x == lastX) {
+        boolean isComplete = apsTracker.statusAndReset();
         // System.out.println(DeleteDuplicates.of(Differences.of(Tensors.vectorInt(time))));
-        timedImageListeners.forEach(listener -> listener.image(time, bufferedImage));
+        timedImageListeners.forEach(listener -> listener.image(time, bufferedImage, isComplete));
+      }
     }
   }
 }

@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.davis._240c;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ class Davis240cDecoder implements DavisDecoder {
     final int time = byteBuffer.getInt(); // microseconds
     final int x = (data >> 12) & 0x3ff; // length 10 bit
     final int y = (data >> 22) & 0x1ff; // length 09 bit
-    boolean isDvs = (data & 0x80000000) == 0;
+    final boolean isDvs = (data & 0x80000000) == 0;
     if (isDvs) {
       final int i = (data >> 11) & 1; // length 1 bit
       DvsDavisEvent dvsDavisEvent = encodeDvs(time, x, y, i);
@@ -68,5 +69,10 @@ class Davis240cDecoder implements DavisDecoder {
       apsDavisEventListeners.add((ApsDavisEventListener) davisEventListener);
     if (davisEventListener instanceof ImuDavisEventListener)
       imuDavisEventListeners.add((ImuDavisEventListener) davisEventListener);
+  }
+
+  @Override
+  public ByteOrder getByteOrder() {
+    return ByteOrder.BIG_ENDIAN;
   }
 }

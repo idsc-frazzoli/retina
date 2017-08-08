@@ -30,7 +30,7 @@ public class PngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage) {
+  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (exportControl.isActive()) {
       try {
         final String string = String.format("images/frame_%08d.png", count);

@@ -13,7 +13,7 @@ public class FirstImageTriggerExportControl implements ExportControl, ColumnTime
   private int time_offset = 0;
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage) {
+  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (1 == frames) {
       GlobalAssert.that(!isActive());
       time_offset = time[0];
