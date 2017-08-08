@@ -8,10 +8,11 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** immutable */
+// TODO long term, merge with DvsDavisEvent
 public class DvsEvent implements Comparable<DvsEvent>, Serializable {
   /** @param time
    * @return */
-  public static DvsEvent timeMark(int time) {
+  public static DvsEvent timeMark(long time) {
     return new DvsEvent(time, -1, -1, -1);
   }
 

@@ -12,5 +12,6 @@ public interface DvsEventSupplier {
   DvsEvent next() throws Exception;
 
   /** @return resolution */
+  @Deprecated
   Dimension dimension();
 }

@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis;
 
-public interface DavisEvent {
+import java.io.Serializable;
+
+public interface DavisEvent extends Serializable {
   int time();
 }
