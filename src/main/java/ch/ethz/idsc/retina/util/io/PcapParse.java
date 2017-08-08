@@ -12,9 +12,12 @@ import java.nio.ByteOrder;
 /** information taken from
  * "Hani's blog: A look at the pcap file format" */
 public class PcapParse {
+  private static final int HEADER_ID = 0xa1b2c3d4;
+
   public static void of(File file, PacketConsumer packetConsumer) throws Exception {
     new PcapParse(file, packetConsumer);
   }
+  // ---
 
   private final InputStream inputStream;
   private final byte[] packet_header = new byte[16];
@@ -57,7 +60,7 @@ public class PcapParse {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     int fid = byteBuffer.getInt();
     // System.out.println(String.format("%08x",fid));
-    _assert(fid == 0xa1b2c3d4);
+    _assert(fid == HEADER_ID);
     // version
     int ver_major = byteBuffer.getShort();
     _assert(ver_major == 2);
