@@ -30,16 +30,16 @@ public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
-  private final Hdl32ePositionListener hdl32ePositionListener;
+  private final Hdl32eFiringListener hdl32eFiringListener;
 
-  public Hdl32eFiringCollector(Hdl32ePositionListener hdl32ePositionListener) {
+  public Hdl32eFiringCollector(Hdl32eFiringListener hdl32eFiringListener) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
       IR[laser] = (float) Math.cos(theta);
       IZ[laser] = (float) Math.sin(theta);
     }
-    this.hdl32ePositionListener = hdl32ePositionListener;
+    this.hdl32eFiringListener = hdl32eFiringListener;
   }
 
   int max = 0;
@@ -75,7 +75,7 @@ public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
         position_data[++position_index] = py;
         position_data[++position_index] = pz;
         if (position_index + 1 == position_data.length) {
-          hdl32ePositionListener.digest(position_data, position_index + 1);
+          hdl32eFiringListener.digest(position_data, position_index + 1);
           position_index = -1;
         }
       } // else too close => ignore

@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
@@ -34,21 +35,24 @@ public class Hdl32ePacketConsumer implements PcapPacketConsumer {
   public void parse(byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    if (length == LASER_SIZE1) {
-      byteBuffer.position(_42); // skip 42 bytes
-      hdl32eFiringPacketConsumer.lasers(byteBuffer);
-    } else //
-    if (length == LASER_SIZE2) {
-      hdl32eFiringPacketConsumer.lasers(byteBuffer);
-    } else //
-    if (length == GPS_SIZE1) {
-      byteBuffer.position(_42); // skip 42 bytes
-      hdl32ePositioningPacketConsumer.positioning(byteBuffer);
-    } else //
-    if (length == GPS_SIZE2) {
-      hdl32ePositioningPacketConsumer.positioning(byteBuffer);
-    } else {
-      System.err.println("unhandled packet");
-    }
+    if (Objects.nonNull(hdl32eFiringPacketConsumer))
+      if (length == LASER_SIZE1) {
+        byteBuffer.position(_42); // skip 42 bytes
+        hdl32eFiringPacketConsumer.lasers(byteBuffer);
+      } else //
+      if (length == LASER_SIZE2) {
+        hdl32eFiringPacketConsumer.lasers(byteBuffer);
+      }
+    if (Objects.nonNull(hdl32ePositioningPacketConsumer))
+      if (length == GPS_SIZE1) {
+        byteBuffer.position(_42); // skip 42 bytes
+        hdl32ePositioningPacketConsumer.positioning(byteBuffer);
+      } else //
+      if (length == GPS_SIZE2) {
+        hdl32ePositioningPacketConsumer.positioning(byteBuffer);
+      }
+    // else {
+    // System.err.println("unhandled packet");
+    // }
   }
 }

@@ -1,12 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositionListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
@@ -16,7 +16,7 @@ enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")
-    Hdl32ePositionListener hdl32ePositionListener = new Hdl32ePositionListener() {
+    Hdl32eFiringListener hdl32ePositionListener = new Hdl32eFiringListener() {
       @Override
       public void digest(float[] position_data, int length) {
         // System.out.println("here");
