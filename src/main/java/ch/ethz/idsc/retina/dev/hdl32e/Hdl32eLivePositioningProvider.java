@@ -6,16 +6,15 @@ import java.net.DatagramSocket;
 
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
-public class LiveHdl32eFiringProvider implements Hdl32eFiringProvider {
-  public static final int PORT = 2368;
+public class Hdl32eLivePositioningProvider implements Hdl32eLiveProvider {
+  public static final int PORT = 8308;
   // ---
-  private final Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer;
-
-  public LiveHdl32eFiringProvider(Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer) {
-    this.hdl32eFiringPacketConsumer = hdl32eFiringPacketConsumer;
-  }
-
+  private final Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer;
   private boolean isLaunched;
+
+  public Hdl32eLivePositioningProvider(Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer) {
+    this.hdl32ePositioningPacketConsumer = hdl32ePositioningPacketConsumer;
+  }
 
   @Override
   public void start() {
@@ -27,7 +26,7 @@ public class LiveHdl32eFiringProvider implements Hdl32eFiringProvider {
         try (DatagramSocket datagramSocket = new DatagramSocket(PORT)) {
           byte[] packet_data = new byte[4096];
           DatagramPacket datagramPacket = new DatagramPacket(packet_data, packet_data.length);
-          PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, null);
+          PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(null, hdl32ePositioningPacketConsumer);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket);
             packetConsumer.parse(packet_data, datagramPacket.getLength());
