@@ -7,11 +7,11 @@ import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dvs.app.DavisEventViewer;
 import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
 
-enum DavisViewerDemo {
+enum AedatViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     DavisEventProvider davisEventProvider = new AedatFileSupplier(Aedat.LOG_04.file, davisDecoder);
-    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, -1.0);
+    DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, 1.0);
   }
 }
