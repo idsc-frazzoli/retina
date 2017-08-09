@@ -6,6 +6,7 @@ import java.io.IOException;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.dev.davis._240c.ApsStatusWarning;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.EventRealtimeSleeper;
@@ -19,6 +20,7 @@ public enum DavisEventViewer {
     DefaultDavisDisplay davisImageDisplay = new DefaultDavisDisplay();
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay.apsRenderer);
+    davisImageProvider.addListener(new ApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
     // ---
     AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 50000);

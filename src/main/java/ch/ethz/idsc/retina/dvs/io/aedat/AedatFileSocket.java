@@ -11,6 +11,7 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
 /** sends content of log file in realtime via DatagramSocket */
@@ -47,7 +48,9 @@ public class AedatFileSocket implements DavisEventProvider {
           --available;
         }
         // TODO implement filter option to drop APS reset reads
-        realtimeSleeper.now(byteBuffer.getInt(4)); // TODO not generic time extraction
+        int now = byteBuffer.getInt(4); // TODO not generic time extraction
+        GlobalAssert.that(byteBuffer.position() == 0);
+        realtimeSleeper.now(now);
         datagramPacket.setLength(available);
         datagramSocket.send(datagramPacket);
         total += available;

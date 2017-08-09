@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-import ch.ethz.idsc.retina.util.gui.Hue;
+import ch.ethz.idsc.retina.util.gui.HueColor;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -39,8 +39,8 @@ public class HuePanorama implements Hdl32ePanorama {
    * @param distance 256 == 0.512[m] */
   @Override
   public void setReading(int x, int y_abs, int distance, byte _intensity) {
-    distances[y_abs + x] = new Hue(distance * DISTANCE_WRAP, 1, 1, 1).color.getRGB();
-    intensity[y_abs + x] = new Hue(_intensity * INTENSITY_WRAP + 0.5, 1, 1, 1).color.getRGB();
+    distances[y_abs + x] = HueColor.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();
+    intensity[y_abs + x] = HueColor.of(_intensity * INTENSITY_WRAP + 0.5, 1, 1, 1).getRGB();
   }
 
   @Override

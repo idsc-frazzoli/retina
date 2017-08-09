@@ -9,4 +9,11 @@ public class ShortUtilsTest extends TestCase {
     assertEquals(ShortUtils.signed24bit((short) 0x7ff), 0x7ff);
     assertEquals(ShortUtils.signed24bit((short) 0xf7ff), 0x7ff);
   }
+
+  public void testDatasheet() {
+    assertEquals(ShortUtils.signed24bit((short) 0x0fde), -34);
+    assertEquals(ShortUtils.signed24bit((short) 0x1055), 85);
+    assertEquals(ShortUtils.signed24bit((short) 0x231b), 795);
+    assertEquals(ShortUtils.signed24bit((short) 0x3009), 9);
+  }
 }

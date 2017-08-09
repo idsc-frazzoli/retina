@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.urg04lx;
+package ch.ethz.idsc.retina.dev.urg04lxug01;
 
 public interface Urg04lxProvider {
   static final String URG_PREFIX = "URG{";

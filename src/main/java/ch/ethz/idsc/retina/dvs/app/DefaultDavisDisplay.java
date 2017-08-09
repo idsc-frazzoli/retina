@@ -58,7 +58,7 @@ public class DefaultDavisDisplay implements Runnable {
 
   public final ColumnTimedImageListener apsRenderer = new ColumnTimedImageListener() {
     @Override
-    public void image(int[] time, BufferedImage bufferedImage) {
+    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
       setBufferedImage(bufferedImage);
       jComponent.repaint();
     }

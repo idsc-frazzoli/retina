@@ -3,9 +3,8 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.tensor.Tensors;
-
-public class Hdl32ePositionCollector implements FiringPacketInterface {
+// TODO rename
+public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
   public static final int POINT_NUMEL = 10000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -33,7 +32,7 @@ public class Hdl32ePositionCollector implements FiringPacketInterface {
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
   private final Hdl32ePositionListener hdl32ePositionListener;
 
-  public Hdl32ePositionCollector(Hdl32ePositionListener hdl32ePositionListener) {
+  public Hdl32eFiringCollector(Hdl32ePositionListener hdl32ePositionListener) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
@@ -61,7 +60,7 @@ public class Hdl32ePositionCollector implements FiringPacketInterface {
         // System.out.println(distance);
       }
       @SuppressWarnings("unused")
-      int intensity = byteBuffer.get(); // TODO
+      int intensity = byteBuffer.get(); // TODO intensity is not forwarded at the moment
       // quote from the user's manual, p.8:
       // "the minimum return distance for the HDL-32E is approximately 1 meter.
       // ignore returns closer than this"
@@ -85,10 +84,6 @@ public class Hdl32ePositionCollector implements FiringPacketInterface {
 
   @Override
   public void status(int usec, byte type, byte value) {
-    // TODO Auto-generated method stub
-  }
-
-  public static void main(String[] args) {
-    System.out.println(Tensors.vectorInt(ORDERING));
+    // ---
   }
 }

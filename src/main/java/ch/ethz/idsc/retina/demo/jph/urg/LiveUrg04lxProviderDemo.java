@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.urg;
 
-import ch.ethz.idsc.retina.dev.urg04lx.LiveUrg04lxProvider;
+import ch.ethz.idsc.retina.dev.urg04lxug01.LiveUrg04lxProvider;
 
 /** for the demo, the sensor has to be connected to the pc */
 enum LiveUrg04lxProviderDemo {

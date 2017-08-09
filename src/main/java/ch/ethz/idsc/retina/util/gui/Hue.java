@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.util.gui;
 
 import java.awt.Color;
 
+@Deprecated
 public class Hue {
   public static final double red = 0;
   public static final double green = 1 / 3.;
@@ -28,57 +29,7 @@ public class Hue {
     this.s = s;
     this.v = v;
     this.a = a;
-    final double r;
-    final double g;
-    final double b;
-    // ---
-    if (s == 0) {
-      r = g = b = v;
-    } else {
-      h %= 1;
-      if (h < 0)
-        h += 1;
-      h *= 6;
-      int i = (int) h;
-      double f = h - i;
-      double aa = v * (1 - s);
-      double bb = v * (1 - s * f);
-      double cc = v * (1 - s * (1 - f));
-      switch (i) {
-      case 0:
-        r = v;
-        g = cc;
-        b = aa;
-        break;
-      case 1:
-        r = bb;
-        g = v;
-        b = aa;
-        break;
-      case 2:
-        r = aa;
-        g = v;
-        b = cc;
-        break;
-      case 3:
-        r = aa;
-        g = bb;
-        b = v;
-        break;
-      case 4:
-        r = cc;
-        g = aa;
-        b = v;
-        break;
-      case 5:
-      default:
-        r = v;
-        g = aa;
-        b = bb;
-        break;
-      }
-    }
-    color = new Color((float) r, (float) g, (float) b, (float) a);
+    color = HueColor.of(h, s, v, a);
   }
 
   private static final double fraction1o255 = 1. / 255.;

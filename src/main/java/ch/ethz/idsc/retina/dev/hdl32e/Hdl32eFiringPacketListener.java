@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public interface FiringPacketInterface {
+public interface Hdl32eFiringPacketListener {
   static final int LASERS = 32;
 
-  /** implementations have to advance byteBuffer by 96 bytes:
+  /** implementations can read 96 bytes from byteBuffer:
    * 
    * for (int laser = 0; laser < LASERS; ++laser) {
    * int distance = byteBuffer.getShort() & 0xffff;
@@ -18,7 +18,9 @@ public interface FiringPacketInterface {
    * @param byteBuffer */
   void process(int firing, int rotational, ByteBuffer byteBuffer);
 
-  /** @param usec gps timestamp in milliseconds
+  /** function is invoked with parameters that refer to previous sequence of laser data
+   * 
+   * @param usec gps timestamp in microseconds
    * @param type
    * @param value */
   void status(int usec, byte type, byte value);

@@ -18,8 +18,9 @@ public class ApsDavisEvent implements DavisEvent {
     this.adc = adc;
   }
 
-  public int grayscale() {
-    return adc >> 2;
+  /** @return 8 most significant bits of adc reading */
+  public byte grayscale() {
+    return (byte) (adc >> 2);
   }
 
   @Override
