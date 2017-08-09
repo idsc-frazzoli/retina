@@ -44,8 +44,12 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
   public void stop() {
     try {
       bufferedReader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException exception) {
+      exception.printStackTrace();
     }
+  }
+
+  public static void main(String[] args) {
+    System.out.println(System.currentTimeMillis());
   }
 }

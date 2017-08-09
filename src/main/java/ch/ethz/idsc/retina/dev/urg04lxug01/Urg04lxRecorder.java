@@ -14,13 +14,14 @@ import ch.ethz.idsc.retina.util.io.UserHome;
 public class Urg04lxRecorder implements Urg04lxListener, AutoCloseable {
   public static Urg04lxListener createDefault() throws IOException {
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    return new Urg04lxRecorder(UserHome.file("urg" + dateFormat.format(new Date()) + ".txt"));
+    return new Urg04lxRecorder(UserHome.file("urh" + dateFormat.format(new Date()) + ".txt"));
   }
 
   private final BufferedWriter bufferedWriter;
 
   public Urg04lxRecorder(File file) throws IOException {
     bufferedWriter = new BufferedWriter(new FileWriter(file));
+    System.out.println("recording to " + file + " " + file.exists());
   }
 
   @Override
