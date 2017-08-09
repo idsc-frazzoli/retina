@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.tensor.RealScalar;
 
-public class Hdl32ePanoramaCollector implements FiringPacketInterface {
+public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
   /** constructor multiplies index values with image width */
   private final int[] index = new int[] { //
       31, 15, //

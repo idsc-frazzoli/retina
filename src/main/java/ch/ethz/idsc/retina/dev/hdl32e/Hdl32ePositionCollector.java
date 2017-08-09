@@ -3,9 +3,8 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.tensor.Tensors;
-
-public class Hdl32ePositionCollector implements FiringPacketInterface {
+// TODO rename
+public class Hdl32ePositionCollector implements Hdl32eFiringPacketListener {
   public static final int POINT_NUMEL = 10000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -86,9 +85,5 @@ public class Hdl32ePositionCollector implements FiringPacketInterface {
   @Override
   public void status(int usec, byte type, byte value) {
     // TODO Auto-generated method stub
-  }
-
-  public static void main(String[] args) {
-    System.out.println(Tensors.vectorInt(ORDERING));
   }
 }

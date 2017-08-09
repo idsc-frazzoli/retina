@@ -8,9 +8,9 @@ import java.util.List;
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
 public final class Hdl32eFiringPacketConsumer {
-  private final List<FiringPacketInterface> firingPacketInterfaces = new LinkedList<>();
+  private final List<Hdl32eFiringPacketListener> firingPacketInterfaces = new LinkedList<>();
 
-  public void addListener(FiringPacketInterface firingPacketInterface) {
+  public void addListener(Hdl32eFiringPacketListener firingPacketInterface) {
     firingPacketInterfaces.add(firingPacketInterface);
   }
 

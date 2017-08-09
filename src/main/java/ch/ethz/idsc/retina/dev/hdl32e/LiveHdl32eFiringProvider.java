@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-import ch.ethz.idsc.retina.util.io.PacketConsumer;
+import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
 public class LiveHdl32eFiringProvider implements Hdl32eFiringProvider {
   public static final int PORT = 2368;
@@ -27,7 +27,7 @@ public class LiveHdl32eFiringProvider implements Hdl32eFiringProvider {
         try (DatagramSocket datagramSocket = new DatagramSocket(PORT)) {
           byte[] packet_data = new byte[4096];
           DatagramPacket datagramPacket = new DatagramPacket(packet_data, packet_data.length);
-          PacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer);
+          PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, null);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket);
             packetConsumer.parse(packet_data, datagramPacket.getLength());

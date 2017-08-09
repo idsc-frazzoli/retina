@@ -7,7 +7,8 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePanoramaListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositionListener;
-import ch.ethz.idsc.retina.util.io.PacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
+import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
 /** collects array of 3d positions */
@@ -36,7 +37,8 @@ enum Hdl32ePacketConsumerDemo {
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
     Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
     hdl32eFiringPacketConsumer.addListener(hdl32ePanoramaCollector);
-    PacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer);
+    Hdl32ePositioningPacketConsumer hdl32eGpsPacketConsumer = new Hdl32ePositioningPacketConsumer();
+    PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, hdl32eGpsPacketConsumer);
     PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }
