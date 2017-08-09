@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveProvider;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveFiringProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveProvider;
 
 enum LiveHdl32eImage {
   ;

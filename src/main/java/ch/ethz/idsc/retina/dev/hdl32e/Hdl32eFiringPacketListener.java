@@ -18,7 +18,9 @@ public interface Hdl32eFiringPacketListener {
    * @param byteBuffer */
   void process(int firing, int rotational, ByteBuffer byteBuffer);
 
-  /** @param usec gps timestamp in microseconds
+  /** function is invoked with parameters that refer to previous sequence of laser data
+   * 
+   * @param usec gps timestamp in microseconds
    * @param type
    * @param value */
   void status(int usec, byte type, byte value);

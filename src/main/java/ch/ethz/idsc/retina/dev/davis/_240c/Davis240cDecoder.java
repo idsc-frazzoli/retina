@@ -54,7 +54,6 @@ class Davis240cDecoder implements DavisDecoder {
       if (read == 0) { // reset read
       } else //
       if (read == 3) { // imu
-        // TODO
         ImuDavisEvent imuDavisEvent = new ImuDavisEvent(time, data);
         imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
       }

@@ -42,7 +42,7 @@ public class Urg04lxRender {
   private final Tensor angle = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, INDEX_LAST).unmodifiable();
   private final Tensor direction;
   private final Tensor gridlines = Tensors.empty();
-  /** range contains distances in [mm] for 682 angles TODO confirm units */
+  /** range contains distances in [mm] for 682 angles */
   private Tensor range = Tensors.empty();
   private Scalar METER_TO_PIXEL; // [m] to [pixel]
   private int ofs_x;

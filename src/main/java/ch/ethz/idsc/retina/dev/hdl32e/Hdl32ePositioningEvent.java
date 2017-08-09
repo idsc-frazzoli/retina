@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e;
 
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -26,14 +25,10 @@ public class Hdl32ePositioningEvent {
   }
 
   public void print() {
-    Tensor gyroRaw = Tensors.vectorDouble(gyro);
-    Tensor tempRaw = Tensors.vectorDouble(temp);
-    Tensor acceXRaw = Tensors.vectorDouble(accx);
-    Tensor acceYRaw = Tensors.vectorDouble(accy);
-    System.out.println(gyroRaw.map(Round._2));
-    System.out.println(tempRaw.map(Round._3));
-    System.out.println(acceXRaw.map(Round._2));
-    System.out.println(acceYRaw.map(Round._2));
+    System.out.println(Tensors.vectorDouble(gyro).map(Round._2));
+    System.out.println(Tensors.vectorDouble(temp).map(Round._2));
+    System.out.println(Tensors.vectorDouble(accx).map(Round._2));
+    System.out.println(Tensors.vectorDouble(accy).map(Round._2));
     System.out.println(nmea);
     System.out.println(gps_usec);
   }
