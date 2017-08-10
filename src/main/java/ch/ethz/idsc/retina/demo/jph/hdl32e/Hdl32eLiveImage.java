@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveFiringProvider;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveProvider;
 
-enum LiveHdl32eImage {
+enum Hdl32eLiveImage {
   ;
   public static void main(String[] args) throws Exception {
     Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = PanoramaUtils.createDisplay();

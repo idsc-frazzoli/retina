@@ -15,7 +15,7 @@ public class ApsStatusWarning implements ColumnTimedImageListener {
     if (isComplete) {
       ++complete;
       // TODO
-      System.err.println(String.format("complete: %d / %d", complete, total));
+      // System.err.println(String.format("complete: %d / %d", complete, total));
     } else {
       // ---
     }

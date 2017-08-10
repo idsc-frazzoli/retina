@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.RealtimeFiringPacket;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-enum PcapHdl32ePanoramaDemo {
+enum Hdl32ePcapPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();

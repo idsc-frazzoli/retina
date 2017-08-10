@@ -24,31 +24,26 @@ class Davis240cDecoder implements DavisDecoder {
   private final List<ImuDavisEventListener> imuDavisEventListeners = new LinkedList<>();
 
   @Override
-  public DvsDavisEvent encodeDvs(int time, int x, int y, int i) {
-    return new DvsDavisEvent(time, LAST_X - x, LAST_Y - y, i);
-  }
-
-  @Override
-  public ApsDavisEvent encodeAps(int time, int x, int y, int adc) {
-    return new ApsDavisEvent(time, x, LAST_Y - y, ADC_MAX - adc);
-  }
-
-  @Override
   public void read(ByteBuffer byteBuffer) {
-    final int data = byteBuffer.getInt(); // also referred to "address"
-    final int time = byteBuffer.getInt(); // microseconds
+    int data = byteBuffer.getInt(); // also referred to "address"
+    int time = byteBuffer.getInt(); // microseconds
+    read(data, time);
+  }
+
+  @Override
+  public void read(int data, int time) {
     final int x = (data >> 12) & 0x3ff; // length 10 bit
     final int y = (data >> 22) & 0x1ff; // length 09 bit
     final boolean isDvs = (data & 0x80000000) == 0;
     if (isDvs) {
       final int i = (data >> 11) & 1; // length 1 bit
-      DvsDavisEvent dvsDavisEvent = encodeDvs(time, x, y, i);
+      DvsDavisEvent dvsDavisEvent = new DvsDavisEvent(time, LAST_X - x, LAST_Y - y, i);
       dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
     } else {
       final int read = (data >> 10) & 0x3;
       if (read == 1) { // signal
         final int adc = data & 0x3ff;
-        ApsDavisEvent apsDavisEvent = encodeAps(time, x, y, adc);
+        ApsDavisEvent apsDavisEvent = new ApsDavisEvent(time, x, LAST_Y - y, ADC_MAX - adc);
         apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
       } else //
       if (read == 0) { // reset read

@@ -6,15 +6,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.ethz.idsc.retina.util.io.UserHome;
 
-public enum LiveUrg04lxProvider implements Urg04lxProvider {
+public enum Urg04lxLiveProvider implements Urg04lxProvider {
   INSTANCE;
   // ---
-  private final Set<Urg04lxListener> listeners = new LinkedHashSet<>();
+  public static final String EXECUTABLE = "urg_timedprovider";
+  // ---
+  private final List<Urg04lxListener> listeners = new LinkedList<>();
   private OutputStream outputStream;
 
   @Override
@@ -26,7 +28,7 @@ public enum LiveUrg04lxProvider implements Urg04lxProvider {
   public void start() {
     final File dir = UserHome.file("Public");
     ProcessBuilder processBuilder = //
-        new ProcessBuilder(new File(dir, "urg_provider").toString());
+        new ProcessBuilder(new File(dir, EXECUTABLE).toString());
     processBuilder.directory(dir);
     try {
       Process process = processBuilder.start();

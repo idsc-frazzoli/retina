@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
-import ch.ethz.idsc.retina.util.gui.HueColor;
+import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
 import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.retina.util.math.Constant;
@@ -76,7 +76,7 @@ enum ComponentDemo {
               Tensor hull = ConvexHull.of(ph);
               ++index;
               double h = palette.Get(index).number().doubleValue();
-              graphics.setColor(HueColor.of(h, 1, 1, .5));
+              graphics.setColor(Hue.of(h, 1, 1, .5));
               graphics.fill(ShapeHelper.path(hull));
             }
           gsw.append(bufferedImage);

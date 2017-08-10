@@ -21,14 +21,18 @@ public class DefaultDavisDisplay implements Runnable {
   private final JFrame jFrame = new JFrame();
   private boolean isLaunched = true;
   long repaint_tic = System.nanoTime();
+  private boolean isComplete;
   public final JComponent jComponent = new JComponent() {
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics graphics) {
       repaint_tic = System.nanoTime();
-      if (Objects.nonNull(bufferedImage))
-        g.drawImage(bufferedImage, 0, 0, jLabel);
+      if (Objects.nonNull(bufferedImage)) {
+        graphics.drawImage(bufferedImage, 0, 0, jLabel);
+        if (!isComplete)
+          graphics.drawString("incomplete!", 0, 200);
+      }
       if (Objects.nonNull(dvsImage))
-        g.drawImage(dvsImage, 240, 0, jLabel);
+        graphics.drawImage(dvsImage, 240, 0, jLabel);
     }
   };
 
@@ -59,7 +63,9 @@ public class DefaultDavisDisplay implements Runnable {
   public final ColumnTimedImageListener apsRenderer = new ColumnTimedImageListener() {
     @Override
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      setBufferedImage(bufferedImage);
+      if (!isComplete)
+        System.err.println("image incomplete");
+      setBufferedImage(bufferedImage, isComplete);
       jComponent.repaint();
     }
   };
@@ -81,7 +87,8 @@ public class DefaultDavisDisplay implements Runnable {
     this.dvsImage = bufferedImage;
   }
 
-  void setBufferedImage(BufferedImage bufferedImage) {
+  private void setBufferedImage(BufferedImage bufferedImage, boolean isComplete) {
     this.bufferedImage = bufferedImage;
+    this.isComplete = isComplete;
   }
 }

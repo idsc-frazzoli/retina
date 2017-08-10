@@ -138,7 +138,9 @@ public class Urg04lxRender {
   }
 
   public void setLine(String line) {
-    range = Tensors.fromString(line.substring(3)).multiply(MILLIMETER_TO_METER); // <- removes "URG" prefix from line
+    // System.out.println(line);
+    int index = line.indexOf('{');
+    range = Tensors.fromString(line.substring(index)).multiply(MILLIMETER_TO_METER); // <- removes "URG" prefix from line
   }
 
   public void setZoom(int zoom) {

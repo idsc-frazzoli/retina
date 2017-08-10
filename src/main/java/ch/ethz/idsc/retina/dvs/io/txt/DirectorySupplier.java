@@ -24,6 +24,7 @@ public class DirectorySupplier implements DavisEventProvider {
   private long next_image = -2;
   private long last_event = -1;
 
+  @SuppressWarnings("unused")
   @Override
   public void start() {
     try {

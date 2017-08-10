@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.util.io.UserHome;
 enum Urg04lxAnimationDemo {
   ;
   public static void main(String[] args) throws Exception {
-    FileUrg04lxProvider urg04lxProvider = new FileUrg04lxProvider(Urg.LOG03.file);
+    FileUrg04lxProvider urg04lxProvider = new FileUrg04lxProvider(Urg.LOG05.file);
     // ---
     // Urg04lxFrame urg04lxFrame = new Urg04lxFrame(urg04lxProvider);
     UrgAnimationWriter urgAnimationWriter = //

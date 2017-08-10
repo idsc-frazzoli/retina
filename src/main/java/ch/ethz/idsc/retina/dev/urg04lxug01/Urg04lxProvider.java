@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.dev.urg04lxug01;
 
 public interface Urg04lxProvider {
-  static final String URG_PREFIX = "URG{";
+  static final String URG_PREFIX = "UR";
 
   /** @param urgListener */
   void addListener(Urg04lxListener urgListener);
