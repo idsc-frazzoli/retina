@@ -1,12 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.davis;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
-import ch.ethz.idsc.retina.dvs.io.aps.ApsBlockCollector;
-import ch.ethz.idsc.retina.dvs.io.aps.ApsColumnCompiler;
+import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.davis.io.aps.ApsBlockCollector;
+import ch.ethz.idsc.retina.davis.io.aps.ApsColumnCompiler;
 
 enum AedatImageFormatterDemo {
   ;

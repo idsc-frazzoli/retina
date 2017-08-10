@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.az;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dvs.app.AedatLogConverter;
+import ch.ethz.idsc.retina.davis.io.aedat.AedatLogConverter;
 
 enum AedatLogConverterDemo {
   ;

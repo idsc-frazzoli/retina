@@ -3,11 +3,11 @@ package ch.ethz.idsc.retina.demo.jph.davis;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dvs.app.DavisEventViewer;
-import ch.ethz.idsc.retina.dvs.io.aedat.AedatClientProvider;
+import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.DavisEventViewer;
+import ch.ethz.idsc.retina.davis.io.aedat.AedatClientProvider;
 
 enum ClientDisplay {
   ;
