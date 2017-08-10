@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.io.aps;
+package ch.ethz.idsc.retina.dvs.io.dvs;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,35 +9,31 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 /** sends content of log file in realtime via DatagramSocket */
-public class ApsStandaloneServer implements ApsBlockListener, AutoCloseable {
-  // ---
-  public static final int COLUMNS = 8;
-  public static final int PORT = 14321;
-  public final int length;
+public class DvsStandaloneServer implements DvsBlockListener, AutoCloseable {
+  public static final int PORT = 14320;
   // ---
   private DatagramSocket datagramSocket = null;
   private DatagramPacket datagramPacket = null;
 
-  public ApsStandaloneServer(ApsBlockCollector apsBlockCollector) {
-    apsBlockCollector.setListener(this);
-    ByteBuffer byteBuffer = apsBlockCollector.byteBuffer();
+  public DvsStandaloneServer(DvsBlockCollector dvsBlockCollector) {
+    dvsBlockCollector.setListener(this);
+    ByteBuffer byteBuffer = dvsBlockCollector.byteBuffer();
     byte[] data = byteBuffer.array();
-    length = data.length;
     try {
       datagramSocket = new DatagramSocket();
       // datagramSocket.setTimeToLive(1); // same LAN
       // datagramSocket.setLoopbackMode(false);
       // datagramSocket.setTrafficClass(0x10 + 0x08); // low delay
       datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), PORT);
-      System.out.println("CONNECTION APS OK");
+      System.out.println("CONNECTION DVS OK");
     } catch (Exception exception) {
       exception.printStackTrace();
     }
   }
 
   @Override
-  public void apsBlockReady() {
-    datagramPacket.setLength(length); // TODO try if once is sufficient
+  public void dvsBlockReady(int length) {
+    datagramPacket.setLength(length);
     try {
       datagramSocket.send(datagramPacket);
     } catch (IOException exception) {

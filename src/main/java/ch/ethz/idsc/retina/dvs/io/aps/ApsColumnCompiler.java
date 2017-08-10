@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.ApsDavisEvent;
  * aps 1151435 ( 195, 0) 612
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
-// TODO code is not sufficiently generic
+// TODO code is not sufficiently generic due to the magic const
 public class ApsColumnCompiler implements ApsDavisEventListener {
   private final byte[] data;
   private final ByteBuffer byteBuffer;

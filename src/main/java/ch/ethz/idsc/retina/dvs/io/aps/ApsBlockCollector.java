@@ -7,17 +7,17 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** compiles aps columns and forwards them to a given {@link ApsColumnListener} */
-public class ApsColumnCollector implements ApsColumnListener {
+public class ApsBlockCollector implements ApsColumnListener {
   private final int columns;
   private final ByteBuffer byteBuffer;
-  private ApsBlockListener blockApsListener;
+  private ApsBlockListener apsBlockListener;
 
   /** for an image of width == 240
    * column is in {2, 3, 4, 5, 6, 8, 10, ... }
    * FactorInteger[240] == {{2, 4}, {3, 1}, {5, 1}}
    * 
    * @param columns has to divide image width */
-  public ApsColumnCollector(int columns) {
+  public ApsBlockCollector(int columns) {
     this.columns = columns;
     byte[] data = new byte[2 + columns * 184];
     byteBuffer = ByteBuffer.wrap(data);
@@ -25,8 +25,8 @@ public class ApsColumnCollector implements ApsColumnListener {
     GlobalAssert.that(240 % columns == 0);
   }
 
-  public void setListener(ApsBlockListener blockApsListener) {
-    this.blockApsListener = blockApsListener;
+  public void setListener(ApsBlockListener apsBlockListener) {
+    this.apsBlockListener = apsBlockListener;
   }
 
   public ByteBuffer byteBuffer() {
@@ -41,9 +41,7 @@ public class ApsColumnCollector implements ApsColumnListener {
       byteBuffer.putShort((short) x);
     }
     byteBuffer.put(columnData);
-    if (xmod == columns - 1) {
-      // GlobalAssert.that(byteBuffer.remaining() == 0);
-      blockApsListener.block();
-    }
+    if (xmod == columns - 1)
+      apsBlockListener.apsBlockReady();
   }
 }

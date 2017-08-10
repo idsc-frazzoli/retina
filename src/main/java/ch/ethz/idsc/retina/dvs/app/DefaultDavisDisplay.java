@@ -73,7 +73,7 @@ public class DefaultDavisDisplay implements Runnable {
     @Override
     public void image(int time, BufferedImage bufferedImage) {
       setDvsImage(bufferedImage);
-      jComponent.repaint();
+      // jComponent.repaint();
     }
   };
 
