@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.dat;
+package ch.ethz.idsc.retina.dvs.io.dat;
 
 import java.io.File;
 import java.io.FileOutputStream;

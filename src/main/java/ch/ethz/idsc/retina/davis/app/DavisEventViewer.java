@@ -14,18 +14,20 @@ import ch.ethz.idsc.retina.davis._240c.EventRealtimeSleeper;
 public enum DavisEventViewer {
   ;
   // TODO arguments not final ...
+  // TODO code somewhat redundant to DavisDatagramClientDemo
   public static void of(DavisEventProvider davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
+    // handle dvs
+    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 50000);
+    davisDecoder.addListener(accumulateDvsImage);
+    accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
+    // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay.apsRenderer);
     davisImageProvider.addListener(new ApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
-    // ---
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 50000);
-    davisDecoder.addListener(accumulateDvsImage);
-    accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---
     if (0 < speed)
       davisDecoder.addListener(new EventRealtimeSleeper(speed));

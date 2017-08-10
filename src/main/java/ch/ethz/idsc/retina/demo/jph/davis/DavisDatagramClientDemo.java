@@ -14,16 +14,16 @@ enum DavisDatagramClientDemo {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
     // subscribe to dvs events:
-    DvsDatagramClient dvsStandaloneClient = new DvsDatagramClient(davisDecoder);
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 50000);
-    dvsStandaloneClient.addListener(accumulateDvsImage);
+    DvsDatagramClient dvsDatagramClient = new DvsDatagramClient(davisDecoder);
+    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
+    dvsDatagramClient.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // subscribe to aps events:
     ApsDatagramClient apsDatagramClient = new ApsDatagramClient(davisDecoder);
     apsDatagramClient.addListener(davisImageDisplay.apsRenderer);
     // ---
     new Thread(() -> {
-      dvsStandaloneClient.start();
+      dvsDatagramClient.start();
     }).start();
     apsDatagramClient.start(); // TODO at the moment this is a blocking call !?
     System.out.println("here");
