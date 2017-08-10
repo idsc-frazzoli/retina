@@ -15,7 +15,7 @@ public enum ApsImageSocket {
   private ApsImageSocket() {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     ApsColumnCollector columnApsCollector = new ApsColumnCollector(8);
-    ApsStandaloneSocket standaloneAedatSocket = new ApsStandaloneSocket(columnApsCollector);
+    ApsStandaloneServer standaloneAedatSocket = new ApsStandaloneServer(columnApsCollector);
     ApsColumnCompiler aedatImageFormatter = new ApsColumnCompiler(columnApsCollector);
     davisDecoder.addListener(aedatImageFormatter);
   }

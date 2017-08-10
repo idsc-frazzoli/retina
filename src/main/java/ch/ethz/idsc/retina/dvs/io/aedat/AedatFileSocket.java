@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
 /** sends content of log file in realtime via DatagramSocket */
 public class AedatFileSocket implements DavisEventProvider {
-  public static final int PORT = 14321;
+  public static final int PORT = 14320; // TODO manage ports centrally to not conflict
   public static final int BUFFER_SIZE = 8 * 512; // -> 8 * 512 == 4096 packet size seems to cause the max sleep time
   // ---
   private final byte[] bytes = new byte[BUFFER_SIZE];

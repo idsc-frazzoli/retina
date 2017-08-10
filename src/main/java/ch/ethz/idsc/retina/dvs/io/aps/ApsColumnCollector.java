@@ -42,7 +42,7 @@ public class ApsColumnCollector implements ApsColumnListener {
     }
     byteBuffer.put(columnData);
     if (xmod == columns - 1) {
-      GlobalAssert.that(byteBuffer.remaining() == 0);
+      // GlobalAssert.that(byteBuffer.remaining() == 0);
       blockApsListener.block();
     }
   }
