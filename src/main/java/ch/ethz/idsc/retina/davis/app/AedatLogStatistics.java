@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.aedat;
+package ch.ethz.idsc.retina.davis.app;
 
 import java.io.File;
 import java.util.Arrays;
@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImuProvider;
+import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
 
 /** functionality is available as a command-line tool */
 public enum AedatLogStatistics {

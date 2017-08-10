@@ -23,7 +23,7 @@ public enum DavisEventViewer {
     davisImageProvider.addListener(new ApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
     // ---
-    AccumulateDvsImage accumulateDvsImage = new AccumulateDvsImage(davisDevice, 50000);
+    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 50000);
     davisDecoder.addListener(accumulateDvsImage);
     accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
     // ---

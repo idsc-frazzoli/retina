@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.davis.TimedImageListener;
 import ch.ethz.idsc.retina.davis._240c.DvsDavisEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-public class AccumulateDvsImage implements DvsDavisEventListener {
+public class AccumulatedEventsImage implements DvsDavisEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   private final int width;
@@ -27,7 +27,7 @@ public class AccumulateDvsImage implements DvsDavisEventListener {
   // private Tensor image = Array.zeros(WIDTH, HEIGHT);
 
   /** @param interval [us] */
-  public AccumulateDvsImage(DavisDevice davisDevice, int interval) {
+  public AccumulatedEventsImage(DavisDevice davisDevice, int interval) {
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
