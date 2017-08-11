@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 
 import ch.ethz.idsc.retina.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class DirectorySupplier implements DavisEventProvider {
@@ -45,7 +45,7 @@ public class DirectorySupplier implements DavisEventProvider {
           System.out.println("exit");
           break;
         }
-        DvsDavisEvent dde = asdf(line);
+        DavisDvsEvent dde = asdf(line);
         if (events % 10000 == 0)
           System.out.println(dde);
         ++events;
@@ -56,13 +56,13 @@ public class DirectorySupplier implements DavisEventProvider {
     }
   }
 
-  private static DvsDavisEvent asdf(String line) {
+  private static DavisDvsEvent asdf(String line) {
     StringTokenizer stringTokenizer = new StringTokenizer(line);
     int time = (int) (Double.parseDouble(stringTokenizer.nextToken()) * 1e6);
     int x = Integer.parseInt(stringTokenizer.nextToken()); // x
     int y = Integer.parseInt(stringTokenizer.nextToken()); // y
     int i = Integer.parseInt(stringTokenizer.nextToken()); // i
-    return new DvsDavisEvent(time, x, y, i);
+    return new DavisDvsEvent(time, x, y, i);
   }
 
   @Override

@@ -1,13 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.davis._240c;
 
-import ch.ethz.idsc.retina.davis.ApsDavisEventListener;
+import ch.ethz.idsc.retina.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis.DavisEvent;
-import ch.ethz.idsc.retina.davis.DvsDavisEventListener;
-import ch.ethz.idsc.retina.davis.ImuDavisEventListener;
+import ch.ethz.idsc.retina.davis.DavisImuEventListener;
 
 public class DavisEventStatistics implements //
-    DvsDavisEventListener, ApsDavisEventListener, ImuDavisEventListener {
+    DavisDvsEventListener, DavisApsEventListener, DavisImuEventListener {
   private static final double SEC_USEC = 1e-6;
   private static final double SEC_NSEC = 1e-9;
   // ---
@@ -22,13 +22,13 @@ public class DavisEventStatistics implements //
   private long jump = 0;
 
   @Override
-  public void dvs(DvsDavisEvent dvsDavisEvent) {
+  public void dvs(DavisDvsEvent dvsDavisEvent) {
     _trackTime(dvsDavisEvent);
     ++dvs;
   }
 
   @Override
-  public void aps(ApsDavisEvent apsDavisEvent) {
+  public void aps(DavisApsEvent apsDavisEvent) {
     _trackTime(apsDavisEvent);
     ++aps;
     if (apsDavisEvent.x == 0 && apsDavisEvent.y == 0)
@@ -36,7 +36,7 @@ public class DavisEventStatistics implements //
   }
 
   @Override
-  public void imu(ImuDavisEvent imuDavisEvent) {
+  public void imu(DavisImuEvent imuDavisEvent) {
     _trackTime(imuDavisEvent);
     ++imu;
     // System.out.println(String.format("%08x", imuDavisEvent.data));

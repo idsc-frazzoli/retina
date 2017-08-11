@@ -9,12 +9,12 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.davis.DavisDevice;
-import ch.ethz.idsc.retina.davis.DvsDavisEventListener;
+import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis.TimedImageListener;
-import ch.ethz.idsc.retina.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-public class AccumulatedEventsImage implements DvsDavisEventListener {
+public class AccumulatedEventsImage implements DavisDvsEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   private final int width;
@@ -43,7 +43,7 @@ public class AccumulatedEventsImage implements DvsDavisEventListener {
   }
 
   @Override
-  public void dvs(DvsDavisEvent dvsDavisEvent) {
+  public void dvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     if (last + interval < dvsDavisEvent.time) {

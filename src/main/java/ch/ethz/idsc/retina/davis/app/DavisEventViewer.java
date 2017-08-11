@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.davis._240c.ApsStatusWarning;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.davis._240c.EventRealtimeSleeper;
+import ch.ethz.idsc.retina.davis._240c.DavisRealtimeSleeper;
 
 public enum DavisEventViewer {
   ;
@@ -28,9 +28,10 @@ public enum DavisEventViewer {
     davisImageProvider.addListener(davisImageDisplay.apsRenderer);
     davisImageProvider.addListener(new ApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
+    // handle imu
     // ---
     if (0 < speed)
-      davisDecoder.addListener(new EventRealtimeSleeper(speed));
+      davisDecoder.addListener(new DavisRealtimeSleeper(speed));
     // ---
     davisEventProvider.start();
     davisEventProvider.stop();

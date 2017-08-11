@@ -8,20 +8,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.davis.DavisDecoder;
-import ch.ethz.idsc.retina.davis.DvsDavisEventListener;
-import ch.ethz.idsc.retina.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 // TODO lot's of magic const in this class
 public class DvsDatagramClient {
   private static final int MAX_PACKET_SIZE = 4096; // TODO ensure that no server sends larger packets
   private final DavisDecoder davisDecoder;
-  private final List<DvsDavisEventListener> listeners = new LinkedList<>();
+  private final List<DavisDvsEventListener> listeners = new LinkedList<>();
 
   public DvsDatagramClient(DavisDecoder davisDecoder) {
     this.davisDecoder = davisDecoder;
   }
 
-  public void addListener(DvsDavisEventListener dvsDavisEventListener) {
+  public void addListener(DavisDvsEventListener dvsDavisEventListener) {
     listeners.add(dvsDavisEventListener);
   }
 
@@ -49,7 +49,7 @@ public class DvsDatagramClient {
           final int x = byteBuffer.get() & 0xff;
           final int y = byteBuffer.get() & 0xff;
           final int i = misc & 1;
-          DvsDavisEvent dvsDavisEvent = new DvsDavisEvent(time, x, y, i);
+          DavisDvsEvent dvsDavisEvent = new DavisDvsEvent(time, x, y, i);
           listeners.forEach(listener -> listener.dvs(dvsDavisEvent));
         }
         pacid_prev = pacid;

@@ -5,12 +5,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import ch.ethz.idsc.retina.davis.DvsDavisEventListener;
-import ch.ethz.idsc.retina.davis._240c.DvsDavisEvent;
+import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.davis.io.ExportControl;
 
 /** lists the events in a text file */
-public class EventsTextWriter implements DvsDavisEventListener, AutoCloseable {
+public class EventsTextWriter implements DavisDvsEventListener, AutoCloseable {
   private final BufferedWriter bufferedWriter;
   private final ExportControl exportControl;
 
@@ -20,7 +20,7 @@ public class EventsTextWriter implements DvsDavisEventListener, AutoCloseable {
   }
 
   @Override
-  public void dvs(DvsDavisEvent dvsDavisEvent) {
+  public void dvs(DavisDvsEvent dvsDavisEvent) {
     if (exportControl.isActive())
       try {
         int mapped = exportControl.mapTime(dvsDavisEvent.time);

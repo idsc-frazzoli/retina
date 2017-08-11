@@ -5,7 +5,7 @@ package ch.ethz.idsc.retina.davis._240c;
   private int lastIndex = -1;
   private boolean complete = true;
 
-  public void aps(ApsDavisEvent apsDavisEvent, int height) {
+  public void aps(DavisApsEvent apsDavisEvent, int height) {
     int refIndex = apsDavisEvent.y + apsDavisEvent.x * height;
     complete &= lastIndex + 1 == refIndex;
     lastIndex = refIndex;

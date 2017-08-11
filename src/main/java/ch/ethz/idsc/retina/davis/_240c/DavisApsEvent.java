@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.davis._240c;
 
 import ch.ethz.idsc.retina.davis.DavisEvent;
 
-public class ApsDavisEvent implements DavisEvent {
+public class DavisApsEvent implements DavisEvent {
   public final int time;
   public final int x;
   public final int y;
@@ -11,7 +11,7 @@ public class ApsDavisEvent implements DavisEvent {
    * where 0 encodes dark, and 1023 brightest */
   private final int adc;
 
-  public ApsDavisEvent(int time, int x, int y, int adc) {
+  public DavisApsEvent(int time, int x, int y, int adc) {
     this.time = time;
     this.x = x;
     this.y = y;

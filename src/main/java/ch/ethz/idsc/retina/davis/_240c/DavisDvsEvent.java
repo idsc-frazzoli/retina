@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.davis._240c;
 
 import ch.ethz.idsc.retina.davis.DavisEvent;
 
-public class DvsDavisEvent implements DavisEvent {
+public class DavisDvsEvent implements DavisEvent {
   /** time in [us] */
   public final int time;
   /** left-right pixel location, x=0 corresponds to far left */
@@ -15,7 +15,7 @@ public class DvsDavisEvent implements DavisEvent {
    * 1 represents a transition from dark to bright (jAERViewer shows 1 in green) */
   public final int i;
 
-  public DvsDavisEvent(int time, int x, int y, int i) {
+  public DavisDvsEvent(int time, int x, int y, int i) {
     this.time = time;
     this.x = x;
     this.y = y;

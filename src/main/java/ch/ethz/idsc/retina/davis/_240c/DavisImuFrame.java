@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.davis._240c;
 
-public class ImuRecord {
+public class DavisImuFrame {
   // TODO units!!!
   public final float accelX;
   public final float accelY;
@@ -11,7 +11,9 @@ public class ImuRecord {
   public final float gyroY;
   public final float gyroZ;
 
-  public ImuRecord(float accelX, float accelY, float accelZ, float temperature, //
+  public DavisImuFrame( //
+      float accelX, float accelY, float accelZ, //
+      float temperature, //
       float gyroX, float gyroY, float gyroZ) {
     this.accelX = accelX;
     this.accelY = accelY;
