@@ -10,7 +10,9 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** encodes an event in 4 bytes (instead of 8 bytes as in aedat) */
 public class DvsBlockCollector implements DavisDvsEventListener {
-  private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[34096]);
+  public static final int MAX_EVENTS = 300;
+  public static final int MAX_LENGTH = 2 + 2 + 4 + MAX_EVENTS * 4;
+  private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_LENGTH]);
   private DvsBlockListener dvsBlockListener;
 
   public DvsBlockCollector() {
@@ -27,7 +29,7 @@ public class DvsBlockCollector implements DavisDvsEventListener {
       resetTo(dvsDavisEvent);
     int exact = dvsDavisEvent.time - offset;
     short diff = (short) (exact & 0x7fff);
-    if (exact != diff || 300 <= numel) { // TODO also use timeout criterion?
+    if (exact != diff || MAX_EVENTS <= numel) { // TODO also use timeout criterion?
       sendAndReset();
       resetTo(dvsDavisEvent);
       exact = dvsDavisEvent.time - offset;
@@ -57,7 +59,7 @@ public class DvsBlockCollector implements DavisDvsEventListener {
     byteBuffer.position(0);
     byteBuffer.putShort((short) numel); // update numel
     byteBuffer.position(0);
-    dvsBlockListener.dvsBlockReady(length);
+    dvsBlockListener.dvsBlockReady(length, byteBuffer);
     numel = 0;
     ++pacid;
   }

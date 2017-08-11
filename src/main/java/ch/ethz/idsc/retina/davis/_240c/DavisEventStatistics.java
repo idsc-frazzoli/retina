@@ -5,6 +5,8 @@ import ch.ethz.idsc.retina.davis.DavisApsEventListener;
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis.DavisEvent;
 import ch.ethz.idsc.retina.davis.DavisImuEventListener;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 public class DavisEventStatistics implements //
     DavisDvsEventListener, DavisApsEventListener, DavisImuEventListener {
@@ -50,6 +52,10 @@ public class DavisEventStatistics implements //
     if (time < time_last)
       ++jump;
     time_last = time;
+  }
+
+  public Tensor eventCount() {
+    return Tensors.vector(dvs, aps, imu);
   }
 
   public void print() {

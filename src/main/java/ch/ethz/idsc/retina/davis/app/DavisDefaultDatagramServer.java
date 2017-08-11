@@ -3,11 +3,13 @@ package ch.ethz.idsc.retina.davis.app;
 
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis._240c.DavisImuFrameCollector;
 import ch.ethz.idsc.retina.davis.io.aps.ApsBlockCollector;
 import ch.ethz.idsc.retina.davis.io.aps.ApsColumnCompiler;
 import ch.ethz.idsc.retina.davis.io.aps.ApsDatagramServer;
 import ch.ethz.idsc.retina.davis.io.dvs.DvsBlockCollector;
 import ch.ethz.idsc.retina.davis.io.dvs.DvsDatagramServer;
+import ch.ethz.idsc.retina.davis.io.imu.ImuDatagramServer;
 
 /** collection of functionality that filters raw data for aps content
  * the aps content is encoded in timed column blocks and sent via {@link ApsDatagramServer}
@@ -21,14 +23,19 @@ public enum DavisDefaultDatagramServer {
   private DavisDefaultDatagramServer() {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     // ---
+    DvsBlockCollector dvsBlockCollector = new DvsBlockCollector();
+    DvsDatagramServer dvsStandaloneServer = new DvsDatagramServer(dvsBlockCollector);
+    davisDecoder.addListener(dvsBlockCollector);
+    // ---
     ApsBlockCollector apsBlockCollector = new ApsBlockCollector(8);
     ApsDatagramServer apsStandaloneServer = new ApsDatagramServer(apsBlockCollector);
     ApsColumnCompiler apsColumnCompiler = new ApsColumnCompiler(apsBlockCollector);
     davisDecoder.addListener(apsColumnCompiler);
     // ---
-    DvsBlockCollector dvsBlockCollector = new DvsBlockCollector();
-    DvsDatagramServer dvsStandaloneServer = new DvsDatagramServer(dvsBlockCollector);
-    davisDecoder.addListener(dvsBlockCollector);
+    ImuDatagramServer imuDatagramServer = new ImuDatagramServer();
+    DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
+    davisImuFrameCollector.addListener(imuDatagramServer);
+    davisDecoder.addListener(davisImuFrameCollector);
   }
 
   public void append(int length, int[] data, int[] time) {

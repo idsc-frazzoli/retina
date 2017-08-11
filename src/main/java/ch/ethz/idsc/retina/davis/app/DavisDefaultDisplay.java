@@ -18,8 +18,11 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
 import ch.ethz.idsc.retina.davis.TimedImageListener;
+import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
 import ch.ethz.idsc.retina.util.Stopwatch;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO redraw thread is independent of sync signal of images...!
@@ -31,6 +34,9 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
   private final JFrame jFrame = new JFrame();
   private final Stopwatch stopwatch = new Stopwatch();
   private boolean isComplete;
+  private DavisEventStatistics davisEventStatistics;
+  private Tensor eventCount = Array.zeros(3);
+  private Tensor displayEventCount = Array.zeros(3);
   public final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -52,6 +58,11 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
         graphics.drawString( //
             imuFrame.gyro().map(Round._2).toString(), 260, 190);
       }
+      // if (Objects.nonNull(davisEventStatistics))
+      {
+        graphics.setColor(Color.GRAY);
+        graphics.drawString(displayEventCount.toString(), 0, 200);
+      }
       // ---
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 190);
@@ -70,13 +81,27 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
       }
     });
     jFrame.setVisible(true);
-    TimerTask timerTask = new TimerTask() {
-      @Override
-      public void run() {
-        jComponent.repaint();
-      }
-    };
-    timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
+    {
+      TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+          jComponent.repaint();
+        }
+      };
+      timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
+    }
+    {
+      TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+          if (Objects.nonNull(davisEventStatistics)) {
+            displayEventCount = davisEventStatistics.eventCount().subtract(eventCount);
+            eventCount = davisEventStatistics.eventCount();
+          }
+        }
+      };
+      timer.schedule(timerTask, 100, 1000); // 33 ms -> 30 Hz
+    }
   }
 
   public void close() {
@@ -101,5 +126,9 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
       System.err.println("image incomplete");
     this.apsImage = bufferedImage;
     this.isComplete = isComplete;
+  }
+
+  public void setStatistics(DavisEventStatistics davisEventStatistics) {
+    this.davisEventStatistics = davisEventStatistics;
   }
 }

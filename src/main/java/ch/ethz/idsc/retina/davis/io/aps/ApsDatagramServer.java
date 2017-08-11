@@ -8,11 +8,12 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.retina.davis.io.DavisDatagram;
+
 /** sends content of log file in realtime via DatagramSocket */
 public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
+  public static final int COLUMNS = 8; // TODO
   // ---
-  public static final int COLUMNS = 8;
-  public static final int PORT = 14321;
   public final int length;
   // ---
   private DatagramSocket datagramSocket = null;
@@ -28,7 +29,7 @@ public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
       // datagramSocket.setTimeToLive(1); // same LAN
       // datagramSocket.setLoopbackMode(false);
       // datagramSocket.setTrafficClass(0x10 + 0x08); // low delay
-      datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), PORT);
+      datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), DavisDatagram.APS_PORT);
       datagramPacket.setLength(length);
     } catch (Exception exception) {
       exception.printStackTrace();
@@ -36,7 +37,7 @@ public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
   }
 
   @Override
-  public void apsBlockReady() {
+  public void apsBlockReady(int length, ByteBuffer byteBuffer) {
     try {
       datagramSocket.send(datagramPacket);
     } catch (IOException exception) {

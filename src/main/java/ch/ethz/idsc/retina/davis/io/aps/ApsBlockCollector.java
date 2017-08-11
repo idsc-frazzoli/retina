@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 /** compiles aps columns and forwards them to a given {@link ApsColumnListener} */
 public class ApsBlockCollector implements ApsColumnListener {
   private final int columns;
+  private final int length;
   private final ByteBuffer byteBuffer;
   private ApsBlockListener apsBlockListener;
 
@@ -19,7 +20,8 @@ public class ApsBlockCollector implements ApsColumnListener {
    * @param columns has to divide image width */
   public ApsBlockCollector(int columns) {
     this.columns = columns;
-    byte[] data = new byte[2 + columns * 184];
+    length = 2 + columns * 184;
+    byte[] data = new byte[length];
     byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
     GlobalAssert.that(240 % columns == 0);
@@ -40,8 +42,12 @@ public class ApsBlockCollector implements ApsColumnListener {
       byteBuffer.position(0);
       byteBuffer.putShort((short) x);
     }
+    // TODO insert check
+    // if raw data stream contains gaps, the next put operation is not safe
     byteBuffer.put(columnData);
-    if (xmod == columns - 1)
-      apsBlockListener.apsBlockReady();
+    if (xmod == columns - 1) {
+      byteBuffer.position(0);
+      apsBlockListener.apsBlockReady(length, byteBuffer);
+    }
   }
 }
