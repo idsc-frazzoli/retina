@@ -19,7 +19,8 @@ public class ImuDatagramClient {
     listeners.add(davisImuFrameListener);
   }
 
-  private int pacid_prev = -1;
+  /** id of expected next packet */
+  private short pacid_next = 0;
 
   public void start() {
     try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.IMU_PORT)) {
@@ -31,15 +32,15 @@ public class ImuDatagramClient {
         datagramSocket.receive(datagramPacket);
         byteBuffer.position(0);
         int time = byteBuffer.getInt();
-        int pacid = byteBuffer.getShort(); // running id of packet
-        if (pacid_prev + 1 != pacid)
-          System.err.println("imu packet missing");
+        short pacid = byteBuffer.getShort(); // running id of packet
+        if (pacid_next != pacid)
+          System.err.println("imu packet missing " + pacid_next);
         float[] value = new float[7];
         for (int index = 0; index < 7; ++index)
           value[index] = byteBuffer.getFloat();
         DavisImuFrame davisImuFrame = new DavisImuFrame(time, value);
         listeners.forEach(listener -> listener.imuFrame(davisImuFrame));
-        pacid_prev = pacid;
+        pacid_next = ++pacid;
       }
     } catch (Exception exception) {
       exception.printStackTrace();

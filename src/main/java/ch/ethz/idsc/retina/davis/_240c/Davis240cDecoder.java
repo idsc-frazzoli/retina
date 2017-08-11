@@ -21,7 +21,10 @@ class Davis240cDecoder implements DavisDecoder {
   private static final int HEIGHT = 180;
   private static final int LAST_X = WIDTH - 1;
   private static final int LAST_Y = HEIGHT - 1;
-  private static final int ADC_MAX = 1023;
+  private static final int ADC_MAX = 0x03ff;
+  private static final int SIGNAL_READ = 0x0400;
+  private static final int RESET_READ = 0;
+  private static final int IMU = 0x0c00;
   // ---
   private final List<DavisDvsEventListener> dvsDavisEventListeners = new LinkedList<>();
   private final List<DavisApsEventListener> apsDavisEventListeners = new LinkedList<>();
@@ -44,15 +47,15 @@ class Davis240cDecoder implements DavisDecoder {
       DavisDvsEvent dvsDavisEvent = new DavisDvsEvent(time, LAST_X - x, LAST_Y - y, i);
       dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
     } else {
-      final int read = (data >> 10) & 0x3;
-      if (read == 1) { // signal
-        final int adc = data & 0x3ff;
+      final int read = data & 0x0c00;
+      if (read == SIGNAL_READ) { // signal
+        final int adc = data & ADC_MAX;
         DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, LAST_Y - y, ADC_MAX - adc);
         apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
       } else //
-      if (read == 0) { // reset read
+      if (read == RESET_READ) { // reset read
       } else //
-      if (read == 3) { // imu
+      if (read == IMU) { // imu
         DavisImuEvent imuDavisEvent = new DavisImuEvent(time, data);
         imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
       }
@@ -72,5 +75,9 @@ class Davis240cDecoder implements DavisDecoder {
   @Override
   public ByteOrder getByteOrder() {
     return ByteOrder.BIG_ENDIAN;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(String.format("%08x", ADC_MAX));
   }
 }

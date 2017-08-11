@@ -20,10 +20,11 @@ public enum DavisEventViewer {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
+    davisImageDisplay.setStatistics(davisEventStatistics);
     // handle dvs
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 50000);
-    davisDecoder.addListener(accumulateDvsImage);
-    accumulateDvsImage.addListener(davisImageDisplay);
+    AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);
+    davisDecoder.addListener(accumulatedEventsImage);
+    accumulatedEventsImage.addListener(davisImageDisplay);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay);

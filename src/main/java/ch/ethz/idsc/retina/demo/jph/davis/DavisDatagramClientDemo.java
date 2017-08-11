@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.demo.jph.davis;
 
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
 import ch.ethz.idsc.retina.davis.io.aps.ApsDatagramClient;
@@ -14,11 +15,14 @@ enum DavisDatagramClientDemo {
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
+    DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
+    davisDecoder.addListener(davisEventStatistics);
+    davisImageDisplay.setStatistics(davisEventStatistics);
     // subscribe to dvs events:
-    DvsDatagramClient dvsDatagramClient = new DvsDatagramClient(davisDecoder);
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
-    dvsDatagramClient.addListener(accumulateDvsImage);
-    accumulateDvsImage.addListener(davisImageDisplay);
+    DvsDatagramClient dvsDatagramClient = new DvsDatagramClient();
+    AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
+    dvsDatagramClient.dvsDatagramDecoder.addListener(accumulatedEventsImage);
+    accumulatedEventsImage.addListener(davisImageDisplay);
     // subscribe to aps events:
     ApsDatagramClient apsDatagramClient = new ApsDatagramClient(davisDecoder);
     apsDatagramClient.addListener(davisImageDisplay);

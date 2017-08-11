@@ -16,29 +16,34 @@ import ch.ethz.idsc.retina.davis._240c.DavisApsEvent;
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
 public class ApsColumnCompiler implements DavisApsEventListener {
+  private static final int LENGTH = 4 + 180;
   private final byte[] data;
   private final ByteBuffer byteBuffer;
   private final ApsColumnListener columnApsListener;
 
   public ApsColumnCompiler(ApsColumnListener columnApsListener) {
-    data = new byte[4 + 180];
+    data = new byte[LENGTH];
     byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
     this.columnApsListener = columnApsListener;
   }
 
   @Override
-  public void aps(DavisApsEvent apsDavisEvent) {
-    if (apsDavisEvent.y == 0) {
+  public void aps(DavisApsEvent davisApsEvent) {
+    if (davisApsEvent.y == 0) {
       byteBuffer.position(0);
-      byteBuffer.putInt(apsDavisEvent.time); // prepend time
+      byteBuffer.putInt(davisApsEvent.time); // prepend time
     }
     // ---
-    byteBuffer.put(apsDavisEvent.grayscale());
+    // subsequent check should not be necessary
+    // however, raw data of jaer was observed to contain gaps due to lag/delay
+    if (byteBuffer.position() < LENGTH)
+      byteBuffer.put(davisApsEvent.grayscale());
+    // byteBuffer.put(4 + davisApsEvent.y, davisApsEvent.grayscale());
     // ---
-    if (apsDavisEvent.y == 179) { // last
+    if (davisApsEvent.y == 179) { // last
       byteBuffer.position(0);
-      columnApsListener.column(apsDavisEvent.x, byteBuffer);
+      columnApsListener.column(davisApsEvent.x, byteBuffer);
     }
   }
 }

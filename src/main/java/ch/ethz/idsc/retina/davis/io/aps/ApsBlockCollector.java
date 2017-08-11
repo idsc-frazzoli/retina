@@ -40,6 +40,8 @@ public class ApsBlockCollector implements ApsColumnListener {
       byteBuffer.position(0);
       byteBuffer.putShort((short) x);
     }
+    // TODO insert check
+    // if raw data stream contains gaps, the next put operation is not safe
     byteBuffer.put(columnData);
     if (xmod == columns - 1)
       apsBlockListener.apsBlockReady();

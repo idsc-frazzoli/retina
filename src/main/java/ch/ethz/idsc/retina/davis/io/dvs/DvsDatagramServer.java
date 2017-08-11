@@ -31,7 +31,7 @@ public class DvsDatagramServer implements DvsBlockListener, AutoCloseable {
   }
 
   @Override
-  public void dvsBlockReady(int length) {
+  public void dvsBlockReady(int length, ByteBuffer byteBuffer) {
     datagramPacket.setLength(length);
     try {
       datagramSocket.send(datagramPacket);
