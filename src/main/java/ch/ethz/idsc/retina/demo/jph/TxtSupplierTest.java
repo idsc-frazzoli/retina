@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
+import ch.ethz.idsc.retina.davis.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
 
 /** demo txt file read */
 enum TxtSupplierTest {

@@ -9,11 +9,11 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import ch.ethz.idsc.retina.davis.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.dvs.io.txt.TxtFileSupplier;
 import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
 import ch.ethz.idsc.retina.util.io.UserHome;

@@ -1,12 +1,14 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.davis;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dvs.app.DavisEventViewer;
-import ch.ethz.idsc.retina.dvs.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis.DavisEventProvider;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.DavisEventViewer;
+import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
 
+/** playback of aedat log file and visualization of content.
+ * data processing is restricted to dvs event accumulation */
 enum AedatViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
