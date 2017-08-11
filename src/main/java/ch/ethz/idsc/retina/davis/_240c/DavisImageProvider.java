@@ -19,7 +19,7 @@ public class DavisImageProvider implements DavisApsEventListener {
   private final int lastX;
   private final int lastY;
   // ---
-  private final List<ColumnTimedImageListener> timedImageListeners = new LinkedList<>();
+  private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int[] time;
@@ -37,22 +37,22 @@ public class DavisImageProvider implements DavisApsEventListener {
     time = new int[width];
   }
 
-  public void addListener(ColumnTimedImageListener timedImageListener) {
-    timedImageListeners.add(timedImageListener);
+  public void addListener(ColumnTimedImageListener columnTimedImageListener) {
+    listeners.add(columnTimedImageListener);
   }
 
   @Override
-  public void aps(DavisApsEvent apsDavisEvent) {
-    apsTracker.aps(apsDavisEvent, height);
-    byte intensity = apsDavisEvent.grayscale();
-    int index = apsDavisEvent.x + (apsDavisEvent.y * width); // TODO should precompute?
+  public void aps(DavisApsEvent davisApsEvent) {
+    apsTracker.aps(davisApsEvent, height);
+    byte intensity = davisApsEvent.grayscale();
+    int index = davisApsEvent.x + (davisApsEvent.y * width); // TODO should precompute?
     bytes[index] = intensity;
-    if (apsDavisEvent.y == lastY) {
-      time[apsDavisEvent.x] = apsDavisEvent.time;
-      if (apsDavisEvent.x == lastX) {
+    if (davisApsEvent.y == lastY) {
+      time[davisApsEvent.x] = davisApsEvent.time;
+      if (davisApsEvent.x == lastX) {
         boolean isComplete = apsTracker.statusAndReset();
         // System.out.println(DeleteDuplicates.of(Differences.of(Tensors.vectorInt(time))));
-        timedImageListeners.forEach(listener -> listener.image(time, bufferedImage, isComplete));
+        listeners.forEach(listener -> listener.image(time, bufferedImage, isComplete));
       }
     }
   }

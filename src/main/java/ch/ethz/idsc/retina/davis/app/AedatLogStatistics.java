@@ -7,7 +7,7 @@ import java.util.Arrays;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.davis._240c.DavisImuProvider;
+import ch.ethz.idsc.retina.davis._240c.DavisImuFrameCollector;
 import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
 
 /** functionality is available as a command-line tool */
@@ -22,7 +22,7 @@ public enum AedatLogStatistics {
     // ---
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
-    DavisImuProvider davisImuProvider = new DavisImuProvider();
+    DavisImuFrameCollector davisImuProvider = new DavisImuFrameCollector();
     davisDecoder.addListener(davisImuProvider);
     // ---
     aedatFileSupplier.start();

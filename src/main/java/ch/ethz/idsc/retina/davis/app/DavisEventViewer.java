@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.davis.DavisEventProvider;
 import ch.ethz.idsc.retina.davis._240c.ApsStatusWarning;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
+import ch.ethz.idsc.retina.davis._240c.DavisImuFrameCollector;
 import ch.ethz.idsc.retina.davis._240c.DavisRealtimeSleeper;
 
 public enum DavisEventViewer {
@@ -22,13 +23,16 @@ public enum DavisEventViewer {
     // handle dvs
     AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 50000);
     davisDecoder.addListener(accumulateDvsImage);
-    accumulateDvsImage.addListener(davisImageDisplay.dvsRenderer);
+    accumulateDvsImage.addListener(davisImageDisplay);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    davisImageProvider.addListener(davisImageDisplay.apsRenderer);
+    davisImageProvider.addListener(davisImageDisplay);
     davisImageProvider.addListener(new ApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
     // handle imu
+    DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
+    davisImuFrameCollector.addListener(davisImageDisplay);
+    davisDecoder.addListener(davisImuFrameCollector);
     // ---
     if (0 < speed)
       davisDecoder.addListener(new DavisRealtimeSleeper(speed));

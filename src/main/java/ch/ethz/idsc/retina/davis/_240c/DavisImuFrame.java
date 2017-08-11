@@ -1,6 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.davis._240c;
 
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+
 public class DavisImuFrame {
   // TODO units!!!
   public final float accelX;
@@ -22,6 +27,18 @@ public class DavisImuFrame {
     this.gyroX = gyroX;
     this.gyroY = gyroY;
     this.gyroZ = gyroZ;
+  }
+
+  public Tensor accel() {
+    return Tensors.vector(accelX, accelY, accelZ);
+  }
+
+  public Tensor gyro() {
+    return Tensors.vector(gyroX, gyroY, gyroZ);
+  }
+
+  public Scalar temperature() {
+    return RealScalar.of(temperature);
   }
 
   public void print() {

@@ -16,14 +16,18 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
 import ch.ethz.idsc.retina.davis.TimedImageListener;
+import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
 import ch.ethz.idsc.retina.util.Stopwatch;
+import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO redraw thread is independent of sync signal of images...!
-public class DavisDefaultDisplay {
+public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImageListener, DavisImuFrameListener {
   private final JLabel jLabel = new JLabel();
   private BufferedImage apsImage = null;
   private BufferedImage dvsImage = null;
+  private DavisImuFrame imuFrame = null;
   private final JFrame jFrame = new JFrame();
   private final Stopwatch stopwatch = new Stopwatch();
   private boolean isComplete;
@@ -39,7 +43,15 @@ public class DavisDefaultDisplay {
       }
       if (Objects.nonNull(dvsImage))
         graphics.drawImage(dvsImage, 240, 0, jLabel);
-      // TODO draw imu
+      if (Objects.nonNull(imuFrame)) {
+        graphics.setColor(Color.GRAY);
+        graphics.drawString( //
+            String.format("%4.1f C", imuFrame.temperature), 70, 190);
+        graphics.drawString( //
+            imuFrame.accel().map(Round._2).toString(), 120, 190);
+        graphics.drawString( //
+            imuFrame.gyro().map(Round._2).toString(), 260, 190);
+      }
       // ---
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 190);
@@ -67,32 +79,26 @@ public class DavisDefaultDisplay {
     timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
   }
 
-  public final ColumnTimedImageListener apsRenderer = new ColumnTimedImageListener() {
-    @Override
-    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      if (!isComplete)
-        System.err.println("image incomplete");
-      setApsImage(bufferedImage, isComplete);
-    }
-  };
-  public final TimedImageListener dvsRenderer = new TimedImageListener() {
-    @Override
-    public void image(int time, BufferedImage bufferedImage) {
-      setDvsImage(bufferedImage);
-    }
-  };
-
   public void close() {
     timer.cancel();
     jFrame.setVisible(false);
     jFrame.dispose();
   }
 
-  void setDvsImage(BufferedImage bufferedImage) {
+  @Override
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    this.imuFrame = davisImuFrame;
+  }
+
+  @Override
+  public void image(int time, BufferedImage bufferedImage) {
     this.dvsImage = bufferedImage;
   }
 
-  private void setApsImage(BufferedImage bufferedImage, boolean isComplete) {
+  @Override
+  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+    if (!isComplete)
+      System.err.println("image incomplete");
     this.apsImage = bufferedImage;
     this.isComplete = isComplete;
   }
