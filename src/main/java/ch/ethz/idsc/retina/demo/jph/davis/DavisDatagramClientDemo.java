@@ -24,8 +24,8 @@ enum DavisDatagramClientDemo {
     dvsDatagramClient.dvsDatagramDecoder.addListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisImageDisplay);
     // subscribe to aps events:
-    ApsDatagramClient apsDatagramClient = new ApsDatagramClient(davisDecoder);
-    apsDatagramClient.addListener(davisImageDisplay);
+    ApsDatagramClient apsDatagramClient = new ApsDatagramClient();
+    apsDatagramClient.apsDatagramDecoder.addListener(davisImageDisplay);
     // subscribe to imu events:
     ImuDatagramClient imuDatagramClient = new ImuDatagramClient();
     imuDatagramClient.addListener(davisImageDisplay);

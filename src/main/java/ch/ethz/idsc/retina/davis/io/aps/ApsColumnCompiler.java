@@ -21,11 +21,11 @@ public class ApsColumnCompiler implements DavisApsEventListener {
   private final ByteBuffer byteBuffer;
   private final ApsColumnListener columnApsListener;
 
-  public ApsColumnCompiler(ApsColumnListener columnApsListener) {
+  public ApsColumnCompiler(ApsColumnListener apsColumnListener) {
     data = new byte[LENGTH];
     byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
-    this.columnApsListener = columnApsListener;
+    this.columnApsListener = apsColumnListener;
   }
 
   @Override

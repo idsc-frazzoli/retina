@@ -37,7 +37,7 @@ public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
   }
 
   @Override
-  public void apsBlockReady() {
+  public void apsBlockReady(int length, ByteBuffer byteBuffer) {
     try {
       datagramSocket.send(datagramPacket);
     } catch (IOException exception) {
