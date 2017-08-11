@@ -6,27 +6,33 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** the units are chosen to match the jAER demo
+ * in the future, the units can be changed to SI */
 public class DavisImuFrame {
-  // TODO units!!!
+  /** us == micro seconds */
+  public final int time;
+  /** acceleration in G */
   public final float accelX;
   public final float accelY;
   public final float accelZ;
+  /** temperature in degree Celsius */
   public final float temperature;
+  /** degree per seconds */
   public final float gyroX;
   public final float gyroY;
   public final float gyroZ;
 
   public DavisImuFrame( //
-      float accelX, float accelY, float accelZ, //
-      float temperature, //
-      float gyroX, float gyroY, float gyroZ) {
-    this.accelX = accelX;
-    this.accelY = accelY;
-    this.accelZ = accelZ;
-    this.temperature = temperature;
-    this.gyroX = gyroX;
-    this.gyroY = gyroY;
-    this.gyroZ = gyroZ;
+      int time, //
+      float[] values) {
+    this.time = time;
+    this.accelX = values[0];
+    this.accelY = values[1];
+    this.accelZ = values[2];
+    this.temperature = values[3];
+    this.gyroX = values[4];
+    this.gyroY = values[5];
+    this.gyroZ = values[6];
   }
 
   public Tensor accel() {

@@ -10,6 +10,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 // TODO lot's of magic const in this class
 public class DvsDatagramClient {
@@ -29,7 +30,7 @@ public class DvsDatagramClient {
 
   // @Override
   public void start() {
-    try (DatagramSocket datagramSocket = new DatagramSocket(DvsDatagramServer.PORT)) {
+    try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.DVS_PORT)) {
       byte[] bytes = new byte[MAX_PACKET_SIZE];
       ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
       byteBuffer.order(davisDecoder.getByteOrder());

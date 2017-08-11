@@ -12,6 +12,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 // TODO lot's of magic const in this class
 public class ApsDatagramClient {
@@ -36,7 +37,7 @@ public class ApsDatagramClient {
 
   // @Override
   public void start() {
-    try (DatagramSocket datagramSocket = new DatagramSocket(ApsDatagramServer.PORT)) {
+    try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.APS_PORT)) {
       byte[] bytes = new byte[MAX_PACKET_SIZE];
       ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
       byteBuffer.order(davisDecoder.getByteOrder());
@@ -46,6 +47,7 @@ public class ApsDatagramClient {
       while (true) {
         datagramSocket.receive(datagramPacket);
         byteBuffer.position(0);
+        // if client is started before server, x was observed not to be in range, e.g. x==-1
         int x = byteBuffer.getShort();
         isComplete &= x == x_next;
         for (int column = 0; column < 8; ++column) {

@@ -33,6 +33,8 @@ intensity as 360[deg] panorama
 
 * parsing and visualization
 * conversion to text+png format
+* compression of raw APS data by factor 8 (ADC reduced from 10 bit to 8 bit)
+* compression of raw DVS data by factor 2 without loss
 
 ## streaming DAT files
 

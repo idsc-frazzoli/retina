@@ -8,10 +8,10 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.retina.davis.io.DavisDatagram;
+
 /** sends content of log file in realtime via DatagramSocket */
 public class DvsDatagramServer implements DvsBlockListener, AutoCloseable {
-  public static final int PORT = 14320;
-  // ---
   private DatagramSocket datagramSocket = null;
   private DatagramPacket datagramPacket = null;
 
@@ -24,7 +24,7 @@ public class DvsDatagramServer implements DvsBlockListener, AutoCloseable {
       // datagramSocket.setTimeToLive(1); // same LAN
       // datagramSocket.setLoopbackMode(false);
       // datagramSocket.setTrafficClass(0x10 + 0x08); // low delay
-      datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), PORT);
+      datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), DavisDatagram.DVS_PORT);
     } catch (Exception exception) {
       exception.printStackTrace();
     }

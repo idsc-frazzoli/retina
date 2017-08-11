@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
 import ch.ethz.idsc.retina.davis.io.aps.ApsDatagramClient;
 import ch.ethz.idsc.retina.davis.io.dvs.DvsDatagramClient;
+import ch.ethz.idsc.retina.davis.io.imu.ImuDatagramClient;
 
 enum DavisDatagramClientDemo {
   ;
@@ -21,9 +22,15 @@ enum DavisDatagramClientDemo {
     // subscribe to aps events:
     ApsDatagramClient apsDatagramClient = new ApsDatagramClient(davisDecoder);
     apsDatagramClient.addListener(davisImageDisplay);
+    // subscribe to imu events:
+    ImuDatagramClient imuDatagramClient = new ImuDatagramClient();
+    imuDatagramClient.addListener(davisImageDisplay);
     // ---
     new Thread(() -> {
       dvsDatagramClient.start();
+    }).start();
+    new Thread(() -> {
+      imuDatagramClient.start();
     }).start();
     apsDatagramClient.start(); // TODO at the moment this is a blocking call !?
     System.out.println("here");
