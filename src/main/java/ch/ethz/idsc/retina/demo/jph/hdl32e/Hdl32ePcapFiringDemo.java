@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringCollector;
 import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringFrame;
 import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketConsumer;
 import ch.ethz.idsc.retina.hdl32e.Hdl32ePacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.RealtimeFiringPacket;
+import ch.ethz.idsc.retina.hdl32e.Hdl32eRealtimeFiringPacket;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
@@ -17,7 +17,7 @@ enum Hdl32ePcapFiringDemo {
     Hdl32eFiringCollector hdl32eFiringCollector = new Hdl32eFiringCollector(hdl32eFiringFrame);
     Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
     hdl32eFiringPacketConsumer.addListener(hdl32eFiringCollector);
-    hdl32eFiringPacketConsumer.addListener(new RealtimeFiringPacket(1.0));
+    hdl32eFiringPacketConsumer.addListener(new Hdl32eRealtimeFiringPacket(1.0));
     // Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer = new Hdl32ePositioningPacketConsumer();
     // hdl32ePositioningPacketConsumer.addListener(hdl32ePanoramaFrame);
     PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, null);

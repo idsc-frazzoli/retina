@@ -3,13 +3,13 @@ package ch.ethz.idsc.retina.davis.app;
 
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.davis.io.aps.ApsBlockCollector;
-import ch.ethz.idsc.retina.davis.io.aps.ApsColumnCompiler;
-import ch.ethz.idsc.retina.davis.io.aps.ApsDatagramServer;
-import ch.ethz.idsc.retina.davis.io.dvs.DvsBlockCollector;
-import ch.ethz.idsc.retina.davis.io.dvs.DvsDatagramServer;
-import ch.ethz.idsc.retina.davis.io.imu.DavisImuFrameCollector;
-import ch.ethz.idsc.retina.davis.io.imu.ImuDatagramServer;
+import ch.ethz.idsc.retina.davis.aps.ApsBlockCollector;
+import ch.ethz.idsc.retina.davis.aps.ApsColumnCompiler;
+import ch.ethz.idsc.retina.davis.aps.ApsDatagramServer;
+import ch.ethz.idsc.retina.davis.dvs.DvsBlockCollector;
+import ch.ethz.idsc.retina.davis.dvs.DvsDatagramServer;
+import ch.ethz.idsc.retina.davis.imu.DavisImuFrameCollector;
+import ch.ethz.idsc.retina.davis.imu.ImuDatagramServer;
 
 /** collection of functionality that filters raw data for aps content
  * the aps content is encoded in timed column blocks and sent via {@link ApsDatagramServer}

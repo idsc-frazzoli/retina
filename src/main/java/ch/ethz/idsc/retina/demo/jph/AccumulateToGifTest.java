@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.TxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.app.AccumulateToGif;
 import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
@@ -28,7 +28,7 @@ enum AccumulateToGifTest {
     File file = new File("/media/datahaki/media/ethz/davis", name);
     final int WINDOW_US = 50000;
     AccumulateToGif.of( //
-        new TxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
+        new DavisTxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
         UserHome.Pictures(name + ".gif"), WINDOW_US);
   }
 

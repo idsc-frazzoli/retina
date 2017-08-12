@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.TxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
@@ -18,7 +18,7 @@ enum TxtSupplierTest {
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     System.out.println(file.exists());
-    try (TxtFileSupplier sup = new TxtFileSupplier(file, ImageDimensions.UZ)) {
+    try (DavisTxtFileSupplier sup = new DavisTxtFileSupplier(file, ImageDimensions.UZ)) {
       DvsEventBuffer buf = new DvsEventBuffer(10000);
       while (true) {
         DvsEvent dvsEvent = sup.next();

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.hdl32e.img.Hdl32eHuePanorama;
+import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanorama;
 import ch.ethz.idsc.tensor.RealScalar;
 
 public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
@@ -31,7 +33,7 @@ public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
   // ---
   private int rotational_last = -1;
   private final List<Hdl32ePanoramaListener> hdl32ePanoramaListeners = new LinkedList<>();
-  private final Supplier<Hdl32ePanorama> supplier = () -> new HuePanorama();
+  private final Supplier<Hdl32ePanorama> supplier = () -> new Hdl32eHuePanorama();
   private Hdl32ePanorama hdl32ePanorama = supplier.get();
 
   public Hdl32ePanoramaCollector() {
