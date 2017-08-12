@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.hdl32e;
+package ch.ethz.idsc.retina.hdl32e.img;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32eHuePanorama;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanorama;
+import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketListener;
 import ch.ethz.idsc.tensor.RealScalar;
 
 public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {

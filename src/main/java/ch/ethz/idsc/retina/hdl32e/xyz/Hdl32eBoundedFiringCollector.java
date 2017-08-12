@@ -1,10 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.hdl32e;
+package ch.ethz.idsc.retina.hdl32e.xyz;
 
 import java.nio.ByteBuffer;
 
-// TODO rename
-public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
+import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketListener;
+
+public class Hdl32eBoundedFiringCollector implements Hdl32eFiringPacketListener {
   public static final int POINT_NUMEL = 10000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -32,7 +34,7 @@ public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
   private final Hdl32eFiringListener hdl32eFiringListener;
 
-  public Hdl32eFiringCollector(Hdl32eFiringListener hdl32eFiringListener) {
+  public Hdl32eBoundedFiringCollector(Hdl32eFiringListener hdl32eFiringListener) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
@@ -42,9 +44,9 @@ public class Hdl32eFiringCollector implements Hdl32eFiringPacketListener {
     this.hdl32eFiringListener = hdl32eFiringListener;
   }
 
-  int max = 0;
-  float[] position_data = new float[3 * POINT_NUMEL];
-  int position_index = -1;
+  private int max = 0;
+  private float[] position_data = new float[3 * POINT_NUMEL];
+  private int position_index = -1;
 
   @Override
   public void process(int firing, int rotational, ByteBuffer byteBuffer) {

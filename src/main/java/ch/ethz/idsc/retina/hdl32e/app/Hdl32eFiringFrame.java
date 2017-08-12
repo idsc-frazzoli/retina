@@ -1,16 +1,22 @@
 // code by jph
-package ch.ethz.idsc.retina.hdl32e;
+package ch.ethz.idsc.retina.hdl32e.app;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+
+import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.util.gui.Hue;
 
 /** {@link Hdl32eFiringFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
@@ -29,22 +35,27 @@ import javax.swing.WindowConstants;
  * typically the distances up to 5[m] can be measured correctly. */
 public class Hdl32eFiringFrame implements Hdl32eFiringListener {
   public final JFrame jFrame = new JFrame();
-  // private final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
-  private float[] posCopy;
+  private float[] posCopy = null;
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
       Graphics2D graphics = (Graphics2D) g;
+      Dimension dimension = getSize();
+      final int midx = dimension.width / 2;
+      final int midy = dimension.height / 2;
       float[] posRef = posCopy;
-      {
+      if (Objects.nonNull(posRef)) {
         for (int c = 0; c < posRef.length; c += 3) {
           float x = posRef[c];
           float y = posRef[c + 1];
-          graphics.fill(new Rectangle(Math.round(300 + x), Math.round(300 + y), 2, 2));
+          float z = posRef[c + 2];
+          Color color = Hue.of(z, 1, 1, 1);
+          graphics.setColor(color);
+          graphics.fill(new Rectangle(Math.round(midx + x * 4), Math.round(midy + y * 4), 1, 1));
         }
+        // graphics.drawString("" + posRef.length, 0, 10);
       }
-      // urg04lxRender.render((Graphics2D) g, getSize());
     }
   };
 
@@ -62,16 +73,10 @@ public class Hdl32eFiringFrame implements Hdl32eFiringListener {
     });
     jFrame.setVisible(true);
   }
-  // @Override
-  // public void urg(String line) {
-  // urg04lxRender.setLine(line);
-  // jComponent.repaint();
-  // }
 
   @Override
   public void digest(float[] position_data, int length) {
     posCopy = Arrays.copyOf(position_data, length);
-    // System.out.println(position_data.length);
     jComponent.repaint();
   }
 }

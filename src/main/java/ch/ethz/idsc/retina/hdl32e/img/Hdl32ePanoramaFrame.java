@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.hdl32e;
+package ch.ethz.idsc.retina.hdl32e.img;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,7 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanorama;
+import ch.ethz.idsc.retina.hdl32e.Hdl32ePositioningEvent;
+import ch.ethz.idsc.retina.hdl32e.Hdl32ePositioningListener;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -38,7 +39,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
       {
         Hdl32ePositioningEvent posRef = hdl32ePositioningEvent;
         if (Objects.nonNull(posRef)) {
-          list.add(posRef.nmea);
+          list.add(posRef.nmea());
           list.add("temp=" + Tensors.vectorDouble(posRef.temp).map(Round._1));
           list.add("gyro=" + Tensors.vectorDouble(posRef.gyro).map(Round._2));
           list.add("accx=" + Tensors.vectorDouble(posRef.accx).map(Round._2));
