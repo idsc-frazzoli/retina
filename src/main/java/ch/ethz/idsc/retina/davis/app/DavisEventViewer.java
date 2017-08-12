@@ -6,11 +6,10 @@ import java.io.IOException;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis.DavisEventProvider;
-import ch.ethz.idsc.retina.davis._240c.ApsStatusWarning;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrameCollector;
 import ch.ethz.idsc.retina.davis._240c.DavisRealtimeSleeper;
+import ch.ethz.idsc.retina.davis.io.imu.DavisImuFrameCollector;
 
 public enum DavisEventViewer {
   ;

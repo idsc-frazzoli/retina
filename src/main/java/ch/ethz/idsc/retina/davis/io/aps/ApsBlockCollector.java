@@ -47,7 +47,7 @@ public class ApsBlockCollector implements ApsColumnListener {
     byteBuffer.put(columnData);
     if (xmod == columns - 1) {
       byteBuffer.position(0);
-      apsBlockListener.apsBlockReady(length, byteBuffer);
+      apsBlockListener.apsBlock(length, byteBuffer);
     }
   }
 }

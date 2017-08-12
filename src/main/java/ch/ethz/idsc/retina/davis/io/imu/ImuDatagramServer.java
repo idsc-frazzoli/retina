@@ -9,8 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 /** sends content of log file in realtime via DatagramSocket */

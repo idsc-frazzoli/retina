@@ -7,14 +7,14 @@ import java.io.FileWriter;
 
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.davis.io.ExportControl;
+import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 /** lists the events in a text file */
 public class EventsTextWriter implements DavisDvsEventListener, AutoCloseable {
   private final BufferedWriter bufferedWriter;
-  private final ExportControl exportControl;
+  private final DavisExportControl exportControl;
 
-  public EventsTextWriter(File directory, ExportControl exportControl) throws Exception {
+  public EventsTextWriter(File directory, DavisExportControl exportControl) throws Exception {
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "events.txt")));
     this.exportControl = exportControl;
   }

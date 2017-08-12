@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.davis.io;
 
 // TODO rename
-public enum DefaultExportControl implements ExportControl {
+public enum DavisDefaultExportControl implements DavisExportControl {
   INSTANCE;
   // ---
   @Override

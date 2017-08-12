@@ -1,8 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.davis;
+package ch.ethz.idsc.retina.davis.io.imu;
 
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
-
+/** provides the compiled */
 public interface DavisImuFrameListener {
   void imuFrame(DavisImuFrame davisImuFrame);
 }

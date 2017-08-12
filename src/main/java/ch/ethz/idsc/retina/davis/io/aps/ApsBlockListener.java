@@ -5,5 +5,5 @@ import java.nio.ByteBuffer;
 
 /** notifies that block of aps columns is completed */
 public interface ApsBlockListener {
-  void apsBlockReady(int length, ByteBuffer byteBuffer);
+  void apsBlock(int length, ByteBuffer byteBuffer);
 }

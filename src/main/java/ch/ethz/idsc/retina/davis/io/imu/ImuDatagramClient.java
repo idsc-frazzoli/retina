@@ -8,8 +8,6 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 public class ImuDatagramClient {

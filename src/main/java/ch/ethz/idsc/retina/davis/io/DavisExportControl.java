@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.davis.io;
 
 // EXPERIMENTAL
-public interface ExportControl {
+public interface DavisExportControl {
   boolean isActive();
 
   int mapTime(int time);

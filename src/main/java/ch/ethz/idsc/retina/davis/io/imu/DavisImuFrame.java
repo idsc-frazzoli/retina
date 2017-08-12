@@ -1,13 +1,14 @@
 // code by jph
-package ch.ethz.idsc.retina.davis._240c;
+package ch.ethz.idsc.retina.davis.io.imu;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** the units are chosen to match the jAER demo
- * in the future, the units can be changed to SI */
+/** in the current implementation the units are chosen to match the jAER demo
+ * 
+ * NOTICE: in the future, the units can be changed to SI */
 public class DavisImuFrame {
   /** us == micro seconds */
   public final int time;
@@ -22,9 +23,7 @@ public class DavisImuFrame {
   public final float gyroY;
   public final float gyroZ;
 
-  public DavisImuFrame( //
-      int time, //
-      float[] values) {
+  public DavisImuFrame(int time, float[] values) {
     this.time = time;
     this.accelX = values[0];
     this.accelY = values[1];
@@ -35,6 +34,7 @@ public class DavisImuFrame {
     this.gyroZ = values[6];
   }
 
+  // EXPERIMENTAL API not finalized
   public Tensor accel() {
     return Tensors.vector(accelX, accelY, accelZ);
   }

@@ -8,15 +8,16 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 public class ApsDatagramDecoder {
   private final BufferedImage bufferedImage;
   private final int[] time = new int[240];
   private final byte[] imageData;
   private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
-  boolean isComplete = true;
-  int x_next = 0;
+  private boolean isComplete = true;
+  private int x_next = 0;
 
   public ApsDatagramDecoder() {
     bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
@@ -33,10 +34,10 @@ public class ApsDatagramDecoder {
     // if client is started before server, x was observed not to be in range, e.g. x==-1
     int x = byteBuffer.getShort();
     isComplete &= x == x_next;
-    for (int column = 0; column < 8; ++column) {
+    for (int column = 0; column < DavisDatagram.BLOCK_COLUMNS; ++column) {
       time[x] = byteBuffer.getInt();
       for (int y = 0; y < 180; ++y)
-        imageData[x + y * 240] = byteBuffer.get();
+        imageData[x + y * 240] = byteBuffer.get(); // TODO increment offset (instead of multiplication)
       ++x;
     }
     x_next = x;

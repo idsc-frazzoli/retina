@@ -6,19 +6,19 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.davis.TimedImageListener;
-import ch.ethz.idsc.retina.davis.io.ExportControl;
+import ch.ethz.idsc.retina.core.TimedImageListener;
+import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 public class SimpleImageWriter implements TimedImageListener {
   private final File directory;
   private final int limit;
-  private final ExportControl exportControl;
+  private final DavisExportControl exportControl;
   private int count = 0;
 
   /** @param directory base
    * @param limit
    * @throws Exception */
-  public SimpleImageWriter(File directory, int limit, ExportControl exportControl) throws Exception {
+  public SimpleImageWriter(File directory, int limit, DavisExportControl exportControl) throws Exception {
     this.directory = directory;
     this.limit = limit;
     this.exportControl = exportControl;

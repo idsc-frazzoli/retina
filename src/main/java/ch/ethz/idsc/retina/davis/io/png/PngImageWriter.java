@@ -8,19 +8,19 @@ import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.davis.io.ExportControl;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 public class PngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   private final File directory;
-  private final ExportControl exportControl;
+  private final DavisExportControl exportControl;
   private final BufferedWriter bufferedWriterBeg;
   private final BufferedWriter bufferedWriterEnd;
   private int count = 0;
 
   /** @param directory base
    * @throws Exception */
-  public PngImageWriter(File directory, ExportControl exportControl) throws Exception {
+  public PngImageWriter(File directory, DavisExportControl exportControl) throws Exception {
     this.directory = directory;
     this.exportControl = exportControl;
     File images = new File(directory, "images");

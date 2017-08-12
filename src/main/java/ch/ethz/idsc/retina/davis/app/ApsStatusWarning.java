@@ -1,11 +1,11 @@
 // code by jph
-package ch.ethz.idsc.retina.davis._240c;
+package ch.ethz.idsc.retina.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 
-public class ApsStatusWarning implements ColumnTimedImageListener {
+/* package */ class ApsStatusWarning implements ColumnTimedImageListener {
   int complete = 0;
   int total = 0;
 

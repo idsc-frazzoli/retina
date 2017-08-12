@@ -1,11 +1,11 @@
 // code by jph
-package ch.ethz.idsc.retina.davis._240c;
+package ch.ethz.idsc.retina.davis.io.imu;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.davis.DavisImuEventListener;
-import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
+import ch.ethz.idsc.retina.davis._240c.DavisImuEvent;
 
 /** the conversion formulas are trimmed to match the values in the jAER demo
  * therefore the absolute values should be correct

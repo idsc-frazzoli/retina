@@ -12,23 +12,16 @@ import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 /** sends content of log file in realtime via DatagramSocket */
 public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
-  public static final int COLUMNS = 8; // TODO
-  // ---
-  public final int length;
-  // ---
   private DatagramSocket datagramSocket = null;
   private DatagramPacket datagramPacket = null;
 
   public ApsDatagramServer(ApsBlockCollector apsBlockCollector) {
-    apsBlockCollector.setListener(this);
+    apsBlockCollector.setListener(this); // TODO design dubious
     ByteBuffer byteBuffer = apsBlockCollector.byteBuffer();
     byte[] data = byteBuffer.array();
-    length = data.length;
+    int length = data.length;
     try {
       datagramSocket = new DatagramSocket();
-      // datagramSocket.setTimeToLive(1); // same LAN
-      // datagramSocket.setLoopbackMode(false);
-      // datagramSocket.setTrafficClass(0x10 + 0x08); // low delay
       datagramPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), DavisDatagram.APS_PORT);
       datagramPacket.setLength(length);
     } catch (Exception exception) {
@@ -37,7 +30,7 @@ public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
   }
 
   @Override
-  public void apsBlockReady(int length, ByteBuffer byteBuffer) {
+  public void apsBlock(int length, ByteBuffer byteBuffer) {
     try {
       datagramSocket.send(datagramPacket);
     } catch (IOException exception) {

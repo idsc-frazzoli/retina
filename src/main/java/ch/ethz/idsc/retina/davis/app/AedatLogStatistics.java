@@ -7,8 +7,8 @@ import java.util.Arrays;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrameCollector;
 import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.davis.io.imu.DavisImuFrameCollector;
 
 /** functionality is available as a command-line tool */
 public enum AedatLogStatistics {
