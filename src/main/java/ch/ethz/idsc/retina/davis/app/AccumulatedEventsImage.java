@@ -46,6 +46,11 @@ public class AccumulatedEventsImage implements DavisDvsEventListener {
   public void dvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
+    if (dvsDavisEvent.time < last) { // FIXME find better math criterion
+      // System.err.println("clear accumuated events image due to reverse timing");
+      clearImage();
+      last = dvsDavisEvent.time + interval;
+    }
     if (last + interval < dvsDavisEvent.time) {
       listeners.forEach(listener -> listener.image(last, bufferedImage));
       clearImage();

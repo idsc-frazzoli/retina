@@ -6,6 +6,7 @@ import java.io.IOException;
 import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis.DavisDevice;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.davis._240c.DavisRealtimeSleeper;
@@ -18,7 +19,7 @@ public enum DavisEventViewer {
   public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
-    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
+    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(Davis240c.INSTANCE); // TODO
     davisImageDisplay.setStatistics(davisEventStatistics);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);

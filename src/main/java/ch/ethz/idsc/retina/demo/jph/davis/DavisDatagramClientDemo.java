@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.demo.jph.davis;
 
 import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
@@ -13,8 +14,9 @@ import ch.ethz.idsc.retina.davis.imu.DavisImuDatagramClient;
 enum DavisDatagramClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
-    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay();
+    DavisDevice davisDevice = Davis240c.INSTANCE;
+    DavisDecoder davisDecoder = davisDevice.createDecoder();
+    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(davisDevice);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     davisImageDisplay.setStatistics(davisEventStatistics);

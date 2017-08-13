@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,6 +18,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.core.TimedImageListener;
+import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.imu.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.imu.DavisImuFrameListener;
@@ -47,8 +49,12 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
-      if (Objects.nonNull(dvsImage))
+      if (Objects.nonNull(dvsImage)) {
         graphics.drawImage(dvsImage, 240, 0, jLabel);
+      }
+      // synchronized (bufferedImage) {
+      // graphics.drawImage(bufferedImage, 240, 0, jLabel);
+      // }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
         graphics.drawString( //
@@ -64,13 +70,22 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
         graphics.drawString(displayEventCount.toString(), 0, 200);
       }
       // ---
-      graphics.setColor(Color.GRAY);
+      graphics.setColor(Color.RED);
       graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 190);
     }
   };
   private final Timer timer = new Timer();
+  private final int width;
+  private final int height;
+  private final BufferedImage bufferedImage;
+  private final byte[] bytes;
 
-  public DavisDefaultDisplay() {
+  public DavisDefaultDisplay(DavisDevice davisDevice) {
+    width = davisDevice.getWidth();
+    height = davisDevice.getHeight();
+    bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+    DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
+    bytes = dataBufferByte.getData();
     jFrame.setBounds(100, 100, 500, 200);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
@@ -117,7 +132,12 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
 
   @Override
   public void image(int time, BufferedImage bufferedImage) {
-    this.dvsImage = bufferedImage;
+    // DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
+    // byte[] data = dataBufferByte.getData();
+    // synchronized (bufferedImage) {
+    // ByteBuffer.wrap(bytes).put(data);
+    // }
+    dvsImage = bufferedImage;
   }
 
   @Override
