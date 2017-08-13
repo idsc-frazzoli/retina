@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.core.TimedImageListener;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
-import ch.ethz.idsc.retina.davis.TimedImageListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 

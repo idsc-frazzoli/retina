@@ -8,10 +8,10 @@ import java.util.List;
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
 public final class Hdl32eFiringPacketConsumer {
-  private final List<Hdl32eFiringPacketListener> firingPacketInterfaces = new LinkedList<>();
+  private final List<Hdl32eFiringPacketListener> listeners = new LinkedList<>();
 
   public void addListener(Hdl32eFiringPacketListener firingPacketInterface) {
-    firingPacketInterfaces.add(firingPacketInterface);
+    listeners.add(firingPacketInterface);
   }
 
   /** @param byteBuffer with at least 1206 bytes to read */
@@ -26,7 +26,7 @@ public final class Hdl32eFiringPacketConsumer {
         // ---
         final int position = byteBuffer.position();
         final int ffiring = firing;
-        firingPacketInterfaces.forEach(listener -> {
+        listeners.forEach(listener -> {
           byteBuffer.position(position);
           listener.process(ffiring, rotational, byteBuffer);
         });
@@ -38,7 +38,7 @@ public final class Hdl32eFiringPacketConsumer {
       int gps_timestamp = byteBuffer.getInt(); // in [usec]
       byte type = byteBuffer.get(); // 55
       byte value = byteBuffer.get(); // 33
-      firingPacketInterfaces.forEach(listener -> listener.status(gps_timestamp, type, value));
+      listeners.forEach(listener -> listener.status(gps_timestamp, type, value));
     }
   }
 }

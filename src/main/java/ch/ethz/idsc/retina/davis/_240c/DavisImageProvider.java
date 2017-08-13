@@ -6,9 +6,9 @@ import java.awt.image.DataBufferByte;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.core.DimensionInterface;
 import ch.ethz.idsc.retina.davis.DavisApsEventListener;
-import ch.ethz.idsc.retina.davis.DimensionInterface;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** for davis240c the raw image data arrives in the order
@@ -23,7 +23,7 @@ public class DavisImageProvider implements DavisApsEventListener {
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int[] time;
-  private final ApsTracker apsTracker = new ApsTracker();
+  private final DavisApsTracker apsTracker = new DavisApsTracker();
 
   public DavisImageProvider(DimensionInterface dimensionInterface) {
     width = dimensionInterface.getWidth();

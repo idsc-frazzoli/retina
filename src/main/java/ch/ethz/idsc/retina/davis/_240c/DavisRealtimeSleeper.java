@@ -15,9 +15,9 @@ public class DavisRealtimeSleeper implements DavisImuEventListener {
   }
 
   @Override
-  public void imu(DavisImuEvent imuDavisEvent) {
-    if (imuDavisEvent.index != 0)
+  public void imu(DavisImuEvent davisImuEvent) {
+    if (davisImuEvent.index != 0)
       return;
-    realtimeSleeper.now(imuDavisEvent.time);
+    realtimeSleeper.now(davisImuEvent.time);
   }
 }

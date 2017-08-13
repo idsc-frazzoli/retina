@@ -10,9 +10,9 @@ import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
-import ch.ethz.idsc.retina.davis.io.png.PngImageWriter;
-import ch.ethz.idsc.retina.davis.io.png.SimpleImageWriter;
-import ch.ethz.idsc.retina.davis.io.txt.EventsTextWriter;
+import ch.ethz.idsc.retina.davis.io.txt.DavisEventsTextWriter;
+import ch.ethz.idsc.retina.davis.io.txt.DavisPngImageWriter;
+import ch.ethz.idsc.retina.davis.io.txt.DavisSimpleImageWriter;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */
@@ -34,11 +34,11 @@ public enum AedatLogConverter {
     davisDecoder.addListener(davisEventStatistics);
     // ---
     FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
-    EventsTextWriter eventsTextWriter = new EventsTextWriter(directory, fitec);
+    DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
     davisDecoder.addListener(eventsTextWriter);
     // ---
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    PngImageWriter pngImageWriter = new PngImageWriter(directory, fitec);
+    DavisPngImageWriter pngImageWriter = new DavisPngImageWriter(directory, fitec);
     davisImageProvider.addListener(fitec);
     davisImageProvider.addListener(pngImageWriter);
     davisDecoder.addListener(davisImageProvider);
@@ -47,7 +47,7 @@ public enum AedatLogConverter {
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();
-      accumulateDvsImage.addListener(new SimpleImageWriter(debug, 50, fitec));
+      accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
       davisDecoder.addListener(accumulateDvsImage);
     }
     // ---

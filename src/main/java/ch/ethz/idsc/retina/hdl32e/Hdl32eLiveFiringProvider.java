@@ -4,9 +4,10 @@ package ch.ethz.idsc.retina.hdl32e;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
-public class Hdl32eLiveFiringProvider implements Hdl32eLiveProvider {
+public class Hdl32eLiveFiringProvider implements StartAndStoppable {
   public static final int PORT = 2368;
   // ---
   private final Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer;

@@ -3,12 +3,12 @@ package ch.ethz.idsc.retina.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.davis.io.ExportControl;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** export control that is enabled from the 2nd image onwards */
-public class FirstImageTriggerExportControl implements ExportControl, ColumnTimedImageListener {
+public class FirstImageTriggerExportControl implements DavisExportControl, ColumnTimedImageListener {
   private int frames = 0;
   private int time_offset = 0;
 

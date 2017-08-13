@@ -24,22 +24,22 @@ public class DavisEventStatistics implements //
   private long jump = 0;
 
   @Override
-  public void dvs(DavisDvsEvent dvsDavisEvent) {
-    _trackTime(dvsDavisEvent);
+  public void dvs(DavisDvsEvent davisDvsEvent) {
+    _trackTime(davisDvsEvent);
     ++dvs;
   }
 
   @Override
-  public void aps(DavisApsEvent apsDavisEvent) {
-    _trackTime(apsDavisEvent);
+  public void aps(DavisApsEvent davisApsEvent) {
+    _trackTime(davisApsEvent);
     ++aps;
-    if (apsDavisEvent.x == 0 && apsDavisEvent.y == 0)
+    if (davisApsEvent.x == 0 && davisApsEvent.y == 0)
       ++frames;
   }
 
   @Override
-  public void imu(DavisImuEvent imuDavisEvent) {
-    _trackTime(imuDavisEvent);
+  public void imu(DavisImuEvent davisImuEvent) {
+    _trackTime(davisImuEvent);
     ++imu;
     // System.out.println(String.format("%08x", imuDavisEvent.data));
     // System.out.println(imuDavisEvent.time+" "+String.format("%08x %d", imuDavisEvent.data, imuDavisEvent.index));

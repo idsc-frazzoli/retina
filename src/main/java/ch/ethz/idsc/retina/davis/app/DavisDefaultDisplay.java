@@ -15,11 +15,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.davis.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.davis.DavisImuFrameListener;
-import ch.ethz.idsc.retina.davis.TimedImageListener;
+import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.core.TimedImageListener;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.davis._240c.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.imu.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.imu.DavisImuFrameListener;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;

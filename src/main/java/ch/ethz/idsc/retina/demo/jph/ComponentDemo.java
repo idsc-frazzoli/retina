@@ -9,7 +9,7 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.TxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
@@ -39,7 +39,7 @@ enum ComponentDemo {
     AnimationWriter gsw = null;
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
-    try (TxtFileSupplier sup = new TxtFileSupplier(file, dimension)) {
+    try (DavisTxtFileSupplier sup = new DavisTxtFileSupplier(file, dimension)) {
       // File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
       // "jumping.dat");
       // DvsEventSupplier sup = new DatFileSupplier(file, dimension);
