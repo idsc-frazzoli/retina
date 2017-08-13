@@ -10,7 +10,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
-public class ImuDatagramClient {
+public class DavisImuDatagramClient {
   private final List<DavisImuFrameListener> listeners = new LinkedList<>();
 
   public void addListener(DavisImuFrameListener davisImuFrameListener) {
@@ -22,7 +22,7 @@ public class ImuDatagramClient {
 
   public void start() {
     try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.IMU_PORT)) {
-      byte[] bytes = new byte[ImuDatagramServer.PACKET_LENGTH];
+      byte[] bytes = new byte[DavisImuDatagramServer.PACKET_LENGTH];
       ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
       byteBuffer.order(ByteOrder.BIG_ENDIAN);
       DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);

@@ -7,11 +7,11 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
-public class ApsDatagramClient {
+public class DavisApsDatagramClient {
   // TODO ensure that no server sends larger packets
   private static final int MAX_PACKET_SIZE = 2048;
   // ---
-  public final ApsDatagramDecoder apsDatagramDecoder = new ApsDatagramDecoder();
+  public final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
 
   public void start() {
     try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.APS_PORT)) {
@@ -21,7 +21,7 @@ public class ApsDatagramClient {
       while (true) {
         datagramSocket.receive(datagramPacket);
         byteBuffer.position(0);
-        apsDatagramDecoder.decode(byteBuffer);
+        davisApsDatagramDecoder.decode(byteBuffer);
       }
     } catch (Exception exception) {
       exception.printStackTrace();

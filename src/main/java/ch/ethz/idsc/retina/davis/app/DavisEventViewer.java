@@ -27,7 +27,7 @@ public enum DavisEventViewer {
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay);
-    davisImageProvider.addListener(new ApsStatusWarning());
+    davisImageProvider.addListener(new DavisApsStatusWarning());
     davisDecoder.addListener(davisImageProvider);
     // handle imu
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();

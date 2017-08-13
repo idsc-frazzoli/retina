@@ -6,19 +6,19 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-/** compiles aps columns and forwards them to a given {@link ApsColumnListener} */
-public class ApsBlockCollector implements ApsColumnListener {
+/** compiles aps columns and forwards them to a given {@link DavisApsColumnListener} */
+public class DavisApsBlockCollector implements DavisApsColumnListener {
   private final int columns;
   private final int length;
   private final ByteBuffer byteBuffer;
-  private ApsBlockListener apsBlockListener;
+  private DavisApsBlockListener apsBlockListener;
 
   /** for an image of width == 240
    * column is in {2, 3, 4, 5, 6, 8, 10, ... }
    * FactorInteger[240] == {{2, 4}, {3, 1}, {5, 1}}
    * 
    * @param columns has to divide image width */
-  public ApsBlockCollector(int columns) {
+  public DavisApsBlockCollector(int columns) {
     this.columns = columns;
     length = 2 + columns * 184;
     byte[] data = new byte[length];
@@ -27,7 +27,7 @@ public class ApsBlockCollector implements ApsColumnListener {
     GlobalAssert.that(240 % columns == 0);
   }
 
-  public void setListener(ApsBlockListener apsBlockListener) {
+  public void setListener(DavisApsBlockListener apsBlockListener) {
     this.apsBlockListener = apsBlockListener;
   }
 

@@ -8,11 +8,11 @@ import java.util.List;
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
-public class DvsDatagramDecoder {
+public class DavisDvsDatagramDecoder {
   private final List<DavisDvsEventListener> listeners = new LinkedList<>();
 
-  public void addListener(DavisDvsEventListener dvsDavisEventListener) {
-    listeners.add(dvsDavisEventListener);
+  public void addListener(DavisDvsEventListener davisDvsEventListener) {
+    listeners.add(davisDvsEventListener);
   }
 
   private short pacid_next = -1;
@@ -35,8 +35,8 @@ public class DvsDatagramDecoder {
       final int x = byteBuffer.get() & 0xff;
       final int y = byteBuffer.get() & 0xff;
       final int i = misc & 1;
-      DavisDvsEvent dvsDavisEvent = new DavisDvsEvent(time, x, y, i);
-      listeners.forEach(listener -> listener.dvs(dvsDavisEvent));
+      DavisDvsEvent davisDvsEvent = new DavisDvsEvent(time, x, y, i);
+      listeners.forEach(listener -> listener.dvs(davisDvsEvent));
     }
     ++total;
     if (total % 1000 == 0 && missed_print != missed) {

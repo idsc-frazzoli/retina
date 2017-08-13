@@ -45,7 +45,7 @@ public class DavisDirectorySupplier implements StartAndStoppable {
           System.out.println("exit");
           break;
         }
-        DavisDvsEvent dde = asdf(line);
+        DavisDvsEvent dde = eventGen(line);
         if (events % 10000 == 0)
           System.out.println(dde);
         ++events;
@@ -56,7 +56,7 @@ public class DavisDirectorySupplier implements StartAndStoppable {
     }
   }
 
-  private static DavisDvsEvent asdf(String line) {
+  private static DavisDvsEvent eventGen(String line) {
     StringTokenizer stringTokenizer = new StringTokenizer(line);
     int time = (int) (Double.parseDouble(stringTokenizer.nextToken()) * 1e6);
     int x = Integer.parseInt(stringTokenizer.nextToken()); // x

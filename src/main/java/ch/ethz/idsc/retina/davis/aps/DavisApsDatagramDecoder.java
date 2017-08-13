@@ -11,7 +11,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
-public class ApsDatagramDecoder {
+public class DavisApsDatagramDecoder {
   private final BufferedImage bufferedImage;
   private final int[] time = new int[240];
   private final byte[] imageData;
@@ -19,7 +19,7 @@ public class ApsDatagramDecoder {
   private boolean isComplete = true;
   private int x_next = 0;
 
-  public ApsDatagramDecoder() {
+  public DavisApsDatagramDecoder() {
     bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
     WritableRaster writableRaster = bufferedImage.getRaster();
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();

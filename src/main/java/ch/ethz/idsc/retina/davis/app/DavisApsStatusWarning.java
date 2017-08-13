@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 
-/* package */ class ApsStatusWarning implements ColumnTimedImageListener {
+/* package */ class DavisApsStatusWarning implements ColumnTimedImageListener {
   int complete = 0;
   int total = 0;
 

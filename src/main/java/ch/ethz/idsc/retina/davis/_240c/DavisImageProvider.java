@@ -23,7 +23,7 @@ public class DavisImageProvider implements DavisApsEventListener {
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int[] time;
-  private final ApsTracker apsTracker = new ApsTracker();
+  private final DavisApsTracker apsTracker = new DavisApsTracker();
 
   public DavisImageProvider(DimensionInterface dimensionInterface) {
     width = dimensionInterface.getWidth();

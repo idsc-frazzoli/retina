@@ -6,9 +6,9 @@ import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
-import ch.ethz.idsc.retina.davis.aps.ApsDatagramClient;
-import ch.ethz.idsc.retina.davis.dvs.DvsDatagramClient;
-import ch.ethz.idsc.retina.davis.imu.ImuDatagramClient;
+import ch.ethz.idsc.retina.davis.aps.DavisApsDatagramClient;
+import ch.ethz.idsc.retina.davis.dvs.DavisDvsDatagramClient;
+import ch.ethz.idsc.retina.davis.imu.DavisImuDatagramClient;
 
 enum DavisDatagramClientDemo {
   ;
@@ -19,15 +19,15 @@ enum DavisDatagramClientDemo {
     davisDecoder.addListener(davisEventStatistics);
     davisImageDisplay.setStatistics(davisEventStatistics);
     // subscribe to dvs events:
-    DvsDatagramClient dvsDatagramClient = new DvsDatagramClient();
+    DavisDvsDatagramClient dvsDatagramClient = new DavisDvsDatagramClient();
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
-    dvsDatagramClient.dvsDatagramDecoder.addListener(accumulatedEventsImage);
+    dvsDatagramClient.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisImageDisplay);
     // subscribe to aps events:
-    ApsDatagramClient apsDatagramClient = new ApsDatagramClient();
-    apsDatagramClient.apsDatagramDecoder.addListener(davisImageDisplay);
+    DavisApsDatagramClient apsDatagramClient = new DavisApsDatagramClient();
+    apsDatagramClient.davisApsDatagramDecoder.addListener(davisImageDisplay);
     // subscribe to imu events:
-    ImuDatagramClient imuDatagramClient = new ImuDatagramClient();
+    DavisImuDatagramClient imuDatagramClient = new DavisImuDatagramClient();
     imuDatagramClient.addListener(davisImageDisplay);
     // ---
     new Thread(() -> {

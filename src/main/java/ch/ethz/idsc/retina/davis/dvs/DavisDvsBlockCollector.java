@@ -9,13 +9,13 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** encodes an event in 4 bytes (instead of 8 bytes as in aedat) */
-public class DvsBlockCollector implements DavisDvsEventListener {
+public class DavisDvsBlockCollector implements DavisDvsEventListener {
   public static final int MAX_EVENTS = 300;
   public static final int MAX_LENGTH = 2 + 2 + 4 + MAX_EVENTS * 4;
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_LENGTH]);
-  private DvsBlockListener dvsBlockListener;
+  private DavisDvsBlockListener davisDvsBlockListener;
 
-  public DvsBlockCollector() {
+  public DavisDvsBlockCollector() {
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
   }
 
@@ -24,29 +24,29 @@ public class DvsBlockCollector implements DavisDvsEventListener {
   int offset;
 
   @Override
-  public void dvs(DavisDvsEvent dvsDavisEvent) {
+  public void dvs(DavisDvsEvent davisDvsEvent) {
     if (numel == 0)
-      resetTo(dvsDavisEvent);
-    int exact = dvsDavisEvent.time - offset;
+      resetTo(davisDvsEvent);
+    int exact = davisDvsEvent.time - offset;
     short diff = (short) (exact & 0x7fff);
     if (exact != diff || MAX_EVENTS <= numel) { // TODO also use timeout criterion?
       sendAndReset();
-      resetTo(dvsDavisEvent);
-      exact = dvsDavisEvent.time - offset;
+      resetTo(davisDvsEvent);
+      exact = davisDvsEvent.time - offset;
       diff = (short) (exact & 0x7fff);
       GlobalAssert.that(exact == 0);
     }
     GlobalAssert.that(exact == diff);
     diff <<= 1;
-    diff |= dvsDavisEvent.i;
+    diff |= davisDvsEvent.i;
     byteBuffer.putShort(diff);
-    byteBuffer.put((byte) dvsDavisEvent.x);
-    byteBuffer.put((byte) dvsDavisEvent.y);
+    byteBuffer.put((byte) davisDvsEvent.x);
+    byteBuffer.put((byte) davisDvsEvent.y);
     ++numel;
   }
 
-  private void resetTo(DavisDvsEvent dvsDavisEvent) {
-    offset = dvsDavisEvent.time;
+  private void resetTo(DavisDvsEvent davisDvsEvent) {
+    offset = davisDvsEvent.time;
     // first two bytes are reserved for count
     byteBuffer.position(2);
     byteBuffer.putShort((short) pacid);
@@ -59,13 +59,13 @@ public class DvsBlockCollector implements DavisDvsEventListener {
     byteBuffer.position(0);
     byteBuffer.putShort((short) numel); // update numel
     byteBuffer.position(0);
-    dvsBlockListener.dvsBlockReady(length, byteBuffer);
+    davisDvsBlockListener.dvsBlockReady(length, byteBuffer);
     numel = 0;
     ++pacid;
   }
 
-  public void setListener(DvsBlockListener dvsBlockListener) {
-    this.dvsBlockListener = dvsBlockListener;
+  public void setListener(DavisDvsBlockListener davisDvsBlockListener) {
+    this.davisDvsBlockListener = davisDvsBlockListener;
   }
 
   public ByteBuffer byteBuffer() {

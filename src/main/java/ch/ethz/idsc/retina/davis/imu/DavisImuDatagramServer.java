@@ -12,7 +12,7 @@ import java.util.Objects;
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 /** sends content of log file in realtime via DatagramSocket */
-public class ImuDatagramServer implements DavisImuFrameListener, AutoCloseable {
+public class DavisImuDatagramServer implements DavisImuFrameListener, AutoCloseable {
   public static final int PACKET_LENGTH = 4 + 2 + 4 * 7;
   // ---
   private DatagramSocket datagramSocket = null;
@@ -20,7 +20,7 @@ public class ImuDatagramServer implements DavisImuFrameListener, AutoCloseable {
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[PACKET_LENGTH]);
   private short pacid = 0;
 
-  public ImuDatagramServer() {
+  public DavisImuDatagramServer() {
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
     byte[] data = byteBuffer.array();
     try {

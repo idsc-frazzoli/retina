@@ -11,13 +11,13 @@ import java.util.Objects;
 import ch.ethz.idsc.retina.davis.io.DavisDatagram;
 
 /** sends content of log file in realtime via DatagramSocket */
-public class ApsDatagramServer implements ApsBlockListener, AutoCloseable {
+public class DavisApsDatagramServer implements DavisApsBlockListener, AutoCloseable {
   private DatagramSocket datagramSocket = null;
   private DatagramPacket datagramPacket = null;
 
-  public ApsDatagramServer(ApsBlockCollector apsBlockCollector) {
-    apsBlockCollector.setListener(this); // TODO design dubious
-    ByteBuffer byteBuffer = apsBlockCollector.byteBuffer();
+  public DavisApsDatagramServer(DavisApsBlockCollector davisApsBlockCollector) {
+    davisApsBlockCollector.setListener(this); // TODO design dubious
+    ByteBuffer byteBuffer = davisApsBlockCollector.byteBuffer();
     byte[] data = byteBuffer.array();
     int length = data.length;
     try {

@@ -15,18 +15,18 @@ import ch.ethz.idsc.retina.davis._240c.DavisApsEvent;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class ApsColumnCompiler implements DavisApsEventListener {
+public class DavisApsColumnCompiler implements DavisApsEventListener {
   private static final int LAST_Y = 179;
   private static final int LENGTH = 4 + 180;
   private final byte[] data;
   private final ByteBuffer byteBuffer;
-  private final ApsColumnListener columnApsListener;
+  private final DavisApsColumnListener davisApsColumnListener;
 
-  public ApsColumnCompiler(ApsColumnListener apsColumnListener) {
+  public DavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
     data = new byte[LENGTH];
     byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
-    this.columnApsListener = apsColumnListener;
+    this.davisApsColumnListener = davisApsColumnListener;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class ApsColumnCompiler implements DavisApsEventListener {
     // ---
     if (davisApsEvent.y == LAST_Y) { // last
       byteBuffer.position(0);
-      columnApsListener.column(davisApsEvent.x, byteBuffer);
+      davisApsColumnListener.column(davisApsEvent.x, byteBuffer);
     }
   }
 }
