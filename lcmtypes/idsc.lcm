@@ -1,0 +1,8 @@
+package idsc;
+
+struct BinaryBlob
+{
+  int32_t  data_length;
+  int8_t   data[data_length];
+}
+
