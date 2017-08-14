@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis.app.DavisEventViewer;
-import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
+import ch.ethz.idsc.retina.davis.io.AedatFileSupplier;
 
 /** playback of aedat log file and visualization of content.
  * data processing is restricted to dvs event accumulation */

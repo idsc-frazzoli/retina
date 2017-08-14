@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.dvs;
+package ch.ethz.idsc.retina.davis.data;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

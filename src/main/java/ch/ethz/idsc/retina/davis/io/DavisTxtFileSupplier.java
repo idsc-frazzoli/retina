@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.txt;
+package ch.ethz.idsc.retina.davis.io;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;

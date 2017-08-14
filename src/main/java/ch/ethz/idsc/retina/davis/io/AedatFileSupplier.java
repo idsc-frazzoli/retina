@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.aedat;
+package ch.ethz.idsc.retina.davis.io;
 
 import java.io.File;
 import java.io.InputStream;

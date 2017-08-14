@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.txt;
+package ch.ethz.idsc.retina.davis.io;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.retina.core.TimedImageListener;
-import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 public class DavisSimpleImageWriter implements TimedImageListener {
   private final File directory;

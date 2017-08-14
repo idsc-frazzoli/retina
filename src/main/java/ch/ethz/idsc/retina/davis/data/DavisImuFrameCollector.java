@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.imu;
+package ch.ethz.idsc.retina.davis.data;
 
 import java.util.LinkedList;
 import java.util.List;

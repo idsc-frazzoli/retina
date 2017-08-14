@@ -7,9 +7,9 @@ import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
-import ch.ethz.idsc.retina.davis.aps.DavisApsDatagramClient;
-import ch.ethz.idsc.retina.davis.dvs.DavisDvsDatagramClient;
-import ch.ethz.idsc.retina.davis.imu.DavisImuDatagramClient;
+import ch.ethz.idsc.retina.davis.data.DavisApsDatagramClient;
+import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramClient;
+import ch.ethz.idsc.retina.davis.data.DavisImuDatagramClient;
 
 enum DavisDatagramClientDemo {
   ;

@@ -9,10 +9,10 @@ import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.davis.io.aedat.AedatFileSupplier;
-import ch.ethz.idsc.retina.davis.io.txt.DavisEventsTextWriter;
-import ch.ethz.idsc.retina.davis.io.txt.DavisPngImageWriter;
-import ch.ethz.idsc.retina.davis.io.txt.DavisSimpleImageWriter;
+import ch.ethz.idsc.retina.davis.io.AedatFileSupplier;
+import ch.ethz.idsc.retina.davis.io.DavisEventsTextWriter;
+import ch.ethz.idsc.retina.davis.io.DavisPngImageWriter;
+import ch.ethz.idsc.retina.davis.io.DavisSimpleImageWriter;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */

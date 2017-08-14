@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.aps;
+package ch.ethz.idsc.retina.davis.data;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

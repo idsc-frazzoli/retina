@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.aps;
+package ch.ethz.idsc.retina.davis.data;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

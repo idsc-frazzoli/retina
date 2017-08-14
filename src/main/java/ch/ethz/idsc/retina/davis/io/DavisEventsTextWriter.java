@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.txt;
+package ch.ethz.idsc.retina.davis.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.FileWriter;
 
 import ch.ethz.idsc.retina.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 /** lists the events in a text file */
 public class DavisEventsTextWriter implements DavisDvsEventListener, AutoCloseable {

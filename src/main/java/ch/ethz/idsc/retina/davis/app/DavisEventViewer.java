@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.davis._240c.DavisRealtimeSleeper;
-import ch.ethz.idsc.retina.davis.imu.DavisImuFrameCollector;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrameCollector;
 
 public enum DavisEventViewer {
   ;

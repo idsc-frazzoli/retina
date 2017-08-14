@@ -9,7 +9,7 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;

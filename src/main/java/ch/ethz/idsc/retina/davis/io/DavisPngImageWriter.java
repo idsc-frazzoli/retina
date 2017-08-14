@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io.txt;
+package ch.ethz.idsc.retina.davis.io;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.davis.io.DavisExportControl;
 
 public class DavisPngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   private final File directory;

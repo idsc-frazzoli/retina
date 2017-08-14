@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.davis;
 
 import ch.ethz.idsc.retina.davis._240c.DavisImuEvent;
-import ch.ethz.idsc.retina.davis.imu.DavisImuFrame;
-import ch.ethz.idsc.retina.davis.imu.DavisImuFrameListener;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 
 /** listens to a single imu event which contains
  * a single readout of accel, temperature, or gyro

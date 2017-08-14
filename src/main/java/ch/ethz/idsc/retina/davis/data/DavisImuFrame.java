@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.imu;
+package ch.ethz.idsc.retina.davis.data;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

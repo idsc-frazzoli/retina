@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.txt.DavisTxtFileSupplier;
+import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.app.AccumulateToGif;
 import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
