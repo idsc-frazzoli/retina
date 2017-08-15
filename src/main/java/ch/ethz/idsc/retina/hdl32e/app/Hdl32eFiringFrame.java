@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.util.gui.Hue;
+import ch.ethz.idsc.tensor.img.Hue;
 
 /** {@link Hdl32eFiringFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider

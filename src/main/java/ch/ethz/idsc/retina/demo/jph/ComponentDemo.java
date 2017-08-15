@@ -14,13 +14,13 @@ import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
 import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.retina.util.math.Constant;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 import ch.ethz.idsc.tensor.opt.ConvexHull;
 

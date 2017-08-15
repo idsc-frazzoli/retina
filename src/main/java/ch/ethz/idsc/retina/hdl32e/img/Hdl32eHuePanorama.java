@@ -4,10 +4,10 @@ package ch.ethz.idsc.retina.hdl32e.img;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-import ch.ethz.idsc.retina.util.gui.Hue;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.img.Hue;
 
 /** [2304 x 32] hue color images visualizing distance and intensity
  * with better contrast than {@link Hdl32eGrayscalePanorama} */

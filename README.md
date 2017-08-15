@@ -60,3 +60,10 @@ intensity as 360[deg] panorama
 ![synth1](https://user-images.githubusercontent.com/4012178/27772610-32af593e-5f66-11e7-8c29-64611f6ca3e6.gif)
 
 </tr></table>
+
+## Dependencies
+
+`retina` requires the libraries
+
+* `ch.ethz.idsc.tensor`
+* `ch.ethz.idsc.lcm-java`
