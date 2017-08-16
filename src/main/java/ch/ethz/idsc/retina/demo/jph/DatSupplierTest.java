@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
+import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
+import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.dev.dvs.io.dat.DatFileSupplier;
 
 /** demo dat file read */
 enum DatSupplierTest {

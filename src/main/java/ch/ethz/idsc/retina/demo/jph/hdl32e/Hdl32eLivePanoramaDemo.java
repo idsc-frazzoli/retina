@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
 import ch.ethz.idsc.retina.core.StartAndStoppable;
-import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.Hdl32eLiveFiringProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eLiveFiringProvider;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
 enum Hdl32eLivePanoramaDemo {

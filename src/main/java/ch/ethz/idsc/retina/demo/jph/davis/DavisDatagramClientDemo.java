@@ -1,15 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.davis;
 
-import ch.ethz.idsc.retina.davis.DavisDecoder;
-import ch.ethz.idsc.retina.davis.DavisDevice;
-import ch.ethz.idsc.retina.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
-import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
-import ch.ethz.idsc.retina.davis.data.DavisApsDatagramClient;
-import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramClient;
-import ch.ethz.idsc.retina.davis.data.DavisImuDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.dev.davis.DavisDevice;
+import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
+import ch.ethz.idsc.retina.dev.davis.app.DavisDefaultDisplay;
+import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuDatagramClient;
 
 enum DavisDatagramClientDemo {
   ;

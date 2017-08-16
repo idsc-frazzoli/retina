@@ -1,13 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
-import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.Hdl32ePacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.Hdl32ePositioningPacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanorama;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanoramaListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
