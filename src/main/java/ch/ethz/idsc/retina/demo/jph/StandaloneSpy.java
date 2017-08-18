@@ -6,6 +6,7 @@ import lcm.spy.Spy;
 enum StandaloneSpy {
   ;
   public static void main(String[] args) throws Exception {
-    new Spy("");
+    new Spy(""); // non-blocking
+    System.out.println("here...");
   }
 }

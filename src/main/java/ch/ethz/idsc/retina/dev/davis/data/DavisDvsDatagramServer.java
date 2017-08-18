@@ -31,7 +31,7 @@ public class DavisDvsDatagramServer implements DavisDvsBlockListener, AutoClosea
   }
 
   @Override
-  public void dvsBlockReady(int length, ByteBuffer byteBuffer) {
+  public void dvsBlock(int length, ByteBuffer byteBuffer) {
     datagramPacket.setLength(length);
     try {
       datagramSocket.send(datagramPacket);

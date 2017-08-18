@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.data;
 
+import java.nio.ByteBuffer;
+
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -45,6 +47,21 @@ public class DavisImuFrame {
 
   public Scalar temperature() {
     return RealScalar.of(temperature);
+  }
+
+  public int length() {
+    return 4 + 7 * 4;
+  }
+
+  public void get(ByteBuffer byteBuffer) {
+    byteBuffer.putInt(time);
+    byteBuffer.putFloat(accelX);
+    byteBuffer.putFloat(accelY);
+    byteBuffer.putFloat(accelZ);
+    byteBuffer.putFloat(temperature);
+    byteBuffer.putFloat(gyroX);
+    byteBuffer.putFloat(gyroY);
+    byteBuffer.putFloat(gyroZ);
   }
 
   public void print() {

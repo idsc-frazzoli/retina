@@ -6,9 +6,10 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketListener;
 
+/** collects a complete 360 rotation */
 public class Hdl32eAngularFiringCollector implements Hdl32eFiringPacketListener {
   /** the highway scene has ~140000 coordinates */
-  private static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184
+  public static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
@@ -32,12 +33,12 @@ public class Hdl32eAngularFiringCollector implements Hdl32eFiringPacketListener 
   // pi/180/1000
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
-  public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0; // TODO simplify
+  public static final double ANGLE_FACTOR = Math.PI / 18000.0; // 100th of a degree
+  // ---
   private final Hdl32eFiringListener hdl32eFiringListener;
 
   // TODO configure to also allow for subscription of other than 360 fov
-  public Hdl32eAngularFiringCollector( //
-      Hdl32eFiringListener hdl32eFiringListener) {
+  public Hdl32eAngularFiringCollector(Hdl32eFiringListener hdl32eFiringListener) {
     final double INCLINATION_FACTOR = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;

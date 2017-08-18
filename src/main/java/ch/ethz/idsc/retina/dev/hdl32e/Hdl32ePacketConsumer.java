@@ -26,7 +26,8 @@ public class Hdl32ePacketConsumer implements PcapPacketConsumer {
   private final Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer;
 
   public Hdl32ePacketConsumer( //
-      Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer, Hdl32ePositioningPacketConsumer hdl32eGpsPacketConsumer) {
+      Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer, //
+      Hdl32ePositioningPacketConsumer hdl32eGpsPacketConsumer) {
     this.hdl32eFiringPacketConsumer = hdl32eFiringPacketConsumer;
     this.hdl32ePositioningPacketConsumer = hdl32eGpsPacketConsumer;
   }

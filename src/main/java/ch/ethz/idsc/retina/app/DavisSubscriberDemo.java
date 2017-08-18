@@ -22,7 +22,7 @@ class DavisSubscriberDemo {
   final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
 
   public DavisSubscriberDemo() {
-    lcm.subscribe(DavisDvsBlockPublisher.CHANNEL, new LCMSubscriber() {
+    lcm.subscribe(DavisDvsBlockPublisher.DVS_CHANNEL, new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
@@ -34,7 +34,7 @@ class DavisSubscriberDemo {
         }
       }
     });
-    lcm.subscribe(DavisApsBlockPublisher.CHANNEL, new LCMSubscriber() {
+    lcm.subscribe(DavisApsBlockPublisher.APS_CHANNEL, new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {

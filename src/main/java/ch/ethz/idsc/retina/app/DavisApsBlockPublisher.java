@@ -8,7 +8,7 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 public class DavisApsBlockPublisher implements DavisApsBlockListener {
-  public static final String CHANNEL = "davis.id.aps";
+  public static final String APS_CHANNEL = "davis.id.aps";
   // ---
   private final LCM lcm = LCM.getSingleton();
 
@@ -18,6 +18,6 @@ public class DavisApsBlockPublisher implements DavisApsBlockListener {
     binaryBlob.data_length = length;
     binaryBlob.data = new byte[length]; // TODO try assigning byte buf array
     byteBuffer.get(binaryBlob.data);
-    lcm.publish(CHANNEL, binaryBlob);
+    lcm.publish(APS_CHANNEL, binaryBlob);
   }
 }

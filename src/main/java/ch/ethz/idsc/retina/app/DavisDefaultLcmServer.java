@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
 
 /** collection of functionality that filters raw data for aps content
  * the aps content is encoded in timed column blocks and sent via {@link DavisApsDatagramServer}
@@ -33,10 +34,10 @@ public enum DavisDefaultLcmServer {
     DavisApsColumnCompiler davisApsColumnCompiler = new DavisApsColumnCompiler(davisApsBlockCollector);
     davisDecoder.addListener(davisApsColumnCompiler);
     // ---
-    // ImuDatagramServer imuDatagramServer = new ImuDatagramServer();
-    // DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
-    // davisImuFrameCollector.addListener(imuDatagramServer);
-    // davisDecoder.addListener(davisImuFrameCollector);
+    DavisImuFramePublisher davisImuFramePublisher = new DavisImuFramePublisher();
+    DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
+    davisImuFrameCollector.addListener(davisImuFramePublisher);
+    davisDecoder.addListener(davisImuFrameCollector);
   }
 
   public void append(int length, int[] data, int[] time) {

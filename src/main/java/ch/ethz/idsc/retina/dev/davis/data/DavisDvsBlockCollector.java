@@ -59,7 +59,7 @@ public class DavisDvsBlockCollector implements DavisDvsEventListener {
     byteBuffer.position(0);
     byteBuffer.putShort((short) numel); // update numel
     byteBuffer.position(0);
-    davisDvsBlockListener.dvsBlockReady(length, byteBuffer);
+    davisDvsBlockListener.dvsBlock(length, byteBuffer);
     numel = 0;
     ++pacid;
   }
