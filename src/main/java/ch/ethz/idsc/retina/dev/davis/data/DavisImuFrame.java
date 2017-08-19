@@ -8,22 +8,31 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** in the current implementation the units are chosen to match the jAER demo
- * 
- * NOTICE: in the future, the units can be changed to SI */
+/** units are SI except for time stamp from chip */
 public class DavisImuFrame {
   /** us == micro seconds */
   public final int time;
-  /** acceleration in G */
+  /** acceleration in m/s^2 */
   public final float accelX;
   public final float accelY;
   public final float accelZ;
   /** temperature in degree Celsius */
   public final float temperature;
-  /** degree per seconds */
+  /** radians per seconds */
   public final float gyroX;
   public final float gyroY;
   public final float gyroZ;
+
+  public DavisImuFrame(int clock_usec, float[] accel, float temperature, float[] gyro) {
+    time = clock_usec;
+    this.accelX = accel[0];
+    this.accelY = accel[1];
+    this.accelZ = accel[2];
+    this.temperature = temperature;
+    this.gyroX = gyro[0];
+    this.gyroY = gyro[1];
+    this.gyroZ = gyro[2];
+  }
 
   public DavisImuFrame(int time, float[] values) {
     this.time = time;
@@ -49,10 +58,12 @@ public class DavisImuFrame {
     return RealScalar.of(temperature);
   }
 
+  @Deprecated
   public int length() {
     return 4 + 7 * 4;
   }
 
+  @Deprecated
   public void get(ByteBuffer byteBuffer) {
     byteBuffer.putInt(time);
     byteBuffer.putFloat(accelX);
@@ -64,6 +75,7 @@ public class DavisImuFrame {
     byteBuffer.putFloat(gyroZ);
   }
 
+  @Deprecated
   public void print() {
     System.out.println(String.format("accelX %f", accelX));
     System.out.println(String.format("accelY %f", accelY));

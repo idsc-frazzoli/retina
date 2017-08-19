@@ -10,25 +10,33 @@ import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisDefaultDisplay;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuLcmDecoder;
 import idsc.BinaryBlob;
+import idsc.DavisImu;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 
-// TODO rename
+/** opens a frame to visualize sensor data from the Davis240c camera
+ * which is received via three lcm channels
+ * <ul>
+ * <li>aps grayscale images
+ * <li>dvs events
+ * <li>imu
+ * </ul> */
 class DavisSubscriberDemo {
   private final LCM lcm = LCM.getSingleton();
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
+  final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
 
-  public DavisSubscriberDemo() {
+  public void start() {
     lcm.subscribe(DavisDvsBlockPublisher.DVS_CHANNEL, new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
           BinaryBlob dvsBlockLcm = new BinaryBlob(ins);
           davisDvsDatagramDecoder.decode(ByteBuffer.wrap(dvsBlockLcm.data));
-          // System.out.println("ok " + dvsBlockLcm.currentTimeMillis);
         } catch (IOException exception) {
           exception.printStackTrace();
         }
@@ -45,18 +53,32 @@ class DavisSubscriberDemo {
         }
       }
     });
+    lcm.subscribe(DavisImuFramePublisher.IMU_CHANNEL, new LCMSubscriber() {
+      @Override
+      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+        try {
+          DavisImu davisImu = new DavisImu(ins);
+          davisImuLcmDecoder.decode(davisImu);
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      }
+    });
   }
 
   public static void main(String[] args) throws Exception {
     DavisDevice davisDevice = Davis240c.INSTANCE;
-    DavisSubscriberDemo dvsBlockLcmReceiver = new DavisSubscriberDemo();
+    DavisSubscriberDemo davisSubscriberDemo = new DavisSubscriberDemo();
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(davisDevice);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 10000);
-    dvsBlockLcmReceiver.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
+    davisSubscriberDemo.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisImageDisplay);
     // handle aps
-    dvsBlockLcmReceiver.davisApsDatagramDecoder.addListener(davisImageDisplay);
+    davisSubscriberDemo.davisApsDatagramDecoder.addListener(davisImageDisplay);
+    // handle imu
+    davisSubscriberDemo.davisImuLcmDecoder.addListener(davisImageDisplay);
     // Thread.sleep(10000);
+    davisSubscriberDemo.start();
   }
 }
