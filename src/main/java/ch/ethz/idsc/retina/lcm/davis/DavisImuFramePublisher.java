@@ -7,9 +7,19 @@ import idsc.DavisImu;
 import lcm.lcm.LCM;
 
 class DavisImuFramePublisher implements DavisImuFrameListener {
-  public static final String IMU_CHANNEL = "davis.id.imu";
+  /** @param id
+   * @return aps channel name for given serial number of davis camera */
+  public static String channel(String id) {
+    return "davis." + id + ".imu";
+  }
+
   // ---
   private final LCM lcm = LCM.getSingleton();
+  private final String channel;
+
+  public DavisImuFramePublisher(String id) {
+    channel = channel(id);
+  }
 
   @Override
   public void imuFrame(DavisImuFrame davisImuFrame) {
@@ -22,6 +32,6 @@ class DavisImuFramePublisher implements DavisImuFrameListener {
     davisImu.gyro[0] = davisImuFrame.gyroX;
     davisImu.gyro[1] = davisImuFrame.gyroY;
     davisImu.gyro[2] = davisImuFrame.gyroZ;
-    lcm.publish(IMU_CHANNEL, davisImu);
+    lcm.publish(channel, davisImu);
   }
 }

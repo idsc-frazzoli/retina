@@ -26,17 +26,17 @@ import lcm.lcm.LCMSubscriber;
  * </ul> */
 class DavisSubscriberDemo {
   private final LCM lcm = LCM.getSingleton();
-  final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
-  final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
-  private final String serial;
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
+  private final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
+  private final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
+  private final String cameraId;
 
-  public DavisSubscriberDemo(String serial) {
-    this.serial = serial;
+  public DavisSubscriberDemo(String cameraId) {
+    this.cameraId = cameraId;
   }
 
   public void subscribe() {
-    lcm.subscribe(DavisDvsBlockPublisher.DVS_CHANNEL, new LCMSubscriber() {
+    lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
@@ -47,7 +47,7 @@ class DavisSubscriberDemo {
         }
       }
     });
-    lcm.subscribe(DavisApsBlockPublisher.channel(serial), new LCMSubscriber() {
+    lcm.subscribe(DavisApsBlockPublisher.channel(cameraId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
@@ -58,7 +58,7 @@ class DavisSubscriberDemo {
         }
       }
     });
-    lcm.subscribe(DavisImuFramePublisher.IMU_CHANNEL, new LCMSubscriber() {
+    lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {

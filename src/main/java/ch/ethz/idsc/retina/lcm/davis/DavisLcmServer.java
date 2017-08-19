@@ -6,6 +6,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockListener;
+import ch.ethz.idsc.retina.dev.davis.data.DavisApsColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsCorrectedColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
@@ -27,28 +28,33 @@ public class DavisLcmServer {
   // ---
   public final DavisDecoder davisDecoder;
 
-  /** @param serial for instance "FX2_02460045" */
-  public DavisLcmServer(String serial) {
+  /** @param serial for instance "FX2_02460045"
+   * @param cameraId */
+  public DavisLcmServer(String serial, String cameraId) {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     // ---
     DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
-    DavisDvsBlockListener davisDvsBlockListener = new DavisDvsBlockPublisher();
+    DavisDvsBlockListener davisDvsBlockListener = new DavisDvsBlockPublisher(cameraId);
     davisDvsBlockCollector.setListener(davisDvsBlockListener);
     davisDecoder.addListener(davisDvsBlockCollector);
     // ---
-    DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(serial);
+    DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId);
     DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
     davisApsBlockCollector.setListener(davisApsBlockListener);
     DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
-    DavisApsCorrectedColumnCompiler davisApsColumnCompiler = new DavisApsCorrectedColumnCompiler(davisApsBlockCollector, davisApsCorrection);
+    DavisApsColumnCompiler davisApsColumnCompiler = //
+        new DavisApsCorrectedColumnCompiler(davisApsBlockCollector, davisApsCorrection);
     davisDecoder.addListener(davisApsColumnCompiler);
     // ---
-    DavisImuFramePublisher davisImuFramePublisher = new DavisImuFramePublisher();
+    DavisImuFramePublisher davisImuFramePublisher = new DavisImuFramePublisher(cameraId);
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
     davisImuFrameCollector.addListener(davisImuFramePublisher);
     davisDecoder.addListener(davisImuFrameCollector);
   }
 
+  /** @param length
+   * @param data
+   * @param time */
   public void append(int length, int[] data, int[] time) {
     for (int index = 0; index < length; ++index)
       davisDecoder.read(data[index], time[index]);

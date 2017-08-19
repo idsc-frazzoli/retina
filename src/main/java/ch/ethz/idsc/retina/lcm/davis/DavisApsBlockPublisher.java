@@ -8,18 +8,18 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 class DavisApsBlockPublisher implements DavisApsBlockListener {
-  /** @param serial
-   * @return aps channel name for given serial number of davis camera */
-  public static String channel(String serial) {
-    return "davis." + serial + ".aps";
+  /** @param id
+   * @return aps channel name for given id */
+  public static String channel(String id) {
+    return "davis." + id + ".aps";
   }
 
   // ---
   private final LCM lcm = LCM.getSingleton();
   private final String channel;
 
-  public DavisApsBlockPublisher(String serial) {
-    channel = channel(serial);
+  public DavisApsBlockPublisher(String id) {
+    channel = channel(id);
   }
 
   @Override

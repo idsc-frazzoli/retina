@@ -8,9 +8,19 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 class DavisDvsBlockPublisher implements DavisDvsBlockListener {
-  public static final String DVS_CHANNEL = "davis.id.dvs";
+  /** @param id
+   * @return aps channel name for given serial number of davis camera */
+  public static String channel(String id) {
+    return "davis." + id + ".dvs";
+  }
+
   // ---
   private final LCM lcm = LCM.getSingleton();
+  private final String channel;
+
+  public DavisDvsBlockPublisher(String serial) {
+    this.channel = channel(serial);
+  }
 
   @Override
   public void dvsBlock(int length, ByteBuffer byteBuffer) {
@@ -18,6 +28,6 @@ class DavisDvsBlockPublisher implements DavisDvsBlockListener {
     binaryBlob.data_length = length;
     binaryBlob.data = new byte[length]; // TODO try assigning byte buf array
     byteBuffer.get(binaryBlob.data);
-    lcm.publish(DVS_CHANNEL, binaryBlob);
+    lcm.publish(channel, binaryBlob);
   }
 }

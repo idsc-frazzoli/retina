@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e.data;
 
-import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
 import junit.framework.TestCase;
 
 public class Hdl32ePanoramaTest extends TestCase {
