@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -9,7 +11,11 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
@@ -18,6 +24,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
@@ -31,7 +38,7 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
   private final int height;
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
-  DavisDefaultComponent davisDefaultComponent = new DavisDefaultComponent();
+  private final DavisDefaultComponent davisDefaultComponent = new DavisDefaultComponent();
 
   public DavisDefaultDisplay(DavisDevice davisDevice) {
     width = davisDevice.getWidth();
@@ -39,9 +46,29 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    jFrame.setBounds(100, 100, 500, 200);
+    jFrame.setBounds(100, 100, 500, 300);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setContentPane(davisDefaultComponent.jComponent);
+    Component component = jFrame.getContentPane();
+    JPanel jPanel = (JPanel) component;
+    {
+      JToolBar jToolBar = new JToolBar();
+      jToolBar.setFloatable(false);
+      {
+        JButton jButton = new JButton("exp");
+        jButton.addActionListener(actionEvent -> {
+          System.out.println("here");
+          try {
+            ImageIO.write(davisDefaultComponent.apsImage, "png", UserHome.Pictures("apsimage.png"));
+          } catch (Exception exception) {
+            // ---
+          }
+        });
+        jToolBar.add(jButton);
+      }
+      jPanel.add(jToolBar, BorderLayout.NORTH);
+    }
+    jPanel.add(davisDefaultComponent.jComponent, BorderLayout.CENTER);
+    // jFrame.setContentPane(davisDefaultComponent.jComponent);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent windowEvent) {

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.app;
+package ch.ethz.idsc.retina.lcm.davis;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,8 +29,13 @@ class DavisSubscriberDemo {
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
   final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
+  private final String serial;
 
-  public void start() {
+  public DavisSubscriberDemo(String serial) {
+    this.serial = serial;
+  }
+
+  public void subscribe() {
     lcm.subscribe(DavisDvsBlockPublisher.DVS_CHANNEL, new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
@@ -42,7 +47,7 @@ class DavisSubscriberDemo {
         }
       }
     });
-    lcm.subscribe(DavisApsBlockPublisher.APS_CHANNEL, new LCMSubscriber() {
+    lcm.subscribe(DavisApsBlockPublisher.channel(serial), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
@@ -68,7 +73,7 @@ class DavisSubscriberDemo {
 
   public static void main(String[] args) throws Exception {
     DavisDevice davisDevice = Davis240c.INSTANCE;
-    DavisSubscriberDemo davisSubscriberDemo = new DavisSubscriberDemo();
+    DavisSubscriberDemo davisSubscriberDemo = new DavisSubscriberDemo(DavisSerial.FX2_02460045.name());
     DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(davisDevice);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 10000);
@@ -78,7 +83,7 @@ class DavisSubscriberDemo {
     davisSubscriberDemo.davisApsDatagramDecoder.addListener(davisImageDisplay);
     // handle imu
     davisSubscriberDemo.davisImuLcmDecoder.addListener(davisImageDisplay);
-    // Thread.sleep(10000);
-    davisSubscriberDemo.start();
+    // start to listen
+    davisSubscriberDemo.subscribe();
   }
 }

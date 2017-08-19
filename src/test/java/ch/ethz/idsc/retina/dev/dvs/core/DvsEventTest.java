@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dvs.core;
+package ch.ethz.idsc.retina.dev.dvs.core;
 
 import junit.framework.TestCase;
 

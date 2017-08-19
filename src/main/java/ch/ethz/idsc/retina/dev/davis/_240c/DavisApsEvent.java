@@ -23,6 +23,12 @@ public class DavisApsEvent implements DavisEvent {
     return (byte) (adc >> 2);
   }
 
+  /** @param ref
+   * @return 8 most significant bits of adc reading */
+  public byte grayscale(int ref) {
+    return (byte) (Math.max(0, adc - ref) >> 2);
+  }
+
   @Override
   public int time() {
     return time;

@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.app;
+package ch.ethz.idsc.retina.lcm.davis;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import idsc.DavisImu;
 import lcm.lcm.LCM;
 
-public class DavisImuFramePublisher implements DavisImuFrameListener {
+class DavisImuFramePublisher implements DavisImuFrameListener {
   public static final String IMU_CHANNEL = "davis.id.imu";
   // ---
   private final LCM lcm = LCM.getSingleton();

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.app;
+package ch.ethz.idsc.retina.lcm.davis;
 
 import java.nio.ByteBuffer;
 
@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
-public class DavisDvsBlockPublisher implements DavisDvsBlockListener {
+class DavisDvsBlockPublisher implements DavisDvsBlockListener {
   public static final String DVS_CHANNEL = "davis.id.dvs";
   // ---
   private final LCM lcm = LCM.getSingleton();

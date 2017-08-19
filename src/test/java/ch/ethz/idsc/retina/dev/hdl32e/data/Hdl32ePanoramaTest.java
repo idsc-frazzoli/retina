@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.hdl32e;
+package ch.ethz.idsc.retina.dev.hdl32e.data;
 
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
 import junit.framework.TestCase;

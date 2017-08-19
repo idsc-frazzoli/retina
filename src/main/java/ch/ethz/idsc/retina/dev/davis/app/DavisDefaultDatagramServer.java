@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockCollector;
-import ch.ethz.idsc.retina.dev.davis.data.DavisApsColumnCompiler;
+import ch.ethz.idsc.retina.dev.davis.data.DavisApsRawColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
@@ -29,7 +29,7 @@ public enum DavisDefaultDatagramServer {
     // ---
     DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
     DavisApsDatagramServer davisApsDatagramServer = new DavisApsDatagramServer(davisApsBlockCollector);
-    DavisApsColumnCompiler davisApsColumnCompiler = new DavisApsColumnCompiler(davisApsBlockCollector);
+    DavisApsRawColumnCompiler davisApsColumnCompiler = new DavisApsRawColumnCompiler(davisApsBlockCollector);
     davisDecoder.addListener(davisApsColumnCompiler);
     // ---
     DavisImuDatagramServer davisImuDatagramServer = new DavisImuDatagramServer();

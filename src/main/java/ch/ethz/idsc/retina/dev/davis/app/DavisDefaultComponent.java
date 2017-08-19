@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.Color;
@@ -14,7 +15,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class DavisDefaultComponent {
+/* package */ class DavisDefaultComponent {
   private final JLabel jLabel = new JLabel();
   BufferedImage apsImage = null;
   BufferedImage dvsImage = null;
@@ -22,7 +23,7 @@ public class DavisDefaultComponent {
   private final Stopwatch stopwatch = new Stopwatch();
   boolean isComplete;
   Tensor displayEventCount = Array.zeros(3);
-  public final JComponent jComponent = new JComponent() {
+  final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       long period = stopwatch.stop();
