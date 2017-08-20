@@ -1,17 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
-import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.hdl32e.Hdl32eFiringPacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.Hdl32ePacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.Hdl32ePositioningPacketConsumer;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanorama;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.hdl32e.img.Hdl32ePanoramaListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
+import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-/** collects array of 3d positions */
 enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
@@ -19,13 +18,13 @@ enum Hdl32ePacketConsumerDemo {
     Hdl32eFiringListener hdl32ePositionListener = new Hdl32eFiringListener() {
       @Override
       public void digest(float[] position_data, int length) {
-        // System.out.println("here");
+        System.out.println("here");
       }
     };
     Hdl32ePanoramaListener hdl32ePanoramaListener = new Hdl32ePanoramaListener() {
       @Override
       public void panorama(Hdl32ePanorama hdl32ePanorama) {
-        // System.out.println(hdl32ePanorama.angle);
+        // System.out.println("here");
       }
 
       @Override

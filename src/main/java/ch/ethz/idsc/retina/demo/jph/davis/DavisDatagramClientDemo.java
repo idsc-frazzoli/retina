@@ -1,22 +1,22 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.davis;
 
-import ch.ethz.idsc.retina.davis.DavisDecoder;
-import ch.ethz.idsc.retina.davis.DavisDevice;
-import ch.ethz.idsc.retina.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.davis.app.AccumulatedEventsImage;
-import ch.ethz.idsc.retina.davis.app.DavisDefaultDisplay;
-import ch.ethz.idsc.retina.davis.aps.DavisApsDatagramClient;
-import ch.ethz.idsc.retina.davis.dvs.DavisDvsDatagramClient;
-import ch.ethz.idsc.retina.davis.imu.DavisImuDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.dev.davis.DavisDevice;
+import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
+import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramClient;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuDatagramClient;
 
 enum DavisDatagramClientDemo {
   ;
   public static void main(String[] args) throws Exception {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisDecoder davisDecoder = davisDevice.createDecoder();
-    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(davisDevice);
+    DavisViewerFrame davisImageDisplay = new DavisViewerFrame(davisDevice);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
     davisImageDisplay.setStatistics(davisEventStatistics);

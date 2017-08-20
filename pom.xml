@@ -19,7 +19,17 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.3.1</version>
+			<version>0.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ethz.idsc</groupId>
+			<artifactId>lcm-java</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jchart2d</groupId>
+			<artifactId>jchart2d</artifactId>
+			<version>3.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -28,14 +38,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>internal.repo</id>
-			<name>Temporary Staging Repository</name>
-			<url>file://${project.build.directory}/mvn-repo</url>
-		</repository>
-	</distributionManagement>
 
 	<repositories>
 		<repository>
@@ -46,7 +48,23 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>lcm-java-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/lcm-java/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
