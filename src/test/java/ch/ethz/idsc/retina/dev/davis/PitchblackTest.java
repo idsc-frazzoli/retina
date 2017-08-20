@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.davis;
 
 import java.util.Arrays;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisSerial;
+import ch.ethz.idsc.retina.demo.DavisSerial;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.ResourceData;

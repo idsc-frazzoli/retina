@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.lcm.davis;
+package ch.ethz.idsc.retina.demo;
 
 /** list of serial numbers of the calibrated davis cameras available at IDSC
  * 

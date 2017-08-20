@@ -19,7 +19,7 @@ public enum DavisEventViewer {
   public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addListener(davisEventStatistics);
-    DavisDefaultDisplay davisImageDisplay = new DavisDefaultDisplay(Davis240c.INSTANCE); // TODO
+    DavisViewerFrame davisImageDisplay = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
     davisImageDisplay.setStatistics(davisEventStatistics);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);

@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisSerial;
+import ch.ethz.idsc.retina.demo.DavisSerial;
 import junit.framework.TestCase;
 
 public class DavisApsCorrectionTest extends TestCase {

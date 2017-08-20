@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,23 +28,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
 // TODO redraw thread is independent of sync signal of images...!
-public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImageListener, DavisImuFrameListener {
+public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageListener, DavisImuFrameListener {
   private final JFrame jFrame = new JFrame();
   private DavisEventStatistics davisEventStatistics;
   private Tensor eventCount = Array.zeros(3);
   private final Timer timer = new Timer();
-  private final int width;
-  private final int height;
-  private final BufferedImage bufferedImage;
-  private final byte[] bytes;
-  private final DavisDefaultComponent davisDefaultComponent = new DavisDefaultComponent();
+  private final DavisViewerComponent davisDefaultComponent = new DavisViewerComponent();
 
-  public DavisDefaultDisplay(DavisDevice davisDevice) {
-    width = davisDevice.getWidth();
-    height = davisDevice.getHeight();
-    bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-    DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
-    bytes = dataBufferByte.getData();
+  public DavisViewerFrame(DavisDevice davisDevice) {
     jFrame.setBounds(100, 100, 500, 300);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Component component = jFrame.getContentPane();
@@ -105,22 +95,17 @@ public class DavisDefaultDisplay implements TimedImageListener, ColumnTimedImage
     jFrame.dispose();
   }
 
-  @Override
+  @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
     davisDefaultComponent.imuFrame = davisImuFrame;
   }
 
-  @Override
+  @Override // from TimedImageListener
   public void image(int time, BufferedImage bufferedImage) {
-    // DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
-    // byte[] data = dataBufferByte.getData();
-    // synchronized (bufferedImage) {
-    // ByteBuffer.wrap(bytes).put(data);
-    // }
-    davisDefaultComponent.dvsImage = bufferedImage;
+    davisDefaultComponent.setDvsImage(bufferedImage);
   }
 
-  @Override
+  @Override // from ColumnTimedImageListener
   public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (!isComplete)
       System.err.println("image incomplete");
