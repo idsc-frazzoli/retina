@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.dev.davis._240c;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisImuEventListener;
  * (0,0) corresponds to left-upper corner, and
  * (x,0) parameterizes the first/top row
  * (0,y) parameterizes the first/left column */
-class Davis240cDecoder implements DavisDecoder {
+public class Davis240cDecoder implements DavisDecoder {
   private static final int WIDTH = 240;
   private static final int HEIGHT = 180;
   private static final int LAST_X = WIDTH - 1;
@@ -27,11 +26,12 @@ class Davis240cDecoder implements DavisDecoder {
   private static final int IMU = 0x0c00;
   // ---
   private final List<DavisDvsEventListener> dvsDavisEventListeners = new LinkedList<>();
-  private final List<DavisApsEventListener> apsDavisEventListeners = new LinkedList<>();
+  private final List<DavisApsEventListener> sigDavisEventListeners = new LinkedList<>();
+  private final List<DavisApsEventListener> rstDavisEventListeners = new LinkedList<>();
   private final List<DavisImuEventListener> imuDavisEventListeners = new LinkedList<>();
 
   @Override
-  public void read(ByteBuffer byteBuffer) {
+  public void read(ByteBuffer byteBuffer) { // BIG_ENDIAN
     int data = byteBuffer.getInt(); // also referred to "address"
     int time = byteBuffer.getInt(); // microseconds
     read(data, time);
@@ -48,12 +48,15 @@ class Davis240cDecoder implements DavisDecoder {
       dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
     } else {
       final int read = data & 0x0c00;
-      if (read == SIGNAL_READ) { // signal
+      if (read == SIGNAL_READ) { // signal read
         final int adc = data & ADC_MAX;
         DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, LAST_Y - y, ADC_MAX - adc);
-        apsDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
+        sigDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
       } else //
       if (read == RESET_READ) { // reset read
+        final int adc = data & ADC_MAX;
+        DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, LAST_Y - y, ADC_MAX - adc);
+        rstDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
       } else //
       if (read == IMU) { // imu
         DavisImuEvent imuDavisEvent = new DavisImuEvent(time, data);
@@ -62,19 +65,18 @@ class Davis240cDecoder implements DavisDecoder {
     }
   }
 
+  public void addRstListener(DavisApsEventListener listener) {
+    rstDavisEventListeners.add(listener);
+  }
+
   @Override
   public void addListener(DavisEventListener davisEventListener) {
     if (davisEventListener instanceof DavisDvsEventListener)
       dvsDavisEventListeners.add((DavisDvsEventListener) davisEventListener);
     if (davisEventListener instanceof DavisApsEventListener)
-      apsDavisEventListeners.add((DavisApsEventListener) davisEventListener);
+      sigDavisEventListeners.add((DavisApsEventListener) davisEventListener);
     if (davisEventListener instanceof DavisImuEventListener)
       imuDavisEventListeners.add((DavisImuEventListener) davisEventListener);
-  }
-
-  @Override
-  public ByteOrder getByteOrder() {
-    return ByteOrder.BIG_ENDIAN;
   }
 
   public static void main(String[] args) {

@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
   // ---
   BufferedImage apsImage = null;
+  BufferedImage rstImage = null;
   private BufferedImage dvsImage = null;
   DavisImuFrame imuFrame = null;
   private final Stopwatch stopwatch = new Stopwatch();
@@ -32,15 +33,20 @@ import ch.ethz.idsc.tensor.sca.Round;
     protected void paintComponent(Graphics graphics) {
       long period = stopwatch.stop();
       stopwatch.start();
+      if (Objects.nonNull(rstImage)) {
+        graphics.drawImage(rstImage, 0, 0, JLABEL);
+        if (!isComplete)
+          graphics.drawString("incomplete!", 0, 200);
+      }
       if (Objects.nonNull(apsImage)) {
-        graphics.drawImage(apsImage, 0, 0, JLABEL);
+        graphics.drawImage(apsImage, 240, 0, JLABEL);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
       {
         BufferedImage refImage = dvsImage;
         if (Objects.nonNull(refImage))
-          graphics.drawImage(refImage, 240, 0, JLABEL);
+          graphics.drawImage(refImage, 2 * 240, 0, JLABEL);
       }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);

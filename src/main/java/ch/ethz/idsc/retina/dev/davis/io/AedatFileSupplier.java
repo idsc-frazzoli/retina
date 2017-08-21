@@ -32,7 +32,7 @@ public class AedatFileSupplier implements StartAndStoppable {
     this.davisDecoder = davisDecoder;
     AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
     inputStream = aedatFileHeader.getInputStream();
-    byteBuffer.order(ByteOrder.BIG_ENDIAN);
+    byteBuffer.order(ByteOrder.BIG_ENDIAN); // order defined by aedat format
   }
 
   @Override

@@ -36,7 +36,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
   private final DavisViewerComponent davisDefaultComponent = new DavisViewerComponent();
 
   public DavisViewerFrame(DavisDevice davisDevice) {
-    jFrame.setBounds(100, 100, 500, 300);
+    jFrame.setBounds(100, 100, 730, 300);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
@@ -112,6 +112,16 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
     davisDefaultComponent.apsImage = bufferedImage;
     davisDefaultComponent.isComplete = isComplete;
   }
+
+  public ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
+    @Override
+    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+      if (!isComplete)
+        System.err.println("rst incomplete");
+      davisDefaultComponent.rstImage = bufferedImage;
+      davisDefaultComponent.isComplete = isComplete;
+    }
+  };
 
   public void setStatistics(DavisEventStatistics davisEventStatistics) {
     this.davisEventStatistics = davisEventStatistics;

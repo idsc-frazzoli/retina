@@ -13,9 +13,9 @@ enum LcmLogView {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = "/media/datahaki/media/ethz/davis240c/lcm_log/lcmlog-2017-08-20.00";
+    cfg.logFile = "/media/datahaki/media/ethz/davis240c/lcm_log/lcmlog-2017-08-20.01";
     cfg.speed = RationalScalar.of(1, 4);
     LogPlayer.create(cfg);
-    DavisLcmViewer.createStandlone(DavisSerial.FX2_02460045.name(), 10_000);
+    DavisLcmViewer.createStandlone(DavisSerial.FX2_02460045.name(), 25_000);
   }
 }

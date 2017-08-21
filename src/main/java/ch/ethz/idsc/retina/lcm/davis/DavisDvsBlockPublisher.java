@@ -19,7 +19,7 @@ class DavisDvsBlockPublisher implements DavisDvsBlockListener {
   private final String channel;
 
   public DavisDvsBlockPublisher(String serial) {
-    this.channel = channel(serial);
+    channel = channel(serial);
   }
 
   @Override

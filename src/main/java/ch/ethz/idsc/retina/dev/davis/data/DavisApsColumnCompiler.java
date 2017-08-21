@@ -2,9 +2,9 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 
 public abstract class DavisApsColumnCompiler implements DavisApsEventListener {
   static final int LAST_Y = 179;
@@ -17,7 +17,7 @@ public abstract class DavisApsColumnCompiler implements DavisApsEventListener {
   public DavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
     data = new byte[LENGTH];
     byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.BIG_ENDIAN);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
     this.davisApsColumnListener = davisApsColumnListener;
   }
 }

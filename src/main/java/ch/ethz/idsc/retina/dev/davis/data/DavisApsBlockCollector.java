@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** compiles aps columns and forwards them to a given {@link DavisApsColumnListener} */
@@ -23,7 +23,7 @@ public class DavisApsBlockCollector implements DavisApsColumnListener {
     length = 2 + columns * 184;
     byte[] data = new byte[length];
     byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.BIG_ENDIAN);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
     GlobalAssert.that(240 % columns == 0);
   }
 
