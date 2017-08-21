@@ -5,6 +5,7 @@ package ch.ethz.idsc.retina.demo;
  * 
  * class exists for convenience to prevent typos when selecting the camera device */
 public enum DavisSerial {
-  FX2_02460045, // jan
+  FX2_02460010, // Julian
+  FX2_02460045, // Jan
   ;
 }
