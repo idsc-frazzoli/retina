@@ -12,8 +12,6 @@ import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.Stopwatch;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO magic const
@@ -27,19 +25,19 @@ import ch.ethz.idsc.tensor.sca.Round;
   DavisImuFrame imuFrame = null;
   private final Stopwatch stopwatch = new Stopwatch();
   boolean isComplete;
-  Tensor displayEventCount = Array.zeros(3);
+  // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       long period = stopwatch.stop();
       stopwatch.start();
       if (Objects.nonNull(rstImage)) {
-        graphics.drawImage(rstImage, 0, 0, JLABEL);
+        graphics.drawImage(rstImage, 0 * 240, 0, JLABEL);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
       if (Objects.nonNull(apsImage)) {
-        graphics.drawImage(apsImage, 240, 0, JLABEL);
+        graphics.drawImage(apsImage, 1 * 240, 0, JLABEL);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
@@ -51,15 +49,15 @@ import ch.ethz.idsc.tensor.sca.Round;
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
         graphics.drawString( //
-            String.format("%4.1f C", imuFrame.temperature), 70, 190);
+            String.format("%4.1f C", imuFrame.temperature), 70, 180 + 12 * 1);
         graphics.drawString( //
-            imuFrame.accel().map(Round._2).toString(), 120, 190);
+            imuFrame.accel().map(Round._2) + "[m*s^-2]", 0, 180 + 12 * 2);
         graphics.drawString( //
-            imuFrame.gyro().map(Round.FUNCTION).toString(), 260, 190);
+            imuFrame.gyro().map(Round._2) + "[rad*s^-1]", 0, 180 + 12 * 3);
       }
       {
-        graphics.setColor(Color.GRAY);
-        graphics.drawString(displayEventCount.toString(), 0, 200);
+        // graphics.setColor(Color.GRAY);
+        // graphics.drawString(displayEventCount.toString(), 0, 200);
       }
       // ---
       graphics.setColor(Color.RED);

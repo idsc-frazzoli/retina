@@ -34,6 +34,10 @@ public class DavisApsEvent implements DavisEvent {
     return time;
   }
 
+  public int adc() {
+    return adc;
+  }
+
   @Override
   public String toString() { // function will be removed after debug phase
     return String.format("aps %8d  (%4d, %3d) %4d", time, x, y, adc);
