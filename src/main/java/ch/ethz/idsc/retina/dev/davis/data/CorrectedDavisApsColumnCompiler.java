@@ -12,10 +12,10 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class DavisApsCorrectedColumnCompiler extends DavisApsColumnCompiler {
+public class CorrectedDavisApsColumnCompiler extends DavisApsColumnCompiler {
   private final DavisApsCorrection davisApsCorrection;
 
-  public DavisApsCorrectedColumnCompiler(DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
+  public CorrectedDavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
     super(davisApsColumnListener);
     this.davisApsCorrection = davisApsCorrection;
   }

@@ -4,17 +4,15 @@ package ch.ethz.idsc.retina.lcm.davis;
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240cDecoder;
-import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsColumnCompiler;
-import ch.ethz.idsc.retina.dev.davis.data.DavisApsCorrectedColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
+import ch.ethz.idsc.retina.dev.davis.data.RawDavisApsColumnCompiler;
 import idsc.DavisImu;
 
 /** collection of functionality that filters raw data for aps content
@@ -41,23 +39,21 @@ public class DavisLcmServer {
       davisDecoder.addDvsListener(davisDvsBlockCollector);
     }
     {
-      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
-      DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
+      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.RST);
+      DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
       davisApsBlockCollector.setListener(davisApsBlockListener);
-      DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
+      // DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
       DavisApsColumnCompiler davisApsColumnCompiler = //
-          new DavisApsCorrectedColumnCompiler(davisApsBlockCollector, davisApsCorrection);
-      davisDecoder.addSigListener(davisApsColumnCompiler);
+          new RawDavisApsColumnCompiler(davisApsBlockCollector);
+      davisDecoder.addRstListener(davisApsColumnCompiler);
     }
     {
-      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.RST);
-      DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
+      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
+      DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
       davisApsBlockCollector.setListener(davisApsBlockListener);
-      DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
-      DavisApsColumnCompiler davisApsColumnCompiler = //
-          new DavisApsCorrectedColumnCompiler(davisApsBlockCollector, davisApsCorrection);
-      Davis240cDecoder d = (Davis240cDecoder) davisDecoder;
-      d.addRstListener(davisApsColumnCompiler);
+      // DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
+      DavisApsColumnCompiler davisApsColumnCompiler = new RawDavisApsColumnCompiler(davisApsBlockCollector);
+      davisDecoder.addSigListener(davisApsColumnCompiler);
     }
     {
       DavisImuFramePublisher davisImuFramePublisher = new DavisImuFramePublisher(cameraId);

@@ -13,13 +13,8 @@ public class DavisApsBlockCollector implements DavisApsColumnListener {
   private final ByteBuffer byteBuffer;
   private DavisApsBlockListener apsBlockListener;
 
-  /** for an image of width == 240
-   * column is in {2, 3, 4, 5, 6, 8, 10, ... }
-   * FactorInteger[240] == {{2, 4}, {3, 1}, {5, 1}}
-   * 
-   * @param columns has to divide image width */
-  public DavisApsBlockCollector(int columns) {
-    this.columns = columns;
+  public DavisApsBlockCollector() {
+    this.columns = DavisStatics.APS_COLUMNS;
     length = 2 + columns * 184;
     byte[] data = new byte[length];
     byteBuffer = ByteBuffer.wrap(data);

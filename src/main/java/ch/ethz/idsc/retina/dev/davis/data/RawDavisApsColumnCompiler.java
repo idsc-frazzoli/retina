@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class DavisApsRawColumnCompiler extends DavisApsColumnCompiler {
-  public DavisApsRawColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
+public class RawDavisApsColumnCompiler extends DavisApsColumnCompiler {
+  public RawDavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
     super(davisApsColumnListener);
   }
 
