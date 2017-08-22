@@ -30,7 +30,7 @@ public class CorrectedDavisApsColumnCompiler extends DavisApsColumnCompiler {
     // subsequent check should not be necessary
     // however, raw data of jaer was observed to contain gaps due to lag/delay
     if (byteBuffer.position() < LENGTH) {
-      int ref = davisApsCorrection.next();
+      int ref = davisApsCorrection.nextReference();
       byteBuffer.put(davisApsEvent.grayscale(ref));
     }
     // byteBuffer.put(4 + davisApsEvent.y, davisApsEvent.grayscale());

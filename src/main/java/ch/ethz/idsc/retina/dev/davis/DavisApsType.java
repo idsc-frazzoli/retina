@@ -4,6 +4,6 @@ package ch.ethz.idsc.retina.dev.davis;
 public enum DavisApsType {
   RST, // reset read
   SIG, // signal read
-  IMG, // image
+  DIF, // difference SIG - RST
   ;
 }
