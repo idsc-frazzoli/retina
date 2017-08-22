@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockCollector;
+import ch.ethz.idsc.retina.dev.davis.data.DavisApsColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramServer;
-import ch.ethz.idsc.retina.dev.davis.data.DavisApsRawColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuDatagramServer;
@@ -25,17 +25,17 @@ public enum DavisDefaultDatagramServer {
     // ---
     DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
     DavisDvsDatagramServer davisDvsDatagramServer = new DavisDvsDatagramServer(davisDvsBlockCollector);
-    davisDecoder.addListener(davisDvsBlockCollector);
+    davisDecoder.addDvsListener(davisDvsBlockCollector);
     // ---
-    DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
+    DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
     DavisApsDatagramServer davisApsDatagramServer = new DavisApsDatagramServer(davisApsBlockCollector);
-    DavisApsRawColumnCompiler davisApsColumnCompiler = new DavisApsRawColumnCompiler(davisApsBlockCollector);
-    davisDecoder.addListener(davisApsColumnCompiler);
+    DavisApsColumnCompiler davisApsColumnCompiler = new DavisApsColumnCompiler(davisApsBlockCollector);
+    davisDecoder.addSigListener(davisApsColumnCompiler);
     // ---
     DavisImuDatagramServer davisImuDatagramServer = new DavisImuDatagramServer();
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
     davisImuFrameCollector.addListener(davisImuDatagramServer);
-    davisDecoder.addListener(davisImuFrameCollector);
+    davisDecoder.addImuListener(davisImuFrameCollector);
   }
 
   public void append(int length, int[] data, int[] time) {

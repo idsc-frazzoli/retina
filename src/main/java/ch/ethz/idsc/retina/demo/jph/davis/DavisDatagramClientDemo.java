@@ -18,7 +18,9 @@ enum DavisDatagramClientDemo {
     DavisDecoder davisDecoder = davisDevice.createDecoder();
     DavisViewerFrame davisImageDisplay = new DavisViewerFrame(davisDevice);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    davisDecoder.addListener(davisEventStatistics);
+    davisDecoder.addDvsListener(davisEventStatistics);
+    davisDecoder.addSigListener(davisEventStatistics);
+    davisDecoder.addImuListener(davisEventStatistics);
     davisImageDisplay.setStatistics(davisEventStatistics);
     // subscribe to dvs events:
     DavisDvsDatagramClient dvsDatagramClient = new DavisDvsDatagramClient();

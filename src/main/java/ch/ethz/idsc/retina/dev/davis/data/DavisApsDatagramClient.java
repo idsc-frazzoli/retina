@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
 
 public class DavisApsDatagramClient {
@@ -16,8 +17,9 @@ public class DavisApsDatagramClient {
   public void start() {
     try (DatagramSocket datagramSocket = new DatagramSocket(DavisDatagram.APS_PORT)) {
       byte[] bytes = new byte[MAX_PACKET_SIZE];
-      ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
       DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
+      ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+      byteBuffer.order(DavisStatics.BYTE_ORDER);
       while (true) {
         datagramSocket.receive(datagramPacket);
         byteBuffer.position(0);

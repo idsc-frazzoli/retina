@@ -31,24 +31,26 @@ public enum AedatLogConverter {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    davisDecoder.addListener(davisEventStatistics);
+    davisDecoder.addDvsListener(davisEventStatistics);
+    davisDecoder.addSigListener(davisEventStatistics);
+    davisDecoder.addImuListener(davisEventStatistics);
     // ---
     FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
     DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
-    davisDecoder.addListener(eventsTextWriter);
+    davisDecoder.addDvsListener(eventsTextWriter);
     // ---
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     DavisPngImageWriter pngImageWriter = new DavisPngImageWriter(directory, fitec);
     davisImageProvider.addListener(fitec);
     davisImageProvider.addListener(pngImageWriter);
-    davisDecoder.addListener(davisImageProvider);
+    davisDecoder.addSigListener(davisImageProvider);
     // ---
     AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 20000);
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();
       accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
-      davisDecoder.addListener(accumulateDvsImage);
+      davisDecoder.addDvsListener(accumulateDvsImage);
     }
     // ---
     aedatFileSupplier.start();

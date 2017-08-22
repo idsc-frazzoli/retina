@@ -12,7 +12,7 @@ enum AedatImageServerDemo {
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = DavisDefaultDatagramServer.INSTANCE.davisDecoder;
     StartAndStoppable davisEventProvider = new AedatFileSupplier(Aedat.LOG_04.file, davisDecoder);
-    davisDecoder.addListener(new DavisRealtimeSleeper(1.0));
+    davisDecoder.addImuListener(new DavisRealtimeSleeper(1.0));
     davisEventProvider.start();
     davisEventProvider.stop();
     System.out.println("server out of data");

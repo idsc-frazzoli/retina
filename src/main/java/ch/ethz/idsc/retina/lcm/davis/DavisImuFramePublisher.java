@@ -7,18 +7,18 @@ import idsc.DavisImu;
 import lcm.lcm.LCM;
 
 class DavisImuFramePublisher implements DavisImuFrameListener {
-  /** @param id
-   * @return aps channel name for given serial number of davis camera */
-  public static String channel(String id) {
-    return "davis." + id + ".imu";
+  /** @param cameraId
+   * @return imu channel name for given serial number of davis camera */
+  public static String channel(String cameraId) {
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + ".imu";
   }
 
   // ---
   private final LCM lcm = LCM.getSingleton();
   private final String channel;
 
-  public DavisImuFramePublisher(String id) {
-    channel = channel(id);
+  public DavisImuFramePublisher(String cameraId) {
+    channel = channel(cameraId);
   }
 
   @Override

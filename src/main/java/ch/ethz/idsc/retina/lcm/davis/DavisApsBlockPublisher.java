@@ -3,23 +3,25 @@ package ch.ethz.idsc.retina.lcm.davis;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.davis.DavisApsType;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockListener;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 class DavisApsBlockPublisher implements DavisApsBlockListener {
-  /** @param id
-   * @return aps channel name for given id */
-  public static String channel(String id) {
-    return "davis." + id + ".aps";
+  /** @param cameraId
+   * @param davisApsType
+   * @return channel name for given id */
+  public static String channel(String cameraId, DavisApsType davisApsType) {
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + "." + davisApsType.name().toLowerCase();
   }
 
   // ---
   private final LCM lcm = LCM.getSingleton();
   private final String channel;
 
-  public DavisApsBlockPublisher(String id) {
-    channel = channel(id);
+  public DavisApsBlockPublisher(String cameraId, DavisApsType davisApsType) {
+    channel = channel(cameraId, davisApsType);
   }
 
   @Override
