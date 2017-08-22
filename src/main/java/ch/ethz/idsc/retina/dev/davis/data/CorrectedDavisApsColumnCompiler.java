@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
+import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
 
 /** conceptual sequence
  * aps 1151355 ( 194, 177) 563
@@ -11,9 +12,12 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class DavisApsRawColumnCompiler extends DavisApsColumnCompiler {
-  public DavisApsRawColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
+public class CorrectedDavisApsColumnCompiler extends DavisApsColumnCompiler {
+  private final DavisApsCorrection davisApsCorrection;
+
+  public CorrectedDavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
     super(davisApsColumnListener);
+    this.davisApsCorrection = davisApsCorrection;
   }
 
   @Override
@@ -25,12 +29,15 @@ public class DavisApsRawColumnCompiler extends DavisApsColumnCompiler {
     // ---
     // subsequent check should not be necessary
     // however, raw data of jaer was observed to contain gaps due to lag/delay
-    if (byteBuffer.position() < LENGTH)
-      byteBuffer.put(davisApsEvent.grayscale());
+    if (byteBuffer.position() < LENGTH) {
+      int ref = davisApsCorrection.nextReference();
+      byteBuffer.put(davisApsEvent.grayscale(ref));
+    }
     // byteBuffer.put(4 + davisApsEvent.y, davisApsEvent.grayscale());
     // ---
     if (davisApsEvent.y == LAST_Y) { // last
       byteBuffer.position(0);
+      davisApsCorrection.reset();
       davisApsColumnListener.column(davisApsEvent.x, byteBuffer);
     }
   }

@@ -2,9 +2,9 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
@@ -16,7 +16,7 @@ public class DavisDvsBlockCollector implements DavisDvsEventListener {
   private DavisDvsBlockListener davisDvsBlockListener;
 
   public DavisDvsBlockCollector() {
-    byteBuffer.order(ByteOrder.BIG_ENDIAN);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
   }
 
   int numel = 0;

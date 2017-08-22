@@ -11,10 +11,11 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisImuEvent;
  * therefore the absolute values should be correct
  * the ordering */
 public class DavisImuFrameCollector implements DavisImuEventListener {
-  private static final double GM_S2 = 9.81;
-  private static final float accelSensitivityScaleFactorGPerLsb = (float) (GM_S2 * 2.0 / 8192);
+  private static final double G_TO_M_S2 = 9.81;
+  private static final float accelSensitivityScaleFactorM_S2PerLsb = (float) (G_TO_M_S2 * 2.0 / 8192);
   private static final float temperatureScaleFactorDegCPerLsb = 1f / 340;
-  private static final float gyroSensitivityScaleFactorDegPerSecPerLsb = 2f / 65.5f;
+  private static final double DEG_TO_RAD = Math.PI / 180.0;
+  private static final float gyroSensitivityScaleFactorRadPerSecPerLsb = (float) (DEG_TO_RAD * 2.0 / 65.5);
   private static final float temperatureOffsetDegC = 35;
   // ---
   private final float[] value = new float[7];
@@ -31,7 +32,7 @@ public class DavisImuFrameCollector implements DavisImuEventListener {
     case 0:
     case 1:
     case 2:
-      value[ordinal] = davisImuEvent.value * accelSensitivityScaleFactorGPerLsb;
+      value[ordinal] = davisImuEvent.value * accelSensitivityScaleFactorM_S2PerLsb;
       break;
     case 3:
       value[ordinal] = davisImuEvent.value * temperatureScaleFactorDegCPerLsb + temperatureOffsetDegC;
@@ -39,7 +40,7 @@ public class DavisImuFrameCollector implements DavisImuEventListener {
     case 4:
     case 5:
     case 6:
-      value[ordinal] = davisImuEvent.value * gyroSensitivityScaleFactorDegPerSecPerLsb;
+      value[ordinal] = davisImuEvent.value * gyroSensitivityScaleFactorRadPerSecPerLsb;
       break;
     default:
       System.err.println("unknown imu index " + ordinal);

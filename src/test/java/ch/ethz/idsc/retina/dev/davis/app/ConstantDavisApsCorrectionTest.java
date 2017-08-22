@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import ch.ethz.idsc.retina.demo.DavisSerial;
 import junit.framework.TestCase;
 
-public class DavisApsCorrectionTest extends TestCase {
+public class ConstantDavisApsCorrectionTest extends TestCase {
   public void testSimple() {
-    DavisApsCorrection davisApsCorrection = new DavisApsCorrection(DavisSerial.FX2_02460045.name());
+    DavisApsCorrection davisApsCorrection = new ConstantDavisApsCorrection(DavisSerial.FX2_02460045.name());
     assertEquals(davisApsCorrection.pitchblack.length, 43200);
   }
 }
