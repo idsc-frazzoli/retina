@@ -37,7 +37,7 @@ public class DavisLcmViewer {
     davisLcmViewer.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewer);
     // handle aps
-    davisLcmViewer.davisApsDatagramDecoder.addListener(davisViewer);
+    davisLcmViewer.davisSigDatagramDecoder.addListener(davisViewer);
     // handle aps
     davisLcmViewer.davisRstDatagramDecoder.addListener(davisViewer.rstListener);
     // handle imu
@@ -50,7 +50,7 @@ public class DavisLcmViewer {
   // ---
   private final LCM lcm = LCM.getSingleton();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final DavisApsDatagramDecoder davisApsDatagramDecoder = new DavisApsDatagramDecoder();
+  private final DavisApsDatagramDecoder davisSigDatagramDecoder = new DavisApsDatagramDecoder();
   private final DavisApsDatagramDecoder davisRstDatagramDecoder = new DavisApsDatagramDecoder();
   private final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
   private final String cameraId;
@@ -73,14 +73,14 @@ public class DavisLcmViewer {
         }
       }
     });
-    lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.IMG), new LCMSubscriber() {
+    lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.SIG), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
           BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
           ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
           byteBuffer.order(DavisStatics.BYTE_ORDER);
-          davisApsDatagramDecoder.decode(byteBuffer);
+          davisSigDatagramDecoder.decode(byteBuffer);
         } catch (IOException exception) {
           exception.printStackTrace();
         }

@@ -38,16 +38,16 @@ public class DavisLcmServer {
       DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
       DavisDvsBlockListener davisDvsBlockListener = new DavisDvsBlockPublisher(cameraId);
       davisDvsBlockCollector.setListener(davisDvsBlockListener);
-      davisDecoder.addListener(davisDvsBlockCollector);
+      davisDecoder.addDvsListener(davisDvsBlockCollector);
     }
     {
-      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.IMG);
+      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
       DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
       davisApsBlockCollector.setListener(davisApsBlockListener);
       DavisApsCorrection davisApsCorrection = new DavisApsCorrection(serial);
       DavisApsColumnCompiler davisApsColumnCompiler = //
           new DavisApsCorrectedColumnCompiler(davisApsBlockCollector, davisApsCorrection);
-      davisDecoder.addListener(davisApsColumnCompiler);
+      davisDecoder.addSigListener(davisApsColumnCompiler);
     }
     {
       DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.RST);
@@ -63,7 +63,7 @@ public class DavisLcmServer {
       DavisImuFramePublisher davisImuFramePublisher = new DavisImuFramePublisher(cameraId);
       DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
       davisImuFrameCollector.addListener(davisImuFramePublisher);
-      davisDecoder.addListener(davisImuFrameCollector);
+      davisDecoder.addImuListener(davisImuFrameCollector);
     }
   }
 

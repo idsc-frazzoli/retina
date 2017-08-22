@@ -9,19 +9,19 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 class DavisApsBlockPublisher implements DavisApsBlockListener {
-  /** @param id
-   * @param suffix is "aps", or "rst"
-   * @return aps channel name for given id */
-  public static String channel(String id, DavisApsType suffix) {
-    return "davis." + id + "." + suffix.name().toLowerCase();
+  /** @param cameraId
+   * @param davisApsType
+   * @return channel name for given id */
+  public static String channel(String cameraId, DavisApsType davisApsType) {
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + "." + davisApsType.name().toLowerCase();
   }
 
   // ---
   private final LCM lcm = LCM.getSingleton();
   private final String channel;
 
-  public DavisApsBlockPublisher(String id, DavisApsType suffix) {
-    channel = channel(id, suffix);
+  public DavisApsBlockPublisher(String cameraId, DavisApsType davisApsType) {
+    channel = channel(cameraId, davisApsType);
   }
 
   @Override

@@ -21,9 +21,11 @@ public enum AedatLogStatistics {
     AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
     // ---
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    davisDecoder.addListener(davisEventStatistics);
+    davisDecoder.addDvsListener(davisEventStatistics);
+    davisDecoder.addSigListener(davisEventStatistics);
+    davisDecoder.addImuListener(davisEventStatistics);
     DavisImuFrameCollector davisImuProvider = new DavisImuFrameCollector();
-    davisDecoder.addListener(davisImuProvider);
+    davisDecoder.addImuListener(davisImuProvider);
     // ---
     aedatFileSupplier.start();
     aedatFileSupplier.stop();

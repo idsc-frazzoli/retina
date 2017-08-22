@@ -8,7 +8,6 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
-import ch.ethz.idsc.retina.dev.davis.DavisEventListener;
 import ch.ethz.idsc.retina.dev.davis.DavisImuEventListener;
 
 /** maps the chip raw dvs/aps data to the standard coordinate system (x,y) where
@@ -65,18 +64,24 @@ public class Davis240cDecoder implements DavisDecoder {
     }
   }
 
+  @Override
+  public void addDvsListener(DavisDvsEventListener listener) {
+    dvsDavisEventListeners.add(listener);
+  }
+
+  @Override
+  public void addSigListener(DavisApsEventListener listener) {
+    sigDavisEventListeners.add(listener);
+  }
+
+  @Override
   public void addRstListener(DavisApsEventListener listener) {
     rstDavisEventListeners.add(listener);
   }
 
   @Override
-  public void addListener(DavisEventListener davisEventListener) {
-    if (davisEventListener instanceof DavisDvsEventListener)
-      dvsDavisEventListeners.add((DavisDvsEventListener) davisEventListener);
-    if (davisEventListener instanceof DavisApsEventListener)
-      sigDavisEventListeners.add((DavisApsEventListener) davisEventListener);
-    if (davisEventListener instanceof DavisImuEventListener)
-      imuDavisEventListeners.add((DavisImuEventListener) davisEventListener);
+  public void addImuListener(DavisImuEventListener listener) {
+    imuDavisEventListeners.add(listener);
   }
 
   public static void main(String[] args) {

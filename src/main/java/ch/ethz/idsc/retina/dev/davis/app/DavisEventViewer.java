@@ -18,25 +18,27 @@ public enum DavisEventViewer {
   // TODO code somewhat redundant to DavisDatagramClientDemo
   public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-    davisDecoder.addListener(davisEventStatistics);
+    davisDecoder.addDvsListener(davisEventStatistics);
+    davisDecoder.addSigListener(davisEventStatistics);
+    davisDecoder.addImuListener(davisEventStatistics);
     DavisViewerFrame davisImageDisplay = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
     davisImageDisplay.setStatistics(davisEventStatistics);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);
-    davisDecoder.addListener(accumulatedEventsImage);
+    davisDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisImageDisplay);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisImageDisplay);
     davisImageProvider.addListener(new DavisApsStatusWarning());
-    davisDecoder.addListener(davisImageProvider);
+    davisDecoder.addSigListener(davisImageProvider);
     // handle imu
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
     davisImuFrameCollector.addListener(davisImageDisplay);
-    davisDecoder.addListener(davisImuFrameCollector);
+    davisDecoder.addImuListener(davisImuFrameCollector);
     // ---
     if (0 < speed)
-      davisDecoder.addListener(new DavisRealtimeSleeper(speed));
+      davisDecoder.addImuListener(new DavisRealtimeSleeper(speed));
     // ---
     davisEventProvider.start();
     davisEventProvider.stop();

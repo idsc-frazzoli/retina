@@ -25,17 +25,17 @@ public enum DavisDefaultDatagramServer {
     // ---
     DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
     DavisDvsDatagramServer davisDvsDatagramServer = new DavisDvsDatagramServer(davisDvsBlockCollector);
-    davisDecoder.addListener(davisDvsBlockCollector);
+    davisDecoder.addDvsListener(davisDvsBlockCollector);
     // ---
     DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector(8);
     DavisApsDatagramServer davisApsDatagramServer = new DavisApsDatagramServer(davisApsBlockCollector);
     DavisApsRawColumnCompiler davisApsColumnCompiler = new DavisApsRawColumnCompiler(davisApsBlockCollector);
-    davisDecoder.addListener(davisApsColumnCompiler);
+    davisDecoder.addSigListener(davisApsColumnCompiler);
     // ---
     DavisImuDatagramServer davisImuDatagramServer = new DavisImuDatagramServer();
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
     davisImuFrameCollector.addListener(davisImuDatagramServer);
-    davisDecoder.addListener(davisImuFrameCollector);
+    davisDecoder.addImuListener(davisImuFrameCollector);
   }
 
   public void append(int length, int[] data, int[] time) {
