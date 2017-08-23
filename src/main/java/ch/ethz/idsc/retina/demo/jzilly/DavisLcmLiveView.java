@@ -6,6 +6,6 @@ import ch.ethz.idsc.retina.lcm.davis.DavisLcmViewer;
 enum DavisLcmLiveView {
 	;
 	public static void main(String[] args) {
-		DavisLcmViewer.createStandlone("FX2_02460045", (int) 3e4);
+		DavisLcmViewer.createStandlone("jzilly", (int) 3e4);
 	}
 }
