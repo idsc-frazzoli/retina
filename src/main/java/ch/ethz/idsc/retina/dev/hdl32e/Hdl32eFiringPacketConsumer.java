@@ -10,8 +10,8 @@ import java.util.List;
 public final class Hdl32eFiringPacketConsumer {
   private final List<Hdl32eFiringPacketListener> listeners = new LinkedList<>();
 
-  public void addListener(Hdl32eFiringPacketListener firingPacketInterface) {
-    listeners.add(firingPacketInterface);
+  public void addListener(Hdl32eFiringPacketListener hdl32eFiringPacketListener) {
+    listeners.add(hdl32eFiringPacketListener);
   }
 
   /** @param byteBuffer with at least 1206 bytes to read */

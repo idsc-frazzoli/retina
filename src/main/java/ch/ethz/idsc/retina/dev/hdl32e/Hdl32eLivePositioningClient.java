@@ -3,20 +3,22 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
-public class Hdl32eLiveFiringProvider implements StartAndStoppable {
-  public static final int PORT = 2368;
+public class Hdl32eLivePositioningClient implements StartAndStoppable {
+  public static final int PORT = 8308;
+  public static final int LENGTH = 512;
   // ---
-  private final Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer;
-
-  public Hdl32eLiveFiringProvider(Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer) {
-    this.hdl32eFiringPacketConsumer = hdl32eFiringPacketConsumer;
-  }
-
+  private final List<PcapPacketConsumer> listeners = new LinkedList<>();
   private boolean isLaunched;
+
+  public void addListener(PcapPacketConsumer pcapPacketConsumer) {
+    listeners.add(pcapPacketConsumer);
+  }
 
   @Override
   public void start() {
@@ -24,14 +26,13 @@ public class Hdl32eLiveFiringProvider implements StartAndStoppable {
       @Override
       public void run() {
         isLaunched = true;
-        System.out.println("live laser");
         try (DatagramSocket datagramSocket = new DatagramSocket(PORT)) {
-          byte[] packet_data = new byte[4096];
+          byte[] packet_data = new byte[LENGTH];
           DatagramPacket datagramPacket = new DatagramPacket(packet_data, packet_data.length);
-          PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, null);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket);
-            packetConsumer.parse(packet_data, datagramPacket.getLength());
+            // TODO assert that datagramPacket length == length
+            listeners.forEach(listener -> listener.parse(packet_data, LENGTH));
           }
           datagramSocket.close();
           System.out.println("socket closed.");
