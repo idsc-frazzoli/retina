@@ -11,8 +11,8 @@ public class Hdl32eLcmServer implements StartAndStoppable {
   private final Hdl32eLivePositioningClient pos = new Hdl32eLivePositioningClient();
 
   public Hdl32eLcmServer(String lidarId) {
-    fir.addListener(new BinaryBlobPublisher("hdl32e." + lidarId + ".fir"));
-    pos.addListener(new BinaryBlobPublisher("hdl32e." + lidarId + ".pos"));
+    fir.addListener(new BinaryBlobPublisher(Hdl32eLcmChannels.firing(lidarId)));
+    pos.addListener(new BinaryBlobPublisher(Hdl32eLcmChannels.positioning(lidarId)));
   }
 
   @Override

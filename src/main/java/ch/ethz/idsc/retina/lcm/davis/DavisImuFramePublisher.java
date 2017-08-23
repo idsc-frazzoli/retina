@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import idsc.DavisImu;
 import lcm.lcm.LCM;
 
-class DavisImuFramePublisher implements DavisImuFrameListener {
+public class DavisImuFramePublisher implements DavisImuFrameListener {
   /** @param cameraId
    * @return imu channel name for given serial number of davis camera */
   public static String channel(String cameraId) {
