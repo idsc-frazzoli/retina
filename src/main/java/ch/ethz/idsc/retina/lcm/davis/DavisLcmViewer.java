@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuLcmDecoder;
+import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import idsc.DavisImu;
 import lcm.lcm.LCM;
@@ -27,7 +28,8 @@ import lcm.lcm.LCMSubscriber;
  * <li>dvs events
  * <li>imu
  * </ul> */
-public class DavisLcmViewer {
+// TODO make generic client and viewer as an example!
+public class DavisLcmViewer implements LcmClientInterface {
   public static DavisLcmViewer createStandlone(String cameraId, int period) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmViewer davisLcmViewer = new DavisLcmViewer(cameraId);
@@ -59,6 +61,7 @@ public class DavisLcmViewer {
     this.cameraId = cameraId;
   }
 
+  @Override
   public void subscribe() {
     lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
       @Override

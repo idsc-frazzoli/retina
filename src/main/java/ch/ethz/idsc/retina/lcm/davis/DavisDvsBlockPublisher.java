@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
-class DavisDvsBlockPublisher implements DavisDvsBlockListener {
+public class DavisDvsBlockPublisher implements DavisDvsBlockListener {
   /** @param cameraId
    * @return dvs channel name for given serial number of davis camera */
   public static String channel(String cameraId) {
