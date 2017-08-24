@@ -14,7 +14,7 @@ import java.nio.ByteOrder;
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 
-  public static void of(File file, PcapPacketConsumer packetConsumer) throws Exception {
+  public static void of(File file, ByteArrayConsumer packetConsumer) throws Exception {
     new PcapParse(file, packetConsumer);
   }
   // ---
@@ -24,7 +24,7 @@ public class PcapParse {
   private int max_size;
   private byte[] packet_data;
 
-  private PcapParse(File file, PcapPacketConsumer packetConsumer) throws Exception {
+  private PcapParse(File file, ByteArrayConsumer packetConsumer) throws Exception {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();
@@ -48,7 +48,7 @@ public class PcapParse {
         // packet data
         int number = inputStream.read(packet_data, 0, length);
         _assert(number == length);
-        packetConsumer.parse(packet_data, length_data);
+        packetConsumer.accept(packet_data, length_data);
       }
     }
   }

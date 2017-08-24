@@ -1,11 +1,14 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm;
 
-import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
-public class BinaryBlobPublisher implements PcapPacketConsumer {
+/** universal implementation that publishes the lcm type {@link BinaryBlob}
+ * 
+ * known use cases: Hdl32e */
+public class BinaryBlobPublisher implements ByteArrayConsumer {
   private final LCM lcm = LCM.getSingleton();
   private final String channel;
 
@@ -14,7 +17,7 @@ public class BinaryBlobPublisher implements PcapPacketConsumer {
   }
 
   @Override
-  public void parse(byte[] packet_data, int length) {
+  public void accept(byte[] packet_data, int length) {
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data_length = length;
     binaryBlob.data = packet_data;

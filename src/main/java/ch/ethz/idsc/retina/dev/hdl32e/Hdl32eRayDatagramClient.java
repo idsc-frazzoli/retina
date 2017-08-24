@@ -7,19 +7,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.core.StartAndStoppable;
-import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
+import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 
-/** HDL32E publishes firing data on port 2368
+/** the lidar device Velodyne HDL32E publishes firing data on port 2368
  * 
- * the Hdl32eLiveFiringClient listens to the data and distributes the data to listeners */
-public class Hdl32eLiveFiringClient implements StartAndStoppable {
-  public static final int PORT = 2368;
+ * the class listens to the data and distributes the data to listeners
+ * 
+ * example use is for further distribution via LCM protocol */
+public class Hdl32eRayDatagramClient implements StartAndStoppable {
   public static final int LENGTH = 1206;
   // ---
-  private final List<PcapPacketConsumer> listeners = new LinkedList<>();
+  private final int port;
+  private final List<ByteArrayConsumer> listeners = new LinkedList<>();
   private boolean isLaunched;
 
-  public void addListener(PcapPacketConsumer pcapPacketConsumer) {
+  public Hdl32eRayDatagramClient(int port) {
+    this.port = port;
+  }
+
+  public void addListener(ByteArrayConsumer pcapPacketConsumer) {
     listeners.add(pcapPacketConsumer);
   }
 
@@ -29,12 +36,13 @@ public class Hdl32eLiveFiringClient implements StartAndStoppable {
       @Override
       public void run() {
         isLaunched = true;
-        try (DatagramSocket datagramSocket = new DatagramSocket(PORT)) {
+        try (DatagramSocket datagramSocket = new DatagramSocket(port)) {
           byte[] bytes = new byte[LENGTH];
           DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket);
-            listeners.forEach(listener -> listener.parse(bytes, datagramPacket.getLength()));
+            GlobalAssert.that(datagramPacket.getLength() == LENGTH);
+            listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
           }
           datagramSocket.close();
           System.out.println("socket closed.");

@@ -1,23 +1,23 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayBlockListener;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
-import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
 enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")
-    Hdl32eFiringListener hdl32ePositionListener = new Hdl32eFiringListener() {
+    Hdl32eRayBlockListener hdl32ePositionListener = new Hdl32eRayBlockListener() {
       @Override
-      public void digest(float[] position_data, int length) {
+      public void digest(FloatBuffer fb, ByteBuffer bb) {
         System.out.println("here");
       }
     };
@@ -34,10 +34,8 @@ enum Hdl32ePacketConsumerDemo {
     };
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
-    Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
-    hdl32eFiringPacketConsumer.addListener(hdl32ePanoramaCollector);
-    Hdl32ePositioningPacketConsumer hdl32eGpsPacketConsumer = new Hdl32ePositioningPacketConsumer();
-    PcapPacketConsumer packetConsumer = new Hdl32ePacketConsumer(hdl32eFiringPacketConsumer, hdl32eGpsPacketConsumer);
+    Hdl32ePacketProvider packetConsumer = new Hdl32ePacketProvider();
+    packetConsumer.hdl32eFiringDecoder.addListener(hdl32ePanoramaCollector);
     PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }
