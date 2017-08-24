@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e.app;
 
-class FiringContainer {
+class RayContainer {
   public float[] position;
   public byte[] intensity;
 

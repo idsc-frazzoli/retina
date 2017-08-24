@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.demo.jph.hdl32e;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringBlockListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayBlockListener;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
@@ -15,7 +15,7 @@ enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")
-    Hdl32eFiringBlockListener hdl32ePositionListener = new Hdl32eFiringBlockListener() {
+    Hdl32eRayBlockListener hdl32ePositionListener = new Hdl32eRayBlockListener() {
       @Override
       public void digest(FloatBuffer fb, ByteBuffer bb) {
         System.out.println("here");

@@ -31,7 +31,7 @@ public enum DavisLcmViewer {
     // handle imu
     davisLcmClient.davisImuLcmDecoder.addListener(davisViewer);
     // start to listen
-    davisLcmClient.subscribe();
+    davisLcmClient.startSubscriptions();
     // return davisLcmViewer;
   }
 

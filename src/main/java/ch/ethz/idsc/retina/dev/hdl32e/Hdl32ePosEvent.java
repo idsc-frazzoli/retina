@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 /** NMEA examples
  * $GPRMC,131653,A,4722.6848,N,00832.8727,E,000.1,276.2,200717,001.8,E,D*15
  * $GPRMC,220642,A,3707.8228,N,12139.2776,W,013.7,145.4,111212,013.8,E,D*08 */
-public class Hdl32ePositioningEvent {
+public class Hdl32ePosEvent {
   public final double[] gyro = new double[3]; // [deg/s]
   public final double[] temp = new double[3]; // [deg C]
   public final double[] accx = new double[3]; // [G] TODO should convert to 9.81 m/s ?

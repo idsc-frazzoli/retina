@@ -8,17 +8,17 @@ import java.util.List;
 import ch.ethz.idsc.retina.util.math.ShortUtils;
 
 /** information on p.21 of HDL-32E user's manual */
-public final class Hdl32ePositioningDecoder {
-  private final List<Hdl32ePositioningEventListener> listeners = new LinkedList<>();
+public final class Hdl32ePosDecoder {
+  private final List<Hdl32ePosEventListener> listeners = new LinkedList<>();
 
-  public void addListener(Hdl32ePositioningEventListener hdl32ePositioningListener) {
+  public void addListener(Hdl32ePosEventListener hdl32ePositioningListener) {
     listeners.add(hdl32ePositioningListener);
   }
 
   /** @param byteBuffer with at least 512 bytes to read */
   public void positioning(ByteBuffer byteBuffer) {
     byte[] nmea = new byte[72]; // NMEA positioning sentence
-    Hdl32ePositioningEvent hdl32ePositioningEvent = new Hdl32ePositioningEvent();
+    Hdl32ePosEvent hdl32ePositioningEvent = new Hdl32ePosEvent();
     // first 14 bytes not used
     byteBuffer.getLong(); // 8
     byteBuffer.getInt(); // 12

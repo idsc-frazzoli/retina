@@ -17,13 +17,13 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringBlockListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEvent;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEventListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosEvent;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosEventListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayBlockListener;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.img.Hue;
 
-/** {@link Hdl32eFiringFrame} requires that the binary "urg_provider" is located at
+/** {@link Hdl32eRayFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
  * 
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
@@ -38,11 +38,11 @@ import ch.ethz.idsc.tensor.img.Hue;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePositioningEventListener {
+public class Hdl32eRayFrame implements Hdl32eRayBlockListener, Hdl32ePosEventListener {
   public final JFrame jFrame = new JFrame();
   private int zoom = 0;
-  private FiringContainer firingContainer;
-  private Hdl32ePositioningEvent hdl32ePositioningEvent;
+  private RayContainer firingContainer;
+  private Hdl32ePosEvent hdl32ePositioningEvent;
   private final Stopwatch stopwatch = new Stopwatch();
   private final JComponent jComponent = new JComponent() {
     @Override
@@ -59,7 +59,7 @@ public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePosit
       final int midx = dimension.width / 2;
       final int midy = dimension.height / 2;
       {
-        FiringContainer ref = firingContainer;
+        RayContainer ref = firingContainer;
         if (Objects.nonNull(ref)) {
           int point = 0;
           for (int c = 0; c < ref.position.length; c += 3) {
@@ -77,7 +77,7 @@ public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePosit
         }
       }
       {
-        Hdl32ePositioningEvent ref = hdl32ePositioningEvent;
+        Hdl32ePosEvent ref = hdl32ePositioningEvent;
         if (Objects.nonNull(ref)) {
           graphics.setColor(Color.GRAY);
           graphics.drawString("" + ref.nmea(), 0, 30);
@@ -88,7 +88,7 @@ public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePosit
     }
   };
 
-  public Hdl32eFiringFrame() {
+  public Hdl32eRayFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 600, 600);
     jFrame.setContentPane(jComponent);
@@ -105,7 +105,7 @@ public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePosit
 
   @Override
   public void digest(FloatBuffer floatBuffer, ByteBuffer byteBuffer) {
-    FiringContainer firingContainer = new FiringContainer();
+    RayContainer firingContainer = new RayContainer();
     firingContainer.position = Arrays.copyOf(floatBuffer.array(), floatBuffer.limit());
     firingContainer.intensity = Arrays.copyOf(byteBuffer.array(), byteBuffer.limit());
     this.firingContainer = firingContainer;
@@ -113,7 +113,7 @@ public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePosit
   }
 
   @Override
-  public void positioning(Hdl32ePositioningEvent hdl32ePositioningEvent) {
+  public void positioning(Hdl32ePosEvent hdl32ePositioningEvent) {
     this.hdl32ePositioningEvent = hdl32ePositioningEvent;
   }
 }

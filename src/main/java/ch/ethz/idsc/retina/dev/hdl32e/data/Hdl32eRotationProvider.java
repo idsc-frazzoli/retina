@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDataListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEventListener;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
-public class Hdl32eRotationProvider implements Hdl32eFiringDataListener {
+public class Hdl32eRotationProvider implements Hdl32eRayDataListener {
   private final List<Hdl32eRotationEventListener> listeners = new LinkedList<>();
   private int usec;
   private int rotational_last = -1;

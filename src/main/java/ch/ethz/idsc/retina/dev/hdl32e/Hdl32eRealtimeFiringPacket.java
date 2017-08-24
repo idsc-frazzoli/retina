@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
-public class Hdl32eRealtimeFiringPacket implements Hdl32eFiringDataListener {
+public class Hdl32eRealtimeFiringPacket implements Hdl32eRayDataListener {
   private final IntRealtimeSleeper rs;
 
   public Hdl32eRealtimeFiringPacket(double speed) {

@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public interface Hdl32eFiringDataListener {
+public interface Hdl32eRayDataListener {
   static final int LASERS = 32;
 
   /** function is invoked with parameters that refer to previous sequence of laser data

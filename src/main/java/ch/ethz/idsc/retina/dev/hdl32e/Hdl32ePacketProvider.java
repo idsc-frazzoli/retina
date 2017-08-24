@@ -4,13 +4,13 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 
 /** default packet distribution
  * 
  * implementation decides based on length of packet to
  * process the data either as firing packet or as GPS */
-public class Hdl32ePacketProvider implements PcapPacketConsumer {
+public class Hdl32ePacketProvider implements ByteArrayConsumer {
   /** the answer to life the universe and everything
    * 
    * hdl32e user's manual refers to first 42 bytes as ethernet header
@@ -21,11 +21,11 @@ public class Hdl32ePacketProvider implements PcapPacketConsumer {
   public static final int GPS_SIZE1 = 554;
   public static final int GPS_SIZE2 = 512;
   // ---
-  public final Hdl32eFiringDecoder hdl32eFiringDecoder = new Hdl32eFiringDecoder();
-  public final Hdl32ePositioningDecoder hdl32ePositioningDecoder = new Hdl32ePositioningDecoder();
+  public final Hdl32eRayDecoder hdl32eFiringDecoder = new Hdl32eRayDecoder();
+  public final Hdl32ePosDecoder hdl32ePositioningDecoder = new Hdl32ePosDecoder();
 
   @Override
-  public void parse(byte[] packet_data, int length) {
+  public void accept(byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     if (length == LASER_SIZE1) {

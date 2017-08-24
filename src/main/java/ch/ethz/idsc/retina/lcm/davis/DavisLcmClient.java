@@ -28,7 +28,7 @@ public class DavisLcmClient implements LcmClientInterface {
   }
 
   @Override
-  public void subscribe() {
+  public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
     lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
       @Override

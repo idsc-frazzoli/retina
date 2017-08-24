@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDataListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eSpacialEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eSpacialEventListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eStatics;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
-public class Hdl32eSpacialProvider implements Hdl32eFiringDataListener {
+public class Hdl32eSpacialProvider implements Hdl32eRayDataListener {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
