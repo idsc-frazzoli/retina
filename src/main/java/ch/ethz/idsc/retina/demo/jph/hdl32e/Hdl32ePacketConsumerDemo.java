@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
@@ -17,7 +20,7 @@ enum Hdl32ePacketConsumerDemo {
     @SuppressWarnings("unused")
     Hdl32eFiringListener hdl32ePositionListener = new Hdl32eFiringListener() {
       @Override
-      public void digest(float[] position_data, int length) {
+      public void digest(FloatBuffer fb, ByteBuffer bb) {
         System.out.println("here");
       }
     };

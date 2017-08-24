@@ -9,10 +9,11 @@ import java.util.List;
  * rotational angle, range, intensity, etc. */
 public final class Hdl32eFiringPacketDecoder {
   private static final int FIRINGS = 12;
+  // ---
   private final List<Hdl32eFiringDataListener> listeners = new LinkedList<>();
 
-  public void addListener(Hdl32eFiringDataListener hdl32eFiringPacketListener) {
-    listeners.add(hdl32eFiringPacketListener);
+  public void addListener(Hdl32eFiringDataListener listener) {
+    listeners.add(listener);
   }
 
   /** @param byteBuffer with at least 1206 bytes to read */

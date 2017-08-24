@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e.data;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningListener;
+import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -22,9 +24,12 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
   public final JFrame jFrame = new JFrame();
   private Hdl32ePanorama hdl32ePanorama;
   private Hdl32ePositioningEvent hdl32ePositioningEvent;
+  private final Stopwatch stopwatch = new Stopwatch();
   JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
+      long period = stopwatch.stop();
+      stopwatch.start();
       Graphics2D graphics = (Graphics2D) g;
       final int height = 32 * SCALE_Y;
       List<String> list = new LinkedList<>();
@@ -47,6 +52,8 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
           render(graphics, list, 0, 2 * (16 + height));
         }
       }
+      graphics.setColor(Color.RED);
+      graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 20);
     }
   };
 

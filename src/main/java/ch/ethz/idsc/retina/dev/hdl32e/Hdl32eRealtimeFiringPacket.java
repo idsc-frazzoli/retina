@@ -13,11 +13,11 @@ public class Hdl32eRealtimeFiringPacket implements Hdl32eFiringDataListener {
   }
 
   @Override
-  public void scan(int rotational, ByteBuffer byteBuffer) {
+  public void timestamp(int usec, byte type, byte value) {
+    rs.now(usec); // blocking
   }
 
   @Override
-  public void timestamp(int usec, byte type, byte value) {
-    rs.now(usec);
+  public void scan(int rotational, ByteBuffer byteBuffer) {
   }
 }
