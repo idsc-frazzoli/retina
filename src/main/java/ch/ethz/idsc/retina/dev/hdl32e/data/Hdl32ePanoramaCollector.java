@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDataListener;
 import ch.ethz.idsc.tensor.RealScalar;
 
-public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
+public class Hdl32ePanoramaCollector implements Hdl32eFiringDataListener {
   /** constructor multiplies index values with image width */
   private final int[] index = new int[] { //
       31, 15, //
@@ -44,7 +44,7 @@ public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
   }
 
   @Override
-  public void process(int firing, int rotational, ByteBuffer byteBuffer) {
+  public void scan(int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
       hdl32ePanoramaListeners.forEach(listener -> listener.panorama(hdl32ePanorama));
       hdl32ePanorama = supplier.get();
@@ -65,7 +65,7 @@ public class Hdl32ePanoramaCollector implements Hdl32eFiringPacketListener {
   }
 
   @Override
-  public void status(int usec, byte type, byte value) {
+  public void timestamp(int usec, byte type, byte value) {
     // ---
   }
 }

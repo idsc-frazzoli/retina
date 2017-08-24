@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.hdl32e;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketConsumer;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningPacketConsumer;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRealtimeFiringPacket;
@@ -16,7 +16,7 @@ enum Hdl32ePcapPanoramaDemo {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
-    Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer = new Hdl32eFiringPacketConsumer();
+    Hdl32eFiringPacketDecoder hdl32eFiringPacketConsumer = new Hdl32eFiringPacketDecoder();
     hdl32eFiringPacketConsumer.addListener(hdl32ePanoramaCollector);
     hdl32eFiringPacketConsumer.addListener(new Hdl32eRealtimeFiringPacket(1.0));
     Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer = new Hdl32ePositioningPacketConsumer();

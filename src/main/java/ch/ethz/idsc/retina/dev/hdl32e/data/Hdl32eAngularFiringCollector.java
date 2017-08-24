@@ -3,11 +3,12 @@ package ch.ethz.idsc.retina.dev.hdl32e.data;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketListener;
 
 /** collects a complete 360 rotation */
-public class Hdl32eAngularFiringCollector implements Hdl32eFiringPacketListener {
+@Deprecated
+public class Hdl32eAngularFiringCollector implements Hdl32eFiringDataListener {
   /** the highway scene has ~140000 coordinates */
   public static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184
   /** quote from the user's manual, p.12:
@@ -54,7 +55,7 @@ public class Hdl32eAngularFiringCollector implements Hdl32eFiringPacketListener 
   private int position_index = -1;
 
   @Override
-  public void process(int firing, int rotational, ByteBuffer byteBuffer) {
+  public void scan(int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
       hdl32eFiringListener.digest(position_data, position_index + 1);
       position_index = -1;
@@ -91,7 +92,7 @@ public class Hdl32eAngularFiringCollector implements Hdl32eFiringPacketListener 
   }
 
   @Override
-  public void status(int usec, byte type, byte value) {
+  public void timestamp(int usec, byte type, byte value) {
     // ---
   }
 }

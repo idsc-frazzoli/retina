@@ -3,10 +3,11 @@ package ch.ethz.idsc.retina.dev.hdl32e.data;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketListener;
 
-public class Hdl32eBoundedFiringCollector implements Hdl32eFiringPacketListener {
+@Deprecated
+public class Hdl32eBoundedFiringCollector implements Hdl32eFiringDataListener {
   public static final int POINT_NUMEL = 10000; // TODO not final design
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
@@ -49,7 +50,7 @@ public class Hdl32eBoundedFiringCollector implements Hdl32eFiringPacketListener 
   private int position_index = -1;
 
   @Override
-  public void process(int firing, int rotational, ByteBuffer byteBuffer) {
+  public void scan(int rotational, ByteBuffer byteBuffer) {
     // TODO cos/sin can be done in a lookup table!
     final double angle = rotational * ANGLE_FACTOR;
     float dx = (float) Math.cos(angle);
@@ -85,7 +86,7 @@ public class Hdl32eBoundedFiringCollector implements Hdl32eFiringPacketListener 
   }
 
   @Override
-  public void status(int usec, byte type, byte value) {
+  public void timestamp(int usec, byte type, byte value) {
     // ---
   }
 }

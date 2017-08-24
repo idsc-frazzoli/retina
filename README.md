@@ -2,7 +2,16 @@
 
 <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Java 8 code to prototype algorithms for sensor interfacing and processing
+Sensor interfaces and data processing in Java 8. 
+
+The implementation includes
+
+* obtaining data from wired sensor
+* parsing of standard log files
+* demo of data handling, for instance simple visualizations
+* option to transmit and receive via the `lcm` protocol
+
+The byte order of the binary data is `little endian` since the encoding is native on most architectures. 
 
 # LIDAR
 

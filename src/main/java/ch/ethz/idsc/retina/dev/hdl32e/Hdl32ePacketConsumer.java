@@ -22,11 +22,11 @@ public class Hdl32ePacketConsumer implements PcapPacketConsumer {
   public static final int GPS_SIZE1 = 554;
   public static final int GPS_SIZE2 = 512;
   // ---
-  private final Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer;
+  private final Hdl32eFiringPacketDecoder hdl32eFiringPacketConsumer;
   private final Hdl32ePositioningPacketConsumer hdl32ePositioningPacketConsumer;
 
   public Hdl32ePacketConsumer( //
-      Hdl32eFiringPacketConsumer hdl32eFiringPacketConsumer, //
+      Hdl32eFiringPacketDecoder hdl32eFiringPacketConsumer, //
       Hdl32ePositioningPacketConsumer hdl32eGpsPacketConsumer) {
     this.hdl32eFiringPacketConsumer = hdl32eFiringPacketConsumer;
     this.hdl32ePositioningPacketConsumer = hdl32eGpsPacketConsumer;
