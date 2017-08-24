@@ -15,17 +15,29 @@ public class Hdl32eSpacialProvider implements Hdl32eFiringDataListener {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  public static final double TO_METER = 0.002;
+  public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---
   private final List<Hdl32eSpacialEventListener> listeners = new LinkedList<>();
+  /* package for testing */ int limit_lo = 0;
   private int usec;
 
   public Hdl32eSpacialProvider() {
-    final double INCLINATION_FACTOR = 4.0 / 3.0;
+    final double inclination = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
-      double theta = Hdl32eStatics.ORDERING[laser] * INCLINATION_FACTOR * Math.PI / 180;
+      double theta = Hdl32eStatics.ORDERING[laser] * inclination * Math.PI / 180;
       IR[laser] = (float) Math.cos(theta);
       IZ[laser] = (float) Math.sin(theta);
     }
+  }
+
+  /** quote from the user's manual, p.8:
+   * "the minimum return distance for the HDL-32E is approximately 1 meter.
+   * ignore returns closer than this"
+   * 
+   * @param closest in [m] */
+  public void setLimitLo(double closest) {
+    limit_lo = (int) (closest / TO_METER);
   }
 
   public void addListener(Hdl32eSpacialEventListener hdl32eSpacialEventListener) {
@@ -47,19 +59,15 @@ public class Hdl32eSpacialProvider implements Hdl32eFiringDataListener {
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
       int intensity = byteBuffer.get() & 0xff;
-      // quote from the user's manual, p.8:
-      // "the minimum return distance for the HDL-32E is approximately 1 meter.
-      // ignore returns closer than this"
-      if (500 <= distance) {
-        // TODO also filter too far?
+      if (limit_lo <= distance) {
         // "report distance to the nearest 0.2 cm" => 2 mm
-        float range = distance * 0.002f; // convert to [meter]
+        float range = distance * TO_METER_FLOAT; // convert to [m]
         coords[0] = IR[laser] * range * dx;
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;
         Hdl32eSpacialEvent hdl32eSpacialEvent = new Hdl32eSpacialEvent(usec, coords, intensity);
         listeners.forEach(listener -> listener.spacial(hdl32eSpacialEvent));
-      } // else too close => ignore
+      }
     }
   }
 }

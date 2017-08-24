@@ -17,7 +17,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringBlockListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEvent;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEventListener;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.img.Hue;
 
@@ -36,10 +38,11 @@ import ch.ethz.idsc.tensor.img.Hue;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Hdl32eFiringFrame implements Hdl32eFiringListener {
+public class Hdl32eFiringFrame implements Hdl32eFiringBlockListener, Hdl32ePositioningEventListener {
   public final JFrame jFrame = new JFrame();
   private int zoom = 0;
   private FiringContainer firingContainer;
+  private Hdl32ePositioningEvent hdl32ePositioningEvent;
   private final Stopwatch stopwatch = new Stopwatch();
   private final JComponent jComponent = new JComponent() {
     @Override
@@ -55,21 +58,30 @@ public class Hdl32eFiringFrame implements Hdl32eFiringListener {
       }
       final int midx = dimension.width / 2;
       final int midy = dimension.height / 2;
-      FiringContainer ref = firingContainer;
-      if (Objects.nonNull(ref)) {
-        int count = 0;
-        for (int c = 0; c < ref.position.length; c += 3) {
-          float x = ref.position[c];
-          float y = ref.position[c + 1];
-          float z = ref.position[c + 2];
-          double alpha = (ref.intensity[count] & 0xff) / 255.0;
-          Color color = Hue.of(z, 1, 1, alpha);
-          graphics.setColor(color);
-          graphics.fill(new Rectangle(Math.round(midx + x * 4), Math.round(midy + y * 4), 1, 1));
-          ++count;
+      {
+        FiringContainer ref = firingContainer;
+        if (Objects.nonNull(ref)) {
+          int point = 0;
+          for (int c = 0; c < ref.position.length; c += 3) {
+            float x = ref.position[c];
+            float y = ref.position[c + 1];
+            float z = ref.position[c + 2];
+            double alpha = (ref.intensity[point] & 0xff) / 255.0;
+            Color color = Hue.of(z, 1, 1, alpha);
+            graphics.setColor(color);
+            graphics.fill(new Rectangle(Math.round(midx + x * 4), Math.round(midy + y * 4), 1, 1));
+            ++point;
+          }
+          graphics.setColor(Color.GRAY);
+          graphics.drawString("" + ref.size(), 0, 10);
         }
-        graphics.setColor(Color.GRAY);
-        graphics.drawString("" + ref.size(), 0, 10);
+      }
+      {
+        Hdl32ePositioningEvent ref = hdl32ePositioningEvent;
+        if (Objects.nonNull(ref)) {
+          graphics.setColor(Color.GRAY);
+          graphics.drawString("" + ref.nmea(), 0, 30);
+        }
       }
       graphics.setColor(Color.RED);
       graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 20);
@@ -98,5 +110,10 @@ public class Hdl32eFiringFrame implements Hdl32eFiringListener {
     firingContainer.intensity = Arrays.copyOf(byteBuffer.array(), byteBuffer.limit());
     this.firingContainer = firingContainer;
     jComponent.repaint();
+  }
+
+  @Override
+  public void positioning(Hdl32ePositioningEvent hdl32ePositioningEvent) {
+    this.hdl32ePositioningEvent = hdl32ePositioningEvent;
   }
 }

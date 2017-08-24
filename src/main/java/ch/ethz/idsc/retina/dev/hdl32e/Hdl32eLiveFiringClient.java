@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.core.StartAndStoppable;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
 /** HDL32E publishes firing data on port 2368
@@ -34,6 +35,7 @@ public class Hdl32eLiveFiringClient implements StartAndStoppable {
           DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket);
+            GlobalAssert.that(datagramPacket.getLength() == LENGTH);
             listeners.forEach(listener -> listener.parse(bytes, datagramPacket.getLength()));
           }
           datagramSocket.close();

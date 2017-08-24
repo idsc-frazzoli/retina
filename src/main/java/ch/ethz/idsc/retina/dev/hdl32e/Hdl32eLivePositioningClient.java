@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.core.StartAndStoppable;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.io.PcapPacketConsumer;
 
 public class Hdl32eLivePositioningClient implements StartAndStoppable {
@@ -30,9 +31,9 @@ public class Hdl32eLivePositioningClient implements StartAndStoppable {
           byte[] packet_data = new byte[LENGTH];
           DatagramPacket datagramPacket = new DatagramPacket(packet_data, packet_data.length);
           while (isLaunched) {
-            datagramSocket.receive(datagramPacket);
-            // TODO assert that datagramPacket length == length
-            listeners.forEach(listener -> listener.parse(packet_data, LENGTH));
+            datagramSocket.receive(datagramPacket); // TODO how to interrupt block?
+            GlobalAssert.that(datagramPacket.getLength() == LENGTH);
+            listeners.forEach(listener -> listener.parse(packet_data, datagramPacket.getLength()));
           }
           datagramSocket.close();
           System.out.println("socket closed.");

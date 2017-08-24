@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringPacketDecoder;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringDecoder;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningDecoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -14,7 +15,8 @@ import lcm.lcm.LCMSubscriber;
 
 public class Hdl32eLcmClient implements LcmClientInterface {
   private final String lidarId;
-  public final Hdl32eFiringPacketDecoder hdl32eFiringPacketDecoder = new Hdl32eFiringPacketDecoder();
+  public final Hdl32eFiringDecoder hdl32eFiringPacketDecoder = new Hdl32eFiringDecoder();
+  public final Hdl32ePositioningDecoder hdl32ePositioningPacketDecoder = new Hdl32ePositioningDecoder();
 
   public Hdl32eLcmClient(String lidarId) {
     this.lidarId = lidarId;
@@ -41,7 +43,9 @@ public class Hdl32eLcmClient implements LcmClientInterface {
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
         try {
           BinaryBlob binaryBlob = new BinaryBlob(ins);
-          // System.out.println("pos" + binaryBlob.data_length);
+          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+          hdl32ePositioningPacketDecoder.positioning(byteBuffer);
         } catch (IOException exception) {
           exception.printStackTrace();
         }

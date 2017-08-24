@@ -7,7 +7,7 @@ import java.util.List;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public final class Hdl32eFiringPacketDecoder {
+public final class Hdl32eFiringDecoder {
   private static final int FIRINGS = 12;
   // ---
   private final List<Hdl32eFiringDataListener> listeners = new LinkedList<>();

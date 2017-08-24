@@ -24,6 +24,9 @@ enum LcmLogView {
     // ---
     Hdl32eLcmClient client = new Hdl32eLcmClient("center");
     client.hdl32eFiringPacketDecoder.addListener(hdl32ePanoramaCollector);
+    // ---
+    Utils.createFiringFrame(client.hdl32eFiringPacketDecoder, client.hdl32ePositioningPacketDecoder);
+    // ---
     client.subscribe();
   }
 }

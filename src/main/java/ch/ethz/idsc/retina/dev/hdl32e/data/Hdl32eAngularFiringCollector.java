@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eFiringBlockListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEventListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eSpacialEvent;
@@ -21,7 +21,7 @@ public class Hdl32eAngularFiringCollector implements Hdl32eSpacialEventListener,
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;
-  private final List<Hdl32eFiringListener> listeners = new LinkedList<>();
+  private final List<Hdl32eFiringBlockListener> listeners = new LinkedList<>();
 
   public Hdl32eAngularFiringCollector(FloatBuffer floatBuffer, ByteBuffer byteBuffer) {
     this.floatBuffer = floatBuffer;
@@ -30,7 +30,7 @@ public class Hdl32eAngularFiringCollector implements Hdl32eSpacialEventListener,
     GlobalAssert.that(floatBuffer.limit() == limit * 3);
   }
 
-  public void addListener(Hdl32eFiringListener listener) {
+  public void addListener(Hdl32eFiringBlockListener listener) {
     listeners.add(listener);
   }
 

@@ -13,12 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEvent;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEventListener;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositioningListener {
+public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositioningEventListener {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
