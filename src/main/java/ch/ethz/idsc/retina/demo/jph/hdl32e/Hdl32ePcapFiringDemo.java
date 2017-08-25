@@ -9,7 +9,7 @@ enum Hdl32ePcapFiringDemo {
   ;
   public static void main(String[] args) throws Exception {
     Hdl32ePacketProvider packetConsumer = new Hdl32ePacketProvider();
-    Hdl32eUtils.createRayFrame(packetConsumer.hdl32eFiringDecoder, packetConsumer.hdl32ePositioningDecoder);
+    Hdl32eUtils.createRayFrame(packetConsumer.hdl32eRayDecoder, packetConsumer.hdl32ePosDecoder);
     // ---
     PcapParse.of(Pcap.HIGHWAY.file, packetConsumer); // blocking
   }

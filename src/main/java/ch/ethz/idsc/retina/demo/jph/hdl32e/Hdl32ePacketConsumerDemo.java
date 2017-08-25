@@ -35,7 +35,7 @@ enum Hdl32ePacketConsumerDemo {
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
     Hdl32ePacketProvider packetConsumer = new Hdl32ePacketProvider();
-    packetConsumer.hdl32eFiringDecoder.addListener(hdl32ePanoramaCollector);
+    packetConsumer.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
     PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
   }
 }

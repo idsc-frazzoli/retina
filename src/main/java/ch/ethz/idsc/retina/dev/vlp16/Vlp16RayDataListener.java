@@ -1,10 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.hdl32e;
+package ch.ethz.idsc.retina.dev.vlp16;
 
 import java.nio.ByteBuffer;
 
-public interface Hdl32eRayDataListener {
-  static final int LASERS = 16;
+public interface Vlp16RayDataListener {
+  static final int LASERS = 32;
 
   /** function is invoked with parameters that refer to previous sequence of laser data
    * 

@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEventListener;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
+// TODO OWLY3D uses class
 public class Hdl32eRotationProvider implements Hdl32eRayDataListener {
   private final List<Hdl32eRotationEventListener> listeners = new LinkedList<>();
   private int usec;

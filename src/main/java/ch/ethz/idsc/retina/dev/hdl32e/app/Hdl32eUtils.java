@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRealtimeFiringPacket;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaFrame;
@@ -34,6 +35,7 @@ public enum Hdl32eUtils {
     hdl32eRotationProvider.addListener(hdl32eAngularFiringCollector);
     hdl32eRayDecoder.addListener(hdl32eSpacialProvider);
     hdl32eRayDecoder.addListener(hdl32eRotationProvider);
+    hdl32eRayDecoder.addListener(new Hdl32eRealtimeFiringPacket(1)); // TODO temp
     Hdl32eRayFrame hdl32eFiringFrame = new Hdl32eRayFrame();
     hdl32eAngularFiringCollector.addListener(hdl32eFiringFrame);
     hdl32ePosDecoder.addListener(hdl32eFiringFrame);

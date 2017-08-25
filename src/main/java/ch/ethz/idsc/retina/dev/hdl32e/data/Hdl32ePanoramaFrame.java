@@ -23,7 +23,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEve
   // ---
   public final JFrame jFrame = new JFrame();
   private Hdl32ePanorama hdl32ePanorama;
-  private Hdl32ePosEvent hdl32ePositioningEvent;
+  private Hdl32ePosEvent hdl32ePosEvent;
   private final Stopwatch stopwatch = new Stopwatch();
   JComponent jComponent = new JComponent() {
     @Override
@@ -42,7 +42,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEve
         }
       }
       {
-        Hdl32ePosEvent posRef = hdl32ePositioningEvent;
+        Hdl32ePosEvent posRef = hdl32ePosEvent;
         if (Objects.nonNull(posRef)) {
           list.add(posRef.nmea());
           list.add("temp=" + Tensors.vectorDouble(posRef.temp).map(Round._1));
@@ -78,8 +78,8 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEve
   }
 
   @Override
-  public void positioning(Hdl32ePosEvent hdl32ePositioningEvent) {
-    this.hdl32ePositioningEvent = hdl32ePositioningEvent;
+  public void positioning(Hdl32ePosEvent hdl32ePosEvent) {
+    this.hdl32ePosEvent = hdl32ePosEvent;
   }
 
   @Override

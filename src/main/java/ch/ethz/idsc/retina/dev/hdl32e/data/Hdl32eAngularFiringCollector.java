@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eSpacialEventListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** collects a complete 360 rotation */
+// TODO OWLY3D uses class
 public class Hdl32eAngularFiringCollector implements Hdl32eSpacialEventListener, Hdl32eRotationEventListener {
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates */
   public static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184

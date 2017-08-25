@@ -14,9 +14,9 @@ enum Hdl32ePcapPanoramaDemo {
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
     Hdl32ePacketProvider packetConsumer = new Hdl32ePacketProvider();
-    packetConsumer.hdl32eFiringDecoder.addListener(hdl32ePanoramaCollector);
-    packetConsumer.hdl32eFiringDecoder.addListener(new Hdl32eRealtimeFiringPacket(1.0));
-    packetConsumer.hdl32ePositioningDecoder.addListener(hdl32ePanoramaFrame);
+    packetConsumer.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
+    packetConsumer.hdl32eRayDecoder.addListener(new Hdl32eRealtimeFiringPacket(1.0));
+    packetConsumer.hdl32ePosDecoder.addListener(hdl32ePanoramaFrame);
     PcapParse.of(Pcap.HIGHWAY.file, packetConsumer); // blocking
   }
 }

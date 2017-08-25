@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eSpacialEventListener;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eStatics;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
+// TODO OWLY3D uses class
 public class Hdl32eSpacialProvider implements Hdl32eRayDataListener {
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
