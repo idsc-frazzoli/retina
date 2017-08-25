@@ -44,6 +44,10 @@ public class RealtimeSleeper {
     }
   }
 
+  public void now(int sec, int usec) {
+    now(sec * 1000_000_000L + usec * 1000L);
+  }
+
   private boolean notInitialized() {
     return Objects.isNull(ref);
   }

@@ -9,7 +9,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /** file description taken from "Hani's blog: A look at the pcap file format"
- * http://www.kroosec.com/2012/10/a-look-at-pcap-file-format.html */
+ * http://www.kroosec.com/2012/10/a-look-at-pcap-file-format.html
+ * 
+ * implementation is standalone */
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 

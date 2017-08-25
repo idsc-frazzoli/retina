@@ -27,7 +27,7 @@ public class Hdl32ePcapPacketDecoder implements PcapPacketListener {
 
   @Override
   public void packet(int sec, int usec, byte[] packet_data, int length) {
-    realtimeSleeper.now(sec * 1000_000_000L + usec * 1000L);
+    realtimeSleeper.now(sec, usec);
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.position(42);
