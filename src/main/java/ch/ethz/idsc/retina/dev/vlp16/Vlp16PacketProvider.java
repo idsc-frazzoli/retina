@@ -21,20 +21,20 @@ public class Vlp16PacketProvider implements ByteArrayConsumer {
   public static final int GPS_SIZE1 = 554;
   public static final int GPS_SIZE2 = Vlp16Statics.POS_PACKET_LENGTH;
   // ---
-  // public final Vlp16RayDecoder hdl32eRayDecoder = new Vlp16RayDecoder();
+  public final Vlp16RayDecoder vlp16RayDecoder = new Vlp16RayDecoder();
   public final Vlp16PosDecoder vlp16PosDecoder = new Vlp16PosDecoder();
 
   @Override
   public void accept(byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    // if (length == LASER_SIZE1) {
-    // byteBuffer.position(_42); // skip 42 bytes
-    // hdl32eRayDecoder.lasers(byteBuffer);
-    // } else //
-    // if (length == LASER_SIZE2) {
-    // hdl32eRayDecoder.lasers(byteBuffer);
-    // }
+    if (length == LASER_SIZE1) {
+      byteBuffer.position(_42); // skip 42 bytes
+      vlp16RayDecoder.lasers(byteBuffer);
+    } else //
+    if (length == LASER_SIZE2) {
+      vlp16RayDecoder.lasers(byteBuffer);
+    }
     if (length == GPS_SIZE1) {
       byteBuffer.position(_42); // skip 42 bytes
       vlp16PosDecoder.positioning(byteBuffer);

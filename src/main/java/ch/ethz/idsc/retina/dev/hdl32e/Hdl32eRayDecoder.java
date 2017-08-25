@@ -26,15 +26,16 @@ public class Hdl32eRayDecoder {
     { // status data
       byteBuffer.position(offset + 1200);
       int gps_timestamp = byteBuffer.getInt(); // in [usec]
-      byte type = byteBuffer.get(); // 55
-      byte value = byteBuffer.get(); // 33
+      byte type = byteBuffer.get(); // 55 == 0x37 == Strongest return
+      byte value = byteBuffer.get(); // 33 == 0x21 == HDL-32E
       listeners.forEach(listener -> listener.timestamp(gps_timestamp, type, value));
     }
     { // 12 blocks of firing data
       byteBuffer.position(offset);
       for (int firing = 0; firing < FIRINGS; ++firing) {
+        // 0xFF 0xEE -> 0xEEFF (as short) == 61183
         @SuppressWarnings("unused")
-        int blockId = byteBuffer.getShort() & 0xffff; // laser block ID, 61183 ?
+        int flag = byteBuffer.getShort() & 0xffff;
         int rotational = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
         // ---
         final int position = byteBuffer.position();

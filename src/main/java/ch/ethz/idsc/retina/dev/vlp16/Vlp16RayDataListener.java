@@ -4,14 +4,14 @@ package ch.ethz.idsc.retina.dev.vlp16;
 import java.nio.ByteBuffer;
 
 public interface Vlp16RayDataListener {
-  static final int LASERS = 32;
+  static final int LASERS = 16;
 
   /** function is invoked with parameters that refer to previous sequence of laser data
    * 
-   * @param usec gps timestamp in microseconds
+   * @param usec microseconds from the top of the hour to the first laser firing in the packet
    * @param type
    * @param value */
-  void timestamp(int usec, byte type, byte value);
+  void timestamp(int usec, byte type);
 
   /** implementations can read 32 * 3 == 96 bytes from byteBuffer:
    * 
@@ -20,7 +20,7 @@ public interface Vlp16RayDataListener {
    * int intensity = byteBuffer.get();
    * }
    * 
-   * @param rotational [0, ..., 35999]
+   * @param azimuth [0, ..., 35999] in 100th of degree
    * @param byteBuffer */
-  void scan(int rotational, ByteBuffer byteBuffer);
+  void scan(int azimuth, ByteBuffer byteBuffer);
 }

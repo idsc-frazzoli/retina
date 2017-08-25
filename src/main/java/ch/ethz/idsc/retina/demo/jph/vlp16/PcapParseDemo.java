@@ -20,5 +20,6 @@ enum PcapParseDemo {
     File file = new File("/media/datahaki/media/ethz/vlp16/VELODYNE/VLP-16 Sample Data", //
         "2015-07-23-14-37-22_Velodyne-VLP-16-Data_Downtown 10Hz Single.pcap");
     PcapParse.of(file, packetConsumer);
+    // System.out.println(String.format("%02x", 55));
   }
 }
