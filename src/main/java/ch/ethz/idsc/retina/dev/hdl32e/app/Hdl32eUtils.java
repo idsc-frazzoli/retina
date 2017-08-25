@@ -6,7 +6,6 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRealtimeFiringPacket;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaFrame;
@@ -24,9 +23,7 @@ public enum Hdl32eUtils {
     return hdl32ePanoramaFrame;
   }
 
-  public static Hdl32eRayFrame createFiringFrame( //
-      Hdl32eRayDecoder hdl32eFiringPacketDecoder, //
-      Hdl32ePosDecoder hdl32ePositioningDecoder) {
+  public static Hdl32eRayFrame createRayFrame(Hdl32eRayDecoder hdl32eRayDecoder, Hdl32ePosDecoder hdl32ePosDecoder) {
     FloatBuffer floatBuffer = FloatBuffer.wrap(new float[2310 * 32 * 3]);
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2310 * 32]);
     Hdl32eAngularFiringCollector hdl32eAngularFiringCollector = //
@@ -35,12 +32,11 @@ public enum Hdl32eUtils {
     hdl32eSpacialProvider.addListener(hdl32eAngularFiringCollector);
     Hdl32eRotationProvider hdl32eRotationProvider = new Hdl32eRotationProvider();
     hdl32eRotationProvider.addListener(hdl32eAngularFiringCollector);
-    hdl32eFiringPacketDecoder.addListener(hdl32eSpacialProvider);
-    hdl32eFiringPacketDecoder.addListener(hdl32eRotationProvider);
-    hdl32eFiringPacketDecoder.addListener(new Hdl32eRealtimeFiringPacket(1));
+    hdl32eRayDecoder.addListener(hdl32eSpacialProvider);
+    hdl32eRayDecoder.addListener(hdl32eRotationProvider);
     Hdl32eRayFrame hdl32eFiringFrame = new Hdl32eRayFrame();
     hdl32eAngularFiringCollector.addListener(hdl32eFiringFrame);
-    hdl32ePositioningDecoder.addListener(hdl32eFiringFrame);
+    hdl32ePosDecoder.addListener(hdl32eFiringFrame);
     return hdl32eFiringFrame;
   }
 }

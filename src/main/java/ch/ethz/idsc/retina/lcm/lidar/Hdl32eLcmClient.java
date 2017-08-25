@@ -27,31 +27,33 @@ public class Hdl32eLcmClient implements LcmClientInterface {
   @Override
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
-    lcm.subscribe(Hdl32eLcmChannels.ray(lidarId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob binaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          hdl32eRayDecoder.lasers(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+    if (hdl32eRayDecoder.hasListeners())
+      lcm.subscribe(Hdl32eLcmChannels.ray(lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            hdl32eRayDecoder.lasers(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
-    lcm.subscribe(Hdl32eLcmChannels.pos(lidarId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob binaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          hdl32ePosDecoder.positioning(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+      });
+    if (hdl32ePosDecoder.hasListeners())
+      lcm.subscribe(Hdl32eLcmChannels.pos(lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            hdl32ePosDecoder.positioning(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
+      });
   }
 }

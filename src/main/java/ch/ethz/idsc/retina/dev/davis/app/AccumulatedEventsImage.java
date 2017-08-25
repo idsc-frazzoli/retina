@@ -34,6 +34,7 @@ public class AccumulatedEventsImage implements DavisDvsEventListener {
     bytes = dataBufferByte.getData();
     GlobalAssert.that(bytes.length == width * height);
     this.interval = interval;
+    GlobalAssert.that(0 < interval);
     // ---
     clearImage();
   }
@@ -46,12 +47,13 @@ public class AccumulatedEventsImage implements DavisDvsEventListener {
   public void dvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
-    if (dvsDavisEvent.time < last) { // FIXME find better math criterion
-      // System.err.println("clear accumuated events image due to reverse timing");
+    final int delta = dvsDavisEvent.time - last;
+    if (delta < 0) {
+      System.err.println("dvs image clear due to reverse timing");
       clearImage();
-      last = dvsDavisEvent.time + interval;
-    }
-    if (last + interval < dvsDavisEvent.time) {
+      last = dvsDavisEvent.time;
+    } else //
+    if (interval < delta) {
       listeners.forEach(listener -> listener.image(last, bufferedImage));
       clearImage();
       last += interval;

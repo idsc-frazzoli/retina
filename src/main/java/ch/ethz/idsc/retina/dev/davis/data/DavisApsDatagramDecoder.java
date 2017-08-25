@@ -30,6 +30,10 @@ public class DavisApsDatagramDecoder {
     listeners.add(columnTimedImageListener);
   }
 
+  public boolean hasListeners() {
+    return !listeners.isEmpty();
+  }
+
   public void decode(ByteBuffer byteBuffer) {
     // if client is started before server, x was observed not to be in range, e.g. x==-1
     int x = byteBuffer.getShort();

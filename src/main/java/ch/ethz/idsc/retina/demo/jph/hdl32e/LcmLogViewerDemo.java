@@ -12,7 +12,7 @@ enum LcmLogViewerDemo {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-08-24.hdl32e";
+    cfg.logFile = Hdl32eRecordings.OFFICE1;
     cfg.speed = RationalScalar.of(1, 8);
     LogPlayer.create(cfg);
     // ---

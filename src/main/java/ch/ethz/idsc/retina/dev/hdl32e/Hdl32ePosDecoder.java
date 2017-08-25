@@ -11,30 +11,34 @@ import ch.ethz.idsc.retina.util.math.ShortUtils;
 public final class Hdl32ePosDecoder {
   private final List<Hdl32ePosEventListener> listeners = new LinkedList<>();
 
-  public void addListener(Hdl32ePosEventListener hdl32ePositioningListener) {
-    listeners.add(hdl32ePositioningListener);
+  public void addListener(Hdl32ePosEventListener listener) {
+    listeners.add(listener);
+  }
+
+  public boolean hasListeners() {
+    return !listeners.isEmpty();
   }
 
   /** @param byteBuffer with at least 512 bytes to read */
   public void positioning(ByteBuffer byteBuffer) {
     byte[] nmea = new byte[72]; // NMEA positioning sentence
-    Hdl32ePosEvent hdl32ePositioningEvent = new Hdl32ePosEvent();
+    Hdl32ePosEvent hdl32ePosEvent = new Hdl32ePosEvent();
     // first 14 bytes not used
     byteBuffer.getLong(); // 8
     byteBuffer.getInt(); // 12
     byteBuffer.getShort(); // 14
     for (int index = 0; index < 3; ++index) {
-      hdl32ePositioningEvent.gyro[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.09766;
-      hdl32ePositioningEvent.temp[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.1453 + 25;
-      hdl32ePositioningEvent.accx[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
-      hdl32ePositioningEvent.accy[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
+      hdl32ePosEvent.gyro[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.09766;
+      hdl32ePosEvent.temp[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.1453 + 25;
+      hdl32ePosEvent.accx[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
+      hdl32ePosEvent.accy[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
     }
     int pos = byteBuffer.position() + 160;
     byteBuffer.position(pos);
-    hdl32ePositioningEvent.gps_usec = byteBuffer.getInt(); // from the hour
+    hdl32ePosEvent.gps_usec = byteBuffer.getInt(); // from the hour
     byteBuffer.getInt(); // not used
     byteBuffer.get(nmea);
-    hdl32ePositioningEvent.nmea = new String(nmea);
-    listeners.forEach(listener -> listener.positioning(hdl32ePositioningEvent));
+    hdl32ePosEvent.nmea = new String(nmea);
+    listeners.forEach(listener -> listener.positioning(hdl32ePosEvent));
   }
 }

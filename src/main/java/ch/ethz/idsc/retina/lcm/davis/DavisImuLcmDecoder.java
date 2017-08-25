@@ -1,9 +1,11 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis.data;
+package ch.ethz.idsc.retina.lcm.davis;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import idsc.DavisImu;
 
 /** translates davis imu lcm message to {@link DavisImuFrame}
@@ -13,6 +15,10 @@ public class DavisImuLcmDecoder {
 
   public void addListener(DavisImuFrameListener davisImuFrameListener) {
     listeners.add(davisImuFrameListener);
+  }
+
+  public boolean hasListeners() {
+    return !listeners.isEmpty();
   }
 
   public void decode(DavisImu davisImu) {

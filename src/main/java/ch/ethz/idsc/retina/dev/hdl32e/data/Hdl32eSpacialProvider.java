@@ -54,7 +54,7 @@ public class Hdl32eSpacialProvider implements Hdl32eRayDataListener {
     // TODO cos/sin can be done in a lookup table!
     final double angle = rotational * ANGLE_FACTOR;
     float dx = (float) Math.cos(angle);
-    float dy = (float) Math.sin(angle);
+    float dy = (float) -Math.sin(angle);
     float[] coords = new float[3];
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;

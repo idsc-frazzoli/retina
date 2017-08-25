@@ -15,6 +15,10 @@ public class DavisDvsDatagramDecoder {
     listeners.add(davisDvsEventListener);
   }
 
+  public boolean hasListeners() {
+    return !listeners.isEmpty();
+  }
+
   private short pacid_next = -1;
   private int missed;
   private int missed_print;
