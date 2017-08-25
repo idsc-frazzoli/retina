@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.core.TimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.TimedImageListener;
 
 public class AccumulatedEventsImage implements DavisDvsEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;

@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.io.DavisExportControl;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** export control that is enabled from the 2nd image onwards */

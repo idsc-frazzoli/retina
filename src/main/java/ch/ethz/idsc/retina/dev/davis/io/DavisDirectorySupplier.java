@@ -7,9 +7,9 @@ import java.io.FileReader;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public class DavisDirectorySupplier implements StartAndStoppable {
   private final BufferedReader br_events;

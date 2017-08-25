@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 /* package */ class DavisApsStatusWarning implements ColumnTimedImageListener {
   int complete = 0;

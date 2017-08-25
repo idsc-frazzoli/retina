@@ -8,8 +8,8 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisApsDatagramDecoder {
   private final BufferedImage bufferedImage;

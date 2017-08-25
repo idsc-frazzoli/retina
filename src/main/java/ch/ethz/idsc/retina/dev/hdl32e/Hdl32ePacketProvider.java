@@ -16,10 +16,10 @@ public class Hdl32ePacketProvider implements ByteArrayConsumer {
    * hdl32e user's manual refers to first 42 bytes as ethernet header
    * they are only present in pcap file, but not in upd packets from live sensor */
   public static final int _42 = 42;
-  public static final int LASER_SIZE1 = 1248;
-  public static final int LASER_SIZE2 = 1206;
+  public static final int LASER_SIZE1 = 1248; // Hdl32eStatics.RAY_PACKET_LENGTH + 42
+  public static final int LASER_SIZE2 = Hdl32eStatics.RAY_PACKET_LENGTH;
   public static final int GPS_SIZE1 = 554;
-  public static final int GPS_SIZE2 = 512;
+  public static final int GPS_SIZE2 = Hdl32eStatics.POS_PACKET_LENGTH;
   // ---
   public final Hdl32eRayDecoder hdl32eFiringDecoder = new Hdl32eRayDecoder();
   public final Hdl32ePosDecoder hdl32ePositioningDecoder = new Hdl32ePosDecoder();

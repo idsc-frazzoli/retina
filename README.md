@@ -24,6 +24,10 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
+## Velodyne VLP-16
+
+* 3D-point cloud visualization
+
 ## Velodyne HDL-32E
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=abOYEIdBgRs)
