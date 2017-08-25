@@ -15,6 +15,7 @@ import lcm.lcm.LCMSubscriber;
 
 /** reference implementation of an lcm client that listens and decodes
  * hdl32e publications and allows listeners to receive the data */
+// TODO OWLY3D uses class
 public class Hdl32eLcmClient implements LcmClientInterface {
   public final Hdl32eRayDecoder hdl32eRayDecoder = new Hdl32eRayDecoder();
   public final Hdl32ePosDecoder hdl32ePosDecoder = new Hdl32ePosDecoder();

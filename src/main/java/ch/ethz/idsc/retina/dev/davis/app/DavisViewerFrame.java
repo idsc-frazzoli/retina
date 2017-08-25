@@ -17,12 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.core.TimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;

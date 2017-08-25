@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
@@ -11,6 +10,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisRealtimeSleeper;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public enum DavisEventViewer {
   ;

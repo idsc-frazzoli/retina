@@ -8,7 +8,7 @@ import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisPngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   private final File directory;

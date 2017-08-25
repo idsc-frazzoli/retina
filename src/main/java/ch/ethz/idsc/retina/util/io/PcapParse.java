@@ -1,5 +1,4 @@
 // code by jph
-// TODO cite web reference
 package ch.ethz.idsc.retina.util.io;
 
 import java.io.File;
@@ -9,13 +8,15 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-/** information taken from
- * "Hani's blog: A look at the pcap file format" */
+/** file description taken from "Hani's blog: A look at the pcap file format"
+ * http://www.kroosec.com/2012/10/a-look-at-pcap-file-format.html
+ * 
+ * implementation is standalone */
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 
-  public static void of(File file, ByteArrayConsumer packetConsumer) throws Exception {
-    new PcapParse(file, packetConsumer);
+  public static void of(File file, PcapPacketListener pcapPacketListener) throws Exception {
+    new PcapParse(file, pcapPacketListener);
   }
   // ---
 
@@ -24,7 +25,7 @@ public class PcapParse {
   private int max_size;
   private byte[] packet_data;
 
-  private PcapParse(File file, ByteArrayConsumer packetConsumer) throws Exception {
+  private PcapParse(File file, PcapPacketListener pcapPacketListener) throws Exception {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();
@@ -33,8 +34,8 @@ public class PcapParse {
         inputStream.read(packet_header); // packet header
         ByteBuffer byteBuffer = ByteBuffer.wrap(packet_header);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.getInt(); // sec
-        byteBuffer.getInt(); // msec
+        int sec = byteBuffer.getInt(); // sec
+        int usec = byteBuffer.getInt(); // microseconds [0...999999]
         // The third field is 4 bytes long and contains the size of the saved packet data in our file in bytes.
         int length = byteBuffer.getInt(); // size
         if (max_size < length)
@@ -48,7 +49,7 @@ public class PcapParse {
         // packet data
         int number = inputStream.read(packet_data, 0, length);
         _assert(number == length);
-        packetConsumer.accept(packet_data, length_data);
+        pcapPacketListener.packet(sec, usec, packet_data, length_data);
       }
     }
   }

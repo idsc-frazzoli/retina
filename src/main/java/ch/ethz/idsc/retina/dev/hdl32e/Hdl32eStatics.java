@@ -5,7 +5,11 @@ public enum Hdl32eStatics {
   ;
   /** default port on which hdl32e publishes firing data */
   public static final int RAY_DEFAULT_PORT = 2368;
+  public static final int RAY_PACKET_LENGTH = 1206;
+  // ---
+  /** default port on which hdl32e publishes positioning data */
   public static final int POS_DEFAULT_PORT = 8308;
+  public static final int POS_PACKET_LENGTH = 512;
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */

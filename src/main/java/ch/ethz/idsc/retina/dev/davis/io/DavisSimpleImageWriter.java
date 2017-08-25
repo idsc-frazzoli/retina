@@ -6,7 +6,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.core.TimedImageListener;
+import ch.ethz.idsc.retina.util.TimedImageListener;
 
 public class DavisSimpleImageWriter implements TimedImageListener {
   private final File directory;

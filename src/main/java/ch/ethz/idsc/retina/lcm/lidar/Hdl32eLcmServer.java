@@ -1,11 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import ch.ethz.idsc.retina.core.StartAndStoppable;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosDatagramClient;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDatagramClient;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eStatics;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.UniversalDatagramClient;
 
 /** implementation listens to live device for firing and positioning data
  * on given ports. the received packets are forwarded via lcm protocol
@@ -16,12 +15,12 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
  * if no arguments are provided, the following default arguments are used:
  * center 2368 8308 */
 public class Hdl32eLcmServer implements StartAndStoppable {
-  private final Hdl32eRayDatagramClient hdl32eRayDatagramClient;
-  private final Hdl32ePosDatagramClient hdl32ePosDatagramClient;
+  private final UniversalDatagramClient hdl32eRayDatagramClient;
+  private final UniversalDatagramClient hdl32ePosDatagramClient;
 
   public Hdl32eLcmServer(String lidarId, int portRay, int portPos) {
-    hdl32eRayDatagramClient = new Hdl32eRayDatagramClient(portRay);
-    hdl32ePosDatagramClient = new Hdl32ePosDatagramClient(portPos);
+    hdl32eRayDatagramClient = new UniversalDatagramClient(portRay, new byte[Hdl32eStatics.RAY_PACKET_LENGTH]); // 1206
+    hdl32ePosDatagramClient = new UniversalDatagramClient(portPos, new byte[Hdl32eStatics.POS_PACKET_LENGTH]); // TODO magic const
     hdl32eRayDatagramClient.addListener(new BinaryBlobPublisher(Hdl32eLcmChannels.ray(lidarId)));
     hdl32ePosDatagramClient.addListener(new BinaryBlobPublisher(Hdl32eLcmChannels.pos(lidarId)));
   }
@@ -38,6 +37,9 @@ public class Hdl32eLcmServer implements StartAndStoppable {
     hdl32ePosDatagramClient.stop();
   }
 
+  /** main function for use as command line tool
+   * 
+   * @param args */
   public static void main(String[] args) {
     String channel = "center";
     int portRay = Hdl32eStatics.RAY_DEFAULT_PORT;

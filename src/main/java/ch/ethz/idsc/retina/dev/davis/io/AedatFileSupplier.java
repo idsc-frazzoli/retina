@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** parser for aedat version 2.0
  * 
