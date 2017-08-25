@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.dev.davis.DavisApsType;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuLcmDecoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import idsc.DavisImu;
@@ -30,55 +29,59 @@ public class DavisLcmClient implements LcmClientInterface {
   @Override
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
-    lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob dvsBinaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(dvsBinaryBlob.data);
-          byteBuffer.order(DavisStatics.BYTE_ORDER);
-          davisDvsDatagramDecoder.decode(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+    if (davisDvsDatagramDecoder.hasListeners())
+      lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob dvsBinaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(dvsBinaryBlob.data);
+            byteBuffer.order(DavisStatics.BYTE_ORDER);
+            davisDvsDatagramDecoder.decode(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
-    lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.SIG), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
-          byteBuffer.order(DavisStatics.BYTE_ORDER);
-          davisSigDatagramDecoder.decode(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+      });
+    if (davisSigDatagramDecoder.hasListeners())
+      lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.SIG), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
+            byteBuffer.order(DavisStatics.BYTE_ORDER);
+            davisSigDatagramDecoder.decode(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
-    lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.RST), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
-          byteBuffer.order(DavisStatics.BYTE_ORDER);
-          davisRstDatagramDecoder.decode(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+      });
+    if (davisRstDatagramDecoder.hasListeners())
+      lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.RST), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
+            byteBuffer.order(DavisStatics.BYTE_ORDER);
+            davisRstDatagramDecoder.decode(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
-    lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          DavisImu davisImu = new DavisImu(ins);
-          davisImuLcmDecoder.decode(davisImu);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+      });
+    if (davisImuLcmDecoder.hasListeners())
+      lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            DavisImu davisImu = new DavisImu(ins);
+            davisImuLcmDecoder.decode(davisImu);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
+      });
   }
 }
