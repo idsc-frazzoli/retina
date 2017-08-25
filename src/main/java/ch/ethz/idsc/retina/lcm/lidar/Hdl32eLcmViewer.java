@@ -16,7 +16,7 @@ public enum Hdl32eLcmViewer {
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
     client.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
     // ---
-    Hdl32eUtils.createFiringFrame(client.hdl32eRayDecoder, client.hdl32ePosDecoder);
+    Hdl32eUtils.createRayFrame(client.hdl32eRayDecoder, client.hdl32ePosDecoder);
     // ---
     client.startSubscriptions();
   }
