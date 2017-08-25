@@ -18,6 +18,8 @@
 # All .idea things
 .idea/
 
+.idea/workspace.xml
+
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
