@@ -17,6 +17,7 @@ enum PcapParseDemo {
       }
     };
     Vlp16PacketProvider packetConsumer = new Vlp16PacketProvider();
+    // packetConsumer.vlp16PosDecoder.addListener(listener);
     File file = new File("/media/datahaki/media/ethz/vlp16/VELODYNE/VLP-16 Sample Data", //
         "2015-07-23-14-37-22_Velodyne-VLP-16-Data_Downtown 10Hz Single.pcap");
     PcapParse.of(file, packetConsumer);

@@ -4,13 +4,13 @@ package ch.ethz.idsc.retina.dev.vlp16;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
  * 
  * implementation decides based on length of packet to
  * process the data either as firing packet or as GPS */
-public class Vlp16PacketProvider implements ByteArrayConsumer {
+public class Vlp16PacketProvider implements PcapPacketListener {
   /** the answer to life the universe and everything
    * 
    * hdl32e user's manual refers to first 42 bytes as ethernet header
@@ -25,7 +25,7 @@ public class Vlp16PacketProvider implements ByteArrayConsumer {
   public final Vlp16PosDecoder vlp16PosDecoder = new Vlp16PosDecoder();
 
   @Override
-  public void accept(byte[] packet_data, int length) {
+  public void packet(int sec, int usec, byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     if (length == LASER_SIZE1) {
