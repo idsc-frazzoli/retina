@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
 
-public class Hdl32eRealtimeFiringPacket implements Hdl32eFiringPacketListener {
+public class Hdl32eRealtimeFiringPacket implements Hdl32eRayDataListener {
   private final IntRealtimeSleeper rs;
 
   public Hdl32eRealtimeFiringPacket(double speed) {
@@ -13,11 +13,11 @@ public class Hdl32eRealtimeFiringPacket implements Hdl32eFiringPacketListener {
   }
 
   @Override
-  public void process(int firing, int rotational, ByteBuffer byteBuffer) {
+  public void timestamp(int usec, byte type, byte value) {
+    rs.now(usec); // blocking
   }
 
   @Override
-  public void status(int usec, byte type, byte value) {
-    rs.now(usec);
+  public void scan(int rotational, ByteBuffer byteBuffer) {
   }
 }

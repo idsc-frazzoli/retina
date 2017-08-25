@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockListener;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
-class DavisApsBlockPublisher implements DavisApsBlockListener {
+public class DavisApsBlockPublisher implements DavisApsBlockListener {
   /** @param cameraId
    * @param davisApsType
    * @return channel name for given id */

@@ -2,7 +2,18 @@
 
 <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Java 8 code to prototype algorithms for sensor interfacing and processing
+Sensor interfaces and data processing in Java 8.
+
+Version `0.0.1` 
+
+The implementation includes
+
+* obtaining data from wired sensor
+* parsing of standard log files
+* demo of data handling, for instance simple visualizations
+* option to transmit and receive via the `lcm` protocol
+
+The byte order of the binary data is `little endian` since the encoding is native on most architectures. 
 
 # LIDAR
 
@@ -33,8 +44,8 @@ intensity as 360[deg] panorama
 
 * parsing and visualization
 * conversion to text+png format
-* compression of raw APS data by factor 8 (ADC reduced from 10 bit to 8 bit)
-* compression of raw DVS data by factor 2 without loss
+* loss-less compression of DVS events by the factor of 2
+* compression of raw APS data by factor 8 (where the ADC values are reduced from 10 bit to 8 bit)
 
 ## streaming DAT files
 
@@ -60,6 +71,29 @@ intensity as 360[deg] panorama
 ![synth1](https://user-images.githubusercontent.com/4012178/27772610-32af593e-5f66-11e7-8c29-64611f6ca3e6.gif)
 
 </tr></table>
+
+## Include in your project
+
+Modify the `pom` file of your project to specify `repository` and `dependency` of the tensor library:
+
+    <repositories>
+      <repository>
+        <id>retina-mvn-repo</id>
+        <url>https://raw.github.com/idsc-frazzoli/retina/mvn-repo/</url>
+        <snapshots>
+          <enabled>true</enabled>
+          <updatePolicy>always</updatePolicy>
+        </snapshots>
+      </repository>
+    </repositories>
+    
+    <dependencies>
+      <dependency>
+        <groupId>ch.ethz.idsc</groupId>
+        <artifactId>retina</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+    </dependencies>
 
 ## Dependencies
 

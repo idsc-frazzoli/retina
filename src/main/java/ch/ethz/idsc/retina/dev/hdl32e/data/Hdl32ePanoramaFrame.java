@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.hdl32e.data;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
@@ -11,20 +12,24 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningEvent;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePositioningListener;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosEvent;
+import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosEventListener;
+import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositioningListener {
+public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEventListener {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
   private Hdl32ePanorama hdl32ePanorama;
-  private Hdl32ePositioningEvent hdl32ePositioningEvent;
+  private Hdl32ePosEvent hdl32ePositioningEvent;
+  private final Stopwatch stopwatch = new Stopwatch();
   JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
+      long period = stopwatch.stop();
+      stopwatch.start();
       Graphics2D graphics = (Graphics2D) g;
       final int height = 32 * SCALE_Y;
       List<String> list = new LinkedList<>();
@@ -37,7 +42,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
         }
       }
       {
-        Hdl32ePositioningEvent posRef = hdl32ePositioningEvent;
+        Hdl32ePosEvent posRef = hdl32ePositioningEvent;
         if (Objects.nonNull(posRef)) {
           list.add(posRef.nmea());
           list.add("temp=" + Tensors.vectorDouble(posRef.temp).map(Round._1));
@@ -47,6 +52,8 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
           render(graphics, list, 0, 2 * (16 + height));
         }
       }
+      graphics.setColor(Color.RED);
+      graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 20);
     }
   };
 
@@ -71,7 +78,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePositi
   }
 
   @Override
-  public void positioning(Hdl32ePositioningEvent hdl32ePositioningEvent) {
+  public void positioning(Hdl32ePosEvent hdl32ePositioningEvent) {
     this.hdl32ePositioningEvent = hdl32ePositioningEvent;
   }
 

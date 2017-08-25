@@ -9,11 +9,11 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum LcmLogView {
+enum DavisLcmLogViewer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = "/media/datahaki/media/ethz/davis240c/lcm_log/lcmlog-2017-08-20.01";
+    cfg.logFile = DavisRecordings.OFFICE;
     cfg.speed = RationalScalar.of(1, 4);
     LogPlayer.create(cfg);
     DavisLcmViewer.createStandlone(DavisSerial.FX2_02460045.name(), 25_000);
