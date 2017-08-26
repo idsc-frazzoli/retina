@@ -6,10 +6,9 @@ import java.nio.ByteBuffer;
 public interface LidarRayDataListener {
   /** function is invoked with parameters that refer to previous sequence of laser data
    * 
-   * @param usec gps timestamp in microseconds
-   * @param type
-   * @param value */
-  void timestamp(int usec, byte type, byte value);
+   * @param usec microseconds from the top of the hour to the first laser firing in the packet
+   * @param type */
+  void timestamp(int usec, byte type);
 
   /** implementations can read LASERS * 3 bytes from byteBuffer:
    * 
@@ -18,7 +17,7 @@ public interface LidarRayDataListener {
    * int intensity = byteBuffer.get();
    * }
    * 
-   * @param rotational [0, ..., 35999]
+   * @param rotational [0, ..., 35999] in 100th of degree
    * @param byteBuffer */
   void scan(int rotational, ByteBuffer byteBuffer);
 }

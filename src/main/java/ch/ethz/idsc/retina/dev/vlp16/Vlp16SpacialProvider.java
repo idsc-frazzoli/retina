@@ -5,11 +5,13 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEventListener;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
-public class Vlp16SpacialProvider implements Vlp16RayDataListener {
+public class Vlp16SpacialProvider implements LidarRayDataListener {
+  private static final int LASERS = 16;
   public static final float[] IR = new float[16];
   public static final float[] IZ = new float[16];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;

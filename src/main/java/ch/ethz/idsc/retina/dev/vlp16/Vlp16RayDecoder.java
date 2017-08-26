@@ -3,9 +3,11 @@ package ch.ethz.idsc.retina.dev.vlp16;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRayDataListener;
+
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public class Vlp16RayDecoder extends ListenerQueue<Vlp16RayDataListener> {
+public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> {
   private static final int FIRINGS = 12;
   // ---
   private final AzimuthExtrapolation ae = new AzimuthExtrapolation();

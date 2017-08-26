@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
 import ch.ethz.idsc.retina.util.io.PcapParse;
+import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
 enum Hdl32ePacketConsumerDemo {
   ;
@@ -34,8 +35,8 @@ enum Hdl32ePacketConsumerDemo {
     };
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
-    Hdl32ePcapPacketDecoder packetConsumer = new Hdl32ePcapPacketDecoder(1);
+    Hdl32ePcapPacketDecoder packetConsumer = new Hdl32ePcapPacketDecoder();
     packetConsumer.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
-    PcapParse.of(Hdl32ePcap.TUNNEL.file, packetConsumer);
+    PcapParse.of(Hdl32ePcap.TUNNEL.file, new PcapRealtimePlayback(1), packetConsumer);
   }
 }

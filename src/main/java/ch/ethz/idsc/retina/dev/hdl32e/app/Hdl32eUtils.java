@@ -9,8 +9,8 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaFrame;
-import ch.ethz.idsc.retina.dev.hdl32e.data.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eSpacialProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.data.LidarRotationProvider;
 
 public enum Hdl32eUtils {
   ;

@@ -28,7 +28,7 @@ public class Hdl32eRayDecoder {
       int gps_timestamp = byteBuffer.getInt(); // in [usec]
       byte type = byteBuffer.get(); // 55 == 0x37 == Strongest return
       byte value = byteBuffer.get(); // 33 == 0x21 == HDL-32E
-      listeners.forEach(listener -> listener.timestamp(gps_timestamp, type, value));
+      listeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     { // 12 blocks of firing data
       byteBuffer.position(offset);

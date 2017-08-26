@@ -66,7 +66,7 @@ public class Hdl32eSpacialProvider implements LidarRayDataListener {
   }
 
   @Override
-  public void timestamp(int usec, byte type, byte value) {
+  public void timestamp(int usec, byte type) {
     this.usec = usec;
   }
 

@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.util.RealtimeSleeper;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
@@ -19,15 +18,9 @@ public class Hdl32ePcapPacketDecoder implements PcapPacketListener {
   // ---
   public final Hdl32eRayDecoder hdl32eRayDecoder = new Hdl32eRayDecoder();
   public final Hdl32ePosDecoder hdl32ePosDecoder = new Hdl32ePosDecoder();
-  private final RealtimeSleeper realtimeSleeper;
-
-  public Hdl32ePcapPacketDecoder(double speed) {
-    realtimeSleeper = new RealtimeSleeper(speed);
-  }
 
   @Override
   public void packet(int sec, int usec, byte[] packet_data, int length) {
-    realtimeSleeper.now(sec, usec);
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.position(42);
