@@ -12,13 +12,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosEvent;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosEventListener;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEventListener {
+public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, VelodynePosEventListener {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
@@ -78,8 +79,8 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, Hdl32ePosEve
   }
 
   @Override
-  public void positioning(Hdl32ePosEvent hdl32ePosEvent) {
-    this.hdl32ePosEvent = hdl32ePosEvent;
+  public void positioning(VelodynePosEvent velodynePosEvent) {
+    this.hdl32ePosEvent = (Hdl32ePosEvent) velodynePosEvent;
   }
 
   @Override

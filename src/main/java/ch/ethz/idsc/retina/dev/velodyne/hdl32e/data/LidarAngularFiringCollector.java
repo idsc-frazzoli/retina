@@ -6,32 +6,40 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.dev.velodyne.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEvent;
 import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEventListener;
 import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEventListener;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayBlockListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** collects a complete 360 rotation */
 // TODO OWLY3D uses class
-public class Hdl32eAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
+public class LidarAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates */
-  public static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184
+  // TODO parts of the implementation are not generic
+  private static final int MAX_COORDINATES = 2304 * 32; // == 221184
+
+  public static LidarAngularFiringCollector createDefault() {
+    FloatBuffer floatBuffer = FloatBuffer.wrap(new float[MAX_COORDINATES * 3]); // 3 because of x y z
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_COORDINATES]);
+    return new LidarAngularFiringCollector(floatBuffer, byteBuffer);
+  }
+
   // ---
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;
-  private final List<Hdl32eRayBlockListener> listeners = new LinkedList<>();
+  private final List<LidarRayBlockListener> listeners = new LinkedList<>();
 
-  public Hdl32eAngularFiringCollector(FloatBuffer floatBuffer, ByteBuffer byteBuffer) {
+  public LidarAngularFiringCollector(FloatBuffer floatBuffer, ByteBuffer byteBuffer) {
     this.floatBuffer = floatBuffer;
     this.byteBuffer = byteBuffer;
     limit = byteBuffer.limit();
     GlobalAssert.that(floatBuffer.limit() == limit * 3);
   }
 
-  public void addListener(Hdl32eRayBlockListener listener) {
+  public void addListener(LidarRayBlockListener listener) {
     listeners.add(listener);
   }
 

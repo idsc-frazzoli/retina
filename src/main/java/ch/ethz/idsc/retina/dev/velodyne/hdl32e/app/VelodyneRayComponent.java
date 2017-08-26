@@ -12,15 +12,15 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosEvent;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
 import ch.ethz.idsc.retina.util.Stopwatch;
 import ch.ethz.idsc.tensor.img.Hue;
 
-class Hdl32eRayComponent {
+class VelodyneRayComponent {
   private final Stopwatch stopwatch = new Stopwatch();
   private int zoom = 0;
   RayContainer rayContainer;
-  Hdl32ePosEvent hdl32ePosEvent;
+  VelodynePosEvent hdl32ePosEvent;
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
@@ -55,7 +55,7 @@ class Hdl32eRayComponent {
         }
       }
       {
-        Hdl32ePosEvent ref = hdl32ePosEvent;
+        VelodynePosEvent ref = hdl32ePosEvent;
         if (Objects.nonNull(ref)) {
           graphics.setColor(Color.GRAY);
           graphics.drawString("" + ref.nmea(), 0, 30);
@@ -66,7 +66,7 @@ class Hdl32eRayComponent {
     }
   };
 
-  public Hdl32eRayComponent() {
+  public VelodyneRayComponent() {
     jComponent.addMouseWheelListener(new MouseWheelListener() {
       @Override
       public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {

@@ -1,12 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne.hdl32e;
+package ch.ethz.idsc.retina.dev.velodyne;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-// TODO OWLY3D uses class
-// TODO class is generic for vlp16
-public interface Hdl32eRayBlockListener {
+public interface LidarRayBlockListener {
   /** @param floatBuffer
    * @param byteBuffer */
   // TODO probably should provide time info

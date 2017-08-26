@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.util.io;
 
 import ch.ethz.idsc.retina.util.RealtimeSleeper;
 
+/** slows down parsing of pcap file to a realtime factor */
 public class PcapRealtimePlayback implements PcapPacketListener {
   private final RealtimeSleeper realtimeSleeper;
 

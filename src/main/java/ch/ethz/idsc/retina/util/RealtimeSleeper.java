@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util;
 
 import java.util.Objects;
 
-/** slows down playback to realtime
+/** functionality is used to slow down playback to realtime
  * 
  * 1) nano seconds
  * 2) long encoding */
@@ -23,7 +23,8 @@ public class RealtimeSleeper {
     this.speed = speed;
   }
 
-  /** @param time in nano seconds */
+  /** @param time in nano seconds
+   * @see System#nanoTime() */
   public void now(long time) {
     if (notInitialized()) {
       ref = time;
@@ -44,6 +45,10 @@ public class RealtimeSleeper {
     }
   }
 
+  /** timestamp used in pcap format
+   * 
+   * @param sec
+   * @param usec micro seconds in range [0, 1, ..., 999999] */
   public void now(int sec, int usec) {
     now(sec * 1000_000_000L + usec * 1000L);
   }

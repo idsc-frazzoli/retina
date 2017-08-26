@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
 import ch.ethz.idsc.tensor.RealScalar;
 
 public class Hdl32ePanoramaCollector implements LidarRayDataListener {
-  private static final int LASERS = 16;
+  private static final int LASERS = 32;
   /** constructor multiplies index values with image width */
   private final int[] index = new int[] { //
       31, 15, //

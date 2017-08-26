@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.demo.jph.lidar;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import ch.ethz.idsc.retina.dev.velodyne.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePcapPacketDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayBlockListener;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaListener;
@@ -16,7 +16,7 @@ enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")
-    Hdl32eRayBlockListener hdl32ePositionListener = new Hdl32eRayBlockListener() {
+    LidarRayBlockListener hdl32ePositionListener = new LidarRayBlockListener() {
       @Override
       public void digest(FloatBuffer fb, ByteBuffer bb) {
         System.out.println("here");

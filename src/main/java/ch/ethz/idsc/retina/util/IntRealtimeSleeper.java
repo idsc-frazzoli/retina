@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util;
 
 import java.util.Objects;
 
-/** slows down playback to realtime
+/** functionality is used to slow down playback to realtime
  * 
  * 1) micro seconds
  * 2) int encoding */

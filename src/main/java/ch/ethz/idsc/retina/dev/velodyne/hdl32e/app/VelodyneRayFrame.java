@@ -8,11 +8,11 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosEvent;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosEventListener;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayBlockListener;
+import ch.ethz.idsc.retina.dev.velodyne.LidarRayBlockListener;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
 
-/** {@link Hdl32eRayFrame} requires that the binary "urg_provider" is located at
+/** {@link VelodyneRayFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
  * 
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
@@ -27,11 +27,11 @@ import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayBlockListener;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Hdl32eRayFrame implements Hdl32eRayBlockListener, Hdl32ePosEventListener {
+public class VelodyneRayFrame implements LidarRayBlockListener, VelodynePosEventListener {
   public final JFrame jFrame = new JFrame();
-  private Hdl32eRayComponent hdl32eRayComponent = new Hdl32eRayComponent();
+  private VelodyneRayComponent hdl32eRayComponent = new VelodyneRayComponent();
 
-  public Hdl32eRayFrame() {
+  public VelodyneRayFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 600, 600);
     jFrame.setContentPane(hdl32eRayComponent.jComponent);
@@ -48,7 +48,7 @@ public class Hdl32eRayFrame implements Hdl32eRayBlockListener, Hdl32ePosEventLis
   }
 
   @Override
-  public void positioning(Hdl32ePosEvent hdl32ePosEvent) {
+  public void positioning(VelodynePosEvent hdl32ePosEvent) {
     hdl32eRayComponent.hdl32ePosEvent = hdl32ePosEvent;
   }
 }
