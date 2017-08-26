@@ -18,7 +18,7 @@ enum LidarPcapLcmServer {
 
   static void _vlp16() throws Exception {
     VelodynePcapLcmServer server = new VelodynePcapLcmServer(VelodyneModel.VLP16, "center", 1);
-    PcapParse.of(Vlp16Pcap.DOWNTOWN_SINGLE.file, new PcapRealtimePlayback(SPEED), server); // blocking
+    PcapParse.of(Vlp16Pcap.DOWNTOWN_DUAL.file, new PcapRealtimePlayback(SPEED), server); // blocking
   }
 
   public static void main(String[] args) throws Exception {

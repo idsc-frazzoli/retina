@@ -13,7 +13,7 @@ public class AzimuthExtrapolation {
 
   public void now(int azimuth) {
     if (FULL <= azimuth) // TODO remove consistency check after working release
-      throw new RuntimeException();
+      throw new RuntimeException("azimuth=" + azimuth);
     if (Objects.isNull(last))
       last = azimuth;
     else //

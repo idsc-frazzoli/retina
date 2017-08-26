@@ -30,7 +30,7 @@ enum VelodynePcapFiringDemo {
         (Vlp16RayDecoder) velodynePcapPacketDecoder.rayDecoder, //
         (Vlp16PosDecoder) velodynePcapPacketDecoder.posDecoder);
     // ---
-    PcapParse.of(Vlp16Pcap.DOWNTOWN_SINGLE.file, new PcapRealtimePlayback(1), velodynePcapPacketDecoder); // blocking
+    PcapParse.of(Vlp16Pcap.DEPOT_DUAL.file, new PcapRealtimePlayback(1), velodynePcapPacketDecoder); // blocking
   }
 
   public static void main(String[] args) throws Exception {
