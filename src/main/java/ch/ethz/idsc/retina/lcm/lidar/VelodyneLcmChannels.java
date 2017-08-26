@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import ch.ethz.idsc.retina.dev.hdl32e.VelodyneModel;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
 
 public enum VelodyneLcmChannels {
   ;

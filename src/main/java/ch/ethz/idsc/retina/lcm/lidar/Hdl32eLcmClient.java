@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.VelodyneModel;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;

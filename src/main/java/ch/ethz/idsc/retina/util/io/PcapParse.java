@@ -17,6 +17,9 @@ import java.util.List;
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 
+  /** @param file
+   * @param pcapPacketListeners
+   * @throws Exception */
   public static void of(File file, PcapPacketListener... pcapPacketListeners) throws Exception {
     new PcapParse(file, Arrays.asList(pcapPacketListeners));
   }

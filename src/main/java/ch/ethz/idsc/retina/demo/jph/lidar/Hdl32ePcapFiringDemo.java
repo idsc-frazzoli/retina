@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePcapPacketDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.app.Hdl32eUtils;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePcapPacketDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.app.Hdl32eUtils;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 

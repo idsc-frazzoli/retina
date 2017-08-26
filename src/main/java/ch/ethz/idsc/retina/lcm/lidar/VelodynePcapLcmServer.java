@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lcm.lidar;
 
 import java.util.Arrays;
 
-import ch.ethz.idsc.retina.dev.hdl32e.VelodyneModel;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.RealtimeSleeper;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;

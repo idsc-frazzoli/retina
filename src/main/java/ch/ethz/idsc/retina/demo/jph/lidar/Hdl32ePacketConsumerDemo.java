@@ -4,11 +4,11 @@ package ch.ethz.idsc.retina.demo.jph.lidar;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePcapPacketDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayBlockListener;
-import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanorama;
-import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaListener;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePcapPacketDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayBlockListener;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanorama;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaListener;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
