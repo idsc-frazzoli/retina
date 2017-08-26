@@ -1,16 +1,13 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne.hdl32e.data;
+package ch.ethz.idsc.retina.dev.velodyne;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
-import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEvent;
-import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEventListener;
-
-/** converts firing data to spacial events with time, 3d-coordinates and intensity */
-// TODO OWLY3D uses class
+/** converts firing data to spacial events with time, 3d-coordinates and intensity
+ * 
+ * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class LidarRotationProvider implements LidarRayDataListener {
   private final List<LidarRotationEventListener> listeners = new LinkedList<>();
   private int usec;

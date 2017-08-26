@@ -20,7 +20,7 @@ public class PcapParse {
   /** @param file
    * @param pcapPacketListeners
    * @throws Exception */
-  public static void of(File file, PcapPacketListener... pcapPacketListeners) throws Exception {
+  public static void of(File file, PcapPacketListener... pcapPacketListeners) throws IOException {
     new PcapParse(file, Arrays.asList(pcapPacketListeners));
   }
   // ---
@@ -30,7 +30,7 @@ public class PcapParse {
   private int max_size;
   private byte[] packet_data;
 
-  private PcapParse(File file, List<PcapPacketListener> pcapPacketListeners) throws Exception {
+  private PcapParse(File file, List<PcapPacketListener> pcapPacketListeners) throws IOException {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();

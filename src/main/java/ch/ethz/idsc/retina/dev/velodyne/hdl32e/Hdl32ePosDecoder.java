@@ -5,11 +5,12 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
 import ch.ethz.idsc.retina.util.math.ShortUtils;
 
 /** information on p.21 of HDL-32E user's manual */
-public final class Hdl32ePosDecoder {
+public final class Hdl32ePosDecoder implements VelodynePosDecoder {
   private final List<VelodynePosEventListener> listeners = new LinkedList<>();
 
   public void addListener(VelodynePosEventListener listener) {
@@ -21,6 +22,7 @@ public final class Hdl32ePosDecoder {
   }
 
   /** @param byteBuffer with at least 512 bytes to read */
+  @Override
   public void positioning(ByteBuffer byteBuffer) {
     byte[] nmea = new byte[72]; // NMEA positioning sentence
     // first 14 bytes not used

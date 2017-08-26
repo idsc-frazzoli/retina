@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.io;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public class UniversalDatagramClient implements StartAndStoppable {
   private final int port;

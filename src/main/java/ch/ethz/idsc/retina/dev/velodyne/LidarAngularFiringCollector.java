@@ -1,20 +1,16 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne.hdl32e.data;
+package ch.ethz.idsc.retina.dev.velodyne;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.velodyne.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEvent;
-import ch.ethz.idsc.retina.dev.velodyne.LidarRotationEventListener;
-import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEventListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-/** collects a complete 360 rotation */
-// TODO OWLY3D uses class
+/** collects a complete 360 rotation
+ * 
+ * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class LidarAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates */
   // TODO parts of the implementation are not generic

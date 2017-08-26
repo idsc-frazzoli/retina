@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.app.Hdl32eUtils;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eUtils;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaFrame;
 

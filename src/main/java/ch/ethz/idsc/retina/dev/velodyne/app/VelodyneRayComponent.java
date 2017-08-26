@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne.hdl32e.app;
+package ch.ethz.idsc.retina.dev.velodyne.app;
 
 import java.awt.Color;
 import java.awt.Dimension;

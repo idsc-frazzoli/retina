@@ -5,15 +5,17 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.velodyne.ListenerQueue;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> {
+public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> implements VelodyneRayDecoder {
   private static final int FIRINGS = 12;
   // ---
   private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
 
   /** @param byteBuffer with at least 1206 bytes to read */
+  @Override
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42
     { // status data

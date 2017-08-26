@@ -9,8 +9,9 @@ import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEventListener;
 
-/** converts firing data to spacial events with time, 3d-coordinates and intensity */
-// TODO OWLY3D uses class
+/** converts firing data to spacial events with time, 3d-coordinates and intensity
+ * 
+ * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Hdl32eSpacialProvider implements LidarRayDataListener {
   private static final int LASERS = 32;
   public static final float[] IR = new float[32];

@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneStatics;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.UniversalDatagramClient;
+import ch.ethz.idsc.retina.util.io.UniversalDatagramClient;
 
 /** implementation listens to live device for firing and positioning data
  * on given ports. the received packets are forwarded via lcm protocol

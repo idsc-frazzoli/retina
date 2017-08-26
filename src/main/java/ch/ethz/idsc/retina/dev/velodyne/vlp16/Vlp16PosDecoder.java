@@ -4,12 +4,14 @@ package ch.ethz.idsc.retina.dev.velodyne.vlp16;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.velodyne.ListenerQueue;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
 
 /** information on p.17 of VLP-16 user's manual */
-public class Vlp16PosDecoder extends ListenerQueue<VelodynePosEventListener> {
+public class Vlp16PosDecoder extends ListenerQueue<VelodynePosEventListener> implements VelodynePosDecoder {
   /** @param byteBuffer with at least 512 bytes to read */
+  @Override
   public void positioning(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42 in pcap file
     byteBuffer.position(offset + 198); // unused

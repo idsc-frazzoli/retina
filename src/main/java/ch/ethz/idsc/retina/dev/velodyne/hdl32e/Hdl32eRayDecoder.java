@@ -6,10 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public class Hdl32eRayDecoder {
+public class Hdl32eRayDecoder implements VelodyneRayDecoder {
   private static final int FIRINGS = 12;
   // ---
   private final List<LidarRayDataListener> listeners = new LinkedList<>();
@@ -23,6 +24,7 @@ public class Hdl32eRayDecoder {
   }
 
   /** @param byteBuffer with at least 1206 bytes to read */
+  @Override
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position();
     { // status data
