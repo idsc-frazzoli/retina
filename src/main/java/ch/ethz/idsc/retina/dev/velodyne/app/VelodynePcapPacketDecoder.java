@@ -8,6 +8,8 @@ import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16PosDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16RayDecoder;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
@@ -19,10 +21,10 @@ public class VelodynePcapPacketDecoder implements PcapPacketListener {
     return new VelodynePcapPacketDecoder(new Hdl32eRayDecoder(), new Hdl32ePosDecoder());
   }
 
-  /** the answer to life the universe and everything
-   * 
-   * hdl32e user's manual refers to first 42 bytes as ethernet header
-   * they are only present in pcap file, but not in upd packets from live sensor */
+  public static VelodynePcapPacketDecoder vlp16() {
+    return new VelodynePcapPacketDecoder(new Vlp16RayDecoder(), new Vlp16PosDecoder());
+  }
+
   // ---
   public final VelodyneRayDecoder rayDecoder;
   public final VelodynePosDecoder posDecoder;
@@ -36,6 +38,9 @@ public class VelodynePcapPacketDecoder implements PcapPacketListener {
   public void packet(int sec, int usec, byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    /** the answer to life the universe and everything
+     * hdl32e user's manual refers to first 42 bytes as ethernet header
+     * they are only present in pcap file, but not in upd packets from live sensor */
     byteBuffer.position(42);
     switch (length) {
     case 1248:

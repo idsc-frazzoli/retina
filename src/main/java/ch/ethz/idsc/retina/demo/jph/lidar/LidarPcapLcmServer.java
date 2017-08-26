@@ -22,6 +22,7 @@ enum LidarPcapLcmServer {
   }
 
   public static void main(String[] args) throws Exception {
-    _hdl32e();
+    // _hdl32e();
+    _vlp16();
   }
 }
