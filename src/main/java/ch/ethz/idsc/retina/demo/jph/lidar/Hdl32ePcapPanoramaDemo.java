@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.hdl32e;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePcapPacketDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRealtimeFiringPacket;
@@ -17,6 +17,6 @@ enum Hdl32ePcapPanoramaDemo {
     packetConsumer.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
     packetConsumer.hdl32eRayDecoder.addListener(new Hdl32eRealtimeFiringPacket(1.0));
     packetConsumer.hdl32ePosDecoder.addListener(hdl32ePanoramaFrame);
-    PcapParse.of(Pcap.HIGHWAY.file, packetConsumer); // blocking
+    PcapParse.of(Hdl32ePcap.HIGHWAY.file, packetConsumer); // blocking
   }
 }

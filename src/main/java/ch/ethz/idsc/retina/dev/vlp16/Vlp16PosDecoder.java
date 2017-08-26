@@ -2,21 +2,9 @@
 package ch.ethz.idsc.retina.dev.vlp16;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-import java.util.List;
 
 /** information on p.17 of VLP-16 user's manual */
-public final class Vlp16PosDecoder {
-  private final List<Vlp16PosEventListener> listeners = new LinkedList<>();
-
-  public void addListener(Vlp16PosEventListener listener) {
-    listeners.add(listener);
-  }
-
-  public boolean hasListeners() {
-    return !listeners.isEmpty();
-  }
-
+public class Vlp16PosDecoder extends ListenerQueue<Vlp16PosEventListener> {
   /** @param byteBuffer with at least 512 bytes to read */
   public void positioning(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42 in pcap file

@@ -7,15 +7,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayBlockListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEvent;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEventListener;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRotationEvent;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRotationEventListener;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEventListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** collects a complete 360 rotation */
 // TODO OWLY3D uses class
-public class Hdl32eAngularFiringCollector implements LidarSpacialEventListener, Hdl32eRotationEventListener {
+public class Hdl32eAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates */
   public static final int MAX_COORDINATES = 2304 * 32 * 3; // == 221184
   // ---
@@ -36,7 +36,7 @@ public class Hdl32eAngularFiringCollector implements LidarSpacialEventListener, 
   }
 
   @Override
-  public void rotation(Hdl32eRotationEvent hdl32eRotationEvent) {
+  public void rotation(LidarRotationEvent hdl32eRotationEvent) {
     floatBuffer.flip();
     byteBuffer.flip();
     listeners.forEach(listener -> listener.digest(floatBuffer, byteBuffer));

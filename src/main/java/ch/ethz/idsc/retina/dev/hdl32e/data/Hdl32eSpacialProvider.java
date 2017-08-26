@@ -5,19 +5,39 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDataListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eStatics;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.hdl32e.LidarSpacialEventListener;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
 // TODO OWLY3D uses class
-public class Hdl32eSpacialProvider implements Hdl32eRayDataListener {
+public class Hdl32eSpacialProvider implements LidarRayDataListener {
+  private static final int LASERS = 32;
   public static final float[] IR = new float[32];
   public static final float[] IZ = new float[32];
   public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
+  /** quote from the user's manual, p.12:
+   * "the interleaving firing pattern is designed to avoid
+   * potential ghosting caused primarily by retro-reflection" */
+  public static final int[] ORDERING = new int[] { //
+      -23, -7, //
+      -22, -6, //
+      -21, -5, //
+      -20, -4, //
+      -19, -3, //
+      -18, -2, //
+      -17, -1, //
+      -16, +0, //
+      -15, +1, //
+      -14, +2, //
+      -13, +3, //
+      -12, +4, //
+      -11, +5, //
+      -10, +6, //
+      -9, +7, //
+      -8, +8 };
   // ---
   private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
@@ -26,7 +46,7 @@ public class Hdl32eSpacialProvider implements Hdl32eRayDataListener {
   public Hdl32eSpacialProvider() {
     final double inclination = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
-      double theta = Hdl32eStatics.ORDERING[laser] * inclination * Math.PI / 180;
+      double theta = ORDERING[laser] * inclination * Math.PI / 180;
       IR[laser] = (float) Math.cos(theta);
       IZ[laser] = (float) Math.sin(theta);
     }

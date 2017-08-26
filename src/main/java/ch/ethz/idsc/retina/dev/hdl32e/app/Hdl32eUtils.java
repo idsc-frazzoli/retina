@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32ePanoramaFrame;
-import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eRotationProvider;
+import ch.ethz.idsc.retina.dev.hdl32e.data.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.hdl32e.data.Hdl32eSpacialProvider;
 
 public enum Hdl32eUtils {
@@ -30,7 +30,7 @@ public enum Hdl32eUtils {
         new Hdl32eAngularFiringCollector(floatBuffer, byteBuffer);
     Hdl32eSpacialProvider hdl32eSpacialProvider = new Hdl32eSpacialProvider();
     hdl32eSpacialProvider.addListener(hdl32eAngularFiringCollector);
-    Hdl32eRotationProvider hdl32eRotationProvider = new Hdl32eRotationProvider();
+    LidarRotationProvider hdl32eRotationProvider = new LidarRotationProvider();
     hdl32eRotationProvider.addListener(hdl32eAngularFiringCollector);
     hdl32eRayDecoder.addListener(hdl32eSpacialProvider);
     hdl32eRayDecoder.addListener(hdl32eRotationProvider);

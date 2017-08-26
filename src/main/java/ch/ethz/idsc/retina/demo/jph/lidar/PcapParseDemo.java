@@ -1,9 +1,8 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.vlp16;
-
-import java.io.File;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.vlp16.Vlp16PacketProvider;
+import ch.ethz.idsc.retina.dev.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
@@ -16,11 +15,11 @@ enum PcapParseDemo {
         System.out.println("" + length);
       }
     };
-    Vlp16PacketProvider packetConsumer = new Vlp16PacketProvider();
-    // packetConsumer.vlp16PosDecoder.addListener(listener);
-    File file = new File("/media/datahaki/media/ethz/vlp16/VELODYNE/VLP-16 Sample Data", //
-        "2015-07-23-14-37-22_Velodyne-VLP-16-Data_Downtown 10Hz Single.pcap");
-    PcapParse.of(file, packetConsumer);
+    Vlp16PacketProvider vlp16PacketProvider = new Vlp16PacketProvider();
+    Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider();
+    vlp16PacketProvider.vlp16RayDecoder.addListener(vlp16SpacialProvider);
+    // packetConsumer.vlp16PosDecoder.addListener(null);
+    PcapParse.of(Vlp16Pcap.DOWNTOWN_SINGLE.file, vlp16PacketProvider);
     // System.out.println(String.format("%02x", 55));
   }
 }

@@ -5,18 +5,18 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDataListener;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEvent;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRotationEventListener;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRotationEvent;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRotationEventListener;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
 // TODO OWLY3D uses class
-public class Hdl32eRotationProvider implements Hdl32eRayDataListener {
-  private final List<Hdl32eRotationEventListener> listeners = new LinkedList<>();
+public class LidarRotationProvider implements LidarRayDataListener {
+  private final List<LidarRotationEventListener> listeners = new LinkedList<>();
   private int usec;
   private int rotational_last = -1;
 
-  public void addListener(Hdl32eRotationEventListener listener) {
+  public void addListener(LidarRotationEventListener listener) {
     listeners.add(listener);
   }
 
@@ -28,8 +28,8 @@ public class Hdl32eRotationProvider implements Hdl32eRayDataListener {
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (rotational < rotational_last) {
-      Hdl32eRotationEvent hdl32eRotationEvent = new Hdl32eRotationEvent(usec, rotational);
-      listeners.forEach(listener -> listener.rotation(hdl32eRotationEvent));
+      LidarRotationEvent lidarRotationEvent = new LidarRotationEvent(usec, rotational);
+      listeners.forEach(listener -> listener.rotation(lidarRotationEvent));
     }
     rotational_last = rotational;
   }

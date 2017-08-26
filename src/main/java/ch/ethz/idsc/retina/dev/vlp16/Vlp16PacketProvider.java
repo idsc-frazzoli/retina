@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.vlp16;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.dev.hdl32e.VelodyneStatics;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
@@ -17,9 +18,9 @@ public class Vlp16PacketProvider implements PcapPacketListener {
    * they are only present in pcap file, but not in upd packets from live sensor */
   public static final int _42 = 42;
   public static final int LASER_SIZE1 = 1248; // Hdl32eStatics.RAY_PACKET_LENGTH + 42
-  public static final int LASER_SIZE2 = Vlp16Statics.RAY_PACKET_LENGTH;
+  public static final int LASER_SIZE2 = VelodyneStatics.RAY_PACKET_LENGTH;
   public static final int GPS_SIZE1 = 554;
-  public static final int GPS_SIZE2 = Vlp16Statics.POS_PACKET_LENGTH;
+  public static final int GPS_SIZE2 = VelodyneStatics.POS_PACKET_LENGTH;
   // ---
   public final Vlp16RayDecoder vlp16RayDecoder = new Vlp16RayDecoder();
   public final Vlp16PosDecoder vlp16PosDecoder = new Vlp16PosDecoder();

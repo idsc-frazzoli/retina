@@ -10,9 +10,9 @@ import java.util.List;
 public class Hdl32eRayDecoder {
   private static final int FIRINGS = 12;
   // ---
-  private final List<Hdl32eRayDataListener> listeners = new LinkedList<>();
+  private final List<LidarRayDataListener> listeners = new LinkedList<>();
 
-  public void addListener(Hdl32eRayDataListener listener) {
+  public void addListener(LidarRayDataListener listener) {
     listeners.add(listener);
   }
 

@@ -3,9 +3,7 @@ package ch.ethz.idsc.retina.dev.hdl32e;
 
 import java.nio.ByteBuffer;
 
-public interface Hdl32eRayDataListener {
-  static final int LASERS = 16;
-
+public interface LidarRayDataListener {
   /** function is invoked with parameters that refer to previous sequence of laser data
    * 
    * @param usec gps timestamp in microseconds
@@ -13,7 +11,7 @@ public interface Hdl32eRayDataListener {
    * @param value */
   void timestamp(int usec, byte type, byte value);
 
-  /** implementations can read 32 * 3 == 96 bytes from byteBuffer:
+  /** implementations can read LASERS * 3 bytes from byteBuffer:
    * 
    * for (int laser = 0; laser < LASERS; ++laser) {
    * int distance = byteBuffer.getShort() & 0xffff;

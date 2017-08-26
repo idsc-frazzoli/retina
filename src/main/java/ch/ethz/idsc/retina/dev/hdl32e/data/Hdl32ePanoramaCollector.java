@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDataListener;
+import ch.ethz.idsc.retina.dev.hdl32e.LidarRayDataListener;
 import ch.ethz.idsc.tensor.RealScalar;
 
-public class Hdl32ePanoramaCollector implements Hdl32eRayDataListener {
+public class Hdl32ePanoramaCollector implements LidarRayDataListener {
+  private static final int LASERS = 16;
   /** constructor multiplies index values with image width */
   private final int[] index = new int[] { //
       31, 15, //

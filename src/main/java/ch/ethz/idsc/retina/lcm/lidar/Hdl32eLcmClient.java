@@ -7,6 +7,7 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32ePosDecoder;
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
+import ch.ethz.idsc.retina.dev.hdl32e.VelodyneModel;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -29,7 +30,7 @@ public class Hdl32eLcmClient implements LcmClientInterface {
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
     if (hdl32eRayDecoder.hasListeners())
-      lcm.subscribe(Hdl32eLcmChannels.ray(lidarId), new LCMSubscriber() {
+      lcm.subscribe(VelodyneLcmChannels.ray(VelodyneModel.HDL32E, lidarId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -43,7 +44,7 @@ public class Hdl32eLcmClient implements LcmClientInterface {
         }
       });
     if (hdl32ePosDecoder.hasListeners())
-      lcm.subscribe(Hdl32eLcmChannels.pos(lidarId), new LCMSubscriber() {
+      lcm.subscribe(VelodyneLcmChannels.pos(VelodyneModel.HDL32E, lidarId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {

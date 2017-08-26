@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.hdl32e;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -36,6 +36,6 @@ enum Hdl32ePacketConsumerDemo {
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
     Hdl32ePcapPacketDecoder packetConsumer = new Hdl32ePcapPacketDecoder(1);
     packetConsumer.hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
-    PcapParse.of(Pcap.TUNNEL.file, packetConsumer);
+    PcapParse.of(Hdl32ePcap.TUNNEL.file, packetConsumer);
   }
 }

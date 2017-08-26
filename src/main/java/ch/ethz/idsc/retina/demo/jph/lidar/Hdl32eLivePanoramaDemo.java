@@ -1,8 +1,8 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.hdl32e;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.hdl32e.Hdl32eStatics;
+import ch.ethz.idsc.retina.dev.hdl32e.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.hdl32e.app.Hdl32eUtils;
 import ch.ethz.idsc.retina.util.UniversalDatagramClient;
 
@@ -13,8 +13,8 @@ enum Hdl32eLivePanoramaDemo {
     Hdl32eRayDecoder hdl32eFiringPacketDecoder = new Hdl32eRayDecoder();
     Hdl32eUtils.createPanoramaDisplay(hdl32eFiringPacketDecoder);
     UniversalDatagramClient hw = new UniversalDatagramClient( //
-        Hdl32eStatics.RAY_DEFAULT_PORT, //
-        new byte[Hdl32eStatics.RAY_PACKET_LENGTH]);
+        VelodyneStatics.RAY_DEFAULT_PORT, //
+        new byte[VelodyneStatics.RAY_PACKET_LENGTH]);
     // FIXME
     // hw.addListener(hdl32eFiringPacketConsumer);
     hw.start();

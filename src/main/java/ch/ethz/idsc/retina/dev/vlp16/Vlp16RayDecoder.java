@@ -2,23 +2,13 @@
 package ch.ethz.idsc.retina.dev.vlp16;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-import java.util.List;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public class Vlp16RayDecoder {
+public class Vlp16RayDecoder extends ListenerQueue<Vlp16RayDataListener> {
   private static final int FIRINGS = 12;
   // ---
-  private final List<Vlp16RayDataListener> listeners = new LinkedList<>();
-
-  public void addListener(Vlp16RayDataListener listener) {
-    listeners.add(listener);
-  }
-
-  public boolean hasListeners() {
-    return !listeners.isEmpty();
-  }
+  private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
 
   /** @param byteBuffer with at least 1206 bytes to read */
   public void lasers(ByteBuffer byteBuffer) {
@@ -33,6 +23,7 @@ public class Vlp16RayDecoder {
       byte type = byteBuffer.get();
       @SuppressWarnings("unused")
       byte value = byteBuffer.get(); // 34 == 0x22 == VLP-16
+      // TODO assert
       listeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     { // 12 blocks of firing data
@@ -41,7 +32,8 @@ public class Vlp16RayDecoder {
         // 0xFF 0xEE -> 0xEEFF (as short) == 61183
         @SuppressWarnings("unused")
         int flag = byteBuffer.getShort() & 0xffff; // laser block ID, 61183 ?
-        int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
+        final int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
+        ae.now(azimuth);
         // System.out.println(azimuth);
         // ---
         final int position = byteBuffer.position();
@@ -49,10 +41,11 @@ public class Vlp16RayDecoder {
           byteBuffer.position(position);
           listener.scan(azimuth, byteBuffer);
         });
+        int azimuth_hi = ae.gap();
         final int position_hi = position + 48; // 16*3
         listeners.forEach(listener -> {
           byteBuffer.position(position_hi);
-          listener.scan(azimuth + 1, byteBuffer); // TODO
+          listener.scan(azimuth_hi, byteBuffer);
         });
         byteBuffer.position(position + 96);
       }

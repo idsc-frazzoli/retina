@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.hdl32e;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 public enum Hdl32eRecordings {
   ;
