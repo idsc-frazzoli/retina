@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
 
 /** file description taken from "Hani's blog: A look at the pcap file format"
  * http://www.kroosec.com/2012/10/a-look-at-pcap-file-format.html
@@ -15,8 +17,11 @@ import java.nio.ByteOrder;
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 
-  public static void of(File file, PcapPacketListener pcapPacketListener) throws Exception {
-    new PcapParse(file, pcapPacketListener);
+  /** @param file
+   * @param pcapPacketListeners
+   * @throws Exception */
+  public static void of(File file, PcapPacketListener... pcapPacketListeners) throws IOException {
+    new PcapParse(file, Arrays.asList(pcapPacketListeners));
   }
   // ---
 
@@ -25,7 +30,7 @@ public class PcapParse {
   private int max_size;
   private byte[] packet_data;
 
-  private PcapParse(File file, PcapPacketListener pcapPacketListener) throws Exception {
+  private PcapParse(File file, List<PcapPacketListener> pcapPacketListeners) throws IOException {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();
@@ -49,7 +54,7 @@ public class PcapParse {
         // packet data
         int number = inputStream.read(packet_data, 0, length);
         _assert(number == length);
-        pcapPacketListener.packet(sec, usec, packet_data, length_data);
+        pcapPacketListeners.forEach(listener -> listener.packet(sec, usec, packet_data, length_data));
       }
     }
   }
