@@ -12,8 +12,10 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -31,7 +33,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 public class Urg04lxRender {
-  private static final Scalar MILLIMETER_TO_METER = RealScalar.of(0.001);
+  private static final double MILLIMETER_TO_METER = 0.001;
   /** points closer than 2[cm] == 0.02[m] are discarded */
   public static final Scalar THRESHOLD = RealScalar.of(0.02); // [m]
   public static final Scalar RAMERDOUGLASPEUKER = RealScalar.of(0.05); // 5[cm] == 0.05[m]
@@ -138,9 +140,11 @@ public class Urg04lxRender {
   }
 
   public void setLine(String line) {
-    // System.out.println(line);
     int index = line.indexOf('{');
-    range = Tensors.fromString(line.substring(index)).multiply(MILLIMETER_TO_METER); // <- removes "URG" prefix from line
+    // <- removes "URG" prefix from line
+    range = Tensor.of(Stream.of(line.substring(index + 1, line.length() - 1).split(",")) //
+        .map(Integer::parseInt) //
+        .map(mm -> DoubleScalar.of(mm * MILLIMETER_TO_METER)));
   }
 
   public void setZoom(int zoom) {

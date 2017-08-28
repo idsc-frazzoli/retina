@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
-import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16PosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16RayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -24,34 +21,22 @@ import lcm.lcm.LCMSubscriber;
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class VelodyneLcmClient implements LcmClientInterface {
   public static VelodyneLcmClient hdl32e(String lidarId) {
-    return new VelodyneLcmClient(VelodyneModel.HDL32E, lidarId);
+    return new VelodyneLcmClient(VelodyneModel.HDL32E, new Hdl32eDecoder(), lidarId);
   }
 
   public static VelodyneLcmClient vlp16(String lidarId) {
-    return new VelodyneLcmClient(VelodyneModel.VLP16, lidarId);
+    return new VelodyneLcmClient(VelodyneModel.VLP16, new Vlp16Decoder(), lidarId);
   }
 
   // ---
-  public final VelodyneRayDecoder rayDecoder;
-  public final VelodynePosDecoder posDecoder;
   private final VelodyneModel velodyneModel;
+  public final VelodyneDecoder velodyneDecoder;
   private final String lidarId;
 
-  private VelodyneLcmClient(VelodyneModel velodyneModel, String lidarId) {
+  private VelodyneLcmClient(VelodyneModel velodyneModel, VelodyneDecoder velodyneDecoder, String lidarId) {
     this.velodyneModel = velodyneModel;
+    this.velodyneDecoder = velodyneDecoder;
     this.lidarId = lidarId;
-    switch (velodyneModel) {
-    case HDL32E:
-      rayDecoder = new Hdl32eRayDecoder();
-      posDecoder = new Hdl32ePosDecoder();
-      break;
-    case VLP16:
-      rayDecoder = new Vlp16RayDecoder();
-      posDecoder = new Vlp16PosDecoder();
-      break;
-    default:
-      throw new RuntimeException();
-    }
   }
 
   @Override
@@ -65,7 +50,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
           BinaryBlob binaryBlob = new BinaryBlob(ins);
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          rayDecoder.lasers(byteBuffer);
+          velodyneDecoder.lasers(byteBuffer);
         } catch (IOException exception) {
           exception.printStackTrace();
         }
@@ -79,7 +64,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
           BinaryBlob binaryBlob = new BinaryBlob(ins);
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          posDecoder.positioning(byteBuffer);
+          velodyneDecoder.positioning(byteBuffer);
         } catch (IOException exception) {
           exception.printStackTrace();
         }

@@ -2,18 +2,44 @@
 package ch.ethz.idsc.retina.dev.velodyne.vlp16;
 
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
-import ch.ethz.idsc.retina.dev.velodyne.ListenerQueue;
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
+import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
-public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> implements VelodyneRayDecoder {
+public class Vlp16Decoder implements VelodyneDecoder {
   private static final int FIRINGS = 12;
   private static final byte DUAL = 0x39;
   // ---
   private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
+  private final List<VelodynePosEventListener> posListeners = new LinkedList<>();
+
+  @Override
+  public void addPosListener(VelodynePosEventListener listener) {
+    posListeners.add(listener);
+  }
+
+  public boolean hasPosListeners() {
+    return !posListeners.isEmpty();
+  }
+
+  // ---
+  private final List<LidarRayDataListener> rayListeners = new LinkedList<>();
+
+  @Override
+  public void addRayListener(LidarRayDataListener listener) {
+    rayListeners.add(listener);
+  }
+
+  public boolean hasRayListeners() {
+    return !rayListeners.isEmpty();
+  }
 
   /** @param byteBuffer with at least 1206 bytes to read */
   @Override
@@ -28,10 +54,9 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
       // 56 == 0x38 == Last return
       // 57 == 0x39 == Dual return
       type = byteBuffer.get();
-      @SuppressWarnings("unused")
       byte value = byteBuffer.get(); // 34 == 0x22 == VLP-16
-      // TODO assert
-      listeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
+      GlobalAssert.that(value == 0x22);
+      rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     if (type != DUAL) { // SINGLE 24 blocks of firing data
       byteBuffer.position(offset);
@@ -43,13 +68,13 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
         ae.now(azimuth);
         // ---
         final int position = byteBuffer.position();
-        listeners.forEach(listener -> {
+        rayListeners.forEach(listener -> {
           byteBuffer.position(position);
           listener.scan(azimuth, byteBuffer);
         });
         int azimuth_hi = ae.gap();
         final int position_hi = position + 48; // 16*3
-        listeners.forEach(listener -> {
+        rayListeners.forEach(listener -> {
           byteBuffer.position(position_hi);
           listener.scan(azimuth_hi, byteBuffer);
         });
@@ -65,7 +90,7 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
           ae.now(azimuth);
           // ---
           final int position = byteBuffer.position();
-          listeners.forEach(listener -> {
+          rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth, byteBuffer);
           });
@@ -78,7 +103,7 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
           ae.now(azimuth); // TODO should be obsolete since azimuth is the same as before
           // ---
           final int position = byteBuffer.position();
-          listeners.forEach(listener -> {
+          rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth, byteBuffer);
           });
@@ -87,7 +112,7 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
           byteBuffer.position(offset + firing * 100 + 48 + 4);
           int azimuth_hi = ae.gap();
           final int position = byteBuffer.position();
-          listeners.forEach(listener -> {
+          rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth_hi, byteBuffer);
           });
@@ -96,12 +121,26 @@ public class Vlp16RayDecoder extends ListenerQueue<LidarRayDataListener> impleme
           byteBuffer.position(offset + (firing + 1) * 100 + 48 + 4);
           int azimuth_hi = ae.gap();
           final int position = byteBuffer.position();
-          listeners.forEach(listener -> {
+          rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth_hi, byteBuffer);
           });
         }
       }
     }
+  }
+
+  /** @param byteBuffer with at least 512 bytes to read */
+  @Override
+  public void positioning(ByteBuffer byteBuffer) {
+    final int offset = byteBuffer.position(); // 0 or 42 in pcap file
+    byteBuffer.position(offset + 198); // unused
+    int gps_usec = byteBuffer.getInt(); // TODO from the hour?
+    byteBuffer.getInt(); // unused
+    byte[] nmea = new byte[72]; // NMEA positioning sentence
+    byteBuffer.get(nmea);
+    VelodynePosEvent vlp16PosEvent = new VelodynePosEvent(gps_usec, new String(nmea));
+    // System.out.println(vlp16PosEvent.gps_usec + " " + vlp16PosEvent.nmea);
+    posListeners.forEach(listener -> listener.positioning(vlp16PosEvent));
   }
 }

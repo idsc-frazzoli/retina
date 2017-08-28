@@ -11,7 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.util.Stopwatch;
+import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO magic const
@@ -23,14 +23,12 @@ import ch.ethz.idsc.tensor.sca.Round;
   BufferedImage rstImage = null;
   private BufferedImage dvsImage = null;
   DavisImuFrame imuFrame = null;
-  private final Stopwatch stopwatch = new Stopwatch();
+  private final IntervalClock intervalClock = new IntervalClock();
   boolean isComplete;
   // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      long period = stopwatch.stop();
-      stopwatch.start();
       if (Objects.nonNull(rstImage)) {
         graphics.drawImage(rstImage, 0 * 240, 0, JLABEL);
         if (!isComplete)
@@ -61,7 +59,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       }
       // ---
       graphics.setColor(Color.RED);
-      graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 190);
+      graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 190);
     }
   };
   private int dvsImageCount = 0;

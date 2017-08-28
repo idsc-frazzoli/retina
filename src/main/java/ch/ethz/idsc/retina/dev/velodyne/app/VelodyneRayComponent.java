@@ -13,19 +13,17 @@ import java.util.Objects;
 import javax.swing.JComponent;
 
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
-import ch.ethz.idsc.retina.util.Stopwatch;
+import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.img.Hue;
 
 class VelodyneRayComponent {
-  private final Stopwatch stopwatch = new Stopwatch();
+  private final IntervalClock intervalClock = new IntervalClock();
   private int zoom = 0;
   RayContainer rayContainer;
   VelodynePosEvent hdl32ePosEvent;
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
-      long period = stopwatch.stop();
-      stopwatch.start();
       Graphics2D graphics = (Graphics2D) g;
       Dimension dimension = getSize();
       {
@@ -62,7 +60,7 @@ class VelodyneRayComponent {
         }
       }
       graphics.setColor(Color.RED);
-      graphics.drawString(String.format("%4.1f Hz", (1.0e9 / period)), 0, 20);
+      graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
     }
   };
 

@@ -48,8 +48,4 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
       exception.printStackTrace();
     }
   }
-
-  public static void main(String[] args) {
-    System.out.println(System.currentTimeMillis());
-  }
 }
