@@ -1,14 +1,16 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.velodyne.hdl32e;
+package ch.ethz.idsc.retina.dev.velodyne.app;
 
 import ch.ethz.idsc.retina.dev.velodyne.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.velodyne.LidarRotationProvider;
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodyneRayFrame;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaFrame;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32eSpacialProvider;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16SpacialProvider;
 
-public enum Hdl32eUtils {
+public enum VelodyneUtils {
   ;
   public static Hdl32ePanoramaFrame createPanoramaDisplay(Hdl32eDecoder hdl32eRayDecoder) {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
@@ -18,22 +20,33 @@ public enum Hdl32eUtils {
     return hdl32ePanoramaFrame;
   }
 
-  public static VelodyneRayFrame createRayFrame(Hdl32eDecoder hdl32eDecoder) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = createCollector(hdl32eDecoder);
+  public static VelodyneRayFrame createRayFrame( //
+      LidarAngularFiringCollector lidarAngularFiringCollector, VelodyneDecoder velodyneDecoder) {
     VelodyneRayFrame velodyneFiringFrame = new VelodyneRayFrame();
     lidarAngularFiringCollector.addListener(velodyneFiringFrame);
-    hdl32eDecoder.addPosListener(velodyneFiringFrame);
+    velodyneDecoder.addPosListener(velodyneFiringFrame);
     return velodyneFiringFrame;
   }
 
-  public static LidarAngularFiringCollector createCollector(Hdl32eDecoder hdl32eDecoder) {
+  public static LidarAngularFiringCollector createCollector32(VelodyneDecoder velodyneDecoder) {
     LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
     Hdl32eSpacialProvider hdl32eSpacialProvider = new Hdl32eSpacialProvider();
     hdl32eSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider hdl32eRotationProvider = new LidarRotationProvider();
     hdl32eRotationProvider.addListener(lidarAngularFiringCollector);
-    hdl32eDecoder.addRayListener(hdl32eSpacialProvider);
-    hdl32eDecoder.addRayListener(hdl32eRotationProvider);
+    velodyneDecoder.addRayListener(hdl32eSpacialProvider);
+    velodyneDecoder.addRayListener(hdl32eRotationProvider);
+    return lidarAngularFiringCollector;
+  }
+
+  public static LidarAngularFiringCollector createCollector16(VelodyneDecoder velodyneDecoder) {
+    LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
+    Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider();
+    vlp16SpacialProvider.addListener(lidarAngularFiringCollector);
+    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
+    lidarRotationProvider.addListener(lidarAngularFiringCollector);
+    velodyneDecoder.addRayListener(vlp16SpacialProvider);
+    velodyneDecoder.addRayListener(lidarRotationProvider);
     return lidarAngularFiringCollector;
   }
 }

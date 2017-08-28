@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.retina.dev.velodyne.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodynePcapPacketDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.app.VelodynePcapPacketListener;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanorama;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaListener;
@@ -17,7 +16,7 @@ enum Hdl32ePacketConsumerDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")
-    LidarRayBlockListener hdl32ePositionListener = new LidarRayBlockListener() {
+    LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
       @Override
       public void digest(FloatBuffer fb, ByteBuffer bb) {
         System.out.println("here");
@@ -36,9 +35,8 @@ enum Hdl32ePacketConsumerDemo {
     };
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
-    VelodynePcapPacketDecoder packetConsumer = VelodynePcapPacketDecoder.hdl32e();
-    Hdl32eDecoder dec = (Hdl32eDecoder) packetConsumer.velodyneDecoder;
-    dec.addRayListener(hdl32ePanoramaCollector);
-    PcapParse.of(Hdl32ePcap.TUNNEL.file, new PcapRealtimePlayback(1), packetConsumer);
+    VelodynePcapPacketListener velodynePcapPacketDecoder = VelodynePcapPacketListener.hdl32e();
+    velodynePcapPacketDecoder.velodyneDecoder.addRayListener(hdl32ePanoramaCollector);
+    PcapParse.of(Hdl32ePcap.TUNNEL.file, new PcapRealtimePlayback(1), velodynePcapPacketDecoder);
   }
 }

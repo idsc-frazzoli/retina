@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.lcm.lidar;
 import java.util.Arrays;
 
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneStatics;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
@@ -21,10 +22,10 @@ public class VelodynePcapLcmServer implements PcapPacketListener {
   public void packet(int sec, int usec, byte[] data, int length) {
     switch (length) {
     case 1248: // length of ray packet in pcap file
-      rayPublisher.accept(Arrays.copyOfRange(data, 42, 1248), 1206); // length of ray packet
+      rayPublisher.accept(Arrays.copyOfRange(data, 42, 1248), VelodyneStatics.RAY_PACKET_LENGTH);
       break;
     case 554:
-      posPublisher.accept(Arrays.copyOfRange(data, 42, 554), 512); // length of pos packet
+      posPublisher.accept(Arrays.copyOfRange(data, 42, 554), VelodyneStatics.POS_PACKET_LENGTH);
       break;
     default:
       System.err.println("unknown length");

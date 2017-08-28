@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.velodyne;
 
 import java.nio.ByteBuffer;
 
+/** data handling for hdl32e and vlp16 sensors */
 public interface VelodyneDecoder {
   void positioning(ByteBuffer byteBuffer);
 

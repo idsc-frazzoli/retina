@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEvent;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** access to a single firing packet containing
  * rotational angle, range, intensity, etc. */
@@ -53,9 +54,8 @@ public class Vlp16Decoder implements VelodyneDecoder {
       // 56 == 0x38 == Last return
       // 57 == 0x39 == Dual return
       type = byteBuffer.get();
-      @SuppressWarnings("unused")
       byte value = byteBuffer.get(); // 34 == 0x22 == VLP-16
-      // TODO assert
+      GlobalAssert.that(value == 0x22);
       rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     if (type != DUAL) { // SINGLE 24 blocks of firing data

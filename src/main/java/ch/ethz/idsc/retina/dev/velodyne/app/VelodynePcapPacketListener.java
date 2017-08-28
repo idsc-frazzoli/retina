@@ -13,20 +13,20 @@ import ch.ethz.idsc.retina.util.io.PcapPacketListener;
  * 
  * implementation decides based on length of packet to
  * process the data either as firing packet or as GPS */
-public class VelodynePcapPacketDecoder implements PcapPacketListener {
-  public static VelodynePcapPacketDecoder hdl32e() {
-    return new VelodynePcapPacketDecoder(new Hdl32eDecoder());
+public class VelodynePcapPacketListener implements PcapPacketListener {
+  public static VelodynePcapPacketListener hdl32e() {
+    return new VelodynePcapPacketListener(new Hdl32eDecoder());
   }
 
-  public static VelodynePcapPacketDecoder vlp16() {
-    return new VelodynePcapPacketDecoder(new Vlp16Decoder());
+  public static VelodynePcapPacketListener vlp16() {
+    return new VelodynePcapPacketListener(new Vlp16Decoder());
   }
 
   // ---
   public final VelodyneDecoder velodyneDecoder;
 
-  public VelodynePcapPacketDecoder(VelodyneDecoder posDecoder) {
-    this.velodyneDecoder = posDecoder;
+  public VelodynePcapPacketListener(VelodyneDecoder velodyneDecoder) {
+    this.velodyneDecoder = velodyneDecoder;
   }
 
   @Override

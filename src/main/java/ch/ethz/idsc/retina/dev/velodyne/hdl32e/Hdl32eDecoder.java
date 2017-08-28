@@ -8,28 +8,28 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.velodyne.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodynePosEventListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.math.ShortUtils;
 
 /** information on p.21 of HDL-32E user's manual */
 public final class Hdl32eDecoder implements VelodyneDecoder {
+  private static final int FIRINGS = 12;
+  // ---
   private final List<VelodynePosEventListener> posListeners = new LinkedList<>();
+  private final List<LidarRayDataListener> rayListeners = new LinkedList<>();
 
   @Override
   public void addPosListener(VelodynePosEventListener listener) {
     posListeners.add(listener);
   }
 
-  public boolean hasPosListeners() {
-    return !posListeners.isEmpty();
-  }
-
-  private static final int FIRINGS = 12;
-  // ---
-  private final List<LidarRayDataListener> rayListeners = new LinkedList<>();
-
   @Override
   public void addRayListener(LidarRayDataListener listener) {
     rayListeners.add(listener);
+  }
+
+  public boolean hasPosListeners() {
+    return !posListeners.isEmpty();
   }
 
   public boolean hasRayListeners() {
@@ -72,6 +72,7 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
       int gps_timestamp = byteBuffer.getInt(); // in [usec]
       byte type = byteBuffer.get(); // 55 == 0x37 == Strongest return
       byte value = byteBuffer.get(); // 33 == 0x21 == HDL-32E
+      GlobalAssert.that(value == 0x21);
       rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     { // 12 blocks of firing data
