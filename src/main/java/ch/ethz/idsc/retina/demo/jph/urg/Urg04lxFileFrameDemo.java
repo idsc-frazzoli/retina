@@ -22,7 +22,7 @@ enum Urg04lxFileFrameDemo {
       }
     });
     urg04lxProvider.addListener(urg04lxFrame);
-    urg04lxProvider.addListener(new Urg04lxRealtimeListener(0.5));
+    urg04lxProvider.addListener(new Urg04lxRealtimeListener(1.0));
     urg04lxProvider.start();
     urg04lxProvider.stop();
   }
