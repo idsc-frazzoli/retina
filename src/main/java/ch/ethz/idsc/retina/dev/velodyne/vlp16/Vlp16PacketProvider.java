@@ -22,8 +22,7 @@ public class Vlp16PacketProvider implements PcapPacketListener {
   public static final int GPS_SIZE1 = 554;
   public static final int GPS_SIZE2 = VelodyneStatics.POS_PACKET_LENGTH;
   // ---
-  public final Vlp16RayDecoder vlp16RayDecoder = new Vlp16RayDecoder();
-  public final Vlp16PosDecoder vlp16PosDecoder = new Vlp16PosDecoder();
+  public final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
 
   @Override
   public void packet(int sec, int usec, byte[] packet_data, int length) {
@@ -31,17 +30,17 @@ public class Vlp16PacketProvider implements PcapPacketListener {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     if (length == LASER_SIZE1) {
       byteBuffer.position(_42); // skip 42 bytes
-      vlp16RayDecoder.lasers(byteBuffer);
+      vlp16Decoder.lasers(byteBuffer);
     } else //
     if (length == LASER_SIZE2) {
-      vlp16RayDecoder.lasers(byteBuffer);
+      vlp16Decoder.lasers(byteBuffer);
     }
     if (length == GPS_SIZE1) {
       byteBuffer.position(_42); // skip 42 bytes
-      vlp16PosDecoder.positioning(byteBuffer);
+      vlp16Decoder.positioning(byteBuffer);
     } else //
     if (length == GPS_SIZE2) {
-      vlp16PosDecoder.positioning(byteBuffer);
+      vlp16Decoder.positioning(byteBuffer);
     }
     // else {
     // System.err.println("unhandled packet");

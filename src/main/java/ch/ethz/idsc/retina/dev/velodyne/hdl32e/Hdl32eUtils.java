@@ -10,30 +10,30 @@ import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32eSpacialProvider;
 
 public enum Hdl32eUtils {
   ;
-  public static Hdl32ePanoramaFrame createPanoramaDisplay(Hdl32eRayDecoder hdl32eRayDecoder) {
+  public static Hdl32ePanoramaFrame createPanoramaDisplay(Hdl32eDecoder hdl32eRayDecoder) {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
-    hdl32eRayDecoder.addListener(hdl32ePanoramaCollector);
+    hdl32eRayDecoder.addRayListener(hdl32ePanoramaCollector);
     return hdl32ePanoramaFrame;
   }
 
-  public static VelodyneRayFrame createRayFrame(Hdl32eRayDecoder hdl32eRayDecoder, Hdl32ePosDecoder hdl32ePosDecoder) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = createCollector(hdl32eRayDecoder, hdl32ePosDecoder);
+  public static VelodyneRayFrame createRayFrame(Hdl32eDecoder hdl32eDecoder) {
+    LidarAngularFiringCollector lidarAngularFiringCollector = createCollector(hdl32eDecoder);
     VelodyneRayFrame velodyneFiringFrame = new VelodyneRayFrame();
     lidarAngularFiringCollector.addListener(velodyneFiringFrame);
-    hdl32ePosDecoder.addListener(velodyneFiringFrame);
+    hdl32eDecoder.addPosListener(velodyneFiringFrame);
     return velodyneFiringFrame;
   }
 
-  public static LidarAngularFiringCollector createCollector(Hdl32eRayDecoder hdl32eRayDecoder, Hdl32ePosDecoder hdl32ePosDecoder) {
+  public static LidarAngularFiringCollector createCollector(Hdl32eDecoder hdl32eDecoder) {
     LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
     Hdl32eSpacialProvider hdl32eSpacialProvider = new Hdl32eSpacialProvider();
     hdl32eSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider hdl32eRotationProvider = new LidarRotationProvider();
     hdl32eRotationProvider.addListener(lidarAngularFiringCollector);
-    hdl32eRayDecoder.addListener(hdl32eSpacialProvider);
-    hdl32eRayDecoder.addListener(hdl32eRotationProvider);
+    hdl32eDecoder.addRayListener(hdl32eSpacialProvider);
+    hdl32eDecoder.addRayListener(hdl32eRotationProvider);
     return lidarAngularFiringCollector;
   }
 }

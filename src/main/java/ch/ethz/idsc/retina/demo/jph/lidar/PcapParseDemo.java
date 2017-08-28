@@ -17,7 +17,7 @@ enum PcapParseDemo {
     };
     Vlp16PacketProvider vlp16PacketProvider = new Vlp16PacketProvider();
     Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider();
-    vlp16PacketProvider.vlp16RayDecoder.addListener(vlp16SpacialProvider);
+    vlp16PacketProvider.vlp16Decoder.addRayListener(vlp16SpacialProvider);
     // packetConsumer.vlp16PosDecoder.addListener(null);
     PcapParse.of(Vlp16Pcap.DOWNTOWN_SINGLE.file, vlp16PacketProvider);
     // System.out.println(String.format("%02x", 55));

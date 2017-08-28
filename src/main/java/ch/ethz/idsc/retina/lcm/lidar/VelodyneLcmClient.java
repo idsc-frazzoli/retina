@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
-import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16PosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16RayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -32,8 +29,8 @@ public class VelodyneLcmClient implements LcmClientInterface {
   }
 
   // ---
-  public final VelodyneRayDecoder rayDecoder;
-  public final VelodynePosDecoder posDecoder;
+  // public final VelodyneRayDecoder rayDecoder;
+  public final VelodyneDecoder posDecoder;
   private final VelodyneModel velodyneModel;
   private final String lidarId;
 
@@ -42,12 +39,12 @@ public class VelodyneLcmClient implements LcmClientInterface {
     this.lidarId = lidarId;
     switch (velodyneModel) {
     case HDL32E:
-      rayDecoder = new Hdl32eRayDecoder();
-      posDecoder = new Hdl32ePosDecoder();
+      // rayDecoder = new Hdl32eRayDecoder();
+      posDecoder = new Hdl32eDecoder();
       break;
     case VLP16:
-      rayDecoder = new Vlp16RayDecoder();
-      posDecoder = new Vlp16PosDecoder();
+      // rayDecoder = new Vlp16RayDecoder();
+      posDecoder = new Vlp16Decoder();
       break;
     default:
       throw new RuntimeException();
@@ -65,7 +62,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
           BinaryBlob binaryBlob = new BinaryBlob(ins);
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          rayDecoder.lasers(byteBuffer);
+          posDecoder.lasers(byteBuffer);
         } catch (IOException exception) {
           exception.printStackTrace();
         }

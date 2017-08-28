@@ -4,12 +4,9 @@ package ch.ethz.idsc.retina.dev.velodyne.app;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.velodyne.VelodynePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16PosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16RayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
@@ -18,20 +15,18 @@ import ch.ethz.idsc.retina.util.io.PcapPacketListener;
  * process the data either as firing packet or as GPS */
 public class VelodynePcapPacketDecoder implements PcapPacketListener {
   public static VelodynePcapPacketDecoder hdl32e() {
-    return new VelodynePcapPacketDecoder(new Hdl32eRayDecoder(), new Hdl32ePosDecoder());
+    return new VelodynePcapPacketDecoder(new Hdl32eDecoder());
   }
 
   public static VelodynePcapPacketDecoder vlp16() {
-    return new VelodynePcapPacketDecoder(new Vlp16RayDecoder(), new Vlp16PosDecoder());
+    return new VelodynePcapPacketDecoder(new Vlp16Decoder());
   }
 
   // ---
-  public final VelodyneRayDecoder rayDecoder;
-  public final VelodynePosDecoder posDecoder;
+  public final VelodyneDecoder velodyneDecoder;
 
-  public VelodynePcapPacketDecoder(VelodyneRayDecoder rayDecoder, VelodynePosDecoder posDecoder) {
-    this.rayDecoder = rayDecoder;
-    this.posDecoder = posDecoder;
+  public VelodynePcapPacketDecoder(VelodyneDecoder posDecoder) {
+    this.velodyneDecoder = posDecoder;
   }
 
   @Override
@@ -44,10 +39,10 @@ public class VelodynePcapPacketDecoder implements PcapPacketListener {
     byteBuffer.position(42);
     switch (length) {
     case 1248:
-      rayDecoder.lasers(byteBuffer);
+      velodyneDecoder.lasers(byteBuffer);
       break;
     case 554:
-      posDecoder.positioning(byteBuffer);
+      velodyneDecoder.positioning(byteBuffer);
       break;
     default:
       System.err.println("unknown length " + length);

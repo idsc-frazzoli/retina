@@ -15,22 +15,22 @@ public enum Vlp16Utils {
   // return hdl32ePanoramaFrame;
   // }
   //
-  public static VelodyneRayFrame createRayFrame(Vlp16RayDecoder vlp16RayDecoder, Vlp16PosDecoder vlp16PosDecoder) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = createCollector(vlp16RayDecoder, vlp16PosDecoder);
+  public static VelodyneRayFrame createRayFrame(Vlp16Decoder vlp16RayDecoder) {
+    LidarAngularFiringCollector lidarAngularFiringCollector = createCollector(vlp16RayDecoder);
     VelodyneRayFrame velodyneFiringFrame = new VelodyneRayFrame();
     lidarAngularFiringCollector.addListener(velodyneFiringFrame);
-    vlp16PosDecoder.addListener(velodyneFiringFrame);
+    vlp16RayDecoder.addPosListener(velodyneFiringFrame);
     return velodyneFiringFrame;
   }
 
-  public static LidarAngularFiringCollector createCollector(Vlp16RayDecoder vlp16RayDecoder, Vlp16PosDecoder vlp16PosDecoder) {
+  public static LidarAngularFiringCollector createCollector(Vlp16Decoder vlp16RayDecoder) {
     LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
     Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider();
     vlp16SpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
-    vlp16RayDecoder.addListener(vlp16SpacialProvider);
-    vlp16RayDecoder.addListener(lidarRotationProvider);
+    vlp16RayDecoder.addRayListener(vlp16SpacialProvider);
+    vlp16RayDecoder.addRayListener(lidarRotationProvider);
     return lidarAngularFiringCollector;
   }
 }

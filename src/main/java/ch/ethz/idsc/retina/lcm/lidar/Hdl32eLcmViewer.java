@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32ePosDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eRayDecoder;
+import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eUtils;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaFrame;
@@ -16,9 +15,9 @@ public enum Hdl32eLcmViewer {
     Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
-    ((Hdl32eRayDecoder) client.rayDecoder).addListener(hdl32ePanoramaCollector);
+    client.posDecoder.addRayListener(hdl32ePanoramaCollector);
     // ---
-    Hdl32eUtils.createRayFrame((Hdl32eRayDecoder) client.rayDecoder, (Hdl32ePosDecoder) client.posDecoder);
+    Hdl32eUtils.createRayFrame((Hdl32eDecoder) client.posDecoder);
     // ---
     client.startSubscriptions();
   }
