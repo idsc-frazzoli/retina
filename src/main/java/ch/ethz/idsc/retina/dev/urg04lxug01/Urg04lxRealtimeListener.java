@@ -9,8 +9,8 @@ public class Urg04lxRealtimeListener implements Urg04lxListener {
   // ---
   private final RealtimeSleeper realtimeSleeper;
 
-  public Urg04lxRealtimeListener(double sleep) {
-    realtimeSleeper = new RealtimeSleeper(sleep);
+  public Urg04lxRealtimeListener(double factor) {
+    realtimeSleeper = new RealtimeSleeper(factor);
   }
 
   @Override

@@ -13,7 +13,7 @@ public class VelodynePcapLcmServer implements PcapPacketListener {
   private final BinaryBlobPublisher rayPublisher;
   private final BinaryBlobPublisher posPublisher;
 
-  public VelodynePcapLcmServer(VelodyneModel velodyneModel, String lidarId, double speed) {
+  public VelodynePcapLcmServer(VelodyneModel velodyneModel, String lidarId) {
     rayPublisher = new BinaryBlobPublisher(VelodyneLcmChannels.ray(velodyneModel, lidarId));
     posPublisher = new BinaryBlobPublisher(VelodyneLcmChannels.pos(velodyneModel, lidarId));
   }

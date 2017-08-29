@@ -10,17 +10,18 @@ import java.util.Objects;
 public class RealtimeSleeper {
   private static final long MICRO = 1000000;
   // ---
-  private final double speed;
+  /** factor of real-time */
+  private final double factor;
   private Long ref = null;
   private long tic;
   private long sleepTotal = 0;
 
   /** Example:
-   * speed of 0.5 will slow down playback to half realtime speed
+   * speed of 0.5 will slow down playback to half real-time speed
    * 
-   * @param speed */
-  public RealtimeSleeper(double speed) {
-    this.speed = speed;
+   * @param factor */
+  public RealtimeSleeper(double factor) {
+    this.factor = factor;
   }
 
   /** @param time in nano seconds
@@ -32,7 +33,7 @@ public class RealtimeSleeper {
     } else {
       long act = time - ref;
       long toc = System.nanoTime() - tic;
-      final long sleep = Math.round(act - toc * speed);
+      final long sleep = Math.round(act - toc * factor);
       if (0 < sleep)
         try {
           long millis = sleep / MICRO;

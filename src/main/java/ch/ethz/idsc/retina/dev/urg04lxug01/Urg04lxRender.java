@@ -12,7 +12,6 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -45,7 +44,7 @@ public class Urg04lxRender {
   private final Tensor direction;
   private final Tensor gridlines = Tensors.empty();
   /** range contains distances in [mm] for 682 angles */
-  private Tensor range = Tensors.empty();
+  private Tensor _range = Tensors.empty();
   private Scalar METER_TO_PIXEL; // [m] to [pixel]
   private int ofs_x;
   private int ofs_y;
@@ -65,6 +64,7 @@ public class Urg04lxRender {
   }
 
   public void render(Graphics2D graphics, Dimension dimension) {
+    Tensor range = _range.copy();
     {
       graphics.setColor(Color.WHITE);
       graphics.fillRect(0, 0, dimension.width, dimension.height);
@@ -139,12 +139,10 @@ public class Urg04lxRender {
     }
   }
 
-  public void setLine(String line) {
-    int index = line.indexOf('{');
-    // <- removes "URG" prefix from line
-    range = Tensor.of(Stream.of(line.substring(index + 1, line.length() - 1).split(",")) //
-        .map(Integer::parseInt) //
-        .map(mm -> DoubleScalar.of(mm * MILLIMETER_TO_METER)));
+  public void setEvent(Urg04lxEvent urg04lxEvent) {
+    _range = Tensors.empty();
+    for (int count = 0; count < urg04lxEvent.range.length; ++count)
+      _range.append(DoubleScalar.of(urg04lxEvent.range[count] * MILLIMETER_TO_METER));
   }
 
   public void setZoom(int zoom) {

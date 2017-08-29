@@ -24,7 +24,7 @@ public class UrgAnimationWriter implements Urg04lxListener {
 
   @Override
   public void urg(String line) {
-    urg04lxRender.setLine(line);
+    urg04lxRender.setEvent(Urg04lxEvent.fromString(line));
     urg04lxRender.render((Graphics2D) image.getGraphics(), dimension);
     try {
       animationWriter.append(image);
