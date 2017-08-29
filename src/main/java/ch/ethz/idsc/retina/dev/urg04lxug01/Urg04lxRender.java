@@ -45,6 +45,7 @@ public class Urg04lxRender {
   private final Tensor gridlines = Tensors.empty();
   /** range contains distances in [mm] for 682 angles */
   private Tensor _range = Tensors.empty();
+  long timestamp = -1;
   private Scalar METER_TO_PIXEL; // [m] to [pixel]
   private int ofs_x;
   private int ofs_y;
@@ -137,9 +138,16 @@ public class Urg04lxRender {
     } catch (Exception exception) {
       // ---
     }
+    {
+      graphics.drawString("" + timestamp, 10, 20);
+      graphics.drawString("" + System.currentTimeMillis(), 10, 30);
+    }
   }
 
   public void setEvent(Urg04lxEvent urg04lxEvent) {
+    if (urg04lxEvent.timestamp < timestamp)
+      System.err.println("decreasing urg timestamp");
+    timestamp = urg04lxEvent.timestamp;
     _range = Tensors.empty();
     for (int count = 0; count < urg04lxEvent.range.length; ++count)
       _range.append(DoubleScalar.of(urg04lxEvent.range[count] * MILLIMETER_TO_METER));

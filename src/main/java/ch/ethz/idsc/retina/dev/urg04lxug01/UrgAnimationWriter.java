@@ -8,7 +8,7 @@ import java.io.File;
 
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-public class UrgAnimationWriter implements Urg04lxListener {
+public class UrgAnimationWriter implements Urg04lxEventListener {
   private final AnimationWriter animationWriter;
   private final Dimension dimension;
   private final BufferedImage image;
@@ -23,8 +23,8 @@ public class UrgAnimationWriter implements Urg04lxListener {
   }
 
   @Override
-  public void urg(String line) {
-    urg04lxRender.setEvent(Urg04lxEvent.fromString(line));
+  public void range(Urg04lxEvent urg04lxEvent) {
+    urg04lxRender.setEvent(urg04lxEvent);
     urg04lxRender.render((Graphics2D) image.getGraphics(), dimension);
     try {
       animationWriter.append(image);

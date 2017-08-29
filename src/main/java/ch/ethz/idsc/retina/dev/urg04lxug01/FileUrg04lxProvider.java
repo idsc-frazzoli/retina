@@ -11,7 +11,7 @@ import java.util.Objects;
 
 /** playback urg recordings */
 public class FileUrg04lxProvider implements Urg04lxProvider {
-  private final List<Urg04lxListener> listeners = new LinkedList<>();
+  private final List<Urg04lxEventListener> listeners = new LinkedList<>();
   private final BufferedReader bufferedReader;
 
   public FileUrg04lxProvider(File file) throws IOException {
@@ -19,7 +19,7 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
   }
 
   @Override
-  public void addListener(Urg04lxListener urgListener) {
+  public void addListener(Urg04lxEventListener urgListener) {
     listeners.add(urgListener);
   }
 
@@ -30,9 +30,10 @@ public class FileUrg04lxProvider implements Urg04lxProvider {
         String line = bufferedReader.readLine();
         if (Objects.isNull(line))
           break;
-        if (line.startsWith(URG_PREFIX))
-          listeners.forEach(urgListener -> urgListener.urg(line));
-        else
+        if (line.startsWith(URG_PREFIX)) {
+          Urg04lxEvent urg04lxEvent = Urg04lxEvent.fromString(line);
+          listeners.forEach(urgListener -> urgListener.range(urg04lxEvent));
+        } else
           System.err.println("unknown: " + line);
       }
     } catch (Exception exception) {
