@@ -16,16 +16,17 @@ public enum Urg04lxLiveProvider implements Urg04lxProvider {
   // ---
   public static final String EXECUTABLE = "urg_timedprovider";
   // ---
-  private final List<Urg04lxListener> listeners = new LinkedList<>();
+  private final List<Urg04lxEventListener> listeners = new LinkedList<>();
   private OutputStream outputStream;
 
   @Override
-  public void addListener(Urg04lxListener urgListener) {
+  public void addListener(Urg04lxEventListener urgListener) {
     listeners.add(urgListener);
   }
 
   @Override
   public void start() {
+    // TODO it seems that urg process is sending only int precision timestamp
     final File dir = UserHome.file("Public");
     ProcessBuilder processBuilder = //
         new ProcessBuilder(new File(dir, EXECUTABLE).toString());
@@ -43,8 +44,10 @@ public enum Urg04lxLiveProvider implements Urg04lxProvider {
             while (process.isAlive()) {
               String line = bufferedReader.readLine();
               if (line != null) {
-                if (line.startsWith(URG_PREFIX))
-                  listeners.forEach(urgListener -> urgListener.urg(line));
+                if (line.startsWith(URG_PREFIX)) {
+                  Urg04lxEvent urg04lxEvent = Urg04lxEvent.fromString(line);
+                  listeners.forEach(urgListener -> urgListener.range(urg04lxEvent));
+                }
               } else {
                 System.out.println("readLine give up.");
                 // never here

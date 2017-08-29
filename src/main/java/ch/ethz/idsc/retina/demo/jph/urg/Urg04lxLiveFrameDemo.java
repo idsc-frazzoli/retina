@@ -7,7 +7,6 @@ import java.awt.event.WindowEvent;
 import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxFrame;
 import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxLiveProvider;
 import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxProvider;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxRecorder;
 
 enum Urg04lxLiveFrameDemo {
   ;
@@ -22,7 +21,6 @@ enum Urg04lxLiveFrameDemo {
       }
     });
     urg04lxProvider.addListener(urg04lxFrame);
-    urg04lxProvider.addListener(Urg04lxRecorder.createDefault());
     urg04lxProvider.start();
   }
 }

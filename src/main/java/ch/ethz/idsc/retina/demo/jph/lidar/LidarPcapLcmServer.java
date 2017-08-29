@@ -12,12 +12,12 @@ enum LidarPcapLcmServer {
   private static final double SPEED = 1.0;
 
   static void _hdl32e() throws Exception {
-    VelodynePcapLcmServer server = new VelodynePcapLcmServer(VelodyneModel.HDL32E, "center", 1);
+    VelodynePcapLcmServer server = new VelodynePcapLcmServer(VelodyneModel.HDL32E, "center");
     PcapParse.of(Hdl32ePcap.HIGHWAY.file, new PcapRealtimePlayback(SPEED), server); // blocking
   }
 
   static void _vlp16() throws Exception {
-    VelodynePcapLcmServer server = new VelodynePcapLcmServer(VelodyneModel.VLP16, "center", 1);
+    VelodynePcapLcmServer server = new VelodynePcapLcmServer(VelodyneModel.VLP16, "center");
     PcapParse.of(Vlp16Pcap.DOWNTOWN_DUAL.file, new PcapRealtimePlayback(SPEED), server); // blocking
   }
 

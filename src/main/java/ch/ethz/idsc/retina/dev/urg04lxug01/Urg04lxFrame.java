@@ -25,7 +25,7 @@ import javax.swing.WindowConstants;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Urg04lxFrame implements Urg04lxListener {
+public class Urg04lxFrame implements Urg04lxEventListener {
   public final JFrame jFrame = new JFrame();
   private final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
@@ -52,8 +52,8 @@ public class Urg04lxFrame implements Urg04lxListener {
   }
 
   @Override
-  public void urg(String line) {
-    urg04lxRender.setLine(line);
+  public void range(Urg04lxEvent urg04lxEvent) {
+    urg04lxRender.setEvent(urg04lxEvent);
     jComponent.repaint();
   }
 }
