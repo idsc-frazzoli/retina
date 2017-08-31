@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 
-public class Mark8SpacialProvider implements LidarRayDataListener {
+public class Mark8SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 8;
   private static final float[] IR = new float[8];
   private static final float[] IZ = new float[8];
@@ -24,6 +24,8 @@ public class Mark8SpacialProvider implements LidarRayDataListener {
       -0.318505, -0.2692, -0.218009, -0.165195, -0.111003, -0.0557982, 0.0, 0.0557982 };
   // ---
   private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private int usec;
+  private final byte[] intensity = new byte[24];
 
   public Mark8SpacialProvider() {
     for (int laser = 0; laser < LASERS; ++laser) {
@@ -33,18 +35,15 @@ public class Mark8SpacialProvider implements LidarRayDataListener {
     }
   }
 
+  @Override
   public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
-
-  int usec;
 
   @Override
   public void timestamp(int usec, byte type) {
     this.usec = usec;
   }
-
-  byte[] intensity = new byte[24];
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
@@ -58,7 +57,8 @@ public class Mark8SpacialProvider implements LidarRayDataListener {
     byteBuffer.position(position);
     int index = 0;
     float[] coords = new float[3];
-    for (int layer = 0; layer < 3; ++layer) { // TODO check if loops are correctly nested
+    // apparently the correct nesting of loops (test more)
+    for (int layer = 0; layer < 3; ++layer) {
       for (int laser = 0; laser < 8; ++laser) {
         // 0 indicates an invalid point
         int distance = byteBuffer.getInt(); // distances in 10 micrometers

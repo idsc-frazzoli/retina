@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
-public class Vlp16SpacialProvider implements LidarRayDataListener {
+public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
   public static final float[] IR = new float[16];
   public static final float[] IZ = new float[16];
@@ -39,8 +39,9 @@ public class Vlp16SpacialProvider implements LidarRayDataListener {
     limit_lo = (int) (closest / TO_METER);
   }
 
-  public void addListener(LidarSpacialEventListener hdl32eSpacialEventListener) {
-    listeners.add(hdl32eSpacialEventListener);
+  @Override
+  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+    listeners.add(lidarSpacialEventListener);
   }
 
   @Override

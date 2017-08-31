@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.hdl32e.data;
+package ch.ethz.idsc.retina.dev.lidar.hdl32e;
 
 import junit.framework.TestCase;
 

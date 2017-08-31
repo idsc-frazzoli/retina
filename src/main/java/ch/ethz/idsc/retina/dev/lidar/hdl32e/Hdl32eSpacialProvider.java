@@ -1,18 +1,18 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.hdl32e.data;
+package ch.ethz.idsc.retina.dev.lidar.hdl32e;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class Hdl32eSpacialProvider implements LidarRayDataListener {
+public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 32;
   private static final float[] IR = new float[32];
   private static final float[] IZ = new float[32];
@@ -53,6 +53,11 @@ public class Hdl32eSpacialProvider implements LidarRayDataListener {
     }
   }
 
+  @Override
+  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+    listeners.add(lidarSpacialEventListener);
+  }
+
   /** quote from the user's manual, p.8:
    * "the minimum return distance for the HDL-32E is approximately 1 meter.
    * ignore returns closer than this"
@@ -60,10 +65,6 @@ public class Hdl32eSpacialProvider implements LidarRayDataListener {
    * @param closest in [m] */
   public void setLimitLo(double closest) {
     limit_lo = (int) (closest / TO_METER);
-  }
-
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
-    listeners.add(lidarSpacialEventListener);
   }
 
   @Override
