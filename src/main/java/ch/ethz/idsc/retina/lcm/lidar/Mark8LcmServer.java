@@ -15,8 +15,6 @@ import lcm.lcm.LCM;
  * <p>if the sensor is the only client to the device, the sensor typically
  * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
-  public static final int HEADER = 0x75bd7e97;
-  public static final int LENGTH = 6632;
   // ---
   private final String ip;
   private boolean isLaunched = true;
@@ -27,9 +25,9 @@ public class Mark8LcmServer {
    * @param lidarId for example "top" */
   public Mark8LcmServer(String ip, String lidarId) {
     this.ip = ip;
-    channel = "mark8." + lidarId + ".ray";
-    binaryBlob.data_length = LENGTH;
-    binaryBlob.data = new byte[LENGTH];
+    channel = "mark8." + lidarId + ".ray"; // TODO redundant in client
+    binaryBlob.data_length = Mark8Device.LENGTH;
+    binaryBlob.data = new byte[Mark8Device.LENGTH];
   }
 
   /** blocking call
@@ -39,14 +37,16 @@ public class Mark8LcmServer {
     try (Socket socket = new Socket(ip, Mark8Device.TCP_PORT)) {
       InputStream inputStream = socket.getInputStream();
       while (isLaunched) {
-        if (LENGTH <= inputStream.available()) {
+        if (Mark8Device.LENGTH <= inputStream.available()) {
           inputStream.read(binaryBlob.data);
-          ByteBuffer message = ByteBuffer.wrap(binaryBlob.data);
-          message.order(ByteOrder.BIG_ENDIAN);
-          int header = message.getInt();
-          int length = message.getInt();
-          if (header != HEADER || length != LENGTH)
-            throw new RuntimeException("data corruption");
+          {
+            ByteBuffer message = ByteBuffer.wrap(binaryBlob.data);
+            message.order(ByteOrder.BIG_ENDIAN);
+            int header = message.getInt();
+            int length = message.getInt();
+            if (header != Mark8Device.HEADER || length != Mark8Device.LENGTH)
+              throw new RuntimeException("data corruption");
+          }
           LCM.getSingleton().publish(channel, binaryBlob);
         } else {
           Thread.sleep(5);

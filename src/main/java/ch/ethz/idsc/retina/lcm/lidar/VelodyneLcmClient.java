@@ -42,7 +42,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
   @Override
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
-    // if (hdl32eRayDecoder.hasListeners())
+    // if (velodyneDecoder.hasRayListeners())
     lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
@@ -56,7 +56,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
         }
       }
     });
-    // if (hdl32ePosDecoder.hasListeners())
+    // if (velodyneDecoder.hasPosListeners())
     lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
