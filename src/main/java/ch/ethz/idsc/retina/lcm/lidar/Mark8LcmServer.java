@@ -15,7 +15,6 @@ import lcm.lcm.LCM;
  * <p>if the sensor is the only client to the device, the sensor typically
  * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
-  // ---
   private final String ip;
   private boolean isLaunched = true;
   private final String channel;
@@ -36,7 +35,7 @@ public class Mark8LcmServer {
   public void start() throws Exception {
     try (Socket socket = new Socket(ip, Mark8Device.TCP_PORT)) {
       InputStream inputStream = socket.getInputStream();
-      while (isLaunched) {
+      while (isLaunched)
         if (Mark8Device.LENGTH <= inputStream.available()) {
           int read = inputStream.read(binaryBlob.data);
           // if (read == -1) {
@@ -54,10 +53,8 @@ public class Mark8LcmServer {
               throw new RuntimeException("data corruption");
           }
           LCM.getSingleton().publish(channel, binaryBlob);
-        } else {
-          Thread.sleep(5);
-        }
-      }
+        } else
+          Thread.sleep(2);
     }
   }
 

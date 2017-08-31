@@ -14,15 +14,15 @@ import ch.ethz.idsc.retina.dev.velodyne.LidarSpacialEventListener;
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Hdl32eSpacialProvider implements LidarRayDataListener {
   private static final int LASERS = 32;
-  public static final float[] IR = new float[32];
-  public static final float[] IZ = new float[32];
-  public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
-  public static final double TO_METER = 0.002;
-  public static final float TO_METER_FLOAT = (float) TO_METER;
+  private static final float[] IR = new float[32];
+  private static final float[] IZ = new float[32];
+  private static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  private static final double TO_METER = 0.002;
+  private static final float TO_METER_FLOAT = (float) TO_METER;
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
-  public static final int[] ORDERING = new int[] { //
+  private static final int[] ORDERING = new int[] { //
       -23, -7, //
       -22, -6, //
       -21, -5, //
@@ -62,8 +62,8 @@ public class Hdl32eSpacialProvider implements LidarRayDataListener {
     limit_lo = (int) (closest / TO_METER);
   }
 
-  public void addListener(LidarSpacialEventListener hdl32eSpacialEventListener) {
-    listeners.add(hdl32eSpacialEventListener);
+  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+    listeners.add(lidarSpacialEventListener);
   }
 
   @Override
@@ -87,8 +87,8 @@ public class Hdl32eSpacialProvider implements LidarRayDataListener {
         coords[0] = IR[laser] * range * dx;
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;
-        LidarSpacialEvent hdl32eSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.spacial(hdl32eSpacialEvent));
+        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
+        listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
       }
     }
   }
