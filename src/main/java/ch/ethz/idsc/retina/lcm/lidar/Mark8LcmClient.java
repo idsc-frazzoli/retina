@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.quanergy.mark8.Mark8Decoder;
+import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;

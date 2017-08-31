@@ -1,0 +1,78 @@
+// code by jph
+package ch.ethz.idsc.retina.dev.lidar.mark8;
+
+import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
+
+import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRotationEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRotationEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
+import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
+
+/** Packet description taken from
+ * M8 Sensor User Guide, QPN 96-00001 Rev H
+ * p.32 */
+public class Mark8Decoder {
+  private static final int FIRINGS = 50;
+  // ---
+  private final List<LidarRayDataListener> listeners = new LinkedList<>();
+
+  public void addRayListener(LidarRayDataListener lidarRayDataListener) {
+    listeners.add(lidarRayDataListener);
+  }
+
+  public void lasers(ByteBuffer byteBuffer) {
+    final int header = byteBuffer.getInt();
+    final int length = byteBuffer.getInt();
+    if (header != Mark8Device.HEADER || length != Mark8Device.LENGTH)
+      throw new RuntimeException();
+    // ---
+    int timestamp_seconds = byteBuffer.getInt();
+    int timestamp_nanos = byteBuffer.getInt(); // 31 bit == 2147483648
+    int usec = timestamp_seconds * 1_000_000 + timestamp_nanos / 1000; // TODO
+    listeners.forEach(listener -> listener.timestamp(usec, (byte) 0));
+    // byteBuffer.get(); // api_version_major
+    // byteBuffer.get(); // api_version_minor
+    // byteBuffer.get(); // api_version_patch
+    // byteBuffer.get(); // packet_type, quanergy only sends packet-type 0x00
+    // instead of reading 4 separate bytes, we simply read 1 integer:
+    byteBuffer.getInt(); // [3 x api, packet type]
+    // READ FIRING DATA [50]
+    for (int index = 0; index < FIRINGS; ++index) {
+      /** rotation [0, ..., 10399] */
+      final int rotational = byteBuffer.getShort();
+      byteBuffer.getShort(); // reserved, don't use
+      final int position = byteBuffer.position();
+      listeners.forEach(listener -> {
+        byteBuffer.position(position);
+        listener.scan(rotational, byteBuffer);
+      });
+      byteBuffer.position(position + 128); // 24 * 4 + 24 + 8
+    }
+    byteBuffer.getInt(); // timestamp seconds
+    byteBuffer.getInt(); // timestamp nanos
+    byteBuffer.getShort(); // API version
+    byteBuffer.getShort(); // status
+    if (byteBuffer.remaining() != 0)
+      throw new RuntimeException();
+  }
+
+  public static void main(String[] args) throws Exception {
+    Mark8Decoder mark8Decoder = new Mark8Decoder();
+    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
+    lidarRotationProvider.addListener(new LidarRotationEventListener() {
+      @Override
+      public void rotation(LidarRotationEvent lidarRotationEvent) {
+        System.out.println("rotation " + lidarRotationEvent.usec + " " + lidarRotationEvent.rotation);
+        // System.out.println(lidarRotationEvent);
+      }
+    });
+    mark8Decoder.addRayListener(lidarRotationProvider);
+    mark8Decoder.addRayListener(new Mark8SpacialProvider());
+    Mark8LcmClient mark8LcmClient = new Mark8LcmClient(mark8Decoder, "center");
+    mark8LcmClient.startSubscriptions();
+    Thread.sleep(10000);
+  }
+}

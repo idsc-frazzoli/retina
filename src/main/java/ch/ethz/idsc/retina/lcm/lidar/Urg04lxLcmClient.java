@@ -7,9 +7,9 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxDevice;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxEvent;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxEventListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxDevice;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxEventListener;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;

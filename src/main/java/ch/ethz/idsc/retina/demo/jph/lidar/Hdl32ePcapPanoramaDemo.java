@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodynePcapPacketListener;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.data.Hdl32ePanoramaFrame;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodynePcapPacketListener;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaCollector;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaFrame;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 

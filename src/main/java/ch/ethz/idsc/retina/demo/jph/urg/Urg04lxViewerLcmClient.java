@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.urg;
 
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxFrame;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxFrame;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 
 enum Urg04lxViewerLcmClient {

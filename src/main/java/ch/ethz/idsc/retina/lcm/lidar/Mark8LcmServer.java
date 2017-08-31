@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.quanergy.mark8.Mark8Device;
+import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 

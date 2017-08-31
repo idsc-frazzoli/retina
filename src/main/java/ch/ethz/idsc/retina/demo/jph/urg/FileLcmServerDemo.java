@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.urg;
 
-import ch.ethz.idsc.retina.dev.urg04lxug01.FileUrg04lxProvider;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxProvider;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxRealtimeListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.FileUrg04lxProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxRealtimeListener;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmServer;
 
 enum FileLcmServerDemo {

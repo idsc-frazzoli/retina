@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodynePcapPacketListener;
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodyneUtils;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodynePcapPacketListener;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
