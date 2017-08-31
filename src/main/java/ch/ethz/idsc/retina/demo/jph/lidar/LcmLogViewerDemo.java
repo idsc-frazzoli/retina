@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.lcm.lidar.Hdl32eLcmViewer;
 import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
@@ -16,6 +15,6 @@ enum LcmLogViewerDemo {
     cfg.speed = RationalScalar.of(1, 8);
     LogPlayer.create(cfg);
     // ---
-    Hdl32eLcmViewer.create("center");
+    // Hdl32eLcmViewer.create("center");
   }
 }

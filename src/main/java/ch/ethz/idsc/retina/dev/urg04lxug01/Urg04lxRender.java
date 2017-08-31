@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -39,6 +40,7 @@ public class Urg04lxRender {
   private static final Color BLIND_SPOT = new Color(230, 30, 30, 64);
   private static final int INDEX_LAST = 681;
   // ---
+  private final IntervalClock intervalClock = new IntervalClock();
   /** p.2 Detection Area: 240 [deg] */
   private final Tensor angle = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, INDEX_LAST).unmodifiable();
   private final Tensor direction;
@@ -134,23 +136,26 @@ public class Urg04lxRender {
       Scalar min = range.flatten(-1).map(Scalar.class::cast).filter(Scalars::nonZero).reduce(Min::of).get();
       Scalar max = range.flatten(-1).map(Scalar.class::cast).reduce(Max::of).get();
       graphics.setColor(Color.BLACK);
-      graphics.drawString(Tensors.of(min, max).map(Round._3).toString() + "[m]", 10, 10);
+      graphics.drawString(Tensors.of(min, max).map(Round._3).toString() + "[m]", 200, 10);
     } catch (Exception exception) {
       // ---
     }
     {
-      graphics.drawString("" + timestamp, 10, 20);
-      graphics.drawString("" + System.currentTimeMillis(), 10, 30);
+      graphics.drawString("" + timestamp, 200, 20);
+      graphics.drawString("" + System.currentTimeMillis(), 200, 30);
     }
+    graphics.setColor(Color.RED);
+    graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
   }
 
   public void setEvent(Urg04lxEvent urg04lxEvent) {
     if (urg04lxEvent.timestamp < timestamp)
       System.err.println("decreasing urg timestamp");
     timestamp = urg04lxEvent.timestamp;
-    _range = Tensors.empty();
+    Tensor range = Tensors.empty();
     for (int count = 0; count < urg04lxEvent.range.length; ++count)
-      _range.append(DoubleScalar.of(urg04lxEvent.range[count] * MILLIMETER_TO_METER));
+      range.append(DoubleScalar.of(urg04lxEvent.range[count] * MILLIMETER_TO_METER));
+    _range = range;
   }
 
   public void setZoom(int zoom) {
