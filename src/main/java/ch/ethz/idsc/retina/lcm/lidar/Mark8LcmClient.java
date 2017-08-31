@@ -20,7 +20,7 @@ public class Mark8LcmClient implements LcmClientInterface {
   public final Mark8Decoder mark8Decoder;
   private final String lidarId;
 
-  private Mark8LcmClient(Mark8Decoder mark8Decoder, String lidarId) {
+  public Mark8LcmClient(Mark8Decoder mark8Decoder, String lidarId) {
     this.mark8Decoder = mark8Decoder;
     this.lidarId = lidarId;
   }

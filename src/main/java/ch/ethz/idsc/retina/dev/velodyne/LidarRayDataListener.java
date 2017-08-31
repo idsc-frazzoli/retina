@@ -17,7 +17,14 @@ public interface LidarRayDataListener {
    * int intensity = byteBuffer.get();
    * }
    * 
-   * @param rotational [0, ..., 35999] in 100th of degree
+   * <p>parameters depends on sensor
+   * 
+   * rotational
+   * Velodyne [0, ..., 35999] in 100th of degree
+   * Mark8 [0, ..., 10399] where 10400 corresponds to 360 degree
+   * 
+   * @param rotational
+   * 
    * @param byteBuffer */
   void scan(int rotational, ByteBuffer byteBuffer);
 }

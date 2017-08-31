@@ -7,24 +7,21 @@ import java.nio.ByteOrder;
 
 /** the quanergy server buffers up to 300 kB of data */
 public class Mark8Connection {
-  public static final int HEADER = 0x75bd7e97;
-  public static final int LENGTH = 6632;
-
   public static void main(String[] args) throws Exception {
     try (Socket socket = new Socket("192.168.1.3", 4141)) {
       InputStream inputStream = socket.getInputStream();
       byte[] data = new byte[32768];
-      byte[] msg = new byte[LENGTH];
+      byte[] msg = new byte[Mark8Device.LENGTH];
       while (true) {
-        if (LENGTH <= inputStream.available()) {
+        if (Mark8Device.LENGTH <= inputStream.available()) {
           inputStream.read(msg);
           ByteBuffer message = ByteBuffer.wrap(msg);
           message.order(ByteOrder.BIG_ENDIAN);
           int header = message.getInt();
-          if (header != HEADER)
+          if (header != Mark8Device.HEADER)
             throw new RuntimeException();
           int length = message.getInt();
-          if (length != LENGTH)
+          if (length != Mark8Device.LENGTH)
             throw new RuntimeException();
           // ---
           int timestamp_seconds = message.getInt();

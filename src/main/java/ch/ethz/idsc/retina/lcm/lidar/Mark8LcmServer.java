@@ -38,7 +38,13 @@ public class Mark8LcmServer {
       InputStream inputStream = socket.getInputStream();
       while (isLaunched) {
         if (Mark8Device.LENGTH <= inputStream.available()) {
-          inputStream.read(binaryBlob.data);
+          int read = inputStream.read(binaryBlob.data);
+          // if (read == -1) {
+          // isLaunched = false;
+          // break;
+          // }
+          if (read != Mark8Device.LENGTH)
+            throw new RuntimeException();
           {
             ByteBuffer message = ByteBuffer.wrap(binaryBlob.data);
             message.order(ByteOrder.BIG_ENDIAN);
