@@ -17,10 +17,10 @@ public class BinaryBlobPublisher implements ByteArrayConsumer {
   }
 
   @Override
-  public void accept(byte[] packet_data, int length) {
+  public void accept(byte[] data, int data_length) {
     BinaryBlob binaryBlob = new BinaryBlob();
-    binaryBlob.data_length = length;
-    binaryBlob.data = packet_data;
+    binaryBlob.data_length = data_length;
+    binaryBlob.data = data;
     lcm.publish(channel, binaryBlob);
   }
 }

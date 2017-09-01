@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
+import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -16,7 +17,7 @@ import lcm.lcm.LCMSubscriber;
  * mark8 publications and allows listeners to receive the data
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class Mark8LcmClient implements LcmClientInterface {
+public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
   public final Mark8Decoder mark8Decoder;
   private final String lidarId;
 
@@ -27,20 +28,18 @@ public class Mark8LcmClient implements LcmClientInterface {
 
   @Override
   public void startSubscriptions() {
-    LCM lcm = LCM.getSingleton();
-    // if (decoder.hasListeners())
-    lcm.subscribe("mark8." + lidarId + ".ray", new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob binaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-          byteBuffer.order(ByteOrder.BIG_ENDIAN); // native encoding of mark8 sensor is big endian
-          mark8Decoder.lasers(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
-        }
-      }
-    });
+    LCM.getSingleton().subscribe(Mark8Device.channel(lidarId), this);
+  }
+
+  @Override
+  public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+    try {
+      BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
+      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+      byteBuffer.order(ByteOrder.BIG_ENDIAN); // native encoding of mark8 sensor is big endian
+      mark8Decoder.lasers(byteBuffer);
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
   }
 }

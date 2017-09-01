@@ -48,9 +48,8 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     final double angle = rotational * ANGLE_FACTOR;
-    // new LidarSpacialEvent(usec, coords, intensity);
     float dx = (float) Math.cos(angle);
-    float dy = (float) -Math.sin(angle);
+    float dy = (float) Math.sin(angle);
     int position = byteBuffer.position();
     byteBuffer.position(position + 24 * 4);
     byteBuffer.get(intensity); // bulk read intensities

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.urg04lxug01;
+package ch.ethz.idsc.retina.dev.lidar.urg04lx.app;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.tensor.DoubleScalar;

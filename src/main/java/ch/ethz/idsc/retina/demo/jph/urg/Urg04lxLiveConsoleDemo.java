@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.urg;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxLiveProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxLiveProvider;
 
 /** for the demo, the sensor has to be connected to the pc */
 enum Urg04lxLiveConsoleDemo {

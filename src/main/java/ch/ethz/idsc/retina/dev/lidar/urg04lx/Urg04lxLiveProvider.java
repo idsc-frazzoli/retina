@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.urg04lxug01;
+package ch.ethz.idsc.retina.dev.lidar.urg04lx;
 
 import java.io.BufferedReader;
 import java.io.File;

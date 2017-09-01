@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.urg04lxug01;
+package ch.ethz.idsc.retina.dev.lidar.urg04lx;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Objects;
 
 /** playback urg recordings */
-public class FileUrg04lxProvider implements Urg04lxProvider {
+public class Urg04lxFileProvider implements Urg04lxProvider {
   private final List<Urg04lxEventListener> listeners = new LinkedList<>();
   private final BufferedReader bufferedReader;
 
-  public FileUrg04lxProvider(File file) throws IOException {
+  public Urg04lxFileProvider(File file) throws IOException {
     bufferedReader = new BufferedReader(new FileReader(file));
   }
 

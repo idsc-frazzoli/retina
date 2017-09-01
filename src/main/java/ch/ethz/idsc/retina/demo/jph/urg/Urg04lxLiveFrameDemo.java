@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.demo.jph.urg;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxFrame;
-import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxLiveProvider;
-import ch.ethz.idsc.retina.dev.lidar.urg04lxug01.Urg04lxProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxLiveProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.app.Urg04lxFrame;
 
 enum Urg04lxLiveFrameDemo {
   ;

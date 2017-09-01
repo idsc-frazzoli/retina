@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.urg04lxug01;
+package ch.ethz.idsc.retina.dev.lidar.urg04lx.app;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,6 +9,9 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
 
 /** {@link Urg04lxFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
