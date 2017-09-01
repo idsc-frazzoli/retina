@@ -7,15 +7,11 @@ import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 
 enum Urg04lxViewerLcmClient {
   ;
-  public static void launch() {
+  public static void main(String[] args) {
     Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
     Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient(urg04lxDecoder, "front");
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();
-    // urg04lxLcmClient.addListener(urg04lxFrame); // FIXME
+    urg04lxDecoder.addListener(urg04lxFrame);
     urg04lxLcmClient.startSubscriptions();
-  }
-
-  public static void main(String[] args) {
-    launch();
   }
 }

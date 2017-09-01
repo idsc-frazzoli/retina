@@ -40,6 +40,10 @@ intensity as 360[deg] panorama
 
 ![intensity](https://user-images.githubusercontent.com/4012178/29026760-c29ebbce-7b7d-11e7-9854-9280594cb462.gif)
 
+## Quanergy Mark8
+
+* 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=DjvEijz14co)
+
 # DVS
 
 ## IniLabs DAVIS240C
