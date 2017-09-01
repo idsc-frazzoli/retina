@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.lidar;
 
 public class LidarRotationEvent {
+  // TODO document
   public final int usec;
   public final int rotation;
 

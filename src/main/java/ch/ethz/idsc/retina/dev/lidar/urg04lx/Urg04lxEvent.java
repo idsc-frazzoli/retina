@@ -14,6 +14,7 @@ public class Urg04lxEvent {
     return new Urg04lxEvent(timestamp, range);
   }
 
+  @Deprecated // TODO implementation does not belong here
   public static Urg04lxEvent fromByteBuffer(ByteBuffer byteBuffer) {
     long timestamp = byteBuffer.getLong();
     short[] range = new short[Urg04lxDevice.POINTS];

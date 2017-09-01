@@ -9,9 +9,13 @@ import java.util.List;
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class LidarRotationProvider implements LidarRayDataListener {
+  /** init value 0 is mandatory for all sensors that transmit complete scan
+   * example: urg04lxug01 */
+  static final int ROTATIONAL_INIT = 0;
+  // ---
   private final List<LidarRotationEventListener> listeners = new LinkedList<>();
   private int usec;
-  private int rotational_last = -1;
+  private int rotational_last = ROTATIONAL_INIT;
 
   public void addListener(LidarRotationEventListener listener) {
     listeners.add(listener);
@@ -24,7 +28,7 @@ public class LidarRotationProvider implements LidarRayDataListener {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (rotational < rotational_last) {
+    if (rotational <= rotational_last) { // TODO changed from < to <= TEST! for use with URG04LX
       LidarRotationEvent lidarRotationEvent = new LidarRotationEvent(usec, rotational);
       listeners.forEach(listener -> listener.rotation(lidarRotationEvent));
     }

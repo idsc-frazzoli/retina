@@ -105,3 +105,10 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
 
 * `ch.ethz.idsc.tensor`
 * `ch.ethz.idsc.lcm-java`
+
+## References
+
+The library is used in the projects:
+* `owly3d`
+
+The repository has over `20` unit tests.

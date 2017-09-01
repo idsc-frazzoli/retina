@@ -62,6 +62,9 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
    * "the minimum return distance for the HDL-32E is approximately 1 meter.
    * ignore returns closer than this"
    * 
+   * however, we find that in office conditions correct ranges
+   * below 1 meter are provided
+   * 
    * @param closest in [m] */
   public void setLimitLo(double closest) {
     limit_lo = (int) (closest / TO_METER);

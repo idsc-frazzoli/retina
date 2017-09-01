@@ -16,6 +16,7 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   // TODO parts of the implementation are not generic
   private static final int MAX_COORDINATES = 2304 * 32; // == 221184
 
+  @Deprecated
   public static LidarAngularFiringCollector createDefault() {
     FloatBuffer floatBuffer = FloatBuffer.wrap(new float[MAX_COORDINATES * 3]); // 3 because of x y z
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_COORDINATES]);
@@ -40,7 +41,7 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   }
 
   @Override
-  public void rotation(LidarRotationEvent hdl32eRotationEvent) {
+  public void rotation(LidarRotationEvent lidarRotationEvent) {
     floatBuffer.flip();
     byteBuffer.flip();
     listeners.forEach(listener -> listener.digest(floatBuffer, byteBuffer));
@@ -51,8 +52,8 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   }
 
   @Override
-  public void spacial(LidarSpacialEvent hdl32eSpacialEvent) {
-    floatBuffer.put(hdl32eSpacialEvent.coords);
-    byteBuffer.put((byte) hdl32eSpacialEvent.intensity);
+  public void spacial(LidarSpacialEvent lidarSpacialEvent) {
+    floatBuffer.put(lidarSpacialEvent.coords);
+    byteBuffer.put((byte) lidarSpacialEvent.intensity);
   }
 }
