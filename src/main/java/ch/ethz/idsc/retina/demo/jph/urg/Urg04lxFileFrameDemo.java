@@ -4,15 +4,15 @@ package ch.ethz.idsc.retina.demo.jph.urg;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import ch.ethz.idsc.retina.dev.urg04lxug01.FileUrg04lxProvider;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxFrame;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxProvider;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxRealtimeListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxFileProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxProvider;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRealtimeListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.app.Urg04lxFrame;
 
 enum Urg04lxFileFrameDemo {
   ;
   public static void main(String[] args) throws Exception {
-    Urg04lxProvider urg04lxProvider = new FileUrg04lxProvider(Urg.LOG05.file);
+    Urg04lxProvider urg04lxProvider = new Urg04lxFileProvider(Urg.LOG05.file);
     // ---
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();
     urg04lxFrame.jFrame.addWindowListener(new WindowAdapter() {

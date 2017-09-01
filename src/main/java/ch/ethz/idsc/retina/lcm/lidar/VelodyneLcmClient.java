@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneModel;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
-import ch.ethz.idsc.retina.dev.velodyne.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -42,7 +42,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
   @Override
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
-    // if (hdl32eRayDecoder.hasListeners())
+    // if (velodyneDecoder.hasRayListeners())
     lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
@@ -56,7 +56,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
         }
       }
     });
-    // if (hdl32ePosDecoder.hasListeners())
+    // if (velodyneDecoder.hasPosListeners())
     lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
       @Override
       public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {

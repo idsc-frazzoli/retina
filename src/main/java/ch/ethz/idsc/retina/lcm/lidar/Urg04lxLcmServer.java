@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.lcm.lidar;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxDevice;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxEvent;
-import ch.ethz.idsc.retina.dev.urg04lxug01.Urg04lxEventListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
 /** encodes Urg04lxContainer to byte packet and publishes the packet via lcm */

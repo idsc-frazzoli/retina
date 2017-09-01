@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.velodyne.VelodyneStatics;
-import ch.ethz.idsc.retina.dev.velodyne.app.VelodyneUtils;
-import ch.ethz.idsc.retina.dev.velodyne.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
 import ch.ethz.idsc.retina.util.io.UniversalDatagramClient;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
