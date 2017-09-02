@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.lidar.mark8;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +25,20 @@ public class Mark8Decoder {
   }
 
   public void lasers(ByteBuffer byteBuffer) {
+    switch (byteBuffer.remaining()) {
+    case Mark8DeflateDigest.LENGTH:
+      lasersDeflated(byteBuffer);
+      break;
+    case Mark8Device.LENGTH:
+      lasersMark8(byteBuffer);
+      break;
+    default:
+      throw new RuntimeException("" + byteBuffer.remaining());
+    }
+  }
+
+  private void lasersMark8(ByteBuffer byteBuffer) {
+    byteBuffer.order(ByteOrder.BIG_ENDIAN);
     final int header = byteBuffer.getInt();
     final int length = byteBuffer.getInt();
     if (header != Mark8Device.HEADER || length != Mark8Device.LENGTH)
@@ -55,6 +70,27 @@ public class Mark8Decoder {
     byteBuffer.getInt(); // timestamp nanos
     byteBuffer.getShort(); // API version
     byteBuffer.getShort(); // status
+    if (byteBuffer.remaining() != 0)
+      throw new RuntimeException();
+  }
+
+  private void lasersDeflated(ByteBuffer byteBuffer) {
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    int timestamp_seconds = byteBuffer.getInt();
+    int timestamp_nanos = byteBuffer.getInt(); // 31 bit == 2147483648
+    int usec = timestamp_seconds * 1_000_000 + timestamp_nanos / 1000; // TODO
+    listeners.forEach(listener -> listener.timestamp(usec, (byte) 0));
+    // READ FIRING DATA [50]
+    for (int index = 0; index < FIRINGS; ++index) {
+      /** rotation [0, ..., 10399] */
+      final int rotational = byteBuffer.getShort();
+      final int position = byteBuffer.position();
+      listeners.forEach(listener -> {
+        byteBuffer.position(position);
+        listener.scan(rotational, byteBuffer);
+      });
+      byteBuffer.position(position + 48 + 24); // 24 * 4 + 24
+    }
     if (byteBuffer.remaining() != 0)
       throw new RuntimeException();
   }

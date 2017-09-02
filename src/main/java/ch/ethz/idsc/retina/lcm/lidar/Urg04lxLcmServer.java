@@ -7,6 +7,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxLiveProvider;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
 /** encodes Urg04lxContainer to byte packet and publishes the packet via lcm */
@@ -28,5 +29,15 @@ public class Urg04lxLcmServer implements Urg04lxEventListener {
     for (int count = 0; count < urg04lxEvent.range.length; ++count)
       byteBuffer.putShort(urg04lxEvent.range[count]);
     publisher.accept(packet, packet.length);
+  }
+
+  public static void launch(String lidarId) {
+    Urg04lxLcmServer urg04lxLcmServer = new Urg04lxLcmServer(lidarId);
+    Urg04lxLiveProvider.INSTANCE.addListener(urg04lxLcmServer);
+    Urg04lxLiveProvider.INSTANCE.start();
+  }
+
+  public static void main(String[] args) throws Exception {
+    launch("front");
   }
 }
