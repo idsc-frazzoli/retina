@@ -7,6 +7,8 @@ public enum Mark8Device {
   // ---
   public static final int HEADER = 0x75bd7e97;
   public static final int LENGTH = 6632;
+  // ---
+  public static final int FIRINGS = 50;
 
   // ---
   public static String channel(String lidarId) {

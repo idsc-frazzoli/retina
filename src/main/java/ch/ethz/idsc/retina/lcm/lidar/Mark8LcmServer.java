@@ -6,7 +6,9 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8DeflateDigest;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
+import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Digest;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
 /** publishes the incoming tcp data from the Quanergy Marc8 via lcm
@@ -14,14 +16,18 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
  * <p>if the sensor is the only client to the device, the sensor typically
  * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
+  public static final int DEFAULT_RETURNS = 1;
+  // ---
   private final String ip;
+  private final Mark8Digest mark8Digest;
   private boolean isLaunched = true;
   private final BinaryBlobPublisher publisher;
 
   /** @param ip for instance "192.168.1.3"
    * @param lidarId for example "top" */
-  public Mark8LcmServer(String ip, String lidarId) {
+  public Mark8LcmServer(String ip, Mark8Digest mark8Digest, String lidarId) {
     this.ip = ip;
+    this.mark8Digest = mark8Digest;
     publisher = new BinaryBlobPublisher(Mark8Device.channel(lidarId));
   }
 
@@ -29,8 +35,7 @@ public class Mark8LcmServer {
    * 
    * @throws Exception */
   public void start() throws Exception {
-    int data_length = Mark8Device.LENGTH;
-    byte[] data = new byte[Mark8Device.LENGTH];
+    final byte[] data = new byte[Mark8Device.LENGTH];
     try (Socket socket = new Socket(ip, Mark8Device.TCP_PORT)) {
       InputStream inputStream = socket.getInputStream();
       while (isLaunched)
@@ -46,7 +51,8 @@ public class Mark8LcmServer {
             if (header != Mark8Device.HEADER || length != Mark8Device.LENGTH)
               throw new RuntimeException("data corruption");
           }
-          publisher.accept(data, data_length);
+          byte[] packet = mark8Digest.digest(data);
+          publisher.accept(packet, packet.length);
         } else
           Thread.sleep(2);
     }
@@ -57,7 +63,9 @@ public class Mark8LcmServer {
   }
 
   public static void main(String[] args) throws Exception {
-    Mark8LcmServer mark8LcmServer = new Mark8LcmServer("192.168.1.3", "center");
+    final int returns = DEFAULT_RETURNS;
+    Mark8Digest mark8Digest = new Mark8DeflateDigest(returns);
+    Mark8LcmServer mark8LcmServer = new Mark8LcmServer("192.168.1.3", mark8Digest, "center");
     mark8LcmServer.start();
   }
 }

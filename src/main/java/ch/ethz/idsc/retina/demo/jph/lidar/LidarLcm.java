@@ -7,5 +7,5 @@ public enum LidarLcm {
   public static final String HDL32E_OFFICE1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-08-24.hdl32e";
   /** Quanergy Mark8 */
   public static final String MARK8_OFFICE1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-08-30.mark8";
-  public static final String MARK8_LAB1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-08-31.urg_mark8";
+  public static final String MARK8_LAB1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-09-01.01.mark8c";
 }

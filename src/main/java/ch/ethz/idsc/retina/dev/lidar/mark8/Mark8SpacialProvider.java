@@ -14,7 +14,9 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   private static final float[] IR = new float[8];
   private static final float[] IZ = new float[8];
   private static final double ANGLE_FACTOR = 2 * Math.PI / 10400.0;
-  private static final double TO_METER = 0.00001;
+  // private static final double TO_METER = 0.00001;
+  // private static final float TO_METER_FLOAT = (float) TO_METER;
+  private static final double TO_METER = 0.002;
   private static final float TO_METER_FLOAT = (float) TO_METER;
   /** ordering taken from p.33 */
   private static final int[] ORDERING = new int[] { 0, 4, 2, 6, 1, 5, 3, 7 };
@@ -26,6 +28,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
   private int usec;
   private final byte[] intensity = new byte[24];
+  private int returns;
 
   public Mark8SpacialProvider() {
     for (int laser = 0; laser < LASERS; ++laser) {
@@ -41,12 +44,37 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void timestamp(int usec, byte type) {
+  public void timestamp(int usec, int type) {
     this.usec = usec;
+    returns = type;
   }
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
+    final double angle = rotational * ANGLE_FACTOR;
+    float dx = (float) Math.cos(angle);
+    float dy = (float) Math.sin(angle);
+    float[] coords = new float[3];
+    // apparently the correct nesting of loops (test more)
+    for (int layer = 0; layer < returns; ++layer) {
+      for (int laser = 0; laser < 8; ++laser) {
+        // 0 indicates an invalid point
+        int distance = byteBuffer.getShort() & 0xffff;
+        int intensity = byteBuffer.get() & 0xff;
+        if (distance != 0) {
+          float range = distance * TO_METER_FLOAT; // convert to [m]
+          coords[0] = IR[laser] * range * dx;
+          coords[1] = IR[laser] * range * dy;
+          coords[2] = IZ[laser] * range;
+          LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
+          listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+        }
+      }
+    }
+  }
+
+  // @Override
+  void scan_former(int rotational, ByteBuffer byteBuffer) {
     final double angle = rotational * ANGLE_FACTOR;
     float dx = (float) Math.cos(angle);
     float dy = (float) Math.sin(angle);
@@ -66,7 +94,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
           coords[0] = IR[laser] * range * dx;
           coords[1] = IR[laser] * range * dy;
           coords[2] = IZ[laser] * range;
-          LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity[index]);
+          LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity[index] & 0xff);
           listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
         }
         ++index;

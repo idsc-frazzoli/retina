@@ -18,8 +18,12 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
 
   @Deprecated
   public static LidarAngularFiringCollector createDefault() {
-    FloatBuffer floatBuffer = FloatBuffer.wrap(new float[MAX_COORDINATES * 3]); // 3 because of x y z
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_COORDINATES]);
+    return create(MAX_COORDINATES);
+  }
+
+  public static LidarAngularFiringCollector create(int max) {
+    FloatBuffer floatBuffer = FloatBuffer.wrap(new float[max * 3]); // 3 because of x y z
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[max]);
     return new LidarAngularFiringCollector(floatBuffer, byteBuffer);
   }
 
