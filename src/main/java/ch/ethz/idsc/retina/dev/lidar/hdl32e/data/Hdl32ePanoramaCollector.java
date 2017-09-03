@@ -66,7 +66,7 @@ public class Hdl32ePanoramaCollector implements LidarRayDataListener {
   }
 
   @Override
-  public void timestamp(int usec, byte type) {
+  public void timestamp(int usec, int type) {
     // ---
   }
 }

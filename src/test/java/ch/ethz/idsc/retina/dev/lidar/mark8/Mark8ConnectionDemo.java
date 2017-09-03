@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 /** the quanergy server buffers up to 300 kB of data */
 enum Mark8ConnectionDemo {
   ;
+  @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception {
     try (Socket socket = new Socket("192.168.1.3", 4141)) {
       InputStream inputStream = socket.getInputStream();

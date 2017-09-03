@@ -63,7 +63,8 @@ public class Mark8LcmServer {
   public static void main(String[] args) throws Exception {
     Mark8Digest mark8Digest;
     // mark8Digest = Mark8IdentityDigest.INSTANCE;
-    mark8Digest = new Mark8DeflateDigest();
+    final int returns = 1;
+    mark8Digest = new Mark8DeflateDigest(returns);
     Mark8LcmServer mark8LcmServer = new Mark8LcmServer("192.168.1.3", mark8Digest, "center");
     mark8LcmServer.start();
   }

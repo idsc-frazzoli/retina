@@ -48,7 +48,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void timestamp(int usec, byte type) {
+  public void timestamp(int usec, int type) {
     // ---
   }
 

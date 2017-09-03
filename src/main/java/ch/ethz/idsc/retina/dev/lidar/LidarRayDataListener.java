@@ -7,8 +7,8 @@ public interface LidarRayDataListener {
   /** function is invoked with parameters that refer to previous sequence of laser data
    * 
    * @param usec microseconds from the top of the hour to the first laser firing in the packet
-   * @param type */
-  void timestamp(int usec, byte type);
+   * @param type device dependent */
+  void timestamp(int usec, int type);
 
   /** implementations can read LASERS * 3 bytes from byteBuffer:
    * 

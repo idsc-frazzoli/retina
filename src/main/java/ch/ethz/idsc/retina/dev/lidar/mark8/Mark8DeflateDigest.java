@@ -7,9 +7,18 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Mark8DeflateDigest implements Mark8Digest {
-  public static final int LENGTH = 3708;
+  private static final int ENCODING_MAX = 65535; // 65535
   private static final int FIRING_SIZE = 132;
-  private final byte[] array = new byte[LENGTH]; // TODO
+  private boolean notify = true;
+  private final byte[] array;
+  private final byte[] intensity;
+
+  /** @param returns 1, 2, or 3 */
+  public Mark8DeflateDigest(int returns) {
+    GlobalAssert.that(0 < returns && returns <= 3);
+    intensity = new byte[8 * returns];
+    array = new byte[8 + Mark8Device.FIRINGS * (2 + 3 * intensity.length)];
+  }
 
   @Override
   public byte[] digest(byte[] data) {
@@ -17,33 +26,33 @@ public class Mark8DeflateDigest implements Mark8Digest {
     src.order(ByteOrder.BIG_ENDIAN); // mark8
     ByteBuffer dst = ByteBuffer.wrap(array);
     dst.order(ByteOrder.LITTLE_ENDIAN); // retina standard
-    // header
-    // dst.putShort(Mark8Device.DEFLAT);
     // timestamp
     src.position(8); // drop: header and length
     dst.putInt(src.getInt()); // sec
     dst.putInt(src.getInt()); // nano sec
     // firing data
-    byte[] intensity = new byte[24];
-    for (int count = 0; count < 50; ++count) {
-      int offset = 20 + count * FIRING_SIZE;
+    for (int count = 0; count < Mark8Device.FIRINGS; ++count) {
+      int offset = 20 + count * FIRING_SIZE; // TODO multiplication not necessary
       src.position(offset + 100);
       src.get(intensity);
       src.position(offset);
       dst.putShort(src.getShort()); // rotational
       src.getShort(); // drop: reserved
-      for (int laser = 0; laser < 24; ++laser) {
+      for (int laser = 0; laser < intensity.length; ++laser) {
         int dist = src.getInt();
         dist /= 200; // 100000 to 500
-        if (65535 < dist) {
-          System.out.println("distenc=" + dist);
+        if (ENCODING_MAX < dist) {
+          dist = 0;
+          if (notify) {
+            System.err.println("distance encoding fail=" + dist);
+            notify = false;
+          }
         }
-        // TODO assert that fits into 16 bit otherwise 0
         dst.putShort((short) dist);
         dst.put(intensity[laser]);
       }
     }
-    src.position(20 + 50 * 132); // drop: header and length
+    src.position(20 + Mark8Device.FIRINGS * FIRING_SIZE); // drop: header and length
     src.getInt(); // sec
     src.getInt(); // nano sec
     src.getInt();

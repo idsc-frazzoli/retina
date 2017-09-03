@@ -71,7 +71,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void timestamp(int usec, byte type) {
+  public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
