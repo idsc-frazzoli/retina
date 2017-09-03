@@ -47,15 +47,16 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
     listeners.add(lidarSpacialEventListener);
   }
 
+  private int usec;
+
   @Override
   public void timestamp(int usec, int type) {
-    // ---
+    this.usec = usec;
   }
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     // for the urg04lxug01 sensor the rotational parameter is irrelevant
-    long usec = byteBuffer.getLong(); // discard timestamp
     float[] coords = new float[3];
     for (int index = 0; index < Urg04lxDevice.POINTS; ++index) {
       int distance = byteBuffer.getShort() & 0xffff;
@@ -63,7 +64,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
       float dist_m = distance * TO_METER_FLOAT;
       coords[0] = DIRX[index] * dist_m;
       coords[1] = DIRY[index] * dist_m;
-      LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent((int) usec, coords, 0xff);
+      LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 0xff);
       listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
     }
   }

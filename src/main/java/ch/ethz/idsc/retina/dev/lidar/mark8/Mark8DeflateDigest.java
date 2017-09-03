@@ -42,11 +42,11 @@ public class Mark8DeflateDigest implements Mark8Digest {
         int dist = src.getInt();
         dist /= 200; // 100000 to 500
         if (ENCODING_MAX < dist) {
-          dist = 0;
           if (notify) {
             System.err.println("distance encoding fail=" + dist);
             notify = false;
           }
+          dist = 0;
         }
         dst.putShort((short) dist);
         dst.put(intensity[laser]);

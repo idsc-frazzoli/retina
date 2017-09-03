@@ -11,7 +11,7 @@ enum Urg04lxViewerLcmClient {
     Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
     Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient(urg04lxDecoder, "front");
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();
-    urg04lxDecoder.addListener(urg04lxFrame);
+    // urg04lxDecoder.addListener(urg04lxFrame); // FIXME
     urg04lxLcmClient.startSubscriptions();
   }
 }

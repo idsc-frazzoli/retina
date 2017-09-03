@@ -17,11 +17,12 @@ public class Urg04lxDecoder {
   }
 
   public void lasers(ByteBuffer byteBuffer) {
-    long timestamp = byteBuffer.getLong();
-    listeners.forEach(listeners -> listeners.timestamp((int) timestamp, (byte) 0));
+    byteBuffer.getShort(); // header
+    long timestamp = byteBuffer.getLong(); // 8 byte
+    listeners.forEach(listeners -> listeners.timestamp((int) timestamp, 0));
     // ---
     listeners.forEach(listeners -> {
-      byteBuffer.position(0);
+      byteBuffer.position(2 + 8);
       listeners.scan(ROTATION, byteBuffer);
     });
   }

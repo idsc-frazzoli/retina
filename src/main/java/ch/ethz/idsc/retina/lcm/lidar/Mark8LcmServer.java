@@ -16,6 +16,8 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
  * <p>if the sensor is the only client to the device, the sensor typically
  * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
+  public static final int DEFAULT_RETURNS = 1;
+  // ---
   private final String ip;
   private final Mark8Digest mark8Digest;
   private boolean isLaunched = true;
@@ -61,10 +63,8 @@ public class Mark8LcmServer {
   }
 
   public static void main(String[] args) throws Exception {
-    Mark8Digest mark8Digest;
-    // mark8Digest = Mark8IdentityDigest.INSTANCE;
-    final int returns = 1;
-    mark8Digest = new Mark8DeflateDigest(returns);
+    final int returns = DEFAULT_RETURNS;
+    Mark8Digest mark8Digest = new Mark8DeflateDigest(returns);
     Mark8LcmServer mark8LcmServer = new Mark8LcmServer("192.168.1.3", mark8Digest, "center");
     mark8LcmServer.start();
   }

@@ -12,6 +12,7 @@ public enum Urg04lxDevice {
   public static final int FOV_HI = +120;
 
   public static String channel(String lidarId) {
+    // the name "rng" indicates that only 2d, i.e. range data is available
     return "urg04lx." + lidarId + ".rng";
   }
 }
