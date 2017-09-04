@@ -28,7 +28,7 @@ public class LidarRotationProvider implements LidarRayDataListener {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (rotational <= rotational_last) { // TODO changed from < to <= TEST! for use with URG04LX
+    if (rotational <= rotational_last) {
       LidarRotationEvent lidarRotationEvent = new LidarRotationEvent(usec, rotational);
       listeners.forEach(listener -> listener.rotation(lidarRotationEvent));
     }

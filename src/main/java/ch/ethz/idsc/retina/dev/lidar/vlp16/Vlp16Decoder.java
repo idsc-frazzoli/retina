@@ -25,6 +25,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
     posListeners.add(listener);
   }
 
+  @Override
   public boolean hasPosListeners() {
     return !posListeners.isEmpty();
   }
@@ -37,6 +38,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
     rayListeners.add(listener);
   }
 
+  @Override
   public boolean hasRayListeners() {
     return !rayListeners.isEmpty();
   }

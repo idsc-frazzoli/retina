@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
+import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaListener;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePcapPacketListener;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanorama;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaListener;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePanoramaProvider;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
@@ -22,9 +22,9 @@ enum Hdl32ePacketConsumerDemo {
         System.out.println("here");
       }
     };
-    Hdl32ePanoramaListener hdl32ePanoramaListener = new Hdl32ePanoramaListener() {
+    LidarPanoramaListener hdl32ePanoramaListener = new LidarPanoramaListener() {
       @Override
-      public void panorama(Hdl32ePanorama hdl32ePanorama) {
+      public void panorama(LidarPanorama hdl32ePanorama) {
         // System.out.println("here");
       }
 
@@ -33,7 +33,7 @@ enum Hdl32ePacketConsumerDemo {
         // ---
       }
     };
-    Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
+    Hdl32ePanoramaProvider hdl32ePanoramaCollector = new Hdl32ePanoramaProvider();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);
     VelodynePcapPacketListener velodynePcapPacketDecoder = VelodynePcapPacketListener.hdl32e();
     velodynePcapPacketDecoder.velodyneDecoder.addRayListener(hdl32ePanoramaCollector);

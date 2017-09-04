@@ -7,8 +7,6 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
@@ -20,20 +18,11 @@ import lcm.lcm.LCMSubscriber;
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class VelodyneLcmClient implements LcmClientInterface {
-  public static VelodyneLcmClient hdl32e(String lidarId) {
-    return new VelodyneLcmClient(VelodyneModel.HDL32E, new Hdl32eDecoder(), lidarId);
-  }
-
-  public static VelodyneLcmClient vlp16(String lidarId) {
-    return new VelodyneLcmClient(VelodyneModel.VLP16, new Vlp16Decoder(), lidarId);
-  }
-
-  // ---
   private final VelodyneModel velodyneModel;
-  public final VelodyneDecoder velodyneDecoder;
+  private final VelodyneDecoder velodyneDecoder;
   private final String lidarId;
 
-  private VelodyneLcmClient(VelodyneModel velodyneModel, VelodyneDecoder velodyneDecoder, String lidarId) {
+  public VelodyneLcmClient(VelodyneModel velodyneModel, VelodyneDecoder velodyneDecoder, String lidarId) {
     this.velodyneModel = velodyneModel;
     this.velodyneDecoder = velodyneDecoder;
     this.lidarId = lidarId;
@@ -42,33 +31,33 @@ public class VelodyneLcmClient implements LcmClientInterface {
   @Override
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
-    // if (velodyneDecoder.hasRayListeners())
-    lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob binaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          velodyneDecoder.lasers(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+    if (velodyneDecoder.hasRayListeners())
+      lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            velodyneDecoder.lasers(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
-    // if (velodyneDecoder.hasPosListeners())
-    lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
-      @Override
-      public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-        try {
-          BinaryBlob binaryBlob = new BinaryBlob(ins);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          velodyneDecoder.positioning(byteBuffer);
-        } catch (IOException exception) {
-          exception.printStackTrace();
+      });
+    if (velodyneDecoder.hasPosListeners())
+      lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            velodyneDecoder.positioning(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
         }
-      }
-    });
+      });
   }
 }

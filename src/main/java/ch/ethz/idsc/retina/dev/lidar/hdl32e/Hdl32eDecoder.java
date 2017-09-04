@@ -28,10 +28,12 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     rayListeners.add(listener);
   }
 
+  @Override
   public boolean hasPosListeners() {
     return !posListeners.isEmpty();
   }
 
+  @Override
   public boolean hasRayListeners() {
     return !rayListeners.isEmpty();
   }

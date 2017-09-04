@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity
  * 
@@ -17,8 +18,6 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private static final float[] IR = new float[32];
   private static final float[] IZ = new float[32];
   private static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
-  private static final double TO_METER = 0.002;
-  private static final float TO_METER_FLOAT = (float) TO_METER;
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
@@ -67,7 +66,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
    * 
    * @param closest in [m] */
   public void setLimitLo(double closest) {
-    limit_lo = (int) (closest / TO_METER);
+    limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }
 
   @Override
@@ -87,7 +86,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
       int intensity = byteBuffer.get() & 0xff;
       if (limit_lo <= distance) {
         // "report distance to the nearest 0.2 cm" => 2 mm
-        float range = distance * TO_METER_FLOAT; // convert to [m]
+        float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
         coords[0] = IR[laser] * range * dx;
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;

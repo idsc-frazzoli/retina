@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayDataProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationEventListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
@@ -15,11 +16,17 @@ import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
 /** Packet description taken from
  * M8 Sensor User Guide, QPN 96-00001 Rev H
  * p.32 */
-public class Mark8Decoder {
+public class Mark8Decoder implements LidarRayDataProvider {
   private final List<LidarRayDataListener> listeners = new LinkedList<>();
 
+  @Override
   public void addRayListener(LidarRayDataListener lidarRayDataListener) {
     listeners.add(lidarRayDataListener);
+  }
+
+  @Override
+  public boolean hasRayListeners() {
+    return !listeners.isEmpty();
   }
 
   public void lasers(ByteBuffer byteBuffer) {

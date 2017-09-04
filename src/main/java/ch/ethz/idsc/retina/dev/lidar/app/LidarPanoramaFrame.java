@@ -1,9 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.hdl32e.data;
+package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -19,11 +20,11 @@ import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, VelodynePosEventListener {
+public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosEventListener {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
-  private Hdl32ePanorama hdl32ePanorama;
+  private LidarPanorama lidarPanorama;
   private Hdl32ePosEvent hdl32ePosEvent;
   private final IntervalClock intervalClock = new IntervalClock();
   JComponent jComponent = new JComponent() {
@@ -33,11 +34,13 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, VelodynePosE
       final int height = 32 * SCALE_Y;
       List<String> list = new LinkedList<>();
       {
-        Hdl32ePanorama hdl32ePanoramaRef = hdl32ePanorama;
-        if (Objects.nonNull(hdl32ePanoramaRef)) {
-          list.add("width=" + hdl32ePanoramaRef.getWidth());
-          graphics.drawImage(hdl32ePanoramaRef.distances(), 0, 0, Hdl32ePanorama.MAX_WIDTH, height, jFrame);
-          graphics.drawImage(hdl32ePanoramaRef.intensity(), 0, 16 + height, Hdl32ePanorama.MAX_WIDTH, height, jFrame);
+        LidarPanorama lidarPanoramaRef = lidarPanorama;
+        if (Objects.nonNull(lidarPanoramaRef)) {
+          list.add("width=" + lidarPanoramaRef.getWidth());
+          BufferedImage bufferedImage = lidarPanoramaRef.distances();
+          final int width = bufferedImage.getWidth();
+          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, jFrame);
+          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, jFrame);
         }
       }
       {
@@ -63,7 +66,7 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, VelodynePosE
     }
   }
 
-  public Hdl32ePanoramaFrame() {
+  public LidarPanoramaFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 1700, 300);
     jFrame.setContentPane(jComponent);
@@ -71,8 +74,8 @@ public class Hdl32ePanoramaFrame implements Hdl32ePanoramaListener, VelodynePosE
   }
 
   @Override
-  public void panorama(Hdl32ePanorama hdl32ePanorama) {
-    this.hdl32ePanorama = hdl32ePanorama;
+  public void panorama(LidarPanorama lidarPanorama) {
+    this.lidarPanorama = lidarPanorama;
     jComponent.repaint();
   }
 

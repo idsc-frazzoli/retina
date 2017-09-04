@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.lcm.lidar;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
@@ -18,7 +17,7 @@ import lcm.lcm.LCMSubscriber;
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
-  public final Mark8Decoder mark8Decoder;
+  private final Mark8Decoder mark8Decoder;
   private final String lidarId;
 
   public Mark8LcmClient(Mark8Decoder mark8Decoder, String lidarId) {
@@ -28,7 +27,8 @@ public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
 
   @Override
   public void startSubscriptions() {
-    LCM.getSingleton().subscribe(Mark8Device.channel(lidarId), this);
+    if (mark8Decoder.hasRayListeners())
+      LCM.getSingleton().subscribe(Mark8Device.channel(lidarId), this);
   }
 
   @Override
@@ -36,7 +36,6 @@ public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
     try {
       BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
       ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-      byteBuffer.order(ByteOrder.BIG_ENDIAN); // native encoding of mark8 sensor is big endian
       mark8Decoder.lasers(byteBuffer);
     } catch (IOException exception) {
       exception.printStackTrace();
