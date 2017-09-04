@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.lidar.app;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayDataProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
@@ -10,6 +11,15 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 
 public enum VelodyneUtils {
   ;
+  public static void panorama(LidarRayDataProvider lidarRayDataProvider, LidarPanoramaProvider lidarPanoramaProvider) {
+    LidarPanoramaFrame lidarPanoramaFrame = new LidarPanoramaFrame();
+    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
+    lidarRotationProvider.addListener(lidarPanoramaProvider);
+    lidarPanoramaProvider.addListener(lidarPanoramaFrame);
+    lidarRayDataProvider.addRayListener(lidarRotationProvider);
+    lidarRayDataProvider.addRayListener(lidarPanoramaProvider);
+  }
+
   public static VelodyneRayFrame createRayFrame( //
       LidarAngularFiringCollector lidarAngularFiringCollector, VelodyneDecoder velodyneDecoder) {
     VelodyneRayFrame velodyneFiringFrame = new VelodyneRayFrame();

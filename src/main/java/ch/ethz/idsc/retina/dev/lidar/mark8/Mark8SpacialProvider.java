@@ -18,8 +18,6 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   // private static final float TO_METER_FLOAT = (float) TO_METER;
   private static final double TO_METER = 0.002;
   private static final float TO_METER_FLOAT = (float) TO_METER;
-  /** ordering taken from p.33 */
-  private static final int[] ORDERING = new int[] { 0, 4, 2, 6, 1, 5, 3, 7 };
   /** angles taken from p.33 */
   // TODO the values state in the data sheet are not evenly spaced... need confirmation through experiments
   private static final double[] M8_VERTICAL_ANGLES = { //
@@ -32,7 +30,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
 
   public Mark8SpacialProvider() {
     for (int laser = 0; laser < LASERS; ++laser) {
-      double theta = M8_VERTICAL_ANGLES[ORDERING[laser]];
+      double theta = M8_VERTICAL_ANGLES[laser];
       IR[laser] = (float) Math.cos(theta);
       IZ[laser] = (float) Math.sin(theta);
     }

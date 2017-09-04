@@ -53,7 +53,7 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
   }
 
   @Override
-  public LidarPanorama supply() {
+  protected LidarPanorama supply() {
     return new LidarGrayscalePanorama(MAX_WIDTH, Hdl32eDevice.LASERS);
   }
 }

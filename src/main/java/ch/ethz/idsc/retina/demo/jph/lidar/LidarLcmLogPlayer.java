@@ -11,7 +11,7 @@ enum LidarLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = LidarLcm.VLP16_OFFICE2;
+    cfg.logFile = LidarLcm.HDL32E_OFFICE1;
     cfg.speed = RationalScalar.of(1, 8);
     LogPlayer.create(cfg);
   }

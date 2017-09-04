@@ -1,9 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaFrame;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePanoramaProvider;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 
@@ -14,12 +13,7 @@ enum Hdl32eLcmPanoramaDemo {
     VelodyneLcmClient velodyneLcmClient = VelodyneLcmClient.hdl32e("center");
     LidarPanoramaProvider lidarPanoramaProvider = new Hdl32ePanoramaProvider();
     // ---
-    LidarPanoramaFrame lidarPanoramaFrame = new LidarPanoramaFrame();
-    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-    lidarRotationProvider.addListener(lidarPanoramaProvider);
-    lidarPanoramaProvider.addListener(lidarPanoramaFrame);
-    velodyneLcmClient.velodyneDecoder.addRayListener(lidarRotationProvider);
-    velodyneLcmClient.velodyneDecoder.addRayListener(lidarPanoramaProvider);
+    VelodyneUtils.panorama(velodyneLcmClient.velodyneDecoder, lidarPanoramaProvider);
     velodyneLcmClient.startSubscriptions();
   }
 }

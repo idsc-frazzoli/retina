@@ -18,7 +18,7 @@ import lcm.lcm.LCMSubscriber;
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
-  public final Mark8Decoder mark8Decoder;
+  private final Mark8Decoder mark8Decoder;
   private final String lidarId;
 
   public Mark8LcmClient(Mark8Decoder mark8Decoder, String lidarId) {

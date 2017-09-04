@@ -31,5 +31,5 @@ public abstract class LidarPanoramaProvider implements LidarRayDataListener, Lid
     lidarPanorama = supply();
   }
 
-  public abstract LidarPanorama supply();
+  protected abstract LidarPanorama supply();
 }
