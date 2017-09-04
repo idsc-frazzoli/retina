@@ -16,7 +16,6 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -34,7 +33,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 public class Urg04lxRender {
-  private static final double MILLIMETER_TO_METER = 0.001;
   /** points closer than 2[cm] == 0.02[m] are discarded */
   public static final Scalar THRESHOLD = RealScalar.of(0.02); // [m]
   public static final Scalar RAMERDOUGLASPEUKER = RealScalar.of(0.05); // 5[cm] == 0.05[m]
@@ -153,10 +151,7 @@ public class Urg04lxRender {
     if (urg04lxEvent.timestamp < timestamp)
       System.err.println("decreasing urg timestamp");
     timestamp = urg04lxEvent.timestamp;
-    Tensor range = Tensors.empty();
-    for (int count = 0; count < urg04lxEvent.range.length; ++count)
-      range.append(DoubleScalar.of(urg04lxEvent.range[count] * MILLIMETER_TO_METER));
-    _range = range;
+    _range = Tensors.vectorDouble(urg04lxEvent.range);
   }
 
   public void setZoom(int zoom) {
