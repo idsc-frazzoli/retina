@@ -6,15 +6,14 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePanoramaCollector;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaCollector;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.data.Hdl32ePanoramaFrame;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 
 public enum VelodyneUtils {
   ;
-  public static Hdl32ePanoramaFrame createPanoramaDisplay(Hdl32eDecoder hdl32eRayDecoder) {
-    Hdl32ePanoramaFrame hdl32ePanoramaFrame = new Hdl32ePanoramaFrame();
+  public static LidarPanoramaFrame createPanoramaDisplay(Hdl32eDecoder hdl32eRayDecoder) {
+    LidarPanoramaFrame hdl32ePanoramaFrame = new LidarPanoramaFrame();
     Hdl32ePanoramaCollector hdl32ePanoramaCollector = new Hdl32ePanoramaCollector();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
     hdl32eRayDecoder.addRayListener(hdl32ePanoramaCollector);
