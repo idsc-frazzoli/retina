@@ -10,4 +10,6 @@ public interface VelodyneDecoder extends LidarRayDataProvider {
   void lasers(ByteBuffer byteBuffer);
 
   void addPosListener(VelodynePosEventListener listener);
+
+  boolean hasPosListeners();
 }

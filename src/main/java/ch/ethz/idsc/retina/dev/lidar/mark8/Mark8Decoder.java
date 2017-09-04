@@ -24,6 +24,11 @@ public class Mark8Decoder implements LidarRayDataProvider {
     listeners.add(lidarRayDataListener);
   }
 
+  @Override
+  public boolean hasRayListeners() {
+    return !listeners.isEmpty();
+  }
+
   public void lasers(ByteBuffer byteBuffer) {
     switch (byteBuffer.remaining()) {
     case 1308:
