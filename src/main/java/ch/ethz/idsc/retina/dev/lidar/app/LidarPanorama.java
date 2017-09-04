@@ -8,7 +8,8 @@ import ch.ethz.idsc.tensor.Scalar;
 public interface LidarPanorama {
   int getWidth();
 
-  void setAngle(Scalar scalar);
+  // TODO is this function really needed?
+  void setAngle(Scalar scalar); // probably should work with basic type
 
   /** in the outdoors the values for distance typically range from [0, ..., ~52592]
    * 1 bit represents a 2 mm increments, i.e.
