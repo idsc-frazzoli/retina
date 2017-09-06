@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.urg;
+package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDecoder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventProvider;
