@@ -13,6 +13,6 @@ public enum Urg04lxDevice {
 
   public static String channel(String lidarId) {
     // the name "rng" indicates that only 2d, i.e. range data is available
-    return "urg04lx." + lidarId + ".rng";
+    return "urg04lx." + lidarId + ".ray";
   }
 }

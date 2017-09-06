@@ -13,7 +13,7 @@ enum DavisLcmLogViewer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = DavisRecordings.OFFICE;
+    cfg.logFile = DavisRecordings.ETH4;
     cfg.speed = RationalScalar.of(1, 4);
     LogPlayer.create(cfg);
     DavisLcmViewer.createStandlone(DavisSerial.FX2_02460045.name(), 25_000);
