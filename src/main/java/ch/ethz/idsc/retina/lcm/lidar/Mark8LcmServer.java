@@ -62,6 +62,7 @@ public class Mark8LcmServer {
     isLaunched = false;
   }
 
+  // TODO remove once this works as module
   public static void main(String[] args) throws Exception {
     final int returns = DEFAULT_RETURNS;
     Mark8Digest mark8Digest = new Mark8DeflateDigest(returns);
