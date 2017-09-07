@@ -10,11 +10,17 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
+/** the images are exported with timestamp of the first column,
+ * i.e. the earliest available timestamp.
+ * 
+ * this is consistent with the logs provided by the Robotics and Perception Group
+ * as verified by inspection, see http://rpg.ifi.uzh.ch/ */
 public class DavisPngImageWriter implements ColumnTimedImageListener, AutoCloseable {
+  private static final String EXTENSION = "png";
+  // ---
   private final File directory;
   private final DavisExportControl davisExportControl;
-  private final BufferedWriter bufferedWriterBeg;
-  private final BufferedWriter bufferedWriterEnd;
+  private final BufferedWriter bufferedWriter;
   private int count = 0;
 
   /** @param directory base
@@ -24,28 +30,20 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
     this.davisExportControl = davisExportControl;
     File images = new File(directory, "images");
     images.mkdir();
-    bufferedWriterBeg = new BufferedWriter(new FileWriter(new File(directory, "images_begin.txt")));
-    bufferedWriterEnd = new BufferedWriter(new FileWriter(new File(directory, "images.txt")));
+    bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "images.txt")));
   }
 
   @Override
   public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (davisExportControl.isActive()) {
       try {
-        final String string = String.format("images/frame_%08d.png", count);
+        final String string = String.format("images/frame_%08d.%s", count, EXTENSION);
         File file = new File(directory, string);
-        ImageIO.write(bufferedImage, "png", file);
+        ImageIO.write(bufferedImage, EXTENSION, file);
         // ---
-        {
-          int selected = time[0];
-          final double stamp = davisExportControl.mapTime(selected) * 1e-6;
-          bufferedWriterBeg.write(String.format("%.6f %s\n", stamp, string));
-        }
-        {
-          int selected = time[time.length - 1];
-          final double stamp = davisExportControl.mapTime(selected) * 1e-6;
-          bufferedWriterEnd.write(String.format("%.6f %s\n", stamp, string));
-        }
+        final int selected = time[0];
+        final double stamp = davisExportControl.mapTime(selected) * 1e-6;
+        bufferedWriter.write(String.format("%.6f %s\n", stamp, string));
       } catch (Exception exception) {
         exception.printStackTrace();
       }
@@ -57,7 +55,6 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
 
   @Override
   public void close() throws Exception {
-    bufferedWriterBeg.close();
-    bufferedWriterEnd.close();
+    bufferedWriter.close();
   }
 }
