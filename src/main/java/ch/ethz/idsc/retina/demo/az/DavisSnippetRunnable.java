@@ -55,6 +55,9 @@ public abstract class DavisSnippetRunnable implements Runnable {
       DavisPngImageWriter davisPngImageWriter = new DavisPngImageWriter(directory, fitec);
       davisLcmClient.davisSigDatagramDecoder.addListener(davisPngImageWriter);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
+      // ---
+      // ResetDavisApsCorrection resetDavisApsCorrection = new ResetDavisApsCorrection();
+      // davisLcmClient.davisRstDatagramDecoder.addListener(resetDavisApsCorrection);
       Log log = new Log(file.toString() + ".00", "r"); // TODO not generic
       Set<String> set = new HashSet<>();
       try {

@@ -19,13 +19,11 @@ public class DavisApsColumnCompiler implements DavisApsEventListener {
   static final int LAST_Y = 179;
   static final int LENGTH = 4 + 180;
   // ---
-  final byte[] data;
-  final ByteBuffer byteBuffer;
+  private final byte[] data = new byte[LENGTH];
+  private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
   final DavisApsColumnListener davisApsColumnListener;
 
   public DavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener) {
-    data = new byte[LENGTH];
-    byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(DavisStatics.BYTE_ORDER);
     this.davisApsColumnListener = davisApsColumnListener;
   }

@@ -55,8 +55,7 @@ public class DavisLcmServer {
       DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
       DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
       davisApsBlockCollector.setListener(davisApsBlockListener);
-      DavisApsColumnCompiler davisApsColumnCompiler =
-          // new RawDavisApsColumnCompiler(davisApsBlockCollector);
+      DavisApsEventListener davisApsColumnCompiler =
           new CorrectedDavisApsColumnCompiler(davisApsBlockCollector, resetDavisApsCorrection);
       davisDecoder.addSigListener(davisApsColumnCompiler);
     }

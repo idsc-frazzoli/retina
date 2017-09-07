@@ -4,8 +4,11 @@ package ch.ethz.idsc.retina.dev.davis._240c;
 import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 
 public class DavisApsEvent implements DavisEvent {
+  /** time from the chip hardware */
   public final int time;
+  /** x ranges from [0, 1, ..., 239] */
   public final int x;
+  /** y ranges from [0, 1, ..., 179] */
   public final int y;
   /** adc ranges typically in the interval [0, ..., 1023]
    * where 0 encodes dark, and 1023 brightest */
