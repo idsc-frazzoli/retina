@@ -2,8 +2,10 @@
 package ch.ethz.idsc.retina.lcm.davis;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
@@ -11,6 +13,7 @@ public class DavisDvsBlockPublisher implements DavisDvsBlockListener {
   /** @param cameraId
    * @return dvs channel name for given serial number of davis camera */
   public static String channel(String cameraId) {
+    GlobalAssert.that(Objects.nonNull(cameraId));
     return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + ".dvs";
   }
 

@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.io;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -13,7 +14,7 @@ public class DavisEventsTextWriter implements DavisDvsEventListener, AutoCloseab
   private final BufferedWriter bufferedWriter;
   private final DavisExportControl davisExportControl;
 
-  public DavisEventsTextWriter(File directory, DavisExportControl davisExportControl) throws Exception {
+  public DavisEventsTextWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "events.txt")));
     this.davisExportControl = davisExportControl;
   }
@@ -34,7 +35,7 @@ public class DavisEventsTextWriter implements DavisDvsEventListener, AutoCloseab
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() throws IOException {
     bufferedWriter.close();
   }
 }

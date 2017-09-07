@@ -5,10 +5,12 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** the images are exported with timestamp of the first column,
  * i.e. the earliest available timestamp.
@@ -23,13 +25,14 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   private final BufferedWriter bufferedWriter;
   private int count = 0;
 
-  /** @param directory base
-   * @throws Exception */
-  public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws Exception {
+  /** @param directory base in which a sub directory "images" is created
+   * @throws IOException */
+  public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     this.directory = directory;
     this.davisExportControl = davisExportControl;
     File images = new File(directory, "images");
     images.mkdir();
+    GlobalAssert.that(images.isDirectory());
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "images.txt")));
   }
 
@@ -54,7 +57,7 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() throws IOException {
     bufferedWriter.close();
   }
 }

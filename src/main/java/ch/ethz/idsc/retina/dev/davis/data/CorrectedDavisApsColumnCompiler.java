@@ -15,7 +15,8 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
 public class CorrectedDavisApsColumnCompiler extends DavisApsColumnCompiler {
   private final DavisApsCorrection davisApsCorrection;
 
-  public CorrectedDavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
+  public CorrectedDavisApsColumnCompiler( //
+      DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
     super(davisApsColumnListener);
     this.davisApsCorrection = davisApsCorrection;
   }

@@ -24,7 +24,7 @@ enum DavisDvsIntervalDistribution {
     LogPlayer lp = LogPlayer.create(cfg);
     DavisLcmClient davisLcmClient = new DavisLcmClient(DavisSerial.FX2_02460045.name());
     DavisDvsIntervalTracker davisDvsIntervalTracker = new DavisDvsIntervalTracker();
-    davisLcmClient.davisDvsDatagramDecoder.addListener(davisDvsIntervalTracker);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisDvsIntervalTracker);
     davisLcmClient.startSubscriptions();
     lp.jFrame.addWindowListener(new WindowAdapter() {
       @Override
