@@ -10,8 +10,8 @@ enum RunDavisSnippetLog {
   public static void main(String[] args) {
     // TODO change target directory
     int period_ms = 2000;
-    File lcmDir = new File("/media/datahaki/media/ethz/export_lcm");
-    File uzhDir = new File("/media/datahaki/media/ethz/export_uzh");
+    File lcmDir = new File("/home/ale/Datasets/ourCityscape_lcm");
+    File uzhDir = new File("/home/ale/Datasets/ourCityscape_uzh");
     new DavisSnippetLog(period_ms, lcmDir, uzhDir);
   }
 }

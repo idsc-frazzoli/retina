@@ -7,6 +7,6 @@ package ch.ethz.idsc.retina.demo;
 public enum DavisSerial {
   FX2_02460010, // Julian
   FX2_02460045, // Jan
-  // TODO list camera of Ale
+  FX2_02460038, // Ale
   ;
 }
