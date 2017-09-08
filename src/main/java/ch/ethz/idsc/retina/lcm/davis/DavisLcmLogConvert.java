@@ -47,13 +47,13 @@ public class DavisLcmLogConvert {
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
       // ---
-      AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
-      {
-        File debug = new File(directory, "events_debug");
-        debug.mkdir();
-        accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
-        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
-      }
+      // AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
+      // {
+      // File debug = new File(directory, "events_debug");
+      // debug.mkdir();
+      // accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
+      // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
+      // }
       // ---
       Log log = new Log(file.toString(), "r");
       Set<String> set = new HashSet<>();
