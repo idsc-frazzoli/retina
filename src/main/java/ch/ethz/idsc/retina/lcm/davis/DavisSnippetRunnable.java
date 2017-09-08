@@ -8,15 +8,17 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public abstract class DavisSnippetRunnable implements Runnable {
   private final int milliSeconds;
+  private final File directory;
 
-  public DavisSnippetRunnable(int milliSeconds) {
+  public DavisSnippetRunnable(int milliSeconds, File directory) {
     this.milliSeconds = milliSeconds;
+    this.directory = directory;
   }
 
   @Override
   public void run() {
     try {
-      LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault();
+      LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault(directory);
       File file = lcmLogProcess.file();
       System.out.println(file);
       Thread.sleep(milliSeconds);

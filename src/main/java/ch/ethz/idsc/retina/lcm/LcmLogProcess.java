@@ -10,7 +10,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.retina.sys.GitRevHead;
 import ch.ethz.idsc.retina.sys.SystemTimestamp;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 /**
  * 
@@ -21,13 +20,8 @@ public class LcmLogProcess implements AutoCloseable {
   /** split file every 50 MB */
   public static String SPLIT_MB = "50";
 
-  public static LcmLogProcess createDefault() throws Exception {
-    return new LcmLogProcess(defaultFile());
-  }
-
-  // function is not for use from the outside
-  private static File defaultFile() {
-    return UserHome.file(defaultFilename());
+  public static LcmLogProcess createDefault(File directory) throws Exception {
+    return new LcmLogProcess(new File(directory, defaultFilename()));
   }
 
   // function is not for use from the outside

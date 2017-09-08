@@ -17,7 +17,7 @@ public class DavisSimpleImageWriter implements TimedImageListener {
   /** @param directory base
    * @param limit
    * @throws Exception */
-  public DavisSimpleImageWriter(File directory, int limit, DavisExportControl exportControl) throws Exception {
+  public DavisSimpleImageWriter(File directory, int limit, DavisExportControl exportControl) {
     this.directory = directory;
     this.limit = limit;
     this.exportControl = exportControl;

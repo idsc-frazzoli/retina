@@ -4,13 +4,14 @@ package ch.ethz.idsc.retina.sys;
 import java.util.Date;
 
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
+import ch.ethz.idsc.retina.util.io.UserHome;
 
 public final class LoggerModule extends AbstractModule {
   private LcmLogProcess lcmLogProcess;
 
   @Override
   protected void first() throws Exception {
-    lcmLogProcess = LcmLogProcess.createDefault();
+    lcmLogProcess = LcmLogProcess.createDefault(UserHome.file(""));
   }
 
   @Override
