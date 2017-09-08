@@ -12,19 +12,29 @@ import ch.ethz.idsc.retina.sys.GitRevHead;
 import ch.ethz.idsc.retina.sys.SystemTimestamp;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
+/**
+ * 
+ */
 public class LcmLogProcess implements AutoCloseable {
   /** standard on linux, non-final so that configurable at runtime */
   public static String BINARY = "/usr/local/bin/lcm-logger";
+  /** split file every 50 MB */
+  public static String SPLIT_MB = "50";
 
   public static LcmLogProcess createDefault() throws Exception {
     return new LcmLogProcess(defaultFile());
   }
 
-  // this function is not used for use from the outside
+  // function is not for use from the outside
   private static File defaultFile() {
+    return UserHome.file(defaultFilename());
+  }
+
+  // function is not for use from the outside
+  private static String defaultFilename() {
     String gitHash = GitRevHead.getHash();
     gitHash = gitHash.substring(0, Math.min(gitHash.length(), 8));
-    return UserHome.file(String.join("_", "lcm", SystemTimestamp.file(), gitHash) + ".log");
+    return String.join("_", "lcm", SystemTimestamp.file(), gitHash) + ".log";
   }
 
   // ---
@@ -39,7 +49,7 @@ public class LcmLogProcess implements AutoCloseable {
     this.file = file;
     // ---
     List<String> list = Arrays.asList( //
-        BINARY, "--quiet", "--increment", "--split-mb=50", file.toString());
+        BINARY, "--quiet", "--increment", "--split-mb=" + SPLIT_MB, file.toString());
     ProcessBuilder processBuilder = new ProcessBuilder(list);
     process = processBuilder.start();
     System.out.println(new Date() + " lcm-logger: started");
@@ -58,6 +68,7 @@ public class LcmLogProcess implements AutoCloseable {
   }
 
   public File file() {
-    return file;
+    String string = file.toString() + ".00"; // TODO is this sufficiently generic
+    return new File(string);
   }
 }
