@@ -34,10 +34,7 @@ public class DavisLcmClient implements LcmClientInterface {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
-            BinaryBlob dvsBinaryBlob = new BinaryBlob(ins);
-            ByteBuffer byteBuffer = ByteBuffer.wrap(dvsBinaryBlob.data);
-            byteBuffer.order(DavisStatics.BYTE_ORDER);
-            davisDvsDatagramDecoder.decode(byteBuffer);
+            digestDvs(new BinaryBlob(ins));
           } catch (IOException exception) {
             exception.printStackTrace();
           }
@@ -48,10 +45,7 @@ public class DavisLcmClient implements LcmClientInterface {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
-            BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
-            ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
-            byteBuffer.order(DavisStatics.BYTE_ORDER);
-            davisSigDatagramDecoder.decode(byteBuffer);
+            digestSig(new BinaryBlob(ins));
           } catch (IOException exception) {
             exception.printStackTrace();
           }
@@ -62,10 +56,7 @@ public class DavisLcmClient implements LcmClientInterface {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
-            BinaryBlob apsBinaryBlob = new BinaryBlob(ins);
-            ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
-            byteBuffer.order(DavisStatics.BYTE_ORDER);
-            davisRstDatagramDecoder.decode(byteBuffer);
+            digestRst(new BinaryBlob(ins));
           } catch (IOException exception) {
             exception.printStackTrace();
           }
@@ -76,12 +67,33 @@ public class DavisLcmClient implements LcmClientInterface {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
-            DavisImu davisImu = new DavisImu(ins);
-            davisImuLcmDecoder.decode(davisImu);
+            digestImu(new DavisImu(ins));
           } catch (IOException exception) {
             exception.printStackTrace();
           }
         }
       });
+  }
+
+  public void digestDvs(BinaryBlob dvsBinaryBlob) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(dvsBinaryBlob.data);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
+    davisDvsDatagramDecoder.decode(byteBuffer);
+  }
+
+  public void digestSig(BinaryBlob apsBinaryBlob) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
+    davisSigDatagramDecoder.decode(byteBuffer);
+  }
+
+  public void digestRst(BinaryBlob apsBinaryBlob) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
+    davisRstDatagramDecoder.decode(byteBuffer);
+  }
+
+  public void digestImu(DavisImu davisImu) {
+    davisImuLcmDecoder.decode(davisImu);
   }
 }

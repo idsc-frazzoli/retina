@@ -11,7 +11,7 @@ public enum Urg04lxLcmServer implements StartAndStoppable {
   INSTANCE;
   // ---
   private Urg04lxLcmServer() {
-    String lidarId = "front";
+    String lidarId = "front"; // TODO magic const
     BinaryBlobPublisher publisher = new BinaryBlobPublisher(Urg04lxDevice.channel(lidarId));
     Urg04lxLiveProvider.INSTANCE.addListener(publisher);
   }
@@ -26,6 +26,7 @@ public enum Urg04lxLcmServer implements StartAndStoppable {
     Urg04lxLiveProvider.INSTANCE.stop();
   }
 
+  // TODO remove once module is up and running
   public static void main(String[] args) throws Exception {
     INSTANCE.start();
     // System.out.println("started");

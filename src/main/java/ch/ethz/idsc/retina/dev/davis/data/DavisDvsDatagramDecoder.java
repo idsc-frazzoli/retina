@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 public class DavisDvsDatagramDecoder {
   private final List<DavisDvsEventListener> listeners = new LinkedList<>();
 
-  public void addListener(DavisDvsEventListener davisDvsEventListener) {
-    listeners.add(davisDvsEventListener);
+  public void addDvsListener(DavisDvsEventListener listener) {
+    listeners.add(listener);
   }
 
   public boolean hasListeners() {

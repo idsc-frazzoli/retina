@@ -31,7 +31,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
   private boolean isLaunched = false;
 
   @Override
-  public void start() {
+  public void start() { // non-blocking
     final File dir = UserHome.file("Public");
     ProcessBuilder processBuilder = //
         new ProcessBuilder(new File(dir, EXECUTABLE).toString());

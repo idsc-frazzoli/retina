@@ -25,7 +25,7 @@ enum DavisDatagramClientDemo {
     // subscribe to dvs events:
     DavisDvsDatagramClient dvsDatagramClient = new DavisDvsDatagramClient();
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
-    dvsDatagramClient.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
+    dvsDatagramClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisImageDisplay);
     // subscribe to aps events:
     DavisApsDatagramClient apsDatagramClient = new DavisApsDatagramClient();

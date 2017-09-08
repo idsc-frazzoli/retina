@@ -1,6 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.data;
 
+import java.nio.ByteBuffer;
+
+import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
 import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
 
@@ -12,11 +16,19 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class CorrectedDavisApsColumnCompiler extends DavisApsColumnCompiler {
+public class CorrectedDavisApsColumnCompiler implements DavisApsEventListener {
+  private static final int LAST_Y = 179;
+  private static final int LENGTH = 4 + 180;
+  // ---
+  private final byte[] data = new byte[LENGTH];
+  private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+  private final DavisApsColumnListener davisApsColumnListener;
   private final DavisApsCorrection davisApsCorrection;
 
-  public CorrectedDavisApsColumnCompiler(DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
-    super(davisApsColumnListener);
+  public CorrectedDavisApsColumnCompiler( //
+      DavisApsColumnListener davisApsColumnListener, DavisApsCorrection davisApsCorrection) {
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
+    this.davisApsColumnListener = davisApsColumnListener;
     this.davisApsCorrection = davisApsCorrection;
   }
 

@@ -8,8 +8,8 @@ import java.util.List;
 public class DavisImuDatagramDecoder {
   private final List<DavisImuFrameListener> listeners = new LinkedList<>();
 
-  public void addListener(DavisImuFrameListener davisImuEventListener) {
-    listeners.add(davisImuEventListener);
+  public void addListener(DavisImuFrameListener davisImuFrameListener) {
+    listeners.add(davisImuFrameListener);
   }
 
   private short pacid_next = -1;

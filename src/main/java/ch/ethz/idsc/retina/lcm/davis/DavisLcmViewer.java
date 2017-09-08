@@ -22,7 +22,7 @@ public enum DavisLcmViewer {
     DavisViewerFrame davisViewer = new DavisViewerFrame(davisDevice);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, period);
-    davisLcmClient.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewer);
     // handle aps
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewer);
