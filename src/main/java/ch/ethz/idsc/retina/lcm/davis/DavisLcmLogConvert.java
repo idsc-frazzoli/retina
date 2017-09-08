@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.FirstImageTriggerExportControl;
@@ -30,6 +31,10 @@ public class DavisLcmLogConvert {
     FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
     long count = 0;
     try {
+      DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
+      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
+      // davisLcmClient.davisSigDatagramDecoder.addListener(davisEventStatistics);
+      // davisLcmClient.davisDvsDatagramDecoder.addImuListener(davisEventStatistics);
       DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(eventsTextWriter);
       // ---
@@ -72,6 +77,8 @@ public class DavisLcmLogConvert {
       }
       eventsTextWriter.close();
       davisPngImageWriter.close();
+      davisEventStatistics.print();
+      System.out.println("total_frames" + davisPngImageWriter.total_frames());
     } catch (IOException exception) {
       // ---
     }

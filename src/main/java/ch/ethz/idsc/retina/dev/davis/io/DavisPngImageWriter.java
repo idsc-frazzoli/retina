@@ -60,4 +60,8 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   public void close() throws IOException {
     bufferedWriter.close();
   }
+
+  public int total_frames() {
+    return count;
+  }
 }
