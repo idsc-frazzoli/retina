@@ -23,7 +23,7 @@ public class LinmotGetComponent extends InterfaceComponent implements LinmotGetL
   }
 
   @Override
-  public void connectAction(boolean isSelected) {
+  public void connectAction(int period, boolean isSelected) {
     if (isSelected)
       linmotDatagramClient.start();
     else

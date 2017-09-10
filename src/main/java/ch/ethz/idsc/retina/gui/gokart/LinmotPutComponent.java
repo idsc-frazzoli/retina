@@ -2,12 +2,17 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.TimerTask;
 
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutPublisher;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 public class LinmotPutComponent extends InterfaceComponent {
@@ -19,6 +24,8 @@ public class LinmotPutComponent extends InterfaceComponent {
       Word.createShort("SOME1", (short) 0xf234), //
       Word.createShort("SOME2", (short) 0x4) //
   );
+  LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher();
+  LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
 
   public LinmotPutComponent() {
     {
@@ -27,6 +34,7 @@ public class LinmotPutComponent extends InterfaceComponent {
       spinnerLabel.setList(COMMANDS);
       spinnerLabel.setValueSafe(COMMANDS.get(0));
       spinnerLabel.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabel.addSpinnerListener(word -> linmotPutEvent.control_word = word.getShort());
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
@@ -58,9 +66,27 @@ public class LinmotPutComponent extends InterfaceComponent {
     }
   }
 
+  private TimerTask timerTask = null;
+
   @Override
-  public void connectAction(boolean isSelected) {
-    System.err.println("not implemented");
+  public void connectAction(int period, boolean isSelected) {
+    if (isSelected) {
+      timerTask = new TimerTask() {
+        @Override
+        public void run() {
+          ByteBuffer byteBuffer = linmotPutPublisher.byteBuffer();
+          byteBuffer.position(0);
+          linmotPutEvent.insert(byteBuffer);
+          linmotPutPublisher.send();
+        }
+      };
+      timer.schedule(timerTask, 100, period);
+    } else {
+      if (Objects.nonNull(timerTask)) {
+        timerTask.cancel();
+        timerTask = null;
+      }
+    }
   }
 
   @Override

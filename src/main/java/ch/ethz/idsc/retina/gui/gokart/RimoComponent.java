@@ -62,7 +62,7 @@ public class RimoComponent extends InterfaceComponent {
   }
 
   @Override
-  public void connectAction(boolean isSelected) {
+  public void connectAction(int period, boolean isSelected) {
     System.err.println("not implemented");
   }
 

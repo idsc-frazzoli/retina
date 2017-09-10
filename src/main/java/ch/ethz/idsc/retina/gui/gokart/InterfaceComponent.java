@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.Arrays;
+import java.util.Timer;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -27,6 +28,7 @@ public abstract class InterfaceComponent {
   private final JPanel jPanel = new JPanel(new BorderLayout());
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
+  public Timer timer = null;
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
@@ -38,11 +40,11 @@ public abstract class InterfaceComponent {
     { // start/stop connection
       JToolBar jToolBar = createRow("connect");
       SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setList(Arrays.asList(10, 20, 50, 100));
-      spinnerLabel.setValue(10);
-      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "frequency");
+      spinnerLabel.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
+      spinnerLabel.setValue(100);
+      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
       JToggleButton jToggleButton = new JToggleButton("connect");
-      jToggleButton.addActionListener(event -> connectAction(jToggleButton.isSelected()));
+      jToggleButton.addActionListener(event -> connectAction(spinnerLabel.getValue(), jToggleButton.isSelected()));
       jToolBar.add(jToggleButton);
     }
   }
@@ -93,7 +95,7 @@ public abstract class InterfaceComponent {
     return jPanel;
   }
 
-  public abstract void connectAction(boolean isSelected);
+  public abstract void connectAction(int period, boolean isSelected);
 
   public abstract String connectionInfo();
 }

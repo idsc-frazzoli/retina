@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import ch.ethz.idsc.retina.util.GlobalAssert;
+
 public class Word {
   public static Word createShort(String string, short value) {
     return new Word(string, value, 2);
@@ -22,5 +24,10 @@ public class Word {
     String hex = String.format("%016x", value);
     hex = hex.substring(hex.length() - 2 * bytes);
     return String.format("%s = %s", string, hex);
+  }
+
+  public short getShort() {
+    GlobalAssert.that(bytes == 2);
+    return (short) value;
   }
 }
