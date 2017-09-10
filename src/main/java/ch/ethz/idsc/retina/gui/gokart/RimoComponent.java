@@ -10,6 +10,10 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class RimoComponent extends InterfaceComponent {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -29,30 +33,41 @@ public class RimoComponent extends InterfaceComponent {
       JToolBar jToolBar = createRow("command speed");
       // [rad/min]
       SliderExt sliderExt = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      sliderExt.physics = x -> {
+        return Quantity.of((Scalar) x.divide(RealScalar.of(60.0)).map(Round._3), "[rad*s^-1]");
+      };
       sliderExt.addToComponent(jToolBar);
     }
     {
       createRow(" ");
     }
     {
-      JToolBar jToolBar = createRow("status word");
-      JTextField jTextField = createReading();
-      jToolBar.add(jTextField);
+      // JToolBar jToolBar = createRow();
+      JTextField jTextField = createReading("status word");
     }
     {
-      JToolBar jToolBar = createRow("actual speed");
-      JTextField jTextField = createReading();
-      jToolBar.add(jTextField);
+      // JToolBar jToolBar = createRow();
+      JTextField jTextField = createReading("actual speed");
     }
     {
-      JToolBar jToolBar = createRow("rms motor current");
-      JTextField jTextField = createReading();
-      jToolBar.add(jTextField);
+      // JToolBar jToolBar = createRow();
+      JTextField jTextField = createReading("rms motor current");
+      // jToolBar.add(jTextField);
     }
     {
-      JToolBar jToolBar = createRow("dc bus voltage");
-      JTextField jTextField = createReading();
-      jToolBar.add(jTextField);
+      // JToolBar jToolBar = createRow();
+      JTextField jTextField = createReading("dc bus voltage");
+      // jToolBar.add(jTextField);
     }
+  }
+
+  @Override
+  public void connectAction(boolean isSelected) {
+    System.err.println("not implemented");
+  }
+
+  @Override
+  public String connectionInfo() {
+    return "n.a.";
   }
 }

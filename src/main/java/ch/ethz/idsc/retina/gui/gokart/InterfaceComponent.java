@@ -20,8 +20,10 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 public abstract class InterfaceComponent {
   public static final int MAX_USHORT = 65535;
   // ---
+  public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
   // ---
+  private final JLabel jConnectionInfo = new JLabel();
   private final JPanel jPanel = new JPanel(new BorderLayout());
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
@@ -31,7 +33,7 @@ public abstract class InterfaceComponent {
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
     { // info: ip port
       JToolBar jToolBar = createRow("IP:PORT");
-      jToolBar.add(new JLabel("localhost:1234"));
+      jToolBar.add(jConnectionInfo);
     }
     { // start/stop connection
       JToolBar jToolBar = createRow("connect");
@@ -40,26 +42,31 @@ public abstract class InterfaceComponent {
       spinnerLabel.setValue(10);
       spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "frequency");
       JToggleButton jToggleButton = new JToggleButton("connect");
+      jToggleButton.addActionListener(event -> connectAction(jToggleButton.isSelected()));
       jToolBar.add(jToggleButton);
     }
   }
 
   public JToolBar createRow(String title) {
+    jConnectionInfo.setText(connectionInfo());
     JToolBar jToolBar1 = new JToolBar();
     JToolBar jToolBar2 = new JToolBar();
     jToolBar1.setFloatable(false);
-    jToolBar1.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
-    jToolBar1.add(new JLabel(title));
+    jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
+    JLabel jLabel = new JLabel(title);
+    jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, HEIGHT));
+    jToolBar1.add(jLabel);
     jToolBar2.setFloatable(false);
     jToolBar2.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
     addPair(jToolBar1, jToolBar2);
     return jToolBar2;
   }
 
-  public void addPair(JComponent west, JComponent center) {
+  private void addPair(JComponent west, JComponent center) {
     int width;
-    width = west.getPreferredSize().width;
-    west.setPreferredSize(new Dimension(width, HEIGHT));
+    // width = west.getPreferredSize().width;
+    west.setPreferredSize(new Dimension(WEST_WIDTH, HEIGHT));
+    west.setSize(new Dimension(WEST_WIDTH, HEIGHT));
     rowTitle.add(west);
     // ---
     width = center.getPreferredSize().width;
@@ -67,14 +74,26 @@ public abstract class InterfaceComponent {
     rowActor.add(center);
   }
 
-  public static JTextField createReading() {
+  public JTextField createReading(String title) {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
+    jConnectionInfo.setText(connectionInfo());
+    JToolBar jToolBar1 = new JToolBar();
+    jToolBar1.setFloatable(false);
+    jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
+    JLabel jLabel = new JLabel(title);
+    jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, HEIGHT));
+    jToolBar1.add(jLabel);
+    addPair(jToolBar1, jTextField);
     return jTextField;
   }
 
   public Component getComponent() {
     return jPanel;
   }
+
+  public abstract void connectAction(boolean isSelected);
+
+  public abstract String connectionInfo();
 }
