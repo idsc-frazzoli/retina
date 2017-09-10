@@ -30,7 +30,7 @@ public class DavisApsDatagramServer implements DavisApsBlockListener, AutoClosea
   }
 
   @Override
-  public void apsBlock(int length, ByteBuffer byteBuffer) {
+  public void apsBlock(ByteBuffer byteBuffer) {
     try {
       datagramSocket.send(datagramPacket);
     } catch (IOException exception) {

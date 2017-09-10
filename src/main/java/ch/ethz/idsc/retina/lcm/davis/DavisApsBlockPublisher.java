@@ -25,7 +25,8 @@ public class DavisApsBlockPublisher implements DavisApsBlockListener {
   }
 
   @Override
-  public void apsBlock(int length, ByteBuffer byteBuffer) {
+  public void apsBlock(ByteBuffer byteBuffer) {
+    final int length = byteBuffer.remaining();
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data_length = length;
     binaryBlob.data = new byte[length]; // TODO try assigning byte buf array

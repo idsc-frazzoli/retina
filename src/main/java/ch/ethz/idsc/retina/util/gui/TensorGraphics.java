@@ -15,7 +15,7 @@ public enum TensorGraphics {
       Point2D point2d = function.apply(tensor.get(0));
       path2d.moveTo(point2d.getX(), point2d.getY());
     }
-    tensor.flatten(0).skip(1).forEach(dir -> {
+    tensor.stream().skip(1).forEach(dir -> {
       final Point2D point = function.apply(dir);
       path2d.lineTo(point.getX(), point.getY());
     });

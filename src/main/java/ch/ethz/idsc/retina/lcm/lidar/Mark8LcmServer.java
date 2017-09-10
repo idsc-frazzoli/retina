@@ -24,7 +24,8 @@ public class Mark8LcmServer {
   private final BinaryBlobPublisher publisher;
 
   /** @param ip for instance "192.168.1.3"
-   * @param lidarId for example "top" */
+   * @param mark8Digest
+   * @param lidarId for example "center", or "front" */
   public Mark8LcmServer(String ip, Mark8Digest mark8Digest, String lidarId) {
     this.ip = ip;
     this.mark8Digest = mark8Digest;

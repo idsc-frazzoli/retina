@@ -37,9 +37,8 @@ public class DavisApsColumnCompiler implements DavisApsEventListener {
     // ---
     // subsequent check should not be necessary
     // however, raw data of jaer was observed to contain gaps due to lag/delay
-    if (byteBuffer.position() < LENGTH)
+    if (byteBuffer.hasRemaining()) // position() < LENGTH
       byteBuffer.put(davisApsEvent.grayscale());
-    // byteBuffer.put(4 + davisApsEvent.y, davisApsEvent.grayscale());
     // ---
     if (davisApsEvent.y == LAST_Y) { // last
       byteBuffer.position(0);

@@ -24,7 +24,7 @@ class SpinnerMenu<Type> extends StandardMenu {
 
   @Override
   protected void design(JPopupMenu myJPopupMenu) {
-    for (Type myType : mySpinnerLabel.myList) {
+    for (Type myType : mySpinnerLabel.list) {
       JMenuItem myJMenuItem = new JMenuItem(myType.toString());
       if (hover)
         myJMenuItem.addMouseListener(new MouseAdapter() {
