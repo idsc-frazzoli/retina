@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.dvs.digest;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Queue;
 
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
  * the history goes back for a fixed window in time */
 public class DvsEventBuffer implements DvsEventDigest {
   private final int window_us;
-  private final Queue<DvsEvent> queue = new LinkedList<>();
+  private final Queue<DvsEvent> queue = new ArrayDeque<>();
 
   public DvsEventBuffer(int window_us) {
     this.window_us = window_us;

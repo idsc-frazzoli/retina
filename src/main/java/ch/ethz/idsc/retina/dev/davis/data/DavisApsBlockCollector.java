@@ -4,26 +4,20 @@ package ch.ethz.idsc.retina.dev.davis.data;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** compiles aps columns and forwards them to a given {@link DavisApsColumnListener} */
 public class DavisApsBlockCollector implements DavisApsColumnListener {
-  private final int columns;
-  private final int length;
-  private final ByteBuffer byteBuffer;
-  private DavisApsBlockListener apsBlockListener;
+  private final int columns = DavisStatics.APS_COLUMNS;
+  /** column + COLUMNS * [time + pixels] */
+  private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2 + columns * DavisApsColumnCompiler.LENGTH]);
+  private DavisApsBlockListener davisApsBlockListener;
 
   public DavisApsBlockCollector() {
-    this.columns = DavisStatics.APS_COLUMNS;
-    length = 2 + columns * 184;
-    byte[] data = new byte[length];
-    byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(DavisStatics.BYTE_ORDER);
-    GlobalAssert.that(240 % columns == 0);
   }
 
-  public void setListener(DavisApsBlockListener apsBlockListener) {
-    this.apsBlockListener = apsBlockListener;
+  public void setListener(DavisApsBlockListener davisApsBlockListener) {
+    this.davisApsBlockListener = davisApsBlockListener;
   }
 
   public ByteBuffer byteBuffer() {
@@ -32,17 +26,20 @@ public class DavisApsBlockCollector implements DavisApsColumnListener {
 
   @Override
   public void column(int x, ByteBuffer columnData) {
-    int xmod = x % columns;
+    final int xmod = x % columns;
     if (xmod == 0) {
       byteBuffer.position(0);
       byteBuffer.putShort((short) x);
     }
-    // TODO insert check
-    // if raw data stream contains gaps, the next put operation is not safe
-    byteBuffer.put(columnData);
-    if (xmod == columns - 1) {
+    // the raw data stream may contains gaps, the next put operation is not safe
+    // unless we check if there is space remaining
+    if (byteBuffer.hasRemaining())
+      byteBuffer.put(columnData);
+    else
+      System.err.println("drop column " + x);
+    if (xmod == columns - 1) { // received last
       byteBuffer.position(0);
-      apsBlockListener.apsBlock(length, byteBuffer);
+      davisApsBlockListener.apsBlock(byteBuffer);
     }
   }
 }

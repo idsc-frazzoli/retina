@@ -5,5 +5,6 @@ import java.nio.ByteBuffer;
 
 /** notifies that block of aps columns is completed */
 public interface DavisApsBlockListener {
-  void apsBlock(int length, ByteBuffer byteBuffer);
+  /** @param byteBuffer with capacity 2 + COLUMNS * [time + pixels] */
+  void apsBlock(ByteBuffer byteBuffer);
 }
