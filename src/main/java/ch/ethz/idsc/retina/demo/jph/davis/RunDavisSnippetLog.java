@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.lcm.davis.DavisSnippetLog;
 enum RunDavisSnippetLog {
   ;
   public static void main(String[] args) {
-    // TODO change target directory
     int period_ms = 1200;
     File lcmDir = new File("/media/datahaki/media/ethz/snippet/lcm");
     File uzhDir = new File("/media/datahaki/media/ethz/snippet/uzh");

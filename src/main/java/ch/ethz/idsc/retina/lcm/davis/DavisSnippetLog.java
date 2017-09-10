@@ -1,24 +1,24 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.davis;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
+/** frame with button that launches a fixed duration of davis data recording
+ * followed by a conversion to uzh format */
 public class DavisSnippetLog {
   private final int period_ms;
   private final File lcmDir;
-  private final File directory;
+  private final File uzhDir;
   // ---
   private final JFrame jFrame = new JFrame("");
-  private final JButton jButton = new JButton("record");
+  private final JButton jButton = new JButton();
   private final ActionListener actionListener = actionEvent -> {
     jButton.setEnabled(false);
     DavisSnippetRunnable davisSnippetRunnable = createSnippet();
@@ -26,23 +26,26 @@ public class DavisSnippetLog {
     thread.start();
   };
 
-  public DavisSnippetLog(int period_ms, File lcmDir, File directory) {
+  /** since the first and last frames may not be received completely
+   * the application layer should introduce margins
+   * 
+   * @param period_ms duration of recording
+   * @param lcmDir
+   * @param uzhDir */
+  public DavisSnippetLog(int period_ms, File lcmDir, File uzhDir) {
     lcmDir.mkdir();
     GlobalAssert.that(lcmDir.isDirectory());
-    directory.mkdir();
-    GlobalAssert.that(directory.isDirectory());
+    uzhDir.mkdir();
+    GlobalAssert.that(uzhDir.isDirectory());
     // ---
     this.period_ms = period_ms;
     this.lcmDir = lcmDir;
-    this.directory = directory;
+    this.uzhDir = uzhDir;
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 200, 100);
-    {
-      JPanel jPanel = new JPanel(new BorderLayout());
-      jButton.addActionListener(actionListener);
-      jPanel.add(jButton, BorderLayout.NORTH);
-      jFrame.setContentPane(jPanel);
-    }
+    jFrame.setBounds(100, 100, 200, 50);
+    jButton.setText(String.format("record %d [ms]", period_ms));
+    jButton.addActionListener(actionListener);
+    jFrame.setContentPane(jButton);
     jFrame.setVisible(true);
   }
 
@@ -50,7 +53,7 @@ public class DavisSnippetLog {
     return new DavisSnippetRunnable(period_ms, lcmDir) {
       @Override
       public void callback(File file) {
-        DavisLcmLogConvert.of(file, directory); // blocking call
+        DavisLcmLogConvert.of(file, uzhDir); // blocking call
         jButton.setEnabled(true);
       };
     };
