@@ -25,6 +25,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
   boolean isComplete;
+  int frame_duration = -1;
+  int reset_duration = -1;
   // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
@@ -55,7 +57,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       }
       {
         // graphics.setColor(Color.GRAY);
-        // graphics.drawString(displayEventCount.toString(), 0, 200);
+        graphics.drawString(frame_duration + " " + reset_duration, 0, 180 + 12 * 4);
       }
       // ---
       graphics.setColor(Color.RED);

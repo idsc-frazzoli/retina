@@ -111,6 +111,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
       System.err.println("image incomplete");
     davisDefaultComponent.apsImage = bufferedImage;
     davisDefaultComponent.isComplete = isComplete;
+    davisDefaultComponent.frame_duration = time[time.length - 1] - time[0];
   }
 
   public ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
@@ -120,6 +121,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
         System.err.println("rst incomplete");
       davisDefaultComponent.rstImage = bufferedImage;
       davisDefaultComponent.isComplete = isComplete;
+      davisDefaultComponent.reset_duration = time[time.length - 1] - time[0];
     }
   };
 
