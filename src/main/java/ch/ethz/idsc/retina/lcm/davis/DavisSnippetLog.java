@@ -53,7 +53,7 @@ public class DavisSnippetLog {
     return new DavisSnippetRunnable(period_ms, lcmDir) {
       @Override
       public void callback(File file) {
-        DavisLcmLogConvert.of(file, uzhDir); // blocking call
+        DavisLcmLogUzhConvert.of(file, uzhDir); // blocking call
         jButton.setEnabled(true);
       };
     };

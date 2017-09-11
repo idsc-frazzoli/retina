@@ -14,6 +14,9 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 
+/** synthesizes grayscale images based on incoming events during intervals of fixed duration
+ * positive events appear in white color
+ * negative events appear in black color */
 public class AccumulatedEventsImage implements DavisDvsEventListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
