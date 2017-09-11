@@ -55,6 +55,15 @@ intensity as 360[deg] panorama
 * loss-less compression of DVS events by the factor of 2
 * compression of raw APS data by factor 8 (where the ADC values are reduced from 10 bit to 8 bit)
 
+### Device Settings
+
+During image capture with the Davis240C the stream of events is discontinued. No events are being transmitted during signal and reset image acquisition. The image capture duration per frame is influenced by two parameters in the section `APS Config`:
+
+    APS.Exposure
+    APS.RowSettle
+
+We recommend to set `APS.RowSettle=0`.
+
 ## streaming DAT files
 
 ![hdr](https://user-images.githubusercontent.com/4012178/27771907-a3bbcef4-5f58-11e7-8b0e-3dfb0cb0ecaf.gif)

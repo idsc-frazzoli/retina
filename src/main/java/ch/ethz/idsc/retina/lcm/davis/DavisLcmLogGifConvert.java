@@ -28,18 +28,21 @@ public class DavisLcmLogGifConvert {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
       // ---
+      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 1000);
+      // ---
       DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
+      davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
       // ---
       DavisGifImageWriter davisGifImageWriter = //
           new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 50 * 6, fitec);
       SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
+      davisLcmClient.davisSigDatagramDecoder.addListener(accumulatedOverlay.sig);
       // ---
-      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 25000);
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
-      signalResetDifference.addListener(accumulatedOverlay);
+      signalResetDifference.addListener(accumulatedOverlay.differenceListener);
       accumulatedOverlay.addListener(davisGifImageWriter);
       // ---
       Log log = new Log(file.toString(), "r");
@@ -74,8 +77,8 @@ public class DavisLcmLogGifConvert {
   }
 
   public static void main(String[] args) {
-    File file = UserHome.file("20170908T141722_45dfaee7.lcm.00");
-    // File file = UserHome.file("20170908T142504_45dfaee7.lcm.00");
+    // File file = UserHome.file("20170908T141722_45dfaee7.lcm.00");
+    File file = UserHome.file("20170908T142504_45dfaee7.lcm.00");
     File target = UserHome.Pictures("");
     of(file, target);
   }

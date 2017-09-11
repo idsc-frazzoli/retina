@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.red.Min;
 /** synthesizes grayscale images based on incoming events during intervals of fixed duration
  * positive events appear in white color
  * negative events appear in black color */
-public class AccumulatedOverlay implements DavisDvsEventListener, ColumnTimedImageListener {
+public class AccumulatedOverlay implements DavisDvsEventListener {
   private static final Scalar ALPHA = RealScalar.of(255);
   // ---
   private final List<TimedImageListener> listeners = new LinkedList<>();
@@ -34,6 +34,36 @@ public class AccumulatedOverlay implements DavisDvsEventListener, ColumnTimedIma
   private Tensor alphamask = Array.of(l -> ALPHA, 180, 240);
   private final int interval;
   private Integer last = null;
+  private int postpone = 0;
+  // ---
+  public final ColumnTimedImageListener differenceListener = new ColumnTimedImageListener() {
+    @Override
+    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+      background = ImageFormat.from(bufferedImage);
+    }
+  };
+  public final ColumnTimedImageListener sig = new ColumnTimedImageListener() {
+    @Override
+    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+      int duration = time[time.length - 1] - time[0];
+      // System.out.println("sig " + duration);
+      if (isComplete)
+        postpone += duration;
+      else
+        System.err.println("skip");
+    }
+  };
+  public final ColumnTimedImageListener rst = new ColumnTimedImageListener() {
+    @Override
+    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+      int duration = time[time.length - 1] - time[0];
+      // System.out.println("rst " + duration);
+      if (isComplete)
+        postpone += duration;
+      else
+        System.err.println("skip");
+    }
+  };
 
   /** @param interval [us] */
   public AccumulatedOverlay(DavisDevice davisDevice, int interval) {
@@ -55,20 +85,25 @@ public class AccumulatedOverlay implements DavisDvsEventListener, ColumnTimedIma
       clearImage();
       last = dvsDavisEvent.time;
     } else //
-    if (interval < delta) {
-      if (Objects.nonNull(background)) {
-        Tensor image = Tensors.of( //
-            background.add(collect_N).map(Min.function(ALPHA)), //
-            background.add(collect_P).map(Min.function(ALPHA)), //
-            background, //
-            alphamask);
-        image = Transpose.of(image, 2, 0, 1);
-        BufferedImage bufferedImage = ImageFormat.of(image);
-        listeners.forEach(listener -> listener.image(last, bufferedImage));
-        System.out.println("overlay ->");
+    {
+      final int delay = interval + postpone;
+      if (delay < delta) {
+        if (Objects.nonNull(background)) {
+          Tensor image = Tensors.of( //
+              background.add(collect_N).map(Min.function(ALPHA)), //
+              background.add(collect_P).map(Min.function(ALPHA)), //
+              background, //
+              alphamask);
+          image = Transpose.of(image, 2, 0, 1);
+          BufferedImage bufferedImage = ImageFormat.of(image);
+          listeners.forEach(listener -> listener.image(last, bufferedImage));
+          System.out.println("overlay -> " + postpone);
+        }
+        clearImage();
+        last += delay;
+        postpone = 0;
+        // System.out.println("RESET");
       }
-      clearImage();
-      last += interval;
     }
     if (dvsDavisEvent.i == 0) // from bright to dark
       collect_N.set(ALPHA, dvsDavisEvent.y, dvsDavisEvent.x);
@@ -79,11 +114,5 @@ public class AccumulatedOverlay implements DavisDvsEventListener, ColumnTimedIma
   void clearImage() {
     collect_P = collect_P.map(Scalar::zero);
     collect_N = collect_N.map(Scalar::zero);
-  }
-
-  @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-    background = ImageFormat.from(bufferedImage);
-    System.out.println("<- background");
   }
 }
