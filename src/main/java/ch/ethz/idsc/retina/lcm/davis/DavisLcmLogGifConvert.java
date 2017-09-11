@@ -6,51 +6,41 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.dev.davis.app.AccumulatedOverlay;
 import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.FirstImageTriggerExportControl;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
-import ch.ethz.idsc.retina.dev.davis.io.DavisEventsTextWriter;
-import ch.ethz.idsc.retina.dev.davis.io.DavisPngImageWriter;
-import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.dev.davis.io.DavisGifImageWriter;
 import ch.ethz.idsc.retina.util.io.UserHome;
 import idsc.BinaryBlob;
 import idsc.DavisImu;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
-public class DavisLcmLogConvert {
+public class DavisLcmLogGifConvert {
   public static void of(final File file, final File target) {
     DavisLcmClient davisLcmClient = new DavisLcmClient(null);
-    final File directory = new File(target, file.getName());
-    directory.mkdir();
-    GlobalAssert.that(directory.isDirectory());
     FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
     long count = 0;
     try {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
-      // davisLcmClient.davisSigDatagramDecoder.addListener(davisEventStatistics);
-      // davisLcmClient.davisDvsDatagramDecoder.addImuListener(davisEventStatistics);
-      DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(eventsTextWriter);
       // ---
-      DavisImageBuffer davisResetBuffer = new DavisImageBuffer();
-      davisLcmClient.davisRstDatagramDecoder.addListener(davisResetBuffer);
+      DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+      davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
       // ---
-      DavisPngImageWriter davisPngImageWriter = new DavisPngImageWriter(directory, fitec);
-      SignalResetDifference signalResetDifference = new SignalResetDifference(davisResetBuffer);
-      signalResetDifference.addListener(davisPngImageWriter);
+      DavisGifImageWriter davisGifImageWriter = //
+          new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 50 * 6, fitec);
+      SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
       // ---
-      // AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
-      // {
-      // File debug = new File(directory, "events_debug");
-      // debug.mkdir();
-      // accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
-      // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
-      // }
+      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 25000);
+      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
+      signalResetDifference.addListener(accumulatedOverlay);
+      accumulatedOverlay.addListener(davisGifImageWriter);
       // ---
       Log log = new Log(file.toString(), "r");
       Set<String> set = new HashSet<>();
@@ -60,22 +50,23 @@ public class DavisLcmLogConvert {
           ++count;
           if (set.add(event.channel))
             System.out.println(event.channel);
-          if (event.channel.endsWith(".imu"))
+          // TODO magic const extensions
+          if (event.channel.endsWith(".imu")) // imu
             davisLcmClient.digestImu(new DavisImu(event.data));
-          if (event.channel.endsWith(".sig"))
+          if (event.channel.endsWith(".sig")) // signal aps
             davisLcmClient.digestSig(new BinaryBlob(event.data));
-          if (event.channel.endsWith(".rst"))
+          if (event.channel.endsWith(".rst")) // reset read aps
             davisLcmClient.digestRst(new BinaryBlob(event.data));
-          if (event.channel.endsWith(".dvs"))
+          if (event.channel.endsWith(".dvs")) // events
             davisLcmClient.digestDvs(new BinaryBlob(event.data));
         }
       } catch (IOException exception) {
         // ---
       }
-      eventsTextWriter.close();
-      davisPngImageWriter.close();
+      // eventsTextWriter.close();
+      davisGifImageWriter.close();
       davisEventStatistics.print();
-      System.out.println("total_frames" + davisPngImageWriter.total_frames());
+      System.out.println("total_frames" + davisGifImageWriter.total_frames());
     } catch (IOException exception) {
       // ---
     }
@@ -83,8 +74,9 @@ public class DavisLcmLogConvert {
   }
 
   public static void main(String[] args) {
-    File file = UserHome.file("lcm_20170907T170846_65df29fb.log.00");
-    File target = new File("/media/datahaki/media/ethz/export");
+    File file = UserHome.file("20170908T141722_45dfaee7.lcm.00");
+    // File file = UserHome.file("20170908T142504_45dfaee7.lcm.00");
+    File target = UserHome.Pictures("");
     of(file, target);
   }
 }
