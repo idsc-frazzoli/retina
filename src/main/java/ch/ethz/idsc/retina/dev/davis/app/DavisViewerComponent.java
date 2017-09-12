@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.util.IntRange;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -27,6 +28,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   boolean isComplete;
   int frame_duration = -1;
   int reset_duration = -1;
+  DavisTallyEvent davisTallyEvent;
+  private int dvsImageCount = 0;
   // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
@@ -46,6 +49,25 @@ import ch.ethz.idsc.tensor.sca.Round;
         if (Objects.nonNull(refImage))
           graphics.drawImage(refImage, 2 * 240, 0, JLABEL);
       }
+      if (Objects.nonNull(davisTallyEvent)) {
+        DavisTallyEvent dte = davisTallyEvent;
+        final int baseline_y = getSize().height - 20;
+        graphics.setColor(Color.LIGHT_GRAY);
+        for (int h = 15; h < 100; h += 15) {
+          double blub = Math.exp(h * 0.1) - 1;
+          graphics.fillRect(0, baseline_y - h, dte.binLast, 1);
+          graphics.drawString("" + Math.round(blub), dte.binLast, baseline_y - h);
+        }
+        graphics.setColor(Color.BLUE);
+        for (int index = 0; index < dte.binLast; ++index) {
+          int height = (int) Math.round(Math.log(dte.bin[index] + 1) * 10);
+          graphics.fillRect(index, baseline_y - height, 1, height);
+        }
+        drawBar(graphics, baseline_y, dte.resetRange, Color.RED, "RST");
+        drawBar(graphics, baseline_y, dte.imageRange, Color.GREEN, "SIG");
+        graphics.setColor(Color.GRAY);
+        graphics.drawString(dte.getDurationUs() + " [us]", dte.binLast, baseline_y);
+      }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
         graphics.drawString( //
@@ -64,7 +86,15 @@ import ch.ethz.idsc.tensor.sca.Round;
       graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 190);
     }
   };
-  private int dvsImageCount = 0;
+
+  private void drawBar(Graphics graphics, int y, IntRange intRange, Color color, String label) {
+    if (Objects.nonNull(intRange)) {
+      graphics.setColor(color);
+      graphics.fillRect(intRange.min, y + 1, intRange.getWidth(), 2);
+      graphics.setColor(Color.GRAY);
+      graphics.drawString(label, intRange.min, y + 12);
+    }
+  }
 
   public void setDvsImage(BufferedImage bufferedImage) {
     BufferedImage dvsImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
