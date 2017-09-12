@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmServer;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 public class Mark8LcmServerModule extends AbstractModule {
-  Mark8LcmServer mark8LcmServer = null;
+  private Mark8LcmServer mark8LcmServer = null;
 
   @Override
   protected void first() throws Exception {

@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8DeflateDigest;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Digest;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
@@ -61,13 +60,5 @@ public class Mark8LcmServer {
 
   public void stop() {
     isLaunched = false;
-  }
-
-  // TODO remove once this works as module
-  public static void main(String[] args) throws Exception {
-    final int returns = DEFAULT_RETURNS;
-    Mark8Digest mark8Digest = new Mark8DeflateDigest(returns);
-    Mark8LcmServer mark8LcmServer = new Mark8LcmServer("192.168.1.3", mark8Digest, "center");
-    mark8LcmServer.start();
   }
 }

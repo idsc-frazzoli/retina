@@ -25,13 +25,4 @@ public enum Urg04lxLcmServer implements StartAndStoppable {
   public void stop() {
     Urg04lxLiveProvider.INSTANCE.stop();
   }
-
-  // TODO remove once module is up and running
-  public static void main(String[] args) throws Exception {
-    INSTANCE.start();
-    // System.out.println("started");
-    // Thread.sleep(5000);
-    // INSTANCE.stop();
-    // System.out.println("stopped");
-  }
 }
