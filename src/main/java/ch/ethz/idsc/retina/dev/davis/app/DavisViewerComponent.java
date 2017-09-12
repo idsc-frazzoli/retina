@@ -27,6 +27,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   boolean isComplete;
   int frame_duration = -1;
   int reset_duration = -1;
+  DavisTallyEvent davisTallyEvent;
+  private int dvsImageCount = 0;
   // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
@@ -46,6 +48,17 @@ import ch.ethz.idsc.tensor.sca.Round;
         if (Objects.nonNull(refImage))
           graphics.drawImage(refImage, 2 * 240, 0, JLABEL);
       }
+      if (Objects.nonNull(davisTallyEvent)) {
+        DavisTallyEvent dte = davisTallyEvent;
+        int y = getSize().height - 10;
+        graphics.setColor(Color.BLUE);
+        for (int index = 0; index < dte.max; ++index) {
+          int height = dte.bin[index] / 10 + 1;
+          graphics.fillRect(index, y - height, 1, height);
+        }
+        graphics.setColor(Color.RED);
+        graphics.fillRect(dte.beg, y + 1, dte.end - dte.beg, 2);
+      }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
         graphics.drawString( //
@@ -64,7 +77,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 190);
     }
   };
-  private int dvsImageCount = 0;
 
   public void setDvsImage(BufferedImage bufferedImage) {
     BufferedImage dvsImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);

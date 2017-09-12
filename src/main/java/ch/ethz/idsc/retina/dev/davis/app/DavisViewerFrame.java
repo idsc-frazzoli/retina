@@ -3,9 +3,12 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,41 +26,57 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.UserHome;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageListener, DavisImuFrameListener {
   private final JFrame jFrame = new JFrame();
   private DavisEventStatistics davisEventStatistics;
-  private Tensor eventCount = Array.zeros(3);
+  // private Tensor eventCount = Array.zeros(3);
   private final Timer timer = new Timer();
-  private final DavisViewerComponent davisDefaultComponent = new DavisViewerComponent();
+  private final DavisViewerComponent davisViewerComponent = new DavisViewerComponent();
+  public final DavisTallyEventProvider davisTallyEventProvider = new DavisTallyEventProvider();
 
   public DavisViewerFrame(DavisDevice davisDevice) {
-    jFrame.setBounds(100, 100, 730, 300);
+    {
+      davisTallyEventProvider.intArrayListener = new DavisTallyEventListener() {
+        @Override
+        public void tallyEvent(DavisTallyEvent davisTallyEvent) {
+          davisViewerComponent.davisTallyEvent = davisTallyEvent;
+        }
+      };
+    }
+    jFrame.setBounds(100, 100, 730, 400);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
     {
       JToolBar jToolBar = new JToolBar();
+      jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
       jToolBar.setFloatable(false);
       {
         JButton jButton = new JButton("exp");
         jButton.addActionListener(actionEvent -> {
           System.out.println("here");
           try {
-            ImageIO.write(davisDefaultComponent.apsImage, "png", UserHome.Pictures("apsimage.png"));
+            ImageIO.write(davisViewerComponent.apsImage, "png", UserHome.Pictures("apsimage.png"));
           } catch (Exception exception) {
             // ---
           }
         });
         jToolBar.add(jButton);
       }
+      {
+        SpinnerLabel<Integer> sl = new SpinnerLabel<>();
+        sl.addSpinnerListener(shift -> davisTallyEventProvider.setShift(shift));
+        sl.setList(Arrays.asList(6, 7, 8, 9));
+        sl.setValueSafe(davisTallyEventProvider.getShift());
+        sl.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");
+      }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
-    jPanel.add(davisDefaultComponent.jComponent, BorderLayout.CENTER);
+    jPanel.add(davisViewerComponent.jComponent, BorderLayout.CENTER);
     // jFrame.setContentPane(davisDefaultComponent.jComponent);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
@@ -70,7 +89,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
       TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
-          davisDefaultComponent.jComponent.repaint();
+          davisViewerComponent.jComponent.repaint();
         }
       };
       timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
@@ -97,21 +116,21 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    davisDefaultComponent.imuFrame = davisImuFrame;
+    davisViewerComponent.imuFrame = davisImuFrame;
   }
 
   @Override // from TimedImageListener
   public void image(int time, BufferedImage bufferedImage) {
-    davisDefaultComponent.setDvsImage(bufferedImage);
+    davisViewerComponent.setDvsImage(bufferedImage);
   }
 
   @Override // from ColumnTimedImageListener
   public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (!isComplete)
       System.err.println("image incomplete");
-    davisDefaultComponent.apsImage = bufferedImage;
-    davisDefaultComponent.isComplete = isComplete;
-    davisDefaultComponent.frame_duration = time[time.length - 1] - time[0];
+    davisViewerComponent.apsImage = bufferedImage;
+    davisViewerComponent.isComplete = isComplete;
+    davisViewerComponent.frame_duration = time[time.length - 1] - time[0];
   }
 
   public ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
@@ -119,9 +138,9 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
       if (!isComplete)
         System.err.println("rst incomplete");
-      davisDefaultComponent.rstImage = bufferedImage;
-      davisDefaultComponent.isComplete = isComplete;
-      davisDefaultComponent.reset_duration = time[time.length - 1] - time[0];
+      davisViewerComponent.rstImage = bufferedImage;
+      davisViewerComponent.isComplete = isComplete;
+      davisViewerComponent.reset_duration = time[time.length - 1] - time[0];
     }
   };
 

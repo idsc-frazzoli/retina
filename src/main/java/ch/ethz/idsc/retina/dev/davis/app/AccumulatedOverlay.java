@@ -1,10 +1,14 @@
 // code by jpg
 package ch.ethz.idsc.retina.dev.davis.app;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
@@ -35,11 +39,19 @@ public class AccumulatedOverlay implements DavisDvsEventListener {
   private final int interval;
   private Integer last = null;
   private int postpone = 0;
+  private int frameCount = 0;
+  private int eventCount = 0;
   // ---
   public final ColumnTimedImageListener differenceListener = new ColumnTimedImageListener() {
     @Override
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      background = ImageFormat.from(bufferedImage);
+      BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
+      Graphics graphics = modif.getGraphics();
+      graphics.drawImage(bufferedImage, 0, 0, new JLabel());
+      graphics.setColor(Color.WHITE);
+      graphics.drawString("" + frameCount, 0, 12);
+      ++frameCount;
+      background = ImageFormat.from(modif);
     }
   };
   public final ColumnTimedImageListener sig = new ColumnTimedImageListener() {
@@ -79,15 +91,14 @@ public class AccumulatedOverlay implements DavisDvsEventListener {
   public void dvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
-    final int delta = dvsDavisEvent.time - last;
-    if (delta < 0) {
+    if (dvsDavisEvent.time - last < 0) {
       System.err.println("dvs image clear due to reverse timing");
       clearImage();
       last = dvsDavisEvent.time;
     } else //
     {
-      final int delay = interval + postpone;
-      if (delay < delta) {
+      ++eventCount;
+      while (interval + postpone < dvsDavisEvent.time - last) {
         if (Objects.nonNull(background)) {
           Tensor image = Tensors.of( //
               background.add(collect_N).map(Min.function(ALPHA)), //
@@ -97,12 +108,12 @@ public class AccumulatedOverlay implements DavisDvsEventListener {
           image = Transpose.of(image, 2, 0, 1);
           BufferedImage bufferedImage = ImageFormat.of(image);
           listeners.forEach(listener -> listener.image(last, bufferedImage));
-          System.out.println("overlay -> " + postpone);
+          System.out.println("overlay -> " + postpone + " " + eventCount);
         }
         clearImage();
-        last += delay;
+        last += interval + postpone;
         postpone = 0;
-        // System.out.println("RESET");
+        eventCount = 0;
       }
     }
     if (dvsDavisEvent.i == 0) // from bright to dark

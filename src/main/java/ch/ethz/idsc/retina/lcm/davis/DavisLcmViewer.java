@@ -19,17 +19,20 @@ public enum DavisLcmViewer {
   public static void createStandlone(String cameraId, int period) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
-    DavisViewerFrame davisViewer = new DavisViewerFrame(davisDevice);
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(davisDevice);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisViewer);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyEventProvider.dvsListener);
+    accumulatedEventsImage.addListener(davisViewerFrame);
     // handle aps
-    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewer);
+    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame);
+    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyEventProvider.sigListener);
     // handle aps
-    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewer.rstListener);
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.rstListener);
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyEventProvider.rstListener);
     // handle imu
-    davisLcmClient.davisImuLcmDecoder.addListener(davisViewer);
+    davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame);
     // start to listen
     davisLcmClient.startSubscriptions();
     // return davisLcmViewer;

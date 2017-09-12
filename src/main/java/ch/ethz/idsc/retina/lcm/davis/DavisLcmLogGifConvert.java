@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.FirstImageTriggerExportControl;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.dev.davis.io.DavisGifImageWriter;
-import ch.ethz.idsc.retina.util.io.UserHome;
 import idsc.BinaryBlob;
 import idsc.DavisImu;
 import lcm.logging.Log;
@@ -28,14 +27,14 @@ public class DavisLcmLogGifConvert {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
       // ---
-      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 1000);
+      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 2000);
       // ---
       DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
       davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
       // ---
       DavisGifImageWriter davisGifImageWriter = //
-          new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 50 * 6, fitec);
+          new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 100, fitec);
       SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
@@ -74,12 +73,5 @@ public class DavisLcmLogGifConvert {
       // ---
     }
     System.out.println("entries: " + count);
-  }
-
-  public static void main(String[] args) {
-    // File file = UserHome.file("20170908T141722_45dfaee7.lcm.00");
-    File file = UserHome.file("20170908T142504_45dfaee7.lcm.00");
-    File target = UserHome.Pictures("");
-    of(file, target);
   }
 }
