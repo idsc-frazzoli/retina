@@ -18,4 +18,5 @@ public interface ColumnTimedImageListener {
    * @param bufferedImage grayscale with 8-bit per pixel
    * @param isComplete */
   void image(int[] time, BufferedImage bufferedImage, boolean isComplete);
+  // TODO combine parameters into new class
 }

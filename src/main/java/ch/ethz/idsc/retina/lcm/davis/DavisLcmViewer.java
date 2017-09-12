@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.davis;
 
-import ch.ethz.idsc.retina.demo.DavisSerial;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
@@ -36,9 +35,5 @@ public enum DavisLcmViewer {
     // start to listen
     davisLcmClient.startSubscriptions();
     // return davisLcmViewer;
-  }
-
-  public static void main(String[] args) {
-    createStandlone(DavisSerial.FX2_02460045.name(), 30_000);
   }
 }

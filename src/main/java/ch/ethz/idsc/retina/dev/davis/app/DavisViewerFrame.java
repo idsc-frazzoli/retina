@@ -40,7 +40,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
 
   public DavisViewerFrame(DavisDevice davisDevice) {
     {
-      davisTallyEventProvider.intArrayListener = new DavisTallyEventListener() {
+      davisTallyEventProvider.davisTallyEventListener = new DavisTallyEventListener() {
         @Override
         public void tallyEvent(DavisTallyEvent davisTallyEvent) {
           davisViewerComponent.davisTallyEvent = davisTallyEvent;

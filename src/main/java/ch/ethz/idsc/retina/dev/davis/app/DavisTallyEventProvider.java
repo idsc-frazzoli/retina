@@ -8,52 +8,41 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisTallyEventProvider {
-  private int shift = 8; // 2^shift
-  private Integer left = null;
-  public DavisTallyEventListener intArrayListener;
-  private DavisTallyEvent davisTallyEvent = new DavisTallyEvent();
+  public DavisTallyEventListener davisTallyEventListener;
+  private DavisTallyEvent davisTallyEvent;
+  public int shift = 8;
   public final ColumnTimedImageListener sigListener = new ColumnTimedImageListener() {
     @Override
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      left = time[0];
-      intArrayListener.tallyEvent(davisTallyEvent);
-      reset();
+      if (isActive()) {
+        davisTallyEvent.setMax(time[0]);
+        davisTallyEventListener.tallyEvent(davisTallyEvent);
+      }
+      davisTallyEvent = new DavisTallyEvent(time[0], shift);
+      davisTallyEvent.setImageBlock(time[0], time[time.length - 1]);
     }
   };
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
       if (isActive())
-        davisTallyEvent.setResetBlock(binIndex(time[0]), binIndex(time[time.length - 1]));
+        davisTallyEvent.setResetBlock(time[0], time[time.length - 1]);
     }
   };
-  public final DavisDvsEventListener dvsListener = davisDvsEvent -> registerEvent(davisDvsEvent.time);
-
-  public void registerEvent(int time) {
-    if (isActive()) {
-      int index = binIndex(time);
-      davisTallyEvent.register(index);
-    }
-  }
-
-  public void reset() {
-    davisTallyEvent = new DavisTallyEvent();
-  }
+  public final DavisDvsEventListener dvsListener = davisDvsEvent -> {
+    if (isActive())
+      davisTallyEvent.register(davisDvsEvent.time);
+  };
 
   public void setShift(int shift) {
     this.shift = shift;
-  }
-
-  int binIndex(int time) {
-    time -= left;
-    return time >> shift;
   }
 
   public int getShift() {
     return shift;
   }
 
-  public boolean isActive() {
-    return Objects.nonNull(left);
+  boolean isActive() {
+    return Objects.nonNull(davisTallyEvent);
   }
 }
