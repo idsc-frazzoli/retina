@@ -30,6 +30,7 @@ public class UniversalDatagramClient implements StartAndStoppable {
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
+        System.out.println("listening on port=" + port);
         isLaunched = true;
         try {
           datagramSocket = new DatagramSocket(port);
@@ -54,7 +55,7 @@ public class UniversalDatagramClient implements StartAndStoppable {
     isLaunched = false;
     if (Objects.nonNull(datagramSocket)) {
       datagramSocket.close(); // according to specs will not throw
-      datagramSocket = null;
+      // datagramSocket = null;
     }
   }
 }

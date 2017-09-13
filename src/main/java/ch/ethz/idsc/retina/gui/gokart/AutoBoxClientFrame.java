@@ -25,6 +25,7 @@ public class AutoBoxClientFrame {
     addTab(new RimoRComponent());
     addTab(new LinmotPutComponent());
     addTab(new LinmotGetComponent());
+    jTabbedPane.setSelectedIndex(2);
     // ---
     jFrame.setContentPane(jTabbedPane);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

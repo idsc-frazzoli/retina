@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import javax.swing.JTextField;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotDatagramClient;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetDatagramClient;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 
@@ -11,7 +11,7 @@ public class LinmotGetComponent extends InterfaceComponent implements LinmotGetL
   private static final int PORT = 12333;
   // ---
   private final JTextField reading;
-  LinmotDatagramClient linmotDatagramClient = new LinmotDatagramClient(PORT);
+  LinmotGetDatagramClient linmotDatagramClient = new LinmotGetDatagramClient(PORT);
 
   public LinmotGetComponent() {
     reading = createReading("receive");

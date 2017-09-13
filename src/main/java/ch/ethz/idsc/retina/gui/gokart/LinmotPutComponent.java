@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -12,57 +11,64 @@ import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvents;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutPublisher;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 public class LinmotPutComponent extends InterfaceComponent {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("CONFIG", (short) 0xf234), //
-      Word.createShort("SET_POS", (short) 0x4) //
+      Word.createShort("SET_POS", (short) 0x7) //
   );
   public static final List<Word> HEADER = Arrays.asList( //
-      Word.createShort("SOME1", (short) 0xf234), //
-      Word.createShort("SOME2", (short) 0x4) //
+      Word.createShort("SOME1", (short) 0xfedc), //
+      Word.createShort("SOME2", (short) 0x9876) //
   );
-  LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher();
-  LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
+  private final LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher();
+  //
+  private final SpinnerLabel<Word> spinnerLabelF0;
+  private final SpinnerLabel<Word> spinnerLabelF1;
+  private final SliderExt sliderExtF2;
+  private final SliderExt sliderExtF3;
+  private final SliderExt sliderExtF4;
+  private final SliderExt sliderExtF5;
 
   public LinmotPutComponent() {
+    final LinmotPutEvent init = LinmotPutEvents.createInitial();
     {
       JToolBar jToolBar = createRow("control word");
-      SpinnerLabel<Word> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setList(COMMANDS);
-      spinnerLabel.setValueSafe(COMMANDS.get(0));
-      spinnerLabel.addToComponent(jToolBar, new Dimension(200, 20), "");
-      spinnerLabel.addSpinnerListener(word -> linmotPutEvent.control_word = word.getShort());
+      spinnerLabelF0 = new SpinnerLabel<>();
+      spinnerLabelF0.setList(COMMANDS);
+      spinnerLabelF0.setValueSafe(COMMANDS.get(0));
+      spinnerLabelF0.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
-      SpinnerLabel<Word> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setList(HEADER);
-      spinnerLabel.setValueSafe(HEADER.get(0));
-      spinnerLabel.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabelF1 = new SpinnerLabel<>();
+      spinnerLabelF1.setList(HEADER);
+      spinnerLabelF1.setValueSafe(HEADER.get(0));
+      spinnerLabelF1.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
       JToolBar jToolBar = createRow("target pos");
-      SliderExt sliderExt = SliderExt.wrap( //
-          new JSlider(Short.MIN_VALUE, Short.MAX_VALUE, 0));
-      sliderExt.addToComponent(jToolBar);
+      sliderExtF2 = SliderExt.wrap(new JSlider(Short.MIN_VALUE, Short.MAX_VALUE, 0));
+      sliderExtF2.addToComponent(jToolBar);
+      sliderExtF2.setValueShort(init.target_position);
     }
     { // max velocity
       JToolBar jToolBar = createRow("velocity max");
-      SliderExt sliderExt = SliderExt.wrap(new JSlider(0, MAX_USHORT, 4096));
-      sliderExt.addToComponent(jToolBar);
+      sliderExtF3 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.max_velocity & 0xffff));
+      sliderExtF3.addToComponent(jToolBar);
     }
     { // acceleration
       JToolBar jToolBar = createRow("acceleration");
-      SliderExt sliderExt = SliderExt.wrap(new JSlider(0, MAX_USHORT, 2000));
-      sliderExt.addToComponent(jToolBar);
+      sliderExtF4 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.acceleration & 0xffff));
+      sliderExtF4.addToComponent(jToolBar);
     }
     { // deceleration
       JToolBar jToolBar = createRow("deceleration");
-      SliderExt sliderExt = SliderExt.wrap(new JSlider(0, MAX_USHORT, 2000));
-      sliderExt.addToComponent(jToolBar);
+      sliderExtF5 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.deceleration & 0xffff));
+      sliderExtF5.addToComponent(jToolBar);
     }
   }
 
@@ -74,9 +80,16 @@ public class LinmotPutComponent extends InterfaceComponent {
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          ByteBuffer byteBuffer = linmotPutPublisher.byteBuffer();
-          byteBuffer.position(0);
-          linmotPutEvent.insert(byteBuffer);
+          LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
+          linmotPutEvent.control_word = spinnerLabelF0.getValue().getShort();
+          linmotPutEvent.motion_cmd_hdr = spinnerLabelF1.getValue().getShort();
+          linmotPutEvent.target_position = (short) sliderExtF2.jSlider.getValue();
+          linmotPutEvent.max_velocity = (short) sliderExtF3.jSlider.getValue();
+          linmotPutEvent.acceleration = (short) sliderExtF4.jSlider.getValue();
+          linmotPutEvent.deceleration = (short) sliderExtF5.jSlider.getValue();
+          System.out.println("linmot put");
+          System.out.println(linmotPutEvent.toInfoString());
+          linmotPutEvent.insert(linmotPutPublisher.byteBuffer());
           linmotPutPublisher.send();
         }
       };

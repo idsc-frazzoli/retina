@@ -41,7 +41,7 @@ public abstract class InterfaceComponent {
       JToolBar jToolBar = createRow("connect");
       SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
       spinnerLabel.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
-      spinnerLabel.setValue(100);
+      spinnerLabel.setValue(1000); // TODO magic const
       spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
       JToggleButton jToggleButton = new JToggleButton("connect");
       jToggleButton.addActionListener(event -> connectAction(spinnerLabel.getValue(), jToggleButton.isSelected()));
