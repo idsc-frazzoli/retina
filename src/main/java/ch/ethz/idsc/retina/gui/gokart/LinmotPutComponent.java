@@ -24,7 +24,12 @@ public class LinmotPutComponent extends InterfaceComponent {
       Word.createShort("SOME1", (short) 0xfedc), //
       Word.createShort("SOME2", (short) 0x9876) //
   );
-  private final LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher();
+  public static final int PORT = 5000;
+  // public static final String GROUP = "225.4.5.6";
+  public static final String GROUP = "localhost";
+  // public static final String GROUP = "239.255.76.67";
+  // ---
+  private final LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher(PORT, GROUP);
   //
   private final SpinnerLabel<Word> spinnerLabelF0;
   private final SpinnerLabel<Word> spinnerLabelF1;
@@ -104,6 +109,6 @@ public class LinmotPutComponent extends InterfaceComponent {
 
   @Override
   public String connectionInfo() {
-    return "n.a.";
+    return String.format("%s:%d", GROUP, PORT);
   }
 }

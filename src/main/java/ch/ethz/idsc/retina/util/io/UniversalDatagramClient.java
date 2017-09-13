@@ -3,21 +3,43 @@ package ch.ethz.idsc.retina.util.io;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-public class UniversalDatagramClient implements StartAndStoppable {
-  private final int port;
+public abstract class UniversalDatagramClient implements StartAndStoppable {
+  public static UniversalDatagramClient create(byte[] bytes, int port) {
+    return new UniversalDatagramClient(bytes) {
+      @Override
+      public DatagramSocket openSocket() throws SocketException {
+        System.out.println("listening on port=" + port);
+        return new DatagramSocket(port);
+      }
+    };
+  }
+
+  public static UniversalDatagramClient create(byte[] bytes, int port, String group) {
+    return new UniversalDatagramClient(bytes) {
+      @Override
+      public DatagramSocket openSocket() throws SocketException, UnknownHostException {
+        System.out.println("listening on port=" + port + " " + group);
+        return new DatagramSocket(port, InetAddress.getByName(group));
+      }
+    };
+  }
+  // ---
+
   private final byte[] bytes;
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
   private boolean isLaunched;
   private DatagramSocket datagramSocket;
 
-  public UniversalDatagramClient(int port, byte[] bytes) {
-    this.port = port;
+  private UniversalDatagramClient(byte[] bytes) {
     this.bytes = bytes;
   }
 
@@ -30,10 +52,9 @@ public class UniversalDatagramClient implements StartAndStoppable {
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
-        System.out.println("listening on port=" + port);
         isLaunched = true;
         try {
-          datagramSocket = new DatagramSocket(port);
+          datagramSocket = openSocket();
           DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
           while (isLaunched) {
             datagramSocket.receive(datagramPacket); // blocking
@@ -53,9 +74,13 @@ public class UniversalDatagramClient implements StartAndStoppable {
   @Override
   public void stop() {
     isLaunched = false;
-    if (Objects.nonNull(datagramSocket)) {
+    if (Objects.nonNull(datagramSocket))
       datagramSocket.close(); // according to specs will not throw
-      // datagramSocket = null;
-    }
   }
+
+  public DatagramSocket datagramSocket() {
+    return datagramSocket;
+  }
+
+  public abstract DatagramSocket openSocket() throws SocketException, UnknownHostException;
 }

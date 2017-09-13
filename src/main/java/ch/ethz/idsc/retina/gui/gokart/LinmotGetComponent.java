@@ -8,17 +8,22 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 
 public class LinmotGetComponent extends InterfaceComponent implements LinmotGetListener {
-  private static final int PORT = 12333;
+  private static final int PORT = 5000;
+  // public static final String GROUP = "225.4.5.6";
+  public static final String GROUP = "localhost";
+  // public static final String GROUP = "239.255.76.67";
   // ---
   private final JTextField reading;
-  LinmotGetDatagramClient linmotDatagramClient = new LinmotGetDatagramClient(PORT);
+  LinmotGetDatagramClient linmotDatagramClient = new LinmotGetDatagramClient(PORT, GROUP);
 
   public LinmotGetComponent() {
     reading = createReading("receive");
+    linmotDatagramClient.addListener(this);
   }
 
   @Override
   public void linmotGet(LinmotGetEvent linmotGetEvent) {
+    System.out.println("received");
     reading.setText(linmotGetEvent.toInfoString());
   }
 

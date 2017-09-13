@@ -25,8 +25,8 @@ public class VelodyneLcmServer implements StartAndStoppable {
   private final UniversalDatagramClient posDatagramClient;
 
   public VelodyneLcmServer(VelodyneModel velodyneModel, String lidarId, int portRay, int portPos) {
-    rayDatagramClient = new UniversalDatagramClient(portRay, new byte[VelodyneStatics.RAY_PACKET_LENGTH]);
-    posDatagramClient = new UniversalDatagramClient(portPos, new byte[VelodyneStatics.POS_PACKET_LENGTH]);
+    rayDatagramClient = UniversalDatagramClient.create(new byte[VelodyneStatics.RAY_PACKET_LENGTH], portRay);
+    posDatagramClient = UniversalDatagramClient.create(new byte[VelodyneStatics.POS_PACKET_LENGTH], portPos);
     rayDatagramClient.addListener(new BinaryBlobPublisher(VelodyneLcmChannels.ray(velodyneModel, lidarId)));
     posDatagramClient.addListener(new BinaryBlobPublisher(VelodyneLcmChannels.pos(velodyneModel, lidarId)));
   }

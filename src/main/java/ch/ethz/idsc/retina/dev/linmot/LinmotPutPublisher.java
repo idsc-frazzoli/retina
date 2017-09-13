@@ -15,12 +15,8 @@ public class LinmotPutPublisher {
   private MulticastSocket multicastSocket;
   private DatagramPacket datagramPacket;
 
-  public LinmotPutPublisher() {
+  public LinmotPutPublisher(int port, String group) {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    // TODO R/N/J magic const
-    int port = 5000;
-    // TODO R/N/J address
-    String group = "225.4.5.6";
     try {
       multicastSocket = new MulticastSocket();
       multicastSocket.setTimeToLive(1); // TODO R/N/J TTL maybe 2 ?

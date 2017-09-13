@@ -18,8 +18,8 @@ public class LinmotGetDatagramClient implements ByteArrayConsumer, StartAndStopp
   private final UniversalDatagramClient universalDatagramClient;
   private final List<LinmotGetListener> listeners = new LinkedList<>();
 
-  public LinmotGetDatagramClient(int port) {
-    universalDatagramClient = new UniversalDatagramClient(port, bytes);
+  public LinmotGetDatagramClient(int port, String group) {
+    universalDatagramClient = UniversalDatagramClient.create(bytes, port, group);
     universalDatagramClient.addListener(this);
   }
 
