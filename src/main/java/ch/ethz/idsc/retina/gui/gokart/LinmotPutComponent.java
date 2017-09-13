@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +14,8 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvents;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutPublisher;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.retina.util.io.UniversalDatagramPublisher;
 
 public class LinmotPutComponent extends InterfaceComponent {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -25,31 +27,30 @@ public class LinmotPutComponent extends InterfaceComponent {
       Word.createShort("SOME2", (short) 0x9876) //
   );
   public static final int PORT = 5000;
-  // public static final String GROUP = "225.4.5.6";
-  public static final String GROUP = "localhost";
-  // public static final String GROUP = "239.255.76.67";
+  public static final String GROUP = "192.168.1.10";
   // ---
-  private final LinmotPutPublisher linmotPutPublisher = new LinmotPutPublisher(PORT, GROUP);
+  private final byte data[] = new byte[12];
+  private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+  private final UniversalDatagramPublisher linmotPutPublisher = new UniversalDatagramPublisher(data, GROUP, PORT);
   //
-  private final SpinnerLabel<Word> spinnerLabelF0;
-  private final SpinnerLabel<Word> spinnerLabelF1;
+  private final SpinnerLabel<Word> spinnerLabelF0 = new SpinnerLabel<>();
+  private final SpinnerLabel<Word> spinnerLabelF1 = new SpinnerLabel<>();
   private final SliderExt sliderExtF2;
   private final SliderExt sliderExtF3;
   private final SliderExt sliderExtF4;
   private final SliderExt sliderExtF5;
 
   public LinmotPutComponent() {
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     final LinmotPutEvent init = LinmotPutEvents.createInitial();
     {
       JToolBar jToolBar = createRow("control word");
-      spinnerLabelF0 = new SpinnerLabel<>();
       spinnerLabelF0.setList(COMMANDS);
       spinnerLabelF0.setValueSafe(COMMANDS.get(0));
       spinnerLabelF0.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
-      spinnerLabelF1 = new SpinnerLabel<>();
       spinnerLabelF1.setList(HEADER);
       spinnerLabelF1.setValueSafe(HEADER.get(0));
       spinnerLabelF1.addToComponent(jToolBar, new Dimension(200, 20), "");
@@ -94,7 +95,8 @@ public class LinmotPutComponent extends InterfaceComponent {
           linmotPutEvent.deceleration = (short) sliderExtF5.jSlider.getValue();
           System.out.println("linmot put");
           System.out.println(linmotPutEvent.toInfoString());
-          linmotPutEvent.insert(linmotPutPublisher.byteBuffer());
+          byteBuffer.position(0);
+          linmotPutEvent.insert(byteBuffer);
           linmotPutPublisher.send();
         }
       };

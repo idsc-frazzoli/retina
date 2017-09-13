@@ -23,7 +23,7 @@ public abstract class UniversalDatagramClient implements StartAndStoppable {
     };
   }
 
-  public static UniversalDatagramClient create(byte[] bytes, int port, String group) {
+  public static UniversalDatagramClient create(byte[] bytes, String group, int port) {
     return new UniversalDatagramClient(bytes) {
       @Override
       public DatagramSocket openSocket() throws SocketException, UnknownHostException {

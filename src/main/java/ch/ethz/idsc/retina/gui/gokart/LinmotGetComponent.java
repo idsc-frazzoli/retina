@@ -8,9 +8,9 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 
 public class LinmotGetComponent extends InterfaceComponent implements LinmotGetListener {
-  private static final int PORT = 5000;
-  // public static final String GROUP = "225.4.5.6";
-  public static final String GROUP = "localhost";
+  private static final int PORT = 5001;
+  // public static final String GROUP = "localhost";
+  public static final String GROUP = "192.168.1.1";
   // public static final String GROUP = "239.255.76.67";
   // ---
   private final JTextField reading;
@@ -37,6 +37,6 @@ public class LinmotGetComponent extends InterfaceComponent implements LinmotGetL
 
   @Override
   public String connectionInfo() {
-    return "" + PORT;
+    return GROUP + ":" + PORT;
   }
 }
