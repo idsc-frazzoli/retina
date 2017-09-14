@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Timer;
 
@@ -24,33 +26,47 @@ public abstract class InterfaceComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
   // ---
-  private final JLabel jConnectionInfo = new JLabel();
   private final JPanel jPanel = new JPanel(new BorderLayout());
+  private final JLabel jConnectionInfoRemote = new JLabel();
+  private final JLabel jConnectionInfoLocal = new JLabel();
+  private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
+  private final JToggleButton jToggleButton = new JToggleButton("start/stop");
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
   public Timer timer = null;
+  ActionListener actionListener = new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      boolean isSelected = jToggleButton.isSelected();
+      spinnerLabelPeriod.setEnabled(!isSelected);
+      connectAction(spinnerLabelPeriod.getValue(), isSelected);
+    }
+  };
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
     { // info: ip port
-      JToolBar jToolBar = createRow("IP:PORT");
-      jToolBar.add(jConnectionInfo);
+      JToolBar jToolBar = createRow("Remote");
+      jToolBar.add(jConnectionInfoRemote);
+    }
+    { // info: ip port
+      JToolBar jToolBar = createRow("Local");
+      jToolBar.add(jConnectionInfoLocal);
     }
     { // start/stop connection
-      JToolBar jToolBar = createRow("connect");
-      SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
-      spinnerLabel.setValue(100);
-      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
-      JToggleButton jToggleButton = new JToggleButton("connect");
-      jToggleButton.addActionListener(event -> connectAction(spinnerLabel.getValue(), jToggleButton.isSelected()));
+      JToolBar jToolBar = createRow("udp socket");
+      spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
+      spinnerLabelPeriod.setValue(100); // TODO magic const
+      spinnerLabelPeriod.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
+      jToggleButton.addActionListener(actionListener);
       jToolBar.add(jToggleButton);
     }
   }
 
   public JToolBar createRow(String title) {
-    jConnectionInfo.setText(connectionInfo());
+    jConnectionInfoRemote.setText(connectionInfoRemote());
+    jConnectionInfoLocal.setText(connectionInfoLocal());
     JToolBar jToolBar1 = new JToolBar();
     JToolBar jToolBar2 = new JToolBar();
     jToolBar1.setFloatable(false);
@@ -80,7 +96,6 @@ public abstract class InterfaceComponent {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
-    jConnectionInfo.setText(connectionInfo());
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
@@ -97,5 +112,7 @@ public abstract class InterfaceComponent {
 
   public abstract void connectAction(int period, boolean isSelected);
 
-  public abstract String connectionInfo();
+  public abstract String connectionInfoRemote();
+
+  public abstract String connectionInfoLocal();
 }

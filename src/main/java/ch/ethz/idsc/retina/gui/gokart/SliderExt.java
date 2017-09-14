@@ -47,4 +47,12 @@ public class SliderExt implements ChangeListener {
     jToolBar.add(jSlider);
     jToolBar.add(jLabel);
   }
+
+  public void setValueShort(short value) {
+    jSlider.setValue(value);
+  }
+
+  public void setValueUnsignedShort(short value) {
+    jSlider.setValue(value & 0xffff);
+  }
 }

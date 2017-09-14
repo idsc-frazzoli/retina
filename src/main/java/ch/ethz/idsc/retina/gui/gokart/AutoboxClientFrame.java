@@ -14,17 +14,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-public class AutoBoxClientFrame {
+public class AutoboxClientFrame {
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final Timer timer = new Timer();
 
-  public AutoBoxClientFrame() {
-    addTab(new RimoLComponent());
-    addTab(new RimoRComponent());
-    addTab(new LinmotPutComponent());
-    addTab(new LinmotGetComponent());
+  public AutoboxClientFrame() {
+    addTab(new RimoComponent());
+    addTab(new LinmotComponent());
+    addTab(new SteerComponent());
+    // jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

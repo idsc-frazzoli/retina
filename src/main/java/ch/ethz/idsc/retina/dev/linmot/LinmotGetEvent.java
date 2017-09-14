@@ -4,6 +4,9 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 
 public class LinmotGetEvent {
+  /** 16 bytes */
+  public static final int LENGTH = 16;
+  // ---
   public final short status_word;
   public final short state_variable;
   public final int actual_position;

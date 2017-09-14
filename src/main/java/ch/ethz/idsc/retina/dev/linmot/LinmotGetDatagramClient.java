@@ -8,17 +8,18 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.UniversalDatagramClient;
+import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class LinmotDatagramClient implements ByteArrayConsumer, StartAndStoppable {
+/** client listens at UDP socket to receive 16-byte linmot messages */
+public class LinmotGetDatagramClient implements ByteArrayConsumer, StartAndStoppable {
   public static final int LENGTH = 16;
   // ---
   private final byte[] bytes = new byte[LENGTH];
-  private final UniversalDatagramClient universalDatagramClient;
+  private final DatagramSocketManager universalDatagramClient;
   private final List<LinmotGetListener> listeners = new LinkedList<>();
 
-  public LinmotDatagramClient(int port) {
-    universalDatagramClient = new UniversalDatagramClient(port, bytes);
+  public LinmotGetDatagramClient(String laddr, int port) {
+    universalDatagramClient = DatagramSocketManager.local(bytes, port, laddr);
     universalDatagramClient.addListener(this);
   }
 
@@ -37,6 +38,7 @@ public class LinmotDatagramClient implements ByteArrayConsumer, StartAndStoppabl
   @Override
   public void start() {
     universalDatagramClient.start();
+    System.out.println("socket start");
   }
 
   @Override
