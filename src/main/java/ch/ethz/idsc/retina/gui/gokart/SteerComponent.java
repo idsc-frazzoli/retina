@@ -97,7 +97,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
     jTextField.setText(steerGetEvent.toInfoString());

@@ -24,6 +24,7 @@ public class AutoboxClientFrame {
     addTab(new RimoComponent());
     addTab(new LinmotComponent());
     addTab(new SteerComponent());
+    addTab(new MiscComponent());
     // jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
