@@ -61,6 +61,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
+      datagramSocketManager.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -90,6 +91,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
         timerTask.cancel();
         timerTask = null;
       }
+      datagramSocketManager.stop();
     }
   }
 
