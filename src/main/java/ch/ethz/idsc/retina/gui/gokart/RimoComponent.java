@@ -123,10 +123,15 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   public void accept(byte[] data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
-    RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
-    jTextFieldLRecv.setText(rimoGetL.toInfoString());
-    jTextFieldRRecv.setText(rimoGetR.toInfoString());
+    try {
+      RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
+      RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
+      jTextFieldLRecv.setText(rimoGetL.toInfoString());
+      jTextFieldRRecv.setText(rimoGetR.toInfoString());
+    } catch (Exception e) {
+      System.out.println("fail decode RimoGet, received=" + length);
+      // TODO: handle exception
+    }
   }
 
   @Override

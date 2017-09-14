@@ -132,10 +132,16 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   public void accept(byte[] data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
-    jTextFieldRecv.setText(linmotGetEvent.toInfoString());
-    // System.out.println(HexStrings.from(data));
-    // jTextFieldRecv.setText(HexStrings.from(data));
+    try {
+      LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
+      jTextFieldRecv.setText(linmotGetEvent.toInfoString());
+      // System.out.println(HexStrings.from(data));
+      // jTextFieldRecv.setText(HexStrings.from(data));
+    } catch (Exception e) {
+      System.out.println(HexStrings.from(data));
+      System.out.println("fail decode, received =" + length);
+      // TODO: handle exception
+    }
   }
 
   @Override
