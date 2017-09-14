@@ -81,6 +81,7 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
             listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
           }
         } catch (Exception exception) {
+          // typically prints: "Socket closed"
           System.err.println(exception.getMessage());
         }
         System.out.println("exit thread");

@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.util.io;
 
+import java.util.Objects;
+
 import junit.framework.TestCase;
 
 public class DatagramSocketManagerTest extends TestCase {
@@ -8,10 +10,8 @@ public class DatagramSocketManagerTest extends TestCase {
     DatagramSocketManager udc = DatagramSocketManager.local(new byte[1000], 18769);
     udc.start();
     Thread.sleep(200);
-    if (udc.datagramSocket().isClosed())
-      System.out.println("TRAVIS CI: SOCKET IS CLOSED");
-    // TODO test if travis can handle then test
+    assertFalse(udc.datagramSocket().isClosed());
     udc.stop();
-    assertTrue(udc.datagramSocket().isClosed());
+    assertTrue(Objects.isNull(udc.datagramSocket()));
   }
 }
