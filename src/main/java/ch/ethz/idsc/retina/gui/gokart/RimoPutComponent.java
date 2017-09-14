@@ -13,6 +13,7 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoDevice;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.UniversalDatagramPublisher;
@@ -66,13 +67,20 @@ public class RimoPutComponent extends InterfaceComponent {
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          RimoPutEvent rimoPutEvent = new RimoPutEvent();
-          rimoPutEvent.left_command = spinnerLabelLw.getValue().getShort();
-          rimoPutEvent.left_speed = (short) sliderExtLs.jSlider.getValue();
-          rimoPutEvent.right_command = spinnerLabelRw.getValue().getShort();
-          rimoPutEvent.right_speed = (short) sliderExtRs.jSlider.getValue();
           byteBuffer.position(0);
-          rimoPutEvent.insert(byteBuffer);
+          {
+            RimoPutEvent rimoPutEvent = new RimoPutEvent();
+            rimoPutEvent.command = spinnerLabelLw.getValue().getShort();
+            rimoPutEvent.speed = (short) sliderExtLs.jSlider.getValue();
+            rimoPutEvent.insert(byteBuffer);
+          }
+          {
+            RimoPutEvent rimoPutEvent = new RimoPutEvent();
+            rimoPutEvent.command = spinnerLabelRw.getValue().getShort();
+            rimoPutEvent.speed = (short) sliderExtRs.jSlider.getValue();
+            rimoPutEvent.insert(byteBuffer);
+          }
+          System.out.println("rimo=" + HexStrings.from(data));
           universalDatagramPublisher.send();
         }
       };

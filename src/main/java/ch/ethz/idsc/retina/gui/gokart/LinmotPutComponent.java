@@ -20,7 +20,7 @@ public class LinmotPutComponent extends InterfaceComponent {
   // ---
   private final byte data[] = new byte[12];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-  private final UniversalDatagramPublisher linmotPutPublisher = //
+  private final UniversalDatagramPublisher universalDatagramPublisher = //
       new UniversalDatagramPublisher(data, AutoboxDevice.GROUP, LinmotPutConfiguration.PORT);
   //
   private final SpinnerLabel<Word> spinnerLabelF0 = new SpinnerLabel<>();
@@ -99,7 +99,7 @@ public class LinmotPutComponent extends InterfaceComponent {
           System.out.println(linmotPutEvent.toInfoString());
           byteBuffer.position(0);
           linmotPutEvent.insert(byteBuffer);
-          linmotPutPublisher.send();
+          universalDatagramPublisher.send();
         }
       };
       timer.schedule(timerTask, 100, period);

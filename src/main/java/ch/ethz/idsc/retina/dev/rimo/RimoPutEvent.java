@@ -4,15 +4,12 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 
 public class RimoPutEvent {
-  public short left_command;
-  public short left_speed;
-  public short right_command;
-  public short right_speed;
+  public short command;
+  /** speed in rad/min */
+  public short speed;
 
   public void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putShort(left_command);
-    byteBuffer.putShort(left_speed);
-    byteBuffer.putShort(right_command);
-    byteBuffer.putShort(right_speed);
+    byteBuffer.putShort(command);
+    byteBuffer.putShort(speed);
   }
 }

@@ -14,7 +14,7 @@ public class LinmotGetComponent extends InterfaceComponent implements LinmotGetL
   // public static final String GROUP = "239.255.76.67";
   // ---
   private final JTextField reading;
-  LinmotGetDatagramClient linmotDatagramClient = new LinmotGetDatagramClient(PORT, GROUP);
+  LinmotGetDatagramClient linmotDatagramClient = new LinmotGetDatagramClient(GROUP, PORT);
 
   public LinmotGetComponent() {
     reading = createReading("receive");
