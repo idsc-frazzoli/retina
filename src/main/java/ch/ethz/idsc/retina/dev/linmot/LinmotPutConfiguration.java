@@ -26,7 +26,7 @@ public enum LinmotPutConfiguration {
   public static final int TARGETPOS_INIT = -100;
   // ---
   public static final int MAXVELOCITY_MIN = 0;
-  public static final int MAXVELOCITY_MAX = 10000;
+  public static final int MAXVELOCITY_MAX = 1000;
   public static final int MAXVELOCITY_INIT = 1000;
   // ---
   public static final int ACCELERATION_MIN = 0;
