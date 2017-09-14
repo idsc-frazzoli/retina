@@ -27,7 +27,8 @@ public abstract class InterfaceComponent {
   public static final int HEIGHT = 30;
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
-  private final JLabel jConnectionInfo = new JLabel();
+  private final JLabel jConnectionInfoRemote = new JLabel();
+  private final JLabel jConnectionInfoLocal = new JLabel();
   private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
   private final JToggleButton jToggleButton = new JToggleButton("connect");
   private final RowPanel rowTitle = new RowPanel();
@@ -46,8 +47,12 @@ public abstract class InterfaceComponent {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
     { // info: ip port
-      JToolBar jToolBar = createRow("IP:PORT");
-      jToolBar.add(jConnectionInfo);
+      JToolBar jToolBar = createRow("Remote");
+      jToolBar.add(jConnectionInfoRemote);
+    }
+    { // info: ip port
+      JToolBar jToolBar = createRow("Local");
+      jToolBar.add(jConnectionInfoLocal);
     }
     { // start/stop connection
       JToolBar jToolBar = createRow("connect");
@@ -60,7 +65,8 @@ public abstract class InterfaceComponent {
   }
 
   public JToolBar createRow(String title) {
-    jConnectionInfo.setText(connectionInfo());
+    jConnectionInfoRemote.setText(connectionInfoRemote());
+    jConnectionInfoLocal.setText(connectionInfoLocal());
     JToolBar jToolBar1 = new JToolBar();
     JToolBar jToolBar2 = new JToolBar();
     jToolBar1.setFloatable(false);
@@ -90,7 +96,7 @@ public abstract class InterfaceComponent {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
-    jConnectionInfo.setText(connectionInfo());
+    // jConnectionInfo.setText(connectionRemoteInfo());
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
@@ -107,5 +113,7 @@ public abstract class InterfaceComponent {
 
   public abstract void connectAction(int period, boolean isSelected);
 
-  public abstract String connectionInfo();
+  public abstract String connectionInfoRemote();
+
+  public abstract String connectionInfoLocal();
 }

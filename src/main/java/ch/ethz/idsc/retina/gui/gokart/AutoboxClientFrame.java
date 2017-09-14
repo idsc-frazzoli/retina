@@ -21,10 +21,10 @@ public class AutoboxClientFrame {
   private final Timer timer = new Timer();
 
   public AutoboxClientFrame() {
-    addTab(new RimoPutComponent());
-    addTab(new LinmotPutComponent());
+    addTab(new RimoComponent());
+    addTab(new LinmotComponent());
     addTab(new SteerPutComponent());
-    addTab(new LinmotGetComponent());
+    // addTab(new LinmotGetComponent());
     jTabbedPane.setSelectedIndex(2);
     // ---
     jFrame.setContentPane(jTabbedPane);

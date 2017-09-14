@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.util.io;
 
 import junit.framework.TestCase;
 
-public class UniversalDatagramClientTest extends TestCase {
+public class DatagramSocketManagerTest extends TestCase {
   public void testSimple() throws Exception {
-    UniversalDatagramClient udc = UniversalDatagramClient.create(new byte[1000], 18769);
+    DatagramSocketManager udc = DatagramSocketManager.local(new byte[1000], 18769);
     udc.start();
     Thread.sleep(200);
     if (udc.datagramSocket().isClosed())

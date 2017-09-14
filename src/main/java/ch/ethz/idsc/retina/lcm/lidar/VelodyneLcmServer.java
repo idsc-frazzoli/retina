@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.io.UniversalDatagramClient;
+import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /** implementation listens to live device for firing and positioning data
  * on given ports. the received packets are forwarded via lcm protocol
@@ -21,12 +21,12 @@ import ch.ethz.idsc.retina.util.io.UniversalDatagramClient;
  * if no arguments are provided, the following default arguments are used:
  * HDL32E center 2368 8308 */
 public class VelodyneLcmServer implements StartAndStoppable {
-  private final UniversalDatagramClient rayDatagramClient;
-  private final UniversalDatagramClient posDatagramClient;
+  private final DatagramSocketManager rayDatagramClient;
+  private final DatagramSocketManager posDatagramClient;
 
   public VelodyneLcmServer(VelodyneModel velodyneModel, String lidarId, int portRay, int portPos) {
-    rayDatagramClient = UniversalDatagramClient.create(new byte[VelodyneStatics.RAY_PACKET_LENGTH], portRay);
-    posDatagramClient = UniversalDatagramClient.create(new byte[VelodyneStatics.POS_PACKET_LENGTH], portPos);
+    rayDatagramClient = DatagramSocketManager.local(new byte[VelodyneStatics.RAY_PACKET_LENGTH], portRay);
+    posDatagramClient = DatagramSocketManager.local(new byte[VelodyneStatics.POS_PACKET_LENGTH], portPos);
     rayDatagramClient.addListener(new BinaryBlobPublisher(VelodyneLcmChannels.ray(velodyneModel, lidarId)));
     posDatagramClient.addListener(new BinaryBlobPublisher(VelodyneLcmChannels.pos(velodyneModel, lidarId)));
   }

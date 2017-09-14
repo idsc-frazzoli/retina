@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
@@ -10,18 +12,20 @@ import java.util.TimerTask;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotDevice;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.UniversalDatagramPublisher;
+import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class LinmotPutComponent extends InterfaceComponent {
+public class LinmotComponent extends InterfaceComponent {
   // ---
   private final byte data[] = new byte[12];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-  private final UniversalDatagramPublisher universalDatagramPublisher = //
-      new UniversalDatagramPublisher(data, AutoboxDevice.GROUP, LinmotPutConfiguration.PORT);
+  DatagramSocketManager datagramSocketManager = //
+      DatagramSocketManager.local(data, LinmotDevice.LOCAL_PORT, LinmotDevice.LOCAL_ADDRESS);
   //
   private final SpinnerLabel<Word> spinnerLabelF0 = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelF1 = new SpinnerLabel<>();
@@ -30,7 +34,7 @@ public class LinmotPutComponent extends InterfaceComponent {
   private final SliderExt sliderExtF4;
   private final SliderExt sliderExtF5;
 
-  public LinmotPutComponent() {
+  public LinmotComponent() {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     // final LinmotPutEvent init = LinmotPutEvents.createInitial();
     {
@@ -99,7 +103,17 @@ public class LinmotPutComponent extends InterfaceComponent {
           System.out.println(linmotPutEvent.toInfoString());
           byteBuffer.position(0);
           linmotPutEvent.insert(byteBuffer);
-          universalDatagramPublisher.send();
+          System.out.println("linmot put=" + HexStrings.from(data));
+          try {
+            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
+                InetAddress.getByName(LinmotDevice.REMOTE_ADDRESS), LinmotDevice.REMOTE_PORT);
+            datagramSocketManager.send(datagramPacket);
+          } catch (Exception exception) {
+            // ---
+            System.out.println("LINMOT SEND FAIL");
+            exception.printStackTrace();
+            System.exit(0); // TODO
+          }
         }
       };
       timer.schedule(timerTask, 100, period);
@@ -112,7 +126,12 @@ public class LinmotPutComponent extends InterfaceComponent {
   }
 
   @Override
-  public String connectionInfo() {
-    return String.format("%s:%d", AutoboxDevice.GROUP, LinmotPutConfiguration.PORT);
+  public String connectionInfoRemote() {
+    return String.format("%s:%d", LinmotDevice.REMOTE_ADDRESS, LinmotDevice.REMOTE_PORT);
+  }
+
+  @Override
+  public String connectionInfoLocal() {
+    return String.format("%s:%d", LinmotDevice.LOCAL_ADDRESS, LinmotDevice.LOCAL_PORT);
   }
 }

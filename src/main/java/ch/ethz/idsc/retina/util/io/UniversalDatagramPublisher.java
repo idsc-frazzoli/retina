@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+@Deprecated
 public class UniversalDatagramPublisher {
   private final byte[] data;
   private final String group;

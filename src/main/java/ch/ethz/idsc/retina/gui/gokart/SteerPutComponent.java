@@ -75,7 +75,13 @@ public class SteerPutComponent extends InterfaceComponent {
   }
 
   @Override
-  public String connectionInfo() {
+  public String connectionInfoRemote() {
     return String.format("%s:%d", AutoboxDevice.GROUP, SteerDevice.PORT);
+  }
+
+  @Override
+  public String connectionInfoLocal() {
+    // TODO Auto-generated method stub
+    return "";
   }
 }
