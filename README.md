@@ -57,12 +57,11 @@ intensity as 360[deg] panorama
 
 ### Device Settings
 
-During image capture with the Davis240C the stream of events is discontinued. No events are being transmitted during signal and reset image acquisition. The image capture duration per frame is influenced by two parameters in the section `APS Config`:
+Quote from Luca/iniLabs:
+* *Two parameters that are intended to control framerate:* `APS.Exposure` and `APS.FrameDelay`
+* `APS.RowSettle` *is used to tell the ADC how many cycles to delay before reading a pixel value, and due to the ADC we're using, it takes at least three cycles for the value of the current pixel to be output by the ADC, so an absolute minimum value there is 3. Better 5-8, to allow the value to settle. Indeed changing this affects the framerate, as it directly changes how much time you spend reading a pixel, but anything lower than 3 gets you the wrong pixel, and usually under 5-6 gives you degraded image quality.*
 
-    APS.Exposure
-    APS.RowSettle
-
-We recommend to set `APS.RowSettle=0`.
+We observed that in *global shutter mode*, during signal image capture the stream of events is suppressed. Whereas, in *rolling shutter mode* the events are more evenly distributed.
 
 ## streaming DAT files
 
