@@ -90,6 +90,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
+      datagramSocketManager.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -104,11 +105,11 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
           ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           linmotPutEvent.insert(byteBuffer);
-          System.out.println("linmot put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
             datagramSocketManager.send(datagramPacket);
+            System.out.println("linmot put=" + HexStrings.from(data));
           } catch (Exception exception) {
             // ---
             System.out.println("LINMOT SEND FAIL");
@@ -123,6 +124,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
         timerTask.cancel();
         timerTask = null;
       }
+      datagramSocketManager.stop();
     }
   }
 
@@ -132,6 +134,8 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
     jTextFieldRecv.setText(linmotGetEvent.toInfoString());
+    // System.out.println(HexStrings.from(data));
+    // jTextFieldRecv.setText(HexStrings.from(data));
   }
 
   @Override
