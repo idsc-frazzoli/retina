@@ -4,34 +4,24 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.awt.Dimension;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvents;
+import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.UniversalDatagramPublisher;
 
 public class LinmotPutComponent extends InterfaceComponent {
-  public static final List<Word> COMMANDS = Arrays.asList( //
-      Word.createShort("CONFIG", (short) 0xf234), //
-      Word.createShort("SET_POS", (short) 0x7) //
-  );
-  public static final List<Word> HEADER = Arrays.asList( //
-      Word.createShort("SOME1", (short) 0xfedc), //
-      Word.createShort("SOME2", (short) 0x9876) //
-  );
-  public static final int PORT = 5000;
-  public static final String GROUP = "192.168.1.10";
   // ---
   private final byte data[] = new byte[12];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-  private final UniversalDatagramPublisher linmotPutPublisher = new UniversalDatagramPublisher(data, GROUP, PORT);
+  private final UniversalDatagramPublisher linmotPutPublisher = //
+      new UniversalDatagramPublisher(data, AutoboxDevice.GROUP, LinmotPutConfiguration.PORT);
   //
   private final SpinnerLabel<Word> spinnerLabelF0 = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelF1 = new SpinnerLabel<>();
@@ -42,38 +32,50 @@ public class LinmotPutComponent extends InterfaceComponent {
 
   public LinmotPutComponent() {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    final LinmotPutEvent init = LinmotPutEvents.createInitial();
+    // final LinmotPutEvent init = LinmotPutEvents.createInitial();
     {
       JToolBar jToolBar = createRow("control word");
-      spinnerLabelF0.setList(COMMANDS);
-      spinnerLabelF0.setValueSafe(COMMANDS.get(0));
+      spinnerLabelF0.setList(LinmotPutConfiguration.COMMANDS);
+      spinnerLabelF0.setValueSafe(LinmotPutConfiguration.COMMANDS.get(0));
       spinnerLabelF0.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
-      spinnerLabelF1.setList(HEADER);
-      spinnerLabelF1.setValueSafe(HEADER.get(0));
+      spinnerLabelF1.setList(LinmotPutConfiguration.HEADER);
+      spinnerLabelF1.setValueSafe(LinmotPutConfiguration.HEADER.get(0));
       spinnerLabelF1.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
       JToolBar jToolBar = createRow("target pos");
-      sliderExtF2 = SliderExt.wrap(new JSlider(Short.MIN_VALUE, Short.MAX_VALUE, 0));
+      sliderExtF2 = SliderExt.wrap(new JSlider( //
+          LinmotPutConfiguration.TARGETPOS_MIN, //
+          LinmotPutConfiguration.TARGETPOS_MAX, //
+          LinmotPutConfiguration.TARGETPOS_INIT));
       sliderExtF2.addToComponent(jToolBar);
-      sliderExtF2.setValueShort(init.target_position);
+      // sliderExtF2.setValueShort(init.target_position);
     }
     { // max velocity
-      JToolBar jToolBar = createRow("velocity max");
-      sliderExtF3 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.max_velocity & 0xffff));
+      JToolBar jToolBar = createRow("max velocity");
+      sliderExtF3 = SliderExt.wrap(new JSlider( //
+          LinmotPutConfiguration.MAXVELOCITY_MIN, //
+          LinmotPutConfiguration.MAXVELOCITY_MAX, //
+          LinmotPutConfiguration.MAXVELOCITY_INIT));
       sliderExtF3.addToComponent(jToolBar);
     }
     { // acceleration
       JToolBar jToolBar = createRow("acceleration");
-      sliderExtF4 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.acceleration & 0xffff));
+      sliderExtF4 = SliderExt.wrap(new JSlider( //
+          LinmotPutConfiguration.ACCELERATION_MIN, //
+          LinmotPutConfiguration.ACCELERATION_MAX, //
+          LinmotPutConfiguration.ACCELERATION_INIT));
       sliderExtF4.addToComponent(jToolBar);
     }
     { // deceleration
       JToolBar jToolBar = createRow("deceleration");
-      sliderExtF5 = SliderExt.wrap(new JSlider(0, MAX_USHORT, init.deceleration & 0xffff));
+      sliderExtF5 = SliderExt.wrap(new JSlider( //
+          LinmotPutConfiguration.DECELERATION_MIN, //
+          LinmotPutConfiguration.DECELERATION_MAX, //
+          LinmotPutConfiguration.DECELERATION_INIT));
       sliderExtF5.addToComponent(jToolBar);
     }
   }
@@ -111,6 +113,6 @@ public class LinmotPutComponent extends InterfaceComponent {
 
   @Override
   public String connectionInfo() {
-    return String.format("%s:%d", GROUP, PORT);
+    return String.format("%s:%d", AutoboxDevice.GROUP, LinmotPutConfiguration.PORT);
   }
 }

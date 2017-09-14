@@ -14,15 +14,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-public class AutoBoxClientFrame {
+public class AutoboxClientFrame {
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final Timer timer = new Timer();
 
-  public AutoBoxClientFrame() {
+  public AutoboxClientFrame() {
     addTab(new RimoPutComponent());
     addTab(new LinmotPutComponent());
+    addTab(new SteerPutComponent());
     addTab(new LinmotGetComponent());
     jTabbedPane.setSelectedIndex(2);
     // ---

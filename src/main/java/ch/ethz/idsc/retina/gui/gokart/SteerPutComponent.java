@@ -11,50 +11,41 @@ import java.util.TimerTask;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoDevice;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerDevice;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.UniversalDatagramPublisher;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.sca.Round;
 
-public class RimoPutComponent extends InterfaceComponent {
+public class SteerPutComponent extends InterfaceComponent {
   public static final List<Word> COMMANDS = Arrays.asList( //
-      Word.createShort("OPERATION", (short) 0x0009) //
+      Word.createByte("OFF", (byte) 0), //
+      Word.createByte("ON", (byte) 1) //
   );
+  // ---
   private final byte data[] = new byte[8];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
   private final UniversalDatagramPublisher universalDatagramPublisher = //
-      new UniversalDatagramPublisher(data, AutoboxDevice.GROUP, RimoDevice.PORT);
+      new UniversalDatagramPublisher(data, AutoboxDevice.GROUP, SteerDevice.PORT);
   //
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
-  private final SpinnerLabel<Word> spinnerLabelRw = new SpinnerLabel<>();
   private final SliderExt sliderExtLs;
-  private final SliderExt sliderExtRs;
 
-  public RimoPutComponent() {
+  public SteerPutComponent() {
     // LEFT
     {
-      JToolBar jToolBar = createRow("LEFT command");
+      JToolBar jToolBar = createRow("command");
       spinnerLabelLw.setList(COMMANDS);
       spinnerLabelLw.setValueSafe(COMMANDS.get(0));
       spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
-      JToolBar jToolBar = createRow("LEFT speed");
-      sliderExtLs = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      JToolBar jToolBar = createRow("torque");
+      sliderExtLs = SliderExt.wrap(new JSlider(-5000, 5000, 0)); // values are divided by 1000
+      sliderExtLs.physics = scalar -> scalar.multiply(RealScalar.of(1e-3)).map(Round._4).Get();
       sliderExtLs.addToComponent(jToolBar);
-    }
-    // RIGHT
-    {
-      JToolBar jToolBar = createRow("RIGHT command");
-      spinnerLabelRw.setList(COMMANDS);
-      spinnerLabelRw.setValueSafe(COMMANDS.get(0));
-      spinnerLabelRw.addToComponent(jToolBar, new Dimension(200, 20), "");
-    }
-    { // command speed
-      JToolBar jToolBar = createRow("RIGHT speed");
-      sliderExtRs = SliderExt.wrap(new JSlider(-8000, 8000, 0));
-      sliderExtRs.addToComponent(jToolBar);
     }
   }
 
@@ -66,13 +57,11 @@ public class RimoPutComponent extends InterfaceComponent {
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          RimoPutEvent rimoPutEvent = new RimoPutEvent();
-          rimoPutEvent.left_command = spinnerLabelLw.getValue().getShort();
-          rimoPutEvent.left_speed = (short) sliderExtLs.jSlider.getValue();
-          rimoPutEvent.right_command = spinnerLabelRw.getValue().getShort();
-          rimoPutEvent.right_speed = (short) sliderExtRs.jSlider.getValue();
+          SteerPutEvent steerPutEvent = new SteerPutEvent();
+          steerPutEvent.command = spinnerLabelLw.getValue().getByte();
+          steerPutEvent.torque = sliderExtLs.jSlider.getValue() * 1e-3f;
           byteBuffer.position(0);
-          rimoPutEvent.insert(byteBuffer);
+          steerPutEvent.insert(byteBuffer);
           universalDatagramPublisher.send();
         }
       };
@@ -87,6 +76,6 @@ public class RimoPutComponent extends InterfaceComponent {
 
   @Override
   public String connectionInfo() {
-    return String.format("%s:%d", AutoboxDevice.GROUP, RimoDevice.PORT);
+    return String.format("%s:%d", AutoboxDevice.GROUP, SteerDevice.PORT);
   }
 }

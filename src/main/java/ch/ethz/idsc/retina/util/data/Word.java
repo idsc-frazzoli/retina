@@ -1,11 +1,15 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.util.data;
 
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Word {
   public static Word createShort(String string, short value) {
     return new Word(string, value, 2);
+  }
+
+  public static Word createByte(String string, byte value) {
+    return new Word(string, value, 1);
   }
 
   // ---
@@ -19,15 +23,20 @@ public class Word {
     this.bytes = bytes;
   }
 
-  @Override
-  public String toString() {
-    String hex = String.format("%016x", value);
-    hex = hex.substring(hex.length() - 2 * bytes);
-    return String.format("%s = %s", string, hex);
+  public byte getByte() {
+    GlobalAssert.that(bytes == 1);
+    return (byte) value;
   }
 
   public short getShort() {
     GlobalAssert.that(bytes == 2);
     return (short) value;
+  }
+
+  @Override
+  public String toString() {
+    String hex = String.format("%016X", value);
+    hex = hex.substring(hex.length() - 2 * bytes);
+    return String.format("%s = 0x%s", string, hex);
   }
 }

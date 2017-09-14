@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Timer;
 
@@ -24,11 +26,21 @@ public abstract class InterfaceComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
   // ---
-  private final JLabel jConnectionInfo = new JLabel();
   private final JPanel jPanel = new JPanel(new BorderLayout());
+  private final JLabel jConnectionInfo = new JLabel();
+  private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
+  private final JToggleButton jToggleButton = new JToggleButton("connect");
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
   public Timer timer = null;
+  ActionListener actionListener = new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      boolean isSelected = jToggleButton.isSelected();
+      spinnerLabelPeriod.setEnabled(!isSelected);
+      connectAction(spinnerLabelPeriod.getValue(), isSelected);
+    }
+  };
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
@@ -39,12 +51,10 @@ public abstract class InterfaceComponent {
     }
     { // start/stop connection
       JToolBar jToolBar = createRow("connect");
-      SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
-      spinnerLabel.setValue(1000); // TODO magic const
-      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
-      JToggleButton jToggleButton = new JToggleButton("connect");
-      jToggleButton.addActionListener(event -> connectAction(spinnerLabel.getValue(), jToggleButton.isSelected()));
+      spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
+      spinnerLabelPeriod.setValue(100); // TODO magic const
+      spinnerLabelPeriod.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
+      jToggleButton.addActionListener(actionListener);
       jToolBar.add(jToggleButton);
     }
   }
