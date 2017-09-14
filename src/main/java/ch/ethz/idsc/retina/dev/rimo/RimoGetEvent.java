@@ -4,6 +4,8 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 
 public class RimoGetEvent {
+  public static final int LENGTH = 14;
+  // ---
   public final short status_word;
   /** rad/min */
   public final short actual_speed;
@@ -26,5 +28,13 @@ public class RimoGetEvent {
     error_code = byteBuffer.getShort(); // 10
     temperature_motor = byteBuffer.getShort(); // 12
     temperature_heatsink = byteBuffer.getShort(); // 14
+  }
+
+  public String toInfoString() {
+    return String.format("%d %d %d %d %d %d %d", //
+        status_word, actual_speed, //
+        rms_motor_current, dc_bus_voltage, //
+        error_code, //
+        temperature_motor, temperature_heatsink);
   }
 }

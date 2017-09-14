@@ -30,7 +30,7 @@ public abstract class InterfaceComponent {
   private final JLabel jConnectionInfoRemote = new JLabel();
   private final JLabel jConnectionInfoLocal = new JLabel();
   private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
-  private final JToggleButton jToggleButton = new JToggleButton("connect");
+  private final JToggleButton jToggleButton = new JToggleButton("start/stop");
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
   public Timer timer = null;
@@ -55,7 +55,7 @@ public abstract class InterfaceComponent {
       jToolBar.add(jConnectionInfoLocal);
     }
     { // start/stop connection
-      JToolBar jToolBar = createRow("connect");
+      JToolBar jToolBar = createRow("udp socket");
       spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
       spinnerLabelPeriod.setValue(100); // TODO magic const
       spinnerLabelPeriod.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
@@ -96,7 +96,6 @@ public abstract class InterfaceComponent {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
-    // jConnectionInfo.setText(connectionRemoteInfo());
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));

@@ -10,81 +10,82 @@ import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotDevice;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class LinmotComponent extends InterfaceComponent {
-  // ---
-  private final byte data[] = new byte[12];
-  private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-  DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(data, LinmotDevice.LOCAL_PORT, LinmotDevice.LOCAL_ADDRESS);
-  //
-  private final SpinnerLabel<Word> spinnerLabelF0 = new SpinnerLabel<>();
-  private final SpinnerLabel<Word> spinnerLabelF1 = new SpinnerLabel<>();
-  private final SliderExt sliderExtF2;
-  private final SliderExt sliderExtF3;
-  private final SliderExt sliderExtF4;
-  private final SliderExt sliderExtF5;
+public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer {
+  private final DatagramSocketManager datagramSocketManager = //
+      DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
+  private TimerTask timerTask = null;
+  private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
+  private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
+  private final SliderExt sliderExtTPos;
+  private final SliderExt sliderExtMVel;
+  private final SliderExt sliderExtAcc;
+  private final SliderExt sliderExtDec;
+  private final JTextField jTextFieldRecv;
 
   public LinmotComponent() {
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    // final LinmotPutEvent init = LinmotPutEvents.createInitial();
     {
       JToolBar jToolBar = createRow("control word");
-      spinnerLabelF0.setList(LinmotPutConfiguration.COMMANDS);
-      spinnerLabelF0.setValueSafe(LinmotPutConfiguration.COMMANDS.get(0));
-      spinnerLabelF0.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
+      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.COMMANDS.get(0));
+      spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
-      spinnerLabelF1.setList(LinmotPutConfiguration.HEADER);
-      spinnerLabelF1.setValueSafe(LinmotPutConfiguration.HEADER.get(0));
-      spinnerLabelF1.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabelHdr.setList(LinmotPutConfiguration.HEADER);
+      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.HEADER.get(0));
+      spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
       JToolBar jToolBar = createRow("target pos");
-      sliderExtF2 = SliderExt.wrap(new JSlider( //
+      sliderExtTPos = SliderExt.wrap(new JSlider( //
           LinmotPutConfiguration.TARGETPOS_MIN, //
           LinmotPutConfiguration.TARGETPOS_MAX, //
           LinmotPutConfiguration.TARGETPOS_INIT));
-      sliderExtF2.addToComponent(jToolBar);
+      sliderExtTPos.addToComponent(jToolBar);
       // sliderExtF2.setValueShort(init.target_position);
     }
     { // max velocity
       JToolBar jToolBar = createRow("max velocity");
-      sliderExtF3 = SliderExt.wrap(new JSlider( //
+      sliderExtMVel = SliderExt.wrap(new JSlider( //
           LinmotPutConfiguration.MAXVELOCITY_MIN, //
           LinmotPutConfiguration.MAXVELOCITY_MAX, //
           LinmotPutConfiguration.MAXVELOCITY_INIT));
-      sliderExtF3.addToComponent(jToolBar);
+      sliderExtMVel.addToComponent(jToolBar);
     }
     { // acceleration
       JToolBar jToolBar = createRow("acceleration");
-      sliderExtF4 = SliderExt.wrap(new JSlider( //
+      sliderExtAcc = SliderExt.wrap(new JSlider( //
           LinmotPutConfiguration.ACCELERATION_MIN, //
           LinmotPutConfiguration.ACCELERATION_MAX, //
           LinmotPutConfiguration.ACCELERATION_INIT));
-      sliderExtF4.addToComponent(jToolBar);
+      sliderExtAcc.addToComponent(jToolBar);
     }
     { // deceleration
       JToolBar jToolBar = createRow("deceleration");
-      sliderExtF5 = SliderExt.wrap(new JSlider( //
+      sliderExtDec = SliderExt.wrap(new JSlider( //
           LinmotPutConfiguration.DECELERATION_MIN, //
           LinmotPutConfiguration.DECELERATION_MAX, //
           LinmotPutConfiguration.DECELERATION_INIT));
-      sliderExtF5.addToComponent(jToolBar);
+      sliderExtDec.addToComponent(jToolBar);
+    }
+    { // reception
+      jTextFieldRecv = createReading("received");
+      datagramSocketManager.addListener(this);
     }
   }
-
-  private TimerTask timerTask = null;
 
   @Override
   public void connectAction(int period, boolean isSelected) {
@@ -93,20 +94,20 @@ public class LinmotComponent extends InterfaceComponent {
         @Override
         public void run() {
           LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-          linmotPutEvent.control_word = spinnerLabelF0.getValue().getShort();
-          linmotPutEvent.motion_cmd_hdr = spinnerLabelF1.getValue().getShort();
-          linmotPutEvent.target_position = (short) sliderExtF2.jSlider.getValue();
-          linmotPutEvent.max_velocity = (short) sliderExtF3.jSlider.getValue();
-          linmotPutEvent.acceleration = (short) sliderExtF4.jSlider.getValue();
-          linmotPutEvent.deceleration = (short) sliderExtF5.jSlider.getValue();
-          System.out.println("linmot put");
-          System.out.println(linmotPutEvent.toInfoString());
-          byteBuffer.position(0);
+          linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
+          linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
+          linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
+          linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
+          linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
+          linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+          byte[] data = new byte[LinmotPutEvent.LENGTH];
+          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           linmotPutEvent.insert(byteBuffer);
           System.out.println("linmot put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(LinmotDevice.REMOTE_ADDRESS), LinmotDevice.REMOTE_PORT);
+                InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
             datagramSocketManager.send(datagramPacket);
           } catch (Exception exception) {
             // ---
@@ -126,12 +127,20 @@ public class LinmotComponent extends InterfaceComponent {
   }
 
   @Override
+  public void accept(byte[] data, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
+    jTextFieldRecv.setText(linmotGetEvent.toInfoString());
+  }
+
+  @Override
   public String connectionInfoRemote() {
-    return String.format("%s:%d", LinmotDevice.REMOTE_ADDRESS, LinmotDevice.REMOTE_PORT);
+    return String.format("%s:%d", LinmotSocket.REMOTE_ADDRESS, LinmotSocket.REMOTE_PORT);
   }
 
   @Override
   public String connectionInfoLocal() {
-    return String.format("%s:%d", LinmotDevice.LOCAL_ADDRESS, LinmotDevice.LOCAL_PORT);
+    return String.format("%s:%d", LinmotSocket.LOCAL_ADDRESS, LinmotSocket.LOCAL_PORT);
   }
 }

@@ -4,6 +4,9 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 
 public class LinmotPutEvent {
+  /** 12 bytes encoding length */
+  public static final int LENGTH = 12;
+  // ---
   public short control_word;
   public short motion_cmd_hdr;
   public short target_position;
@@ -11,6 +14,7 @@ public class LinmotPutEvent {
   public short acceleration;
   public short deceleration;
 
+  /** @param byteBuffer with at least 12 bytes remaining */
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);
     byteBuffer.putShort(motion_cmd_hdr);

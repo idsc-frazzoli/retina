@@ -12,53 +12,65 @@ import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoDevice;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoComponent extends InterfaceComponent {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
   // ---
-  private final byte[] data_receive = new byte[2 * 14];
   private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(data_receive, RimoDevice.LOCAL_PORT, RimoDevice.LOCAL_ADDRESS);
+      DatagramSocketManager.local(new byte[2 * RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;
-  private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
-  private final SpinnerLabel<Word> spinnerLabelRw = new SpinnerLabel<>();
-  private final SliderExt sliderExtLs;
-  private final SliderExt sliderExtRs;
+  private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
+  private final SliderExt sliderExtLVel;
+  private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();
+  private final SliderExt sliderExtRVel;
+  private final JTextField jTextFieldLRecv;
+  private final JTextField jTextFieldRRecv;
 
   public RimoComponent() {
     // LEFT
     {
       JToolBar jToolBar = createRow("LEFT command");
-      spinnerLabelLw.setList(COMMANDS);
-      spinnerLabelLw.setValueSafe(COMMANDS.get(0));
-      spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabelLCmd.setList(COMMANDS);
+      spinnerLabelLCmd.setValueSafe(COMMANDS.get(0));
+      spinnerLabelLCmd.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("LEFT speed");
-      sliderExtLs = SliderExt.wrap(new JSlider(-8000, 8000, 0));
-      sliderExtLs.addToComponent(jToolBar);
+      sliderExtLVel = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      sliderExtLVel.addToComponent(jToolBar);
     }
     // RIGHT
     {
       JToolBar jToolBar = createRow("RIGHT command");
-      spinnerLabelRw.setList(COMMANDS);
-      spinnerLabelRw.setValueSafe(COMMANDS.get(0));
-      spinnerLabelRw.addToComponent(jToolBar, new Dimension(200, 20), "");
+      spinnerLabelRCmd.setList(COMMANDS);
+      spinnerLabelRCmd.setValueSafe(COMMANDS.get(0));
+      spinnerLabelRCmd.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("RIGHT speed");
-      sliderExtRs = SliderExt.wrap(new JSlider(-8000, 8000, 0));
-      sliderExtRs.addToComponent(jToolBar);
+      sliderExtRVel = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      sliderExtRVel.addToComponent(jToolBar);
+    }
+    { // reception
+      jTextFieldLRecv = createReading("LEFT recv");
+      datagramSocketManager.addListener(this);
+    }
+    { // reception
+      jTextFieldRRecv = createReading("RIGHT recv");
+      datagramSocketManager.addListener(this);
     }
   }
 
@@ -69,26 +81,25 @@ public class RimoComponent extends InterfaceComponent {
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          final byte data[] = new byte[8];
-          final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+          byte data[] = new byte[2 * RimoPutEvent.LENGTH];
+          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          byteBuffer.position(0);
           {
             RimoPutEvent rimoPutEvent = new RimoPutEvent();
-            rimoPutEvent.command = spinnerLabelLw.getValue().getShort();
-            rimoPutEvent.speed = (short) sliderExtLs.jSlider.getValue();
+            rimoPutEvent.command = spinnerLabelLCmd.getValue().getShort();
+            rimoPutEvent.speed = (short) sliderExtLVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
           }
           {
             RimoPutEvent rimoPutEvent = new RimoPutEvent();
-            rimoPutEvent.command = spinnerLabelRw.getValue().getShort();
-            rimoPutEvent.speed = (short) sliderExtRs.jSlider.getValue();
+            rimoPutEvent.command = spinnerLabelRCmd.getValue().getShort();
+            rimoPutEvent.speed = (short) sliderExtRVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
           }
           System.out.println("rimo put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(RimoDevice.REMOTE_ADDRESS), RimoDevice.REMOTE_PORT);
+                InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
             datagramSocketManager.send(datagramPacket);
           } catch (Exception exception) {
             // ---
@@ -109,12 +120,22 @@ public class RimoComponent extends InterfaceComponent {
   }
 
   @Override
+  public void accept(byte[] data, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
+    RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
+    jTextFieldLRecv.setText(rimoGetL.toInfoString());
+    jTextFieldRRecv.setText(rimoGetR.toInfoString());
+  }
+
+  @Override
   public String connectionInfoRemote() {
-    return String.format("%s:%d", RimoDevice.REMOTE_ADDRESS, RimoDevice.REMOTE_PORT);
+    return String.format("%s:%d", RimoSocket.REMOTE_ADDRESS, RimoSocket.REMOTE_PORT);
   }
 
   @Override
   public String connectionInfoLocal() {
-    return String.format("%s:%d", RimoDevice.LOCAL_ADDRESS, RimoDevice.LOCAL_PORT);
+    return String.format("%s:%d", RimoSocket.LOCAL_ADDRESS, RimoSocket.LOCAL_PORT);
   }
 }

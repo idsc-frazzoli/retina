@@ -23,9 +23,8 @@ public class AutoboxClientFrame {
   public AutoboxClientFrame() {
     addTab(new RimoComponent());
     addTab(new LinmotComponent());
-    addTab(new SteerPutComponent());
-    // addTab(new LinmotGetComponent());
-    jTabbedPane.setSelectedIndex(2);
+    addTab(new SteerComponent());
+    // jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
