@@ -14,6 +14,9 @@ import java.util.TimerTask;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -23,7 +26,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, JoystickEventListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
@@ -49,7 +52,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     }
     { // command speed
       JToolBar jToolBar = createRow("LEFT speed");
-      sliderExtLVel = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      sliderExtLVel = SliderExt.wrap(new JSlider(-RimoPutEvent.MAX_SPEED, RimoPutEvent.MAX_SPEED, 0));
       sliderExtLVel.addToComponent(jToolBar);
     }
     // RIGHT
@@ -61,7 +64,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     }
     { // command speed
       JToolBar jToolBar = createRow("RIGHT speed");
-      sliderExtRVel = SliderExt.wrap(new JSlider(-8000, 8000, 0));
+      sliderExtRVel = SliderExt.wrap(new JSlider(-RimoPutEvent.MAX_SPEED, RimoPutEvent.MAX_SPEED, 0));
       sliderExtRVel.addToComponent(jToolBar);
     }
     addSeparator();
@@ -154,5 +157,24 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public String connectionInfoLocal() {
     return String.format("%s:%d", RimoSocket.LOCAL_ADDRESS, RimoSocket.LOCAL_PORT);
+  }
+
+  private int sign = 1;
+
+  @Override
+  public void joystick(JoystickEvent joystickEvent) {
+    if (joystickEnabled) {
+      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
+      if (joystick.isButtonPressedBack()) {
+        sign = -1;
+      }
+      if (joystick.isButtonPressedStart()) {
+        sign = 1;
+      }
+      double wheelL = joystick.getLeftSliderUnitValue();
+      sliderExtLVel.jSlider.setValue((int) (wheelL * RimoPutEvent.MAX_SPEED * sign));
+      double wheelR = joystick.getRightSliderUnitValue();
+      sliderExtRVel.jSlider.setValue((int) (wheelR * RimoPutEvent.MAX_SPEED * sign));
+    }
   }
 }

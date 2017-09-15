@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
@@ -12,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -37,6 +40,17 @@ public class AutoboxClientFrame {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
       // jToolBar
+      JToggleButton jToggle = new JToggleButton("Joystick");
+      jToggle.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          boolean status = jToggle.isSelected();
+          for (InterfaceComponent ic : list) {
+            ic.setJoystickEnabled(status);
+          }
+        }
+      });
+      jToolBar.add(jToggle);
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     jPanel.add(jTabbedPane, BorderLayout.CENTER);
@@ -56,6 +70,7 @@ public class AutoboxClientFrame {
         // ---
       }
     });
+    joystickLcmClient.startSubscriptions();
     jFrame.setVisible(true);
   }
 
@@ -68,5 +83,6 @@ public class AutoboxClientFrame {
     jPanel.add(interfaceComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
+    joystickLcmClient.addListener(interfaceComponent);
   }
 }

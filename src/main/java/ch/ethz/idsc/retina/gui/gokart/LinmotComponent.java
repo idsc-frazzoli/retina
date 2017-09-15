@@ -13,6 +13,9 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
@@ -25,7 +28,7 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
+public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener, JoystickEventListener {
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;
@@ -179,5 +182,14 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   @Override
   public String connectionInfoLocal() {
     return String.format("%s:%d", LinmotSocket.LOCAL_ADDRESS, LinmotSocket.LOCAL_PORT);
+  }
+
+  @Override
+  public void joystick(JoystickEvent joystickEvent) {
+    if (joystickEnabled) {
+      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
+      double value = joystick.getLeftKnobDirectionDown();
+      sliderExtTPos.jSlider.setValue(Math.min((int) (LinmotPutConfiguration.TARGETPOS_MIN * value), LinmotPutConfiguration.TARGETPOS_MAX));
+    }
   }
 }
