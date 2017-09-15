@@ -43,6 +43,7 @@ public abstract class InterfaceComponent {
       connectAction(spinnerLabelPeriod.getValue(), isSelected);
     }
   };
+  protected boolean joystickEnabled;
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
@@ -132,4 +133,8 @@ public abstract class InterfaceComponent {
   public abstract String connectionInfoRemote();
 
   public abstract String connectionInfoLocal();
+
+  public void setJoystickEnabled(boolean status) {
+    joystickEnabled = status;
+  }
 }
