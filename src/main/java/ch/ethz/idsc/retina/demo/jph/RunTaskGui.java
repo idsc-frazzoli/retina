@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.demo.jph;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.demo.jph.lidar.Hdl32eLcmServerModule;
-import ch.ethz.idsc.retina.demo.jph.lidar.Mark8LcmServerModule;
-import ch.ethz.idsc.retina.demo.jph.lidar.Urg04lxLcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
 import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TaskGui;

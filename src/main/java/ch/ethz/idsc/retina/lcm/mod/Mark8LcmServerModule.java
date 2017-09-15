@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.lidar;
+package ch.ethz.idsc.retina.lcm.mod;
 
 import java.util.Objects;
 

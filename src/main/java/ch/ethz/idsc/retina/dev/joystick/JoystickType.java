@@ -20,4 +20,8 @@ public enum JoystickType {
     this.buttons = buttons;
     this.hats = hats;
   }
+
+  public int encodingSize() {
+    return 1 + axes + 2 + hats;
+  }
 }
