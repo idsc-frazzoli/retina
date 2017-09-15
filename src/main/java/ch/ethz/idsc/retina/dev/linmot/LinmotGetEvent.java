@@ -11,8 +11,8 @@ public class LinmotGetEvent {
   public final short state_variable;
   public final int actual_position;
   public final int demand_position;
-  public final short winding_temp1;
-  public final short winding_temp2;
+  private final short winding_temp1;
+  private final short winding_temp2;
 
   public LinmotGetEvent(ByteBuffer byteBuffer) {
     status_word = byteBuffer.getShort();
@@ -21,6 +21,16 @@ public class LinmotGetEvent {
     demand_position = byteBuffer.getInt();
     winding_temp1 = byteBuffer.getShort();
     winding_temp2 = byteBuffer.getShort();
+  }
+
+  /** @return temperature of winding 1 in Celsius */
+  public double windingTemperature1() {
+    return winding_temp1 * 0.1; // TODO document conversion factor
+  }
+
+  /** @return temperature of winding 1 in Celsius */
+  public double windingTemperature2() {
+    return winding_temp2 * 0.1;
   }
 
   public String toInfoString() {

@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -22,8 +23,9 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer {
+public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;
@@ -33,9 +35,16 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final SliderExt sliderExtMVel;
   private final SliderExt sliderExtAcc;
   private final SliderExt sliderExtDec;
-  private final JTextField jTextFieldRecv;
+  // private final JTextField jTextFieldRecv;
+  private final JTextField jTextFieldStatusWord;
+  private final JTextField jTextFieldStateVariable;
+  private final JTextField jTextFieldActualPosition;
+  private final JTextField jTextFieldDemandPosition;
+  private final JTextField jTextFieldWindingTemp1;
+  private final JTextField jTextFieldWindingTemp2;
 
   public LinmotComponent() {
+    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
@@ -81,9 +90,14 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
           LinmotPutConfiguration.DECELERATION_INIT));
       sliderExtDec.addToComponent(jToolBar);
     }
-    { // reception
-      jTextFieldRecv = createReading("received");
-      datagramSocketManager.addListener(this);
+    addSeparator();
+    {
+      jTextFieldStatusWord = createReading("status word");
+      jTextFieldStateVariable = createReading("state variable");
+      jTextFieldActualPosition = createReading("actual pos.");
+      jTextFieldDemandPosition = createReading("demand pos.");
+      jTextFieldWindingTemp1 = createReading("winding temp.1");
+      jTextFieldWindingTemp2 = createReading("winding temp.2");
     }
   }
 
@@ -134,7 +148,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     try {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
-      jTextFieldRecv.setText(linmotGetEvent.toInfoString());
+      linmotGet(linmotGetEvent);
       // System.out.println(HexStrings.from(data));
       // jTextFieldRecv.setText(HexStrings.from(data));
     } catch (Exception e) {
@@ -142,6 +156,19 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
       System.out.println("fail decode, received =" + length);
       // TODO: handle exception
     }
+  }
+
+  @Override
+  public void linmotGet(LinmotGetEvent linmotGetEvent) {
+    // linmotGetEvent.toInfoString()
+    jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
+    jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
+    // TODO figure out units for position
+    jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
+    jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
+    // TODO change background
+    jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "C").toString());
+    jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "C").toString());
   }
 
   @Override

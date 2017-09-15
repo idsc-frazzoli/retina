@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -64,7 +65,17 @@ public abstract class InterfaceComponent {
     }
   }
 
-  public JToolBar createRow(String title) {
+  protected void addSeparator() {
+    JLabel jLabelW = new JLabel();
+    jLabelW.setBackground(Color.GRAY);
+    jLabelW.setOpaque(true);
+    JLabel jLabelC = new JLabel();
+    jLabelC.setBackground(Color.GRAY);
+    jLabelC.setOpaque(true);
+    addPair(jLabelW, jLabelC, 5);
+  }
+
+  protected JToolBar createRow(String title) {
     jConnectionInfoRemote.setText(connectionInfoRemote());
     jConnectionInfoLocal.setText(connectionInfoLocal());
     JToolBar jToolBar1 = new JToolBar();
@@ -81,14 +92,18 @@ public abstract class InterfaceComponent {
   }
 
   private void addPair(JComponent west, JComponent center) {
+    addPair(west, center, HEIGHT);
+  }
+
+  private void addPair(JComponent west, JComponent center, int height) {
     int width;
     // width = west.getPreferredSize().width;
-    west.setPreferredSize(new Dimension(WEST_WIDTH, HEIGHT));
-    west.setSize(new Dimension(WEST_WIDTH, HEIGHT));
+    west.setPreferredSize(new Dimension(WEST_WIDTH, height));
+    west.setSize(new Dimension(WEST_WIDTH, height));
     rowTitle.add(west);
     // ---
     width = center.getPreferredSize().width;
-    center.setPreferredSize(new Dimension(width, HEIGHT));
+    center.setPreferredSize(new Dimension(width, height));
     rowActor.add(center);
   }
 

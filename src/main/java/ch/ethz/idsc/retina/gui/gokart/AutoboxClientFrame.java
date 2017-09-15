@@ -25,11 +25,11 @@ public class AutoboxClientFrame {
     addTab(new LinmotComponent());
     addTab(new SteerComponent());
     addTab(new MiscComponent());
-    // jTabbedPane.setSelectedIndex(0);
+    jTabbedPane.setSelectedIndex(1);
     // ---
     jFrame.setContentPane(jTabbedPane);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 500, 400);
+    jFrame.setBounds(100, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {

@@ -12,10 +12,10 @@ import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
@@ -24,7 +24,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
@@ -36,10 +36,11 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   private final SliderExt sliderExtLVel;
   private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtRVel;
-  private final JTextField jTextFieldLRecv;
-  private final JTextField jTextFieldRRecv;
+  private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
+  private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
 
   public RimoComponent() {
+    datagramSocketManager.addListener(this);
     // LEFT
     {
       JToolBar jToolBar = createRow("LEFT command");
@@ -64,14 +65,21 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
       sliderExtRVel = SliderExt.wrap(new JSlider(-8000, 8000, 0));
       sliderExtRVel.addToComponent(jToolBar);
     }
+    addSeparator();
     { // reception
-      jTextFieldLRecv = createReading("LEFT recv");
-      datagramSocketManager.addListener(this);
+      assign(rimoGetFieldsL, "LEFT");
+      assign(rimoGetFieldsR, "RIGHT");
     }
-    { // reception
-      jTextFieldRRecv = createReading("RIGHT recv");
-      datagramSocketManager.addListener(this);
-    }
+  }
+
+  private void assign(RimoGetFields rimoGetFields, String side) {
+    rimoGetFields.jTF_status_word = createReading(side + " status word");
+    rimoGetFields.jTF_actual_speed = createReading(side + " actual speed");
+    rimoGetFields.jTF_rms_motor_current = createReading(side + " rms current");
+    rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
+    rimoGetFields.jTF_error_code = createReading(side + " error code");
+    rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
+    rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
   }
 
   @Override
@@ -126,12 +134,17 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     try {
       RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
       RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
-      jTextFieldLRecv.setText(rimoGetL.toInfoString());
-      jTextFieldRRecv.setText(rimoGetR.toInfoString());
-    } catch (Exception e) {
+      rimoGet(rimoGetL, rimoGetR);
+    } catch (Exception exception) {
       System.out.println("fail decode RimoGet, received=" + length);
       // TODO: handle exception
     }
+  }
+
+  @Override
+  public void rimoGet(RimoGetEvent rimoGetL, RimoGetEvent rimoGetR) {
+    rimoGetFieldsL.updateText(rimoGetL);
+    rimoGetFieldsR.updateText(rimoGetR);
   }
 
   @Override

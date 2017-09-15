@@ -74,7 +74,7 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
       @Override
       public void run() {
         try {
-          datagramSocket = openSocket(); // TODO do this outside of THREAD!
+          datagramSocket = openSocket(); // FIXME do this outside of THREAD!
           System.out.println("datagramSocket open " + !datagramSocket.isClosed());
           DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
           while (isLaunched) {

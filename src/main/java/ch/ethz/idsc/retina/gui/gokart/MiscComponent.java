@@ -17,8 +17,6 @@ import javax.swing.JToolBar;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
