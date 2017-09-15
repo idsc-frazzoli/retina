@@ -70,6 +70,7 @@ public class AutoboxClientFrame {
         // ---
       }
     });
+    joystickLcmClient.startSubscriptions();
     jFrame.setVisible(true);
   }
 
@@ -82,5 +83,6 @@ public class AutoboxClientFrame {
     jPanel.add(interfaceComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
+    joystickLcmClient.addListener(interfaceComponent);
   }
 }
