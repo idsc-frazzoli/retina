@@ -123,7 +123,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
             datagramSocketManager.send(datagramPacket);
-            System.out.println("linmot put=" + HexStrings.from(data));
+            // System.out.println("linmot put=" + HexStrings.from(data));
           } catch (Exception exception) {
             // ---
             System.out.println("LINMOT SEND FAIL");
@@ -152,8 +152,8 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
       // System.out.println(HexStrings.from(data));
       // jTextFieldRecv.setText(HexStrings.from(data));
     } catch (Exception e) {
-      System.out.println(HexStrings.from(data));
-      System.out.println("fail decode, received =" + length);
+      // System.out.println();
+      System.out.println("fail decode, received =" + length + " : " + HexStrings.from(data));
       // TODO: handle exception
     }
   }
@@ -167,8 +167,8 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     // TODO change background
-    jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "C").toString());
-    jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "C").toString());
+    jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
+    jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
   }
 
   @Override

@@ -70,26 +70,30 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
   @Override
   public void start() {
     isLaunched = true;
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          datagramSocket = openSocket(); // FIXME do this outside of THREAD!
-          System.out.println("datagramSocket open " + !datagramSocket.isClosed());
-          DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
-          while (isLaunched) {
-            datagramSocket.receive(datagramPacket); // blocking
-            listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
+    try {
+      datagramSocket = openSocket();
+      Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+          try {
+            System.out.println("datagramSocket open " + !datagramSocket.isClosed());
+            DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
+            while (isLaunched) {
+              datagramSocket.receive(datagramPacket); // blocking
+              listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
+            }
+          } catch (Exception exception) {
+            // typically prints: "Socket closed"
+            System.err.println(exception.getMessage());
           }
-        } catch (Exception exception) {
-          // typically prints: "Socket closed"
-          System.err.println(exception.getMessage());
+          System.out.println("exit thread");
         }
-        System.out.println("exit thread");
-      }
-    };
-    Thread thread = new Thread(runnable);
-    thread.start();
+      };
+      Thread thread = new Thread(runnable);
+      thread.start();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 
   @Override

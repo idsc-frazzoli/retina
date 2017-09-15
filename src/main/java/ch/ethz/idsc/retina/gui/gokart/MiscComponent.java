@@ -15,15 +15,16 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements ByteArrayConsumer {
+public class MiscComponent extends InterfaceComponent implements ByteArrayConsumer, MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -39,9 +40,12 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelSteer = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLed = new SpinnerLabel<>();
+  private final JTextField jTextFieldEmg;
+  private final JTextField jTextFieldBat;
   private final JTextField jTextField;
 
   public MiscComponent() {
+    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("resetRimoL");
       spinnerLabelRimoL.setList(COMMANDS);
@@ -72,9 +76,11 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
       spinnerLabelLed.setValueSafe(LEDCONTROL.get(0));
       spinnerLabelLed.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
+    addSeparator();
     { // reception
+      jTextFieldEmg = createReading("emergency");
+      jTextFieldBat = createReading("battery");
       jTextField = createReading("received");
-      datagramSocketManager.addListener(this);
     }
   }
 
@@ -97,7 +103,7 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
           ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           miscPutEvent.insert(byteBuffer);
-          System.out.println("misc put=" + HexStrings.from(data));
+          // System.out.println("misc put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
@@ -125,6 +131,13 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
     ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
+    miscGet(miscGetEvent);
+  }
+
+  @Override
+  public void miscGet(MiscGetEvent miscGetEvent) {
+    jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
     jTextField.setText(miscGetEvent.toInfoString());
   }
 

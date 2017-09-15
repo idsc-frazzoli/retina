@@ -18,7 +18,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
@@ -104,7 +103,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
             rimoPutEvent.speed = (short) sliderExtRVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
           }
-          System.out.println("rimo put=" + HexStrings.from(data));
+          // System.out.println("rimo put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);

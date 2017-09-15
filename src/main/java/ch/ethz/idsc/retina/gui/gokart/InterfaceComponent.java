@@ -58,7 +58,7 @@ public abstract class InterfaceComponent {
     { // start/stop connection
       JToolBar jToolBar = createRow("udp socket");
       spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
-      spinnerLabelPeriod.setValue(100); // TODO magic const
+      spinnerLabelPeriod.setValue(20); // TODO magic const
       spinnerLabelPeriod.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
       jToggleButton.addActionListener(actionListener);
       jToolBar.add(jToggleButton);
@@ -111,6 +111,8 @@ public abstract class InterfaceComponent {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
+    jTextField.setEnabled(false);
+    jTextField.setDisabledTextColor(Color.BLACK);
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
