@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.lidar;
+package ch.ethz.idsc.retina.lcm.mod;
 
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ public class Hdl32eLcmServerModule extends AbstractModule {
     String channel = "center";
     int portRay = VelodyneStatics.RAY_DEFAULT_PORT;
     int portPos = VelodyneStatics.POS_DEFAULT_PORT;
-    VelodyneLcmServer velodyneLcmServer = new VelodyneLcmServer(velodyneModel, channel, portRay, portPos);
+    velodyneLcmServer = new VelodyneLcmServer(velodyneModel, channel, portRay, portPos);
     velodyneLcmServer.start();
   }
 
