@@ -123,7 +123,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
             datagramSocketManager.send(datagramPacket);
-            System.out.println("linmot put=" + HexStrings.from(data));
+            // System.out.println("linmot put=" + HexStrings.from(data));
           } catch (Exception exception) {
             // ---
             System.out.println("LINMOT SEND FAIL");

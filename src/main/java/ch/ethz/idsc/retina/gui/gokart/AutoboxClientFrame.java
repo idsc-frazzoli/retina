@@ -12,13 +12,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
+
+import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 
 public class AutoboxClientFrame {
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final Timer timer = new Timer();
+  protected final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
 
   public AutoboxClientFrame() {
     addTab(new RimoComponent());
@@ -27,7 +32,15 @@ public class AutoboxClientFrame {
     addTab(new MiscComponent());
     jTabbedPane.setSelectedIndex(1);
     // ---
-    jFrame.setContentPane(jTabbedPane);
+    JPanel jPanel = new JPanel(new BorderLayout());
+    {
+      JToolBar jToolBar = new JToolBar();
+      jToolBar.setFloatable(false);
+      // jToolBar
+      jPanel.add(jToolBar, BorderLayout.NORTH);
+    }
+    jPanel.add(jTabbedPane, BorderLayout.CENTER);
+    jFrame.setContentPane(jPanel);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
