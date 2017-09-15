@@ -189,7 +189,11 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     if (joystickEnabled) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       double value = joystick.getLeftKnobDirectionDown();
-      sliderExtTPos.jSlider.setValue(Math.min((int) (LinmotPutConfiguration.TARGETPOS_MIN * value), LinmotPutConfiguration.TARGETPOS_MAX));
+      int pos = (int) //
+      Math.min(Math.max(LinmotPutConfiguration.TARGETPOS_MIN, //
+          (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
+          LinmotPutConfiguration.TARGETPOS_MAX);
+      sliderExtTPos.jSlider.setValue(pos);
     }
   }
 }
