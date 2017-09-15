@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-public final class GenericXboxPadJoystick extends AbstractJoystick {
+public final class GenericXboxPadJoystick extends JoystickEvent {
   @Override
   public JoystickType type() {
     return JoystickType.GENERIC_XBOX_PAD;

@@ -3,12 +3,12 @@ package ch.ethz.idsc.retina.dev.joystick;
 
 import java.nio.ByteBuffer;
 
-public abstract class AbstractJoystick {
+public abstract class JoystickEvent {
   private final byte[] _axes;
   private short _buttons;
   private final byte[] _hats;
 
-  public AbstractJoystick() {
+  public JoystickEvent() {
     JoystickType joystickType = type();
     _axes = new byte[joystickType.axes];
     _hats = new byte[joystickType.hats];

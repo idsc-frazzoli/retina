@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 
 public enum JoystickDecoder {
   ;
-  public static AbstractJoystick decode(ByteBuffer byteBuffer) {
+  public static JoystickEvent decode(ByteBuffer byteBuffer) {
     int ordinal = byteBuffer.get() & 0xff;
-    AbstractJoystick abstractJoystick = JoystickType.values()[ordinal].supplier.get();
-    abstractJoystick.decode(byteBuffer);
-    return abstractJoystick;
+    JoystickEvent joystickEvent = JoystickType.values()[ordinal].supplier.get();
+    joystickEvent.decode(byteBuffer);
+    return joystickEvent;
   }
 }
