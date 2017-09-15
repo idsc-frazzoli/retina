@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
@@ -26,7 +27,7 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer {
+public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
@@ -38,6 +39,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
   private final JTextField jTextField;
 
   public SteerComponent() {
+    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("command");
       spinnerLabelLw.setList(COMMANDS);
@@ -50,9 +52,9 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
       sliderExtLs.physics = scalar -> scalar.multiply(RealScalar.of(1e-3)).map(Round._4).Get();
       sliderExtLs.addToComponent(jToolBar);
     }
+    addSeparator();
     { // reception
       jTextField = createReading("received");
-      datagramSocketManager.addListener(this);
     }
   }
 
@@ -100,6 +102,11 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
     ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+    steerGet(steerGetEvent);
+  }
+
+  @Override
+  public void steerGet(SteerGetEvent steerGetEvent) {
     jTextField.setText(steerGetEvent.toInfoString());
   }
 

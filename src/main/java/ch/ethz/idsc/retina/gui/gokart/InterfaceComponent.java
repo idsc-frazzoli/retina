@@ -111,6 +111,8 @@ public abstract class InterfaceComponent {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
     jTextField.setEditable(false);
+    jTextField.setEnabled(false);
+    jTextField.setDisabledTextColor(Color.BLACK);
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
