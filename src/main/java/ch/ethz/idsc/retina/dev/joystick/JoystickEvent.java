@@ -15,7 +15,6 @@ public abstract class JoystickEvent {
   }
 
   protected final boolean isButtonPressed(int index) {
-    // System.out.println(String.format("%04X", _buttons));
     return (_buttons & (1 << index)) != 0;
   }
 
@@ -23,12 +22,6 @@ public abstract class JoystickEvent {
    * @return value in unit interval [0, 1] */
   protected final double getAxisValue(int index) {
     return _axes[index] / (double) Byte.MAX_VALUE;
-  }
-
-  public final void printAxes() {
-    for (int index = 0; index < _axes.length; ++index)
-      System.out.print(String.format("%7d ", _axes[index]));
-    System.out.println();
   }
 
   public final void decode(ByteBuffer byteBuffer) {
@@ -40,4 +33,14 @@ public abstract class JoystickEvent {
   }
 
   public abstract JoystickType type();
+
+  public final String toInfoString() {
+    StringBuffer stringBuffer = new StringBuffer();
+    stringBuffer.append(type().name());
+    for (int index = 0; index < _axes.length; ++index)
+      stringBuffer.append(String.format(" %4d", _axes[index]));
+    stringBuffer.append(String.format(" B=%04X", _buttons));
+    // TODO hats
+    return stringBuffer.toString();
+  }
 }
