@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
 /** extracts points at horizontal level */
 public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
-  private static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  private static final double ANGLE_FACTOR = Math.PI / 18000.0;
   // ---
   private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
@@ -42,7 +42,6 @@ public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    // TODO cos/sin can be done in a lookup table!
     final double angle = rotational * ANGLE_FACTOR;
     final float dx = (float) Math.cos(angle);
     final float dy = (float) -Math.sin(angle);

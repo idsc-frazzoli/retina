@@ -5,14 +5,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-public class OccupancyMap implements LidarSpacialEventListener {
+public class OccupancyMap implements LidarRayBlockListener {
   private static final int WIDTH = 1024;
   private static final float METER_TO_PIXEL = 50;
+  // ---
   private final BufferedImage bufferedImage = new BufferedImage(WIDTH, WIDTH, BufferedImage.TYPE_BYTE_GRAY);
   private final byte[] bytes;
   private Tensor global;
@@ -27,6 +28,7 @@ public class OccupancyMap implements LidarSpacialEventListener {
   }
 
   @Override
-  public void spacial(LidarSpacialEvent lidarSpacialEvent) {
+  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+    // TODO Auto-generated method stub
   }
 }

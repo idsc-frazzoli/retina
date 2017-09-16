@@ -12,9 +12,9 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
 public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
-  public static final float[] IR = new float[16];
-  public static final float[] IZ = new float[16];
-  public static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  public static final float[] IR = new float[LASERS];
+  public static final float[] IZ = new float[LASERS];
+  public static final double ANGLE_FACTOR = Math.PI / 18000.0;
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---
