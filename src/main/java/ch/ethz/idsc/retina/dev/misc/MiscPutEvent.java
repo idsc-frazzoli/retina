@@ -1,3 +1,4 @@
+// code by nisaak and jph
 package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;

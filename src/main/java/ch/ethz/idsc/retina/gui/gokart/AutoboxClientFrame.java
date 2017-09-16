@@ -26,7 +26,7 @@ public class AutoboxClientFrame {
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final Timer timer = new Timer();
-  protected final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
+  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
 
   public AutoboxClientFrame() {
     addTab(new RimoComponent());

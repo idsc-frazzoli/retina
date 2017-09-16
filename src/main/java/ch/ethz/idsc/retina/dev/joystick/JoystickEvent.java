@@ -35,12 +35,12 @@ public abstract class JoystickEvent {
   public abstract JoystickType type();
 
   public final String toInfoString() {
-    StringBuffer stringBuffer = new StringBuffer();
-    stringBuffer.append(type().name());
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append(type().name());
     for (int index = 0; index < _axes.length; ++index)
-      stringBuffer.append(String.format(" %4d", _axes[index]));
-    stringBuffer.append(String.format(" B=%04X", _buttons));
+      stringBuilder.append(String.format(" %4d", _axes[index]));
+    stringBuilder.append(String.format(" B=%04X", _buttons));
     // TODO hats
-    return stringBuffer.toString();
+    return stringBuilder.toString();
   }
 }

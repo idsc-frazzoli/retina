@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.util.data.Word;
 
 public enum LinmotPutConfiguration {
   ;
-  public static final int PORT = 5001;
   // ---
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("HOME", (short) 0x083f), //

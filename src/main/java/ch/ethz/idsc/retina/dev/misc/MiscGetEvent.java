@@ -6,7 +6,8 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.HexStrings;
 
 public class MiscGetEvent {
-  public static final int LENGTH = 44;
+  public static final int LENGTH = 44; // TODO not final, just we don't know how many bytes we need
+  // ---
   public final byte emergency;
   private final float battery; // TODO should be raw value
   public final byte[] data;

@@ -16,7 +16,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -26,7 +25,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, JoystickEventListener {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );

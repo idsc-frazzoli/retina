@@ -15,7 +15,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
@@ -28,7 +27,7 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener, JoystickEventListener {
+public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;

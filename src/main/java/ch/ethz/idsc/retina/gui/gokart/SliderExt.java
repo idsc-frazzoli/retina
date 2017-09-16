@@ -30,17 +30,17 @@ public class SliderExt implements ChangeListener {
 
   @Override
   public void stateChanged(ChangeEvent changeEvent) {
-    StringBuffer stringBuffer = new StringBuffer();
+    StringBuilder stringBuilder = new StringBuilder();
     if (Objects.isNull(physics)) {
-      stringBuffer.append(jSlider.getValue());
+      stringBuilder.append(jSlider.getValue());
     } else {
       Scalar scalar = physics.apply(RealScalar.of(jSlider.getValue()));
-      stringBuffer.append(scalar.toString());
+      stringBuilder.append(scalar.toString());
       String toolTip = "" + jSlider.getValue();
       jLabel.setToolTipText(toolTip);
       jSlider.setToolTipText(toolTip);
     }
-    jLabel.setText(stringBuffer.toString());
+    jLabel.setText(stringBuilder.toString());
   }
 
   public void addToComponent(JToolBar jToolBar) {
