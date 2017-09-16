@@ -48,7 +48,8 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   public void rotation(LidarRotationEvent lidarRotationEvent) {
     floatBuffer.flip();
     byteBuffer.flip();
-    listeners.forEach(listener -> listener.digest(floatBuffer, byteBuffer));
+    LidarRayBlockEvent lidarRayBlockEvent = new LidarRayBlockEvent(floatBuffer, byteBuffer);
+    listeners.forEach(listener -> listener.lidarRayBlock(lidarRayBlockEvent));
     floatBuffer.limit(limit * 3);
     floatBuffer.position(0);
     byteBuffer.limit(limit);

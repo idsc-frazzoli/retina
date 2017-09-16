@@ -1,9 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaListener;
@@ -18,7 +16,7 @@ enum Hdl32ePacketConsumerDemo {
     @SuppressWarnings("unused")
     LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
       @Override
-      public void digest(FloatBuffer fb, ByteBuffer bb) {
+      public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
         System.out.println("here");
       }
     };

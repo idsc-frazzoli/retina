@@ -15,21 +15,21 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 32;
-  private static final float[] IR = new float[32];
-  private static final float[] IZ = new float[32];
-  private static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  private static final float[] IR = new float[LASERS];
+  private static final float[] IZ = new float[LASERS];
+  private static final double ANGLE_FACTOR = Math.PI / 18000;
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
   private static final int[] ORDERING = new int[] { //
-      -23, -7, //
-      -22, -6, //
-      -21, -5, //
-      -20, -4, //
-      -19, -3, //
-      -18, -2, //
-      -17, -1, //
-      -16, +0, //
+      -23, -7, // 0
+      -22, -6, // 2
+      -21, -5, // 4
+      -20, -4, // 6
+      -19, -3, // 8
+      -18, -2, // 10
+      -17, -1, // 12
+      -16, +0, // 14, 15
       -15, +1, //
       -14, +2, //
       -13, +3, //
@@ -44,6 +44,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private int usec;
 
   public Hdl32eSpacialProvider() {
+    /** angular spacing between the lasers */
     final double inclination = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * inclination * Math.PI / 180;
