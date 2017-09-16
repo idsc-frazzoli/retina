@@ -12,7 +12,7 @@ public class PcapRealtimePlayback implements PcapPacketListener {
   }
 
   @Override
-  public void packet(int sec, int usec, byte[] data, int length) {
+  public void pcapPacket(int sec, int usec, byte[] data, int length) {
     realtimeSleeper.now(sec, usec);
   }
 }

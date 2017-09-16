@@ -18,11 +18,11 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
-public abstract class InterfaceComponent implements JoystickEventListener {
+public abstract class InterfaceComponent implements JoystickListener {
   public static final int MAX_USHORT = 65535;
   // ---
   public static final int WEST_WIDTH = 140;
@@ -36,7 +36,7 @@ public abstract class InterfaceComponent implements JoystickEventListener {
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
   public Timer timer = null;
-  ActionListener actionListener = new ActionListener() {
+  private ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       boolean isSelected = jToggleButton.isSelected();
@@ -44,7 +44,7 @@ public abstract class InterfaceComponent implements JoystickEventListener {
       connectAction(spinnerLabelPeriod.getValue(), isSelected);
     }
   };
-  protected boolean joystickEnabled;
+  private boolean isJoystickEnabled;
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
@@ -136,6 +136,10 @@ public abstract class InterfaceComponent implements JoystickEventListener {
   public abstract String connectionInfoLocal();
 
   public void setJoystickEnabled(boolean status) {
-    joystickEnabled = status;
+    isJoystickEnabled = status;
+  }
+
+  protected boolean isJoystickEnabled() {
+    return isJoystickEnabled;
   }
 }

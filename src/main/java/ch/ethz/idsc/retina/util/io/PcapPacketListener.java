@@ -6,5 +6,5 @@ public interface PcapPacketListener {
    * @param usec ranges from [0, 1, ..., 999999]
    * @param data
    * @param length */
-  void packet(int sec, int usec, byte[] data, int length);
+  void pcapPacket(int sec, int usec, byte[] data, int length);
 }

@@ -39,11 +39,11 @@ public final class GenericXboxPadJoystick extends JoystickEvent {
     return isButtonPressed(7);
   }
 
-  public boolean isButtonPressedAxisLeft() {
+  public boolean isButtonPressedLeftKnob() {
     return isButtonPressed(8);
   }
 
-  public boolean isButtonPressedAxisRight() {
+  public boolean isButtonPressedRightKnob() {
     return isButtonPressed(9);
   }
 

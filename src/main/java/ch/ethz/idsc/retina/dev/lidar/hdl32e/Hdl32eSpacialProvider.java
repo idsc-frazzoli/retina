@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
@@ -15,21 +15,21 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 32;
-  private static final float[] IR = new float[32];
-  private static final float[] IZ = new float[32];
-  private static final double ANGLE_FACTOR = 2 * Math.PI / 36000.0;
+  private static final float[] IR = new float[LASERS];
+  private static final float[] IZ = new float[LASERS];
+  private static final double ANGLE_FACTOR = Math.PI / 18000;
   /** quote from the user's manual, p.12:
    * "the interleaving firing pattern is designed to avoid
    * potential ghosting caused primarily by retro-reflection" */
   private static final int[] ORDERING = new int[] { //
-      -23, -7, //
-      -22, -6, //
-      -21, -5, //
-      -20, -4, //
-      -19, -3, //
-      -18, -2, //
-      -17, -1, //
-      -16, +0, //
+      -23, -7, // 0
+      -22, -6, // 2
+      -21, -5, // 4
+      -20, -4, // 6
+      -19, -3, // 8
+      -18, -2, // 10
+      -17, -1, // 12
+      -16, +0, // 14, 15
       -15, +1, //
       -14, +2, //
       -13, +3, //
@@ -39,11 +39,12 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
       -9, +7, //
       -8, +8 };
   // ---
-  private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
 
   public Hdl32eSpacialProvider() {
+    /** angular spacing between the lasers */
     final double inclination = 4.0 / 3.0;
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = ORDERING[laser] * inclination * Math.PI / 180;
@@ -53,7 +54,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
@@ -91,7 +92,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;
         LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }
   }

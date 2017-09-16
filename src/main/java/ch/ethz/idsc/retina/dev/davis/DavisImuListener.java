@@ -10,6 +10,6 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
  * 
  * several of these events are collected into a {@link DavisImuFrame}
  * to which a {@link DavisImuFrameListener} subscribes to */
-public interface DavisImuEventListener extends DavisEventListener {
-  void imu(DavisImuEvent davisImuEvent);
+public interface DavisImuListener extends DavisEventListener {
+  void davisImu(DavisImuEvent davisImuEvent);
 }

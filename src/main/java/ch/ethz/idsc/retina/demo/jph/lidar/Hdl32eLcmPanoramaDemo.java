@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePanoramaProvider;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 
-/** displays hdl32e live data stream as depth and intensity panorama */
+/** displays hdl32e lcm messages as depth and intensity panorama */
 enum Hdl32eLcmPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {

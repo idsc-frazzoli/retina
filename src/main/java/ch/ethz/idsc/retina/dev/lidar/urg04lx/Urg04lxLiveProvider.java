@@ -15,27 +15,42 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
 /** receives binary packets via inputstream from urg04lx process
- * and distributes to listeners */
+ * and distributes to listeners
+ * 
+ * requires that the binary "urg_binaryprovider" is located at
+ * /home/{username}/Public/urg_binaryprovider
+ * 
+ * https://sourceforge.net/projects/urgnetwork/files/urg_library/
+ * 
+ * Quote from datasheet:
+ * The light source of the sensor is infrared laser of
+ * wavelength 785nm with laser class 1 safety
+ * Max. Distance: 4000[mm]
+ * 
+ * The sensor is designed for indoor use only.
+ * The sensor is not a safety device/tool.
+ * The sensor is not for use in military applications.
+ * 
+ * typically the distances up to 5[m] can be measured correctly. */
 public enum Urg04lxLiveProvider implements StartAndStoppable {
   INSTANCE;
   public static final String EXECUTABLE = "urg_binaryprovider";
   // ---
   private OutputStream outputStream;
-  private final byte[] array = new byte[2 + 8 + Urg04lxDevice.POINTS * 2];
+  /** 2 bytes header, 8 bytes timestamp, each point as short */
+  private final byte[] array = new byte[2 + 8 + Urg04lxDevice.MAX_POINTS * 2];
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
+  private boolean isLaunched = false;
 
   public void addListener(ByteArrayConsumer byteArrayConsumer) {
     listeners.add(byteArrayConsumer);
   }
 
-  private boolean isLaunched = false;
-
   @Override
   public void start() { // non-blocking
-    final File dir = UserHome.file("Public");
-    ProcessBuilder processBuilder = //
-        new ProcessBuilder(new File(dir, EXECUTABLE).toString());
-    processBuilder.directory(dir);
+    final File directory = UserHome.file("Public");
+    ProcessBuilder processBuilder = new ProcessBuilder(new File(directory, EXECUTABLE).toString());
+    processBuilder.directory(directory);
     try {
       Process process = processBuilder.start();
       outputStream = process.getOutputStream();

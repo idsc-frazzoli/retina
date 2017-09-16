@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
-import ch.ethz.idsc.retina.dev.davis.DavisImuEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
 
 /** maps the chip raw dvs/aps data to the standard coordinate system (x,y) where
  * (0,0) corresponds to left-upper corner, and
@@ -24,10 +24,10 @@ public class Davis240cDecoder implements DavisDecoder {
   private static final int RESET_READ = 0;
   private static final int IMU = 0x0c00;
   // ---
-  private final List<DavisDvsEventListener> dvsDavisEventListeners = new LinkedList<>();
-  private final List<DavisApsEventListener> sigDavisEventListeners = new LinkedList<>();
-  private final List<DavisApsEventListener> rstDavisEventListeners = new LinkedList<>();
-  private final List<DavisImuEventListener> imuDavisEventListeners = new LinkedList<>();
+  private final List<DavisDvsListener> dvsDavisEventListeners = new LinkedList<>();
+  private final List<DavisApsListener> sigDavisEventListeners = new LinkedList<>();
+  private final List<DavisApsListener> rstDavisEventListeners = new LinkedList<>();
+  private final List<DavisImuListener> imuDavisEventListeners = new LinkedList<>();
 
   @Override
   public void read(ByteBuffer byteBuffer) { // BIG_ENDIAN
@@ -44,43 +44,43 @@ public class Davis240cDecoder implements DavisDecoder {
     if (isDvs) {
       final int i = (data >> 11) & 1; // length 1 bit
       DavisDvsEvent dvsDavisEvent = new DavisDvsEvent(time, LAST_X - x, LAST_Y - y, i);
-      dvsDavisEventListeners.forEach(listener -> listener.dvs(dvsDavisEvent));
+      dvsDavisEventListeners.forEach(listener -> listener.davisDvs(dvsDavisEvent));
     } else {
       final int read = data & 0x0c00;
       if (read == SIGNAL_READ) { // signal read
         final int adc = data & ADC_MAX;
         DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, LAST_Y - y, ADC_MAX - adc);
-        sigDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
+        sigDavisEventListeners.forEach(listener -> listener.davisAps(apsDavisEvent));
       } else //
       if (read == RESET_READ) { // reset read
         final int adc = data & ADC_MAX;
         DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, LAST_Y - y, ADC_MAX - adc);
-        rstDavisEventListeners.forEach(listener -> listener.aps(apsDavisEvent));
+        rstDavisEventListeners.forEach(listener -> listener.davisAps(apsDavisEvent));
       } else //
       if (read == IMU) { // imu
         DavisImuEvent imuDavisEvent = new DavisImuEvent(time, data);
-        imuDavisEventListeners.forEach(listener -> listener.imu(imuDavisEvent));
+        imuDavisEventListeners.forEach(listener -> listener.davisImu(imuDavisEvent));
       }
     }
   }
 
   @Override
-  public void addDvsListener(DavisDvsEventListener listener) {
+  public void addDvsListener(DavisDvsListener listener) {
     dvsDavisEventListeners.add(listener);
   }
 
   @Override
-  public void addSigListener(DavisApsEventListener listener) {
+  public void addSigListener(DavisApsListener listener) {
     sigDavisEventListeners.add(listener);
   }
 
   @Override
-  public void addRstListener(DavisApsEventListener listener) {
+  public void addRstListener(DavisApsListener listener) {
     rstDavisEventListeners.add(listener);
   }
 
   @Override
-  public void addImuListener(DavisImuEventListener listener) {
+  public void addImuListener(DavisImuListener listener) {
     imuDavisEventListeners.add(listener);
   }
 

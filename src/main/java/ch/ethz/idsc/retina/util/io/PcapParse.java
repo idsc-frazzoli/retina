@@ -54,7 +54,7 @@ public class PcapParse {
         // packet data
         int number = inputStream.read(packet_data, 0, length);
         _assert(number == length);
-        pcapPacketListeners.forEach(listener -> listener.packet(sec, usec, packet_data, length_data));
+        pcapPacketListeners.forEach(listener -> listener.pcapPacket(sec, usec, packet_data, length_data));
       }
     }
   }

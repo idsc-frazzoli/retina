@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisTallyEventProvider {
@@ -29,7 +29,7 @@ public class DavisTallyEventProvider {
         davisTallyEvent.setResetBlock(time[0], time[time.length - 1]);
     }
   };
-  public final DavisDvsEventListener dvsListener = davisDvsEvent -> {
+  public final DavisDvsListener dvsListener = davisDvsEvent -> {
     if (isActive())
       davisTallyEvent.register(davisDvsEvent.time);
   };

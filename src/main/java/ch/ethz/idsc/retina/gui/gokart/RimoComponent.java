@@ -16,7 +16,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -26,7 +25,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, JoystickEventListener {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
@@ -76,10 +75,13 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   private void assign(RimoGetFields rimoGetFields, String side) {
     rimoGetFields.jTF_status_word = createReading(side + " status word");
+    // TODO NRJ background according to difference from target and actual speed
     rimoGetFields.jTF_actual_speed = createReading(side + " actual speed");
     rimoGetFields.jTF_rms_motor_current = createReading(side + " rms current");
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
+    // TODO NRJ background according to error code
     rimoGetFields.jTF_error_code = createReading(side + " error code");
+    // TODO NRJ background according to temperature
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
   }
@@ -163,7 +165,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
-    if (joystickEnabled) {
+    if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       if (joystick.isButtonPressedBack()) {
         sign = -1;

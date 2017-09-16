@@ -138,8 +138,9 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public void miscGet(MiscGetEvent miscGetEvent) {
     jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    // TODO NRJ give warning
     jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
-    jTextField.setText(miscGetEvent.toInfoString());
+    jTextField.setText(miscGetEvent.getRemainingHex());
   }
 
   @Override

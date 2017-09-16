@@ -15,7 +15,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
@@ -28,7 +27,7 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener, JoystickEventListener {
+public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;
@@ -38,11 +37,12 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final SliderExt sliderExtMVel;
   private final SliderExt sliderExtAcc;
   private final SliderExt sliderExtDec;
-  // private final JTextField jTextFieldRecv;
+  // ---
   private final JTextField jTextFieldStatusWord;
   private final JTextField jTextFieldStateVariable;
   private final JTextField jTextFieldActualPosition;
   private final JTextField jTextFieldDemandPosition;
+  // TODO NRJ set background color of field according to temperature
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
 
@@ -186,7 +186,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
-    if (joystickEnabled) {
+    if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       double value = joystick.getLeftKnobDirectionDown();
       int pos = (int) //

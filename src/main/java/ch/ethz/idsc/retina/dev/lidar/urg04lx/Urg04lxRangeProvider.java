@@ -7,12 +7,12 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 
-public class Urg04lxEventProvider implements LidarRayDataListener {
+public class Urg04lxRangeProvider implements LidarRayDataListener {
   private static final double MILLIMETER_TO_METER = 0.001;
   // ---
-  private final List<Urg04lxEventListener> listeners = new LinkedList<>();
+  private final List<Urg04lxRangeListener> listeners = new LinkedList<>();
 
-  public void addListener(Urg04lxEventListener urg04lxEventListener) {
+  public void addListener(Urg04lxRangeListener urg04lxEventListener) {
     listeners.add(urg04lxEventListener);
   }
 
@@ -25,10 +25,10 @@ public class Urg04lxEventProvider implements LidarRayDataListener {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    double[] range = new double[Urg04lxDevice.POINTS];
-    for (int index = 0; index < Urg04lxDevice.POINTS; ++index)
+    double[] range = new double[Urg04lxDevice.MAX_POINTS];
+    for (int index = 0; index < Urg04lxDevice.MAX_POINTS; ++index)
       range[index] = (byteBuffer.getShort() & 0xffff) * MILLIMETER_TO_METER;
-    Urg04lxEvent urg04lxEvent = new Urg04lxEvent(usec, range);
+    Urg04lxRangeEvent urg04lxEvent = new Urg04lxRangeEvent(usec, range);
     listeners.forEach(listener -> listener.range(urg04lxEvent));
   }
 }

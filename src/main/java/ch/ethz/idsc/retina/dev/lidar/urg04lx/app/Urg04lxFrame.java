@@ -10,8 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 
 /** {@link Urg04lxFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
@@ -28,7 +28,7 @@ import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Urg04lxFrame implements Urg04lxEventListener {
+public class Urg04lxFrame implements Urg04lxRangeListener {
   public final JFrame jFrame = new JFrame();
   private final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
@@ -55,18 +55,8 @@ public class Urg04lxFrame implements Urg04lxEventListener {
   }
 
   @Override
-  public void range(Urg04lxEvent urg04lxEvent) {
+  public void range(Urg04lxRangeEvent urg04lxEvent) {
     urg04lxRender.setEvent(urg04lxEvent);
     jComponent.repaint();
   }
-  //
-  // @Override
-  // public void timestamp(int usec, int type) {
-  // // ---
-  // }
-  //
-  // @Override
-  // public void scan(int rotational, ByteBuffer byteBuffer) {
-  // range(Urg04lxEvent.fromByteBuffer(byteBuffer));
-  // }
 }

@@ -13,24 +13,19 @@ import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-/** class hosts a thread to listen to incoming messages
+/** implementation hosts a thread to listen to incoming messages
  * 
- * the socket is opened when start() is called
- * the socket is closed when stop() is called
+ * <ul>
+ * <li>the socket is opened when start() is called
+ * <li>the socket is closed when stop() is called
+ * </ul>
  * 
- * reception callback and send() are available only when the socket is open,
- * i.e. in between a start() and a stop() call */
+ * <p>reception callback and send() are available only when the socket is open,
+ * i.e. in between a start() and a stop() call
+ * 
+ * <p>the implementation is used to communicate with the Velodyne lidars,
+ * Quanergy lidars, and the dSpace micro-Autobox */
 public abstract class DatagramSocketManager implements StartAndStoppable {
-  public static DatagramSocketManager local(byte[] bytes, int port) {
-    return new DatagramSocketManager(bytes) {
-      @Override
-      DatagramSocket openSocket() throws SocketException {
-        System.out.println("listening on port=" + port);
-        return new DatagramSocket(port);
-      }
-    };
-  }
-
   /** Quote from DatagramSocket javadoc:
    * 
    * Creates a datagram socket, bound to the specified local
@@ -45,14 +40,23 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
   public static DatagramSocketManager local(byte[] bytes, int port, String laddr) {
     return new DatagramSocketManager(bytes) {
       @Override
-      DatagramSocket openSocket() throws SocketException, UnknownHostException {
-        System.out.println("listening on port=" + port + " " + laddr);
+      DatagramSocket private_createSocket() throws SocketException, UnknownHostException {
         return new DatagramSocket(port, InetAddress.getByName(laddr));
       }
     };
   }
-  // ---
 
+  @Deprecated // TODO test veoldyne with constructor below, why not also specify the laddr!
+  public static DatagramSocketManager local(byte[] bytes, int port) {
+    return new DatagramSocketManager(bytes) {
+      @Override
+      DatagramSocket private_createSocket() throws SocketException {
+        return new DatagramSocket(port);
+      }
+    };
+  }
+
+  // ---
   /** bytes for reception of data */
   private final byte[] bytes;
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
@@ -71,7 +75,7 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
   public void start() {
     isLaunched = true;
     try {
-      datagramSocket = openSocket();
+      datagramSocket = private_createSocket();
       Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -106,6 +110,10 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
     }
   }
 
+  /** send given datagramPacket via open socket
+   * 
+   * @param datagramPacket
+   * @throws IOException */
   public void send(DatagramPacket datagramPacket) throws IOException {
     if (Objects.isNull(datagramSocket))
       System.err.println("still has to invoke start!");
@@ -116,5 +124,5 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
     return datagramSocket;
   }
 
-  abstract DatagramSocket openSocket() throws SocketException, UnknownHostException;
+  abstract DatagramSocket private_createSocket() throws SocketException, UnknownHostException;
 }

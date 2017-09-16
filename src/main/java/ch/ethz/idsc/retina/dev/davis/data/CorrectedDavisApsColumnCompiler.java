@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
 import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisApsCorrection;
  * aps 1151435 ( 195, 1) 615
  * aps 1151435 ( 195, 2) 618 */
 // TODO code is not sufficiently generic due to the magic const
-public class CorrectedDavisApsColumnCompiler implements DavisApsEventListener {
+public class CorrectedDavisApsColumnCompiler implements DavisApsListener {
   private static final int LAST_Y = 179;
   private static final int LENGTH = 4 + 180;
   // ---
@@ -33,7 +33,7 @@ public class CorrectedDavisApsColumnCompiler implements DavisApsEventListener {
   }
 
   @Override
-  public void aps(DavisApsEvent davisApsEvent) {
+  public void davisAps(DavisApsEvent davisApsEvent) {
     if (davisApsEvent.y == 0) {
       byteBuffer.position(0);
       byteBuffer.putInt(davisApsEvent.time); // prepend time

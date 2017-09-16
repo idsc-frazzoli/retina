@@ -17,7 +17,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -29,7 +28,7 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener, JoystickEventListener {
+public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener {
   public static final int AMP = 1000;
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("OFF", (byte) 0), //
@@ -110,7 +109,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
-    jTextField.setText(steerGetEvent.toInfoString());
+    jTextField.setText(steerGetEvent.getRemainingInHex());
   }
 
   @Override
@@ -125,7 +124,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
-    if (joystickEnabled) {
+    if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       double value = -joystick.getRightKnobDirectionRight();
       sliderExtTorque.jSlider.setValue((int) (AMP * value));

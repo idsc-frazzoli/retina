@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.TimedImageListener;
@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of fixed duration
  * positive events appear in white color
  * negative events appear in black color */
-public class AccumulatedEventsImage implements DavisDvsEventListener {
+public class AccumulatedEventsImage implements DavisDvsListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   private final int width;
@@ -47,7 +47,7 @@ public class AccumulatedEventsImage implements DavisDvsEventListener {
   }
 
   @Override
-  public void dvs(DavisDvsEvent dvsDavisEvent) {
+  public void davisDvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     final int delta = dvsDavisEvent.time - last;
