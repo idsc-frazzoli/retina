@@ -22,6 +22,7 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 
 public class AutoboxClientFrame {
+  // TODO NRJ reduce max speed when using joystick in gui
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
@@ -39,7 +40,6 @@ public class AutoboxClientFrame {
     {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
-      // jToolBar
       JToggleButton jToggle = new JToggleButton("Joystick");
       jToggle.addActionListener(new ActionListener() {
         @Override
@@ -59,15 +59,9 @@ public class AutoboxClientFrame {
     jFrame.setBounds(100, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(WindowEvent windowEvent) {
         list.forEach(interfaceComponent -> interfaceComponent.connectAction(100, false));
         timer.cancel();
-        System.out.println("cancel");
-      }
-
-      @Override
-      public void windowClosed(WindowEvent e) {
-        // ---
       }
     });
     joystickLcmClient.startSubscriptions();

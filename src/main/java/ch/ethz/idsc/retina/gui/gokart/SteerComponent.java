@@ -109,7 +109,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
-    jTextField.setText(steerGetEvent.toInfoString());
+    jTextField.setText(steerGetEvent.getRemainingInHex());
   }
 
   @Override
@@ -124,7 +124,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
-    if (joystickEnabled) {
+    if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       double value = -joystick.getRightKnobDirectionRight();
       sliderExtTorque.jSlider.setValue((int) (AMP * value));

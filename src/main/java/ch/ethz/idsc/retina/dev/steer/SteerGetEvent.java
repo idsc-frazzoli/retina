@@ -5,19 +5,20 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.HexStrings;
 
+/** information received from micro-autobox about steering */
 public class SteerGetEvent {
-  // TODO not final number, but we don't know how many we need and what the bytes mean
+  // TODO NRJ not final number, but we don't know how many we need and what the bytes mean
   public static final int LENGTH = 44;
   // ---
-  public final byte[] data;
+  public final byte[] remaining;
 
   public SteerGetEvent(ByteBuffer byteBuffer) {
     int length = byteBuffer.remaining();
-    data = new byte[length];
-    byteBuffer.get(data);
+    remaining = new byte[length];
+    byteBuffer.get(remaining);
   }
 
-  public String toInfoString() {
-    return HexStrings.from(data);
+  public String getRemainingInHex() {
+    return HexStrings.from(remaining);
   }
 }

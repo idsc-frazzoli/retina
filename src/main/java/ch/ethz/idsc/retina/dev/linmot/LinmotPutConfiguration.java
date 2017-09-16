@@ -20,6 +20,7 @@ public enum LinmotPutConfiguration {
       Word.createShort("ZEROS", (short) 0x0000) // <- this message may not be needed
   );
   // ---
+  // TODO NRJ document empirical justification for all magic numbers
   public static final int TARGETPOS_MIN = -500;
   public static final int TARGETPOS_MAX = -48;
   public static final int TARGETPOS_INIT = -50;

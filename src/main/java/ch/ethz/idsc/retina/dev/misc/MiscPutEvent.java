@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;
 
+/** misc information sent to micro-autobox */
 public class MiscPutEvent {
   public static final int LENGTH = 5;
   // ---

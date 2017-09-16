@@ -37,11 +37,12 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final SliderExt sliderExtMVel;
   private final SliderExt sliderExtAcc;
   private final SliderExt sliderExtDec;
-  // private final JTextField jTextFieldRecv;
+  // ---
   private final JTextField jTextFieldStatusWord;
   private final JTextField jTextFieldStateVariable;
   private final JTextField jTextFieldActualPosition;
   private final JTextField jTextFieldDemandPosition;
+  // TODO NRJ set background color of field according to temperature
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
 
@@ -185,7 +186,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
-    if (joystickEnabled) {
+    if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       double value = joystick.getLeftKnobDirectionDown();
       int pos = (int) //
