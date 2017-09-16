@@ -7,8 +7,12 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataProvider;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Urg04lxDecoder implements LidarRayDataProvider {
+  /** 'U' 'B' as short in little endian
+   * "BU" == Binary Urg */
+  private static final short HEADER = 0x4255;
   private static final int ROTATION = 0;
   // ---
   private final List<LidarRayDataListener> listeners = new LinkedList<>();
@@ -24,7 +28,9 @@ public class Urg04lxDecoder implements LidarRayDataProvider {
   }
 
   public void lasers(ByteBuffer byteBuffer) {
-    byteBuffer.getShort(); // header
+    // header 1st byte == 'U', 2nd byte == 'B'
+    short header = byteBuffer.getShort();
+    GlobalAssert.that(header == HEADER);
     long timestamp = byteBuffer.getLong(); // 8 byte
     listeners.forEach(listeners -> listeners.timestamp((int) timestamp, 0));
     // ---

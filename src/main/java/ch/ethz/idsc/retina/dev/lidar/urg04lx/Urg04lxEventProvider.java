@@ -25,8 +25,8 @@ public class Urg04lxEventProvider implements LidarRayDataListener {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    double[] range = new double[Urg04lxDevice.POINTS];
-    for (int index = 0; index < Urg04lxDevice.POINTS; ++index)
+    double[] range = new double[Urg04lxDevice.MAX_POINTS];
+    for (int index = 0; index < Urg04lxDevice.MAX_POINTS; ++index)
       range[index] = (byteBuffer.getShort() & 0xffff) * MILLIMETER_TO_METER;
     Urg04lxEvent urg04lxEvent = new Urg04lxEvent(usec, range);
     listeners.forEach(listener -> listener.range(urg04lxEvent));

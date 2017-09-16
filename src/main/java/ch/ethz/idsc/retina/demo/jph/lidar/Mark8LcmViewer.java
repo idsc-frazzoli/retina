@@ -12,7 +12,8 @@ import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
 enum Mark8LcmViewer {
   ;
   public static void main(String[] args) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.create3d(30000 * 8);
+    // TODO crude upper bound
+    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(30000 * 8, 3);
     Mark8SpacialProvider mark8SpacialProvider = new Mark8SpacialProvider();
     mark8SpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();

@@ -38,7 +38,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
   // ---
   private OutputStream outputStream;
   /** 2 bytes header, 8 bytes timestamp, each point as short */
-  private final byte[] array = new byte[2 + 8 + Urg04lxDevice.POINTS * 2];
+  private final byte[] array = new byte[2 + 8 + Urg04lxDevice.MAX_POINTS * 2];
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
   private boolean isLaunched = false;
 
