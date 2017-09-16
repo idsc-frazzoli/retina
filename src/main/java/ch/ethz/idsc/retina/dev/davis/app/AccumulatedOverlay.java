@@ -11,7 +11,7 @@ import java.util.Objects;
 import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.red.Min;
 /** synthesizes grayscale images based on incoming events during intervals of fixed duration
  * positive events appear in white color
  * negative events appear in black color */
-public class AccumulatedOverlay implements DavisDvsEventListener {
+public class AccumulatedOverlay implements DavisDvsListener {
   private static final Scalar ALPHA = RealScalar.of(255);
   // ---
   private final List<TimedImageListener> listeners = new LinkedList<>();
@@ -88,7 +88,7 @@ public class AccumulatedOverlay implements DavisDvsEventListener {
   }
 
   @Override
-  public void dvs(DavisDvsEvent dvsDavisEvent) {
+  public void davisDvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     if (dvsDavisEvent.time - last < 0) {

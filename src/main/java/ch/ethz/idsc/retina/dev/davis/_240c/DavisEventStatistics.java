@@ -1,15 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisEvent;
-import ch.ethz.idsc.retina.dev.davis.DavisImuEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class DavisEventStatistics implements //
-    DavisDvsEventListener, DavisApsEventListener, DavisImuEventListener {
+    DavisDvsListener, DavisApsListener, DavisImuListener {
   private static final double SEC_USEC = 1e-6;
   private static final double SEC_NSEC = 1e-9;
   // ---
@@ -24,13 +24,13 @@ public class DavisEventStatistics implements //
   private long jump = 0;
 
   @Override
-  public void dvs(DavisDvsEvent davisDvsEvent) {
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
     _trackTime(davisDvsEvent);
     ++dvs;
   }
 
   @Override
-  public void aps(DavisApsEvent davisApsEvent) {
+  public void davisAps(DavisApsEvent davisApsEvent) {
     _trackTime(davisApsEvent);
     ++aps;
     if (davisApsEvent.x == 0 && davisApsEvent.y == 0)
@@ -38,7 +38,7 @@ public class DavisEventStatistics implements //
   }
 
   @Override
-  public void imu(DavisImuEvent davisImuEvent) {
+  public void davisImu(DavisImuEvent davisImuEvent) {
     _trackTime(davisImuEvent);
     ++imu;
     // System.out.println(String.format("%08x", imuDavisEvent.data));

@@ -18,11 +18,11 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
-public abstract class InterfaceComponent implements JoystickEventListener {
+public abstract class InterfaceComponent implements JoystickListener {
   public static final int MAX_USHORT = 65535;
   // ---
   public static final int WEST_WIDTH = 140;

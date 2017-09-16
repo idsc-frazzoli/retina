@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
@@ -14,12 +14,12 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
   private static final double ANGLE_FACTOR = Math.PI / 18000.0;
   // ---
-  private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
 
   @Override
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
@@ -56,7 +56,7 @@ public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
       coords[0] = range * dx;
       coords[1] = range * dy;
       LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-      listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+      listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
     }
   }
 }

@@ -24,7 +24,7 @@ public class Hdl32ePanoramaWriter implements LidarPanoramaListener {
   }
 
   @Override
-  public void panorama(LidarPanorama lidarPanorama) {
+  public void lidarPanorama(LidarPanorama lidarPanorama) {
     if (60 < frames && frames < 240) // FIXME not final
       try {
         BufferedImage subImage = lidarPanorama.distances().getSubimage(0, 0, lidarPanorama.getWidth(), 32);

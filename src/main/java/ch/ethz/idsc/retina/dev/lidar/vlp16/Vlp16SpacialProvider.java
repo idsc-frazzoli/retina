@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 
 /** converts firing data to spacial events with time, 3d-coordinates and intensity */
@@ -18,7 +18,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---
-  private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO magic const
   private int usec;
 
@@ -40,7 +40,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
@@ -66,7 +66,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;
         LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }
   }

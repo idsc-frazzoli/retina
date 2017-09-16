@@ -6,11 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEventListener;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-public class Urg04lxAnimationWriter implements Urg04lxEventListener {
+public class Urg04lxAnimationWriter implements Urg04lxRangeListener {
   private final AnimationWriter animationWriter;
   private final Dimension dimension;
   private final BufferedImage image;
@@ -25,7 +25,7 @@ public class Urg04lxAnimationWriter implements Urg04lxEventListener {
   }
 
   @Override
-  public void range(Urg04lxEvent urg04lxEvent) {
+  public void range(Urg04lxRangeEvent urg04lxEvent) {
     urg04lxRender.setEvent(urg04lxEvent);
     urg04lxRender.render((Graphics2D) image.getGraphics(), dimension);
     try {

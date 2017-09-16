@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
 
 /** collects complete image of latest reset aps */
-public class ResetDavisApsCorrection implements DavisApsCorrection, DavisApsEventListener {
+public class ResetDavisApsCorrection implements DavisApsCorrection, DavisApsListener {
   /** alignment column 0, column 1, ... */
   private final int[] pitchblack;
   private int count = -1;
@@ -25,7 +25,7 @@ public class ResetDavisApsCorrection implements DavisApsCorrection, DavisApsEven
   }
 
   @Override
-  public void aps(DavisApsEvent davisApsEvent) {
+  public void davisAps(DavisApsEvent davisApsEvent) {
     // TODO use incremental method
     pitchblack[davisApsEvent.y + davisApsEvent.x * 180] = davisApsEvent.adc();
   }

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
@@ -21,7 +21,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
    * points closer than 2[cm] == 0.02[m] are discarded */
   public static final double THRESHOLD = 0.02; // [m]
   // ---
-  private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener> listeners = new LinkedList<>();
   // ---
   private final int dimensions;
   private final float[] DIRX;
@@ -45,7 +45,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
@@ -67,7 +67,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
         coords[0] = DIRX[index] * dist_m;
         coords[1] = DIRY[index] * dist_m;
         LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 0xff);
-        listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }
   }

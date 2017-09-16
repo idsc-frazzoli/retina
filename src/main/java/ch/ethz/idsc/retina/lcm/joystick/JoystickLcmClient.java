@@ -9,7 +9,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEventListener;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
@@ -19,13 +19,13 @@ import lcm.lcm.LCMSubscriber;
 
 public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
   private final JoystickType joystickType;
-  private final List<JoystickEventListener> listeners = new LinkedList<>();
+  private final List<JoystickListener> listeners = new LinkedList<>();
 
   public JoystickLcmClient(JoystickType joystickType) {
     this.joystickType = joystickType;
   }
 
-  public void addListener(JoystickEventListener joystickEventListener) {
+  public void addListener(JoystickListener joystickEventListener) {
     listeners.add(joystickEventListener);
   }
 

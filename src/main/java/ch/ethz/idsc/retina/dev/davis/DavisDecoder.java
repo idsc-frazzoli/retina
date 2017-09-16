@@ -18,11 +18,11 @@ public interface DavisDecoder {
   void read(int data, int time);
 
   /** @param davisEventListener to subscribe to dvs, aps, or imu events */
-  void addImuListener(DavisImuEventListener listener);
+  void addImuListener(DavisImuListener listener);
 
-  void addDvsListener(DavisDvsEventListener listener);
+  void addDvsListener(DavisDvsListener listener);
 
-  void addRstListener(DavisApsEventListener listener);
+  void addRstListener(DavisApsListener listener);
 
-  void addSigListener(DavisApsEventListener listener);
+  void addSigListener(DavisApsListener listener);
 }

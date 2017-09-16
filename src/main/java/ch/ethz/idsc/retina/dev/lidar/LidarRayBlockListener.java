@@ -2,8 +2,6 @@
 package ch.ethz.idsc.retina.dev.lidar;
 
 public interface LidarRayBlockListener {
-  /** @param floatBuffer
-   * @param byteBuffer */
-  // TODO probably should provide time info
+  /** @param lidarRayBlockEvent */
   void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent);
 }

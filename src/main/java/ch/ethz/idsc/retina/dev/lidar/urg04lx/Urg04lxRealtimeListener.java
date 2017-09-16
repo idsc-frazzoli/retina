@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.lidar.urg04lx;
 import ch.ethz.idsc.retina.util.RealtimeSleeper;
 
 /** slows down playback of urg04lx recording to factor of real-time */
-public class Urg04lxRealtimeListener implements Urg04lxEventListener {
+public class Urg04lxRealtimeListener implements Urg04lxRangeListener {
   private static final long MILLI_TO_NANO = 1_000_000L;
   // ---
   private final RealtimeSleeper realtimeSleeper;
@@ -14,7 +14,7 @@ public class Urg04lxRealtimeListener implements Urg04lxEventListener {
   }
 
   @Override
-  public void range(Urg04lxEvent urg04lxEvent) {
+  public void range(Urg04lxRangeEvent urg04lxEvent) {
     realtimeSleeper.now(urg04lxEvent.timestamp * MILLI_TO_NANO);
   }
 }

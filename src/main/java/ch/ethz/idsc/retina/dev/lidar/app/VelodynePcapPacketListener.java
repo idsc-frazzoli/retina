@@ -30,7 +30,7 @@ public class VelodynePcapPacketListener implements PcapPacketListener {
   }
 
   @Override
-  public void packet(int sec, int usec, byte[] packet_data, int length) {
+  public void pcapPacket(int sec, int usec, byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     /** the answer to life the universe and everything

@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.dev.lidar.VelodynePosEventListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** access to a single firing packet containing
@@ -18,10 +18,10 @@ public class Vlp16Decoder implements VelodyneDecoder {
   private static final byte DUAL = 0x39;
   // ---
   private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
-  private final List<VelodynePosEventListener> posListeners = new LinkedList<>();
+  private final List<VelodynePosListener> posListeners = new LinkedList<>();
 
   @Override
-  public void addPosListener(VelodynePosEventListener listener) {
+  public void addPosListener(VelodynePosListener listener) {
     posListeners.add(listener);
   }
 
@@ -143,6 +143,6 @@ public class Vlp16Decoder implements VelodyneDecoder {
     byteBuffer.get(nmea);
     VelodynePosEvent vlp16PosEvent = new VelodynePosEvent(gps_usec, new String(nmea));
     // System.out.println(vlp16PosEvent.gps_usec + " " + vlp16PosEvent.nmea);
-    posListeners.forEach(listener -> listener.positioning(vlp16PosEvent));
+    posListeners.forEach(listener -> listener.velodynePos(vlp16PosEvent));
   }
 }

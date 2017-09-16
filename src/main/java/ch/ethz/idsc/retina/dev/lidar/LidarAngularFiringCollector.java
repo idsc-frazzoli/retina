@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
  * into a pointcloud consisting of 3d, or 2d points
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class LidarAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
+public class LidarAngularFiringCollector implements LidarSpacialListener, LidarRotationListener {
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;
@@ -36,7 +36,7 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   }
 
   @Override
-  public void rotation(LidarRotationEvent lidarRotationEvent) {
+  public void lidarRotation(LidarRotationEvent lidarRotationEvent) {
     // set limit of buffers to current position
     floatBuffer.flip();
     byteBuffer.flip();
@@ -52,7 +52,7 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   }
 
   @Override
-  public void spacial(LidarSpacialEvent lidarSpacialEvent) {
+  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     floatBuffer.put(lidarSpacialEvent.coords); // either 3, or 2 floats
     byteBuffer.put((byte) lidarSpacialEvent.intensity);
   }

@@ -9,9 +9,9 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.dev.lidar.VelodynePosEventListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
 
-public class VelodyneRayFrame implements LidarRayBlockListener, VelodynePosEventListener {
+public class VelodyneRayFrame implements LidarRayBlockListener, VelodynePosListener {
   public final JFrame jFrame = new JFrame();
   private VelodyneRayComponent hdl32eRayComponent = new VelodyneRayComponent();
 
@@ -32,7 +32,7 @@ public class VelodyneRayFrame implements LidarRayBlockListener, VelodynePosEvent
   }
 
   @Override
-  public void positioning(VelodynePosEvent hdl32ePosEvent) {
+  public void velodynePos(VelodynePosEvent hdl32ePosEvent) {
     hdl32eRayComponent.hdl32ePosEvent = hdl32ePosEvent;
   }
 }

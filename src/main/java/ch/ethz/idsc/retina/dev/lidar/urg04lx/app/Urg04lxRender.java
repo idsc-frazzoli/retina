@@ -13,7 +13,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -147,7 +147,7 @@ public class Urg04lxRender {
     graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
   }
 
-  public void setEvent(Urg04lxEvent urg04lxEvent) {
+  public void setEvent(Urg04lxRangeEvent urg04lxEvent) {
     if (urg04lxEvent.timestamp < timestamp)
       System.err.println("decreasing urg timestamp");
     timestamp = urg04lxEvent.timestamp;

@@ -14,13 +14,13 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.dev.lidar.VelodynePosEventListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePosEvent;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosEventListener {
+public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosListener {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
@@ -74,13 +74,13 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosEve
   }
 
   @Override
-  public void panorama(LidarPanorama lidarPanorama) {
+  public void lidarPanorama(LidarPanorama lidarPanorama) {
     this.lidarPanorama = lidarPanorama;
     jComponent.repaint();
   }
 
   @Override
-  public void positioning(VelodynePosEvent velodynePosEvent) {
+  public void velodynePos(VelodynePosEvent velodynePosEvent) {
     this.hdl32ePosEvent = (Hdl32ePosEvent) velodynePosEvent;
   }
 
