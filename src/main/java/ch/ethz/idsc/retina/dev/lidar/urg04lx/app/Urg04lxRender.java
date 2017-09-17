@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -151,13 +152,14 @@ public class Urg04lxRender {
       }
     }
     if (Objects.nonNull(_pointcloud)) {
-      Tensor pc = _pointcloud;
-      for (Tensor dir : pc) {
-        final Point2D point = toPoint(dir);
-        Shape shape = new Rectangle2D.Double(point.getX(), point.getY(), 1, 1);
-        graphics.setColor(new Color(255, 0, 255, 255));
-        graphics.fill(shape);
-      }
+      List<Tensor> pc = _pointcloud;
+      for (Tensor block : pc)
+        for (Tensor dir : block) {
+          final Point2D point = toPoint(dir);
+          Shape shape = new Rectangle2D.Double(point.getX(), point.getY(), 1, 1);
+          graphics.setColor(new Color(255, 0, 255, 255));
+          graphics.fill(shape);
+        }
     }
     graphics.setColor(Color.RED);
     graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
@@ -174,9 +176,9 @@ public class Urg04lxRender {
     METER_TO_PIXEL = Power.of(4 / 3.0, zoom).multiply(RealScalar.of(100));
   }
 
-  private Tensor _pointcloud;
+  private List<Tensor> _pointcloud;
 
-  public void setPointcloud(Tensor pointcloud) {
+  public void setPointcloud(List<Tensor> pointcloud) {
     _pointcloud = pointcloud;
   }
 }
