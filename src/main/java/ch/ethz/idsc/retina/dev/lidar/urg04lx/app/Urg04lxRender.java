@@ -11,8 +11,10 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
@@ -36,8 +38,9 @@ public class Urg04lxRender {
   /** points closer than 2[cm] == 0.02[m] are discarded */
   public static final Scalar THRESHOLD = RealScalar.of(0.02); // [m]
   public static final Scalar RAMERDOUGLASPEUKER = RealScalar.of(0.05); // 5[cm] == 0.05[m]
+  /** red color in directions where no trusted information is available */
   private static final Color BLIND_SPOT = new Color(230, 30, 30, 64);
-  private static final int INDEX_LAST = 681;
+  private static final int INDEX_LAST = Urg04lxDevice.MAX_POINTS - 1;
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
   /** p.2 Detection Area: 240 [deg] */
@@ -90,7 +93,25 @@ public class Urg04lxRender {
         graphics.draw(TensorGraphics.polygonToPath(swipe, this::toPoint));
       graphics.setStroke(new BasicStroke());
     }
-    {
+    if (range.length() != 0) {
+      {
+        Tensor points = range.pmul(direction);
+        Tensor contour = Tensor.of(IntStream.range(0, range.length()) //
+            .filter(index -> Scalars.lessThan(THRESHOLD, range.Get(index))) //
+            .mapToObj(points::get));
+        // ---
+        graphics.setColor(new Color(0, 128 + 64, 128, 64));
+        try {
+          Tensor path = RamerDouglasPeucker.of(contour, RAMERDOUGLASPEUKER);
+          graphics.draw(TensorGraphics.polygonToPath(path, this::toPoint));
+        } catch (Exception exception) {
+          System.err.println("nono");
+          // ---
+        }
+        contour.append(Array.zeros(2));
+        graphics.setColor(new Color(128, 128 + 64, 128, 32));
+        graphics.fill(TensorGraphics.polygonToPath(contour, this::toPoint));
+      }
       for (int index = 0; index < range.length(); ++index) {
         final Tensor rotation = direction.get(index);
         if (Scalars.lessThan(range.Get(index), THRESHOLD)) {
@@ -101,47 +122,42 @@ public class Urg04lxRender {
         } else {
           Tensor dir = rotation.multiply(range.Get(index));
           final Point2D point = toPoint(dir);
-          Shape shape = new Rectangle2D.Double(point.getX(), point.getY(), 2, 2);
-          graphics.setColor(new Color(128, 128, 128, 128));
+          Shape shape = new Rectangle2D.Double(point.getX(), point.getY(), 1, 1);
+          graphics.setColor(new Color(0, 0, 0, 128));
           graphics.fill(shape);
-          if (index == range.length() / 2) {
-            graphics.setColor(Color.BLACK);
-            graphics.drawString( //
-                range.Get(index).map(Round._3).toString(), (int) point.getX(), (int) point.getY());
-          }
         }
       }
-      if (0 < range.length()) {
-        Tensor points = range.pmul(direction);
-        Tensor contour = Tensor.of(IntStream.range(0, range.length()) //
-            .filter(index -> Scalars.lessThan(THRESHOLD, range.Get(index))) //
-            .mapToObj(points::get));
+      {
+        int index = Urg04lxDevice.MAX_POINTS / 2;
+        final Tensor rotation = direction.get(index);
+        Tensor dir = rotation.multiply(range.Get(index));
+        final Point2D point = toPoint(dir);
+        graphics.setColor(Color.BLACK);
+        graphics.drawString( //
+            range.Get(index).map(Round._3).toString(), (int) point.getX(), (int) point.getY());
+      }
+      try {
+        // display min max range in sensor data
+        Scalar min = range.flatten(-1).map(Scalar.class::cast).filter(Scalars::nonZero).reduce(Min::of).get();
+        Scalar max = range.flatten(-1).map(Scalar.class::cast).reduce(Max::of).get();
+        graphics.setColor(Color.BLACK);
+        graphics.drawString(Tensors.of(min, max).map(Round._3).toString() + "[m]", 200, 10);
+      } catch (Exception exception) {
         // ---
-        graphics.setColor(new Color(0, 128 + 64, 128, 255));
-        try {
-          Tensor path = RamerDouglasPeucker.of(contour, RAMERDOUGLASPEUKER);
-          graphics.draw(TensorGraphics.polygonToPath(path, this::toPoint));
-        } catch (Exception exception) {
-          System.err.println("nono");
-          // ---
-        }
-        contour.append(Array.zeros(2));
-        graphics.setColor(new Color(128, 128 + 64, 128, 64));
-        graphics.fill(TensorGraphics.polygonToPath(contour, this::toPoint));
+      }
+      {
+        graphics.drawString("" + timestamp, 200, 20);
+        graphics.drawString("" + System.currentTimeMillis(), 200, 30);
       }
     }
-    try {
-      // display min max range in sensor data
-      Scalar min = range.flatten(-1).map(Scalar.class::cast).filter(Scalars::nonZero).reduce(Min::of).get();
-      Scalar max = range.flatten(-1).map(Scalar.class::cast).reduce(Max::of).get();
-      graphics.setColor(Color.BLACK);
-      graphics.drawString(Tensors.of(min, max).map(Round._3).toString() + "[m]", 200, 10);
-    } catch (Exception exception) {
-      // ---
-    }
-    {
-      graphics.drawString("" + timestamp, 200, 20);
-      graphics.drawString("" + System.currentTimeMillis(), 200, 30);
+    if (Objects.nonNull(_pointcloud)) {
+      Tensor pc = _pointcloud;
+      for (Tensor dir : pc) {
+        final Point2D point = toPoint(dir);
+        Shape shape = new Rectangle2D.Double(point.getX(), point.getY(), 1, 1);
+        graphics.setColor(new Color(255, 0, 255, 255));
+        graphics.fill(shape);
+      }
     }
     graphics.setColor(Color.RED);
     graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
@@ -156,5 +172,11 @@ public class Urg04lxRender {
 
   public void setZoom(int zoom) {
     METER_TO_PIXEL = Power.of(4 / 3.0, zoom).multiply(RealScalar.of(100));
+  }
+
+  private Tensor _pointcloud;
+
+  public void setPointcloud(Tensor pointcloud) {
+    _pointcloud = pointcloud;
   }
 }

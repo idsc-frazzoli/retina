@@ -5,13 +5,21 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.nio.FloatBuffer;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.dev.lidar.app.UniformResample;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
+import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** {@link Urg04lxFrame} requires that the binary "urg_provider" is located at
  * /home/{username}/Public/urg_provider
@@ -28,7 +36,7 @@ import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
  * The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Urg04lxFrame implements Urg04lxRangeListener {
+public class Urg04lxFrame implements Urg04lxRangeListener, LidarRayBlockListener {
   public final JFrame jFrame = new JFrame();
   private final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
@@ -57,6 +65,19 @@ public class Urg04lxFrame implements Urg04lxRangeListener {
   @Override
   public void range(Urg04lxRangeEvent urg04lxRangeEvent) {
     urg04lxRender.setEvent(urg04lxRangeEvent);
+  }
+
+  @Override
+  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+    FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
+    // int limit = floatBuffer.limit();
+    Tensor points = Tensors.vector(i -> Tensors.of( //
+        DoubleScalar.of(floatBuffer.get()), //
+        DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
+    Tensor result = new UniformResample(RealScalar.of(33), RealScalar.of(.05)).apply(points);
+    System.out.println(points.length() + " " + result.length());
+    urg04lxRender.setPointcloud(result);
     jComponent.repaint();
+    System.out.println(lidarRayBlockEvent.size());
   }
 }
