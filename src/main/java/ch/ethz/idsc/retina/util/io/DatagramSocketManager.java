@@ -46,7 +46,7 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
     };
   }
 
-  @Deprecated // TODO test veoldyne with constructor below, why not also specify the laddr!
+  @Deprecated // TODO test velodyne with constructor below, why not also specify the laddr!
   public static DatagramSocketManager local(byte[] bytes, int port) {
     return new DatagramSocketManager(bytes) {
       @Override
@@ -106,8 +106,8 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
         while (thread.isAlive())
           try {
             Thread.sleep(1);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
+          } catch (Exception exception) {
+            exception.printStackTrace();
           }
       thread = null;
       datagramSocket = null;

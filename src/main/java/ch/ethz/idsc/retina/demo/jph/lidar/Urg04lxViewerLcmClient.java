@@ -17,19 +17,24 @@ enum Urg04lxViewerLcmClient {
     Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient(urg04lxDecoder, "front");
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();
     {
+      // THE ORDER IS IMPORTANT:
+      // 1) update spacial info
+      // 2) create rotation event
+      Urg04lxSpacialProvider urg04lxSpacialProvider = new Urg04lxSpacialProvider(2);
+      urg04lxDecoder.addRayListener(urg04lxSpacialProvider);
+      // ---
+      LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
+      urg04lxSpacialProvider.addListener(lidarAngularFiringCollector);
+      // ---
+      LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
+      urg04lxDecoder.addRayListener(lidarRotationProvider);
+      lidarRotationProvider.addListener(lidarAngularFiringCollector);
+      lidarAngularFiringCollector.addListener(urg04lxFrame);
+    }
+    {
       Urg04lxRangeProvider urg04lxRangeProvider = new Urg04lxRangeProvider();
       urg04lxRangeProvider.addListener(urg04lxFrame);
       urg04lxDecoder.addRayListener(urg04lxRangeProvider);
-    }
-    {
-      LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-      urg04lxDecoder.addRayListener(lidarRotationProvider);
-      Urg04lxSpacialProvider urg04lxSpacialProvider = new Urg04lxSpacialProvider(2);
-      LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
-      lidarRotationProvider.addListener(lidarAngularFiringCollector);
-      lidarAngularFiringCollector.addListener(urg04lxFrame);
-      urg04lxSpacialProvider.addListener(lidarAngularFiringCollector);
-      urg04lxDecoder.addRayListener(urg04lxSpacialProvider);
     }
     urg04lxLcmClient.startSubscriptions();
   }

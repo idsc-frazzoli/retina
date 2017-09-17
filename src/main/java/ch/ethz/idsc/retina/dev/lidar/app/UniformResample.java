@@ -40,7 +40,8 @@ public class UniformResample implements Serializable {
           dista.Get(index + 0).add(dista.Get(index + 1)));
       if (connected) {
         while (Scalars.lessThan(sum, delta.Get(index))) {
-          Tensor shift = diffs.get(index).multiply(sum.divide(delta.Get(index)));
+          Scalar factor = sum.divide(delta.Get(index));
+          Tensor shift = diffs.get(index).multiply(factor);
           Tensor interp = points.get(index).add(shift);
           ret.append(interp);
           sum = sum.add(ds);
