@@ -12,15 +12,15 @@ public class Urg04lxRangeProvider implements LidarRayDataListener {
   // ---
   private final List<Urg04lxRangeListener> listeners = new LinkedList<>();
 
-  public void addListener(Urg04lxRangeListener urg04lxEventListener) {
-    listeners.add(urg04lxEventListener);
+  public void addListener(Urg04lxRangeListener urg04lxRangeListener) {
+    listeners.add(urg04lxRangeListener);
   }
 
   private int usec;
 
   @Override
   public void timestamp(int usec, int type) {
-    // ---
+    this.usec = usec;
   }
 
   @Override

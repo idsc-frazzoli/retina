@@ -60,8 +60,8 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
   /** bytes for reception of data */
   private final byte[] bytes;
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
-  private volatile boolean isLaunched;
   private DatagramSocket datagramSocket;
+  private Thread thread;
 
   private DatagramSocketManager(byte[] bytes) {
     this.bytes = bytes;
@@ -73,27 +73,25 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
 
   @Override
   public void start() {
-    isLaunched = true;
     try {
       datagramSocket = private_createSocket();
       Runnable runnable = new Runnable() {
         @Override
         public void run() {
           try {
-            System.out.println("datagramSocket open " + !datagramSocket.isClosed());
             DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
-            while (isLaunched) {
+            while (true) {
               datagramSocket.receive(datagramPacket); // blocking
               listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
             }
           } catch (Exception exception) {
-            // typically prints: "Socket closed"
-            System.err.println(exception.getMessage());
+            String message = exception.getMessage();
+            if (!message.equals("Socket closed"))
+              System.err.println(message);
           }
-          System.out.println("exit thread");
         }
       };
-      Thread thread = new Thread(runnable);
+      thread = new Thread(runnable);
       thread.start();
     } catch (Exception exception) {
       exception.printStackTrace();
@@ -102,10 +100,16 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
 
   @Override
   public void stop() {
-    isLaunched = false;
     if (Objects.nonNull(datagramSocket)) {
       datagramSocket.close(); // according to specs will not throw
-      System.out.println("datasocket closed " + datagramSocket.isClosed());
+      if (Objects.nonNull(thread))
+        while (thread.isAlive())
+          try {
+            Thread.sleep(1);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+      thread = null;
       datagramSocket = null;
     }
   }

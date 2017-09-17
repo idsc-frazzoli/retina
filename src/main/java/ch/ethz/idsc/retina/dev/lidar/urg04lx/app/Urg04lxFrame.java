@@ -55,8 +55,8 @@ public class Urg04lxFrame implements Urg04lxRangeListener {
   }
 
   @Override
-  public void range(Urg04lxRangeEvent urg04lxEvent) {
-    urg04lxRender.setEvent(urg04lxEvent);
+  public void range(Urg04lxRangeEvent urg04lxRangeEvent) {
+    urg04lxRender.setEvent(urg04lxRangeEvent);
     jComponent.repaint();
   }
 }

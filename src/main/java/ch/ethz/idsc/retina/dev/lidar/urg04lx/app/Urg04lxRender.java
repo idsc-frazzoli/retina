@@ -147,11 +147,11 @@ public class Urg04lxRender {
     graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 20);
   }
 
-  public void setEvent(Urg04lxRangeEvent urg04lxEvent) {
-    if (urg04lxEvent.timestamp < timestamp)
+  public void setEvent(Urg04lxRangeEvent urg04lxRangeEvent) {
+    if (urg04lxRangeEvent.timestamp < timestamp)
       System.err.println("decreasing urg timestamp");
-    timestamp = urg04lxEvent.timestamp;
-    _range = Tensors.vectorDouble(urg04lxEvent.range);
+    timestamp = urg04lxRangeEvent.timestamp;
+    _range = Tensors.vectorDouble(urg04lxRangeEvent.range);
   }
 
   public void setZoom(int zoom) {
