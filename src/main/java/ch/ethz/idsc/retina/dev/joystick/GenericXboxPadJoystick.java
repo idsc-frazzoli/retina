@@ -100,4 +100,20 @@ public final class GenericXboxPadJoystick extends JoystickEvent {
     double axis = getAxisValue(5);
     return (axis + 1) * 0.5;
   }
+
+  public boolean isHatPressedUp() {
+    return (getHat(0) & 1) != 0;
+  }
+
+  public boolean isHatPressedRight() {
+    return (getHat(0) & 2) != 0;
+  }
+
+  public boolean isHatPressedDown() {
+    return (getHat(0) & 4) != 0;
+  }
+
+  public boolean isHatPressedLeft() {
+    return (getHat(0) & 8) != 0;
+  }
 }

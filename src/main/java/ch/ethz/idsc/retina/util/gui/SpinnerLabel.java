@@ -233,8 +233,8 @@ public class SpinnerLabel<Type> {
     this.list = list;
   }
 
-  public void setStream(Stream<Type> myStream) {
-    setList(myStream.collect(Collectors.toList()));
+  public void setStream(Stream<Type> stream) {
+    setList(stream.collect(Collectors.toList()));
   }
 
   // public void setIterable(Iterable<Type> myIterable) {

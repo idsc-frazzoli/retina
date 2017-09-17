@@ -19,4 +19,9 @@ public class LidarRayBlockEvent {
     this.byteBuffer = byteBuffer;
     this.dimensions = dimensions;
   }
+
+  /** @return number of points stored in block */
+  public int size() {
+    return byteBuffer.limit();
+  }
 }

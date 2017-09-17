@@ -24,6 +24,10 @@ public abstract class JoystickEvent {
     return _axes[index] / (double) Byte.MAX_VALUE;
   }
 
+  protected int getHat(int index) {
+    return _hats[index];
+  }
+
   public final void decode(ByteBuffer byteBuffer) {
     // <- ordinal is read by JoystickDecoder
     for (int axis = 0; axis < _axes.length; ++axis)

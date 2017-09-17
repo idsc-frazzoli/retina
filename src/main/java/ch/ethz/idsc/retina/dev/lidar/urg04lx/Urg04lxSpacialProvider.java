@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 public class Urg04lxSpacialProvider implements LidarSpacialProvider {
-  private static final double TO_METER = 0.001; // [mm] to [m]
+  /* package */ static final double TO_METER = 0.001; // [mm] to [m]
   private static final float TO_METER_FLOAT = (float) TO_METER;
   /** recommended threshold
    * points closer than 2[cm] == 0.02[m] are discarded */
@@ -24,8 +24,8 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   // ---
   private final int dimensions;
-  private final float[] DIRX;
-  private final float[] DIRY;
+  private final float[] dirx;
+  private final float[] diry;
   /* package for testing */ int limit_lo;
 
   public Urg04lxSpacialProvider(int dimensions) {
@@ -34,9 +34,9 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
     Tensor angle = Subdivide.of( //
         Urg04lxDevice.FOV_LO * Math.PI / 180, //
         Urg04lxDevice.FOV_HI * Math.PI / 180, //
-        Urg04lxDevice.MAX_POINTS - 1).unmodifiable();
-    DIRX = Primitives.toArrayFloat(Cos.of(angle));
-    DIRY = Primitives.toArrayFloat(Sin.of(angle));
+        Urg04lxDevice.MAX_POINTS - 1);
+    dirx = Primitives.toArrayFloat(Cos.of(angle));
+    diry = Primitives.toArrayFloat(Sin.of(angle));
     setLimitLo(THRESHOLD);
   }
 
@@ -64,9 +64,9 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
       int distance = byteBuffer.getShort() & 0xffff;
       if (limit_lo <= distance) {
         float dist_m = distance * TO_METER_FLOAT;
-        coords[0] = DIRX[index] * dist_m;
-        coords[1] = DIRY[index] * dist_m;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 0xff);
+        coords[0] = dirx[index] * dist_m;
+        coords[1] = diry[index] * dist_m;
+        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 255);
         listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }
