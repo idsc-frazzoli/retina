@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -28,10 +30,11 @@ public class UniformResample implements Serializable {
     this.ds = ds;
   }
 
-  public Tensor apply(Tensor points) {
+  public List<Tensor> apply(Tensor points) {
     Tensor dista = Tensor.of(points.stream().map(Norm._2::ofVector));
     Tensor diffs = Differences.of(points);
     Tensor delta = Tensor.of(diffs.stream().map(Norm._2::ofVector));
+    List<Tensor> total = new LinkedList<>();
     Tensor ret = Tensors.empty();
     Scalar sum = RealScalar.ZERO;
     for (int index = 0; index < diffs.length(); ++index) {
@@ -47,15 +50,23 @@ public class UniformResample implements Serializable {
           sum = sum.add(ds);
         }
         sum = sum.subtract(delta.Get(index));
-      } else
+      } else {
+        if (ret.length() != 0) {
+          total.add(ret);
+          ret = Tensors.empty();
+        }
         sum = RealScalar.ZERO;
+      }
     }
-    return ret;
+    if (ret.length() != 0)
+      total.add(ret);
+    return total;
   }
 
   public static void main(String[] args) {
     UniformResample pr = new UniformResample(RealScalar.of(33), RealScalar.of(.3));
-    Tensor ret = pr.apply(Tensors.fromString("{{100,0},{100,2},{100,3},{10,10},{10,10.2},{10,10.4}}"));
-    System.out.println(Pretty.of(ret.map(Round._1)));
+    List<Tensor> total = pr.apply(Tensors.fromString("{{100,0},{100,2},{100,3},{10,10},{10,10.2},{10,10.4},{20,40}}"));
+    for (Tensor ret : total)
+      System.out.println(Pretty.of(ret.map(Round._1)));
   }
 }

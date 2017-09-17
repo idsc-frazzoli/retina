@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.nio.FloatBuffer;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -110,8 +111,8 @@ public class Urg04lxFrame implements Urg04lxRangeListener, LidarRayBlockListener
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    Tensor result = new UniformResample(threshold, ds_value).apply(points);
-    System.out.println(points.length() + " -> " + result.length());
+    List<Tensor> result = new UniformResample(threshold, ds_value).apply(points);
+    System.out.println(points.length() + " -> blocks = " + result.size());
     urg04lxRender.setPointcloud(result);
     jComponent.repaint();
   }

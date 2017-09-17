@@ -11,9 +11,6 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32ePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
-import ch.ethz.idsc.retina.util.io.UserHome;
-import ch.ethz.idsc.tensor.io.Export;
-import ch.ethz.idsc.tensor.io.ImageFormat;
 
 public enum Hdl32ePlanarSlam {
   ;
@@ -38,7 +35,7 @@ public enum Hdl32ePlanarSlam {
     SlamFrame slamFrame = new SlamFrame();
     occupancyMap.addListener(slamFrame);
     velodyneLcmClient.startSubscriptions();
-    Thread.sleep(10000);
-    Export.of(UserHome.Pictures("occupancy.png"), ImageFormat.from(occupancyMap.bufferedImage()));
+    // Thread.sleep(10000);
+    // Export.of(UserHome.Pictures("occupancy.png"), ImageFormat.from(occupancyMap.bufferedImage()));
   }
 }
