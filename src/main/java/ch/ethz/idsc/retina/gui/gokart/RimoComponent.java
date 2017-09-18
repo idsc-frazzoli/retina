@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
@@ -24,6 +26,13 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -39,6 +48,9 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   private final SliderExt sliderExtRVel;
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
+  private final JTextField jTextFieldSpeedDifferenceL;
+  private final JTextField jTextFieldSpeedDifferenceR;
+  public RimoPutEvent rimoPutEvent = new RimoPutEvent();
 
   public RimoComponent() {
     datagramSocketManager.addListener(this);
@@ -70,6 +82,8 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     { // reception
       assign(rimoGetFieldsL, "LEFT");
       assign(rimoGetFieldsR, "RIGHT");
+      jTextFieldSpeedDifferenceL = createReading("speeddifferenceL");
+      jTextFieldSpeedDifferenceR = createReading("speeddifferenceR");
     }
   }
 
@@ -149,6 +163,45 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   public void rimoGet(RimoGetEvent rimoGetL, RimoGetEvent rimoGetR) {
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
+    double speedDifferenceL = rimoPutEvent.speed - rimoGetL.actual_speed;
+    double speedDifferenceR = rimoPutEvent.speed - rimoGetR.actual_speed;
+    {
+      jTextFieldSpeedDifferenceL.setText(Quantity.of(speedDifferenceL, "[rad/min]").toString());
+      double speedDiffL = speedDifferenceL;
+      Scalar scalarL = RealScalar.of(speedDiffL / 500);
+      scalarL = Clip.unit().apply(scalarL);
+      Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
+      Color colorL = ColorFormat.toColor(vectorL);
+      jTextFieldSpeedDifferenceL.setBackground(colorL);
+    }
+    {
+      jTextFieldSpeedDifferenceR.setText(Quantity.of(speedDifferenceR, "[rad/min]").toString());
+      double speedDiffR = speedDifferenceR;
+      Scalar scalarR = RealScalar.of(speedDiffR);
+      scalarR = Clip.unit().apply(scalarR);
+      Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
+      Color colorR = ColorFormat.toColor(vectorR);
+      jTextFieldSpeedDifferenceR.setBackground(colorR);
+    } 
+    {
+      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());
+      double tempMotL = rimoGetL.temperature_motor;
+      Scalar scalarL = RealScalar.of(tempMotL/10);
+      scalarL = Clip.unit().apply(scalarL);
+      Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
+      Color colorL = ColorFormat.toColor(vectorL);
+      rimoGetFieldsL.jTF_temperature_motor.setBackground(colorL);
+    }
+    {
+      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetR.temperature_motor, "[C]").toString());
+      double tempMotR = rimoGetR.temperature_motor;
+      Scalar scalarR = RealScalar.of(tempMotR/10);
+      scalarR = Clip.unit().apply(scalarR);
+      Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
+      Color colorR = ColorFormat.toColor(vectorR);
+      rimoGetFieldsL.jTF_temperature_motor.setBackground(colorR);
+    }
+    
   }
 
   @Override
