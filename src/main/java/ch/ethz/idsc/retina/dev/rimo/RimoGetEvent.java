@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 public class RimoGetEvent {
   public static final int LENGTH = 16;
   // ---
+  /** m */
+  public static final double RADIUS = 0.14;
   public final short status_word;
   /** rad/min */
   public final short actual_speed;
@@ -32,6 +34,11 @@ public class RimoGetEvent {
     error_code = byteBuffer.getInt(); // 12
     temperature_motor = byteBuffer.getShort(); // 14
     temperature_heatsink = byteBuffer.getShort(); // 16
+  }
+
+  /** @return convert rad/min to m/s */
+  public double getActualSpeed() {
+    return actual_speed * RADIUS / 60;
   }
 
   public int getBusVoltage() {

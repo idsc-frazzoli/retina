@@ -10,7 +10,7 @@ public class MiscGetEvent {
   public static final int LENGTH = 44;
   // ---
   public final byte emergency;
-  // TODO NRJ battery should be raw value from adc (probably a short instead of
+  // c (p TODO NRJ battery should be raw value from adrobably a short instead of
   // float)
   private final float battery;
   /** collection of bytes received after battery value */
