@@ -48,10 +48,27 @@ intensity as 360[deg] panorama
 
 ## IniLabs DAVIS240C
 
+<table>
+<tr>
+<td>
+
+![05tram](https://user-images.githubusercontent.com/4012178/30553969-2948547a-9ca3-11e7-91e8-159806c7e329.gif)
+
+<td>
+
+![04peds](https://user-images.githubusercontent.com/4012178/30553578-f3429ce2-9ca1-11e7-8870-85078c8aa96c.gif)
+
+<td>
+
+![00scene](https://user-images.githubusercontent.com/4012178/30553889-e59c0a5a-9ca2-11e7-8cc3-08de77e21e5e.gif)
+
+</tr>
+</table>
+
 .aedat files
 
 * parsing and visualization
-* conversion to text+png format
+* conversion to text+png format as used by the Robotics and Perception Group at UZH
 * loss-less compression of DVS events by the factor of 2
 * compression of raw APS data by factor 8 (where the ADC values are reduced from 10 bit to 8 bit)
 

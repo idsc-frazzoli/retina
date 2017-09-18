@@ -27,11 +27,11 @@ public class DavisLcmLogGifConvert {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
       // ---
-      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 2000);
+      AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 3000);
       // ---
       DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
-      davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
+      // davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
       // ---
       DavisGifImageWriter davisGifImageWriter = //
           new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 100, fitec);

@@ -15,7 +15,11 @@ enum RunDavisLcmLogGifConvert {
     // File file = UserHome.file("20170911T173346_43995b66.lcm.00");
     // File file = UserHome.file("20170911T172819_43995b66.lcm.00");
     // File file = UserHome.file("20170911T180635_43995b66.lcm.00");
-    File file = UserHome.file("20170911T182016_43995b66.lcm.00");
+    // File file = UserHome.file("20170911T182016_43995b66.lcm.00");
+    // File file = UserHome.file("20170918T154009_2e37a549.lcm.00"); // not interesting
+    // File file = UserHome.file("20170918T154100_2e37a549.lcm.00"); // ped + 3 guys
+    // File file = UserHome.file("20170918T154307_2e37a549.lcm.00"); // cool peds
+    File file = UserHome.file("20170918T154139_2e37a549.lcm.00"); // tram
     File target = UserHome.Pictures("");
     DavisLcmLogGifConvert.of(file, target);
   }
