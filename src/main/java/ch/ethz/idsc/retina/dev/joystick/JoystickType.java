@@ -7,6 +7,7 @@ import java.util.function.Supplier;
  * INSTEAD, APPEND NEW JOYSTICKS TO LIST */
 public enum JoystickType {
   GENERIC_XBOX_PAD(() -> new GenericXboxPadJoystick(), 6, 14, 1), //
+  PC_PS3_ANDROID(() -> new PCPS3AndroidJoystick(), 4 , 15, 1), //
   // <- append next joystick here
   ;
   public final Supplier<JoystickEvent> supplier;
