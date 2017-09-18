@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.lcm.davis.DavisSnippetLog;
 enum RunDavisSnippetLog {
   ;
   public static void main(String[] args) {
-    int period_ms = 1200;
+    int period_ms = 2000;
     File lcmDir = new File("/media/datahaki/media/ethz/snippet/lcm");
     File uzhDir = new File("/media/datahaki/media/ethz/snippet/uzh");
     new DavisSnippetLog(period_ms, lcmDir, uzhDir);
