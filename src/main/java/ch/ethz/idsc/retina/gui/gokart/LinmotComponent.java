@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -25,7 +26,13 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
   private final DatagramSocketManager datagramSocketManager = //
@@ -42,7 +49,6 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final JTextField jTextFieldStateVariable;
   private final JTextField jTextFieldActualPosition;
   private final JTextField jTextFieldDemandPosition;
-  // TODO NRJ set background color of field according to temperature
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
 
@@ -169,9 +175,24 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     // TODO figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
-    // TODO change background
-    jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
-    jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
+    {
+      jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
+      double temp1 = linmotGetEvent.windingTemperature1();
+      Scalar scalar = RealScalar.of(temp1 / 100);
+      scalar = Clip.unit().apply(scalar);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      jTextFieldWindingTemp1.setBackground(color);
+    }
+    {
+      jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
+      double temp2 = linmotGetEvent.windingTemperature2();
+      Scalar scalar = RealScalar.of(temp2 / 100);
+      scalar = Clip.unit().apply(scalar);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      jTextFieldWindingTemp2.setBackground(color);
+    }
   }
 
   @Override
