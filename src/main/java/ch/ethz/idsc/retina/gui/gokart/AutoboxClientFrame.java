@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -20,9 +22,9 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 public class AutoboxClientFrame {
-  // TODO NRJ reduce max speed when using joystick in gui
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
@@ -30,7 +32,8 @@ public class AutoboxClientFrame {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
 
   public AutoboxClientFrame() {
-    addTab(new RimoComponent());
+    RimoComponent rimocomponent = new RimoComponent();
+    addTab(rimocomponent);
     addTab(new LinmotComponent());
     addTab(new SteerComponent());
     addTab(new MiscComponent());
@@ -40,17 +43,27 @@ public class AutoboxClientFrame {
     {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
-      JToggleButton jToggle = new JToggleButton("Joystick");
-      jToggle.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          boolean status = jToggle.isSelected();
-          for (InterfaceComponent ic : list) {
-            ic.setJoystickEnabled(status);
+      jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
+      {
+        SpinnerLabel<Integer> speedlimit = new SpinnerLabel<>();
+        speedlimit.setArray(0, 500, 1000, 2000, 4000, 8000);
+        speedlimit.setIndex(2);
+        speedlimit.addSpinnerListener(i -> rimocomponent.setspeedlimit(i));
+        speedlimit.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
+      }
+      {
+        JToggleButton jToggle = new JToggleButton("Joystick");
+        jToggle.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            boolean status = jToggle.isSelected();
+            for (InterfaceComponent ic : list) {
+              ic.setJoystickEnabled(status);
+            }
           }
-        }
-      });
-      jToolBar.add(jToggle);
+        });
+        jToolBar.add(jToggle);
+      }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     jPanel.add(jTabbedPane, BorderLayout.CENTER);
