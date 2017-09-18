@@ -9,14 +9,16 @@ import java.nio.ByteBuffer;
 public class RimoGetEvent {
   public static final int LENGTH = 16;
   // ---
+  /** m */
+  public static final double RADIUS = 0.14;
   public final short status_word;
   /** rad/min */
   public final short actual_speed;
   /** ARMS */
   public final short rms_motor_current;
   /** cV */
-  public final short dc_bus_voltage;
-  public final short error_code;
+  private final short dc_bus_voltage;
+  public final int error_code;
   /** C */
   public final short temperature_motor;
   /** C */
@@ -29,9 +31,22 @@ public class RimoGetEvent {
     actual_speed = byteBuffer.getShort(); // 4
     rms_motor_current = byteBuffer.getShort(); // 6
     dc_bus_voltage = byteBuffer.getShort(); // 8
-    error_code = byteBuffer.getShort(); // 10
+    error_code = byteBuffer.getInt(); // 12
     temperature_motor = byteBuffer.getShort(); // 14
     temperature_heatsink = byteBuffer.getShort(); // 16
+  }
+
+  /** @return convert rad/min to m/s */
+  public double getActualSpeed() {
+    return actual_speed * RADIUS / 60;
+  }
+
+  public int getBusVoltage() {
+    return dc_bus_voltage;
+  }
+
+  public float getTemperatureMotor() {
+    return temperature_motor; // TODO right now only senses zeros
   }
 
   // TODO NRJ provide functions that compute physical values from raw integer

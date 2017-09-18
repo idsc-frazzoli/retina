@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -138,8 +139,12 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public void miscGet(MiscGetEvent miscGetEvent) {
     jTextFieldEmg.setText("" + miscGetEvent.emergency);
-    // TODO NRJ give warning
-    jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
+    {
+      jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
+      double value = miscGetEvent.steerBatteryVoltage();
+      Color color = value < 11 ? Color.RED : Color.WHITE;
+      jTextFieldBat.setBackground(color);
+    }
     jTextField.setText(miscGetEvent.getRemainingHex());
   }
 

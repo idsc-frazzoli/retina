@@ -69,9 +69,10 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          SteerPutEvent steerPutEvent = new SteerPutEvent();
-          steerPutEvent.command = spinnerLabelLw.getValue().getByte();
-          steerPutEvent.torque = sliderExtTorque.jSlider.getValue() * 1e-3f;
+          SteerPutEvent steerPutEvent = new SteerPutEvent(//
+              spinnerLabelLw.getValue().getByte(), //
+              sliderExtTorque.jSlider.getValue() * 1e-3f//
+          );
           byte[] data = new byte[SteerPutEvent.LENGTH];
           ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

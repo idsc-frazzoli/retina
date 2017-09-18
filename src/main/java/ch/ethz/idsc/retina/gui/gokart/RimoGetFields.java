@@ -19,7 +19,7 @@ public class RimoGetFields {
     jTF_status_word.setText(String.format("%04X", rimoGetEvent.status_word));
     jTF_actual_speed.setText("" + rimoGetEvent.actual_speed);
     jTF_rms_motor_current.setText("" + rimoGetEvent.rms_motor_current);
-    jTF_dc_bus_voltage.setText("" + rimoGetEvent.dc_bus_voltage);
+    jTF_dc_bus_voltage.setText("" + rimoGetEvent.getBusVoltage() + "[V]");
     jTF_error_code.setText("" + rimoGetEvent.error_code);
     jTF_temperature_motor.setText("" + rimoGetEvent.temperature_motor);
     jTF_temperature_heatsink.setText("" + rimoGetEvent.temperature_heatsink);

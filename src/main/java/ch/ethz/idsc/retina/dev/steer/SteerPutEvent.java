@@ -7,12 +7,13 @@ import java.nio.ByteBuffer;
 public class SteerPutEvent {
   public static final int LENGTH = 5;
   // ---
-  public byte command;
+  public final byte command;
   // TODO NRJ not finalized, at the moment this is position instead of torque!
-  public float torque;
+  public final float torque;
 
-  public SteerPutEvent() {
-    // TODO NRJ provide command and torque in constructor and make variables final
+  public SteerPutEvent(byte command, float torque) {
+    this.command = command;
+    this.torque = torque;
   }
 
   public void insert(ByteBuffer byteBuffer) {

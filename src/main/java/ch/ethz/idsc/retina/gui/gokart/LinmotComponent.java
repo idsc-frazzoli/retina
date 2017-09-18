@@ -1,14 +1,20 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.TimerTask;
 
+import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -17,15 +23,23 @@ import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.retina.dev.linmot.LinmotInitProcedure;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.retina.dev.linmot.TimedLinmotPutEvent;
 import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
   private final DatagramSocketManager datagramSocketManager = //
@@ -42,16 +56,30 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final JTextField jTextFieldStateVariable;
   private final JTextField jTextFieldActualPosition;
   private final JTextField jTextFieldDemandPosition;
-  // TODO NRJ set background color of field according to temperature
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
+  public final Queue<TimedLinmotPutEvent> queue = new PriorityQueue<>();
 
   public LinmotComponent() {
     datagramSocketManager.addListener(this);
     {
+      JToolBar jToolBar = createRow("Special Routines");
+      JButton initButton = new JButton("Init");
+      initButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (queue.isEmpty())
+            queue.addAll(new LinmotInitProcedure().list);
+          else
+            System.out.println("queue not empty yet");
+        }
+      });
+      jToolBar.add(initButton);
+    }
+    {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.COMMANDS.get(0));
+      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.COMMANDS.get(1));
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
@@ -111,13 +139,23 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-          linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
-          linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
-          linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-          linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-          linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-          linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+          final LinmotPutEvent linmotPutEvent;
+          if (queue.isEmpty()) {
+            linmotPutEvent = new LinmotPutEvent();
+            linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
+            linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
+            linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
+            linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
+            linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
+            linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+          } else {
+            TimedLinmotPutEvent timedLinmotPutEvent = queue.peek();
+            System.out.println(timedLinmotPutEvent.linmotPutEvent.control_word);
+            if (timedLinmotPutEvent.time_ms < System.currentTimeMillis()) {
+              queue.poll();
+            }
+            linmotPutEvent = timedLinmotPutEvent.linmotPutEvent;
+          }
           byte[] data = new byte[LinmotPutEvent.LENGTH];
           ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -169,9 +207,24 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
     // TODO figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
-    // TODO change background
-    jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
-    jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
+    {
+      jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
+      double temp1 = linmotGetEvent.windingTemperature1();
+      Scalar scalar = RealScalar.of(temp1 / 100);
+      scalar = Clip.unit().apply(scalar);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      jTextFieldWindingTemp1.setBackground(color);
+    }
+    {
+      jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
+      double temp2 = linmotGetEvent.windingTemperature2();
+      Scalar scalar = RealScalar.of(temp2 / 100);
+      scalar = Clip.unit().apply(scalar);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      jTextFieldWindingTemp2.setBackground(color);
+    }
   }
 
   @Override

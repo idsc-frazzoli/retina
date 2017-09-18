@@ -162,6 +162,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   }
 
   private int sign = 1;
+  public int speedlimitjoystick = 1000;
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
@@ -174,9 +175,13 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
         sign = 1;
       }
       double wheelL = joystick.getLeftSliderUnitValue();
-      sliderExtLVel.jSlider.setValue((int) (wheelL * RimoPutEvent.MAX_SPEED * sign));
+      sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
       double wheelR = joystick.getRightSliderUnitValue();
-      sliderExtRVel.jSlider.setValue((int) (wheelR * RimoPutEvent.MAX_SPEED * sign));
+      sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
     }
+  }
+
+  public void setspeedlimit(int i) {
+    speedlimitjoystick = i;
   }
 }
