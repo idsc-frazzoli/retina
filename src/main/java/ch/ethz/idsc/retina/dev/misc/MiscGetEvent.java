@@ -6,24 +6,29 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.HexStrings;
 
 public class MiscGetEvent {
+  // TODO NRJ not final, just we don't know how many bytes we need
   public static final int LENGTH = 44;
+  // ---
   public final byte emergency;
-  private final float battery; // TODO should be raw value
-  public final byte[] data;
+  // TODO NRJ battery should be raw value from adc (probably a short instead of
+  // float)
+  private final float battery;
+  /** collection of bytes received after battery value */
+  private final byte[] remaining;
 
   public MiscGetEvent(ByteBuffer byteBuffer) {
     emergency = byteBuffer.get();
     battery = byteBuffer.getFloat();
     int length = byteBuffer.remaining();
-    data = new byte[length];
-    byteBuffer.get(data);
+    remaining = new byte[length];
+    byteBuffer.get(remaining);
   }
 
   public double steerBatteryVoltage() {
     return battery;
   }
 
-  public String toInfoString() {
-    return HexStrings.from(data);
+  public String getRemainingHex() {
+    return HexStrings.from(remaining);
   }
 }

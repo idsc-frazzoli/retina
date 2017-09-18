@@ -13,7 +13,8 @@ public class Mark8DeflateDigest implements Mark8Digest {
   private final byte[] array;
   private final byte[] intensity;
 
-  /** @param returns 1, 2, or 3 */
+  /** @param returns
+   * 1, 2, or 3 */
   public Mark8DeflateDigest(int returns) {
     GlobalAssert.that(0 < returns && returns <= 3);
     intensity = new byte[8 * returns];

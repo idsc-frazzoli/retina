@@ -43,13 +43,15 @@ public class IntegerMath {
     return a * (b / gcd(a, b)); // to avoid overflow
   }
 
-  /** @param myCollection non-empty
+  /** @param myCollection
+   * non-empty
    * @return greatest common divider of all integers in myCollection */
   public static int gcd(Collection<Integer> myCollection) {
     return myCollection.stream().reduce(IntegerMath::gcd).orElse(null);
   }
 
-  /** @param myCollection non-empty
+  /** @param myCollection
+   * non-empty
    * @return least common multiple of all integers in myCollection */
   public static int lcm(Collection<Integer> myCollection) {
     return myCollection.stream().reduce(IntegerMath::lcm).orElse(null);
@@ -57,12 +59,11 @@ public class IntegerMath {
 
   /** integer division with intuitive handling of negative numbers
    * 
-   * for instance:
-   * -5/ 7 == 0, but
-   * floorDiv(-5, 7) == -1
+   * for instance: -5/ 7 == 0, but floorDiv(-5, 7) == -1
    * 
    * @param a
-   * @param b is positive
+   * @param b
+   * is positive
    * @return */
   public static int floorDiv(int a, int b) {
     assert 0 < b;
@@ -71,12 +72,11 @@ public class IntegerMath {
 
   /** integer division equivalent to double division followed by ceil
    * 
-   * for instance:
-   * 5/ 7 == 0, but
-   * ceilDiv( 5, 7) == 1, since ceil(5./ 7.) == 1
+   * for instance: 5/ 7 == 0, but ceilDiv( 5, 7) == 1, since ceil(5./ 7.) == 1
    * 
    * @param a
-   * @param b is positive
+   * @param b
+   * is positive
    * @return */
   public static int ceilDiv(int a, int b) {
     return floorDiv(a + b - 1, b);

@@ -14,7 +14,8 @@ public class DavisSimpleImageWriter implements TimedImageListener {
   private final DavisExportControl exportControl;
   private int count = 0;
 
-  /** @param directory base
+  /** @param directory
+   * base
    * @param limit
    * @throws Exception */
   public DavisSimpleImageWriter(File directory, int limit, DavisExportControl exportControl) {

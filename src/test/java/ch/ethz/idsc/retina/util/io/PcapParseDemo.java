@@ -9,7 +9,7 @@ enum PcapParseDemo {
   public static void main(String[] args) throws Exception {
     PcapPacketListener pcapPacketListener = new PcapPacketListener() {
       @Override
-      public void packet(int sec, int usec, byte[] packet_data, int length) {
+      public void pcapPacket(int sec, int usec, byte[] packet_data, int length) {
         System.out.println(sec + " " + usec + " " + length);
       }
     };

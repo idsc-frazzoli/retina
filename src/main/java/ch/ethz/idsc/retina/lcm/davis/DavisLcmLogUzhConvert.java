@@ -44,7 +44,8 @@ public class DavisLcmLogUzhConvert {
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
       // ---
-      // AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
+      // AccumulatedEventsImage accumulateDvsImage = new
+      // AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
       // {
       // File debug = new File(directory, "events_debug");
       // debug.mkdir();

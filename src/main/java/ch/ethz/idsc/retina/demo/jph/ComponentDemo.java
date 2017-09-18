@@ -40,7 +40,8 @@ enum ComponentDemo {
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     try (DavisTxtFileSupplier sup = new DavisTxtFileSupplier(file, dimension)) {
-      // File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
+      // File file = new
+      // File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
       // "jumping.dat");
       // DvsEventSupplier sup = new DatFileSupplier(file, dimension);
       // DvsEventBuffer buf = new DvsEventBuffer(10000);

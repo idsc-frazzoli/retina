@@ -18,10 +18,15 @@ public abstract class JoystickEvent {
     return (_buttons & (1 << index)) != 0;
   }
 
-  /** @param index of axis
+  /** @param index
+   * of axis
    * @return value in unit interval [0, 1] */
   protected final double getAxisValue(int index) {
     return _axes[index] / (double) Byte.MAX_VALUE;
+  }
+
+  protected int getHat(int index) {
+    return _hats[index];
   }
 
   public final void decode(ByteBuffer byteBuffer) {
@@ -35,12 +40,12 @@ public abstract class JoystickEvent {
   public abstract JoystickType type();
 
   public final String toInfoString() {
-    StringBuffer stringBuffer = new StringBuffer();
-    stringBuffer.append(type().name());
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append(type().name());
     for (int index = 0; index < _axes.length; ++index)
-      stringBuffer.append(String.format(" %4d", _axes[index]));
-    stringBuffer.append(String.format(" B=%04X", _buttons));
+      stringBuilder.append(String.format(" %4d", _axes[index]));
+    stringBuilder.append(String.format(" B=%04X", _buttons));
     // TODO hats
-    return stringBuffer.toString();
+    return stringBuilder.toString();
   }
 }

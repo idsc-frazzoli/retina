@@ -9,13 +9,11 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarRotationEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRotationListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
 
-/** Packet description taken from
- * M8 Sensor User Guide, QPN 96-00001 Rev H
- * p.32 */
+/** Packet description taken from M8 Sensor User Guide, QPN 96-00001 Rev H p.32 */
 public class Mark8Decoder implements LidarRayDataProvider {
   private final List<LidarRayDataListener> listeners = new LinkedList<>();
 
@@ -110,9 +108,9 @@ public class Mark8Decoder implements LidarRayDataProvider {
   public static void main(String[] args) throws Exception {
     Mark8Decoder mark8Decoder = new Mark8Decoder();
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-    lidarRotationProvider.addListener(new LidarRotationEventListener() {
+    lidarRotationProvider.addListener(new LidarRotationListener() {
       @Override
-      public void rotation(LidarRotationEvent lidarRotationEvent) {
+      public void lidarRotation(LidarRotationEvent lidarRotationEvent) {
         System.out.println("rotation " + lidarRotationEvent.usec + " " + lidarRotationEvent.rotation);
         // System.out.println(lidarRotationEvent);
       }

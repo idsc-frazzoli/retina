@@ -6,8 +6,8 @@ import java.util.Objects;
 public class AzimuthExtrapolation {
   public static final int FULL = 36000; // 360 degree
   // ---
-  /** the default value 20 is used only for the first extrapolation
-   * the value 20 was chosen because it fits with the example data */
+  /** the default value 20 is used only for the first extrapolation the value 20
+   * was chosen because it fits with the example data */
   private int half = 20;
   private Integer last;
 

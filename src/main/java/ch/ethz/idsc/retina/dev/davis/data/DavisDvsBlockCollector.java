@@ -3,13 +3,13 @@ package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** encodes an event in 4 bytes (instead of 8 bytes as in aedat) */
-public class DavisDvsBlockCollector implements DavisDvsEventListener {
+public class DavisDvsBlockCollector implements DavisDvsListener {
   public static final int MAX_EVENTS = 300;
   public static final int MAX_LENGTH = 2 + 2 + 4 + MAX_EVENTS * 4;
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[MAX_LENGTH]);
@@ -24,7 +24,7 @@ public class DavisDvsBlockCollector implements DavisDvsEventListener {
   int offset;
 
   @Override
-  public void dvs(DavisDvsEvent davisDvsEvent) {
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (numel == 0)
       resetTo(davisDvsEvent);
     int exact = davisDvsEvent.time - offset;

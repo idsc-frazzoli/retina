@@ -12,8 +12,10 @@ public enum JoystickLcmClientDemo {
     joystickLcmClient.addListener(joystickEvent -> {
       System.out.println(joystickEvent.toInfoString());
       GenericXboxPadJoystick genericXboxPadJoystick = (GenericXboxPadJoystick) joystickEvent;
-      // System.out.print("L-knob R=" + genericXboxPadJoystick.getLeftKnobDirectionRight() + " ");
-      // System.out.print("slider L=" + genericXboxPadJoystick.getLeftSliderUnitValue() + " ");
+      // System.out.print("L-knob R=" +
+      // genericXboxPadJoystick.getLeftKnobDirectionRight() + " ");
+      // System.out.print("slider L=" +
+      // genericXboxPadJoystick.getLeftSliderUnitValue() + " ");
       System.out.print("button A=" + genericXboxPadJoystick.isButtonPressedA() + " ");
       System.out.println();
     });

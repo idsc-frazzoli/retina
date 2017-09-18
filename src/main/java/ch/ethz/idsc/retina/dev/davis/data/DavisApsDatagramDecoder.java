@@ -35,7 +35,8 @@ public class DavisApsDatagramDecoder {
   }
 
   public void decode(ByteBuffer byteBuffer) {
-    // if client is started before server, x was observed not to be in range, e.g. x==-1
+    // if client is started before server, x was observed not to be in range, e.g.
+    // x==-1
     int x = byteBuffer.getShort();
     // TODO check that value in valid range
     isComplete &= x == x_next;

@@ -21,7 +21,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-/** selector in gui for easy scrolling through a list with mouse-wheel but no pull-down menu
+/** selector in gui for easy scrolling through a list with mouse-wheel but no
+ * pull-down menu
  * 
  * @param <Type> */
 public class SpinnerLabel<Type> {
@@ -77,7 +78,8 @@ public class SpinnerLabel<Type> {
       // Point2D start = new Point2D.Float(0, 0);
       // Point2D end = new Point2D.Float(0, myDimension.height - 1);
       // float[] dist = { 0f, (numel() - index) / (float) (numel() + 1), 1f };
-      // Color[] colors = { Colors.alpha064(Color.lightGray), Colors.alpha128(Color.white), Colors.alpha064(Color.lightGray) };
+      // Color[] colors = { Colors.alpha064(Color.lightGray),
+      // Colors.alpha128(Color.white), Colors.alpha064(Color.lightGray) };
       // LinearGradientPaint p = new LinearGradientPaint(start, end, dist, colors);
       // myGraphics.setPaint(p);
       // ---
@@ -227,14 +229,14 @@ public class SpinnerLabel<Type> {
   }
 
   /** @param list
-   * is used by reference.
-   * Any modification to myList is discouraged and (eventually) reflected in the {@link SpinnerLabel}. */
+   * is used by reference. Any modification to myList is discouraged
+   * and (eventually) reflected in the {@link SpinnerLabel}. */
   public void setList(List<Type> list) {
     this.list = list;
   }
 
-  public void setStream(Stream<Type> myStream) {
-    setList(myStream.collect(Collectors.toList()));
+  public void setStream(Stream<Type> stream) {
+    setList(stream.collect(Collectors.toList()));
   }
 
   // public void setIterable(Iterable<Type> myIterable) {

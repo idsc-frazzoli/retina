@@ -7,8 +7,8 @@ package ch.ethz.idsc.retina.dev.lidar;
 public class VelodynePosEvent {
   /** number of microseconds past the hour per UTC time */
   private final int gps_usec;
-  /** The Validity field in the $GPRMC message (‘A’ or ‘V’) should be checked
-   * by the user to ensure the GPS system and the VLP-16 are receiving valid
+  /** The Validity field in the $GPRMC message (‘A’ or ‘V’) should be checked by
+   * the user to ensure the GPS system and the VLP-16 are receiving valid
    * Coordinated Universal Time (UTC) updates from the user’s GPS receiver. */
   private final String nmea;
 

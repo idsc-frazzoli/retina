@@ -11,14 +11,12 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
 
-/** very efficient for postprocessing:
- * playback rates of up to 43M [events/sec]
+/** very efficient for postprocessing: playback rates of up to 43M [events/sec]
  * 
- * The events are sequentially stored in a binary file.
- * Each event is encoded into 8 bytes,
- * where the first 4 bytes stores the absolute time-stamp in microseconds and
- * the last 4 bytes stores the event-polarity (1 for positive, 0 for negative) and
- * the x and y position in the image.
+ * The events are sequentially stored in a binary file. Each event is encoded
+ * into 8 bytes, where the first 4 bytes stores the absolute time-stamp in
+ * microseconds and the last 4 bytes stores the event-polarity (1 for positive,
+ * 0 for negative) and the x and y position in the image.
  * 
  * The latter bytes can be processed by using the the following bit-masks:
  * 

@@ -6,8 +6,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
 
-/** opens a frame to visualize sensor data from the Davis240c camera
- * which is received via three lcm channels
+/** opens a frame to visualize sensor data from the Davis240c camera which is
+ * received via three lcm channels
  * <ul>
  * <li>aps grayscale images
  * <li>dvs events

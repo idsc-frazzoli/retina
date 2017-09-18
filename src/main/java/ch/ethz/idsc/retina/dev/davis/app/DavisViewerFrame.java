@@ -99,7 +99,8 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
         @Override
         public void run() {
           if (Objects.nonNull(davisEventStatistics)) {
-            // davisDefaultComponent.displayEventCount = davisEventStatistics.eventCount().subtract(eventCount);
+            // davisDefaultComponent.displayEventCount =
+            // davisEventStatistics.eventCount().subtract(eventCount);
             // eventCount = davisEventStatistics.eventCount();
           }
         }

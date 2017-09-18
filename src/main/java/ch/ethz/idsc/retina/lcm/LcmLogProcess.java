@@ -35,8 +35,10 @@ public class LcmLogProcess implements AutoCloseable {
   private final File file;
   private final Process process;
 
-  /** @param file reference to absolute path of log file
-   * @throws Exception if file already exists or log process cannot be started */
+  /** @param file
+   * reference to absolute path of log file
+   * @throws Exception
+   * if file already exists or log process cannot be started */
   public LcmLogProcess(final File file) throws Exception {
     if (file.exists())
       throw new RuntimeException();

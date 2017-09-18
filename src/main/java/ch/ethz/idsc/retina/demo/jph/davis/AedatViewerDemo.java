@@ -7,8 +7,8 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisEventViewer;
 import ch.ethz.idsc.retina.dev.davis.io.AedatFileSupplier;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-/** playback of aedat log file and visualization of content.
- * data processing is restricted to dvs event accumulation */
+/** playback of aedat log file and visualization of content. data processing is
+ * restricted to dvs event accumulation */
 enum AedatViewerDemo {
   ;
   public static void main(String[] args) throws Exception {

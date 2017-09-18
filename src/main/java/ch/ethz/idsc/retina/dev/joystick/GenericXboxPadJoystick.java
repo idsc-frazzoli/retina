@@ -39,32 +39,32 @@ public final class GenericXboxPadJoystick extends JoystickEvent {
     return isButtonPressed(7);
   }
 
-  public boolean isButtonPressedAxisLeft() {
+  public boolean isButtonPressedLeftKnob() {
     return isButtonPressed(8);
   }
 
-  public boolean isButtonPressedAxisRight() {
+  public boolean isButtonPressedRightKnob() {
     return isButtonPressed(9);
   }
 
-  /** value is 1.0 if left knob is held to the far right
-   * value is -1.0 if left knob is held to the far left
+  /** value is 1.0 if left knob is held to the far right value is -1.0 if left knob
+   * is held to the far left
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionRight() {
     return getAxisValue(0);
   }
 
-  /** value is 1.0 if left knob is pulled towards user
-   * value is -1.0 if left knob is pushed away from user
+  /** value is 1.0 if left knob is pulled towards user value is -1.0 if left knob
+   * is pushed away from user
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionDown() {
     return getAxisValue(1);
   }
 
-  /** value is 1.0 if left knob is pushed away from user
-   * value is -1.0 if left knob is pulled towards user
+  /** value is 1.0 if left knob is pushed away from user value is -1.0 if left knob
+   * is pulled towards user
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionUp() {
@@ -83,8 +83,8 @@ public final class GenericXboxPadJoystick extends JoystickEvent {
     return -getRightKnobDirectionDown();
   }
 
-  /** value is 0.0 if slider is passive, and
-   * 1.0 if slider is pressed inwards all the way
+  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
+   * the way
    * 
    * @return value in the unit interval [0,1] */
   public double getLeftSliderUnitValue() {
@@ -92,12 +92,28 @@ public final class GenericXboxPadJoystick extends JoystickEvent {
     return (axis + 1) * 0.5;
   }
 
-  /** value is 0.0 if slider is passive, and
-   * 1.0 if slider is pressed inwards all the way
+  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
+   * the way
    * 
    * @return value in the unit interval [0,1] */
   public double getRightSliderUnitValue() {
     double axis = getAxisValue(5);
     return (axis + 1) * 0.5;
+  }
+
+  public boolean isHatPressedUp() {
+    return (getHat(0) & 1) != 0;
+  }
+
+  public boolean isHatPressedRight() {
+    return (getHat(0) & 2) != 0;
+  }
+
+  public boolean isHatPressedDown() {
+    return (getHat(0) & 4) != 0;
+  }
+
+  public boolean isHatPressedLeft() {
+    return (getHat(0) & 8) != 0;
   }
 }

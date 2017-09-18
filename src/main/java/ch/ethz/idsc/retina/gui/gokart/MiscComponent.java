@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
@@ -137,8 +138,9 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public void miscGet(MiscGetEvent miscGetEvent) {
     jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    // TODO NRJ give warning
     jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
-    jTextField.setText(miscGetEvent.toInfoString());
+    jTextField.setText(miscGetEvent.getRemainingHex());
   }
 
   @Override
@@ -149,5 +151,10 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public String connectionInfoLocal() {
     return String.format("%s:%d", MiscSocket.LOCAL_ADDRESS, MiscSocket.LOCAL_PORT);
+  }
+
+  @Override
+  public void joystick(JoystickEvent joystickEvent) {
+    // TODO use buttons to reset
   }
 }

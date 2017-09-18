@@ -10,8 +10,8 @@ public class DavisApsEvent implements DavisEvent {
   public final int x;
   /** y ranges from [0, 1, ..., 179] */
   public final int y;
-  /** adc ranges typically in the interval [0, ..., 1023]
-   * where 0 encodes dark, and 1023 brightest */
+  /** adc ranges typically in the interval [0, ..., 1023] where 0 encodes dark, and
+   * 1023 brightest */
   private final int adc;
 
   public DavisApsEvent(int time, int x, int y, int adc) {

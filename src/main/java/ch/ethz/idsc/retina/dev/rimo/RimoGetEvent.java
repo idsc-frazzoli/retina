@@ -3,6 +3,9 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
 
+/** information received from micro-autobox about the status of a motor usually
+ * two of the events are received simultaneously: for the left and right rear
+ * wheel */
 public class RimoGetEvent {
   public static final int LENGTH = 16;
   // ---
@@ -19,7 +22,8 @@ public class RimoGetEvent {
   /** C */
   public final short temperature_heatsink;
 
-  /** @param byteBuffer of which 16 bytes are read */
+  /** @param byteBuffer
+   * of which 16 bytes are read */
   public RimoGetEvent(ByteBuffer byteBuffer) {
     status_word = byteBuffer.getShort(); // 2
     actual_speed = byteBuffer.getShort(); // 4
@@ -30,6 +34,9 @@ public class RimoGetEvent {
     temperature_heatsink = byteBuffer.getShort(); // 16
   }
 
+  // TODO NRJ provide functions that compute physical values from raw integer
+  // values
+  // for instance voltage, current, temperature...
   public String toInfoString() {
     return String.format("%d %d %d %d %d %d %d", //
         status_word, actual_speed, //

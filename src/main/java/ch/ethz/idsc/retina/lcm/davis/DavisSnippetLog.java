@@ -26,10 +26,11 @@ public class DavisSnippetLog {
     thread.start();
   };
 
-  /** since the first and last frames may not be received completely
-   * the application layer should introduce margins
+  /** since the first and last frames may not be received completely the
+   * application layer should introduce margins
    * 
-   * @param period_ms duration of recording
+   * @param period_ms
+   * duration of recording
    * @param lcmDir
    * @param uzhDir */
   public DavisSnippetLog(int period_ms, File lcmDir, File uzhDir) {

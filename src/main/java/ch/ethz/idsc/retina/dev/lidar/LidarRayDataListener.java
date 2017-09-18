@@ -4,27 +4,27 @@ package ch.ethz.idsc.retina.dev.lidar;
 import java.nio.ByteBuffer;
 
 public interface LidarRayDataListener {
-  /** function is invoked with parameters that refer to previous sequence of laser data
+  /** function is invoked with parameters that refer to previous sequence of laser
+   * data
    * 
-   * @param usec microseconds from the top of the hour to the first laser firing in the packet
-   * @param type device dependent */
+   * @param usec
+   * microseconds from the top of the hour to the first laser firing in
+   * the packet
+   * @param type
+   * device dependent */
   void timestamp(int usec, int type);
 
-  /** implementations can read LASERS * 3 bytes from byteBuffer:
+  /** parameters depend on sensor
    * 
-   * for (int laser = 0; laser < LASERS; ++laser) {
-   * int distance = byteBuffer.getShort() & 0xffff;
-   * int intensity = byteBuffer.get();
-   * }
+   * rotational Velodyne [0, ..., 35999] in 100th of degree Mark8 [0, ..., 10399]
+   * where 10400 corresponds to 360 degrees
    * 
-   * <p>parameters depends on sensor
+   * for velodyne: implementations can read LASERS * 3 bytes from byteBuffer:
    * 
-   * rotational
-   * Velodyne [0, ..., 35999] in 100th of degree
-   * Mark8 [0, ..., 10399] where 10400 corresponds to 360 degree
+   * for (int laser = 0; laser < LASERS; ++laser) { int distance =
+   * byteBuffer.getShort() & 0xffff; int intensity = byteBuffer.get(); }
    * 
    * @param rotational
-   * 
    * @param byteBuffer */
   void scan(int rotational, ByteBuffer byteBuffer);
 }

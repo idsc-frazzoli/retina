@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 import ch.ethz.idsc.tensor.RealScalar;
 
 public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
-  /** at motor RPM == 600 the max width ~2170
-   * at motor RPM == 1200 the max width ~1083 */
+  /** at motor RPM == 600 the max width ~2170 at motor RPM == 1200 the max width
+   * ~1083 */
   private static final int MAX_WIDTH = 2304;
   /** constructor multiplies index values with image width */
   private final int[] index = new int[] { //

@@ -13,8 +13,10 @@ import ch.ethz.idsc.retina.dev.davis.io.AedatFileSupplier;
 /** functionality is available as a command-line tool */
 public enum AedatLogStatistics {
   ;
-  /** @param aedat file as source
-   * @param directory target
+  /** @param aedat
+   * file as source
+   * @param directory
+   * target
    * @throws Exception */
   public static void of(File aedat) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();

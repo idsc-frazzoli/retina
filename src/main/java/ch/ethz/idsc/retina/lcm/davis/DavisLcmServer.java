@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
@@ -21,12 +21,15 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
 import idsc.DavisImu;
 
-/** collection of functionality that filters raw data for aps content
- * the aps content is encoded in timed column blocks and sent via {@link DavisApsDatagramServer}
- * the dvs content is encoded in packets with at most 300 events and sent via {@link DavisDvsDatagramServer}
- * the imu content is encoded as {@link DavisImu}
+/** collection of functionality that filters raw data for aps content the aps
+ * content is encoded in timed column blocks and sent via
+ * {@link DavisApsDatagramServer} the dvs content is encoded in packets with at
+ * most 300 events and sent via {@link DavisDvsDatagramServer} the imu content
+ * is encoded as {@link DavisImu}
  * 
- * <p>tested on cameras:
+ * <p>
+ * tested on cameras:
+ * 
  * <pre>
  * DAVIS FX2 02460045
  * </pre> */
@@ -34,7 +37,8 @@ public class DavisLcmServer {
   // ---
   public final DavisDecoder davisDecoder;
 
-  /** @param serial for instance "FX2_02460045"
+  /** @param serial
+   * for instance "FX2_02460045"
    * @param cameraId */
   public DavisLcmServer(String serial, String cameraId, DavisApsType... types) {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
@@ -55,7 +59,7 @@ public class DavisLcmServer {
       DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
       DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
       davisApsBlockCollector.setListener(davisApsBlockListener);
-      DavisApsEventListener davisApsColumnCompiler = new CorrectedDavisApsColumnCompiler(davisApsBlockCollector, resetDavisApsCorrection);
+      DavisApsListener davisApsColumnCompiler = new CorrectedDavisApsColumnCompiler(davisApsBlockCollector, resetDavisApsCorrection);
       davisDecoder.addSigListener(davisApsColumnCompiler);
     }
     {
@@ -74,7 +78,7 @@ public class DavisLcmServer {
       davisDecoder.read(data[index], time[index]);
   }
 
-  private static DavisApsEventListener create(String cameraId, DavisApsType davisApsType) {
+  private static DavisApsListener create(String cameraId, DavisApsType davisApsType) {
     DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, davisApsType);
     DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
     davisApsBlockCollector.setListener(davisApsBlockListener);

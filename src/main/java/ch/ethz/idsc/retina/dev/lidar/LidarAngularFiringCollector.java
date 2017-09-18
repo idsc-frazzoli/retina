@@ -8,36 +8,27 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-/** collects a complete 360 rotation
+/** collects a lidar scan of a complete 360 rotation into a pointcloud consisting
+ * of 3d, or 2d points
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class LidarAngularFiringCollector implements LidarSpacialEventListener, LidarRotationEventListener {
-  /** the highway scene has 2304 * 32 * 3 == 221184 coordinates */
-  // TODO parts of the implementation are not generic
-  private static final int MAX_COORDINATES = 2304 * 32; // == 221184
-
-  @Deprecated
-  public static LidarAngularFiringCollector createDefault() {
-    return create(MAX_COORDINATES);
-  }
-
-  public static LidarAngularFiringCollector create(int max) {
-    FloatBuffer floatBuffer = FloatBuffer.wrap(new float[max * 3]); // 3 because of x y z
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[max]);
-    return new LidarAngularFiringCollector(floatBuffer, byteBuffer);
-  }
-
-  // ---
+public class LidarAngularFiringCollector implements LidarSpacialListener, LidarRotationListener {
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;
   private final List<LidarRayBlockListener> listeners = new LinkedList<>();
+  private final int dimensions;
 
-  public LidarAngularFiringCollector(FloatBuffer floatBuffer, ByteBuffer byteBuffer) {
-    this.floatBuffer = floatBuffer;
-    this.byteBuffer = byteBuffer;
-    limit = byteBuffer.limit();
-    GlobalAssert.that(floatBuffer.limit() == limit * 3);
+  /** the highway scene has 2304 * 32 * 3 == 221184 coordinates
+   * 
+   * @param limit
+   * @param dimensions */
+  public LidarAngularFiringCollector(int limit, int dimensions) {
+    this.floatBuffer = FloatBuffer.wrap(new float[limit * dimensions]); // 2 because of x y;
+    this.byteBuffer = ByteBuffer.wrap(new byte[limit]);
+    this.limit = limit;
+    this.dimensions = dimensions;
+    GlobalAssert.that(floatBuffer.limit() == limit * dimensions);
   }
 
   public void addListener(LidarRayBlockListener listener) {
@@ -45,19 +36,24 @@ public class LidarAngularFiringCollector implements LidarSpacialEventListener, L
   }
 
   @Override
-  public void rotation(LidarRotationEvent lidarRotationEvent) {
+  public void lidarRotation(LidarRotationEvent lidarRotationEvent) {
+    // set limit of buffers to current position
     floatBuffer.flip();
     byteBuffer.flip();
-    listeners.forEach(listener -> listener.digest(floatBuffer, byteBuffer));
-    floatBuffer.limit(limit * 3);
+    LidarRayBlockEvent lidarRayBlockEvent = //
+        new LidarRayBlockEvent(lidarRotationEvent.usec, floatBuffer, byteBuffer, dimensions);
+    listeners.forEach(listener -> listener.lidarRayBlock(lidarRayBlockEvent));
+    // ---
+    // reset buffers
+    floatBuffer.limit(limit * dimensions);
     floatBuffer.position(0);
     byteBuffer.limit(limit);
     byteBuffer.position(0);
   }
 
   @Override
-  public void spacial(LidarSpacialEvent lidarSpacialEvent) {
-    floatBuffer.put(lidarSpacialEvent.coords);
+  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+    floatBuffer.put(lidarSpacialEvent.coords); // either 3, or 2 floats
     byteBuffer.put((byte) lidarSpacialEvent.intensity);
   }
 }

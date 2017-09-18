@@ -2,6 +2,8 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
@@ -12,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -19,11 +22,12 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 
 public class AutoboxClientFrame {
+  // TODO NRJ reduce max speed when using joystick in gui
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final Timer timer = new Timer();
-  protected final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
+  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
 
   public AutoboxClientFrame() {
     addTab(new RimoComponent());
@@ -36,7 +40,17 @@ public class AutoboxClientFrame {
     {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
-      // jToolBar
+      JToggleButton jToggle = new JToggleButton("Joystick");
+      jToggle.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          boolean status = jToggle.isSelected();
+          for (InterfaceComponent ic : list) {
+            ic.setJoystickEnabled(status);
+          }
+        }
+      });
+      jToolBar.add(jToggle);
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     jPanel.add(jTabbedPane, BorderLayout.CENTER);
@@ -45,17 +59,12 @@ public class AutoboxClientFrame {
     jFrame.setBounds(100, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosing(WindowEvent windowEvent) {
         list.forEach(interfaceComponent -> interfaceComponent.connectAction(100, false));
         timer.cancel();
-        System.out.println("cancel");
-      }
-
-      @Override
-      public void windowClosed(WindowEvent e) {
-        // ---
       }
     });
+    joystickLcmClient.startSubscriptions();
     jFrame.setVisible(true);
   }
 
@@ -68,5 +77,6 @@ public class AutoboxClientFrame {
     jPanel.add(interfaceComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
+    joystickLcmClient.addListener(interfaceComponent);
   }
 }

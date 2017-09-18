@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.util.io.PcapPacketListener;
 
 /** default packet distribution
  * 
- * implementation decides based on length of packet to
- * process the data either as firing packet or as GPS */
+ * implementation decides based on length of packet to process the data either
+ * as firing packet or as GPS */
 public class VelodynePcapPacketListener implements PcapPacketListener {
   public static VelodynePcapPacketListener hdl32e() {
     return new VelodynePcapPacketListener(new Hdl32eDecoder());
@@ -30,12 +30,12 @@ public class VelodynePcapPacketListener implements PcapPacketListener {
   }
 
   @Override
-  public void packet(int sec, int usec, byte[] packet_data, int length) {
+  public void pcapPacket(int sec, int usec, byte[] packet_data, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(packet_data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    /** the answer to life the universe and everything
-     * hdl32e user's manual refers to first 42 bytes as ethernet header
-     * they are only present in pcap file, but not in upd packets from live sensor */
+    /** the answer to life the universe and everything hdl32e user's manual refers to
+     * first 42 bytes as ethernet header they are only present in pcap file, but not
+     * in upd packets from live sensor */
     byteBuffer.position(42);
     switch (length) {
     case 1248:

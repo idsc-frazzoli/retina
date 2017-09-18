@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.util.data.Word;
 
 public enum LinmotPutConfiguration {
   ;
-  public static final int PORT = 5001;
   // ---
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("HOME", (short) 0x083f), //
@@ -21,9 +20,10 @@ public enum LinmotPutConfiguration {
       Word.createShort("ZEROS", (short) 0x0000) // <- this message may not be needed
   );
   // ---
+  // TODO NRJ document empirical justification for all magic numbers
   public static final int TARGETPOS_MIN = -500;
-  public static final int TARGETPOS_MAX = 0;
-  public static final int TARGETPOS_INIT = -100;
+  public static final int TARGETPOS_MAX = -48;
+  public static final int TARGETPOS_INIT = -50;
   // ---
   public static final int MAXVELOCITY_MIN = 0;
   public static final int MAXVELOCITY_MAX = 1000;

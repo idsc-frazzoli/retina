@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEventListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 
 public class Mark8SpacialProvider implements LidarSpacialProvider {
@@ -19,11 +19,12 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   private static final double TO_METER = 0.002;
   private static final float TO_METER_FLOAT = (float) TO_METER;
   /** angles taken from p.33 */
-  // TODO the values state in the data sheet are not evenly spaced... need confirmation through experiments
+  // TODO the values state in the data sheet are not evenly spaced... need
+  // confirmation through experiments
   private static final double[] M8_VERTICAL_ANGLES = { //
       -0.318505, -0.2692, -0.218009, -0.165195, -0.111003, -0.0557982, 0.0, 0.0557982 };
   // ---
-  private final List<LidarSpacialEventListener> listeners = new LinkedList<>();
+  private final List<LidarSpacialListener> listeners = new LinkedList<>();
   private int usec;
   private final byte[] intensity = new byte[24];
   private int returns;
@@ -37,7 +38,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   }
 
   @Override
-  public void addListener(LidarSpacialEventListener lidarSpacialEventListener) {
+  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
@@ -65,7 +66,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
           coords[1] = IR[laser] * range * dy;
           coords[2] = IZ[laser] * range;
           LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-          listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+          listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
         }
       }
     }
@@ -93,7 +94,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
           coords[1] = IR[laser] * range * dy;
           coords[2] = IZ[laser] * range;
           LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity[index] & 0xff);
-          listeners.forEach(listener -> listener.spacial(lidarSpacialEvent));
+          listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
         }
         ++index;
       }

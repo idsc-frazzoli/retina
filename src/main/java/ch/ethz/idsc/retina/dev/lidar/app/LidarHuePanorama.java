@@ -9,8 +9,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
 
-/** [2304 x 32] hue color images visualizing distance and intensity
- * with better contrast than {@link LidarGrayscalePanorama} */
+/** [2304 x 32] hue color images visualizing distance and intensity with better
+ * contrast than {@link LidarGrayscalePanorama} */
 public class LidarHuePanorama implements LidarPanorama {
   private static final double DISTANCE_WRAP = 0.1; // wrap every 10[m]
   private static final double INTENSITY_WRAP = 0.00976563;
@@ -43,7 +43,8 @@ public class LidarHuePanorama implements LidarPanorama {
 
   /** @param x
    * @param y_abs
-   * @param distance 256 == 0.512[m] */
+   * @param distance
+   * 256 == 0.512[m] */
   @Override
   public void setReading(int address, float distance, byte _intensity) {
     distances[address] = Hue.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();

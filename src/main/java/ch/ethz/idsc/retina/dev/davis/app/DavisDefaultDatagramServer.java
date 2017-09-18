@@ -11,9 +11,10 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
 
-/** collection of functionality that filters raw data for aps content
- * the aps content is encoded in timed column blocks and sent via {@link DavisApsDatagramServer}
- * the dvs content is encoded in packets with at most 300 events and sent via {@link DavisDvsDatagramServer} */
+/** collection of functionality that filters raw data for aps content the aps
+ * content is encoded in timed column blocks and sent via
+ * {@link DavisApsDatagramServer} the dvs content is encoded in packets with at
+ * most 300 events and sent via {@link DavisDvsDatagramServer} */
 public enum DavisDefaultDatagramServer {
   INSTANCE;
   // ---

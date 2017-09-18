@@ -3,16 +3,16 @@ package ch.ethz.idsc.retina.util.math;
 
 /** A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
  * 
- * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
- * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
- * Better rank ordering method by Stefan Gustavson in 2012.
+ * Based on example code by Stefan Gustavson (stegu@itn.liu.se). Optimisations
+ * by Peter Eastman (peastman@drizzle.stanford.edu). Better rank ordering method
+ * by Stefan Gustavson in 2012.
  * 
  * This could be speeded up even further, but it's useful as it is.
  * 
  * Version 2012-03-09
  * 
- * This code was placed in the public domain by its original author,
- * Stefan Gustavson. You may use it as you see fit, but attribution is appreciated. */
+ * This code was placed in the public domain by its original author, Stefan
+ * Gustavson. You may use it as you see fit, but attribution is appreciated. */
 public class SimplexNoise extends ContinuousNoise {
   static class Grad {
     double x, y, z, w;
@@ -129,9 +129,9 @@ public class SimplexNoise extends ContinuousNoise {
       i1 = 0;
       j1 = 1;
     } // upper triangle, YX order: (0,0)->(0,1)->(1,1)
-    // A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
-    // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
-    // c = (3-sqrt(3))/6
+      // A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
+      // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
+      // c = (3-sqrt(3))/6
     double x1 = x0 - i1 + G2; // Offsets for middle corner in (x,y) unskewed coords
     double y1 = y0 - j1 + G2;
     double x2 = x0 - 1.0 + 2.0 * G2; // Offsets for last corner in (x,y) unskewed coords
@@ -360,7 +360,8 @@ public class SimplexNoise extends ContinuousNoise {
     // simplex[c] is a 4-vector with the numbers 0, 1, 2 and 3 in some order.
     // Many values of c will never occur, since e.g. x>y>z>w makes x<z, y<w and x<w
     // impossible. Only the 24 indices which have non-zero entries make any sense.
-    // We use a thresholding to set the coordinates in turn from the largest magnitude.
+    // We use a thresholding to set the coordinates in turn from the largest
+    // magnitude.
     // Rank 3 denotes the largest coordinate.
     i1 = rankx >= 3 ? 1 : 0;
     j1 = ranky >= 3 ? 1 : 0;

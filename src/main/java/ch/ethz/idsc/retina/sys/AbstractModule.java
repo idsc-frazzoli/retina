@@ -9,8 +9,8 @@ import java.util.Date;
  * automatically terminate. Should there be an exception thrown while starting
  * the modules, this class would try to restart it again. */
 public abstract class AbstractModule {
-  /** this thread is only used to call launch() thread will terminate once
-   * launch() is over. */
+  /** this thread is only used to call launch() thread will terminate once launch()
+   * is over. */
   private Thread thread; // keep private
 
   /** Used by task manager to launch the modules. */
@@ -49,9 +49,9 @@ public abstract class AbstractModule {
     last();
   }
 
-  /** function launch() should init everything quickly and then return. If
-   * launch procedure encounters problems (such as hardware failure, files
-   * missing, ...) en exception is thrown.
+  /** function launch() should init everything quickly and then return. If launch
+   * procedure encounters problems (such as hardware failure, files missing, ...)
+   * en exception is thrown.
    *
    * In particular, launch() should not block indefinitely.
    *

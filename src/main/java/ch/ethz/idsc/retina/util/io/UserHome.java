@@ -5,8 +5,8 @@ import java.io.File;
 
 public enum UserHome {
   ;
-  /** for the special input filename == ""
-   * the function returns the user home directory
+  /** for the special input filename == "" the function returns the user home
+   * directory
    * 
    * @param filename
    * @return */

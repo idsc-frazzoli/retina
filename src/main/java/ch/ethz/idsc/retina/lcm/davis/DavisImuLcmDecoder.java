@@ -8,8 +8,8 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import idsc.DavisImu;
 
-/** translates davis imu lcm message to {@link DavisImuFrame}
- * which is then distributed to listeners */
+/** translates davis imu lcm message to {@link DavisImuFrame} which is then
+ * distributed to listeners */
 public class DavisImuLcmDecoder {
   private final List<DavisImuFrameListener> listeners = new LinkedList<>();
 

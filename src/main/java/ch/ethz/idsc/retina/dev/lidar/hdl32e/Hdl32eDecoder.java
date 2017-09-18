@@ -7,7 +7,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
-import ch.ethz.idsc.retina.dev.lidar.VelodynePosEventListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.math.ShortUtils;
 
@@ -15,11 +15,11 @@ import ch.ethz.idsc.retina.util.math.ShortUtils;
 public final class Hdl32eDecoder implements VelodyneDecoder {
   private static final int FIRINGS = 12;
   // ---
-  private final List<VelodynePosEventListener> posListeners = new LinkedList<>();
+  private final List<VelodynePosListener> posListeners = new LinkedList<>();
   private final List<LidarRayDataListener> rayListeners = new LinkedList<>();
 
   @Override
-  public void addPosListener(VelodynePosEventListener listener) {
+  public void addPosListener(VelodynePosListener listener) {
     posListeners.add(listener);
   }
 
@@ -38,7 +38,8 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     return !rayListeners.isEmpty();
   }
 
-  /** @param byteBuffer with at least 512 bytes to read */
+  /** @param byteBuffer
+   * with at least 512 bytes to read */
   @Override
   public void positioning(ByteBuffer byteBuffer) {
     byte[] nmea = new byte[72]; // NMEA positioning sentence
@@ -62,10 +63,11 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     byteBuffer.getInt(); // not used
     byteBuffer.get(nmea);
     Hdl32ePosEvent hdl32ePosEvent = new Hdl32ePosEvent(gps_usec, new String(nmea), gyro, temp, accx, accy);
-    posListeners.forEach(listener -> listener.positioning(hdl32ePosEvent));
+    posListeners.forEach(listener -> listener.velodynePos(hdl32ePosEvent));
   }
 
-  /** @param byteBuffer with at least 1206 bytes to read */
+  /** @param byteBuffer
+   * with at least 1206 bytes to read */
   @Override
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position();

@@ -46,11 +46,11 @@ public final class PCPS3AndroidJoystick extends JoystickEvent {
   public boolean isButtonPressedRightKnob() {
     return isButtonPressed(9);
   }
-  
+
   public boolean isButtonPressedL1() {
     return isButtonPressed(10);
   }
-  
+
   public boolean isButtonPressedL2() {
     return isButtonPressed(11);
   }
@@ -58,32 +58,33 @@ public final class PCPS3AndroidJoystick extends JoystickEvent {
   public boolean isButtonPressedR1() {
     return isButtonPressed(12);
   }
-  
+
   public boolean isButtonPressedR2() {
     return isButtonPressed(13);
   }
-  
+
   public boolean isButtonPressedHome() {
     return isButtonPressed(14);
   }
-  /** value is 1.0 if left knob is held to the far right
-   * value is -1.0 if left knob is held to the far left
+
+  /** value is 1.0 if left knob is held to the far right value is -1.0 if left knob
+   * is held to the far left
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionRight() {
     return getAxisValue(0);
   }
 
-  /** value is 1.0 if left knob is pulled towards user
-   * value is -1.0 if left knob is pushed away from user
+  /** value is 1.0 if left knob is pulled towards user value is -1.0 if left knob
+   * is pushed away from user
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionDown() {
     return getAxisValue(1);
   }
 
-  /** value is 1.0 if left knob is pushed away from user
-   * value is -1.0 if left knob is pulled towards user
+  /** value is 1.0 if left knob is pushed away from user value is -1.0 if left knob
+   * is pulled towards user
    * 
    * @return values in the unit interval [0, 1] */
   public double getLeftKnobDirectionUp() {
@@ -101,5 +102,4 @@ public final class PCPS3AndroidJoystick extends JoystickEvent {
   public double getRightKnobDirectionUp() {
     return -getRightKnobDirectionDown();
   }
-
 }

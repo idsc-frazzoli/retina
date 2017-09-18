@@ -29,7 +29,7 @@ public enum VelodyneUtils {
   }
 
   public static LidarAngularFiringCollector createCollector32(VelodyneDecoder velodyneDecoder) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
+    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304 * 32, 3);
     LidarSpacialProvider lidarSpacialProvider = new Hdl32eSpacialProvider();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
@@ -40,7 +40,7 @@ public enum VelodyneUtils {
   }
 
   public static LidarAngularFiringCollector createCollector16(VelodyneDecoder velodyneDecoder) {
-    LidarAngularFiringCollector lidarAngularFiringCollector = LidarAngularFiringCollector.createDefault();
+    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304 * 32, 3);
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();

@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.nio.ByteBuffer;
 
+/** information received from micro-autobox about linear motor that controls the
+ * break of the gokart */
 public class LinmotGetEvent {
   /** 16 bytes */
   public static final int LENGTH = 16;
@@ -25,7 +27,8 @@ public class LinmotGetEvent {
 
   /** @return temperature of winding 1 in Celsius */
   public double windingTemperature1() {
-    return winding_temp1 * 0.1; // TODO document conversion factor
+    // TODO NRJ document conversion factor
+    return winding_temp1 * 0.1;
   }
 
   /** @return temperature of winding 1 in Celsius */

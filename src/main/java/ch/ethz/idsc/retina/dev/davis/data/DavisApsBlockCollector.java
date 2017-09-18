@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 
-/** compiles aps columns and forwards them to a given {@link DavisApsColumnListener} */
+/** compiles aps columns and forwards them to a given
+ * {@link DavisApsColumnListener} */
 public class DavisApsBlockCollector implements DavisApsColumnListener {
   private final int columns = DavisStatics.APS_COLUMNS;
   /** column + COLUMNS * [time + pixels] */

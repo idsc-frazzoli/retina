@@ -19,7 +19,7 @@ public class VelodynePcapLcmServer implements PcapPacketListener {
   }
 
   @Override
-  public void packet(int sec, int usec, byte[] data, int length) {
+  public void pcapPacket(int sec, int usec, byte[] data, int length) {
     switch (length) {
     case 1248: // length of ray packet in pcap file
       rayPublisher.accept(Arrays.copyOfRange(data, 42, 1248), VelodyneStatics.RAY_PACKET_LENGTH);

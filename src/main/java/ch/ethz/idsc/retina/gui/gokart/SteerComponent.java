@@ -15,11 +15,12 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
@@ -28,6 +29,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener {
+  public static final int AMP = 1000;
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
@@ -35,7 +37,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS);
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
-  private final SliderExt sliderExtLs;
+  private final SliderExt sliderExtTorque;
   private final JTextField jTextField;
 
   public SteerComponent() {
@@ -48,9 +50,9 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
     }
     { // command speed
       JToolBar jToolBar = createRow("torque");
-      sliderExtLs = SliderExt.wrap(new JSlider(-5000, 5000, 0)); // values are divided by 1000
-      sliderExtLs.physics = scalar -> scalar.multiply(RealScalar.of(1e-3)).map(Round._4).Get();
-      sliderExtLs.addToComponent(jToolBar);
+      sliderExtTorque = SliderExt.wrap(new JSlider(-AMP, AMP, 0)); // values are divided by 1000
+      sliderExtTorque.physics = scalar -> scalar.multiply(RealScalar.of(1e-3)).map(Round._4).Get();
+      sliderExtTorque.addToComponent(jToolBar);
     }
     addSeparator();
     { // reception
@@ -69,12 +71,12 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
         public void run() {
           SteerPutEvent steerPutEvent = new SteerPutEvent();
           steerPutEvent.command = spinnerLabelLw.getValue().getByte();
-          steerPutEvent.torque = sliderExtLs.jSlider.getValue() * 1e-3f;
+          steerPutEvent.torque = sliderExtTorque.jSlider.getValue() * 1e-3f;
           byte[] data = new byte[SteerPutEvent.LENGTH];
           ByteBuffer byteBuffer = ByteBuffer.wrap(data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           steerPutEvent.insert(byteBuffer);
-          System.out.println("steer put=" + HexStrings.from(data));
+          // System.out.println("steer put=" + HexStrings.from(data));
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
@@ -107,7 +109,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
 
   @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
-    jTextField.setText(steerGetEvent.toInfoString());
+    jTextField.setText(steerGetEvent.getRemainingInHex());
   }
 
   @Override
@@ -118,5 +120,14 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
   @Override
   public String connectionInfoLocal() {
     return String.format("%s:%d", SteerSocket.LOCAL_ADDRESS, SteerSocket.LOCAL_PORT);
+  }
+
+  @Override
+  public void joystick(JoystickEvent joystickEvent) {
+    if (isJoystickEnabled()) {
+      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
+      double value = -joystick.getRightKnobDirectionRight();
+      sliderExtTorque.jSlider.setValue((int) (AMP * value));
+    }
   }
 }

@@ -16,8 +16,8 @@ public abstract class AbstractEventModule extends AbstractModule {
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
 
-  /** Initialisation for user implementation. Runs before runEventModule() is
-   * ever called. */
+  /** Initialisation for user implementation. Runs before runEventModule() is ever
+   * called. */
   @Override
   protected abstract void first() throws Exception;
 

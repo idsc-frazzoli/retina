@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.nio.ByteBuffer;
 
+/** information sent to micro-autobox to forward to the linear motor that
+ * controls the break of the gokart */
 public class LinmotPutEvent {
   /** 12 bytes encoding length */
   public static final int LENGTH = 12;
@@ -14,7 +16,8 @@ public class LinmotPutEvent {
   public short acceleration;
   public short deceleration;
 
-  /** @param byteBuffer with at least 12 bytes remaining */
+  /** @param byteBuffer
+   * with at least 12 bytes remaining */
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);
     byteBuffer.putShort(motion_cmd_hdr);

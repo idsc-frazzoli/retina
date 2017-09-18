@@ -12,11 +12,11 @@ import javax.imageio.ImageIO;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
-/** the images are exported with timestamp of the first column,
- * i.e. the earliest available timestamp.
+/** the images are exported with timestamp of the first column, i.e. the earliest
+ * available timestamp.
  * 
- * this is consistent with the logs provided by the Robotics and Perception Group
- * as verified by inspection, see http://rpg.ifi.uzh.ch/ */
+ * this is consistent with the logs provided by the Robotics and Perception
+ * Group as verified by inspection, see http://rpg.ifi.uzh.ch/ */
 public class DavisPngImageWriter implements ColumnTimedImageListener, AutoCloseable {
   private static final String EXTENSION = "png";
   // ---
@@ -25,7 +25,8 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   private final BufferedWriter bufferedWriter;
   private int count = 0;
 
-  /** @param directory base in which a sub directory "images" is created
+  /** @param directory
+   * base in which a sub directory "images" is created
    * @throws IOException */
   public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     this.directory = directory;

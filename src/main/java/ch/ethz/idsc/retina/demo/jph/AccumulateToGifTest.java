@@ -53,6 +53,7 @@ enum AccumulateToGifTest {
     _procedural(new ProceduralDvsEventSupplier(ImageDimensions.IMPERIAL_COLLEGE, 10_000_000), "synth2");
     _procedural(Waves.create(ImageDimensions.IMPERIAL_COLLEGE), "synth1");
     // /media/datahaki/media/ethz/slowmo/out
-    // File dir = new File("/media/datahaki/media/ethz/davis/shapes_translation/images");
+    // File dir = new
+    // File("/media/datahaki/media/ethz/davis/shapes_translation/images");
   }
 }

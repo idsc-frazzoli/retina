@@ -13,6 +13,8 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
@@ -35,11 +37,12 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   private final SliderExt sliderExtMVel;
   private final SliderExt sliderExtAcc;
   private final SliderExt sliderExtDec;
-  // private final JTextField jTextFieldRecv;
+  // ---
   private final JTextField jTextFieldStatusWord;
   private final JTextField jTextFieldStateVariable;
   private final JTextField jTextFieldActualPosition;
   private final JTextField jTextFieldDemandPosition;
+  // TODO NRJ set background color of field according to temperature
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
 
@@ -179,5 +182,18 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   @Override
   public String connectionInfoLocal() {
     return String.format("%s:%d", LinmotSocket.LOCAL_ADDRESS, LinmotSocket.LOCAL_PORT);
+  }
+
+  @Override
+  public void joystick(JoystickEvent joystickEvent) {
+    if (isJoystickEnabled()) {
+      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
+      double value = joystick.getLeftKnobDirectionDown();
+      int pos = (int) //
+      Math.min(Math.max(LinmotPutConfiguration.TARGETPOS_MIN, //
+          (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
+          LinmotPutConfiguration.TARGETPOS_MAX);
+      sliderExtTPos.jSlider.setValue(pos);
+    }
   }
 }

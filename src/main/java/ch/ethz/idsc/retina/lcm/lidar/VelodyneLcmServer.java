@@ -7,16 +7,16 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-/** implementation listens to live device for firing and positioning data
- * on given ports. the received packets are forwarded via lcm protocol
+/** implementation listens to live device for firing and positioning data on
+ * given ports. the received packets are forwarded via lcm protocol
  * 
- * server can be launched from the command line with the arguments:
- * MODEL LIDARID PORT_RAY PORT_POS
+ * server can be launched from the command line with the arguments: MODEL
+ * LIDARID PORT_RAY PORT_POS
  * 
- * MODEL is either of the strings: "HDL32E", "VLP16"
- * LIDARID describes the function/position of the sensor on the robot, for example "center"
- * PORT_RAY is the UDP port on which the the device publishes firing packets
- * PORT_POS is the UDP port on which the the device publishes positioning packets
+ * MODEL is either of the strings: "HDL32E", "VLP16" LIDARID describes the
+ * function/position of the sensor on the robot, for example "center" PORT_RAY
+ * is the UDP port on which the the device publishes firing packets PORT_POS is
+ * the UDP port on which the the device publishes positioning packets
  * 
  * if no arguments are provided, the following default arguments are used:
  * HDL32E center 2368 8308 */

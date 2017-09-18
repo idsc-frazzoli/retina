@@ -13,8 +13,8 @@ import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 
-/** reference implementation of an lcm client that listens and decodes
- * hdl32e publications and allows listeners to receive the data
+/** reference implementation of an lcm client that listens and decodes hdl32e
+ * publications and allows listeners to receive the data
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class VelodyneLcmClient implements LcmClientInterface {
