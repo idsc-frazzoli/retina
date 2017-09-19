@@ -188,16 +188,6 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
   }
 
   @Override
-  public String connectionInfoRemote() {
-    return String.format("%s:%d", LinmotSocket.REMOTE_ADDRESS, LinmotSocket.REMOTE_PORT);
-  }
-
-  @Override
-  public String connectionInfoLocal() {
-    return String.format("%s:%d", LinmotSocket.LOCAL_ADDRESS, LinmotSocket.LOCAL_PORT);
-  }
-
-  @Override
   public void joystick(JoystickEvent joystickEvent) {
     if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;

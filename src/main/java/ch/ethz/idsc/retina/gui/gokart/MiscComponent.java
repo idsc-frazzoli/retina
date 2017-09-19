@@ -118,16 +118,6 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
   }
 
   @Override
-  public String connectionInfoRemote() {
-    return String.format("%s:%d", MiscSocket.REMOTE_ADDRESS, MiscSocket.REMOTE_PORT);
-  }
-
-  @Override
-  public String connectionInfoLocal() {
-    return String.format("%s:%d", MiscSocket.LOCAL_ADDRESS, MiscSocket.LOCAL_PORT);
-  }
-
-  @Override
   public void joystick(JoystickEvent joystickEvent) {
     // TODO use buttons to reset
   }

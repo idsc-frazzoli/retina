@@ -82,16 +82,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   }
 
   @Override
-  public String connectionInfoRemote() {
-    return String.format("%s:%d", SteerSocket.REMOTE_ADDRESS, SteerSocket.REMOTE_PORT);
-  }
-
-  @Override
-  public String connectionInfoLocal() {
-    return String.format("%s:%d", SteerSocket.LOCAL_ADDRESS, SteerSocket.LOCAL_PORT);
-  }
-
-  @Override
   public void joystick(JoystickEvent joystickEvent) {
     if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;

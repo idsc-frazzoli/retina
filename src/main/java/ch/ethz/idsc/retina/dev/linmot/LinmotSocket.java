@@ -24,11 +24,11 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 public enum LinmotSocket implements StartAndStoppable, ByteArrayConsumer {
   INSTANCE;
   // ---
-  public static final int LOCAL_PORT = 5001;
-  public static final String LOCAL_ADDRESS = "192.168.1.1";
+  private static final int LOCAL_PORT = 5001;
+  private static final String LOCAL_ADDRESS = "192.168.1.1";
   // ---
-  public static final int REMOTE_PORT = 5001;
-  public static final String REMOTE_ADDRESS = "192.168.1.10";
+  private static final int REMOTE_PORT = 5001;
+  private static final String REMOTE_ADDRESS = "192.168.1.10";
   // ---
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);

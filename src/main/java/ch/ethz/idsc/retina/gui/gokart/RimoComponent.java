@@ -71,10 +71,10 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       sliderExtRVel.addToComponent(jToolBar);
     }
     addSeparator();
-    { // reception
-      assign(rimoGetFieldsL, "LEFT");
-      assign(rimoGetFieldsR, "RIGHT");
-    }
+    // reception
+    assign(rimoGetFieldsL, "LEFT");
+    addSeparator();
+    assign(rimoGetFieldsR, "RIGHT");
   }
 
   private void assign(RimoGetFields rimoGetFields, String side) {
@@ -160,16 +160,6 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
     // TODO Auto-generated method stub
-  }
-
-  @Override
-  public String connectionInfoRemote() {
-    return String.format("%s:%d", RimoSocket.REMOTE_ADDRESS, RimoSocket.REMOTE_PORT);
-  }
-
-  @Override
-  public String connectionInfoLocal() {
-    return String.format("%s:%d", RimoSocket.LOCAL_ADDRESS, RimoSocket.LOCAL_PORT);
   }
 
   private int sign = 1;
