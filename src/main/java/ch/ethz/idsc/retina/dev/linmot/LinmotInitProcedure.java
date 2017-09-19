@@ -10,26 +10,26 @@ public class LinmotInitProcedure {
     long now = System.currentTimeMillis();
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = 0x003e; // Off Mode
-      linmotPutEvent.motion_cmd_hdr = 0x0000;
+      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_OFF_MODE.getShort(); // Off Mode
+      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
       list.add(new TimedLinmotPutEvent(now + 500, linmotPutEvent));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = 0x00bf; // Error Acknowledgment
-      linmotPutEvent.motion_cmd_hdr = 0x0000;
+      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_ERR_ACK.getShort(); // Error Acknowledgment
+      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
       list.add(new TimedLinmotPutEvent(now + 1000, linmotPutEvent));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = 0x083f; // Home
-      linmotPutEvent.motion_cmd_hdr = 0x0000;
+      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_HOME.getShort(); // Home
+      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
       list.add(new TimedLinmotPutEvent(now + 3000, linmotPutEvent));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = 0x003f; // Operation
-      linmotPutEvent.motion_cmd_hdr = 0x0900; // Position
+      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_OPERATION.getShort(); // Operation
+      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_POSITION.getShort(); // Position
       list.add(new TimedLinmotPutEvent(now + 3500, linmotPutEvent));
     }
   }

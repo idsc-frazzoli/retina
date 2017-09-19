@@ -23,25 +23,20 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener {
+public class SteerComponent extends InterfaceComponent implements SteerGetListener {
   public static final int AMP = 1000;
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
   );
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS);
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField jTextField;
 
   public SteerComponent() {
-    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("command");
       spinnerLabelLw.setList(COMMANDS);
@@ -65,7 +60,7 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
-      datagramSocketManager.start();
+      SteerSocket.INSTANCE.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -81,7 +76,8 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
-            datagramSocketManager.send(datagramPacket);
+            // datagramSocketManager.send(datagramPacket);
+            SteerSocket.INSTANCE.send(datagramPacket); // TODO not final design
           } catch (Exception exception) {
             // ---
             System.out.println("STEER SEND FAIL");
@@ -96,16 +92,8 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
         timerTask.cancel();
         timerTask = null;
       }
-      datagramSocketManager.stop();
+      SteerSocket.INSTANCE.stop();
     }
-  }
-
-  @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-    steerGet(steerGetEvent);
   }
 
   @Override

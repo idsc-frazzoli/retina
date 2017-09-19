@@ -21,6 +21,7 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
@@ -33,9 +34,18 @@ public class AutoboxClientFrame {
 
   public AutoboxClientFrame() {
     RimoComponent rimocomponent = new RimoComponent();
-    addTab(rimocomponent);
-    addTab(new LinmotComponent());
-    addTab(new SteerComponent());
+    {
+      addTab(rimocomponent);
+      SteerSocket.INSTANCE.addListener(rimocomponent);
+    }
+    {
+      addTab(new LinmotComponent());
+    }
+    {
+      SteerComponent steerComponent = new SteerComponent();
+      SteerSocket.INSTANCE.addListener(steerComponent);
+      addTab(steerComponent);
+    }
     addTab(new MiscComponent());
     jTabbedPane.setSelectedIndex(1);
     // ---
@@ -44,6 +54,13 @@ public class AutoboxClientFrame {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
+      {
+        SpinnerLabel<DriveMode> speedlimit = new SpinnerLabel<>();
+        speedlimit.setArray(DriveMode.values());
+        speedlimit.setIndex(0);
+        speedlimit.addSpinnerListener(i -> rimocomponent.setdrivemode(i));
+        speedlimit.addToComponentReduced(jToolBar, new Dimension(120, 28), "drive mode");
+      }
       {
         SpinnerLabel<Integer> speedlimit = new SpinnerLabel<>();
         speedlimit.setArray(0, 500, 1000, 2000, 4000, 8000);

@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -20,12 +21,21 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, SteerGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
@@ -39,6 +49,8 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   private final SliderExt sliderExtRVel;
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
+  private RimoPutEvent rimoPutEventL = new RimoPutEvent();
+  private RimoPutEvent rimoPutEventR = new RimoPutEvent();
 
   public RimoComponent() {
     datagramSocketManager.addListener(this);
@@ -75,7 +87,6 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   private void assign(RimoGetFields rimoGetFields, String side) {
     rimoGetFields.jTF_status_word = createReading(side + " status word");
-    // TODO NRJ background according to difference from target and actual speed
     rimoGetFields.jTF_actual_speed = createReading(side + " actual speed");
     rimoGetFields.jTF_rms_motor_current = createReading(side + " rms current");
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
@@ -101,12 +112,14 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
             rimoPutEvent.command = spinnerLabelLCmd.getValue().getShort();
             rimoPutEvent.speed = (short) sliderExtLVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
+            rimoPutEventL = rimoPutEvent;
           }
           {
             RimoPutEvent rimoPutEvent = new RimoPutEvent();
             rimoPutEvent.command = spinnerLabelRCmd.getValue().getShort();
             rimoPutEvent.speed = (short) sliderExtRVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
+            rimoPutEventR = rimoPutEvent;
           }
           // System.out.println("rimo put=" + HexStrings.from(data));
           try {
@@ -149,6 +162,47 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   public void rimoGet(RimoGetEvent rimoGetL, RimoGetEvent rimoGetR) {
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
+    {
+      double speedDiff = rimoPutEventL.speed - rimoGetL.actual_speed;
+      Scalar scalar = RealScalar.of(speedDiff);
+      scalar = Clip.function(-500, 500).apply(scalar);
+      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
+    }
+    {
+      double speedDiff = rimoPutEventR.speed - rimoGetR.actual_speed;
+      Scalar scalar = RealScalar.of(speedDiff);
+      scalar = Clip.function(-500, 500).apply(scalar);
+      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
+    }
+    {
+      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());
+      double tempMotL = rimoGetL.temperature_motor;
+      Scalar scalarL = RealScalar.of(tempMotL / 10);
+      scalarL = Clip.unit().apply(scalarL);
+      Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
+      Color colorL = ColorFormat.toColor(vectorL);
+      rimoGetFieldsL.jTF_temperature_motor.setBackground(colorL);
+    }
+    {
+      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetR.temperature_motor, "[C]").toString());
+      double tempMotR = rimoGetR.temperature_motor;
+      Scalar scalarR = RealScalar.of(tempMotR / 10);
+      scalarR = Clip.unit().apply(scalarR);
+      Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
+      Color colorR = ColorFormat.toColor(vectorR);
+      rimoGetFieldsR.jTF_temperature_motor.setBackground(colorR);
+    }
+  }
+
+  @Override
+  public void steerGet(SteerGetEvent steerGetEvent) {
+    // TODO Auto-generated method stub
   }
 
   @Override
@@ -163,25 +217,39 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   private int sign = 1;
   public int speedlimitjoystick = 1000;
+  public DriveMode drivemode = DriveMode.SIMPLE_DRIVE;
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
     if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      if (joystick.isButtonPressedBack()) {
-        sign = -1;
+      switch (drivemode) {
+      case SIMPLE_DRIVE:
+        int wheelspeed = (int) Math.round(joystick.getRightKnobDirectionUp() * speedlimitjoystick);
+        sliderExtLVel.jSlider.setValue(wheelspeed);
+        sliderExtRVel.jSlider.setValue(wheelspeed);
+        break;
+      case FULL_CONTROL:
+        if (joystick.isButtonPressedBack()) {
+          sign = -1;
+        }
+        if (joystick.isButtonPressedStart()) {
+          sign = 1;
+        }
+        double wheelL = joystick.getLeftSliderUnitValue();
+        sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
+        double wheelR = joystick.getRightSliderUnitValue();
+        sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
+        break;
       }
-      if (joystick.isButtonPressedStart()) {
-        sign = 1;
-      }
-      double wheelL = joystick.getLeftSliderUnitValue();
-      sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
-      double wheelR = joystick.getRightSliderUnitValue();
-      sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
     }
   }
 
   public void setspeedlimit(int i) {
     speedlimitjoystick = i;
+  }
+
+  public void setdrivemode(DriveMode i) {
+    drivemode = i;
   }
 }

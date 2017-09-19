@@ -41,6 +41,10 @@ public class RimoGetEvent {
     return actual_speed * RADIUS / 60;
   }
 
+  public static short getRawValueSpeed(double speed) {
+    return (short) Math.round(speed * 60 / RADIUS);
+  }
+
   public int getBusVoltage() {
     return dc_bus_voltage;
   }
