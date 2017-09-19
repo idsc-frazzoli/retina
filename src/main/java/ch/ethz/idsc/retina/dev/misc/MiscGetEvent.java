@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.misc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.HexStrings;
 
-public class MiscGetEvent {
+public class MiscGetEvent implements Serializable {
   // TODO NRJ not final, just we don't know how many bytes we need
   public static final int LENGTH = 44;
   // ---

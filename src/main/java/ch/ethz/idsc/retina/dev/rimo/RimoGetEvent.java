@@ -1,12 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear
  * wheel */
-public class RimoGetEvent {
+public class RimoGetEvent implements Serializable {
   public static final int LENGTH = 16;
   // ---
   /** m */

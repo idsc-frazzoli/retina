@@ -1,9 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-public class RimoPutEvent {
+public class RimoPutEvent implements Serializable {
   /** 4 bytes encoding length */
   /* package */ static final int LENGTH = 4;
   /** according to tests on the bench, the max effective speed is ~6300 */
