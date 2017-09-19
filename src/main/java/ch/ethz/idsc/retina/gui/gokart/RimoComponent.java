@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
@@ -50,9 +49,8 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   private final SliderExt sliderExtRVel;
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
-  private final JTextField jTextFieldSpeedDifferenceL;
-  private final JTextField jTextFieldSpeedDifferenceR;
-  public RimoPutEvent rimoPutEvent = new RimoPutEvent();
+  private RimoPutEvent rimoPutEventL = new RimoPutEvent();
+  private RimoPutEvent rimoPutEventR = new RimoPutEvent();
 
   public RimoComponent() {
     datagramSocketManager.addListener(this);
@@ -84,8 +82,6 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     { // reception
       assign(rimoGetFieldsL, "LEFT");
       assign(rimoGetFieldsR, "RIGHT");
-      jTextFieldSpeedDifferenceL = createReading("speeddifferenceL");
-      jTextFieldSpeedDifferenceR = createReading("speeddifferenceR");
     }
   }
 
@@ -117,12 +113,14 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
             rimoPutEvent.command = spinnerLabelLCmd.getValue().getShort();
             rimoPutEvent.speed = (short) sliderExtLVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
+            rimoPutEventL = rimoPutEvent;
           }
           {
             RimoPutEvent rimoPutEvent = new RimoPutEvent();
             rimoPutEvent.command = spinnerLabelRCmd.getValue().getShort();
             rimoPutEvent.speed = (short) sliderExtRVel.jSlider.getValue();
             rimoPutEvent.insert(byteBuffer);
+            rimoPutEventR = rimoPutEvent;
           }
           // System.out.println("rimo put=" + HexStrings.from(data));
           try {
@@ -165,25 +163,23 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   public void rimoGet(RimoGetEvent rimoGetL, RimoGetEvent rimoGetR) {
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
-    double speedDifferenceL = rimoPutEvent.speed - rimoGetL.actual_speed;
-    double speedDifferenceR = rimoPutEvent.speed - rimoGetR.actual_speed;
     {
-      jTextFieldSpeedDifferenceL.setText(Quantity.of(speedDifferenceL, "[rad/min]").toString());
-      double speedDiffL = speedDifferenceL;
-      Scalar scalarL = RealScalar.of(speedDiffL / 500);
-      scalarL = Clip.unit().apply(scalarL);
-      Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
-      Color colorL = ColorFormat.toColor(vectorL);
-      jTextFieldSpeedDifferenceL.setBackground(colorL);
+      double speedDiff = rimoPutEventL.speed - rimoGetL.actual_speed;
+      Scalar scalar = RealScalar.of(speedDiff);
+      scalar = Clip.function(-500, 500).apply(scalar);
+      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
-      jTextFieldSpeedDifferenceR.setText(Quantity.of(speedDifferenceR, "[rad/min]").toString());
-      double speedDiffR = speedDifferenceR;
-      Scalar scalarR = RealScalar.of(speedDiffR);
-      scalarR = Clip.unit().apply(scalarR);
-      Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
-      Color colorR = ColorFormat.toColor(vectorR);
-      jTextFieldSpeedDifferenceR.setBackground(colorR);
+      double speedDiff = rimoPutEventR.speed - rimoGetR.actual_speed;
+      Scalar scalar = RealScalar.of(speedDiff);
+      scalar = Clip.function(-500, 500).apply(scalar);
+      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
       rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());

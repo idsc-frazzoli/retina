@@ -23,11 +23,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements ByteArrayConsumer, SteerGetListener {
+public class SteerComponent extends InterfaceComponent implements SteerGetListener {
   public static final int AMP = 1000;
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("OFF", (byte) 0), //
@@ -95,14 +94,6 @@ public class SteerComponent extends InterfaceComponent implements ByteArrayConsu
       }
       SteerSocket.INSTANCE.stop();
     }
-  }
-
-  @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-    steerGet(steerGetEvent);
   }
 
   @Override

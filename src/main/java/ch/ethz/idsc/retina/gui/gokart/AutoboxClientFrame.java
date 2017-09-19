@@ -36,6 +36,7 @@ public class AutoboxClientFrame {
     RimoComponent rimocomponent = new RimoComponent();
     {
       addTab(rimocomponent);
+      SteerSocket.INSTANCE.addListener(rimocomponent);
     }
     {
       addTab(new LinmotComponent());
