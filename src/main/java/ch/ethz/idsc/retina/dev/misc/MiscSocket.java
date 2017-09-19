@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.misc;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
@@ -29,17 +29,13 @@ public enum MiscSocket implements StartAndStoppable, ByteArrayConsumer {
     datagramSocketManager.addListener(this);
   }
 
-  public void addListener(MiscGetListener rimoGetListener) {
-    listeners.add(rimoGetListener);
+  public void addListener(MiscGetListener miscGetListener) {
+    listeners.add(miscGetListener);
   }
 
   @Override
   public void start() {
     datagramSocketManager.start();
-  }
-
-  public void send(DatagramPacket datagramPacket) throws IOException {
-    datagramSocketManager.send(datagramPacket);
   }
 
   @Override
@@ -53,5 +49,23 @@ public enum MiscSocket implements StartAndStoppable, ByteArrayConsumer {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
     listeners.forEach(listener -> listener.miscGet(miscGetEvent));
+  }
+
+  public void send(MiscPutEvent miscPutEvent) {
+    byte[] data = new byte[MiscPutEvent.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    miscPutEvent.insert(byteBuffer);
+    // System.out.println("misc put=" + HexStrings.from(data));
+    try {
+      DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
+          InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
+      datagramSocketManager.send(datagramPacket);
+    } catch (Exception exception) {
+      // ---
+      System.out.println("MISC SEND FAIL");
+      exception.printStackTrace();
+      System.exit(0); // TODO
+    }
   }
 }

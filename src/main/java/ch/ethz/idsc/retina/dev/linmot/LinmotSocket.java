@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
@@ -38,17 +38,13 @@ public enum LinmotSocket implements StartAndStoppable, ByteArrayConsumer {
     datagramSocketManager.addListener(this);
   }
 
-  public void addListener(LinmotGetListener rimoGetListener) {
-    listeners.add(rimoGetListener);
+  public void addListener(LinmotGetListener linmotGetListener) {
+    listeners.add(linmotGetListener);
   }
 
   @Override
   public void start() {
     datagramSocketManager.start();
-  }
-
-  public void send(DatagramPacket datagramPacket) throws IOException {
-    datagramSocketManager.send(datagramPacket);
   }
 
   @Override
@@ -63,11 +59,27 @@ public enum LinmotSocket implements StartAndStoppable, ByteArrayConsumer {
     try {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
       listeners.forEach(listener -> listener.linmotGet(linmotGetEvent));
-      // System.out.println(HexStrings.from(data));
-      // jTextFieldRecv.setText(HexStrings.from(data));
     } catch (Exception exception) {
       System.out.println("fail decode, received =" + length + " : " + HexStrings.from(data));
       System.err.println(exception.getMessage());
+    }
+  }
+
+  public void send(LinmotPutEvent linmotPutEvent) {
+    byte[] data = new byte[LinmotPutEvent.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    linmotPutEvent.insert(byteBuffer);
+    try {
+      DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
+          InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
+      datagramSocketManager.send(datagramPacket);
+      // System.out.println("linmot put=" + HexStrings.from(data));
+    } catch (Exception exception) {
+      // ---
+      System.out.println("LINMOT SEND FAIL");
+      exception.printStackTrace();
+      System.exit(0); // TODO
     }
   }
 }

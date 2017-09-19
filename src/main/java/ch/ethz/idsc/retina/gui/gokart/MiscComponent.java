@@ -3,10 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -96,21 +92,7 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
           miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
           miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
           miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
-          byte[] data = new byte[MiscPutEvent.LENGTH];
-          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          miscPutEvent.insert(byteBuffer);
-          // System.out.println("misc put=" + HexStrings.from(data));
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
-            MiscSocket.INSTANCE.send(datagramPacket);
-          } catch (Exception exception) {
-            // ---
-            System.out.println("MISC SEND FAIL");
-            exception.printStackTrace();
-            System.exit(0); // TODO
-          }
+          MiscSocket.INSTANCE.send(miscPutEvent);
         }
       };
       timer.schedule(timerTask, 100, period);

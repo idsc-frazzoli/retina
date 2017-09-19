@@ -2,10 +2,6 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -64,26 +60,10 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          SteerPutEvent steerPutEvent = new SteerPutEvent(//
+          SteerPutEvent steerPutEvent = new SteerPutEvent( //
               spinnerLabelLw.getValue().getByte(), //
-              sliderExtTorque.jSlider.getValue() * 1e-3f//
-          );
-          byte[] data = new byte[SteerPutEvent.LENGTH];
-          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          steerPutEvent.insert(byteBuffer);
-          // System.out.println("steer put=" + HexStrings.from(data));
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
-            // datagramSocketManager.send(datagramPacket);
-            SteerSocket.INSTANCE.send(datagramPacket); // TODO not final design
-          } catch (Exception exception) {
-            // ---
-            System.out.println("STEER SEND FAIL");
-            exception.printStackTrace();
-            System.exit(0); // TODO
-          }
+              sliderExtTorque.jSlider.getValue() * 1e-3f);
+          SteerSocket.INSTANCE.send(steerPutEvent);
         }
       };
       timer.schedule(timerTask, 100, period);

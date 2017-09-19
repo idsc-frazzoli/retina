@@ -5,10 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -150,21 +146,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
             }
             linmotPutEvent = timedLinmotPutEvent.linmotPutEvent;
           }
-          byte[] data = new byte[LinmotPutEvent.LENGTH];
-          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          linmotPutEvent.insert(byteBuffer);
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
-            LinmotSocket.INSTANCE.send(datagramPacket);
-            // System.out.println("linmot put=" + HexStrings.from(data));
-          } catch (Exception exception) {
-            // ---
-            System.out.println("LINMOT SEND FAIL");
-            exception.printStackTrace();
-            System.exit(0); // TODO
-          }
+          LinmotSocket.INSTANCE.send(linmotPutEvent);
         }
       };
       timer.schedule(timerTask, 100, period);

@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
  * controls the break of the gokart */
 public class LinmotPutEvent {
   /** 12 bytes encoding length */
-  public static final int LENGTH = 12;
+  /* package */ static final int LENGTH = 12;
   // ---
   public short control_word;
   public short motion_cmd_hdr;
@@ -18,7 +18,7 @@ public class LinmotPutEvent {
 
   /** @param byteBuffer
    * with at least 12 bytes remaining */
-  public void insert(ByteBuffer byteBuffer) {
+  /* package */ void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);
     byteBuffer.putShort(motion_cmd_hdr);
     byteBuffer.putShort(target_position);

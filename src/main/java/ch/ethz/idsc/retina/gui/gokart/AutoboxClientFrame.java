@@ -21,6 +21,7 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -42,7 +43,9 @@ public class AutoboxClientFrame {
       addTab(rimocomponent);
     }
     {
-      addTab(new LinmotComponent());
+      LinmotComponent linmotComponent = new LinmotComponent();
+      LinmotSocket.INSTANCE.addListener(linmotComponent);
+      addTab(linmotComponent);
     }
     {
       SteerComponent steerComponent = new SteerComponent();

@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
@@ -38,10 +38,6 @@ public enum RimoSocket implements StartAndStoppable, ByteArrayConsumer {
     datagramSocketManager.start();
   }
 
-  public void send(DatagramPacket datagramPacket) throws IOException {
-    datagramSocketManager.send(datagramPacket);
-  }
-
   @Override
   public void stop() {
     datagramSocketManager.stop();
@@ -58,6 +54,24 @@ public enum RimoSocket implements StartAndStoppable, ByteArrayConsumer {
     } catch (Exception exception) {
       System.out.println("fail decode RimoGet, received=" + length);
       System.err.println(exception.getMessage());
+    }
+  }
+
+  public void send(RimoPutEvent rimoPutEventL, RimoPutEvent rimoPutEventR) {
+    byte data[] = new byte[2 * RimoPutEvent.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    rimoPutEventL.insert(byteBuffer);
+    rimoPutEventR.insert(byteBuffer);
+    try {
+      DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
+          InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
+      datagramSocketManager.send(datagramPacket);
+    } catch (Exception exception) {
+      // ---
+      System.out.println("RIMO SEND FAIL");
+      exception.printStackTrace();
+      System.exit(0); // TODO
     }
   }
 }

@@ -3,10 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,8 +41,9 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   private final SliderExt sliderExtRVel;
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
-  private RimoPutEvent rimoPutEventL = new RimoPutEvent();
-  private RimoPutEvent rimoPutEventR = new RimoPutEvent();
+  // TODO check if this is good default?
+  private RimoPutEvent rimoPutEventL = new RimoPutEvent((short) 0, (short) 0);
+  private RimoPutEvent rimoPutEventR = new RimoPutEvent((short) 0, (short) 0);
 
   public RimoComponent() {
     // LEFT
@@ -99,34 +96,13 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          byte data[] = new byte[2 * RimoPutEvent.LENGTH];
-          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          {
-            RimoPutEvent rimoPutEvent = new RimoPutEvent();
-            rimoPutEvent.command = spinnerLabelLCmd.getValue().getShort();
-            rimoPutEvent.speed = (short) sliderExtLVel.jSlider.getValue();
-            rimoPutEvent.insert(byteBuffer);
-            rimoPutEventL = rimoPutEvent;
-          }
-          {
-            RimoPutEvent rimoPutEvent = new RimoPutEvent();
-            rimoPutEvent.command = spinnerLabelRCmd.getValue().getShort();
-            rimoPutEvent.speed = (short) sliderExtRVel.jSlider.getValue();
-            rimoPutEvent.insert(byteBuffer);
-            rimoPutEventR = rimoPutEvent;
-          }
-          // System.out.println("rimo put=" + HexStrings.from(data));
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
-            RimoSocket.INSTANCE.send(datagramPacket);
-          } catch (Exception exception) {
-            // ---
-            System.out.println("RIMO SEND FAIL");
-            exception.printStackTrace();
-            System.exit(0); // TODO
-          }
+          rimoPutEventL = new RimoPutEvent(//
+              spinnerLabelLCmd.getValue().getShort(), //
+              (short) sliderExtLVel.jSlider.getValue());
+          rimoPutEventR = new RimoPutEvent( //
+              spinnerLabelRCmd.getValue().getShort(), //
+              (short) sliderExtRVel.jSlider.getValue());
+          RimoSocket.INSTANCE.send(rimoPutEventL, rimoPutEventR);
         }
       };
       timer.schedule(timerTask, 100, period);

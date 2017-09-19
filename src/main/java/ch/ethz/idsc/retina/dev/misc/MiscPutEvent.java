@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 /** misc information sent to micro-autobox */
 public class MiscPutEvent {
-  public static final int LENGTH = 5;
+  /* package */ static final int LENGTH = 5;
   // ---
   public byte resetRimoL;
   public byte resetRimoR;
@@ -13,7 +13,7 @@ public class MiscPutEvent {
   public byte resetSteer;
   public byte ledControl;
 
-  public void insert(ByteBuffer byteBuffer) {
+  /* package */ void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(resetRimoL);
     byteBuffer.put(resetRimoR);
     byteBuffer.put(resetLinmot);
