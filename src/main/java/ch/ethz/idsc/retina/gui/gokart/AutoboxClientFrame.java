@@ -21,6 +21,8 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.dev.misc.MiscSocket;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -35,8 +37,9 @@ public class AutoboxClientFrame {
   public AutoboxClientFrame() {
     RimoComponent rimocomponent = new RimoComponent();
     {
-      addTab(rimocomponent);
+      RimoSocket.INSTANCE.addListener(rimocomponent);
       SteerSocket.INSTANCE.addListener(rimocomponent);
+      addTab(rimocomponent);
     }
     {
       addTab(new LinmotComponent());
@@ -46,7 +49,11 @@ public class AutoboxClientFrame {
       SteerSocket.INSTANCE.addListener(steerComponent);
       addTab(steerComponent);
     }
-    addTab(new MiscComponent());
+    {
+      MiscComponent miscComponent = new MiscComponent();
+      MiscSocket.INSTANCE.addListener(miscComponent);
+      addTab(miscComponent);
+    }
     jTabbedPane.setSelectedIndex(1);
     // ---
     JPanel jPanel = new JPanel(new BorderLayout());

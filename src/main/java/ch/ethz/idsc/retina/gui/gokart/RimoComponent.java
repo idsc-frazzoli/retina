@@ -25,8 +25,6 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -35,13 +33,11 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, SteerGetListener {
+public class RimoComponent extends InterfaceComponent implements RimoGetListener, SteerGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
   // ---
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[2 * RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS);
   private TimerTask timerTask = null;
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtLVel;
@@ -53,7 +49,6 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   private RimoPutEvent rimoPutEventR = new RimoPutEvent();
 
   public RimoComponent() {
-    datagramSocketManager.addListener(this);
     // LEFT
     {
       JToolBar jToolBar = createRow("LEFT command");
@@ -100,7 +95,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
-      datagramSocketManager.start();
+      RimoSocket.INSTANCE.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -125,7 +120,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
-            datagramSocketManager.send(datagramPacket);
+            RimoSocket.INSTANCE.send(datagramPacket);
           } catch (Exception exception) {
             // ---
             System.out.println("RIMO SEND FAIL");
@@ -140,21 +135,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
         timerTask.cancel();
         timerTask = null;
       }
-      datagramSocketManager.stop();
-    }
-  }
-
-  @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    try {
-      RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
-      RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
-      rimoGet(rimoGetL, rimoGetR);
-    } catch (Exception exception) {
-      System.out.println("fail decode RimoGet, received=" + length);
-      // TODO: handle exception
+      RimoSocket.INSTANCE.stop();
     }
   }
 

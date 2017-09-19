@@ -22,11 +22,9 @@ import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements ByteArrayConsumer, MiscGetListener {
+public class MiscComponent extends InterfaceComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -35,8 +33,6 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
   );
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[MiscGetEvent.LENGTH], MiscSocket.LOCAL_PORT, MiscSocket.LOCAL_ADDRESS);
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -47,7 +43,6 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   private final JTextField jTextField;
 
   public MiscComponent() {
-    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("resetRimoL");
       spinnerLabelRimoL.setList(COMMANDS);
@@ -91,7 +86,7 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
-      datagramSocketManager.start();
+      MiscSocket.INSTANCE.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -109,7 +104,7 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
           try {
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
                 InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
-            datagramSocketManager.send(datagramPacket);
+            MiscSocket.INSTANCE.send(datagramPacket);
           } catch (Exception exception) {
             // ---
             System.out.println("MISC SEND FAIL");
@@ -124,16 +119,8 @@ public class MiscComponent extends InterfaceComponent implements ByteArrayConsum
         timerTask.cancel();
         timerTask = null;
       }
-      datagramSocketManager.stop();
+      MiscSocket.INSTANCE.stop();
     }
-  }
-
-  @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
-    miscGet(miscGetEvent);
   }
 
   @Override

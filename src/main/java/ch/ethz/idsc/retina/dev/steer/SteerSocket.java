@@ -23,14 +23,14 @@ public enum SteerSocket implements StartAndStoppable, ByteArrayConsumer {
   // ---
   private final DatagramSocketManager datagramSocketManager = //
       DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS);
-  private final List<SteerGetListener> list = new LinkedList<>();
+  private final List<SteerGetListener> listeners = new LinkedList<>();
 
   private SteerSocket() {
     datagramSocketManager.addListener(this);
   }
 
   public void addListener(SteerGetListener steerGetListener) {
-    list.add(steerGetListener);
+    listeners.add(steerGetListener);
   }
 
   @Override
@@ -52,6 +52,6 @@ public enum SteerSocket implements StartAndStoppable, ByteArrayConsumer {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-    list.forEach(l -> l.steerGet(steerGetEvent));
+    listeners.forEach(listener -> listener.steerGet(steerGetEvent));
   }
 }
