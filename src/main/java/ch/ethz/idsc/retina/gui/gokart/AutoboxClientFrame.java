@@ -55,6 +55,13 @@ public class AutoboxClientFrame {
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
       {
+        SpinnerLabel<DriveMode> speedlimit = new SpinnerLabel<>();
+        speedlimit.setArray(DriveMode.values());
+        speedlimit.setIndex(0);
+        speedlimit.addSpinnerListener(i -> rimocomponent.setdrivemode(i));
+        speedlimit.addToComponentReduced(jToolBar, new Dimension(120, 28), "drive mode");
+      }
+      {
         SpinnerLabel<Integer> speedlimit = new SpinnerLabel<>();
         speedlimit.setArray(0, 500, 1000, 2000, 4000, 8000);
         speedlimit.setIndex(2);

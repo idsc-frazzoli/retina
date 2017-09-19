@@ -12,13 +12,13 @@ public enum LinmotPutConfiguration {
   public static final Word CMD_OPERATION = Word.createShort("OPERATION", (short) 0x003f);
   public static final Word CMD_ERR_ACK = Word.createShort("ERR_ACK", (short) 0x00bf);
   public static final Word CMD_OFF_MODE = Word.createShort("OFF_MODE", (short) 0x003e);
+  public static final Word MC_POSITION = Word.createShort("POSITION", (short) 0x0900);
+  public static final Word MC_ZEROS = Word.createShort("ZEROS", (short) 0x0000);
   // ---
   public static final List<Word> COMMANDS = Arrays.asList( //
       CMD_HOME, CMD_OPERATION, CMD_ERR_ACK, CMD_OFF_MODE);
   public static final List<Word> HEADER = Arrays.asList( //
-      Word.createShort("POSITION", (short) 0x0900), //
-      Word.createShort("ZEROS", (short) 0x0000) // <- this message may not be needed
-  );
+      MC_POSITION, MC_ZEROS); //
   // ---
   // TODO NRJ document empirical justification for all magic numbers
   public static final int TARGETPOS_MIN = -500;

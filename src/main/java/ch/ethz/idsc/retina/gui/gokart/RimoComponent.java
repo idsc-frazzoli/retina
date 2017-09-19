@@ -87,7 +87,6 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   private void assign(RimoGetFields rimoGetFields, String side) {
     rimoGetFields.jTF_status_word = createReading(side + " status word");
-    // TODO NRJ background according to difference from target and actual speed
     rimoGetFields.jTF_actual_speed = createReading(side + " actual speed");
     rimoGetFields.jTF_rms_motor_current = createReading(side + " rms current");
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
@@ -197,7 +196,7 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
       scalarR = Clip.unit().apply(scalarR);
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
       Color colorR = ColorFormat.toColor(vectorR);
-      rimoGetFieldsL.jTF_temperature_motor.setBackground(colorR);
+      rimoGetFieldsR.jTF_temperature_motor.setBackground(colorR);
     }
   }
 
@@ -218,25 +217,39 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
 
   private int sign = 1;
   public int speedlimitjoystick = 1000;
+  public DriveMode drivemode = DriveMode.SIMPLE_DRIVE;
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
     if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      if (joystick.isButtonPressedBack()) {
-        sign = -1;
+      switch (drivemode) {
+      case SIMPLE_DRIVE:
+        int wheelspeed = (int) Math.round(joystick.getRightKnobDirectionUp() * speedlimitjoystick);
+        sliderExtLVel.jSlider.setValue(wheelspeed);
+        sliderExtRVel.jSlider.setValue(wheelspeed);
+        break;
+      case FULL_CONTROL:
+        if (joystick.isButtonPressedBack()) {
+          sign = -1;
+        }
+        if (joystick.isButtonPressedStart()) {
+          sign = 1;
+        }
+        double wheelL = joystick.getLeftSliderUnitValue();
+        sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
+        double wheelR = joystick.getRightSliderUnitValue();
+        sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
+        break;
       }
-      if (joystick.isButtonPressedStart()) {
-        sign = 1;
-      }
-      double wheelL = joystick.getLeftSliderUnitValue();
-      sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
-      double wheelR = joystick.getRightSliderUnitValue();
-      sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
     }
   }
 
   public void setspeedlimit(int i) {
     speedlimitjoystick = i;
+  }
+
+  public void setdrivemode(DriveMode i) {
+    drivemode = i;
   }
 }
