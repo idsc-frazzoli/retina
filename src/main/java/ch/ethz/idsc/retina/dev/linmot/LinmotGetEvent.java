@@ -25,6 +25,15 @@ public class LinmotGetEvent {
     winding_temp2 = byteBuffer.getShort();
   }
 
+  public void encode(ByteBuffer byteBuffer) {
+    byteBuffer.putShort(status_word);
+    byteBuffer.putShort(state_variable);
+    byteBuffer.putInt(actual_position);
+    byteBuffer.putInt(demand_position);
+    byteBuffer.putShort(winding_temp1);
+    byteBuffer.putShort(winding_temp2);
+  }
+
   /** @return temperature of winding 1 in Celsius */
   public double windingTemperature1() {
     // TODO NRJ document conversion factor

@@ -29,8 +29,6 @@ public abstract class InterfaceComponent implements JoystickListener {
   public static final int HEIGHT = 30;
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
-  private final JLabel jConnectionInfoRemote = new JLabel();
-  private final JLabel jConnectionInfoLocal = new JLabel();
   private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
   private final JToggleButton jToggleButton = new JToggleButton("start/stop");
   private final RowPanel rowTitle = new RowPanel();
@@ -49,14 +47,6 @@ public abstract class InterfaceComponent implements JoystickListener {
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
-    { // info: ip port
-      JToolBar jToolBar = createRow("Remote");
-      jToolBar.add(jConnectionInfoRemote);
-    }
-    { // info: ip port
-      JToolBar jToolBar = createRow("Local");
-      jToolBar.add(jConnectionInfoLocal);
-    }
     { // start/stop connection
       JToolBar jToolBar = createRow("udp socket");
       spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
@@ -78,8 +68,6 @@ public abstract class InterfaceComponent implements JoystickListener {
   }
 
   protected JToolBar createRow(String title) {
-    jConnectionInfoRemote.setText(connectionInfoRemote());
-    jConnectionInfoLocal.setText(connectionInfoLocal());
     JToolBar jToolBar1 = new JToolBar();
     JToolBar jToolBar2 = new JToolBar();
     jToolBar1.setFloatable(false);
@@ -130,10 +118,6 @@ public abstract class InterfaceComponent implements JoystickListener {
   }
 
   public abstract void connectAction(int period, boolean isSelected);
-
-  public abstract String connectionInfoRemote();
-
-  public abstract String connectionInfoLocal();
 
   public void setJoystickEnabled(boolean status) {
     isJoystickEnabled = status;

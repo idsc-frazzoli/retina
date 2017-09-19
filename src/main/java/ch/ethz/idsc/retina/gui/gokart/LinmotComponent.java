@@ -5,10 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -28,11 +24,8 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.linmot.TimedLinmotPutEvent;
-import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -41,9 +34,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class LinmotComponent extends InterfaceComponent implements ByteArrayConsumer, LinmotGetListener {
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
+public class LinmotComponent extends InterfaceComponent implements LinmotGetListener {
   private TimerTask timerTask = null;
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
@@ -61,7 +52,6 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   public final Queue<TimedLinmotPutEvent> queue = new PriorityQueue<>();
 
   public LinmotComponent() {
-    datagramSocketManager.addListener(this);
     {
       JToolBar jToolBar = createRow("Special Routines");
       JButton initButton = new JButton("Init");
@@ -135,7 +125,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
   @Override
   public void connectAction(int period, boolean isSelected) {
     if (isSelected) {
-      datagramSocketManager.start();
+      LinmotSocket.INSTANCE.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -156,21 +146,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
             }
             linmotPutEvent = timedLinmotPutEvent.linmotPutEvent;
           }
-          byte[] data = new byte[LinmotPutEvent.LENGTH];
-          ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-          linmotPutEvent.insert(byteBuffer);
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-                InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
-            datagramSocketManager.send(datagramPacket);
-            // System.out.println("linmot put=" + HexStrings.from(data));
-          } catch (Exception exception) {
-            // ---
-            System.out.println("LINMOT SEND FAIL");
-            exception.printStackTrace();
-            System.exit(0); // TODO
-          }
+          LinmotSocket.INSTANCE.send(linmotPutEvent);
         }
       };
       timer.schedule(timerTask, 100, period);
@@ -179,23 +155,7 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
         timerTask.cancel();
         timerTask = null;
       }
-      datagramSocketManager.stop();
-    }
-  }
-
-  @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    try {
-      LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
-      linmotGet(linmotGetEvent);
-      // System.out.println(HexStrings.from(data));
-      // jTextFieldRecv.setText(HexStrings.from(data));
-    } catch (Exception e) {
-      // System.out.println();
-      System.out.println("fail decode, received =" + length + " : " + HexStrings.from(data));
-      // TODO: handle exception
+      LinmotSocket.INSTANCE.stop();
     }
   }
 
@@ -225,16 +185,6 @@ public class LinmotComponent extends InterfaceComponent implements ByteArrayCons
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp2.setBackground(color);
     }
-  }
-
-  @Override
-  public String connectionInfoRemote() {
-    return String.format("%s:%d", LinmotSocket.REMOTE_ADDRESS, LinmotSocket.REMOTE_PORT);
-  }
-
-  @Override
-  public String connectionInfoLocal() {
-    return String.format("%s:%d", LinmotSocket.LOCAL_ADDRESS, LinmotSocket.LOCAL_PORT);
   }
 
   @Override
