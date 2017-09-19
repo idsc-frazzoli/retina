@@ -22,6 +22,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
@@ -34,7 +36,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener {
+public class RimoComponent extends InterfaceComponent implements ByteArrayConsumer, RimoGetListener, SteerGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createShort("OPERATION", (short) 0x0009) //
   );
@@ -182,11 +184,11 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
       Color colorR = ColorFormat.toColor(vectorR);
       jTextFieldSpeedDifferenceR.setBackground(colorR);
-    } 
+    }
     {
       rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());
       double tempMotL = rimoGetL.temperature_motor;
-      Scalar scalarL = RealScalar.of(tempMotL/10);
+      Scalar scalarL = RealScalar.of(tempMotL / 10);
       scalarL = Clip.unit().apply(scalarL);
       Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
       Color colorL = ColorFormat.toColor(vectorL);
@@ -195,13 +197,17 @@ public class RimoComponent extends InterfaceComponent implements ByteArrayConsum
     {
       rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetR.temperature_motor, "[C]").toString());
       double tempMotR = rimoGetR.temperature_motor;
-      Scalar scalarR = RealScalar.of(tempMotR/10);
+      Scalar scalarR = RealScalar.of(tempMotR / 10);
       scalarR = Clip.unit().apply(scalarR);
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
       Color colorR = ColorFormat.toColor(vectorR);
       rimoGetFieldsL.jTF_temperature_motor.setBackground(colorR);
     }
-    
+  }
+
+  @Override
+  public void steerGet(SteerGetEvent steerGetEvent) {
+    // TODO Auto-generated method stub
   }
 
   @Override
