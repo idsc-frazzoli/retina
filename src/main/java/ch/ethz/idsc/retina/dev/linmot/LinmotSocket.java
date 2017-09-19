@@ -5,12 +5,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.List;
 
+import ch.ethz.idsc.retina.gui.gokart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.HexStrings;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /** Example interface on datahaki's computer
@@ -21,8 +18,8 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public enum LinmotSocket implements StartAndStoppable, ByteArrayConsumer {
-  INSTANCE;
+public class LinmotSocket extends AutoboxSocket<LinmotGetListener> {
+  public static final LinmotSocket INSTANCE = new LinmotSocket();
   // ---
   private static final int LOCAL_PORT = 5001;
   private static final String LOCAL_ADDRESS = "192.168.1.1";
@@ -30,26 +27,10 @@ public enum LinmotSocket implements StartAndStoppable, ByteArrayConsumer {
   private static final int REMOTE_PORT = 5001;
   private static final String REMOTE_ADDRESS = "192.168.1.10";
   // ---
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS);
-  private final List<LinmotGetListener> listeners = new LinkedList<>();
 
   private LinmotSocket() {
+    super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS));
     datagramSocketManager.addListener(this);
-  }
-
-  public void addListener(LinmotGetListener linmotGetListener) {
-    listeners.add(linmotGetListener);
-  }
-
-  @Override
-  public void start() {
-    datagramSocketManager.start();
-  }
-
-  @Override
-  public void stop() {
-    datagramSocketManager.stop();
   }
 
   @Override

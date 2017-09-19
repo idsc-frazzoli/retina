@@ -12,7 +12,9 @@ public class DatagramSocketManagerTest extends TestCase {
     Stopwatch stopwatch = Stopwatch.started();
     for (int count = 0; count < 3; ++count) {
       udc.start();
+      udc.start();
       assertFalse(udc.datagramSocket().isClosed());
+      udc.stop();
       udc.stop();
       assertTrue(Objects.isNull(udc.datagramSocket()));
     }

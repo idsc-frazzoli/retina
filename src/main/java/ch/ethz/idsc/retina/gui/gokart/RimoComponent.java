@@ -188,6 +188,8 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
         double wheelR = joystick.getRightSliderUnitValue();
         sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
         break;
+      default:
+        break;
       }
     }
   }

@@ -5,15 +5,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.List;
 
-import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.retina.gui.gokart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public enum SteerSocket implements StartAndStoppable, ByteArrayConsumer {
-  INSTANCE;
+public class SteerSocket extends AutoboxSocket<SteerGetListener> {
+  public static final SteerSocket INSTANCE = new SteerSocket();
   /** local */
   private static final int LOCAL_PORT = 5002;
   private static final String LOCAL_ADDRESS = "192.168.1.1";
@@ -21,26 +18,10 @@ public enum SteerSocket implements StartAndStoppable, ByteArrayConsumer {
   private static final int REMOTE_PORT = 5002;
   private static final String REMOTE_ADDRESS = "192.168.1.10";
   // ---
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS);
-  private final List<SteerGetListener> listeners = new LinkedList<>();
 
   private SteerSocket() {
+    super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS));
     datagramSocketManager.addListener(this);
-  }
-
-  public void addListener(SteerGetListener steerGetListener) {
-    listeners.add(steerGetListener);
-  }
-
-  @Override
-  public void start() {
-    datagramSocketManager.start();
-  }
-
-  @Override
-  public void stop() {
-    datagramSocketManager.stop();
   }
 
   @Override

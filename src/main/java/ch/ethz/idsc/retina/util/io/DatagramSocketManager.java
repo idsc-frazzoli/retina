@@ -77,29 +77,30 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
 
   @Override
   public void start() {
-    try {
-      datagramSocket = private_createSocket();
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          try {
-            DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
-            while (true) {
-              datagramSocket.receive(datagramPacket); // blocking
-              listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
+    if (Objects.isNull(datagramSocket) || datagramSocket.isClosed())
+      try {
+        datagramSocket = private_createSocket();
+        Runnable runnable = new Runnable() {
+          @Override
+          public void run() {
+            try {
+              DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
+              while (true) {
+                datagramSocket.receive(datagramPacket); // blocking
+                listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
+              }
+            } catch (Exception exception) {
+              String message = exception.getMessage();
+              if (!message.equals("Socket closed"))
+                System.err.println(message);
             }
-          } catch (Exception exception) {
-            String message = exception.getMessage();
-            if (!message.equals("Socket closed"))
-              System.err.println(message);
           }
-        }
-      };
-      thread = new Thread(runnable);
-      thread.start();
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+        };
+        thread = new Thread(runnable);
+        thread.start();
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
   }
 
   @Override

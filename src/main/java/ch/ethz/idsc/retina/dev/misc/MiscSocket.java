@@ -5,15 +5,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.List;
 
-import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.retina.gui.gokart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public enum MiscSocket implements StartAndStoppable, ByteArrayConsumer {
-  INSTANCE;
+public class MiscSocket extends AutoboxSocket<MiscGetListener> {
+  public static final MiscSocket INSTANCE = new MiscSocket();
   // ---
   private static final int LOCAL_PORT = 5003;
   private static final String LOCAL_ADDRESS = "192.168.1.1";
@@ -21,26 +18,10 @@ public enum MiscSocket implements StartAndStoppable, ByteArrayConsumer {
   private static final int REMOTE_PORT = 5003;
   private static final String REMOTE_ADDRESS = "192.168.1.10";
   // ---
-  private final DatagramSocketManager datagramSocketManager = //
-      DatagramSocketManager.local(new byte[MiscGetEvent.LENGTH], MiscSocket.LOCAL_PORT, MiscSocket.LOCAL_ADDRESS);
-  private final List<MiscGetListener> listeners = new LinkedList<>();
 
   private MiscSocket() {
+    super(DatagramSocketManager.local(new byte[MiscGetEvent.LENGTH], MiscSocket.LOCAL_PORT, MiscSocket.LOCAL_ADDRESS));
     datagramSocketManager.addListener(this);
-  }
-
-  public void addListener(MiscGetListener miscGetListener) {
-    listeners.add(miscGetListener);
-  }
-
-  @Override
-  public void start() {
-    datagramSocketManager.start();
-  }
-
-  @Override
-  public void stop() {
-    datagramSocketManager.stop();
   }
 
   @Override

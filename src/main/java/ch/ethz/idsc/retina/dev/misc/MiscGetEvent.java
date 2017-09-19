@@ -10,8 +10,7 @@ public class MiscGetEvent {
   public static final int LENGTH = 44;
   // ---
   public final byte emergency;
-  // c (p TODO NRJ battery should be raw value from adrobably a short instead of
-  // float)
+  // TODO NRJ battery should be raw value from adc (probably a short instead of float)
   private final float battery;
   /** collection of bytes received after battery value */
   private final byte[] remaining;
@@ -22,6 +21,11 @@ public class MiscGetEvent {
     int length = byteBuffer.remaining();
     remaining = new byte[length];
     byteBuffer.get(remaining);
+  }
+
+  public void encode(ByteBuffer byteBuffer) {
+    byteBuffer.put(emergency);
+    byteBuffer.putFloat(battery); // TODO
   }
 
   public double steerBatteryVoltage() {

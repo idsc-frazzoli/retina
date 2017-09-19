@@ -36,6 +36,16 @@ public class RimoGetEvent {
     temperature_heatsink = byteBuffer.getShort(); // 16
   }
 
+  public void encode(ByteBuffer byteBuffer) {
+    byteBuffer.putShort(status_word);
+    byteBuffer.putShort(actual_speed);
+    byteBuffer.putShort(rms_motor_current);
+    byteBuffer.putShort(dc_bus_voltage);
+    byteBuffer.putInt(error_code);
+    byteBuffer.putShort(temperature_motor);
+    byteBuffer.putShort(temperature_heatsink);
+  }
+
   /** @return convert rad/min to m/s */
   public double getActualSpeed() {
     return actual_speed * RADIUS / 60;
