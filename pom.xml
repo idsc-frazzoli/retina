@@ -27,6 +27,11 @@
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
+			<groupId>ch.ethz.idsc</groupId>
+			<artifactId>owly</artifactId>
+			<version>0.0.5</version>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.jchart2d</groupId>
 			<artifactId>jchart2d</artifactId>
 			<version>3.3.2</version>
@@ -51,6 +56,14 @@
 		<repository>
 			<id>lcm-java-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/lcm-java/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>owly-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/owly/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
