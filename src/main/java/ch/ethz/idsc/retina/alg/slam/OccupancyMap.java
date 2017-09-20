@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.slam;
+package ch.ethz.idsc.retina.alg.slam;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.app.UniformResample;
 import ch.ethz.idsc.retina.util.GlobalAssert;
-import ch.ethz.idsc.retina.util.math.Se2Sampler;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -38,6 +37,7 @@ public class OccupancyMap implements LidarRayBlockListener {
   private Tensor global;
   private Tensor pose;
   private boolean optimize = false;
+  private final Se2MultiresSamples se2MultiresSamples = Se2MultiresSamples.createDefault();
   private final List<OccupancyMapListener> listeners = new LinkedList<>();
 
   public OccupancyMap() {
@@ -72,24 +72,17 @@ public class OccupancyMap implements LidarRayBlockListener {
       // Stopwatch stp = Stopwatch.started();
       Scalar ang = RealScalar.of(2 * Math.PI / 180);
       Scalar shf = RealScalar.of(0.03 * METER_TO_PIXEL);
-      for (int iterate = 0; iterate < 4; ++iterate) {
+      for (int level = 0; level < 4; ++level) {
         // ---
         Tensor next = null;
         int cmp = 0;
-        for (int x = -1; x <= 1; ++x) {
-          for (int y = -1; y <= 1; ++y) {
-            for (int t = -1; t <= 1; ++t) {
-              Tensor test = pose.dot(Se2Sampler.get( //
-                  ang.multiply(RealScalar.of(t)), //
-                  shf.multiply(RealScalar.of(x)), //
-                  shf.multiply(RealScalar.of(y))));
-              Tensor evl = Tensor.of(points.stream().map(row -> test.dot(row)));
-              int ret = evaluate(evl);
-              if (cmp < ret) {
-                next = test;
-                cmp = ret;
-              }
-            }
+        for (Tensor tryme : se2MultiresSamples.level(level)) {
+          Tensor test = pose.dot(tryme);
+          Tensor evl = Tensor.of(points.stream().map(row -> test.dot(row)));
+          int ret = evaluate(evl);
+          if (cmp < ret) {
+            next = test;
+            cmp = ret;
           }
         }
         pose = next;

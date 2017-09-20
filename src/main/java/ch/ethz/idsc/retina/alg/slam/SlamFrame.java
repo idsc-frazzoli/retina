@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph.slam;
+package ch.ethz.idsc.retina.alg.slam;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

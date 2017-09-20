@@ -50,7 +50,11 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
     };
   }
 
-  @Deprecated // TODO test velodyne with constructor below, why not also specify the laddr!
+  /** the velodyne sensor does send data via connections that specify a local address
+   * 
+   * @param bytes
+   * @param port
+   * @return */
   public static DatagramSocketManager local(byte[] bytes, int port) {
     return new DatagramSocketManager(bytes) {
       @Override

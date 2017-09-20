@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.demo.jph.slam;
 
 import java.io.IOException;
 
+import ch.ethz.idsc.retina.alg.slam.OccupancyMap;
+import ch.ethz.idsc.retina.alg.slam.SlamFrame;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
