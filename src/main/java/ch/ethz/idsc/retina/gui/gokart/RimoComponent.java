@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.owly.math.car.DifferentialSpeed;
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -159,9 +160,12 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
 
   @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
-    // TODO Auto-generated method stub
+    lastSteer = steerGetEvent;
   }
 
+  private SteerGetEvent lastSteer = null;
+  private final DifferentialSpeed dsL = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(+0.54));
+  private final DifferentialSpeed dsR = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-0.54));
   private int sign = 1;
   public int speedlimitjoystick = 1000;
   public DriveMode drivemode = DriveMode.SIMPLE_DRIVE;
@@ -172,9 +176,11 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
       switch (drivemode) {
       case SIMPLE_DRIVE:
-        int wheelspeed = (int) Math.round(joystick.getRightKnobDirectionUp() * speedlimitjoystick);
-        sliderExtLVel.jSlider.setValue(wheelspeed);
-        sliderExtRVel.jSlider.setValue(wheelspeed);
+        double wheelspeed = joystick.getRightKnobDirectionUp() * speedlimitjoystick;
+        Scalar scalarL = dsL.get(RealScalar.of(wheelspeed), RealScalar.of(lastSteer.getSteeringAngle()));
+        Scalar scalarR = dsR.get(RealScalar.of(wheelspeed), RealScalar.of(lastSteer.getSteeringAngle()));
+        sliderExtLVel.jSlider.setValue(scalarL.number().intValue());
+        sliderExtRVel.jSlider.setValue(scalarR.number().intValue());
         break;
       case FULL_CONTROL:
         if (joystick.isButtonPressedBack()) {
