@@ -36,6 +36,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
 public class LinmotComponent extends InterfaceComponent implements LinmotGetListener {
   private TimerTask timerTask = null;
+  private final JButton initButton = new JButton("Init");
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
   private final SliderExt sliderExtTPos;
@@ -54,7 +55,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
   public LinmotComponent() {
     {
       JToolBar jToolBar = createRow("Special Routines");
-      JButton initButton = new JButton("Init");
+      initButton.setEnabled(false);
       initButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -124,11 +125,13 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
 
   @Override
   public void connectAction(int period, boolean isSelected) {
+    initButton.setEnabled(isSelected);
     if (isSelected) {
       LinmotSocket.INSTANCE.start();
       timerTask = new TimerTask() {
         @Override
         public void run() {
+          initButton.setEnabled(queue.isEmpty());
           final LinmotPutEvent linmotPutEvent;
           if (queue.isEmpty()) {
             linmotPutEvent = new LinmotPutEvent();
@@ -140,7 +143,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
             linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
           } else {
             TimedPutEvent<LinmotPutEvent> timedLinmotPutEvent = queue.peek();
-            System.out.println(timedLinmotPutEvent.linmotPutEvent.control_word);
+            // System.out.println(timedLinmotPutEvent.linmotPutEvent.control_word);
             if (timedLinmotPutEvent.time_ms < System.currentTimeMillis()) {
               queue.poll();
             }
