@@ -36,7 +36,6 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
   private final SpinnerLabel<Word> spinnerLabelLed = new SpinnerLabel<>();
   private final JTextField jTextFieldEmg;
   private final JTextField jTextFieldBat;
-  private final JTextField jTextField;
 
   public MiscComponent() {
     {
@@ -73,7 +72,6 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     { // reception
       jTextFieldEmg = createReading("emergency");
       jTextFieldBat = createReading("battery");
-      jTextField = createReading("received");
     }
   }
 
@@ -107,14 +105,18 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
 
   @Override
   public void miscGet(MiscGetEvent miscGetEvent) {
-    jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    // jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    {
+      jTextFieldEmg.setText("" + miscGetEvent.isEmergency());
+      Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
+      jTextFieldEmg.setBackground(color);
+    }
     {
       jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
       double value = miscGetEvent.steerBatteryVoltage();
       Color color = value < 11 ? Color.RED : Color.WHITE;
       jTextFieldBat.setBackground(color);
     }
-    jTextField.setText(miscGetEvent.getRemainingHex());
   }
 
   @Override

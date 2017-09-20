@@ -35,12 +35,9 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
    * socket will be bound to the {@link InetAddress#isAnyLocalAddress wildcard}
    * address, an IP address chosen by the kernel.
    *
-   * @param bytes
-   * container of sufficient size to receive datagram packets
-   * @param port
-   * local port to use
-   * @param laddr
-   * local address to bind */
+   * @param bytes container of sufficient size to receive datagram packets
+   * @param port local port to use
+   * @param laddr local address to bind */
   public static DatagramSocketManager local(byte[] bytes, int port, String laddr) {
     return new DatagramSocketManager(bytes) {
       @Override
