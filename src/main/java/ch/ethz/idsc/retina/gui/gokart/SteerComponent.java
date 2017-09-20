@@ -2,8 +2,6 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
 
@@ -24,10 +22,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class SteerComponent extends InterfaceComponent implements SteerGetListener {
   public static final int AMP = 1000;
-  public static final List<Word> COMMANDS = Arrays.asList( //
-      Word.createByte("OFF", (byte) 0), //
-      Word.createByte("ON", (byte) 1) //
-  );
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField jTextField;
@@ -35,8 +29,8 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   public SteerComponent() {
     {
       JToolBar jToolBar = createRow("command");
-      spinnerLabelLw.setList(COMMANDS);
-      spinnerLabelLw.setValueSafe(COMMANDS.get(0));
+      spinnerLabelLw.setList(SteerPutEvent.COMMANDS);
+      spinnerLabelLw.setValueSafe(SteerPutEvent.CMD_ON);
       spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
