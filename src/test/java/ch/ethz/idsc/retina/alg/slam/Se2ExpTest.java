@@ -9,19 +9,18 @@ import ch.ethz.idsc.tensor.red.Diagonal;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class Se2SamplerTest extends TestCase {
+public class Se2ExpTest extends TestCase {
   public void testSome() {
-    Tensor matrix = Se2Sampler.get(RealScalar.of(0), RealScalar.of(2), RealScalar.of(3));
+    Tensor matrix = Se2Exp.of(RealScalar.of(2), RealScalar.of(3), RealScalar.ZERO);
     Tensor diag = Diagonal.of(matrix);
     assertEquals(diag, Tensors.vector(1, 1, 1));
   }
 
   public void testSome2() {
-    Tensor mat = Se2Sampler.get(1, 0, 0);
-    // System.out.println(Pretty.of(mat));
+    Tensor matrix = Se2Exp.of(0, 0, 1);
     Tensor rot = RotationMatrix.of(RealScalar.ONE);
     // System.out.println(Pretty.of(rot));
-    assertTrue(Chop._12.close(mat.Get(0, 1), rot.Get(0, 1)));
-    assertTrue(Chop._12.close(mat.Get(1, 1), rot.Get(1, 1)));
+    assertTrue(Chop._12.close(matrix.Get(0, 1), rot.Get(0, 1)));
+    assertTrue(Chop._12.close(matrix.Get(1, 1), rot.Get(1, 1)));
   }
 }

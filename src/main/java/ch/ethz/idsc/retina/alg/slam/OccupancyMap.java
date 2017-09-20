@@ -27,6 +27,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 public class OccupancyMap implements LidarRayBlockListener {
   public static final int WIDTH = 1024;
   public static final float METER_TO_PIXEL = 50;
+  public static final int LEVELS = 4;
   public static final Scalar M2PIX = RealScalar.of(METER_TO_PIXEL);
   // ---
   public Scalar threshold = RealScalar.of(40);
@@ -37,7 +38,7 @@ public class OccupancyMap implements LidarRayBlockListener {
   private Tensor global;
   private Tensor pose;
   private boolean optimize = false;
-  private final Se2MultiresSamples se2MultiresSamples = Se2MultiresSamples.createDefault();
+  private final Se2MultiresSamples se2MultiresSamples;
   private final List<OccupancyMapListener> listeners = new LinkedList<>();
 
   public OccupancyMap() {
@@ -46,6 +47,10 @@ public class OccupancyMap implements LidarRayBlockListener {
     bytes = dataBufferByte.getData();
     global = IdentityMatrix.of(3);
     pose = IdentityMatrix.of(3);
+    se2MultiresSamples = new Se2MultiresSamples( //
+        RealScalar.of(2 * Math.PI / 180), // 2 [deg]
+        RealScalar.of(0.03 * METER_TO_PIXEL), // 3 [cm]
+        LEVELS);
   }
 
   private int index = 0;

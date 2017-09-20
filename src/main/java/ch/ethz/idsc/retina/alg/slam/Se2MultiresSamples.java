@@ -14,15 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
  */
 public class Se2MultiresSamples {
   private static final Scalar DECR = RealScalar.of(0.6);
-
-  public static Se2MultiresSamples createDefault() {
-    // TODO justify magic const
-    Scalar ang = RealScalar.of(2 * Math.PI / 180); // 2 [deg]
-    float METER_TO_PIXEL = 50;
-    Scalar shf = RealScalar.of(0.03 * METER_TO_PIXEL); // 3 [cm]
-    return new Se2MultiresSamples(ang, shf, 4);
-  }
-
+  // ---
   private final List<Tensor> list = new ArrayList<>();
 
   public Se2MultiresSamples(Scalar ang, Scalar shf, int level) {
@@ -30,13 +22,11 @@ public class Se2MultiresSamples {
       Tensor next = Tensors.empty();
       for (int x = -1; x <= 1; ++x)
         for (int y = -1; y <= 1; ++y)
-          for (int t = -1; t <= 1; ++t) {
-            Tensor test = Se2Sampler.get( //
-                ang.multiply(RealScalar.of(t)), //
+          for (int t = -1; t <= 1; ++t)
+            next.append(Se2Exp.of( //
                 shf.multiply(RealScalar.of(x)), //
-                shf.multiply(RealScalar.of(y)));
-            next.append(test);
-          }
+                shf.multiply(RealScalar.of(y)), //
+                ang.multiply(RealScalar.of(t))));
       list.add(next);
       // ---
       ang = ang.multiply(DECR);
