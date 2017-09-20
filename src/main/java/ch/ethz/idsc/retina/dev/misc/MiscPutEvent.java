@@ -1,10 +1,11 @@
 // code by nisaak and jph
 package ch.ethz.idsc.retina.dev.misc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 /** misc information sent to micro-autobox */
-public class MiscPutEvent {
+public class MiscPutEvent implements Serializable {
   /* package */ static final int LENGTH = 5;
   // ---
   public byte resetRimoL;

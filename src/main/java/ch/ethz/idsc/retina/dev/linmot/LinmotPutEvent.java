@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 /** information sent to micro-autobox to forward to the linear motor that
  * controls the break of the gokart */
-public class LinmotPutEvent {
+public class LinmotPutEvent implements Serializable {
   /** 12 bytes encoding length */
   /* package */ static final int LENGTH = 12;
   // ---

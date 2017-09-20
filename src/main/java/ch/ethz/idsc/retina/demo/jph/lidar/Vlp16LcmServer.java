@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;

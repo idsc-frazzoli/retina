@@ -1,12 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.HexStrings;
 
 /** information received from micro-autobox about steering */
-public class SteerGetEvent {
+public class SteerGetEvent implements Serializable {
   // TODO NRJ not final number, but we don't know how many we need and what the bytes mean
   public static final int LENGTH = 44;
   // ---

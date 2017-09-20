@@ -23,7 +23,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotInitProcedure;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.linmot.TimedLinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.TimedPutEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -49,7 +49,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
   private final JTextField jTextFieldDemandPosition;
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
-  public final Queue<TimedLinmotPutEvent> queue = new PriorityQueue<>();
+  public final Queue<TimedPutEvent<LinmotPutEvent>> queue = new PriorityQueue<>();
 
   public LinmotComponent() {
     {
@@ -139,7 +139,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
             linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
             linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
           } else {
-            TimedLinmotPutEvent timedLinmotPutEvent = queue.peek();
+            TimedPutEvent<LinmotPutEvent> timedLinmotPutEvent = queue.peek();
             System.out.println(timedLinmotPutEvent.linmotPutEvent.control_word);
             if (timedLinmotPutEvent.time_ms < System.currentTimeMillis()) {
               queue.poll();

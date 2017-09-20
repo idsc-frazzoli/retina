@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
-public class LinmotGetEvent {
+public class LinmotGetEvent implements Serializable {
   /** 16 bytes */
   public static final int LENGTH = 16;
   // ---
