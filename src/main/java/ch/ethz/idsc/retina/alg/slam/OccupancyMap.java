@@ -56,52 +56,49 @@ public class OccupancyMap implements LidarRayBlockListener {
 
   @Override
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    // System.out.println("enter "+index);
-    GlobalAssert.that(lidarRayBlockEvent.dimensions == 2);
-    Tensor points = Tensors.vector(i -> Tensors.vector( //
-        lidarRayBlockEvent.floatBuffer.get(), //
-        lidarRayBlockEvent.floatBuffer.get()), lidarRayBlockEvent.size());
-    UniformResample uniformResample = new UniformResample(threshold, ds_value);
-    final List<Tensor> total = uniformResample.apply(points);
-    List<Tensor> mark = new LinkedList<>();
-    for (Tensor block : total) {
-      block = block.multiply(M2PIX);
-      block.stream().forEach(row -> row.append(RealScalar.ONE));
-      mark.add(block);
-    }
-    points = Tensor.of(mark.stream().flatMap(Tensor::stream));
-    System.out.println(lidarRayBlockEvent.size() + " -> " + Dimensions.of(points));
-    if (optimize) {
-      // Stopwatch stp = Stopwatch.started();
-      Scalar ang = RealScalar.of(2 * Math.PI / 180);
-      Scalar shf = RealScalar.of(0.03 * METER_TO_PIXEL);
-      for (int level = 0; level < 4; ++level) {
-        // ---
-        Tensor next = null;
-        int cmp = 0;
-        for (Tensor tryme : se2MultiresSamples.level(level)) {
-          Tensor test = pose.dot(tryme);
-          Tensor evl = Tensor.of(points.stream().map(row -> test.dot(row)));
-          int ret = evaluate(evl);
-          if (cmp < ret) {
-            next = test;
-            cmp = ret;
-          }
-        }
-        pose = next;
-        // ---
-        ang = ang.multiply(RealScalar.of(.6));
-        shf = shf.multiply(RealScalar.of(.6));
+    synchronized (pose) {
+      // System.out.println("enter "+index);
+      GlobalAssert.that(lidarRayBlockEvent.dimensions == 2);
+      Tensor points = Tensors.vector(i -> Tensors.vector( //
+          lidarRayBlockEvent.floatBuffer.get(), //
+          lidarRayBlockEvent.floatBuffer.get()), lidarRayBlockEvent.size());
+      UniformResample uniformResample = new UniformResample(threshold, ds_value);
+      final List<Tensor> total = uniformResample.apply(points);
+      List<Tensor> mark = new LinkedList<>();
+      for (Tensor block : total) {
+        block = block.multiply(M2PIX);
+        block.stream().forEach(row -> row.append(RealScalar.ONE));
+        mark.add(block);
       }
+      points = Tensor.of(mark.stream().flatMap(Tensor::stream));
+      System.out.println(lidarRayBlockEvent.size() + " -> " + Dimensions.of(points));
+      if (optimize) {
+        // Stopwatch stp = Stopwatch.started();
+        for (int level = 0; level < 4; ++level) {
+          Tensor next = null;
+          int cmp = 0;
+          for (Tensor tryme : se2MultiresSamples.level(level)) {
+            Tensor test = pose.dot(tryme);
+            Tensor evl = Tensor.of(points.stream().map(row -> test.dot(row)));
+            int ret = evaluate(evl);
+            if (cmp < ret) {
+              next = test;
+              cmp = ret;
+            }
+          }
+          pose = next;
+        }
+      }
+      optimize |= true;
+      List<Tensor> reps = mark.stream() //
+          .map(block -> Tensor.of(block.stream().map(row -> pose.dot(row)))) //
+          .collect(Collectors.toList());
+      imprint(reps);
+      SlamEvent slamEvent = new SlamEvent();
+      slamEvent.global_pose = global.dot(pose);
+      slamEvent.bufferedImage = bufferedImage;
+      listeners.forEach(listener -> listener.slam(slamEvent));
     }
-    optimize |= true;
-    List<Tensor> reps = mark.stream() //
-        .map(block -> Tensor.of(block.stream().map(row -> pose.dot(row)))) //
-        .collect(Collectors.toList());
-    imprint(reps);
-    SlamEvent slamEvent = new SlamEvent();
-    slamEvent.occupancyMap = this;
-    listeners.forEach(listener -> listener.slam(slamEvent));
   }
 
   public void addListener(SlamListener occupancyMapListener) {
@@ -169,13 +166,5 @@ public class OccupancyMap implements LidarRayBlockListener {
       }
     }
     return sum;
-  }
-
-  public BufferedImage bufferedImage() {
-    return bufferedImage;
-  }
-
-  public Tensor getPose() {
-    return global.dot(pose);
   }
 }

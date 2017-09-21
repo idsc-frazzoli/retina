@@ -4,11 +4,11 @@ package ch.ethz.idsc.retina.alg.slam;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import ch.ethz.idsc.retina.util.gui.BufferedImageCopy;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
@@ -16,12 +16,12 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 public class SlamComponent implements SlamListener {
   private final static JLabel JLABEL = new JLabel();
   // ---
-  private BufferedImage bufferedImage;
+  private final BufferedImageCopy bufferedImageCopy = new BufferedImageCopy();
   private Tensor pose = IdentityMatrix.of(3);
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      graphics.drawImage(bufferedImage, 0, 0, JLABEL);
+      graphics.drawImage(bufferedImageCopy.get(), 0, 0, JLABEL);
       {
         graphics.setColor(Color.GRAY);
         graphics.drawRect(512, 512, 2, 2);
@@ -50,21 +50,14 @@ public class SlamComponent implements SlamListener {
         512 - vector.Get(1).number().intValue());
   }
 
-  public void setImage(BufferedImage bufferedImage) {
-    this.bufferedImage = bufferedImage;
-  }
-
   public void setPose(Tensor pose) {
     this.pose = pose;
   }
 
   @Override
   public void slam(SlamEvent slamEvent) {
-    OccupancyMap occupancyMap = slamEvent.occupancyMap;
-    BufferedImage bufferedImage = new BufferedImage(1024, 1024, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage.getGraphics().drawImage(occupancyMap.bufferedImage(), 0, 0, JLABEL);
-    setImage(bufferedImage);
-    setPose(occupancyMap.getPose()); // TODO make this safe from modification
+    bufferedImageCopy.update(slamEvent.bufferedImage);
+    setPose(slamEvent.global_pose); // TODO make this safe from modification
     jComponent.repaint();
   }
 }
