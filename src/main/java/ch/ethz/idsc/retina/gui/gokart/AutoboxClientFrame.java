@@ -57,7 +57,7 @@ public class AutoboxClientFrame {
       MiscSocket.INSTANCE.addListener(miscComponent);
       addTab(miscComponent);
     }
-    jTabbedPane.setSelectedIndex(1);
+    jTabbedPane.setSelectedIndex(0);
     // ---
     JPanel jPanel = new JPanel(new BorderLayout());
     {
