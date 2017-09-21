@@ -21,8 +21,7 @@ public class IntRealtimeSleeper {
     this.speed = speed;
   }
 
-  /** @param time
-   * in micro seconds */
+  /** @param time in micro seconds */
   public void now(int time) {
     if (notInitialized()) { // initialized?
       ref = time;

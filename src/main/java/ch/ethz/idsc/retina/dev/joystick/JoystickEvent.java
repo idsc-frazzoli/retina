@@ -18,8 +18,7 @@ public abstract class JoystickEvent {
     return (_buttons & (1 << index)) != 0;
   }
 
-  /** @param index
-   * of axis
+  /** @param index of axis
    * @return value in unit interval [0, 1] */
   protected final double getAxisValue(int index) {
     return _axes[index] / (double) Byte.MAX_VALUE;

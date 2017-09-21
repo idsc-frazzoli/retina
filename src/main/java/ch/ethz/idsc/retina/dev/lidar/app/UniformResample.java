@@ -23,10 +23,8 @@ public class UniformResample implements Serializable {
 
   /** the threshold
    * 
-   * @param threshold
-   * a common value is RealScalar.of(33)
-   * @param ds
-   * distance between samples after re-sampling */
+   * @param threshold a common value is RealScalar.of(33)
+   * @param ds distance between samples after re-sampling */
   public UniformResample(Scalar threshold, Scalar ds) {
     this.threshold = threshold;
     this.ds = ds;

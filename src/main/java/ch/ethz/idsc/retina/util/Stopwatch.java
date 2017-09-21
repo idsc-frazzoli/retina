@@ -40,16 +40,14 @@ public class Stopwatch {
 
   /** start stopwatch
    * 
-   * @throws Exception
-   * if stopwatch is already started */
+   * @throws Exception if stopwatch is already started */
   public void start() {
     if (!isStopped())
       throw new RuntimeException();
     tic = System.nanoTime();
   }
 
-  /** @throws Exception
-   * if stopwatch was not started */
+  /** @throws Exception if stopwatch was not started */
   public void stop() {
     frozen += current();
     tic = null;
@@ -59,15 +57,13 @@ public class Stopwatch {
   }
 
   /** @return what is on the display of the stopwatch in nano-seconds: total of all
-   * start-until-stop intervals including start-until-now if instance is
-   * started */
+   * start-until-stop intervals including start-until-now if instance is started */
   public long display_nanoSeconds() {
     return frozen + (isStopped() ? 0 : current());
   }
 
   /** @return what is on the display of the stopwatch in seconds: total of all
-   * start-until-stop intervals including start-until-now if instance is
-   * started */
+   * start-until-stop intervals including start-until-now if instance is started */
   public double display_seconds() {
     return display_nanoSeconds() * 1e-9;
   }
@@ -80,8 +76,7 @@ public class Stopwatch {
   }
 
   /** @return internal time difference start-until-now
-   * @throws Exception
-   * if stopwatch is not started */
+   * @throws Exception if stopwatch is not started */
   private long current() {
     return System.nanoTime() - tic;
   }

@@ -38,8 +38,7 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     return !rayListeners.isEmpty();
   }
 
-  /** @param byteBuffer
-   * with at least 512 bytes to read */
+  /** @param byteBuffer with at least 512 bytes to read */
   @Override
   public void positioning(ByteBuffer byteBuffer) {
     byte[] nmea = new byte[72]; // NMEA positioning sentence
@@ -66,8 +65,7 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     posListeners.forEach(listener -> listener.velodynePos(hdl32ePosEvent));
   }
 
-  /** @param byteBuffer
-   * with at least 1206 bytes to read */
+  /** @param byteBuffer with at least 1206 bytes to read */
   @Override
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position();

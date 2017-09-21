@@ -15,8 +15,7 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   private final DavisExportControl davisExportControl;
   private int count = 0;
 
-  /** @param directory
-   * base in which a sub directory "images" is created
+  /** @param directory base in which a sub directory "images" is created
    * @throws IOException */
   public DavisGifImageWriter(File file, int period, DavisExportControl davisExportControl) throws IOException {
     animatedGifWriter = AnimatedGifWriter.of(file, period);

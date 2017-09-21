@@ -64,8 +64,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
    * however, we find that in office conditions correct ranges below 1 meter are
    * provided
    * 
-   * @param closest
-   * in [m] */
+   * @param closest in [m] */
   public void setLimitLo(double closest) {
     limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }

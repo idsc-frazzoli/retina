@@ -25,8 +25,7 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   private final BufferedWriter bufferedWriter;
   private int count = 0;
 
-  /** @param directory
-   * base in which a sub directory "images" is created
+  /** @param directory base in which a sub directory "images" is created
    * @throws IOException */
   public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     this.directory = directory;

@@ -14,11 +14,8 @@ public interface ColumnTimedImageListener {
    * to image(). Therefore the implementation of {@link ColumnTimedImageListener}
    * is required to make a copy of the image for long term use.
    * 
-   * @param time
-   * array of timestamps in [us] with time.length ==
-   * bufferedImage.getWidth()
-   * @param bufferedImage
-   * grayscale with 8-bit per pixel
+   * @param time array of timestamps in [us] with time.length == bufferedImage.getWidth()
+   * @param bufferedImage grayscale with 8-bit per pixel
    * @param isComplete */
   void image(int[] time, BufferedImage bufferedImage, boolean isComplete);
   // TODO combine parameters into new class

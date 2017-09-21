@@ -21,8 +21,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-/** selector in gui for easy scrolling through a list with mouse-wheel but no
- * pull-down menu
+/** selector in gui for easy scrolling through a list with mouse-wheel but no pull-down menu
  * 
  * @param <Type> */
 public class SpinnerLabel<Type> {
