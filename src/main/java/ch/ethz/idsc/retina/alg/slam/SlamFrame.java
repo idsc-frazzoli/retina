@@ -4,10 +4,8 @@ package ch.ethz.idsc.retina.alg.slam;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
@@ -19,13 +17,12 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SlamFrame implements OccupancyMapListener {
-  private final static JLabel JLABEL = new JLabel();
+public class SlamFrame {
   // ---
   private final JFrame jFrame = new JFrame();
   private Scalar threshold = RealScalar.of(30);
   private Scalar ds_value = RealScalar.of(0.03);
-  SlamComponent slamComponent = new SlamComponent();
+  public SlamComponent slamComponent = new SlamComponent();
 
   public SlamFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -56,16 +53,5 @@ public class SlamFrame implements OccupancyMapListener {
       jFrame.setContentPane(jPanel);
     }
     jFrame.setVisible(true);
-  }
-
-  @Override
-  public void occupancyMap(OccupancyMap occupancyMap) {
-    occupancyMap.ds_value = ds_value;
-    occupancyMap.threshold = threshold;
-    BufferedImage bufferedImage = new BufferedImage(1024, 1024, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage.getGraphics().drawImage(occupancyMap.bufferedImage(), 0, 0, JLABEL);
-    slamComponent.setImage(bufferedImage);
-    slamComponent.setPose(occupancyMap.getPose()); // TODO make this safe from modification
-    slamComponent.jComponent.repaint();
   }
 }

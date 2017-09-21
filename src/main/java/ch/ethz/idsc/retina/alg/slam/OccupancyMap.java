@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class OccupancyMap implements LidarRayBlockListener {
   public static final int WIDTH = 1024;
+  /** in the j2b2 project m2p == 50 */
   public static final float METER_TO_PIXEL = 50;
   public static final int LEVELS = 4;
   public static final Scalar M2PIX = RealScalar.of(METER_TO_PIXEL);
@@ -39,7 +40,7 @@ public class OccupancyMap implements LidarRayBlockListener {
   private Tensor pose;
   private boolean optimize = false;
   private final Se2MultiresSamples se2MultiresSamples;
-  private final List<OccupancyMapListener> listeners = new LinkedList<>();
+  private final List<SlamListener> listeners = new LinkedList<>();
 
   public OccupancyMap() {
     WritableRaster writableRaster = bufferedImage.getRaster();
@@ -53,12 +54,9 @@ public class OccupancyMap implements LidarRayBlockListener {
         LEVELS);
   }
 
-  private int index = 0;
-
   @Override
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     // System.out.println("enter "+index);
-    ++index;
     GlobalAssert.that(lidarRayBlockEvent.dimensions == 2);
     Tensor points = Tensors.vector(i -> Tensors.vector( //
         lidarRayBlockEvent.floatBuffer.get(), //
@@ -101,11 +99,12 @@ public class OccupancyMap implements LidarRayBlockListener {
         .map(block -> Tensor.of(block.stream().map(row -> pose.dot(row)))) //
         .collect(Collectors.toList());
     imprint(reps);
-    listeners.forEach(listener -> listener.occupancyMap(this));
-    // System.out.println("exit "+index);
+    SlamEvent slamEvent = new SlamEvent();
+    slamEvent.occupancyMap = this;
+    listeners.forEach(listener -> listener.slam(slamEvent));
   }
 
-  public void addListener(OccupancyMapListener occupancyMapListener) {
+  public void addListener(SlamListener occupancyMapListener) {
     listeners.add(occupancyMapListener);
   }
 

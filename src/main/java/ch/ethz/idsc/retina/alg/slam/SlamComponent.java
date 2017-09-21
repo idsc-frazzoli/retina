@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-public class SlamComponent {
+public class SlamComponent implements SlamListener {
   private final static JLabel JLABEL = new JLabel();
   // ---
   private BufferedImage bufferedImage;
@@ -56,5 +56,15 @@ public class SlamComponent {
 
   public void setPose(Tensor pose) {
     this.pose = pose;
+  }
+
+  @Override
+  public void slam(SlamEvent slamEvent) {
+    OccupancyMap occupancyMap = slamEvent.occupancyMap;
+    BufferedImage bufferedImage = new BufferedImage(1024, 1024, BufferedImage.TYPE_BYTE_GRAY);
+    bufferedImage.getGraphics().drawImage(occupancyMap.bufferedImage(), 0, 0, JLABEL);
+    setImage(bufferedImage);
+    setPose(occupancyMap.getPose()); // TODO make this safe from modification
+    jComponent.repaint();
   }
 }
