@@ -45,7 +45,7 @@ public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
     final float dx = (float) Math.cos(angle);
     final float dy = (float) -Math.sin(angle);
     final float[] coords = new float[2];
-    int laser = 15;
+    int laser = 15; // magic const refers to horizontal laser
     byteBuffer.position(byteBuffer.position() + laser * 3);
     int distance = byteBuffer.getShort() & 0xffff;
     int intensity = byteBuffer.get() & 0xff;

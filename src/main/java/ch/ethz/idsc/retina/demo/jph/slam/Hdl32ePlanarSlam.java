@@ -34,7 +34,7 @@ public enum Hdl32ePlanarSlam {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(occupancyMap);
     // ---
-    SlamFrame slamFrame = new SlamFrame();
+    SlamFrame slamFrame = new SlamFrame(occupancyMap);
     occupancyMap.addListener(slamFrame.slamComponent);
     velodyneLcmClient.startSubscriptions();
     // Thread.sleep(10000);

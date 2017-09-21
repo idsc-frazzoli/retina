@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.lidar.app.UniformResample;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.math.UniformResample;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -25,14 +25,14 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class OccupancyMap implements LidarRayBlockListener {
-  public static final int WIDTH = 1024;
+  public static final int WIDTH = 1200;
   /** in the j2b2 project m2p == 50 */
   public static final float METER_TO_PIXEL = 50;
   public static final int LEVELS = 4;
   public static final Scalar M2PIX = RealScalar.of(METER_TO_PIXEL);
   // ---
-  public Scalar threshold = RealScalar.of(40);
-  public Scalar ds_value = RealScalar.of(0.03);
+  public Scalar threshold = RealScalar.of(100);
+  public Scalar ds_value = RealScalar.of(0.05);
   private final BufferedImage bufferedImage = new BufferedImage(WIDTH, WIDTH, BufferedImage.TYPE_BYTE_GRAY);
   private final Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
   private final byte[] bytes;
@@ -57,7 +57,6 @@ public class OccupancyMap implements LidarRayBlockListener {
   @Override
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     synchronized (pose) {
-      // System.out.println("enter "+index);
       GlobalAssert.that(lidarRayBlockEvent.dimensions == 2);
       Tensor points = Tensors.vector(i -> Tensors.vector( //
           lidarRayBlockEvent.floatBuffer.get(), //
@@ -90,13 +89,14 @@ public class OccupancyMap implements LidarRayBlockListener {
         }
       }
       optimize |= true;
-      List<Tensor> reps = mark.stream() //
+      final List<Tensor> pose_lidar = mark.stream() //
           .map(block -> Tensor.of(block.stream().map(row -> pose.dot(row)))) //
           .collect(Collectors.toList());
-      imprint(reps);
+      imprint(pose_lidar);
       SlamEvent slamEvent = new SlamEvent();
       slamEvent.global_pose = global.dot(pose);
       slamEvent.bufferedImage = bufferedImage;
+      slamEvent.pose_lidar = pose_lidar;
       listeners.forEach(listener -> listener.slam(slamEvent));
     }
   }
@@ -113,8 +113,7 @@ public class OccupancyMap implements LidarRayBlockListener {
         FO2.subtract(point.Get(1)).number().intValue());
   }
 
-  /** @param points
-   * with dimensions == [n, 3] */
+  /** @param points with dimensions == [n, 3] */
   private void imprint(List<Tensor> total) {
     graphics.setColor(new Color(20, 20, 20, 255));
     for (Tensor points : total) {
@@ -153,8 +152,7 @@ public class OccupancyMap implements LidarRayBlockListener {
     }
   }
 
-  /** @param points
-   * with dimensions == [n, 3] */
+  /** @param points with dimensions == [n, 3] */
   private int evaluate(Tensor points) {
     int sum = 0;
     for (Tensor point : points) {

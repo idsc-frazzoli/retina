@@ -19,10 +19,10 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.lidar.app.UniformResample;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.retina.util.math.UniformResample;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
