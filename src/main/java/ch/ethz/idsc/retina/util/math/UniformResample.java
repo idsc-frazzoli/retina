@@ -18,6 +18,7 @@ public class UniformResample implements Serializable {
   private final Scalar threshold;
   /** distance between samples after re-sampling */
   private final Scalar ds;
+  public int minLength = 2;
 
   /** the threshold
    * 
@@ -51,15 +52,18 @@ public class UniformResample implements Serializable {
         }
         sum = sum.subtract(delta.Get(index));
       } else {
-        if (ret.length() != 0) {
+        if (addPredicate(ret))
           total.add(ret);
-          ret = Tensors.empty();
-        }
+        ret = Tensors.empty();
         sum = RealScalar.ZERO;
       }
     }
-    if (ret.length() != 0)
+    if (addPredicate(ret))
       total.add(ret);
     return total;
+  }
+
+  private boolean addPredicate(Tensor tensor) {
+    return minLength <= tensor.length();
   }
 }

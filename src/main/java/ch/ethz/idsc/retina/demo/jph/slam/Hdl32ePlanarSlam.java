@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 public enum Hdl32ePlanarSlam {
   ;
   public static void main(String[] args) throws InterruptedException, IOException {
-    // the main actor of the show:
     OccupancyMap occupancyMap = new OccupancyMap();
     // ---
     final String lidarId = "center";
@@ -37,8 +36,5 @@ public enum Hdl32ePlanarSlam {
     SlamFrame slamFrame = new SlamFrame(occupancyMap);
     occupancyMap.addListener(slamFrame.slamComponent);
     velodyneLcmClient.startSubscriptions();
-    // Thread.sleep(10000);
-    // Export.of(UserHome.Pictures("occupancy.png"),
-    // ImageFormat.from(occupancyMap.bufferedImage()));
   }
 }

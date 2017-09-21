@@ -17,15 +17,12 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class SlamFrame {
-  // ---
-  private final OccupancyMap occupancyMap;
   private final JFrame jFrame = new JFrame();
   public final SlamComponent slamComponent = new SlamComponent();
 
   public SlamFrame(OccupancyMap occupancyMap) {
-    this.occupancyMap = occupancyMap;
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 50, 1100, 1050);
+    jFrame.setBounds(100, 50, 1200, 1080);
     {
       JPanel jPanel = new JPanel(new BorderLayout());
       {

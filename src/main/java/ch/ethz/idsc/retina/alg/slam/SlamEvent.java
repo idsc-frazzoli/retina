@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** simultaneous localization and mapping */
 public class SlamEvent {
   public Tensor global_pose;
+  public Tensor move;
   public BufferedImage bufferedImage;
   public List<Tensor> pose_lidar;
 }
