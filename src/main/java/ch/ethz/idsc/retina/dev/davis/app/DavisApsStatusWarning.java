@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
   int total = 0;
 
   @Override
-  public void image(ColumnTimedImage columnTimedImage) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     ++total;
     if (columnTimedImage.isComplete) {
       ++complete;

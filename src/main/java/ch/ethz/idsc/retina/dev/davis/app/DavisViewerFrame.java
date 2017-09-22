@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +22,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.io.UserHome;
@@ -94,12 +94,12 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
   }
 
   @Override // from TimedImageListener
-  public void image(int time, BufferedImage bufferedImage) {
-    davisViewerComponent.setDvsImage(bufferedImage);
+  public void timedImage(TimedImageEvent timedImageEvent) {
+    davisViewerComponent.setDvsImage(timedImageEvent.bufferedImage);
   }
 
   @Override // from ColumnTimedImageListener
-  public void image(ColumnTimedImage columnTimedImage) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (!columnTimedImage.isComplete)
       System.err.println("image incomplete");
     davisViewerComponent.sigImage = columnTimedImage.bufferedImage;

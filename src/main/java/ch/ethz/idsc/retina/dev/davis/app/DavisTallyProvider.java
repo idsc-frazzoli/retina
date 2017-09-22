@@ -13,7 +13,7 @@ public class DavisTallyProvider {
   public int shift = 8;
   public final ColumnTimedImageListener sigListener = new ColumnTimedImageListener() {
     @Override
-    public void image(ColumnTimedImage columnTimedImage) {
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       if (isTriggered()) {
         davisTallyEvent.setMax(columnTimedImage.time[0]);
         davisTallyListener.tallyEvent(davisTallyEvent);
@@ -24,7 +24,7 @@ public class DavisTallyProvider {
   };
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
-    public void image(ColumnTimedImage columnTimedImage) {
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       if (isTriggered())
         davisTallyEvent.setResetBlock(columnTimedImage.time[0], columnTimedImage.time[columnTimedImage.time.length - 1]);
     }

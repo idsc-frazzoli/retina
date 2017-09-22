@@ -54,7 +54,7 @@ public class DavisImageProvider implements DavisApsListener {
         boolean isComplete = apsTracker.statusAndReset();
         // System.out.println(DeleteDuplicates.of(Differences.of(Tensors.vectorInt(time))));
         ColumnTimedImage columnTimedImage = new ColumnTimedImage(time, bufferedImage, isComplete);
-        listeners.forEach(listener -> listener.image(columnTimedImage));
+        listeners.forEach(listener -> listener.columnTimedImage(columnTimedImage));
       }
     }
   }

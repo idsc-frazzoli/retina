@@ -29,7 +29,7 @@ public class DavisLcmLogGifConvert {
       // ---
       AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 3000);
       // ---
-      DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+      final DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
       // davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
       // ---

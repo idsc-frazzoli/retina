@@ -11,5 +11,5 @@ public interface ColumnTimedImageListener {
   /** the instance bufferedImage of the provided image is altered in between calls
    * to image(). Therefore the implementation of {@link ColumnTimedImageListener}
    * is required to make a copy of the image for long term use. */
-  void image(ColumnTimedImage columnTimedImage);
+  void columnTimedImage(ColumnTimedImage columnTimedImage);
 }

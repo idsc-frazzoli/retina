@@ -37,7 +37,7 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   }
 
   @Override
-  public void image(ColumnTimedImage columnTimedImage) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (davisExportControl.isActive()) {
       try {
         final String string = String.format("images/frame_%08d.%s", count, EXTENSION);

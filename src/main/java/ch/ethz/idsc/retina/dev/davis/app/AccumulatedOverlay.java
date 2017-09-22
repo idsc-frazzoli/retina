@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -43,7 +44,7 @@ public class AccumulatedOverlay implements DavisDvsListener {
   // ---
   public final ColumnTimedImageListener differenceListener = new ColumnTimedImageListener() {
     @Override
-    public void image(ColumnTimedImage columnTimedImage) {
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
       Graphics graphics = modif.getGraphics();
       graphics.drawImage(columnTimedImage.bufferedImage, 0, 0, new JLabel());
@@ -81,8 +82,8 @@ public class AccumulatedOverlay implements DavisDvsListener {
               background, //
               alphamask);
           image = Transpose.of(image, 2, 0, 1);
-          BufferedImage bufferedImage = ImageFormat.of(image);
-          listeners.forEach(listener -> listener.image(last, bufferedImage));
+          TimedImageEvent timedImageEvent = new TimedImageEvent(last, ImageFormat.of(image));
+          listeners.forEach(listener -> listener.timedImage(timedImageEvent));
           System.out.println("overlay -> " + postpone + " " + eventCount);
         }
         clearImage();

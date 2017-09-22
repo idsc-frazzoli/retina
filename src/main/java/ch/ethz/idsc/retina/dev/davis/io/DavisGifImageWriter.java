@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.tensor.io.AnimatedGifWriter;
 
@@ -24,13 +25,13 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   }
 
   @Override
-  public void image(ColumnTimedImage columnTimedImage) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     image(columnTimedImage.bufferedImage);
   }
 
   @Override
-  public void image(int time, BufferedImage bufferedImage) {
-    image(bufferedImage);
+  public void timedImage(TimedImageEvent timedImageEvent) {
+    image(timedImageEvent.bufferedImage);
   }
 
   private void image(BufferedImage bufferedImage) {

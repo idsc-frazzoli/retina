@@ -50,7 +50,7 @@ public class DavisApsDatagramDecoder {
     x_next = x;
     if (x == 240) {
       ColumnTimedImage columnTimedImage = new ColumnTimedImage(time, bufferedImage, isComplete);
-      listeners.forEach(listener -> listener.image(columnTimedImage));
+      listeners.forEach(listener -> listener.columnTimedImage(columnTimedImage));
       isComplete = true;
       x_next = 0;
     }

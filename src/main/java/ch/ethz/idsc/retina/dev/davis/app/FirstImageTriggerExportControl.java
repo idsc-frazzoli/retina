@@ -12,7 +12,7 @@ public class FirstImageTriggerExportControl implements DavisExportControl, Colum
   private int time_offset = 0;
 
   @Override
-  public void image(ColumnTimedImage columnTimedImage) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (1 == frames) {
       GlobalAssert.that(!isActive());
       time_offset = columnTimedImage.time[0];
