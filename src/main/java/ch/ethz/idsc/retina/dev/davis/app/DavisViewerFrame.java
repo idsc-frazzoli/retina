@@ -53,7 +53,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
         jButton.addActionListener(actionEvent -> {
           System.out.println("here");
           try {
-            ImageIO.write(davisViewerComponent.apsImage, "png", UserHome.Pictures("apsimage.png"));
+            ImageIO.write(davisViewerComponent.sigImage, "png", UserHome.Pictures("sigImage.png"));
           } catch (Exception exception) {
             // ---
           }
@@ -122,7 +122,7 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
   public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
     if (!isComplete)
       System.err.println("image incomplete");
-    davisViewerComponent.apsImage = bufferedImage;
+    davisViewerComponent.sigImage = bufferedImage;
     davisViewerComponent.isComplete = isComplete;
     davisViewerComponent.frame_duration = time[time.length - 1] - time[0];
   }

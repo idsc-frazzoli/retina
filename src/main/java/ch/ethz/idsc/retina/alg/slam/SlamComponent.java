@@ -15,8 +15,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.util.Bulletin;
-import ch.ethz.idsc.retina.util.gui.BufferedImageCopy;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
+import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Pretty;
@@ -26,7 +26,7 @@ public class SlamComponent implements SlamListener {
   private static final JLabel JLABEL = new JLabel();
   private static final int W_HALF = OccupancyMap.WIDTH / 2;
   // ---
-  private final BufferedImageCopy bufferedImageCopy = new BufferedImageCopy();
+  private final ImageCopy bufferedImageCopy = new ImageCopy();
   private SlamEvent _slamEvent;
   final JComponent jComponent = new JComponent() {
     @Override

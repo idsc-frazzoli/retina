@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import junit.framework.TestCase;
 
-public class SteerPositionControlTest extends TestCase {
+public class PDSteerPositionControlTest extends TestCase {
   public void testSimple() {
     PDSteerPositionControl test = new PDSteerPositionControl();
     test.iterate(1);
@@ -15,7 +15,7 @@ public class SteerPositionControlTest extends TestCase {
     test.iterate(1);
     for (int i = 0; i < 10; i++) {
       double value = test.iterate(0);
-      System.out.println(value);
+      // System.out.println(value);
     }
   }
 
@@ -28,7 +28,7 @@ public class SteerPositionControlTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = RandomVariate.of(distribution);
       double value = test.iterate(err_pos.number().doubleValue() * .01);
-      System.out.println(value);
+      // System.out.println(value);
     }
   }
 }

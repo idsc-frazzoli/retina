@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.util.gui;
+package ch.ethz.idsc.retina.util.img;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 import ch.ethz.idsc.owly.data.GlobalAssert;
 
-public class BufferedImageCopy {
+public class ImageCopy {
   private static final BufferedImage DUMMY = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
   // ---
   private BufferedImage copy = null;

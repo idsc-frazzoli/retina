@@ -7,7 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JProgressBar;
 
 /** static functionality */
-public class Colors {
+public enum Colors {
+  ;
   /** JToggleButton background when selected is 184 207 229 selection color
    * subtracts 24 from each RGB value */
   public static final Color selection = new Color(160, 183, 205);
@@ -45,8 +46,5 @@ public class Colors {
 
   public static Color withAlpha(Color myColor, int alpha) {
     return new Color(myColor.getRed(), myColor.getGreen(), myColor.getBlue(), alpha);
-  }
-
-  private Colors() {
   }
 }

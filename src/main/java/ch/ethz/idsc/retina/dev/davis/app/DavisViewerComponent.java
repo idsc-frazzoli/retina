@@ -12,17 +12,17 @@ import javax.swing.JComponent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.IntRange;
 import ch.ethz.idsc.retina.util.IntervalClock;
-import ch.ethz.idsc.retina.util.gui.BufferedImageCopy;
+import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.ImageHistogram;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO magic const
 /* package */ class DavisViewerComponent {
   private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
   // ---
-  BufferedImage apsImage = null;
+  BufferedImage sigImage = null;
   BufferedImage rstImage = null;
-  // private BufferedImage dvsImage = null;
-  private BufferedImageCopy bufferedImageCopy = new BufferedImageCopy();
+  private ImageCopy imageCopy = new ImageCopy();
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
   boolean isComplete;
@@ -38,17 +38,17 @@ import ch.ethz.idsc.tensor.sca.Round;
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
-      if (Objects.nonNull(apsImage)) {
-        graphics.drawImage(apsImage, 1 * 240, 0, null);
+      if (Objects.nonNull(sigImage)) {
+        graphics.drawImage(sigImage, 1 * 240, 0, null);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
-      if (bufferedImageCopy.hasValue())
-        graphics.drawImage(bufferedImageCopy.get(), 2 * 240, 0, null);
+      if (imageCopy.hasValue())
+        graphics.drawImage(imageCopy.get(), 2 * 240, 0, null);
       // ---
+      final int baseline_y = getSize().height - 20;
       if (Objects.nonNull(davisTallyEvent)) {
         DavisTallyEvent dte = davisTallyEvent;
-        final int baseline_y = getSize().height - 20;
         graphics.setColor(Color.LIGHT_GRAY);
         for (int h = 15; h < 100; h += 15) {
           double blub = Math.exp(h * 0.1) - 1;
@@ -78,6 +78,17 @@ import ch.ethz.idsc.tensor.sca.Round;
         // graphics.setColor(Color.GRAY);
         graphics.drawString(frame_duration + " " + reset_duration, 0, 180 + 12 * 4);
       }
+      if (Objects.nonNull(sigImage)) {
+        int[] bins = ImageHistogram.of(sigImage);
+        final int x_offset = 400;
+        graphics.setColor(new Color(0, 128, 0));
+        graphics.fillRect(x_offset, baseline_y, 256, 1);
+        graphics.setColor(Color.GREEN);
+        for (int index = 0; index < bins.length; ++index) {
+          int height = bins[index] / 20;
+          graphics.fillRect(x_offset + index, baseline_y - height, 1, height);
+        }
+      }
       // ---
       graphics.setColor(Color.RED);
       graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 190);
@@ -94,6 +105,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public void setDvsImage(BufferedImage bufferedImage) {
-    bufferedImageCopy.update(bufferedImage);
+    imageCopy.update(bufferedImage);
   }
 }
