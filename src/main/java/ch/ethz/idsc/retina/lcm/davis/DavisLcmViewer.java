@@ -4,7 +4,9 @@ package ch.ethz.idsc.retina.lcm.davis;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
+import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
+import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 
 /** opens a frame to visualize sensor data from the Davis240c camera which is
  * received via three lcm channels
@@ -23,13 +25,19 @@ public enum DavisLcmViewer {
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
-    accumulatedEventsImage.addListener(davisViewerFrame);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps
-    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame);
+    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
     // handle aps
     davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.rstListener);
     davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.rstListener);
+    // handle dif
+    DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
+    SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
+    davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
+    signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
     // handle imu
     davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame.davisViewerComponent);
     // start to listen

@@ -26,10 +26,10 @@ enum DavisDatagramClientDemo {
     DavisDvsDatagramClient dvsDatagramClient = new DavisDvsDatagramClient();
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
     dvsDatagramClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisViewerFrame);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // subscribe to aps events:
     DavisApsDatagramClient apsDatagramClient = new DavisApsDatagramClient();
-    apsDatagramClient.davisApsDatagramDecoder.addListener(davisViewerFrame);
+    apsDatagramClient.davisApsDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     // subscribe to imu events:
     DavisImuDatagramClient imuDatagramClient = new DavisImuDatagramClient();
     imuDatagramClient.addListener(davisViewerFrame.davisViewerComponent);

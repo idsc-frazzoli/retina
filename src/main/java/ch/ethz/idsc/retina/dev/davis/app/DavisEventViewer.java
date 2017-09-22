@@ -26,10 +26,10 @@ public enum DavisEventViewer {
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);
     davisDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisViewerFrame);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    davisImageProvider.addListener(davisViewerFrame);
+    davisImageProvider.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     davisImageProvider.addListener(new DavisApsStatusWarning());
     davisDecoder.addSigListener(davisImageProvider);
     // handle imu

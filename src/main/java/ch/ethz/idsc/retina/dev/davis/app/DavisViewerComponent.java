@@ -15,6 +15,8 @@ import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.IntRange;
 import ch.ethz.idsc.retina.util.IntervalClock;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
+import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageHistogram;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -24,39 +26,55 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   // ---
   BufferedImage sigImage = null;
   BufferedImage rstImage = null;
+  BufferedImage difImage = null;
   private ImageCopy imageCopy = new ImageCopy();
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
-  boolean isComplete;
   int frame_duration = -1;
   int reset_duration = -1;
   DavisTallyEvent davisTallyEvent;
   // Tensor displayEventCount = Array.zeros(3);
-  public ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
+  public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
     public void columnTimedImage(ColumnTimedImage columnTimedImage) { // TODO store reference
-      if (!isComplete)
+      if (!columnTimedImage.isComplete)
         System.err.println("rst incomplete");
       rstImage = columnTimedImage.bufferedImage;
-      isComplete = columnTimedImage.isComplete;
       reset_duration = columnTimedImage.duration();
+    }
+  };
+  public final ColumnTimedImageListener sigListener = new ColumnTimedImageListener() {
+    @Override
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
+      if (!columnTimedImage.isComplete)
+        System.err.println("sig incomplete");
+      sigImage = columnTimedImage.bufferedImage;
+      frame_duration = columnTimedImage.duration();
+    }
+  };
+  public final ColumnTimedImageListener difListener = new ColumnTimedImageListener() {
+    @Override
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
+      difImage = columnTimedImage.bufferedImage;
+    }
+  };
+  public final TimedImageListener dvsImageListener = new TimedImageListener() {
+    @Override
+    public void timedImage(TimedImageEvent timedImageEvent) {
+      imageCopy.update(timedImageEvent.bufferedImage);
     }
   };
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      if (Objects.nonNull(rstImage)) {
+      if (Objects.nonNull(rstImage))
         graphics.drawImage(rstImage, 0 * 240, 0, null);
-        if (!isComplete)
-          graphics.drawString("incomplete!", 0, 200);
-      }
-      if (Objects.nonNull(sigImage)) {
+      if (Objects.nonNull(sigImage))
         graphics.drawImage(sigImage, 1 * 240, 0, null);
-        if (!isComplete)
-          graphics.drawString("incomplete!", 0, 200);
-      }
+      if (Objects.nonNull(difImage))
+        graphics.drawImage(difImage, 2 * 240, 0, null);
       if (imageCopy.hasValue())
-        graphics.drawImage(imageCopy.get(), 2 * 240, 0, null);
+        graphics.drawImage(imageCopy.get(), 2 * 240, 180, null);
       // ---
       final int baseline_y = getSize().height - 20;
       if (Objects.nonNull(davisTallyEvent)) {
@@ -90,14 +108,14 @@ public class DavisViewerComponent implements DavisImuFrameListener {
         // graphics.setColor(Color.GRAY);
         graphics.drawString(frame_duration + " " + reset_duration, 0, 180 + 12 * 4);
       }
-      if (Objects.nonNull(sigImage)) {
-        int[] bins = ImageHistogram.of(sigImage);
+      if (Objects.nonNull(difImage)) {
+        int[] bins = ImageHistogram.of(difImage);
         final int x_offset = 400;
         graphics.setColor(new Color(0, 128, 0));
         graphics.fillRect(x_offset, baseline_y, 256, 1);
         graphics.setColor(Color.GREEN);
         for (int index = 0; index < bins.length; ++index) {
-          int height = bins[index] / 20;
+          int height = (int) Math.round(Math.log(bins[index] + 1) * 10);
           graphics.fillRect(x_offset + index, baseline_y - height, 1, height);
         }
       }
@@ -114,10 +132,6 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       graphics.setColor(Color.GRAY);
       graphics.drawString(label, intRange.min, y + 12);
     }
-  }
-
-  public void setDvsImage(BufferedImage bufferedImage) {
-    imageCopy.update(bufferedImage);
   }
 
   @Override // from DavisImuFrameListener
