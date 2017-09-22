@@ -1,9 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import java.awt.image.BufferedImage;
-
 import ch.ethz.idsc.retina.dev.davis.io.DavisExportControl;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
@@ -13,10 +12,10 @@ public class FirstImageTriggerExportControl implements DavisExportControl, Colum
   private int time_offset = 0;
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+  public void image(ColumnTimedImage columnTimedImage) {
     if (1 == frames) {
       GlobalAssert.that(!isActive());
-      time_offset = time[0];
+      time_offset = columnTimedImage.time[0];
       System.out.println("enabled at " + time_offset);
     }
     ++frames;

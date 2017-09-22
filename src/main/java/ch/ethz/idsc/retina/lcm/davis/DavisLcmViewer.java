@@ -28,10 +28,10 @@ public enum DavisLcmViewer {
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame);
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
     // handle aps
-    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.rstListener);
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.rstListener);
     davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.rstListener);
     // handle imu
-    davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame);
+    davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame.davisViewerComponent);
     // start to listen
     davisLcmClient.startSubscriptions();
     // return davisLcmViewer;

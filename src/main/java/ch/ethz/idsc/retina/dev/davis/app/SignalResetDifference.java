@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,13 +26,14 @@ public class SignalResetDifference implements ColumnTimedImageListener {
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+  public void image(ColumnTimedImage columnTimedImage) {
     if (davisImageBuffer.hasImage()) {
       // TODO long term: use java buffers
-      Tensor sig = ImageFormat.from(bufferedImage);
+      Tensor sig = ImageFormat.from(columnTimedImage.bufferedImage);
       Tensor rst = ImageFormat.from(davisImageBuffer.bufferedImage());
       BufferedImage difference = ImageFormat.of(sig.subtract(rst).map(Max.function(RealScalar.ZERO)));
-      listeners.forEach(listener -> listener.image(time, difference, isComplete));
+      ColumnTimedImage columnTimedImage2 = new ColumnTimedImage(columnTimedImage.time, difference, columnTimedImage.isComplete);
+      listeners.forEach(listener -> listener.image(columnTimedImage2));
     }
   }
 }

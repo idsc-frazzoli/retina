@@ -38,7 +38,6 @@ public class DavisLcmLogGifConvert {
       SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
-      davisLcmClient.davisSigDatagramDecoder.addListener(accumulatedOverlay.sig);
       // ---
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
       signalResetDifference.addListener(accumulatedOverlay.differenceListener);

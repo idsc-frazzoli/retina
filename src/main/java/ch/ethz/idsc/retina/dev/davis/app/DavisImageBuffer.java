@@ -3,15 +3,14 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
-
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** stores last complete to image */
+// TODO use image copy instead!!!
+@Deprecated
 public class DavisImageBuffer implements ColumnTimedImageListener {
-  private static final JPanel JPANEL = new JPanel();
-  // ---
   private BufferedImage bufferedImage;
   private boolean hasImage = false;
 
@@ -20,10 +19,10 @@ public class DavisImageBuffer implements ColumnTimedImageListener {
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-    if (!isComplete)
+  public void image(ColumnTimedImage columnTimedImage) {
+    if (!columnTimedImage.isComplete)
       System.err.println("reset image not complete");
-    this.bufferedImage.getGraphics().drawImage(bufferedImage, 0, 0, JPANEL);
+    bufferedImage.getGraphics().drawImage(columnTimedImage.bufferedImage, 0, 0, null);
     hasImage = true;
   }
 

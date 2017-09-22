@@ -10,14 +10,16 @@ import java.util.Objects;
 import javax.swing.JComponent;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.IntRange;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageHistogram;
 import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO magic const
-/* package */ class DavisViewerComponent {
+public class DavisViewerComponent implements DavisImuFrameListener {
   private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
   // ---
   BufferedImage sigImage = null;
@@ -30,6 +32,16 @@ import ch.ethz.idsc.tensor.sca.Round;
   int reset_duration = -1;
   DavisTallyEvent davisTallyEvent;
   // Tensor displayEventCount = Array.zeros(3);
+  public ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
+    @Override
+    public void image(ColumnTimedImage columnTimedImage) { // TODO store reference
+      if (!isComplete)
+        System.err.println("rst incomplete");
+      rstImage = columnTimedImage.bufferedImage;
+      isComplete = columnTimedImage.isComplete;
+      reset_duration = columnTimedImage.duration();
+    }
+  };
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -106,5 +118,10 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   public void setDvsImage(BufferedImage bufferedImage) {
     imageCopy.update(bufferedImage);
+  }
+
+  @Override // from DavisImuFrameListener
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    imuFrame = davisImuFrame;
   }
 }
