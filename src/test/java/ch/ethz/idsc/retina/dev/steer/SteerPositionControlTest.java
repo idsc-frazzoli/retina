@@ -1,3 +1,4 @@
+// code by rvmoos and jph
 package ch.ethz.idsc.retina.dev.steer;
 
 import ch.ethz.idsc.tensor.Scalar;
@@ -8,18 +9,18 @@ import junit.framework.TestCase;
 
 public class SteerPositionControlTest extends TestCase {
   public void testSimple() {
-    SteerPositionControl test = new SteerPositionControl();
+    PDSteerPositionControl test = new PDSteerPositionControl();
     test.iterate(1);
     test.iterate(1);
-    // test.iterate(1);
-    for (int i = 0; i < 100; i++) {
+    test.iterate(1);
+    for (int i = 0; i < 10; i++) {
       double value = test.iterate(0);
-      // System.out.println(value);
+      System.out.println(value);
     }
   }
 
   public void testSimple2() {
-    SteerPositionControl test = new SteerPositionControl();
+    PDSteerPositionControl test = new PDSteerPositionControl();
     // test.iterate(1);
     // test.iterate(1);
     // test.iterate(1);
@@ -27,7 +28,7 @@ public class SteerPositionControlTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = RandomVariate.of(distribution);
       double value = test.iterate(err_pos.number().doubleValue() * .01);
-      // System.out.println(value);
+      System.out.println(value);
     }
   }
 }
