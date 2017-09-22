@@ -43,15 +43,13 @@ public class IntegerMath {
     return a * (b / gcd(a, b)); // to avoid overflow
   }
 
-  /** @param myCollection
-   * non-empty
+  /** @param myCollection non-empty
    * @return greatest common divider of all integers in myCollection */
   public static int gcd(Collection<Integer> myCollection) {
     return myCollection.stream().reduce(IntegerMath::gcd).orElse(null);
   }
 
-  /** @param myCollection
-   * non-empty
+  /** @param myCollection non-empty
    * @return least common multiple of all integers in myCollection */
   public static int lcm(Collection<Integer> myCollection) {
     return myCollection.stream().reduce(IntegerMath::lcm).orElse(null);

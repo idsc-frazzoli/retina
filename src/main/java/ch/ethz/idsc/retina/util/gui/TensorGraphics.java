@@ -10,15 +10,15 @@ import ch.ethz.idsc.tensor.Tensor;
 public enum TensorGraphics {
   ;
   public static Path2D polygonToPath(Tensor tensor, Function<Tensor, Point2D> function) {
-    Path2D path2d = new Path2D.Double();
+    Path2D path2D = new Path2D.Double();
     {
-      Point2D point2d = function.apply(tensor.get(0));
-      path2d.moveTo(point2d.getX(), point2d.getY());
+      Point2D point2D = function.apply(tensor.get(0));
+      path2D.moveTo(point2D.getX(), point2D.getY());
     }
     tensor.stream().skip(1).forEach(dir -> {
-      final Point2D point = function.apply(dir);
-      path2d.lineTo(point.getX(), point.getY());
+      Point2D point2D = function.apply(dir);
+      path2D.lineTo(point2D.getX(), point2D.getY());
     });
-    return path2d;
+    return path2D;
   }
 }

@@ -19,10 +19,8 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 // TODO class name not final
 public enum AedatLogConverter {
   ;
-  /** @param aedat
-   * file as source
-   * @param directory
-   * target
+  /** @param aedat file as source
+   * @param directory target
    * @throws Exception */
   public static void of(File aedat, File directory) throws Exception {
     GlobalAssert.that(aedat.isFile());

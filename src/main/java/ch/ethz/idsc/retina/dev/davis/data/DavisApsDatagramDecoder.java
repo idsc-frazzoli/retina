@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisApsDatagramDecoder {
@@ -48,8 +49,8 @@ public class DavisApsDatagramDecoder {
     }
     x_next = x;
     if (x == 240) {
-      final boolean complete = isComplete;
-      listeners.forEach(listener -> listener.image(time, bufferedImage, complete));
+      ColumnTimedImage columnTimedImage = new ColumnTimedImage(time, bufferedImage, isComplete);
+      listeners.forEach(listener -> listener.columnTimedImage(columnTimedImage));
       isComplete = true;
       x_next = 0;
     }

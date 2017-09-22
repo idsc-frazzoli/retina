@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,6 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
@@ -25,8 +25,7 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   private final BufferedWriter bufferedWriter;
   private int count = 0;
 
-  /** @param directory
-   * base in which a sub directory "images" is created
+  /** @param directory base in which a sub directory "images" is created
    * @throws IOException */
   public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     this.directory = directory;
@@ -38,14 +37,14 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (davisExportControl.isActive()) {
       try {
         final String string = String.format("images/frame_%08d.%s", count, EXTENSION);
         File file = new File(directory, string);
-        ImageIO.write(bufferedImage, EXTENSION, file);
+        ImageIO.write(columnTimedImage.bufferedImage, EXTENSION, file);
         // ---
-        final int selected = time[0];
+        final int selected = columnTimedImage.time[0];
         final double stamp = davisExportControl.mapTime(selected) * 1e-6;
         bufferedWriter.write(String.format("%.6f %s\n", stamp, string));
       } catch (Exception exception) {

@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class DavisTallyEventProviderTest extends TestCase {
   public void testSimple() {
-    DavisTallyEventProvider davisEventTally = new DavisTallyEventProvider();
-    assertFalse(davisEventTally.isActive());
+    DavisTallyProvider davisEventTally = new DavisTallyProvider(null);
+    assertFalse(davisEventTally.isTriggered());
   }
 }

@@ -13,13 +13,13 @@ import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.dev.davis.io.DavisEventsTextWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisPngImageWriter;
 import ch.ethz.idsc.retina.util.GlobalAssert;
-import ch.ethz.idsc.retina.util.io.UserHome;
 import idsc.BinaryBlob;
 import idsc.DavisImu;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
-public class DavisLcmLogUzhConvert {
+public enum DavisLcmLogUzhConvert {
+  ;
   public static void of(final File file, final File target) {
     DavisLcmClient davisLcmClient = new DavisLcmClient(null);
     final File directory = new File(target, file.getName());
@@ -82,11 +82,5 @@ public class DavisLcmLogUzhConvert {
       // ---
     }
     System.out.println("entries: " + count);
-  }
-
-  public static void main(String[] args) {
-    File file = UserHome.file("lcm_20170907T170846_65df29fb.log.00");
-    File target = new File("/media/datahaki/media/ethz/export");
-    of(file, target);
   }
 }

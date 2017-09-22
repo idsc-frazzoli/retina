@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.util;
 
-import java.awt.image.BufferedImage;
-
 /** provides an image with a single timestamp.
  * 
  * <p>
@@ -10,5 +8,5 @@ import java.awt.image.BufferedImage;
  * time at which the image was taken. That definition is up to the
  * implementation. */
 public interface TimedImageListener {
-  void image(int time, BufferedImage bufferedImage);
+  void timedImage(TimedImageEvent timedImageEvent);
 }

@@ -1,18 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.retina.util.img.ImageDifference;
 
 /** listens to signal images from which the class subtracts the last reset image */
 public class SignalResetDifference implements ColumnTimedImageListener {
+  /** buffer for the last reset image */
   private final DavisImageBuffer davisImageBuffer;
   private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
 
@@ -25,13 +23,15 @@ public class SignalResetDifference implements ColumnTimedImageListener {
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (davisImageBuffer.hasImage()) {
-      // TODO long term: use java buffers
-      Tensor sig = ImageFormat.from(bufferedImage);
-      Tensor rst = ImageFormat.from(davisImageBuffer.bufferedImage());
-      BufferedImage difference = ImageFormat.of(sig.subtract(rst).map(Max.function(RealScalar.ZERO)));
-      listeners.forEach(listener -> listener.image(time, difference, isComplete));
+      // Stopwatch stopwatch = Stopwatch.started();
+      ColumnTimedImage image = new ColumnTimedImage( //
+          columnTimedImage.time, //
+          ImageDifference.of(columnTimedImage.bufferedImage, davisImageBuffer.bufferedImage()), //
+          columnTimedImage.isComplete);
+      // System.out.println("DIFF in " + stopwatch.display_seconds());
+      listeners.forEach(listener -> listener.columnTimedImage(image));
     }
   }
 }

@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 
 /** synthesizes grayscale images based on incoming events during intervals of
@@ -58,7 +59,8 @@ public class AccumulatedEventsImage implements DavisDvsListener {
       last = dvsDavisEvent.time;
     } else //
     if (interval < delta) {
-      listeners.forEach(listener -> listener.image(last, bufferedImage));
+      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
+      listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
     }

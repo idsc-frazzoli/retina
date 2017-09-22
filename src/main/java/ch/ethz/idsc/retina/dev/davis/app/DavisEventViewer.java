@@ -21,20 +21,20 @@ public enum DavisEventViewer {
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
-    DavisViewerFrame davisImageDisplay = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
-    davisImageDisplay.setStatistics(davisEventStatistics);
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
+    davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);
     davisDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisImageDisplay);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    davisImageProvider.addListener(davisImageDisplay);
+    davisImageProvider.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     davisImageProvider.addListener(new DavisApsStatusWarning());
     davisDecoder.addSigListener(davisImageProvider);
     // handle imu
     DavisImuFrameCollector davisImuFrameCollector = new DavisImuFrameCollector();
-    davisImuFrameCollector.addListener(davisImageDisplay);
+    davisImuFrameCollector.addListener(davisViewerFrame.davisViewerComponent);
     davisDecoder.addImuListener(davisImuFrameCollector);
     // ---
     if (0 < speed)
@@ -43,6 +43,6 @@ public enum DavisEventViewer {
     davisEventProvider.start();
     davisEventProvider.stop();
     davisEventStatistics.print();
-    davisImageDisplay.close();
+    davisViewerFrame.close();
   }
 }

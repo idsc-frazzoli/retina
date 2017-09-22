@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.DimensionInterface;
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -52,7 +53,8 @@ public class DavisImageProvider implements DavisApsListener {
       if (davisApsEvent.x == lastX) {
         boolean isComplete = apsTracker.statusAndReset();
         // System.out.println(DeleteDuplicates.of(Differences.of(Tensors.vectorInt(time))));
-        listeners.forEach(listener -> listener.image(time, bufferedImage, isComplete));
+        ColumnTimedImage columnTimedImage = new ColumnTimedImage(time, bufferedImage, isComplete);
+        listeners.forEach(listener -> listener.columnTimedImage(columnTimedImage));
       }
     }
   }

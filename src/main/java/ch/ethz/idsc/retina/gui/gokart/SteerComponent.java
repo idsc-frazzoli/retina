@@ -25,6 +25,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
+  private TimerTask timerTask = null;
 
   public SteerComponent() {
     {
@@ -54,8 +55,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
       jTextField[10] = createReading("halfRckPos");
     }
   }
-
-  private TimerTask timerTask = null;
 
   @Override
   public void connectAction(int period, boolean isSelected) {

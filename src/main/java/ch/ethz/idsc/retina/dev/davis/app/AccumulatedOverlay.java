@@ -12,8 +12,10 @@ import javax.swing.JLabel;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -38,30 +40,15 @@ public class AccumulatedOverlay implements DavisDvsListener {
   private final int interval;
   private Integer last = null;
   private int postpone = 0;
-  // private int frameCount = 0;
   private int eventCount = 0;
   // ---
   public final ColumnTimedImageListener differenceListener = new ColumnTimedImageListener() {
     @Override
-    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
       Graphics graphics = modif.getGraphics();
-      graphics.drawImage(bufferedImage, 0, 0, new JLabel());
-      // graphics.setColor(Color.WHITE);
-      // graphics.drawString("" + frameCount, 0, 12);
-      // ++frameCount;
+      graphics.drawImage(columnTimedImage.bufferedImage, 0, 0, new JLabel());
       background = ImageFormat.from(modif);
-    }
-  };
-  public final ColumnTimedImageListener sig = new ColumnTimedImageListener() {
-    @Override
-    public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      // int duration = time[time.length - 1] - time[0];
-      // System.out.println("sig " + duration);
-      // if (isComplete)
-      // postpone += duration;
-      // else
-      // System.err.println("skip");
     }
   };
 
@@ -95,8 +82,8 @@ public class AccumulatedOverlay implements DavisDvsListener {
               background, //
               alphamask);
           image = Transpose.of(image, 2, 0, 1);
-          BufferedImage bufferedImage = ImageFormat.of(image);
-          listeners.forEach(listener -> listener.image(last, bufferedImage));
+          TimedImageEvent timedImageEvent = new TimedImageEvent(last, ImageFormat.of(image));
+          listeners.forEach(listener -> listener.timedImage(timedImageEvent));
           System.out.println("overlay -> " + postpone + " " + eventCount);
         }
         clearImage();

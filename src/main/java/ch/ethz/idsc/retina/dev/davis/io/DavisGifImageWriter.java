@@ -5,7 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.tensor.io.AnimatedGifWriter;
 
@@ -15,8 +17,7 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   private final DavisExportControl davisExportControl;
   private int count = 0;
 
-  /** @param directory
-   * base in which a sub directory "images" is created
+  /** @param directory base in which a sub directory "images" is created
    * @throws IOException */
   public DavisGifImageWriter(File file, int period, DavisExportControl davisExportControl) throws IOException {
     animatedGifWriter = AnimatedGifWriter.of(file, period);
@@ -24,13 +25,13 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-    image(bufferedImage);
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
+    image(columnTimedImage.bufferedImage);
   }
 
   @Override
-  public void image(int time, BufferedImage bufferedImage) {
-    image(bufferedImage);
+  public void timedImage(TimedImageEvent timedImageEvent) {
+    image(timedImageEvent.bufferedImage);
   }
 
   private void image(BufferedImage bufferedImage) {

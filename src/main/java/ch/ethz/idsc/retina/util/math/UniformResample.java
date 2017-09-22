@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.app;
+package ch.ethz.idsc.retina.util.math;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -11,27 +11,26 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
-import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class UniformResample implements Serializable {
   /** determines whether points are connected */
   private final Scalar threshold;
   /** distance between samples after re-sampling */
   private final Scalar ds;
+  public int minLength = 2;
 
   /** the threshold
    * 
-   * @param threshold
-   * a common value is RealScalar.of(33)
-   * @param ds
-   * distance between samples after re-sampling */
+   * @param threshold a common value is RealScalar.of(33)
+   * @param ds distance between samples after re-sampling */
   public UniformResample(Scalar threshold, Scalar ds) {
     this.threshold = threshold;
     this.ds = ds;
   }
 
+  /** @param points sequence of lidar points in ccw- or cw-direction
+   * @return list of points grouped by connectivity and resampled equidistantly */
   public List<Tensor> apply(Tensor points) {
     Tensor dista = Tensor.of(points.stream().map(Norm._2::ofVector));
     Tensor diffs = Differences.of(points);
@@ -53,22 +52,18 @@ public class UniformResample implements Serializable {
         }
         sum = sum.subtract(delta.Get(index));
       } else {
-        if (ret.length() != 0) {
+        if (addPredicate(ret))
           total.add(ret);
-          ret = Tensors.empty();
-        }
+        ret = Tensors.empty();
         sum = RealScalar.ZERO;
       }
     }
-    if (ret.length() != 0)
+    if (addPredicate(ret))
       total.add(ret);
     return total;
   }
 
-  public static void main(String[] args) {
-    UniformResample pr = new UniformResample(RealScalar.of(33), RealScalar.of(.3));
-    List<Tensor> total = pr.apply(Tensors.fromString("{{100,0},{100,2},{100,3},{10,10},{10,10.2},{10,10.4},{20,40}}"));
-    for (Tensor ret : total)
-      System.out.println(Pretty.of(ret.map(Round._1)));
+  private boolean addPredicate(Tensor tensor) {
+    return minLength <= tensor.length();
   }
 }

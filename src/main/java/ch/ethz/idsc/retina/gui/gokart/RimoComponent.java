@@ -11,7 +11,13 @@ import java.util.TimerTask;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.owly.data.TimeKeeper;
+import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
 import ch.ethz.idsc.owly.math.car.DifferentialSpeed;
+import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
+import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
+import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
+import ch.ethz.idsc.owly.math.state.StateTime;
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -25,6 +31,8 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -42,8 +50,9 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   private final SliderExt sliderExtRVel;
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
-  // TODO check if this is good default?
+  /** default message used only for display information */
   private RimoPutEvent rimoPutEventL = new RimoPutEvent((short) 0, (short) 0);
+  /** default message used only for display information */
   private RimoPutEvent rimoPutEventR = new RimoPutEvent((short) 0, (short) 0);
 
   public RimoComponent() {
@@ -168,32 +177,49 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   private final DifferentialSpeed dsR = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-0.54));
   private int sign = 1;
   public int speedlimitjoystick = 1000;
-  public DriveMode drivemode = DriveMode.SIMPLE_DRIVE;
+  public DriveMode driveMode = DriveMode.SIMPLE_DRIVE;
+  private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
+      new Rice1StateSpaceModel(RealScalar.of(1)), //
+      MidpointIntegrator.INSTANCE, //
+      new StateTime(Array.zeros(1), RealScalar.ZERO));
+  private final TimeKeeper timeKeeper = new TimeKeeper();
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
+    final Scalar now = timeKeeper.now();
+    Scalar push = RealScalar.ZERO;
     if (isJoystickEnabled()) {
       GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      switch (drivemode) {
-      case SIMPLE_DRIVE:
-        double wheelspeed = joystick.getRightKnobDirectionUp() * speedlimitjoystick;
-        Scalar scalarL = dsL.get(RealScalar.of(wheelspeed), RealScalar.of(lastSteer.getSteeringAngle()));
-        Scalar scalarR = dsR.get(RealScalar.of(wheelspeed), RealScalar.of(lastSteer.getSteeringAngle()));
-        sliderExtLVel.jSlider.setValue(scalarL.number().intValue());
-        sliderExtRVel.jSlider.setValue(scalarR.number().intValue());
+      push = RealScalar.of(joystick.getRightKnobDirectionUp() * speedlimitjoystick);
+    }
+    episodeIntegrator.move(Tensors.of(push), now);
+    // ---
+    if (isJoystickEnabled()) {
+      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
+      switch (driveMode) {
+      case SIMPLE_DRIVE: {
+        final StateTime rate = episodeIntegrator.tail();
+        final Scalar speed = rate.state().Get(0);
+        final Scalar theta = Objects.isNull(lastSteer) ? RealScalar.ZERO : RealScalar.of(lastSteer.getSteeringAngle());
+        sliderExtLVel.jSlider.setValue(dsL.get(speed, theta).number().intValue());
+        sliderExtRVel.jSlider.setValue(dsR.get(speed, theta).number().intValue());
         break;
-      case FULL_CONTROL:
-        if (joystick.isButtonPressedBack()) {
+      }
+      case FULL_CONTROL: {
+        if (joystick.isButtonPressedBack())
           sign = -1;
-        }
-        if (joystick.isButtonPressedStart()) {
+        if (joystick.isButtonPressedStart())
           sign = 1;
+        {
+          double wheelL = joystick.getLeftSliderUnitValue();
+          sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
         }
-        double wheelL = joystick.getLeftSliderUnitValue();
-        sliderExtLVel.jSlider.setValue((int) (wheelL * speedlimitjoystick * sign));
-        double wheelR = joystick.getRightSliderUnitValue();
-        sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
+        {
+          double wheelR = joystick.getRightSliderUnitValue();
+          sliderExtRVel.jSlider.setValue((int) (wheelR * speedlimitjoystick * sign));
+        }
         break;
+      }
       default:
         break;
       }
@@ -205,6 +231,6 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   }
 
   public void setdrivemode(DriveMode i) {
-    drivemode = i;
+    driveMode = i;
   }
 }
