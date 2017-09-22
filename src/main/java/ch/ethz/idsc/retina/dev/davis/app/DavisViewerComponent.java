@@ -8,47 +8,44 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.IntRange;
 import ch.ethz.idsc.retina.util.IntervalClock;
+import ch.ethz.idsc.retina.util.gui.BufferedImageCopy;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO magic const
 /* package */ class DavisViewerComponent {
-  private static final JLabel JLABEL = new JLabel();
   private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
   // ---
   BufferedImage apsImage = null;
   BufferedImage rstImage = null;
-  private BufferedImage dvsImage = null;
+  // private BufferedImage dvsImage = null;
+  private BufferedImageCopy bufferedImageCopy = new BufferedImageCopy();
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
   boolean isComplete;
   int frame_duration = -1;
   int reset_duration = -1;
   DavisTallyEvent davisTallyEvent;
-  private int dvsImageCount = 0;
   // Tensor displayEventCount = Array.zeros(3);
   final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       if (Objects.nonNull(rstImage)) {
-        graphics.drawImage(rstImage, 0 * 240, 0, JLABEL);
+        graphics.drawImage(rstImage, 0 * 240, 0, null);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
       if (Objects.nonNull(apsImage)) {
-        graphics.drawImage(apsImage, 1 * 240, 0, JLABEL);
+        graphics.drawImage(apsImage, 1 * 240, 0, null);
         if (!isComplete)
           graphics.drawString("incomplete!", 0, 200);
       }
-      {
-        BufferedImage refImage = dvsImage;
-        if (Objects.nonNull(refImage))
-          graphics.drawImage(refImage, 2 * 240, 0, JLABEL);
-      }
+      if (bufferedImageCopy.hasValue())
+        graphics.drawImage(bufferedImageCopy.get(), 2 * 240, 0, null);
+      // ---
       if (Objects.nonNull(davisTallyEvent)) {
         DavisTallyEvent dte = davisTallyEvent;
         final int baseline_y = getSize().height - 20;
@@ -97,13 +94,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public void setDvsImage(BufferedImage bufferedImage) {
-    BufferedImage dvsImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
-    Graphics graphics = dvsImage.getGraphics();
-    graphics.drawImage(bufferedImage, 0, 0, JLABEL);
-    graphics.setColor(Color.WHITE);
-    graphics.setFont(FONT);
-    graphics.drawString("" + dvsImageCount, 0, 175);
-    this.dvsImage = dvsImage;
-    ++dvsImageCount;
+    bufferedImageCopy.update(bufferedImage);
   }
 }

@@ -36,17 +36,10 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
   // private Tensor eventCount = Array.zeros(3);
   private final Timer timer = new Timer();
   private final DavisViewerComponent davisViewerComponent = new DavisViewerComponent();
-  public final DavisTallyEventProvider davisTallyEventProvider = new DavisTallyEventProvider();
+  public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
+      davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
 
   public DavisViewerFrame(DavisDevice davisDevice) {
-    {
-      davisTallyEventProvider.davisTallyEventListener = new DavisTallyEventListener() {
-        @Override
-        public void tallyEvent(DavisTallyEvent davisTallyEvent) {
-          davisViewerComponent.davisTallyEvent = davisTallyEvent;
-        }
-      };
-    }
     jFrame.setBounds(100, 100, 730, 400);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Component component = jFrame.getContentPane();
@@ -69,9 +62,9 @@ public class DavisViewerFrame implements TimedImageListener, ColumnTimedImageLis
       }
       {
         SpinnerLabel<Integer> sl = new SpinnerLabel<>();
-        sl.addSpinnerListener(shift -> davisTallyEventProvider.setShift(shift));
+        sl.addSpinnerListener(shift -> davisTallyProvider.setShift(shift));
         sl.setList(Arrays.asList(6, 7, 8, 9));
-        sl.setValueSafe(davisTallyEventProvider.getShift());
+        sl.setValueSafe(davisTallyProvider.getShift());
         sl.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");
       }
       jPanel.add(jToolBar, BorderLayout.NORTH);

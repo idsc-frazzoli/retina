@@ -22,14 +22,14 @@ public enum DavisLcmViewer {
     // handle dvs
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyEventProvider.dvsListener);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
     accumulatedEventsImage.addListener(davisViewerFrame);
     // handle aps
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame);
-    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyEventProvider.sigListener);
+    davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
     // handle aps
     davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.rstListener);
-    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyEventProvider.rstListener);
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.rstListener);
     // handle imu
     davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame);
     // start to listen

@@ -38,7 +38,6 @@ public class AccumulatedOverlay implements DavisDvsListener {
   private final int interval;
   private Integer last = null;
   private int postpone = 0;
-  // private int frameCount = 0;
   private int eventCount = 0;
   // ---
   public final ColumnTimedImageListener differenceListener = new ColumnTimedImageListener() {
@@ -47,21 +46,12 @@ public class AccumulatedOverlay implements DavisDvsListener {
       BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
       Graphics graphics = modif.getGraphics();
       graphics.drawImage(bufferedImage, 0, 0, new JLabel());
-      // graphics.setColor(Color.WHITE);
-      // graphics.drawString("" + frameCount, 0, 12);
-      // ++frameCount;
       background = ImageFormat.from(modif);
     }
   };
   public final ColumnTimedImageListener sig = new ColumnTimedImageListener() {
     @Override
     public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
-      // int duration = time[time.length - 1] - time[0];
-      // System.out.println("sig " + duration);
-      // if (isComplete)
-      // postpone += duration;
-      // else
-      // System.err.println("skip");
     }
   };
 
