@@ -55,7 +55,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   }
 
   @Override
-  public void steerGet(SteerGetEvent steerGetEvent) {
+  public void digest(SteerGetEvent steerGetEvent) {
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
     jTextField[2].setText("" + steerGetEvent.tsuTrq_CANInput);

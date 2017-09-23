@@ -10,6 +10,7 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
@@ -82,7 +83,9 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   }
 
   @Override
-  public void rimoGet(RimoGetEvent rimoGetL, RimoGetEvent rimoGetR) {
+  public void digest(RimoGetEvent rimoGetEvent) {
+    RimoGetTire rimoGetL = rimoGetEvent.getL;
+    RimoGetTire rimoGetR = rimoGetEvent.getR;
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
     {

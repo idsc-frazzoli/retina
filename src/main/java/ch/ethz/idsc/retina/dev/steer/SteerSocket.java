@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class SteerSocket extends AutoboxSocket<SteerGetListener, SteerPutEvent, SteerPutProvider> {
+public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerGetListener, SteerPutEvent, SteerPutProvider> {
   public static final SteerSocket INSTANCE = new SteerSocket();
   /** local */
   private static final int LOCAL_PORT = 5002;
@@ -29,11 +29,8 @@ public class SteerSocket extends AutoboxSocket<SteerGetListener, SteerPutEvent, 
   }
 
   @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-    listeners.forEach(listener -> listener.steerGet(steerGetEvent));
+  protected SteerGetEvent createGetEvent(ByteBuffer byteBuffer) {
+    return new SteerGetEvent(byteBuffer);
   }
 
   @Override

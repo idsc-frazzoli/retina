@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoSocket extends AutoboxSocket<RimoGetListener, RimoPutEvent, RimoPutProvider> {
+public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoGetListener, RimoPutEvent, RimoPutProvider> {
   public static final RimoSocket INSTANCE = new RimoSocket();
   // ---
   private static final int LOCAL_PORT = 5000;
@@ -23,23 +23,16 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener, RimoPutEvent, Rim
   // ---
 
   private RimoSocket() {
-    super(DatagramSocketManager.local(new byte[2 * RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS));
+    super(DatagramSocketManager.local(new byte[2 * RimoGetTire.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS));
     // ---
     addProvider(RimoPutFallback.INSTANCE);
   }
 
   @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    try {
-      RimoGetEvent rimoGetL = new RimoGetEvent(byteBuffer);
-      RimoGetEvent rimoGetR = new RimoGetEvent(byteBuffer);
-      listeners.forEach(listener -> listener.rimoGet(rimoGetL, rimoGetR));
-    } catch (Exception exception) {
-      System.out.println("fail decode RimoGet, received=" + length);
-      System.err.println(exception.getMessage());
-    }
+  protected RimoGetEvent createGetEvent(ByteBuffer byteBuffer) {
+    RimoGetTire rimoGetL = new RimoGetTire(byteBuffer);
+    RimoGetTire rimoGetR = new RimoGetTire(byteBuffer);
+    return new RimoGetEvent(rimoGetL, rimoGetR);
   }
 
   @Override

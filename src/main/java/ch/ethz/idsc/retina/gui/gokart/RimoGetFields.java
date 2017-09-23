@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import javax.swing.JTextField;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 
 public class RimoGetFields {
   JTextField jTF_status_word; // 2
@@ -15,7 +15,7 @@ public class RimoGetFields {
   JTextField jTF_temperature_heatsink; // 16
   // ---
 
-  public void updateText(RimoGetEvent rimoGetEvent) {
+  public void updateText(RimoGetTire rimoGetEvent) {
     jTF_status_word.setText(String.format("%04X", rimoGetEvent.status_word));
     jTF_actual_speed.setText("" + rimoGetEvent.actual_speed);
     jTF_rms_motor_current.setText("" + rimoGetEvent.rms_motor_current);

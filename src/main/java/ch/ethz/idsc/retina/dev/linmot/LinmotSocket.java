@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /**  */
-public class LinmotSocket extends AutoboxSocket<LinmotGetListener, LinmotPutEvent, LinmotPutProvider> {
+public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotGetListener, LinmotPutEvent, LinmotPutProvider> {
   public static final LinmotSocket INSTANCE = new LinmotSocket();
   // ---
   private static final int LOCAL_PORT = 5001;
@@ -31,16 +31,8 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetListener, LinmotPutEven
   }
 
   @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
-    for (LinmotGetListener listener : listeners)
-      try {
-        listener.linmotGet(linmotGetEvent);
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
+  protected LinmotGetEvent createGetEvent(ByteBuffer byteBuffer) {
+    return new LinmotGetEvent(byteBuffer);
   }
 
   @Override

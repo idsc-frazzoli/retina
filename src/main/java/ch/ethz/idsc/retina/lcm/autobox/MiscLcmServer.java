@@ -16,7 +16,7 @@ public enum MiscLcmServer implements MiscGetListener {
   private final byte[] data = new byte[SteerGetEvent.LENGTH];
 
   @Override
-  public void miscGet(MiscGetEvent miscGetEvent) {
+  public void digest(MiscGetEvent miscGetEvent) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     miscGetEvent.encode(byteBuffer);

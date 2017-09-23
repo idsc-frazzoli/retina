@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class MiscSocket extends AutoboxSocket<MiscGetListener, MiscPutEvent, MiscPutProvider> {
+public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscGetListener, MiscPutEvent, MiscPutProvider> {
   public static final MiscSocket INSTANCE = new MiscSocket();
   // ---
   private static final int LOCAL_PORT = 5003;
@@ -29,11 +29,8 @@ public class MiscSocket extends AutoboxSocket<MiscGetListener, MiscPutEvent, Mis
   }
 
   @Override
-  public void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
-    listeners.forEach(listener -> listener.miscGet(miscGetEvent));
+  protected MiscGetEvent createGetEvent(ByteBuffer byteBuffer) {
+    return new MiscGetEvent(byteBuffer);
   }
 
   @Override

@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-public interface SteerGetListener {
-  void steerGet(SteerGetEvent steerGetEvent);
+import ch.ethz.idsc.retina.dev.zhkart.GetListener;
+
+public interface SteerGetListener extends GetListener<SteerGetEvent> {
 }
