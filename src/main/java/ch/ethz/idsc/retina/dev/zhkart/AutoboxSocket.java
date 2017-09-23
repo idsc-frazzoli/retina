@@ -3,8 +3,11 @@ package ch.ethz.idsc.retina.dev.zhkart;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,9 +27,11 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public abstract class AutoboxSocket<T> implements StartAndStoppable, ByteArrayConsumer {
-  protected final DatagramSocketManager datagramSocketManager;
+public abstract class AutoboxSocket<T, R, P extends PutProvider<R>> implements //
+    StartAndStoppable, ByteArrayConsumer {
+  private final DatagramSocketManager datagramSocketManager;
   protected final List<T> listeners = new LinkedList<>();
+  protected final List<P> providers = new ArrayList<>();
   protected Timer timer;
 
   public AutoboxSocket(DatagramSocketManager datagramSocketManager) {
@@ -42,7 +47,14 @@ public abstract class AutoboxSocket<T> implements StartAndStoppable, ByteArrayCo
       @Override
       public void run() {
         try {
-          datagramSocketManager.send(getDatagramPacket());
+          for (PutProvider<R> putProvider : providers) {
+            Optional<R> optional = putProvider.pollPutEvent();
+            if (optional.isPresent()) {
+              datagramSocketManager.send(getDatagramPacket(optional.get()));
+              break;
+            }
+          }
+          throw new RuntimeException("no command provided");
         } catch (IOException exception) {
           exception.printStackTrace();
         }
@@ -52,7 +64,7 @@ public abstract class AutoboxSocket<T> implements StartAndStoppable, ByteArrayCo
 
   protected abstract long getPeriod();
 
-  protected abstract DatagramPacket getDatagramPacket();
+  protected abstract DatagramPacket getDatagramPacket(R optional);
 
   @Override
   public final void stop() {
@@ -60,12 +72,17 @@ public abstract class AutoboxSocket<T> implements StartAndStoppable, ByteArrayCo
     datagramSocketManager.stop();
   }
 
-  public final void addListener(T rimoGetListener) {
-    listeners.add(rimoGetListener);
+  public final void addProvider(P putProvider) {
+    providers.add(putProvider);
+    Collections.sort(providers, PutProviderComparator.INSTANCE);
   }
 
-  public final void removeListener(T rimoGetListener) {
-    listeners.remove(rimoGetListener);
+  public final void addListener(T getListener) {
+    listeners.add(getListener);
+  }
+
+  public final void removeListener(T getListener) {
+    listeners.remove(getListener);
   }
 
   public final boolean hasListeners() {

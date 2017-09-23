@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TimerTask;
 
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
@@ -24,7 +23,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
@@ -42,8 +40,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class RimoComponent extends InterfaceComponent implements RimoGetListener, SteerGetListener {
-  // ---
-  private TimerTask timerTask = null;
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtLVel;
   private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();
@@ -97,27 +93,6 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
     // TODO NRJ background according to temperature
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
-  }
-
-  @Override
-  public void connectAction(int period, boolean isSelected) {
-    if (isSelected) {
-      RimoSocket.INSTANCE.start();
-      timerTask = new TimerTask() {
-        @Override
-        public void run() {
-          Optional<RimoPutEvent> optional = rimoPutProvider.pollPutEvent();
-          RimoSocket.INSTANCE.send(optional.get());
-        }
-      };
-      timer.schedule(timerTask, 100, period);
-    } else {
-      if (Objects.nonNull(timerTask)) {
-        timerTask.cancel();
-        timerTask = null;
-      }
-      RimoSocket.INSTANCE.stop();
-    }
   }
 
   @Override
@@ -239,7 +214,7 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
 
     @Override
     public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
+      return ProviderRank.TESTING;
     }
   };
 }

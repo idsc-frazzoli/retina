@@ -5,9 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.TimerTask;
 
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -17,7 +15,6 @@ import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -78,30 +75,6 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     }
   }
 
-  private TimerTask timerTask = null;
-
-  @Override
-  public void connectAction(int period, boolean isSelected) {
-    if (isSelected) {
-      MiscSocket.INSTANCE.start();
-      timerTask = new TimerTask() {
-        @Override
-        public void run() {
-          Optional<MiscPutEvent> optional = miscPutProvider.pollPutEvent();
-          if (optional.isPresent())
-            MiscSocket.INSTANCE.send(optional.get());
-        }
-      };
-      timer.schedule(timerTask, 100, period);
-    } else {
-      if (Objects.nonNull(timerTask)) {
-        timerTask.cancel();
-        timerTask = null;
-      }
-      MiscSocket.INSTANCE.stop();
-    }
-  }
-
   @Override
   public void miscGet(MiscGetEvent miscGetEvent) {
     // jTextFieldEmg.setText("" + miscGetEvent.emergency);
@@ -126,7 +99,7 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
   public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
     @Override
     public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
+      return ProviderRank.TESTING;
     }
 
     @Override

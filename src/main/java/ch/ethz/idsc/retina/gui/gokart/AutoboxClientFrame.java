@@ -10,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,7 +32,6 @@ public class AutoboxClientFrame {
   private final JFrame jFrame = new JFrame();
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
-  private final Timer timer = new Timer();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(JoystickType.GENERIC_XBOX_PAD);
 
   public AutoboxClientFrame() {
@@ -101,8 +99,8 @@ public class AutoboxClientFrame {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent windowEvent) {
-        list.forEach(interfaceComponent -> interfaceComponent.connectAction(100, false));
-        timer.cancel();
+        // list.forEach(interfaceComponent -> interfaceComponent.connectAction(100, false));
+        // timer.cancel();
       }
     });
     joystickLcmClient.startSubscriptions();
@@ -111,7 +109,7 @@ public class AutoboxClientFrame {
 
   private void addTab(InterfaceComponent interfaceComponent) {
     list.add(interfaceComponent);
-    interfaceComponent.timer = timer;
+    // interfaceComponent.timer = timer;
     String string = interfaceComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);
     JPanel jPanel = new JPanel(new BorderLayout());

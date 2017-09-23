@@ -1,5 +1,5 @@
 // code by nisaak and jph
-package ch.ethz.idsc.retina.dev.linmot;
+package ch.ethz.idsc.retina.dev.zhkart;
 
 public class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
   public final long time_ms;

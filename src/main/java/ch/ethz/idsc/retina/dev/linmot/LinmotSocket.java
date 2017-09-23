@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.util.HexStrings;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /**  */
-public class LinmotSocket extends AutoboxSocket<LinmotGetListener> {
+public class LinmotSocket extends AutoboxSocket<LinmotGetListener, LinmotPutEvent, LinmotPutProvider> {
   public static final LinmotSocket INSTANCE = new LinmotSocket();
   // ---
   private static final int LOCAL_PORT = 5001;
@@ -25,7 +25,6 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetListener> {
 
   private LinmotSocket() {
     super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS));
-    datagramSocketManager.addListener(this);
   }
 
   @Override
@@ -41,32 +40,26 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetListener> {
     }
   }
 
-  public void send(LinmotPutEvent linmotPutEvent) {
-    byte[] data = new byte[LinmotPutEvent.LENGTH];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    linmotPutEvent.insert(byteBuffer);
-    try {
-      DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-          InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
-      datagramSocketManager.send(datagramPacket);
-      // System.out.println("linmot put=" + HexStrings.from(data));
-    } catch (Exception exception) {
-      // ---
-      System.out.println("LINMOT SEND FAIL");
-      exception.printStackTrace();
-      System.exit(0); // TODO
-    }
-  }
-
   @Override
   protected long getPeriod() {
     return SEND_PERIOD_MS;
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket() {
-    // TODO Auto-generated method stub
+  protected DatagramPacket getDatagramPacket(LinmotPutEvent linmotPutEvent) {
+    byte[] data = new byte[LinmotPutEvent.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    linmotPutEvent.insert(byteBuffer);
+    try {
+      return new DatagramPacket(data, data.length, //
+          InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
+    } catch (Exception exception) {
+      // ---
+      System.out.println("LINMOT SEND FAIL");
+      exception.printStackTrace();
+      System.exit(0); // TODO
+    }
     return null;
   }
 }

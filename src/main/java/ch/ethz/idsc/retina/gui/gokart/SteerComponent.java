@@ -2,9 +2,7 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.TimerTask;
 
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -16,7 +14,6 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -28,7 +25,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private TimerTask timerTask = null;
 
   public SteerComponent() {
     {
@@ -60,27 +56,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   }
 
   @Override
-  public void connectAction(int period, boolean isSelected) {
-    if (isSelected) {
-      SteerSocket.INSTANCE.start();
-      timerTask = new TimerTask() {
-        @Override
-        public void run() {
-          Optional<SteerPutEvent> optional = steerPutProvider.pollPutEvent();
-          SteerSocket.INSTANCE.send(optional.get());
-        }
-      };
-      timer.schedule(timerTask, 100, period);
-    } else {
-      if (Objects.nonNull(timerTask)) {
-        timerTask.cancel();
-        timerTask = null;
-      }
-      SteerSocket.INSTANCE.stop();
-    }
-  }
-
-  @Override
   public void steerGet(SteerGetEvent steerGetEvent) {
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
@@ -107,7 +82,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
     public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
+      return ProviderRank.TESTING;
     }
 
     @Override

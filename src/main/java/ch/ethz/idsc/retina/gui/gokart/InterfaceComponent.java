@@ -6,21 +6,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Timer;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.util.gui.RowPanel;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 public abstract class InterfaceComponent implements JoystickListener {
   public static final int MAX_USHORT = 65535;
@@ -29,32 +23,13 @@ public abstract class InterfaceComponent implements JoystickListener {
   public static final int HEIGHT = 30;
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
-  private final SpinnerLabel<Integer> spinnerLabelPeriod = new SpinnerLabel<>();
-  private final JToggleButton jToggleButton = new JToggleButton("start/stop");
   private final RowPanel rowTitle = new RowPanel();
   private final RowPanel rowActor = new RowPanel();
-  public Timer timer = null;
-  private ActionListener actionListener = new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      boolean isSelected = jToggleButton.isSelected();
-      spinnerLabelPeriod.setEnabled(!isSelected);
-      connectAction(spinnerLabelPeriod.getValue(), isSelected);
-    }
-  };
   private boolean isJoystickEnabled;
 
   public InterfaceComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
-    { // start/stop connection
-      JToolBar jToolBar = createRow("udp socket");
-      spinnerLabelPeriod.setList(Arrays.asList(10, 20, 50, 100, 200, 500, 1000));
-      spinnerLabelPeriod.setValue(20); // TODO magic const
-      spinnerLabelPeriod.addToComponentReduced(jToolBar, new Dimension(60, 26), "period [ms]");
-      jToggleButton.addActionListener(actionListener);
-      jToolBar.add(jToggleButton);
-    }
   }
 
   protected void addSeparator() {
@@ -116,8 +91,6 @@ public abstract class InterfaceComponent implements JoystickListener {
   public Component getComponent() {
     return jPanel;
   }
-
-  public abstract void connectAction(int period, boolean isSelected);
 
   public void setJoystickEnabled(boolean status) {
     isJoystickEnabled = status;

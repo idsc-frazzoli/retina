@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoSocket extends AutoboxSocket<RimoGetListener> {
+public class RimoSocket extends AutoboxSocket<RimoGetListener, RimoPutEvent, RimoPutProvider> {
   public static final RimoSocket INSTANCE = new RimoSocket();
   // ---
   private static final int LOCAL_PORT = 5000;
@@ -39,31 +39,26 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener> {
     }
   }
 
-  public void send(RimoPutEvent rimoPutEvent) {
-    byte data[] = new byte[2 * RimoPutTire.LENGTH];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    rimoPutEvent.insert(byteBuffer);
-    try {
-      DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
-          InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
-      datagramSocketManager.send(datagramPacket);
-    } catch (Exception exception) {
-      // ---
-      System.out.println("RIMO SEND FAIL");
-      exception.printStackTrace();
-      System.exit(0); // TODO
-    }
-  }
-
   @Override
   protected long getPeriod() {
     return SEND_PERIOD_MS;
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket() {
-    // TODO Auto-generated method stub
+  protected DatagramPacket getDatagramPacket(RimoPutEvent rimoPutEvent) {
+    byte data[] = new byte[2 * RimoPutTire.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    rimoPutEvent.insert(byteBuffer);
+    try {
+      return new DatagramPacket(data, data.length, //
+          InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
+    } catch (Exception exception) {
+      // ---
+      System.out.println("RIMO SEND FAIL");
+      exception.printStackTrace();
+      System.exit(0); // TODO
+    }
     return null;
   }
 }
