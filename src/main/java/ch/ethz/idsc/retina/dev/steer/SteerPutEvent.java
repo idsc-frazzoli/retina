@@ -16,12 +16,12 @@ public class SteerPutEvent implements Serializable {
   public static final List<Word> COMMANDS = Arrays.asList( //
       CMD_OFF, CMD_ON);
   // ---
-  public final byte command;
+  private final byte command;
   // TODO NRJ not finalized, at the moment this is position instead of torque!
-  public final float torque;
+  private final float torque;
 
-  public SteerPutEvent(byte command, float torque) {
-    this.command = command;
+  public SteerPutEvent(Word command, float torque) {
+    this.command = command.getByte();
     this.torque = torque;
   }
 

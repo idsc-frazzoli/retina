@@ -106,15 +106,14 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
 
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
-    public Optional<SteerPutEvent> pollPutEvent() {
-      return Optional.of(new SteerPutEvent( //
-          spinnerLabelLw.getValue().getByte(), //
-          sliderExtTorque.jSlider.getValue() * 1e-3f));
+    public ProviderRank getProviderRank() {
+      return ProviderRank.MANUAL;
     }
 
     @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
+    public Optional<SteerPutEvent> pollPutEvent() {
+      return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
+          sliderExtTorque.jSlider.getValue() * 1e-3f));
     }
   };
 }

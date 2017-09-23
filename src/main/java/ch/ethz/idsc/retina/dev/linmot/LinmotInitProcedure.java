@@ -1,3 +1,4 @@
+// code by nisaak, rvmoos, and jph
 package ch.ethz.idsc.retina.dev.linmot;
 
 import java.util.PriorityQueue;
@@ -9,30 +10,30 @@ public class LinmotInitProcedure {
   public LinmotInitProcedure() {
     long timestamp = System.currentTimeMillis();
     {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_ERR_ACK.getShort(); // Error Acknowledgment
-      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
+      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+          LinmotPutConfiguration.CMD_ERR_ACK, //
+          LinmotPutConfiguration.MC_ZEROS);
       timestamp += 200;
       list.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_OFF_MODE.getShort(); // Off Mode
-      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
+      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+          LinmotPutConfiguration.CMD_OFF_MODE, //
+          LinmotPutConfiguration.MC_ZEROS);
       timestamp += 200;
       list.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_HOME.getShort(); // Home
-      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort();
+      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+          LinmotPutConfiguration.CMD_HOME, //
+          LinmotPutConfiguration.MC_ZEROS);
       timestamp += 4000;
       list.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = LinmotPutConfiguration.CMD_OPERATION.getShort(); // Operation
-      linmotPutEvent.motion_cmd_hdr = LinmotPutConfiguration.MC_ZEROS.getShort(); // Position
+      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+          LinmotPutConfiguration.CMD_OPERATION, //
+          LinmotPutConfiguration.MC_ZEROS); //
       timestamp += 200;
       list.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }

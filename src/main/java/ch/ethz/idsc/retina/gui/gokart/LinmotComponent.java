@@ -203,9 +203,8 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
   public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
     public Optional<LinmotPutEvent> pollPutEvent() {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
-      linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
-      linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
+      LinmotPutEvent linmotPutEvent = //
+          new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
       linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
       linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
       linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
