@@ -13,10 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 
-public abstract class InterfaceComponent implements JoystickListener {
+public abstract class InterfaceComponent {
   public static final int MAX_USHORT = 65535;
   // ---
   public static final int WEST_WIDTH = 140;

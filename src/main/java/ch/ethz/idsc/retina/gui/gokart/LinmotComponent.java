@@ -12,8 +12,6 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
@@ -22,6 +20,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -143,19 +142,6 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
       Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp2.setBackground(color);
-    }
-  }
-
-  @Override
-  public void joystick(JoystickEvent joystickEvent) {
-    if (isJoystickEnabled()) {
-      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      double value = joystick.getLeftKnobDirectionDown();
-      int pos = (int) //
-      Math.min(Math.max(LinmotPutConfiguration.TARGETPOS_MIN, //
-          (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
-          LinmotPutConfiguration.TARGETPOS_MAX);
-      sliderExtTPos.jSlider.setValue(pos);
     }
   }
 

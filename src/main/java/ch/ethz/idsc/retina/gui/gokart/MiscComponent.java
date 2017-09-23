@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
@@ -89,11 +88,6 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
       Color color = value < 11 ? Color.RED : Color.WHITE;
       jTextFieldBat.setBackground(color);
     }
-  }
-
-  @Override
-  public void joystick(JoystickEvent joystickEvent) {
-    // TODO use buttons to reset
   }
 
   public final MiscPutProvider miscPutProvider = new MiscPutProvider() {

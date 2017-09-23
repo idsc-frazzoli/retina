@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.util.gui;
 
 import java.util.Objects;
 import java.util.function.Function;

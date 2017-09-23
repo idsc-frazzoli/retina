@@ -8,14 +8,13 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -68,15 +67,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
     jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
     jTextField[9].setText("" + steerGetEvent.gearRat);
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
-  }
-
-  @Override
-  public void joystick(JoystickEvent joystickEvent) {
-    if (isJoystickEnabled()) {
-      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      double value = -joystick.getRightKnobDirectionRight();
-      sliderExtTorque.jSlider.setValue((int) (AMP * value));
-    }
   }
 
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
