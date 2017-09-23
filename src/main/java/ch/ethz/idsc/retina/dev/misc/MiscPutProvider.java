@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.misc;
 
-import java.util.Optional;
+import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 
-public interface MiscPutProvider {
-  Optional<MiscPutEvent> pollMiscPut();
+public interface MiscPutProvider extends PutProvider<MiscPutEvent> {
 }

@@ -27,6 +27,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
+import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -39,8 +41,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements //
-    RimoGetListener, SteerGetListener, RimoPutProvider {
+public class RimoComponent extends InterfaceComponent implements RimoGetListener, SteerGetListener {
   // ---
   private TimerTask timerTask = null;
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
@@ -105,7 +106,7 @@ public class RimoComponent extends InterfaceComponent implements //
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          Optional<RimoPutEvent> optional = pollRimoPut();
+          Optional<RimoPutEvent> optional = rimoPutProvider.pollPutEvent();
           RimoSocket.INSTANCE.send(optional.get());
         }
       };
@@ -228,10 +229,17 @@ public class RimoComponent extends InterfaceComponent implements //
     driveMode = i;
   }
 
-  @Override
-  public Optional<RimoPutEvent> pollRimoPut() {
-    rimoPutTireL = new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue());
-    rimoPutTireR = new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue());
-    return Optional.of(new RimoPutEvent(rimoPutTireL, rimoPutTireR));
-  }
+  public final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
+    @Override
+    public Optional<RimoPutEvent> pollPutEvent() {
+      rimoPutTireL = new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue());
+      rimoPutTireR = new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue());
+      return Optional.of(new RimoPutEvent(rimoPutTireL, rimoPutTireR));
+    }
+
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.MANUAL;
+    }
+  };
 }

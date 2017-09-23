@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.gui.gokart.AutoboxSocket;
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 public class RimoSocket extends AutoboxSocket<RimoGetListener> {
@@ -17,6 +17,8 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener> {
   // ---
   private static final int REMOTE_PORT = 5000;
   private static final String REMOTE_ADDRESS = "192.168.1.10";
+  // ---
+  private static final int SEND_PERIOD_MS = 20;
   // ---
 
   private RimoSocket() {
@@ -52,5 +54,16 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener> {
       exception.printStackTrace();
       System.exit(0); // TODO
     }
+  }
+
+  @Override
+  protected long getPeriod() {
+    return SEND_PERIOD_MS;
+  }
+
+  @Override
+  protected DatagramPacket getDatagramPacket() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

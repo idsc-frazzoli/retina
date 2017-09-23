@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.util.Optional;
+import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 
-public interface LinmotPutProvider {
-  Optional<LinmotPutEvent> pollLinmotPut();
+public interface LinmotPutProvider extends PutProvider<LinmotPutEvent> {
 }

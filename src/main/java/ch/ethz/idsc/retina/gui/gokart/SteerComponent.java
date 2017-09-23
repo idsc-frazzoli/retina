@@ -17,12 +17,13 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements SteerGetListener, SteerPutProvider {
+public class SteerComponent extends InterfaceComponent implements SteerGetListener {
   public static final int AMP = 1000;
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
@@ -65,7 +66,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          Optional<SteerPutEvent> optional = pollSteerPut();
+          Optional<SteerPutEvent> optional = steerPutProvider.pollPutEvent();
           SteerSocket.INSTANCE.send(optional.get());
         }
       };
@@ -103,10 +104,17 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
     }
   }
 
-  @Override
-  public Optional<SteerPutEvent> pollSteerPut() {
-    return Optional.of(new SteerPutEvent( //
-        spinnerLabelLw.getValue().getByte(), //
-        sliderExtTorque.jSlider.getValue() * 1e-3f));
-  }
+  public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
+    @Override
+    public Optional<SteerPutEvent> pollPutEvent() {
+      return Optional.of(new SteerPutEvent( //
+          spinnerLabelLw.getValue().getByte(), //
+          sliderExtTorque.jSlider.getValue() * 1e-3f));
+    }
+
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.MANUAL;
+    }
+  };
 }

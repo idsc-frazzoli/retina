@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import java.util.Optional;
+import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 
-public interface RimoPutProvider {
-  Optional<RimoPutEvent> pollRimoPut();
+public interface RimoPutProvider extends PutProvider<RimoPutEvent> {
 }

@@ -18,11 +18,12 @@ import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements MiscGetListener, MiscPutProvider {
+public class MiscComponent extends InterfaceComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -86,7 +87,7 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          Optional<MiscPutEvent> optional = pollMiscPut();
+          Optional<MiscPutEvent> optional = miscPutProvider.pollPutEvent();
           if (optional.isPresent())
             MiscSocket.INSTANCE.send(optional.get());
         }
@@ -122,14 +123,21 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     // TODO use buttons to reset
   }
 
-  @Override
-  public Optional<MiscPutEvent> pollMiscPut() {
-    MiscPutEvent miscPutEvent = new MiscPutEvent();
-    miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
-    miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
-    miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
-    miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
-    miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
-    return Optional.of(miscPutEvent);
-  }
+  public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.MANUAL;
+    }
+
+    @Override
+    public Optional<MiscPutEvent> pollPutEvent() {
+      MiscPutEvent miscPutEvent = new MiscPutEvent();
+      miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
+      miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
+      miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
+      miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
+      miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
+      return Optional.of(miscPutEvent);
+    }
+  };
 }

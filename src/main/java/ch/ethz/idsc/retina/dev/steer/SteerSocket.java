@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.gui.gokart.AutoboxSocket;
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 public class SteerSocket extends AutoboxSocket<SteerGetListener> {
@@ -17,6 +17,8 @@ public class SteerSocket extends AutoboxSocket<SteerGetListener> {
   /** remote */
   private static final int REMOTE_PORT = 5002;
   private static final String REMOTE_ADDRESS = "192.168.1.10";
+  // ---
+  private static final int SEND_PERIOD_MS = 20;
   // ---
 
   private SteerSocket() {
@@ -48,5 +50,16 @@ public class SteerSocket extends AutoboxSocket<SteerGetListener> {
       exception.printStackTrace();
       System.exit(0); // TODO
     }
+  }
+
+  @Override
+  protected long getPeriod() {
+    return SEND_PERIOD_MS;
+  }
+
+  @Override
+  protected DatagramPacket getDatagramPacket() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
