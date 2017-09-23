@@ -3,11 +3,11 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 public class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
   public final long time_ms;
-  public final T linmotPutEvent;
+  public final T putEvent;
 
-  public TimedPutEvent(long time_ms, T linmotPutEvent) {
+  public TimedPutEvent(long time_ms, T putEvent) {
     this.time_ms = time_ms;
-    this.linmotPutEvent = linmotPutEvent;
+    this.putEvent = putEvent;
   }
 
   @Override

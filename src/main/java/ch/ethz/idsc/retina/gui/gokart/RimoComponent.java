@@ -3,9 +3,8 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
@@ -23,6 +22,8 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
@@ -38,10 +39,8 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements RimoGetListener, SteerGetListener {
-  public static final List<Word> COMMANDS = Arrays.asList( //
-      Word.createShort("OPERATION", (short) 0x0009) //
-  );
+public class RimoComponent extends InterfaceComponent implements //
+    RimoGetListener, SteerGetListener, RimoPutProvider {
   // ---
   private TimerTask timerTask = null;
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
@@ -51,33 +50,33 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
   /** default message used only for display information */
-  private RimoPutEvent rimoPutEventL = new RimoPutEvent((short) 0, (short) 0);
+  private RimoPutTire rimoPutTireL = new RimoPutTire(RimoPutTire.OPERATION, (short) 0);
   /** default message used only for display information */
-  private RimoPutEvent rimoPutEventR = new RimoPutEvent((short) 0, (short) 0);
+  private RimoPutTire rimoPutTireR = new RimoPutTire(RimoPutTire.OPERATION, (short) 0);
 
   public RimoComponent() {
     // LEFT
     {
       JToolBar jToolBar = createRow("LEFT command");
-      spinnerLabelLCmd.setList(COMMANDS);
-      spinnerLabelLCmd.setValueSafe(COMMANDS.get(0));
+      spinnerLabelLCmd.setList(RimoPutTire.COMMANDS);
+      spinnerLabelLCmd.setValueSafe(RimoPutTire.OPERATION);
       spinnerLabelLCmd.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("LEFT speed");
-      sliderExtLVel = SliderExt.wrap(new JSlider(-RimoPutEvent.MAX_SPEED, RimoPutEvent.MAX_SPEED, 0));
+      sliderExtLVel = SliderExt.wrap(new JSlider(-RimoPutTire.MAX_SPEED, RimoPutTire.MAX_SPEED, 0));
       sliderExtLVel.addToComponent(jToolBar);
     }
     // RIGHT
     {
       JToolBar jToolBar = createRow("RIGHT command");
-      spinnerLabelRCmd.setList(COMMANDS);
-      spinnerLabelRCmd.setValueSafe(COMMANDS.get(0));
+      spinnerLabelRCmd.setList(RimoPutTire.COMMANDS);
+      spinnerLabelRCmd.setValueSafe(RimoPutTire.OPERATION);
       spinnerLabelRCmd.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("RIGHT speed");
-      sliderExtRVel = SliderExt.wrap(new JSlider(-RimoPutEvent.MAX_SPEED, RimoPutEvent.MAX_SPEED, 0));
+      sliderExtRVel = SliderExt.wrap(new JSlider(-RimoPutTire.MAX_SPEED, RimoPutTire.MAX_SPEED, 0));
       sliderExtRVel.addToComponent(jToolBar);
     }
     addSeparator();
@@ -106,13 +105,8 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          rimoPutEventL = new RimoPutEvent(//
-              spinnerLabelLCmd.getValue().getShort(), //
-              (short) sliderExtLVel.jSlider.getValue());
-          rimoPutEventR = new RimoPutEvent( //
-              spinnerLabelRCmd.getValue().getShort(), //
-              (short) sliderExtRVel.jSlider.getValue());
-          RimoSocket.INSTANCE.send(rimoPutEventL, rimoPutEventR);
+          Optional<RimoPutEvent> optional = pollRimoPut();
+          RimoSocket.INSTANCE.send(optional.get());
         }
       };
       timer.schedule(timerTask, 100, period);
@@ -130,7 +124,7 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
     {
-      double speedDiff = rimoPutEventL.speed - rimoGetL.actual_speed;
+      double speedDiff = rimoPutTireL.getSpeedRadPerMin() - rimoGetL.actual_speed;
       Scalar scalar = RealScalar.of(speedDiff);
       scalar = Clip.function(-500, 500).apply(scalar);
       scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
@@ -139,7 +133,7 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
-      double speedDiff = rimoPutEventR.speed - rimoGetR.actual_speed;
+      double speedDiff = rimoPutTireR.getSpeedRadPerMin() - rimoGetR.actual_speed;
       Scalar scalar = RealScalar.of(speedDiff);
       scalar = Clip.function(-500, 500).apply(scalar);
       scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
@@ -232,5 +226,12 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
 
   public void setdrivemode(DriveMode i) {
     driveMode = i;
+  }
+
+  @Override
+  public Optional<RimoPutEvent> pollRimoPut() {
+    rimoPutTireL = new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue());
+    rimoPutTireR = new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue());
+    return Optional.of(new RimoPutEvent(rimoPutTireL, rimoPutTireR));
   }
 }

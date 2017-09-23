@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimerTask;
 
 import javax.swing.JSlider;
@@ -14,13 +15,14 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements SteerGetListener {
+public class SteerComponent extends InterfaceComponent implements SteerGetListener, SteerPutProvider {
   public static final int AMP = 1000;
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
@@ -63,10 +65,8 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          SteerPutEvent steerPutEvent = new SteerPutEvent( //
-              spinnerLabelLw.getValue().getByte(), //
-              sliderExtTorque.jSlider.getValue() * 1e-3f);
-          SteerSocket.INSTANCE.send(steerPutEvent);
+          Optional<SteerPutEvent> optional = pollSteerPut();
+          SteerSocket.INSTANCE.send(optional.get());
         }
       };
       timer.schedule(timerTask, 100, period);
@@ -101,5 +101,12 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
       double value = -joystick.getRightKnobDirectionRight();
       sliderExtTorque.jSlider.setValue((int) (AMP * value));
     }
+  }
+
+  @Override
+  public Optional<SteerPutEvent> pollSteerPut() {
+    return Optional.of(new SteerPutEvent( //
+        spinnerLabelLw.getValue().getByte(), //
+        sliderExtTorque.jSlider.getValue() * 1e-3f));
   }
 }

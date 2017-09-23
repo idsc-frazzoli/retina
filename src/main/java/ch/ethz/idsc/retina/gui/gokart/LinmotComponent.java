@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TimerTask;
@@ -22,6 +23,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotInitProcedure;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.linmot.TimedPutEvent;
 import ch.ethz.idsc.retina.util.data.Word;
@@ -34,7 +36,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class LinmotComponent extends InterfaceComponent implements LinmotGetListener {
+public class LinmotComponent extends InterfaceComponent implements LinmotGetListener, LinmotPutProvider {
   private TimerTask timerTask = null;
   private final JButton initButton = new JButton("Init");
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
@@ -134,20 +136,14 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
           initButton.setEnabled(queue.isEmpty());
           final LinmotPutEvent linmotPutEvent;
           if (queue.isEmpty()) {
-            linmotPutEvent = new LinmotPutEvent();
-            linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
-            linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
-            linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-            linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-            linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-            linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+            linmotPutEvent = pollLinmotPut().get();
           } else {
             TimedPutEvent<LinmotPutEvent> timedLinmotPutEvent = queue.peek();
             // System.out.println(timedLinmotPutEvent.linmotPutEvent.control_word);
             if (timedLinmotPutEvent.time_ms < System.currentTimeMillis()) {
               queue.poll();
             }
-            linmotPutEvent = timedLinmotPutEvent.linmotPutEvent;
+            linmotPutEvent = timedLinmotPutEvent.putEvent;
           }
           LinmotSocket.INSTANCE.send(linmotPutEvent);
         }
@@ -201,5 +197,17 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
           LinmotPutConfiguration.TARGETPOS_MAX);
       sliderExtTPos.jSlider.setValue(pos);
     }
+  }
+
+  @Override
+  public Optional<LinmotPutEvent> pollLinmotPut() {
+    LinmotPutEvent linmotPutEvent = new LinmotPutEvent();
+    linmotPutEvent.control_word = spinnerLabelCtrl.getValue().getShort();
+    linmotPutEvent.motion_cmd_hdr = spinnerLabelHdr.getValue().getShort();
+    linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
+    linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
+    linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
+    linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+    return Optional.of(linmotPutEvent);
   }
 }

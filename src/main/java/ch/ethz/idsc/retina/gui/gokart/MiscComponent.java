@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimerTask;
 
 import javax.swing.JTextField;
@@ -15,12 +16,13 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements MiscGetListener {
+public class MiscComponent extends InterfaceComponent implements MiscGetListener, MiscPutProvider {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -84,13 +86,9 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
       timerTask = new TimerTask() {
         @Override
         public void run() {
-          MiscPutEvent miscPutEvent = new MiscPutEvent();
-          miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
-          miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
-          miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
-          miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
-          miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
-          MiscSocket.INSTANCE.send(miscPutEvent);
+          Optional<MiscPutEvent> optional = pollMiscPut();
+          if (optional.isPresent())
+            MiscSocket.INSTANCE.send(optional.get());
         }
       };
       timer.schedule(timerTask, 100, period);
@@ -122,5 +120,16 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
   @Override
   public void joystick(JoystickEvent joystickEvent) {
     // TODO use buttons to reset
+  }
+
+  @Override
+  public Optional<MiscPutEvent> pollMiscPut() {
+    MiscPutEvent miscPutEvent = new MiscPutEvent();
+    miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
+    miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
+    miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
+    miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
+    miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
+    return Optional.of(miscPutEvent);
   }
 }

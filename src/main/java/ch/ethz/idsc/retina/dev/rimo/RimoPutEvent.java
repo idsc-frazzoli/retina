@@ -5,22 +5,18 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 public class RimoPutEvent implements Serializable {
-  /** 4 bytes encoding length */
-  /* package */ static final int LENGTH = 4;
-  /** according to tests on the bench, the max effective speed is ~6300 */
-  public static final short MAX_SPEED = 6500;
-  // ---
-  public final short command;
-  /** speed in rad/min */
-  public final short speed;
+  public final RimoPutTire putL;
+  public final RimoPutTire putR;
 
-  public RimoPutEvent(short command, short speed) {
-    this.command = command;
-    this.speed = speed;
+  public RimoPutEvent(RimoPutTire putL, RimoPutTire putR) {
+    this.putL = putL;
+    this.putR = putR;
   }
 
   /* package */ void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putShort(command);
-    byteBuffer.putShort(speed);
+    byteBuffer.putShort(putL.command);
+    byteBuffer.putShort(putL.speed);
+    byteBuffer.putShort(putR.command);
+    byteBuffer.putShort(putR.speed);
   }
 }

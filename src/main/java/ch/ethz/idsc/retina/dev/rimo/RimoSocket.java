@@ -37,12 +37,11 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener> {
     }
   }
 
-  public void send(RimoPutEvent rimoPutEventL, RimoPutEvent rimoPutEventR) {
-    byte data[] = new byte[2 * RimoPutEvent.LENGTH];
+  public void send(RimoPutEvent rimoPutEvent) {
+    byte data[] = new byte[2 * RimoPutTire.LENGTH];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    rimoPutEventL.insert(byteBuffer);
-    rimoPutEventR.insert(byteBuffer);
+    rimoPutEvent.insert(byteBuffer);
     try {
       DatagramPacket datagramPacket = new DatagramPacket(data, data.length, //
           InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
