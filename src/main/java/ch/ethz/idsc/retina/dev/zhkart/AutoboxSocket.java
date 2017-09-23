@@ -1,15 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
@@ -27,12 +27,12 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public abstract class AutoboxSocket<T, R, P extends PutProvider<R>> implements //
+public abstract class AutoboxSocket<T, E, P extends PutProvider<E>> implements //
     StartAndStoppable, ByteArrayConsumer {
   private final DatagramSocketManager datagramSocketManager;
   protected final List<T> listeners = new LinkedList<>();
-  protected final List<P> providers = new ArrayList<>();
-  protected Timer timer;
+  public final Set<P> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private Timer timer;
 
   public AutoboxSocket(DatagramSocketManager datagramSocketManager) {
     this.datagramSocketManager = datagramSocketManager;
@@ -46,25 +46,24 @@ public abstract class AutoboxSocket<T, R, P extends PutProvider<R>> implements /
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        try {
-          for (PutProvider<R> putProvider : providers) {
-            Optional<R> optional = putProvider.pollPutEvent();
-            if (optional.isPresent()) {
+        for (PutProvider<E> putProvider : providers) {
+          Optional<E> optional = putProvider.getPutEvent();
+          if (optional.isPresent())
+            try {
               datagramSocketManager.send(getDatagramPacket(optional.get()));
-              break;
+              return;
+            } catch (Exception exception) {
+              exception.printStackTrace();
             }
-          }
-          throw new RuntimeException("no command provided");
-        } catch (IOException exception) {
-          exception.printStackTrace();
         }
+        System.err.println("no command provided");
       }
     }, 100, getPeriod());
   }
 
   protected abstract long getPeriod();
 
-  protected abstract DatagramPacket getDatagramPacket(R optional);
+  protected abstract DatagramPacket getDatagramPacket(E optional) throws UnknownHostException;
 
   @Override
   public final void stop() {
@@ -73,8 +72,15 @@ public abstract class AutoboxSocket<T, R, P extends PutProvider<R>> implements /
   }
 
   public final void addProvider(P putProvider) {
-    providers.add(putProvider);
-    Collections.sort(providers, PutProviderComparator.INSTANCE);
+    boolean added = providers.add(putProvider);
+    if (!added)
+      throw new RuntimeException();
+  }
+
+  public final void removeProvider(P putProvider) {
+    boolean removed = providers.remove(putProvider);
+    if (!removed)
+      new RuntimeException().printStackTrace();
   }
 
   public final void addListener(T getListener) {

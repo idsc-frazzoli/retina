@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public enum LinmotPutFallback implements LinmotPutProvider {
+/* package */ enum LinmotPutFallback implements LinmotPutProvider {
   INSTANCE;
   // ---
   @Override
@@ -14,7 +14,7 @@ public enum LinmotPutFallback implements LinmotPutProvider {
   }
 
   @Override
-  public Optional<LinmotPutEvent> pollPutEvent() {
+  public Optional<LinmotPutEvent> getPutEvent() {
     // TODO NRJ check if this is good choice
     return Optional.of(new LinmotPutEvent( //
         LinmotPutConfiguration.CMD_OFF_MODE, //

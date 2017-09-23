@@ -97,7 +97,7 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     }
 
     @Override
-    public Optional<MiscPutEvent> pollPutEvent() {
+    public Optional<MiscPutEvent> getPutEvent() {
       MiscPutEvent miscPutEvent = new MiscPutEvent();
       miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
       miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public enum RimoPutFallback implements RimoPutProvider {
+/* package */ enum RimoPutFallback implements RimoPutProvider {
   INSTANCE;
   // ---
   @Override
@@ -14,7 +14,7 @@ public enum RimoPutFallback implements RimoPutProvider {
   }
 
   @Override
-  public Optional<RimoPutEvent> pollPutEvent() {
+  public Optional<RimoPutEvent> getPutEvent() {
     return Optional.of(new RimoPutEvent( //
         new RimoPutTire(RimoPutTire.OPERATION, (short) 0), //
         new RimoPutTire(RimoPutTire.OPERATION, (short) 0)));

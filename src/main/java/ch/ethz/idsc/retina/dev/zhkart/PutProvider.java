@@ -4,7 +4,9 @@ package ch.ethz.idsc.retina.dev.zhkart;
 import java.util.Optional;
 
 public interface PutProvider<T> {
+  /** @return */
   ProviderRank getProviderRank();
 
-  Optional<T> pollPutEvent();
+  /** @return */
+  Optional<T> getPutEvent();
 }

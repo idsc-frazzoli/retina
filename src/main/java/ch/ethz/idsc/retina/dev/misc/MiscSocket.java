@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -23,6 +24,8 @@ public class MiscSocket extends AutoboxSocket<MiscGetListener, MiscPutEvent, Mis
 
   private MiscSocket() {
     super(DatagramSocketManager.local(new byte[MiscGetEvent.LENGTH], MiscSocket.LOCAL_PORT, MiscSocket.LOCAL_ADDRESS));
+    // ---
+    addProvider(MiscPutFallback.INSTANCE);
   }
 
   @Override
@@ -39,21 +42,12 @@ public class MiscSocket extends AutoboxSocket<MiscGetListener, MiscPutEvent, Mis
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(MiscPutEvent miscPutEvent) {
+  protected DatagramPacket getDatagramPacket(MiscPutEvent miscPutEvent) throws UnknownHostException {
     byte[] data = new byte[MiscPutEvent.LENGTH];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     miscPutEvent.insert(byteBuffer);
-    // System.out.println("misc put=" + HexStrings.from(data));
-    try {
-      return new DatagramPacket(data, data.length, //
-          InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
-    } catch (Exception exception) {
-      // ---
-      System.out.println("MISC SEND FAIL");
-      exception.printStackTrace();
-      System.exit(0); // TODO
-    }
-    return null;
+    return new DatagramPacket(data, data.length, //
+        InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
   }
 }

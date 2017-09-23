@@ -55,7 +55,7 @@ public enum LinmotCalibrationProvider implements LinmotPutProvider {
   }
 
   @Override
-  public Optional<LinmotPutEvent> pollPutEvent() {
+  public Optional<LinmotPutEvent> getPutEvent() {
     while (!queue.isEmpty()) {
       TimedPutEvent<LinmotPutEvent> timedPutEvent = queue.peek();
       if (timedPutEvent.time_ms < System.currentTimeMillis())

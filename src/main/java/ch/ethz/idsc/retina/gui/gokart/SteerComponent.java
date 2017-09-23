@@ -76,7 +76,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
     }
 
     @Override
-    public Optional<SteerPutEvent> pollPutEvent() {
+    public Optional<SteerPutEvent> getPutEvent() {
       return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
           sliderExtTorque.jSlider.getValue() * 1e-3f));
     }

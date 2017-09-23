@@ -147,7 +147,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
 
   public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
-    public Optional<LinmotPutEvent> pollPutEvent() {
+    public Optional<LinmotPutEvent> getPutEvent() {
       initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
       LinmotPutEvent linmotPutEvent = //
           new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());

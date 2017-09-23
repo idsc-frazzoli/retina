@@ -8,6 +8,11 @@ public enum PutProviderComparator implements Comparator<PutProvider<?>> {
   // ---
   @Override
   public int compare(PutProvider<?> lhs, PutProvider<?> rhs) {
-    return lhs.getProviderRank().compareTo(rhs.getProviderRank());
+    int cmp = lhs.getProviderRank().compareTo(rhs.getProviderRank());
+    if (cmp != 0)
+      return cmp;
+    if (lhs == rhs)
+      return 0;
+    return Integer.compare(1, 0); // <- deterministic effect on sorting unknown
   }
 }

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public enum SteerPutFallback implements SteerPutProvider {
+/* package */ enum SteerPutFallback implements SteerPutProvider {
   INSTANCE;
   // ---
   @Override
@@ -14,7 +14,7 @@ public enum SteerPutFallback implements SteerPutProvider {
   }
 
   @Override
-  public Optional<SteerPutEvent> pollPutEvent() {
+  public Optional<SteerPutEvent> getPutEvent() {
     return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_OFF, 0));
   }
 }

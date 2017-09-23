@@ -125,7 +125,7 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
 
   public final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
-    public Optional<RimoPutEvent> pollPutEvent() {
+    public Optional<RimoPutEvent> getPutEvent() {
       rimoPutTireL = new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue());
       rimoPutTireR = new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue());
       return Optional.of(new RimoPutEvent(rimoPutTireL, rimoPutTireR));

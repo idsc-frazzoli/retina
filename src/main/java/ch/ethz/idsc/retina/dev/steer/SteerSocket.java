@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -23,6 +24,8 @@ public class SteerSocket extends AutoboxSocket<SteerGetListener, SteerPutEvent, 
 
   private SteerSocket() {
     super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS));
+    // ---
+    addProvider(SteerPutFallback.INSTANCE);
   }
 
   @Override
@@ -39,21 +42,12 @@ public class SteerSocket extends AutoboxSocket<SteerGetListener, SteerPutEvent, 
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(SteerPutEvent steerPutEvent) {
+  protected DatagramPacket getDatagramPacket(SteerPutEvent steerPutEvent) throws UnknownHostException {
     byte[] data = new byte[SteerPutEvent.LENGTH];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     steerPutEvent.insert(byteBuffer);
-    // System.out.println("steer put=" + HexStrings.from(data));
-    try {
-      return new DatagramPacket(data, data.length, //
-          InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
-    } catch (Exception exception) {
-      // ---
-      System.out.println("STEER SEND FAIL");
-      exception.printStackTrace();
-      System.exit(0); // TODO
-    }
-    return null;
+    return new DatagramPacket(data, data.length, //
+        InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
   }
 }

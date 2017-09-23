@@ -22,6 +22,7 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   // ---
   private GenericXboxPadJoystick _genericXboxPadJoystick;
   private long lastUpdate;
+  private int speedlimitjoystick = 1000;
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
@@ -36,7 +37,7 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   /** steering */
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
-    public Optional<SteerPutEvent> pollPutEvent() {
+    public Optional<SteerPutEvent> getPutEvent() {
       if (hasJoystick()) {
         double value = -_genericXboxPadJoystick.getRightKnobDirectionRight();
         return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, (float) value));
@@ -52,10 +53,9 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   /** tire speed */
   public final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     int sign = 1;
-    int speedlimitjoystick = 1000;
 
     @Override
-    public Optional<RimoPutEvent> pollPutEvent() {
+    public Optional<RimoPutEvent> getPutEvent() {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _genericXboxPadJoystick;
         if (joystick.isButtonPressedBack())
@@ -81,7 +81,7 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   /** breaking */
   public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
-    public Optional<LinmotPutEvent> pollPutEvent() {
+    public Optional<LinmotPutEvent> getPutEvent() {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _genericXboxPadJoystick;
         double value = joystick.getLeftKnobDirectionDown();
@@ -153,4 +153,8 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   // driveMode = i;
   // }
   //
+
+  public void setspeedlimit(int i) {
+    speedlimitjoystick = i;
+  }
 }

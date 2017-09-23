@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -23,6 +24,8 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener, RimoPutEvent, Rim
 
   private RimoSocket() {
     super(DatagramSocketManager.local(new byte[2 * RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS));
+    // ---
+    addProvider(RimoPutFallback.INSTANCE);
   }
 
   @Override
@@ -45,20 +48,12 @@ public class RimoSocket extends AutoboxSocket<RimoGetListener, RimoPutEvent, Rim
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(RimoPutEvent rimoPutEvent) {
+  protected DatagramPacket getDatagramPacket(RimoPutEvent rimoPutEvent) throws UnknownHostException {
     byte data[] = new byte[2 * RimoPutTire.LENGTH];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     rimoPutEvent.insert(byteBuffer);
-    try {
-      return new DatagramPacket(data, data.length, //
-          InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
-    } catch (Exception exception) {
-      // ---
-      System.out.println("RIMO SEND FAIL");
-      exception.printStackTrace();
-      System.exit(0); // TODO
-    }
-    return null;
+    return new DatagramPacket(data, data.length, //
+        InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
   }
 }

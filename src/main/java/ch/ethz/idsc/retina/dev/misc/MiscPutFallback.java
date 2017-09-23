@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public enum MiscPutFallback implements MiscPutProvider {
+/* package */ enum MiscPutFallback implements MiscPutProvider {
   INSTANCE;
   // ---
   @Override
@@ -14,7 +14,7 @@ public enum MiscPutFallback implements MiscPutProvider {
   }
 
   @Override
-  public Optional<MiscPutEvent> pollPutEvent() {
+  public Optional<MiscPutEvent> getPutEvent() {
     return Optional.of(new MiscPutEvent());
   }
 }
