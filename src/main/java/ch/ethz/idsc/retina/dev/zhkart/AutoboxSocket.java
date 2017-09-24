@@ -5,13 +5,14 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
@@ -29,16 +30,30 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends PutProvider<PE>> implements //
-    StartAndStoppable, ByteArrayConsumer {
+public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends PutProvider<PE>> //
+    implements StartAndStoppable {
   private final DatagramSocketManager datagramSocketManager;
-  private final List<T> listeners = new LinkedList<>();
+  private final List<T> listeners = new CopyOnWriteArrayList<>();
+  private final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
+    @Override
+    public void accept(byte[] data, int length) {
+      ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
+      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+      GE getEvent = createGetEvent(byteBuffer);
+      for (T listener : listeners)
+        try {
+          listener.digest(getEvent);
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+    }
+  };
   private final Set<P> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private Timer timer;
 
-  public AutoboxSocket(DatagramSocketManager datagramSocketManager) {
+  protected AutoboxSocket(DatagramSocketManager datagramSocketManager) {
     this.datagramSocketManager = datagramSocketManager;
-    datagramSocketManager.addListener(this);
+    datagramSocketManager.addListener(byteArrayConsumer);
   }
 
   @Override
@@ -70,21 +85,11 @@ public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends
   protected abstract GE createGetEvent(ByteBuffer byteBuffer);
 
   @Override
-  public final void accept(byte[] data, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    GE getEvent = createGetEvent(byteBuffer);
-    for (T listener : listeners)
-      try {
-        listener.digest(getEvent);
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-  }
-
-  @Override
   public final void stop() {
-    timer.cancel();
+    if (Objects.nonNull(timer)) {
+      timer.cancel();
+      timer = null;
+    }
     datagramSocketManager.stop();
   }
 
@@ -97,7 +102,7 @@ public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends
   public final void removeProvider(P putProvider) {
     boolean removed = providers.remove(putProvider);
     if (!removed)
-      new RuntimeException().printStackTrace();
+      new RuntimeException("provider was not listed").printStackTrace();
   }
 
   public final void addListener(T getListener) {
@@ -105,7 +110,9 @@ public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends
   }
 
   public final void removeListener(T getListener) {
-    listeners.remove(getListener);
+    boolean removed = listeners.remove(getListener);
+    if (!removed)
+      new RuntimeException("listener was not listed").printStackTrace();
   }
 
   public final boolean hasListeners() {

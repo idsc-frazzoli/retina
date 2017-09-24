@@ -14,22 +14,25 @@ import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 
 public class Urg04lxLcmClient implements LcmClientInterface, LCMSubscriber {
-  private final Urg04lxDecoder urg04lxDecoder;
+  public final Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
   private final String lidarId;
 
-  public Urg04lxLcmClient(Urg04lxDecoder urg04lxDecoder, String lidarId) {
-    this.urg04lxDecoder = urg04lxDecoder;
+  public Urg04lxLcmClient(String lidarId) {
     this.lidarId = lidarId;
   }
 
   @Override
   public void startSubscriptions() {
-    LCM.getSingleton().subscribe(Urg04lxDevice.channel(lidarId), this);
+    LCM.getSingleton().subscribe(name(), this);
   }
 
   @Override
   public void stopSubscriptions() {
-    // TODO Auto-generated method stub
+    LCM.getSingleton().unsubscribe(name(), this);
+  }
+
+  private String name() {
+    return Urg04lxDevice.channel(lidarId);
   }
 
   @Override

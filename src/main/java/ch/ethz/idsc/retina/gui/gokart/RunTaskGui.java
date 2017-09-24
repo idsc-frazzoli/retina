@@ -20,14 +20,15 @@ enum RunTaskGui {
     modules.add(SpyModule.class);
     modules.add(LoggerModule.class);
     // ---
-    modules.add(AutoboxSocketModule.class);
-    modules.add(AutoboxGetLcmServerModule.class);
-    modules.add(AutoboxJoystickModule.class);
-    modules.add(AutoboxTestingModule.class);
-    // ---
     modules.add(Hdl32eLcmServerModule.class);
     modules.add(Mark8LcmServerModule.class);
     modules.add(Urg04lxLcmServerModule.class);
+    // ---
+    modules.add(Urg04lxEmergencyModule.class);
+    modules.add(AutoboxGetLcmServerModule.class);
+    modules.add(AutoboxTestingModule.class);
+    modules.add(AutoboxJoystickModule.class);
+    modules.add(AutoboxSocketModule.class);
     new TaskGui(modules);
   }
 }
