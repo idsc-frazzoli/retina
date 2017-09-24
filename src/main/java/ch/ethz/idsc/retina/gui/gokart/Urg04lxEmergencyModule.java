@@ -40,6 +40,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
+    // ---
   }
 
   @Override
