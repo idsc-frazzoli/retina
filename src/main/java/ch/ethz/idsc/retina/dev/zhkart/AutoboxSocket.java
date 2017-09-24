@@ -30,11 +30,10 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public abstract class AutoboxSocket<GE, PE> //
-    implements StartAndStoppable {
+public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> implements StartAndStoppable {
   private final DatagramSocketManager datagramSocketManager;
   private final List<GetListener<GE>> getListeners = new CopyOnWriteArrayList<>();
-  // private final List<T> putListeners = new CopyOnWriteArrayList<>();
+  private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
   private final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
     @Override
     public void accept(byte[] data, int length) {
@@ -68,7 +67,10 @@ public abstract class AutoboxSocket<GE, PE> //
           Optional<PE> optional = putProvider.getPutEvent();
           if (optional.isPresent())
             try {
-              datagramSocketManager.send(getDatagramPacket(optional.get()));
+              PE putEvent = optional.get();
+              byte[] data = putEvent.asArray();
+              datagramSocketManager.send(getDatagramPacket(data));
+              putListeners.forEach(listener -> listener.putEvent(putEvent));
               return;
             } catch (Exception exception) {
               exception.printStackTrace();
@@ -76,12 +78,12 @@ public abstract class AutoboxSocket<GE, PE> //
         }
         System.err.println("no command provided");
       }
-    }, 100, getPeriod());
+    }, 70, getPeriod());
   }
 
   protected abstract long getPeriod();
 
-  protected abstract DatagramPacket getDatagramPacket(PE optional) throws UnknownHostException;
+  protected abstract DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException;
 
   protected abstract GE createGetEvent(ByteBuffer byteBuffer);
 
@@ -94,6 +96,7 @@ public abstract class AutoboxSocket<GE, PE> //
     datagramSocketManager.stop();
   }
 
+  /***************************************************/
   public final void addProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
@@ -106,6 +109,7 @@ public abstract class AutoboxSocket<GE, PE> //
       new RuntimeException("provider was not listed").printStackTrace();
   }
 
+  /***************************************************/
   public final void addGetListener(GetListener<GE> getListener) {
     getListeners.add(getListener);
   }
@@ -115,13 +119,15 @@ public abstract class AutoboxSocket<GE, PE> //
     if (!removed)
       new RuntimeException("listener was not listed").printStackTrace();
   }
-  // public final void addPutListener(T getListener) {
-  // putListeners.add(getListener);
-  // }
-  //
-  // public final void removePutListener(T getListener) {
-  // boolean removed = getListeners.remove(getListener);
-  // if (!removed)
-  // new RuntimeException("listener was not listed").printStackTrace();
-  // }
+
+  /***************************************************/
+  public final void addPutListener(PutListener<PE> putListener) {
+    putListeners.add(putListener);
+  }
+
+  public final void removePutListener(PutListener<PE> putListener) {
+    boolean removed = putListeners.remove(putListener);
+    if (!removed)
+      new RuntimeException("listener was not listed").printStackTrace();
+  }
 }

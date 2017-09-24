@@ -1,14 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-public class RimoPutEvent implements Serializable {
-  public static final int LENGTH = 2 * RimoPutTire.LENGTH;
-  public static final RimoPutEvent STOP = new RimoPutEvent( //
-      RimoPutTire.STOP, //
-      RimoPutTire.STOP);
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+
+public class RimoPutEvent extends DataEvent {
+  private static final int LENGTH = 2 * RimoPutTire.LENGTH;
+  public static final RimoPutEvent STOP = new RimoPutEvent(RimoPutTire.STOP, RimoPutTire.STOP);
   // ---
   public final RimoPutTire putL;
   public final RimoPutTire putR;
@@ -18,10 +17,14 @@ public class RimoPutEvent implements Serializable {
     this.putR = putR;
   }
 
-  /* package */ void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putShort(putL.command);
-    byteBuffer.putShort(putL.speed);
-    byteBuffer.putShort(putR.command);
-    byteBuffer.putShort(putR.speed);
+  @Override
+  public void insert(ByteBuffer byteBuffer) {
+    putL.insert(byteBuffer);
+    putR.insert(byteBuffer);
+  }
+
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 }

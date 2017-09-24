@@ -1,16 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 
 /** information sent to micro-autobox to forward to the linear motor that
  * controls the break of the gokart */
-public class LinmotPutEvent implements Serializable {
+public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
-  /* package */ static final int LENGTH = 12;
+  private static final int LENGTH = 12;
   // ---
   public final short control_word;
   public final short motion_cmd_hdr;
@@ -26,7 +26,8 @@ public class LinmotPutEvent implements Serializable {
 
   /** @param byteBuffer
    * with at least 12 bytes remaining */
-  /* package */ void insert(ByteBuffer byteBuffer) {
+  @Override
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);
     byteBuffer.putShort(motion_cmd_hdr);
     byteBuffer.putShort(target_position);
@@ -40,5 +41,10 @@ public class LinmotPutEvent implements Serializable {
         control_word, motion_cmd_hdr, //
         target_position, max_velocity, //
         acceleration, deceleration);
+  }
+
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 }

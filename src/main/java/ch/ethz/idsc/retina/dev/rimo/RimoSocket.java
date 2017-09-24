@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
@@ -41,11 +40,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(RimoPutEvent rimoPutEvent) throws UnknownHostException {
-    byte data[] = new byte[RimoPutEvent.LENGTH];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    rimoPutEvent.insert(byteBuffer);
+  protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
         InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
   }

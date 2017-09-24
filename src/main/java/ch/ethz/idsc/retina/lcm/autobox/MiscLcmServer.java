@@ -1,25 +1,25 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.autobox;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscPutListener;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
-public enum MiscLcmServer implements MiscGetListener {
+public enum MiscLcmServer implements MiscGetListener, MiscPutListener {
   INSTANCE;
   // ---
-  private final BinaryBlobPublisher publisher = new BinaryBlobPublisher("autobox.misc.get");
-  private final byte[] data = new byte[SteerGetEvent.LENGTH];
+  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher("autobox.misc.get");
+  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher("autobox.misc.put");
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    miscGetEvent.encode(byteBuffer);
-    publisher.accept(data, data.length);
+    getPublisher.accept(miscGetEvent.asArray());
+  }
+
+  @Override
+  public void putEvent(MiscPutEvent miscPutEvent) {
+    putPublisher.accept(miscPutEvent.asArray());
   }
 }

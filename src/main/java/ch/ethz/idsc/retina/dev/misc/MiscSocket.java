@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
@@ -39,11 +38,7 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(MiscPutEvent miscPutEvent) throws UnknownHostException {
-    byte[] data = new byte[MiscPutEvent.LENGTH];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    miscPutEvent.insert(byteBuffer);
+  protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
         InetAddress.getByName(MiscSocket.REMOTE_ADDRESS), MiscSocket.REMOTE_PORT);
   }

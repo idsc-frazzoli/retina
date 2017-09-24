@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
@@ -39,11 +38,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   }
 
   @Override
-  protected DatagramPacket getDatagramPacket(SteerPutEvent steerPutEvent) throws UnknownHostException {
-    byte[] data = new byte[SteerPutEvent.LENGTH];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    steerPutEvent.insert(byteBuffer);
+  protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
         InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
   }

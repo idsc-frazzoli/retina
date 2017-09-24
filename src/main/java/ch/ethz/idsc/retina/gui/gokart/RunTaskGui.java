@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
-import ch.ethz.idsc.retina.lcm.mod.AutoboxGetLcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
@@ -28,7 +28,7 @@ enum RunTaskGui {
     modules.add(MiscEmergencyModule.class);
     modules.add(LinmotEmergencyModule.class);
     // ---
-    modules.add(AutoboxGetLcmServerModule.class);
+    modules.add(AutoboxLcmServerModule.class);
     modules.add(AutoboxTestingModule.class);
     modules.add(AutoboxJoystickModule.class);
     modules.add(AutoboxSocketModule.class);

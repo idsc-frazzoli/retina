@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.rimo;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,5 +29,10 @@ public class RimoPutTire implements Serializable {
 
   public short getSpeedRadPerMin() {
     return speed;
+  }
+
+  void insert(ByteBuffer byteBuffer) {
+    byteBuffer.putShort(command);
+    byteBuffer.putShort(speed);
   }
 }

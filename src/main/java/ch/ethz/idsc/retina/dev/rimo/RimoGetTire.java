@@ -37,7 +37,7 @@ public class RimoGetTire implements Serializable {
     temperature_heatsink = byteBuffer.getShort(); // 16
   }
 
-  public void encode(ByteBuffer byteBuffer) {
+  void encode(ByteBuffer byteBuffer) {
     byteBuffer.putShort(status_word);
     byteBuffer.putShort(actual_speed);
     byteBuffer.putShort(rms_motor_current);
