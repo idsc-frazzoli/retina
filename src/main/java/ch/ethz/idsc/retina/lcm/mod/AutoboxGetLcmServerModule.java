@@ -18,7 +18,6 @@ public class AutoboxGetLcmServerModule extends AbstractModule {
     LinmotSocket.INSTANCE.addListener(LinmotLcmServer.INSTANCE);
     SteerSocket.INSTANCE.addListener(SteerLcmServer.INSTANCE);
     MiscSocket.INSTANCE.addListener(MiscLcmServer.INSTANCE);
-    System.out.println(MiscSocket.INSTANCE.hasListeners());
   }
 
   @Override
@@ -27,6 +26,5 @@ public class AutoboxGetLcmServerModule extends AbstractModule {
     LinmotSocket.INSTANCE.removeListener(LinmotLcmServer.INSTANCE);
     SteerSocket.INSTANCE.removeListener(SteerLcmServer.INSTANCE);
     MiscSocket.INSTANCE.removeListener(MiscLcmServer.INSTANCE);
-    System.out.println(MiscSocket.INSTANCE.hasListeners());
   }
 }

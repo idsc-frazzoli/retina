@@ -17,16 +17,19 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.sys.AbstractModule;
 
-public class AutoboxTestingFrame {
+public class AutoboxTestingModule extends AbstractModule {
   private final List<InterfaceComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final RimoComponent rimoComponent = new RimoComponent();
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
+  public final JFrame jFrame = new JFrame();
 
-  public AutoboxTestingFrame() {
+  @Override
+  protected void first() throws Exception {
     RimoSocket.INSTANCE.addListener(rimoComponent);
     RimoSocket.INSTANCE.addProvider(rimoComponent.rimoPutProvider);
     addTab(rimoComponent);
@@ -45,13 +48,12 @@ public class AutoboxTestingFrame {
     // ---
     jTabbedPane.setSelectedIndex(0);
     // ---
-    JFrame jFrame = new JFrame();
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 80, 500, 700);
+    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent windowEvent) {
+      public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeListener(rimoComponent);
         RimoSocket.INSTANCE.removeProvider(rimoComponent.rimoPutProvider);
         // ---
@@ -67,6 +69,12 @@ public class AutoboxTestingFrame {
       }
     });
     jFrame.setVisible(true);
+  }
+
+  @Override
+  protected void last() {
+    jFrame.setVisible(false);
+    jFrame.dispose();
   }
 
   private void addTab(InterfaceComponent interfaceComponent) {

@@ -17,12 +17,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
-  INSTANCE;
-  // ---
+public class AutoboxGenericXboxPadJoystick implements JoystickListener {
   private GenericXboxPadJoystick _genericXboxPadJoystick;
   private long lastUpdate;
-  private int speedlimitjoystick = 1000;
+  private int speedLimit = 1000;
 
   @Override
   public void joystick(JoystickEvent joystickEvent) {
@@ -63,9 +61,9 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
         if (joystick.isButtonPressedStart())
           sign = 1;
         double wheelL = joystick.getLeftSliderUnitValue();
-        short sL = (short) (wheelL * speedlimitjoystick * sign);
+        short sL = (short) (wheelL * speedLimit * sign);
         double wheelR = joystick.getRightSliderUnitValue();
-        short sR = (short) (wheelR * speedlimitjoystick * sign);
+        short sR = (short) (wheelR * speedLimit * sign);
         return Optional.of(new RimoPutEvent( //
             new RimoPutTire(RimoPutTire.OPERATION, sL), //
             new RimoPutTire(RimoPutTire.OPERATION, sR)));
@@ -154,7 +152,7 @@ public enum AutoboxGenericXboxPadJoystick implements JoystickListener {
   // }
   //
 
-  public void setspeedlimit(int i) {
-    speedlimitjoystick = i;
+  public void setSpeedLimit(int i) {
+    speedLimit = i;
   }
 }

@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 public class RimoPutEvent implements Serializable {
+  public static final int LENGTH = 2 * RimoPutTire.LENGTH;
+  // ---
   public final RimoPutTire putL;
   public final RimoPutTire putR;
 

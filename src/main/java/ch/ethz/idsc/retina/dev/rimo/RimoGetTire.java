@@ -8,10 +8,10 @@ import java.nio.ByteBuffer;
  * two of the events are received simultaneously: for the left and right rear
  * wheel */
 public class RimoGetTire implements Serializable {
-  public static final int LENGTH = 16;
-  // ---
+  static final int LENGTH = 16;
   /** m */
-  public static final double RADIUS = 0.14;
+  public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
+  // ---
   public final short status_word;
   /** rad/min */
   public final short actual_speed;

@@ -6,14 +6,13 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
 public enum RimoLcmServer implements RimoGetListener {
   INSTANCE;
   // ---
   private final BinaryBlobPublisher publisher = new BinaryBlobPublisher("autobox.rimo.get");
-  private final byte[] data = new byte[2 * RimoGetTire.LENGTH];
+  private final byte[] data = new byte[RimoGetEvent.LENGTH];
 
   @Override
   public void digest(RimoGetEvent rimoGetEvent) {

@@ -1,9 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxGetLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
@@ -19,7 +20,10 @@ enum RunTaskGui {
     modules.add(SpyModule.class);
     modules.add(LoggerModule.class);
     // ---
+    modules.add(AutoboxSocketModule.class);
     modules.add(AutoboxGetLcmServerModule.class);
+    modules.add(AutoboxJoystickModule.class);
+    modules.add(AutoboxTestingModule.class);
     // ---
     modules.add(Hdl32eLcmServerModule.class);
     modules.add(Mark8LcmServerModule.class);
