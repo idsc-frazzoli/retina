@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /**  */
-public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotGetListener, LinmotPutEvent, LinmotPutProvider> {
+public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> {
   public static final LinmotSocket INSTANCE = new LinmotSocket();
   // ---
   private static final int LOCAL_PORT = 5001;

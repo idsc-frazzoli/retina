@@ -23,14 +23,14 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
 
   @Override
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addListener(this);
+    LinmotSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addProvider(this);
   }
 
   @Override
   protected void last() {
     RimoSocket.INSTANCE.removeProvider(this);
-    LinmotSocket.INSTANCE.removeListener(this);
+    LinmotSocket.INSTANCE.removeGetListener(this);
   }
 
   @Override
@@ -44,7 +44,7 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
   }
 
   @Override
-  public void digest(LinmotGetEvent linmotGetEvent) {
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
     // too cold
     flag |= linmotGetEvent.windingTemperature1() < MIN_C;
     flag |= linmotGetEvent.windingTemperature2() < MIN_C;

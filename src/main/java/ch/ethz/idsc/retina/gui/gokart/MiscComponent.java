@@ -75,7 +75,7 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
   }
 
   @Override
-  public void digest(MiscGetEvent miscGetEvent) {
+  public void getEvent(MiscGetEvent miscGetEvent) {
     // jTextFieldEmg.setText("" + miscGetEvent.emergency);
     {
       jTextFieldEmg.setText("" + miscGetEvent.isEmergency());

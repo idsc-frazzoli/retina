@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscGetListener, MiscPutEvent, MiscPutProvider> {
+public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   public static final MiscSocket INSTANCE = new MiscSocket();
   // ---
   private static final int LOCAL_PORT = 5003;

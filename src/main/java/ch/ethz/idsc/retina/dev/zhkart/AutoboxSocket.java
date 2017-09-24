@@ -30,25 +30,26 @@ import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
  * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
-public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends PutProvider<PE>> //
+public abstract class AutoboxSocket<GE, PE> //
     implements StartAndStoppable {
   private final DatagramSocketManager datagramSocketManager;
-  private final List<T> listeners = new CopyOnWriteArrayList<>();
+  private final List<GetListener<GE>> getListeners = new CopyOnWriteArrayList<>();
+  // private final List<T> putListeners = new CopyOnWriteArrayList<>();
   private final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
     @Override
     public void accept(byte[] data, int length) {
       ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
       byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
       GE getEvent = createGetEvent(byteBuffer);
-      for (T listener : listeners)
+      for (GetListener<GE> listener : getListeners)
         try {
-          listener.digest(getEvent);
+          listener.getEvent(getEvent);
         } catch (Exception exception) {
           exception.printStackTrace();
         }
     }
   };
-  private final Set<P> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private final Set<PutProvider<PE>> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private Timer timer;
 
   protected AutoboxSocket(DatagramSocketManager datagramSocketManager) {
@@ -93,29 +94,34 @@ public abstract class AutoboxSocket<GE, T extends GetListener<GE>, PE, P extends
     datagramSocketManager.stop();
   }
 
-  public final void addProvider(P putProvider) {
+  public final void addProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
       throw new RuntimeException();
   }
 
-  public final void removeProvider(P putProvider) {
+  public final void removeProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
     if (!removed)
       new RuntimeException("provider was not listed").printStackTrace();
   }
 
-  public final void addListener(T getListener) {
-    listeners.add(getListener);
+  public final void addGetListener(GetListener<GE> getListener) {
+    getListeners.add(getListener);
   }
 
-  public final void removeListener(T getListener) {
-    boolean removed = listeners.remove(getListener);
+  public final void removeGetListener(GetListener<GE> getListener) {
+    boolean removed = getListeners.remove(getListener);
     if (!removed)
       new RuntimeException("listener was not listed").printStackTrace();
   }
-
-  public final boolean hasListeners() {
-    return !listeners.isEmpty();
-  }
+  // public final void addPutListener(T getListener) {
+  // putListeners.add(getListener);
+  // }
+  //
+  // public final void removePutListener(T getListener) {
+  // boolean removed = getListeners.remove(getListener);
+  // if (!removed)
+  // new RuntimeException("listener was not listed").printStackTrace();
+  // }
 }

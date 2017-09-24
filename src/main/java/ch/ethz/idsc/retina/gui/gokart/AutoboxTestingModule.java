@@ -30,19 +30,19 @@ public class AutoboxTestingModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    RimoSocket.INSTANCE.addListener(rimoComponent);
+    RimoSocket.INSTANCE.addGetListener(rimoComponent);
     RimoSocket.INSTANCE.addProvider(rimoComponent.rimoPutProvider);
     addTab(rimoComponent);
     // ---
-    LinmotSocket.INSTANCE.addListener(linmotComponent);
+    LinmotSocket.INSTANCE.addGetListener(linmotComponent);
     LinmotSocket.INSTANCE.addProvider(linmotComponent.linmotPutProvider);
     addTab(linmotComponent);
     // ---
-    SteerSocket.INSTANCE.addListener(steerComponent);
+    SteerSocket.INSTANCE.addGetListener(steerComponent);
     SteerSocket.INSTANCE.addProvider(steerComponent.steerPutProvider);
     addTab(steerComponent);
     // ---
-    MiscSocket.INSTANCE.addListener(miscComponent);
+    MiscSocket.INSTANCE.addGetListener(miscComponent);
     MiscSocket.INSTANCE.addProvider(miscComponent.miscPutProvider);
     addTab(miscComponent);
     // ---
@@ -54,16 +54,16 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        RimoSocket.INSTANCE.removeListener(rimoComponent);
+        RimoSocket.INSTANCE.removeGetListener(rimoComponent);
         RimoSocket.INSTANCE.removeProvider(rimoComponent.rimoPutProvider);
         // ---
-        LinmotSocket.INSTANCE.removeListener(linmotComponent);
+        LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
         LinmotSocket.INSTANCE.removeProvider(linmotComponent.linmotPutProvider);
         // ---
-        SteerSocket.INSTANCE.removeListener(steerComponent);
+        SteerSocket.INSTANCE.removeGetListener(steerComponent);
         SteerSocket.INSTANCE.removeProvider(steerComponent.steerPutProvider);
         // ---
-        MiscSocket.INSTANCE.removeListener(miscComponent);
+        MiscSocket.INSTANCE.removeGetListener(miscComponent);
         MiscSocket.INSTANCE.removeProvider(miscComponent.miscPutProvider);
         System.out.println("removed listeners and providers");
       }

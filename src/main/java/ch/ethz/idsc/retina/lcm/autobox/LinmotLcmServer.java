@@ -15,7 +15,7 @@ public enum LinmotLcmServer implements LinmotGetListener {
   private final byte[] data = new byte[LinmotGetEvent.LENGTH];
 
   @Override
-  public void digest(LinmotGetEvent linmotGetEvent) {
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     linmotGetEvent.encode(byteBuffer);

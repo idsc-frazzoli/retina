@@ -22,14 +22,14 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   protected void first() throws Exception {
-    MiscSocket.INSTANCE.addListener(this);
+    MiscSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addProvider(this);
   }
 
   @Override
   protected void last() {
     RimoSocket.INSTANCE.removeProvider(this);
-    MiscSocket.INSTANCE.removeListener(this);
+    MiscSocket.INSTANCE.removeGetListener(this);
   }
 
   @Override
@@ -43,7 +43,7 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
   }
 
   @Override
-  public void digest(MiscGetEvent miscGetEvent) {
+  public void getEvent(MiscGetEvent miscGetEvent) {
     flag |= miscGetEvent.steerBatteryVoltage() < MIN_V;
     flag |= MAX_V < miscGetEvent.steerBatteryVoltage();
     flag |= miscGetEvent.isEmergency();

@@ -15,7 +15,7 @@ public enum RimoLcmServer implements RimoGetListener {
   private final byte[] data = new byte[RimoGetEvent.LENGTH];
 
   @Override
-  public void digest(RimoGetEvent rimoGetEvent) {
+  public void getEvent(RimoGetEvent rimoGetEvent) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     rimoGetEvent.getL.encode(byteBuffer);

@@ -15,7 +15,7 @@ public enum SteerLcmServer implements SteerGetListener {
   private final byte[] data = new byte[SteerGetEvent.LENGTH];
 
   @Override
-  public void digest(SteerGetEvent steerGetEvent) {
+  public void getEvent(SteerGetEvent steerGetEvent) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     steerGetEvent.encode(byteBuffer);

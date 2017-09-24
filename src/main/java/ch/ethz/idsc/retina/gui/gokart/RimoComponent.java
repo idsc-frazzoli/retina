@@ -83,7 +83,7 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
   }
 
   @Override
-  public void digest(RimoGetEvent rimoGetEvent) {
+  public void getEvent(RimoGetEvent rimoGetEvent) {
     RimoGetTire rimoGetL = rimoGetEvent.getL;
     RimoGetTire rimoGetR = rimoGetEvent.getR;
     rimoGetFieldsL.updateText(rimoGetL);

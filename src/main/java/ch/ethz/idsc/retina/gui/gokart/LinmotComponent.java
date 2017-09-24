@@ -118,7 +118,7 @@ public class LinmotComponent extends InterfaceComponent implements LinmotGetList
   }
 
   @Override
-  public void digest(LinmotGetEvent linmotGetEvent) {
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
     // linmotGetEvent.toInfoString()
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));

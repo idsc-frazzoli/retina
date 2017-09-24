@@ -14,17 +14,17 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 public class AutoboxGetLcmServerModule extends AbstractModule {
   @Override
   protected void first() throws Exception {
-    RimoSocket.INSTANCE.addListener(RimoLcmServer.INSTANCE);
-    LinmotSocket.INSTANCE.addListener(LinmotLcmServer.INSTANCE);
-    SteerSocket.INSTANCE.addListener(SteerLcmServer.INSTANCE);
-    MiscSocket.INSTANCE.addListener(MiscLcmServer.INSTANCE);
+    RimoSocket.INSTANCE.addGetListener(RimoLcmServer.INSTANCE);
+    LinmotSocket.INSTANCE.addGetListener(LinmotLcmServer.INSTANCE);
+    SteerSocket.INSTANCE.addGetListener(SteerLcmServer.INSTANCE);
+    MiscSocket.INSTANCE.addGetListener(MiscLcmServer.INSTANCE);
   }
 
   @Override
   protected void last() {
-    RimoSocket.INSTANCE.removeListener(RimoLcmServer.INSTANCE);
-    LinmotSocket.INSTANCE.removeListener(LinmotLcmServer.INSTANCE);
-    SteerSocket.INSTANCE.removeListener(SteerLcmServer.INSTANCE);
-    MiscSocket.INSTANCE.removeListener(MiscLcmServer.INSTANCE);
+    RimoSocket.INSTANCE.removeGetListener(RimoLcmServer.INSTANCE);
+    LinmotSocket.INSTANCE.removeGetListener(LinmotLcmServer.INSTANCE);
+    SteerSocket.INSTANCE.removeGetListener(SteerLcmServer.INSTANCE);
+    MiscSocket.INSTANCE.removeGetListener(MiscLcmServer.INSTANCE);
   }
 }

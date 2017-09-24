@@ -2,5 +2,7 @@
 package ch.ethz.idsc.retina.dev.zhkart;
 
 public enum DriveMode {
-  SIMPLE_DRIVE, FULL_CONTROL
+  SIMPLE_DRIVE, //
+  FULL_CONTROL, //
+  ;
 }

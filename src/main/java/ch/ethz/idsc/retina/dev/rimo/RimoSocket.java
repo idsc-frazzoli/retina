@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoGetListener, RimoPutEvent, RimoPutProvider> {
+public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   public static final RimoSocket INSTANCE = new RimoSocket();
   // ---
   private static final int LOCAL_PORT = 5000;
