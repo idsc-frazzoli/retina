@@ -1,14 +1,17 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
+
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
-public class LinmotGetEvent implements Serializable {
+public class LinmotGetEvent extends DataEvent {
   /** 16 bytes */
   public static final int LENGTH = 16;
+  // TODO NRJ document conversion factor
+  private static final double TO_DEGREE_CELSIUS = 0.1;
   // ---
   public final short status_word;
   public final short state_variable;
@@ -26,7 +29,25 @@ public class LinmotGetEvent implements Serializable {
     winding_temp2 = byteBuffer.getShort();
   }
 
-  public void encode(ByteBuffer byteBuffer) {
+  /** @return temperature of winding 1 in degree Celsius */
+  public double windingTemperature1() {
+    return winding_temp1 * TO_DEGREE_CELSIUS;
+  }
+
+  /** @return temperature of winding 2 in degree Celsius */
+  public double windingTemperature2() {
+    return winding_temp2 * TO_DEGREE_CELSIUS;
+  }
+
+  public String toInfoString() {
+    return String.format("%d %d %d %d %d %d", //
+        status_word, state_variable, //
+        actual_position, demand_position, //
+        winding_temp1, winding_temp2);
+  }
+
+  @Override
+  protected void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(status_word);
     byteBuffer.putShort(state_variable);
     byteBuffer.putInt(actual_position);
@@ -35,21 +56,8 @@ public class LinmotGetEvent implements Serializable {
     byteBuffer.putShort(winding_temp2);
   }
 
-  /** @return temperature of winding 1 in Celsius */
-  public double windingTemperature1() {
-    // TODO NRJ document conversion factor
-    return winding_temp1 * 0.1;
-  }
-
-  /** @return temperature of winding 1 in Celsius */
-  public double windingTemperature2() {
-    return winding_temp2 * 0.1;
-  }
-
-  public String toInfoString() {
-    return String.format("%d %d %d %d %d %d", //
-        status_word, state_variable, //
-        actual_position, demand_position, //
-        winding_temp1, winding_temp2);
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 }

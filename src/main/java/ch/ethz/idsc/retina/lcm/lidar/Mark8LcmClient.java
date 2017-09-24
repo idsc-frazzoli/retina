@@ -32,6 +32,11 @@ public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
   }
 
   @Override
+  public void stopSubscriptions() {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
   public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
     try {
       BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException

@@ -1,10 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.misc;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-public class MiscGetEvent implements Serializable {
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+
+public class MiscGetEvent extends DataEvent {
   public static final int LENGTH = 5;
   // ---
   private final byte emergency;
@@ -13,11 +14,6 @@ public class MiscGetEvent implements Serializable {
   public MiscGetEvent(ByteBuffer byteBuffer) {
     emergency = byteBuffer.get();
     batteryAdc = byteBuffer.getFloat();
-  }
-
-  public void encode(ByteBuffer byteBuffer) {
-    byteBuffer.put(emergency);
-    byteBuffer.putFloat(batteryAdc);
   }
 
   public boolean isEmergency() {
@@ -30,5 +26,16 @@ public class MiscGetEvent implements Serializable {
     // 2.8 accounts for the resitance value of the voltage divider
     // TODO NRJ MAC state ohm of resistors
     return batteryAdc * 5 * 2.8;
+  }
+
+  @Override
+  protected void insert(ByteBuffer byteBuffer) {
+    byteBuffer.put(emergency);
+    byteBuffer.putFloat(batteryAdc);
+  }
+
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 }

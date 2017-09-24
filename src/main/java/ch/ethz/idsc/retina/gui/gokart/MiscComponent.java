@@ -5,17 +5,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.TimerTask;
+import java.util.Optional;
 
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
+import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -75,36 +74,8 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     }
   }
 
-  private TimerTask timerTask = null;
-
   @Override
-  public void connectAction(int period, boolean isSelected) {
-    if (isSelected) {
-      MiscSocket.INSTANCE.start();
-      timerTask = new TimerTask() {
-        @Override
-        public void run() {
-          MiscPutEvent miscPutEvent = new MiscPutEvent();
-          miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
-          miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
-          miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
-          miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
-          miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
-          MiscSocket.INSTANCE.send(miscPutEvent);
-        }
-      };
-      timer.schedule(timerTask, 100, period);
-    } else {
-      if (Objects.nonNull(timerTask)) {
-        timerTask.cancel();
-        timerTask = null;
-      }
-      MiscSocket.INSTANCE.stop();
-    }
-  }
-
-  @Override
-  public void miscGet(MiscGetEvent miscGetEvent) {
+  public void getEvent(MiscGetEvent miscGetEvent) {
     // jTextFieldEmg.setText("" + miscGetEvent.emergency);
     {
       jTextFieldEmg.setText("" + miscGetEvent.isEmergency());
@@ -119,8 +90,21 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
     }
   }
 
-  @Override
-  public void joystick(JoystickEvent joystickEvent) {
-    // TODO use buttons to reset
-  }
+  public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.TESTING;
+    }
+
+    @Override
+    public Optional<MiscPutEvent> getPutEvent() {
+      MiscPutEvent miscPutEvent = new MiscPutEvent();
+      miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
+      miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
+      miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
+      miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
+      miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
+      return Optional.of(miscPutEvent);
+    }
+  };
 }

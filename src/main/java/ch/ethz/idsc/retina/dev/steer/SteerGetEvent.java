@@ -1,13 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+
 /** information received from micro-autobox about steering */
-public class SteerGetEvent implements Serializable {
+public class SteerGetEvent extends DataEvent {
   public static final int LENGTH = 44;
   // ---
+  // TODO NRJ document variables
   public final float motAsp_CANInput;
   public final float motAsp_Qual;
   public final float tsuTrq_CANInput;
@@ -36,11 +38,29 @@ public class SteerGetEvent implements Serializable {
     halfRckPos = byteBuffer.getFloat();
   }
 
-  public void encode(ByteBuffer byteBuffer) {
+  @Override
+  protected void insert(ByteBuffer byteBuffer) {
+    byteBuffer.putFloat(motAsp_CANInput);
+    byteBuffer.putFloat(motAsp_Qual);
+    byteBuffer.putFloat(tsuTrq_CANInput);
+    byteBuffer.putFloat(tsuTrq_Qual);
+    byteBuffer.putFloat(refMotTrq_CANInput);
+    byteBuffer.putFloat(estMotTrq_CANInput);
+    byteBuffer.putFloat(estMotTrq_Qual);
+    // ---
+    byteBuffer.putFloat(gcpRelRckPos);
+    byteBuffer.putFloat(gcpRelRckQual);
+    byteBuffer.putFloat(gearRat);
+    byteBuffer.putFloat(halfRckPos);
+  }
+
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 
   public double getSteeringAngle() {
-    return gcpRelRckPos;
     // TODO NRJ Not final formula for steering angle
+    return gcpRelRckPos;
   }
 }

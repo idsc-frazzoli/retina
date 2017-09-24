@@ -60,4 +60,9 @@ public class VelodyneLcmClient implements LcmClientInterface {
         }
       });
   }
+
+  @Override
+  public void stopSubscriptions() {
+    // TODO Auto-generated method stub
+  }
 }

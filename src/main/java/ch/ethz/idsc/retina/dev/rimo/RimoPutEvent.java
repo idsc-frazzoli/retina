@@ -1,26 +1,30 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-public class RimoPutEvent implements Serializable {
-  /** 4 bytes encoding length */
-  /* package */ static final int LENGTH = 4;
-  /** according to tests on the bench, the max effective speed is ~6300 */
-  public static final short MAX_SPEED = 6500;
-  // ---
-  public final short command;
-  /** speed in rad/min */
-  public final short speed;
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
-  public RimoPutEvent(short command, short speed) {
-    this.command = command;
-    this.speed = speed;
+public class RimoPutEvent extends DataEvent {
+  private static final int LENGTH = 2 * RimoPutTire.LENGTH;
+  public static final RimoPutEvent STOP = new RimoPutEvent(RimoPutTire.STOP, RimoPutTire.STOP);
+  // ---
+  public final RimoPutTire putL;
+  public final RimoPutTire putR;
+
+  public RimoPutEvent(RimoPutTire putL, RimoPutTire putR) {
+    this.putL = putL;
+    this.putR = putR;
   }
 
-  /* package */ void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putShort(command);
-    byteBuffer.putShort(speed);
+  @Override
+  public void insert(ByteBuffer byteBuffer) {
+    putL.insert(byteBuffer);
+    putR.insert(byteBuffer);
+  }
+
+  @Override
+  protected int length() {
+    return LENGTH;
   }
 }

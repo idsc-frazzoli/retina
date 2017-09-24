@@ -75,6 +75,11 @@ public class DavisLcmClient implements LcmClientInterface {
       });
   }
 
+  @Override
+  public void stopSubscriptions() {
+    // TODO Auto-generated method stub
+  }
+
   public void digestDvs(BinaryBlob dvsBinaryBlob) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(dvsBinaryBlob.data);
     byteBuffer.order(DavisStatics.BYTE_ORDER);

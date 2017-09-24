@@ -2,20 +2,19 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.util.Objects;
-import java.util.TimerTask;
+import java.util.Optional;
 
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -25,7 +24,6 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private TimerTask timerTask = null;
 
   public SteerComponent() {
     {
@@ -57,30 +55,7 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
   }
 
   @Override
-  public void connectAction(int period, boolean isSelected) {
-    if (isSelected) {
-      SteerSocket.INSTANCE.start();
-      timerTask = new TimerTask() {
-        @Override
-        public void run() {
-          SteerPutEvent steerPutEvent = new SteerPutEvent( //
-              spinnerLabelLw.getValue().getByte(), //
-              sliderExtTorque.jSlider.getValue() * 1e-3f);
-          SteerSocket.INSTANCE.send(steerPutEvent);
-        }
-      };
-      timer.schedule(timerTask, 100, period);
-    } else {
-      if (Objects.nonNull(timerTask)) {
-        timerTask.cancel();
-        timerTask = null;
-      }
-      SteerSocket.INSTANCE.stop();
-    }
-  }
-
-  @Override
-  public void steerGet(SteerGetEvent steerGetEvent) {
+  public void getEvent(SteerGetEvent steerGetEvent) {
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
     jTextField[2].setText("" + steerGetEvent.tsuTrq_CANInput);
@@ -94,12 +69,16 @@ public class SteerComponent extends InterfaceComponent implements SteerGetListen
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
   }
 
-  @Override
-  public void joystick(JoystickEvent joystickEvent) {
-    if (isJoystickEnabled()) {
-      GenericXboxPadJoystick joystick = (GenericXboxPadJoystick) joystickEvent;
-      double value = -joystick.getRightKnobDirectionRight();
-      sliderExtTorque.jSlider.setValue((int) (AMP * value));
+  public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.TESTING;
     }
-  }
+
+    @Override
+    public Optional<SteerPutEvent> getPutEvent() {
+      return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
+          sliderExtTorque.jSlider.getValue() * 1e-3f));
+    }
+  };
 }

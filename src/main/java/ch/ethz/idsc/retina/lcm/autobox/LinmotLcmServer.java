@@ -1,24 +1,25 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.autobox;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
-public enum LinmotLcmServer implements LinmotGetListener {
+public enum LinmotLcmServer implements LinmotGetListener, LinmotPutListener {
   INSTANCE;
   // ---
-  private final BinaryBlobPublisher publisher = new BinaryBlobPublisher("autobox.linmot.get");
-  private final byte[] data = new byte[LinmotGetEvent.LENGTH];
+  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher("autobox.linmot.get");
+  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher("autobox.linmot.put");
 
   @Override
-  public void linmotGet(LinmotGetEvent linmotGetEvent) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    linmotGetEvent.encode(byteBuffer);
-    publisher.accept(data, data.length);
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    getPublisher.accept(linmotGetEvent.asArray());
+  }
+
+  @Override
+  public void putEvent(LinmotPutEvent linmotPutEvent) {
+    putPublisher.accept(linmotPutEvent.asArray());
   }
 }
