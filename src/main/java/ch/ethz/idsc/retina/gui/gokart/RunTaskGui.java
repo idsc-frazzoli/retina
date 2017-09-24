@@ -26,6 +26,7 @@ enum RunTaskGui {
     // ---
     modules.add(Urg04lxEmergencyModule.class);
     modules.add(MiscEmergencyModule.class);
+    modules.add(LinmotEmergencyModule.class);
     modules.add(AutoboxGetLcmServerModule.class);
     modules.add(AutoboxTestingModule.class);
     modules.add(AutoboxJoystickModule.class);

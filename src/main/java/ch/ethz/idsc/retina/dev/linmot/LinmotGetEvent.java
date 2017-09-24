@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 public class LinmotGetEvent implements Serializable {
   /** 16 bytes */
   public static final int LENGTH = 16;
+  // TODO NRJ document conversion factor
+  private static final double TO_DEGREE_CELSIUS = 0.1;
   // ---
   public final short status_word;
   public final short state_variable;
@@ -35,15 +37,14 @@ public class LinmotGetEvent implements Serializable {
     byteBuffer.putShort(winding_temp2);
   }
 
-  /** @return temperature of winding 1 in Celsius */
+  /** @return temperature of winding 1 in degree Celsius */
   public double windingTemperature1() {
-    // TODO NRJ document conversion factor
-    return winding_temp1 * 0.1;
+    return winding_temp1 * TO_DEGREE_CELSIUS;
   }
 
-  /** @return temperature of winding 1 in Celsius */
+  /** @return temperature of winding 2 in degree Celsius */
   public double windingTemperature2() {
-    return winding_temp2 * 0.1;
+    return winding_temp2 * TO_DEGREE_CELSIUS;
   }
 
   public String toInfoString() {

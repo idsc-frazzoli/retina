@@ -12,10 +12,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** sends stop command if steer battery voltage is below threshold
+/** sends stop command if steer battery voltage is outside of valid range
  * or if emergency flag is set in {@link MiscGetEvent} */
 public class MiscEmergencyModule extends AbstractModule implements MiscGetListener, RimoPutProvider {
-  private static final double THRESHOLD_V = 10.7;
+  private static final double MIN_V = 10.7;
+  private static final double MAX_V = 15;
   // ---
   private boolean flag = false;
 
@@ -43,7 +44,8 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   public void digest(MiscGetEvent miscGetEvent) {
-    flag |= miscGetEvent.steerBatteryVoltage() < THRESHOLD_V;
+    flag |= miscGetEvent.steerBatteryVoltage() < MIN_V;
+    flag |= MAX_V < miscGetEvent.steerBatteryVoltage();
     flag |= miscGetEvent.isEmergency();
   }
 }
