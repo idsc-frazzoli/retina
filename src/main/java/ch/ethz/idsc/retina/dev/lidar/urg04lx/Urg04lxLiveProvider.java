@@ -14,7 +14,10 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
-/** receives binary packets via inputstream from urg04lx process and distributes
+/** Hint: the sensor requires a warm-up time of half a minute or so.
+ * attempts to connect immediately after power up will fail.
+ * 
+ * receives binary packets via inputstream from urg04lx process and distributes
  * to listeners
  * 
  * requires that the binary "urg_binaryprovider" is located at
@@ -50,6 +53,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
     processBuilder.directory(directory);
     try {
       Process process = processBuilder.start();
+      System.out.println("urg_alive1=" + process.isAlive());
       outputStream = process.getOutputStream();
       InputStream inputStream = process.getInputStream();
       Runnable runnable = new Runnable() {
@@ -57,6 +61,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
         public void run() {
           isLaunched = true;
           try {
+            System.out.println("urg_alive2=" + process.isAlive());
             while (process.isAlive()) {
               int available = inputStream.available();
               if (array.length <= available) {
@@ -70,7 +75,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
                 else
                   throw new RuntimeException("data corrupt");
               } else
-                Thread.sleep(2);
+                Thread.sleep(10); // magic const
             }
           } catch (Exception exception) {
             exception.printStackTrace();
