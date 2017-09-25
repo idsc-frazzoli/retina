@@ -25,7 +25,6 @@ public class DatFileDigest implements DvsEventDigest, AutoCloseable {
     if (byteBuffer.remaining() == 0) {
       try {
         outputStream.write(bytes);
-        outputStream.flush(); // TODO not final design
       } catch (Exception exception) {
         exception.printStackTrace();
       }
@@ -42,6 +41,7 @@ public class DatFileDigest implements DvsEventDigest, AutoCloseable {
 
   @Override
   public void close() throws Exception {
+    outputStream.flush();
     outputStream.close();
   }
 }

@@ -8,7 +8,7 @@ public abstract class JoystickEvent {
   private short _buttons;
   private final byte[] _hats;
 
-  public JoystickEvent() {
+  protected JoystickEvent() {
     JoystickType joystickType = type();
     _axes = new byte[joystickType.axes];
     _hats = new byte[joystickType.hats];
@@ -24,7 +24,7 @@ public abstract class JoystickEvent {
     return _axes[index] / (double) Byte.MAX_VALUE;
   }
 
-  protected int getHat(int index) {
+  protected final int getHat(int index) {
     return _hats[index];
   }
 
@@ -36,15 +36,16 @@ public abstract class JoystickEvent {
     byteBuffer.get(_hats);
   }
 
-  public abstract JoystickType type();
-
   public final String toInfoString() {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(type().name());
     for (int index = 0; index < _axes.length; ++index)
       stringBuilder.append(String.format(" %4d", _axes[index]));
     stringBuilder.append(String.format(" B=%04X", _buttons));
-    // TODO hats
+    for (int index = 0; index < _hats.length; ++index)
+      stringBuilder.append(String.format(" H%d=%02X", index, _hats[index]));
     return stringBuilder.toString();
   }
+
+  public abstract JoystickType type();
 }

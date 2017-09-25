@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.awt.Dimension;
 
-// TODO not final design
 enum ImageDimensions {
   ;
   // wp.doc.ic.ac.uk_pb2114_datasets

@@ -40,7 +40,7 @@ enum DavisDatagramClientDemo {
     new Thread(() -> {
       imuDatagramClient.start();
     }).start();
-    apsDatagramClient.start(); // TODO at the moment this is a blocking call !?
+    apsDatagramClient.start(); // <- blocking call
     System.out.println("here");
   }
 }
