@@ -17,7 +17,9 @@ public class ColumnTimedImage {
     this.isComplete = isComplete;
   }
 
+  /** @return difference between last and first column timestamp */
   public int duration() {
-    return time[time.length - 1] - time[0]; // TODO 1 missing
+    // formula also works when time.length == 1
+    return time[time.length - 1] - time[0];
   }
 }

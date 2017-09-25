@@ -18,6 +18,8 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -28,6 +30,8 @@ class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
   );
+  private static final Scalar BATTERY_LOW = Quantity.of(11, "V");
+  // ---
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -85,8 +89,7 @@ class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
     {
       Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
       jTextFieldBat.setText(voltage.toString());
-      double value = voltage.number().doubleValue(); // TODO temporary
-      Color color = value < 11 ? Color.RED : Color.WHITE;
+      Color color = Scalars.lessThan(voltage, BATTERY_LOW) ? Color.RED : Color.WHITE;
       jTextFieldBat.setBackground(color);
     }
   }

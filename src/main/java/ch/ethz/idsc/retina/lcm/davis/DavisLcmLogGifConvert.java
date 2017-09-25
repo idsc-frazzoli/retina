@@ -51,14 +51,13 @@ public class DavisLcmLogGifConvert {
           ++count;
           if (set.add(event.channel))
             System.out.println(event.channel);
-          // TODO magic const extensions
-          if (event.channel.endsWith(".imu")) // imu
+          if (event.channel.endsWith(DavisLcmChannel.IMU.extension)) // imu
             davisLcmClient.digestImu(new DavisImu(event.data));
-          if (event.channel.endsWith(".sig")) // signal aps
+          if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
             davisLcmClient.digestSig(new BinaryBlob(event.data));
-          if (event.channel.endsWith(".rst")) // reset read aps
+          if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps
             davisLcmClient.digestRst(new BinaryBlob(event.data));
-          if (event.channel.endsWith(".dvs")) // events
+          if (event.channel.endsWith(DavisLcmChannel.DVS.extension)) // events
             davisLcmClient.digestDvs(new BinaryBlob(event.data));
         }
       } catch (IOException exception) {

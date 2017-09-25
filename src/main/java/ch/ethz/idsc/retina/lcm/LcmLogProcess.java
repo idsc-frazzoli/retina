@@ -59,12 +59,14 @@ public class LcmLogProcess implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
+    // TODO outputstream Ctrl+C ?
+    // ... something like "Ctrl+C" via the process.inputstream
     if (Objects.nonNull(process))
       process.destroy();
   }
 
   public File file() {
-    String string = file.toString() + ".00"; // TODO is this sufficiently generic
+    String string = file.toString() + ".00"; // TODO is this not sufficiently generic
     return new File(string);
   }
 }

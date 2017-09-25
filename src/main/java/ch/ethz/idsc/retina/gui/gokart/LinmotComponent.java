@@ -118,7 +118,6 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
 
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    // linmotGetEvent.toInfoString()
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
     // TODO figure out units for position

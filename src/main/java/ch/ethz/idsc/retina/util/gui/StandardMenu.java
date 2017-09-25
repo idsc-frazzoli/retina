@@ -52,7 +52,7 @@ public abstract class StandardMenu {
 
   private JPopupMenu myJPopupMenu = new JPopupMenu();
 
-  protected final JPopupMenu designShow() { // TODO misnomer & why return?
+  protected final JPopupMenu designShow() {
     design(myJPopupMenu);
     return myJPopupMenu;
   }

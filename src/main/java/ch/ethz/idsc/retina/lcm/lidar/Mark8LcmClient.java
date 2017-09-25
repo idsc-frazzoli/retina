@@ -27,13 +27,12 @@ public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
 
   @Override
   public void startSubscriptions() {
-    if (mark8Decoder.hasRayListeners())
-      LCM.getSingleton().subscribe(Mark8Device.channel(lidarId), this);
+    LCM.getSingleton().subscribe(name(), this);
   }
 
   @Override
   public void stopSubscriptions() {
-    // TODO Auto-generated method stub
+    LCM.getSingleton().unsubscribe(name(), this);
   }
 
   @Override
@@ -45,5 +44,9 @@ public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
+  }
+
+  private String name() {
+    return Mark8Device.channel(lidarId);
   }
 }

@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util;
 
-// TODO class name not final
+/** universal interface to allow for starting and stopping a process/computation */
 public interface StartAndStoppable {
   void start();
 
