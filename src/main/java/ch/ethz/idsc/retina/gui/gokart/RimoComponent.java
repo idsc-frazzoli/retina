@@ -107,8 +107,9 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
       rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
-      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());
-      double tempMotL = rimoGetL.temperature_motor;
+      Scalar temp = rimoGetL.getTemperatureMotor();
+      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      double tempMotL = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
       Scalar scalarL = RealScalar.of(tempMotL / 10);
       scalarL = Clip.unit().apply(scalarL);
       Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
@@ -116,8 +117,9 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
       rimoGetFieldsL.jTF_temperature_motor.setBackground(colorL);
     }
     {
-      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetR.temperature_motor, "[C]").toString());
-      double tempMotR = rimoGetR.temperature_motor;
+      Scalar temp = rimoGetR.getTemperatureMotor();
+      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      double tempMotR = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
       Scalar scalarR = RealScalar.of(tempMotR / 10);
       scalarR = Clip.unit().apply(scalarR);
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);

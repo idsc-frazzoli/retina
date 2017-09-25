@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.Scalar;
 
 class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -83,8 +83,9 @@ class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
       jTextFieldEmg.setBackground(color);
     }
     {
-      jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
-      double value = miscGetEvent.steerBatteryVoltage();
+      Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
+      jTextFieldBat.setText(voltage.toString());
+      double value = voltage.number().doubleValue(); // TODO temporary
       Color color = value < 11 ? Color.RED : Color.WHITE;
       jTextFieldBat.setBackground(color);
     }

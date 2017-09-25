@@ -11,12 +11,16 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /** sends stop command if steer battery voltage is outside of valid range
  * or if emergency flag is set in {@link MiscGetEvent} */
 public class MiscEmergencyModule extends AbstractModule implements MiscGetListener, RimoPutProvider {
-  private static final double MIN_V = 10.7;
-  private static final double MAX_V = 15;
+  private static final Clip VOLTAGE_RANGE = Clip.function( //
+      Quantity.of(10.7, "V"), //
+      Quantity.of(15, "V"));
   // ---
   private boolean flag = false;
 
@@ -44,8 +48,10 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    flag |= miscGetEvent.steerBatteryVoltage() < MIN_V;
-    flag |= MAX_V < miscGetEvent.steerBatteryVoltage();
+    {
+      Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
+      flag |= !VOLTAGE_RANGE.apply(voltage).equals(voltage);
+    }
     flag |= miscGetEvent.isEmergency();
   }
 }

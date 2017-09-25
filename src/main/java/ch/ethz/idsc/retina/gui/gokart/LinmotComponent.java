@@ -27,7 +27,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListener {
@@ -126,8 +125,9 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     {
-      jTextFieldWindingTemp1.setText(Quantity.of(linmotGetEvent.windingTemperature1(), "[C]").toString());
-      double temp1 = linmotGetEvent.windingTemperature1();
+      Scalar temp = linmotGetEvent.getWindingTemperature1();
+      jTextFieldWindingTemp1.setText(temp.toString());
+      double temp1 = temp.number().doubleValue(); // TODO temporary
       Scalar scalar = RealScalar.of(temp1 / 100);
       scalar = Clip.unit().apply(scalar);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
@@ -135,8 +135,9 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
       jTextFieldWindingTemp1.setBackground(color);
     }
     {
-      jTextFieldWindingTemp2.setText(Quantity.of(linmotGetEvent.windingTemperature2(), "[C]").toString());
-      double temp2 = linmotGetEvent.windingTemperature2();
+      Scalar temp = linmotGetEvent.getWindingTemperature2();
+      jTextFieldWindingTemp2.setText(temp.toString());
+      double temp2 = temp.number().doubleValue(); // TODO temporary
       Scalar scalar = RealScalar.of(temp2 / 100);
       scalar = Clip.unit().apply(scalar);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);

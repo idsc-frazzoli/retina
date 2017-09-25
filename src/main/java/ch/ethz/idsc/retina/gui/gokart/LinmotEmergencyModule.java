@@ -11,13 +11,17 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /** sends stop command if either winding temperature is outside valid range */
 public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
   /** degree celsius */
-  private static final double MIN_C = 2;
   // TODO NRJ check valid range
-  private static final double MAX_C = 110;
+  private static final Clip TEMPERATURE_RANGE = Clip.function( //
+      Quantity.of(2, "C"), //
+      Quantity.of(110, "C"));
   // ---
   private boolean flag = false;
 
@@ -45,11 +49,13 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
 
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    // too cold
-    flag |= linmotGetEvent.windingTemperature1() < MIN_C;
-    flag |= linmotGetEvent.windingTemperature2() < MIN_C;
-    // too hot
-    flag |= MAX_C < linmotGetEvent.windingTemperature1();
-    flag |= MAX_C < linmotGetEvent.windingTemperature2();
+    {
+      Scalar temperature = linmotGetEvent.getWindingTemperature1();
+      flag |= !TEMPERATURE_RANGE.apply(temperature).equals(temperature);
+    }
+    {
+      Scalar temperature = linmotGetEvent.getWindingTemperature2();
+      flag |= !TEMPERATURE_RANGE.apply(temperature).equals(temperature);
+    }
   }
 }
