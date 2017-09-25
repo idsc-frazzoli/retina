@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements RimoGetListener {
+class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtLVel;
   private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();

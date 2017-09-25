@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class LinmotComponent extends InterfaceComponent implements LinmotGetListener {
+class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListener {
   private final JButton initButton = new JButton("Init");
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();

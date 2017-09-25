@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 public class AutoboxTestingModule extends AbstractModule {
-  private final List<InterfaceComponent> list = new LinkedList<>();
+  private final List<AutoboxTestingComponent> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final RimoComponent rimoComponent = new RimoComponent();
   private final LinmotComponent linmotComponent = new LinmotComponent();
@@ -28,6 +28,7 @@ public class AutoboxTestingModule extends AbstractModule {
   private final MiscComponent miscComponent = new MiscComponent();
   public final JFrame jFrame = new JFrame();
 
+  // TODO NRJ make put commands appear in testing components
   @Override
   protected void first() throws Exception {
     RimoSocket.INSTANCE.addGetListener(rimoComponent);
@@ -77,7 +78,7 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.dispose();
   }
 
-  private void addTab(InterfaceComponent interfaceComponent) {
+  private void addTab(AutoboxTestingComponent interfaceComponent) {
     list.add(interfaceComponent);
     String string = interfaceComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);

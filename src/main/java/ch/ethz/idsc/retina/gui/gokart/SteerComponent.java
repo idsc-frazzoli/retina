@@ -19,8 +19,9 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SteerComponent extends InterfaceComponent implements SteerGetListener {
+class SteerComponent extends AutoboxTestingComponent implements SteerGetListener {
   public static final int AMP = 1000;
+  // ---
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];

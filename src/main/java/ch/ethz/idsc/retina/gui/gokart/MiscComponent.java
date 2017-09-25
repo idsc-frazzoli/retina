@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements MiscGetListener {
+class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //

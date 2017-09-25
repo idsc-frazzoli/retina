@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** sends stop command if front lidar is not operational */
 public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
-  private static final int WATCHDOG = 500;
+  private static final int WATCHDOG_MS = 500; // 500[ms]
   private final Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient("front");
 
   @Override
@@ -31,11 +31,11 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
     urg04lxLcmClient.stopSubscriptions();
   }
 
-  private long now = 0;
+  private long last = now();
 
   @Override
   public void timestamp(int usec, int type) {
-    now = System.currentTimeMillis();
+    last = now();
   }
 
   @Override
@@ -50,8 +50,12 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
 
   @Override
   public Optional<RimoPutEvent> getPutEvent() {
-    if (System.currentTimeMillis() < now + WATCHDOG)
-      return Optional.of(RimoPutEvent.STOP);
-    return Optional.empty();
+    if (now() < last + WATCHDOG_MS)
+      return Optional.empty();
+    return Optional.of(RimoPutEvent.STOP);
+  }
+
+  private static long now() {
+    return System.currentTimeMillis();
   }
 }

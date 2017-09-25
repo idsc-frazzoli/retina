@@ -15,7 +15,7 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 
-public abstract class InterfaceComponent {
+abstract class AutoboxTestingComponent {
   public static final int MAX_USHORT = 65535;
   // ---
   public static final int WEST_WIDTH = 140;
@@ -26,7 +26,7 @@ public abstract class InterfaceComponent {
   private final RowPanel rowActor = new RowPanel();
   private boolean isJoystickEnabled;
 
-  public InterfaceComponent() {
+  public AutoboxTestingComponent() {
     jPanel.add(rowTitle.jPanel, BorderLayout.WEST);
     jPanel.add(rowActor.jPanel, BorderLayout.CENTER);
   }
