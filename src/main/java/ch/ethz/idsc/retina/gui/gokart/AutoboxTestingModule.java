@@ -28,7 +28,6 @@ public class AutoboxTestingModule extends AbstractModule {
   private final MiscComponent miscComponent = new MiscComponent();
   public final JFrame jFrame = new JFrame();
 
-  // TODO NRJ make put commands appear in testing components
   @Override
   protected void first() throws Exception {
     RimoSocket.INSTANCE.addGetListener(rimoComponent);

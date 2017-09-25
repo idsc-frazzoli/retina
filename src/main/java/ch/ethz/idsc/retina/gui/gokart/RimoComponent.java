@@ -77,7 +77,6 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
     // TODO NRJ background according to error code
     rimoGetFields.jTF_error_code = createReading(side + " error code");
-    // TODO NRJ background according to temperature
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
   }

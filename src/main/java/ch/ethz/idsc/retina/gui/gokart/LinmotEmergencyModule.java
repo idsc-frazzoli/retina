@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** sends stop command if either winding temperature is outside valid range */
 public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
   /** degree celsius */
-  // TODO NRJ check valid range
+  // TODO NRJ check valid range, cite source
   private static final Clip TEMPERATURE_RANGE = Clip.function( //
       Quantity.of(2, "C"), //
       Quantity.of(110, "C"));

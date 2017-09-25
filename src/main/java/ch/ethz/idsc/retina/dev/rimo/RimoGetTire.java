@@ -68,9 +68,6 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(temperature_motor, "C");
   }
 
-  // TODO NRJ provide functions that compute physical values from raw integer
-  // values
-  // for instance voltage, current, temperature...
   public String toInfoString() {
     return String.format("%d %d %d %d %d %d %d", //
         status_word, actual_speed, //

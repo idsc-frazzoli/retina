@@ -8,12 +8,13 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
 
 public class Mark8SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 8;
   private static final float[] IR = new float[8];
   private static final float[] IZ = new float[8];
-  private static final double ANGLE_FACTOR = 2 * Math.PI / 10400.0;
+  // private static final double ANGLE_FACTOR = 2 * Math.PI / 10400.0;
   // private static final double TO_METER = 0.00001;
   // private static final float TO_METER_FLOAT = (float) TO_METER;
   private static final double TO_METER = 0.002;
@@ -23,6 +24,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   // confirmation through experiments
   private static final double[] M8_VERTICAL_ANGLES = { //
       -0.318505, -0.2692, -0.218009, -0.165195, -0.111003, -0.0557982, 0.0, 0.0557982 };
+  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(10400, false);
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   private int usec;
@@ -50,9 +52,11 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    final double angle = rotational * ANGLE_FACTOR;
-    float dx = (float) Math.cos(angle);
-    float dy = (float) Math.sin(angle);
+    // final double angle = rotational * ANGLE_FACTOR;
+    // float dx = (float) Math.cos(angle);
+    // float dy = (float) Math.sin(angle);
+    float dx = TRIGONOMETRY.dx(rotational);
+    float dy = TRIGONOMETRY.dy(rotational);
     float[] coords = new float[3];
     // apparently the correct nesting of loops (test more)
     for (int layer = 0; layer < returns; ++layer) {
@@ -74,9 +78,11 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
 
   // @Override
   void scan_former(int rotational, ByteBuffer byteBuffer) {
-    final double angle = rotational * ANGLE_FACTOR;
-    float dx = (float) Math.cos(angle);
-    float dy = (float) Math.sin(angle);
+    // final double angle = rotational * ANGLE_FACTOR;
+    // float dx = (float) Math.cos(angle);
+    // float dy = (float) Math.sin(angle);
+    float dx = TRIGONOMETRY.dx(rotational);
+    float dy = TRIGONOMETRY.dy(rotational);
     int position = byteBuffer.position();
     byteBuffer.position(position + 24 * 4);
     byteBuffer.get(intensity); // bulk read intensities
