@@ -1,11 +1,11 @@
-// code by jph
+// code from stackoverflow  
+// adapted by jph
 package ch.ethz.idsc.retina.util.data;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-// TODO give reference to stackoverflow user
 public class IntDisjointSet {
   private final int[] parent;
   private final int[] rank;

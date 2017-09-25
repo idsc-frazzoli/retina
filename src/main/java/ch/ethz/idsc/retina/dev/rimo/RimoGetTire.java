@@ -4,6 +4,9 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear
  * wheel */
@@ -21,7 +24,7 @@ public class RimoGetTire implements Serializable {
   private final short dc_bus_voltage;
   public final int error_code;
   /** C */
-  public final short temperature_motor;
+  private final short temperature_motor;
   /** C */
   public final short temperature_heatsink;
 
@@ -60,13 +63,11 @@ public class RimoGetTire implements Serializable {
     return dc_bus_voltage;
   }
 
-  public float getTemperatureMotor() {
-    return temperature_motor; // TODO right now only senses zeros
+  public Scalar getTemperatureMotor() {
+    // TODO NRJ right now only senses zeros
+    return Quantity.of(temperature_motor, "C");
   }
 
-  // TODO NRJ provide functions that compute physical values from raw integer
-  // values
-  // for instance voltage, current, temperature...
   public String toInfoString() {
     return String.format("%d %d %d %d %d %d %d", //
         status_word, actual_speed, //

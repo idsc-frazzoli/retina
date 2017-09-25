@@ -139,8 +139,8 @@ public class Urg04lxRender {
       }
       try {
         // display min max range in sensor data
-        Scalar min = range.flatten(-1).map(Scalar.class::cast).filter(Scalars::nonZero).reduce(Min::of).get();
-        Scalar max = range.flatten(-1).map(Scalar.class::cast).reduce(Max::of).get();
+        Scalar min = range.stream().map(Scalar.class::cast).filter(Scalars::nonZero).reduce(Min::of).get();
+        Scalar max = range.stream().map(Scalar.class::cast).reduce(Max::of).get();
         graphics.setColor(Color.BLACK);
         graphics.drawString(Tensors.of(min, max).map(Round._3).toString() + "[m]", 200, 10);
       } catch (Exception exception) {

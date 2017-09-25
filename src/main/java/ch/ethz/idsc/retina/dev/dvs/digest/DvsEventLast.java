@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.dev.dvs.digest;
 
 import java.awt.Point;

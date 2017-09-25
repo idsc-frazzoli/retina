@@ -17,9 +17,11 @@ import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MiscComponent extends InterfaceComponent implements MiscGetListener {
+class MiscComponent extends AutoboxTestingComponent implements MiscGetListener {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -28,6 +30,8 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
   );
+  private static final Scalar BATTERY_LOW = Quantity.of(11, "V");
+  // ---
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -83,9 +87,9 @@ public class MiscComponent extends InterfaceComponent implements MiscGetListener
       jTextFieldEmg.setBackground(color);
     }
     {
-      jTextFieldBat.setText(Quantity.of(miscGetEvent.steerBatteryVoltage(), "[V]").toString());
-      double value = miscGetEvent.steerBatteryVoltage();
-      Color color = value < 11 ? Color.RED : Color.WHITE;
+      Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
+      jTextFieldBat.setText(voltage.toString());
+      Color color = Scalars.lessThan(voltage, BATTERY_LOW) ? Color.RED : Color.WHITE;
       jTextFieldBat.setBackground(color);
     }
   }

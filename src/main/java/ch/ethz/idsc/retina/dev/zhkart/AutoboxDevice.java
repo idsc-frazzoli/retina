@@ -3,6 +3,5 @@ package ch.ethz.idsc.retina.dev.zhkart;
 
 public enum AutoboxDevice {
   ;
-  // TODO use
-  public static final String GROUP = "192.168.1.10";
+  public static final String REMOTE_ADDRESS = "192.168.1.10"; // "192.168.1.10"
 }

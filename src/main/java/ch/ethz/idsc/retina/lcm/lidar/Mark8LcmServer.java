@@ -10,11 +10,10 @@ import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Digest;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 
-/** publishes the incoming tcp data from the Quanergy Marc8 via lcm
+/** publishes the incoming TCP data from the Quanergy Marc8 via LCM
  * 
- * <p>
- * if the sensor is the only client to the device, the sensor typically requires
- * 20 seconds to respond with the first measurements */
+ * <p>if the sensor is the only client to the device, the sensor typically
+ * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
   public static final int DEFAULT_RETURNS = 1;
   // ---
@@ -23,11 +22,9 @@ public class Mark8LcmServer {
   private boolean isLaunched = true;
   private final BinaryBlobPublisher publisher;
 
-  /** @param ip
-   * for instance "192.168.1.3"
+  /** @param ip address for instance "192.168.1.3"
    * @param mark8Digest
-   * @param lidarId
-   * for example "center", or "front" */
+   * @param lidarId for example "center", or "front" */
   public Mark8LcmServer(String ip, Mark8Digest mark8Digest, String lidarId) {
     this.ip = ip;
     this.mark8Digest = mark8Digest;

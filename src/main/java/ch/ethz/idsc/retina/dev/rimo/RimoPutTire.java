@@ -12,6 +12,11 @@ public class RimoPutTire implements Serializable {
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0);
+
+  public static RimoPutTire withSpeed(short speed) {
+    return new RimoPutTire(OPERATION, speed);
+  }
+
   // ---
   /** 4 bytes encoding length */
   /* package */ static final int LENGTH = 4;

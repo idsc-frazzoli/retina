@@ -30,8 +30,6 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   private ImageCopy imageCopy = new ImageCopy();
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
-  int frame_duration = -1;
-  int reset_duration = -1;
   DavisTallyEvent davisTallyEvent;
   // Tensor displayEventCount = Array.zeros(3);
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
@@ -40,7 +38,6 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       if (!columnTimedImage.isComplete)
         System.err.println("rst incomplete");
       rstImage = columnTimedImage.bufferedImage;
-      reset_duration = columnTimedImage.duration();
     }
   };
   public final ColumnTimedImageListener sigListener = new ColumnTimedImageListener() {
@@ -49,7 +46,6 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       if (!columnTimedImage.isComplete)
         System.err.println("sig incomplete");
       sigImage = columnTimedImage.bufferedImage;
-      frame_duration = columnTimedImage.duration();
     }
   };
   public final ColumnTimedImageListener difListener = new ColumnTimedImageListener() {
@@ -103,10 +99,6 @@ public class DavisViewerComponent implements DavisImuFrameListener {
             imuFrame.accel().map(Round._2) + "[m*s^-2]", 0, 180 + 12 * 2);
         graphics.drawString( //
             imuFrame.gyro().map(Round._2) + "[rad*s^-1]", 0, 180 + 12 * 3);
-      }
-      {
-        // graphics.setColor(Color.GRAY);
-        graphics.drawString(frame_duration + " " + reset_duration, 0, 180 + 12 * 4);
       }
       if (Objects.nonNull(difImage)) {
         int[] bins = ImageHistogram.of(difImage);

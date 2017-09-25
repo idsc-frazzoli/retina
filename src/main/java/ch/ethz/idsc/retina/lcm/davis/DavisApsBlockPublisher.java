@@ -13,7 +13,7 @@ public class DavisApsBlockPublisher implements DavisApsBlockListener {
    * @param davisApsType
    * @return channel name for given id */
   public static String channel(String cameraId, DavisApsType davisApsType) {
-    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + "." + davisApsType.name().toLowerCase();
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + davisApsType.extension;
   }
 
   // ---

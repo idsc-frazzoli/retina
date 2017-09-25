@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class RimoComponent extends InterfaceComponent implements RimoGetListener {
+class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtLVel;
   private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();
@@ -77,7 +77,6 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
     // TODO NRJ background according to error code
     rimoGetFields.jTF_error_code = createReading(side + " error code");
-    // TODO NRJ background according to temperature
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
   }
@@ -107,8 +106,9 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
-      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetL.temperature_motor, "[C]").toString());
-      double tempMotL = rimoGetL.temperature_motor;
+      Scalar temp = rimoGetL.getTemperatureMotor();
+      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      double tempMotL = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
       Scalar scalarL = RealScalar.of(tempMotL / 10);
       scalarL = Clip.unit().apply(scalarL);
       Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
@@ -116,8 +116,9 @@ public class RimoComponent extends InterfaceComponent implements RimoGetListener
       rimoGetFieldsL.jTF_temperature_motor.setBackground(colorL);
     }
     {
-      rimoGetFieldsL.jTF_temperature_motor.setText(Quantity.of(rimoGetR.temperature_motor, "[C]").toString());
-      double tempMotR = rimoGetR.temperature_motor;
+      Scalar temp = rimoGetR.getTemperatureMotor();
+      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      double tempMotR = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
       Scalar scalarR = RealScalar.of(tempMotR / 10);
       scalarR = Clip.unit().apply(scalarR);
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);

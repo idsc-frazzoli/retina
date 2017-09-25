@@ -16,21 +16,23 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
 import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 public class AutoboxJoystickModule extends AbstractModule {
-  private final AutoboxGenericXboxPadJoystick agxpj = new AutoboxGenericXboxPadJoystick();
+  private final AutoboxGenericXboxPadJoystick instance = new AutoboxGenericXboxPadJoystick();
   private final JFrame jFrame = new JFrame("joystick");
 
   @Override
   protected void first() throws Exception {
-    GenericXboxPadLcmClient.INSTANCE.addListener(agxpj);
+    GenericXboxPadLcmClient.INSTANCE.addListener(instance);
     // ---
-    RimoSocket.INSTANCE.addProvider(agxpj.rimoPutProvider);
-    LinmotSocket.INSTANCE.addProvider(agxpj.linmotPutProvider);
-    SteerSocket.INSTANCE.addProvider(agxpj.steerPutProvider);
+    RimoSocket.INSTANCE.addProvider(instance.rimoPutProvider);
+    LinmotSocket.INSTANCE.addProvider(instance.linmotPutProvider);
+    SteerSocket.INSTANCE.addProvider(instance.steerPutProvider);
+    SteerSocket.INSTANCE.addGetListener(instance);
     // ---
     JPanel jPanel = new JPanel(new BorderLayout());
     {
@@ -38,10 +40,17 @@ public class AutoboxJoystickModule extends AbstractModule {
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
       {
+        SpinnerLabel<DriveMode> spinnerLabel = new SpinnerLabel<>();
+        spinnerLabel.setArray(DriveMode.values());
+        spinnerLabel.setValue(instance.driveMode);
+        spinnerLabel.addSpinnerListener(i -> instance.driveMode = i);
+        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(120, 28), "drive mode");
+      }
+      {
         SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
         spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
-        spinnerLabel.setIndex(2);
-        spinnerLabel.addSpinnerListener(i -> agxpj.setSpeedLimit(i));
+        spinnerLabel.setValueSafe(instance.speedLimit);
+        spinnerLabel.addSpinnerListener(i -> instance.speedLimit = i);
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
       }
       jPanel.add(jToolBar, BorderLayout.NORTH);
@@ -53,11 +62,13 @@ public class AutoboxJoystickModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        RimoSocket.INSTANCE.removeProvider(agxpj.rimoPutProvider);
-        LinmotSocket.INSTANCE.removeProvider(agxpj.linmotPutProvider);
-        SteerSocket.INSTANCE.removeProvider(agxpj.steerPutProvider);
+        RimoSocket.INSTANCE.removeProvider(instance.rimoPutProvider);
+        LinmotSocket.INSTANCE.removeProvider(instance.linmotPutProvider);
+        SteerSocket.INSTANCE.removeProvider(instance.steerPutProvider);
+        SteerSocket.INSTANCE.removeGetListener(instance);
+        // ---
         System.out.println("removed listeners and providers");
-        GenericXboxPadLcmClient.INSTANCE.removeListener(agxpj);
+        GenericXboxPadLcmClient.INSTANCE.removeListener(instance);
       }
     });
     jFrame.setVisible(true);

@@ -6,6 +6,8 @@ import java.util.Date;
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
 import ch.ethz.idsc.retina.util.io.UserHome;
 
+/** invokes lcm logger binary as Process that records all lcm-messages
+ * into binary files for later playback */
 public final class LoggerModule extends AbstractModule {
   private LcmLogProcess lcmLogProcess;
 
@@ -16,8 +18,6 @@ public final class LoggerModule extends AbstractModule {
 
   @Override
   protected void last() {
-    // TODO try to send signal to exit gracefully
-    // ... something like "Ctrl+C" via the process.inputstream
     System.out.println(new Date() + " lcm-logger: graceful destruction");
     try {
       lcmLogProcess.close();

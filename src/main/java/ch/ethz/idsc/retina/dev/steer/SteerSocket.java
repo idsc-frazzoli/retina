@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
@@ -16,7 +17,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   private static final String LOCAL_ADDRESS = "192.168.1.1";
   /** remote */
   private static final int REMOTE_PORT = 5002;
-  private static final String REMOTE_ADDRESS = "192.168.1.10";
+  private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
   // ---
   private static final int SEND_PERIOD_MS = 20;
   // ---

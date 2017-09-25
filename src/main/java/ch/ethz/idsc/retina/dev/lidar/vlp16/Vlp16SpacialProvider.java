@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity */
@@ -15,7 +16,8 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
   public static final float[] IR = new float[LASERS];
   public static final float[] IZ = new float[LASERS];
-  public static final double ANGLE_FACTOR = Math.PI / 18000.0;
+  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
+  // public static final double ANGLE_FACTOR = Math.PI / 18000.0;
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---
@@ -52,10 +54,11 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
 
   @Override
   public void scan(int azimuth, ByteBuffer byteBuffer) {
-    // TODO cos/sin can be done in a lookup table!
-    final double angle = azimuth * ANGLE_FACTOR;
-    float dx = (float) Math.cos(angle);
-    float dy = (float) -Math.sin(angle);
+    // final double angle = azimuth * ANGLE_FACTOR;
+    // float dx = (float) Math.cos(angle);
+    // float dy = (float) -Math.sin(angle);
+    float dx = TRIGONOMETRY.dx(azimuth);
+    float dy = TRIGONOMETRY.dy(azimuth);
     float[] coords = new float[3];
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;

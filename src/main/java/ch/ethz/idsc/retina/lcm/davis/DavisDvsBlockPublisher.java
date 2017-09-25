@@ -14,7 +14,7 @@ public class DavisDvsBlockPublisher implements DavisDvsBlockListener {
    * @return dvs channel name for given serial number of davis camera */
   public static String channel(String cameraId) {
     GlobalAssert.that(Objects.nonNull(cameraId));
-    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + ".dvs";
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + DavisLcmChannel.DVS.extension;
   }
 
   // ---

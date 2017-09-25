@@ -4,6 +4,8 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
@@ -30,13 +32,13 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   /** @return temperature of winding 1 in degree Celsius */
-  public double windingTemperature1() {
-    return winding_temp1 * TO_DEGREE_CELSIUS;
+  public Scalar getWindingTemperature1() {
+    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, "C");
   }
 
   /** @return temperature of winding 2 in degree Celsius */
-  public double windingTemperature2() {
-    return winding_temp2 * TO_DEGREE_CELSIUS;
+  public Scalar getWindingTemperature2() {
+    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, "C");
   }
 
   public String toInfoString() {

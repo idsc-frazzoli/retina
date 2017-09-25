@@ -21,7 +21,7 @@ public class RimoGetFields {
     jTF_rms_motor_current.setText("" + rimoGetEvent.rms_motor_current);
     jTF_dc_bus_voltage.setText("" + rimoGetEvent.getBusVoltage() + "[V]");
     jTF_error_code.setText("" + rimoGetEvent.error_code);
-    jTF_temperature_motor.setText("" + rimoGetEvent.temperature_motor);
+    jTF_temperature_motor.setText(rimoGetEvent.getTemperatureMotor().toString());
     jTF_temperature_heatsink.setText("" + rimoGetEvent.temperature_heatsink);
   }
 }
