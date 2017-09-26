@@ -17,10 +17,11 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.sca.Round;
+import ch.ethz.idsc.tensor.Scalar;
 
 class SteerComponent extends AutoboxTestingComponent implements SteerGetListener {
   public static final int AMP = 1000;
+  public static final double FACTOR = 0.5;
   // ---
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
@@ -36,7 +37,7 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
     { // command speed
       JToolBar jToolBar = createRow("torque");
       sliderExtTorque = SliderExt.wrap(new JSlider(-AMP, AMP, 0)); // values are divided by 1000
-      sliderExtTorque.physics = scalar -> scalar.multiply(RealScalar.of(1e-3)).map(Round._4).Get();
+      sliderExtTorque.physics = SteerComponent::giveTorque;
       sliderExtTorque.addToComponent(jToolBar);
     }
     addSeparator();
@@ -70,6 +71,10 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
   }
 
+  private static Scalar giveTorque(int value) {
+    return RealScalar.of(value * FACTOR / AMP);
+  }
+
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
     public ProviderRank getProviderRank() {
@@ -79,7 +84,7 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
     @Override
     public Optional<SteerPutEvent> getPutEvent() {
       return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
-          sliderExtTorque.jSlider.getValue() * 1e-3f));
+          giveTorque(sliderExtTorque.jSlider.getValue()).number().doubleValue()));
     }
   };
 }
