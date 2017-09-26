@@ -32,7 +32,7 @@ public class RimoPutTire implements Serializable {
     this.speed = speed;
   }
 
-  public short getSpeedRadPerMin() {
+  public short getSpeedRaw() {
     return speed;
   }
 

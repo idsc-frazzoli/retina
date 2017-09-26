@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
@@ -26,7 +27,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
+class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, RimoPutListener {
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
   private final SliderExt sliderExtLVel;
   private final SpinnerLabel<Word> spinnerLabelRCmd = new SpinnerLabel<>();
@@ -88,7 +89,7 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
     {
-      double speedDiff = rimoPutTireL.getSpeedRadPerMin() - rimoGetL.actual_speed;
+      double speedDiff = rimoPutTireL.getSpeedRaw() - rimoGetL.actual_speed;
       Scalar scalar = RealScalar.of(speedDiff);
       scalar = Clip.function(-500, 500).apply(scalar);
       scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
@@ -97,7 +98,7 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
       rimoGetFieldsL.jTF_actual_speed.setBackground(color);
     }
     {
-      double speedDiff = rimoPutTireR.getSpeedRadPerMin() - rimoGetR.actual_speed;
+      double speedDiff = rimoPutTireR.getSpeedRaw() - rimoGetR.actual_speed;
       Scalar scalar = RealScalar.of(speedDiff);
       scalar = Clip.function(-500, 500).apply(scalar);
       scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
@@ -140,4 +141,11 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener {
       return ProviderRank.TESTING;
     }
   };
+
+  @Override
+  public void putEvent(RimoPutEvent rimoPutEvent) {
+    // TODO also assign spinner labels
+    sliderExtLVel.jSlider.setValue(rimoPutEvent.putL.getSpeedRaw());
+    sliderExtRVel.jSlider.setValue(rimoPutEvent.putR.getSpeedRaw());
+  }
 }

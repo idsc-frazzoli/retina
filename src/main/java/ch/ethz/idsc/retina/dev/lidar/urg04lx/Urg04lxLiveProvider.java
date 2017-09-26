@@ -70,12 +70,16 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(array);
                 byte c1 = byteBuffer.get();
                 byte c2 = byteBuffer.get();
-                if (c1 == 'U' && c2 == 'B')
+                if (c1 == 'U' && c2 == 'B') {
+                  long tic = System.currentTimeMillis();
                   listeners.forEach(listener -> listener.accept(array, array.length));
-                else
+                  long duration = System.currentTimeMillis() - tic;
+                  // TODO enhance readout
+                  Thread.sleep(Math.max(0, 95 - duration));
+                } else
                   throw new RuntimeException("data corrupt");
               } else
-                Thread.sleep(10); // magic const
+                Thread.sleep(2); // magic const
             }
           } catch (Exception exception) {
             exception.printStackTrace();
