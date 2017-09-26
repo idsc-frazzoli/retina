@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -18,6 +20,8 @@ import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class SteerComponent extends AutoboxTestingComponent implements SteerGetListener {
   public static final int AMP = 1000;
@@ -26,6 +30,7 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
+  private final SteerAngleTracker steerAngleTracker = new SteerAngleTracker();
 
   public SteerComponent() {
     {
@@ -58,6 +63,9 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
+    steerAngleTracker.getEvent(steerGetEvent);
+    double angle = steerAngleTracker.getSteeringAngle(steerGetEvent);
+    // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
     jTextField[2].setText("" + steerGetEvent.tsuTrq_CANInput);
@@ -65,7 +73,11 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
-    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos);
+    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos + " " + angle);
+    {
+      Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
+      jTextField[7].setBackground(color);
+    }
     jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
     jTextField[9].setText("" + steerGetEvent.gearRat);
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
