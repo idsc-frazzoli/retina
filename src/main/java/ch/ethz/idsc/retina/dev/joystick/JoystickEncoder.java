@@ -9,7 +9,7 @@ public enum JoystickEncoder {
   public static void encode( //
       JoystickType joystickType, FloatBuffer axes, ByteBuffer buttons, ByteBuffer hats, ByteBuffer dest) {
     dest.put((byte) joystickType.ordinal()); // joystick id
-    while (axes.hasRemaining())
+    while (axes.hasRemaining()) // <- null pointer exception has been observed here
       dest.put((byte) (axes.get() * Byte.MAX_VALUE));
     {
       short mask = 0; // no more than 16 buttons

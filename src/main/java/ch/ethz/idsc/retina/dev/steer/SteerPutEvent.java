@@ -17,12 +17,13 @@ public class SteerPutEvent extends DataEvent {
       CMD_OFF, CMD_ON);
   // ---
   private final byte command;
-  // TODO NRJ not finalized, at the moment this is position instead of torque!
   private final float torque;
 
-  public SteerPutEvent(Word command, float torque) {
+  /** @param command
+   * @param torque TODO NRJ determine valid range */
+  public SteerPutEvent(Word command, double torque) {
     this.command = command.getByte();
-    this.torque = torque;
+    this.torque = (float) torque;
   }
 
   @Override

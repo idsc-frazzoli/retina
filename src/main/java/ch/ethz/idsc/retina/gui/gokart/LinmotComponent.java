@@ -22,12 +22,11 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Round;
 
 class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListener {
   private final JButton initButton = new JButton("Init");
@@ -123,23 +122,20 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     // TODO NRJ figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
+    // TODO simplify using new Clip API
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
-      jTextFieldWindingTemp1.setText(temp.toString());
-      double temp1 = temp.number().doubleValue(); // TODO temporary
-      Scalar scalar = RealScalar.of(temp1 / 100);
-      scalar = Clip.unit().apply(scalar);
-      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
+      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp1.setBackground(color);
     }
     {
       Scalar temp = linmotGetEvent.getWindingTemperature2();
-      jTextFieldWindingTemp2.setText(temp.toString());
-      double temp2 = temp.number().doubleValue(); // TODO temporary
-      Scalar scalar = RealScalar.of(temp2 / 100);
-      scalar = Clip.unit().apply(scalar);
-      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      jTextFieldWindingTemp2.setText(temp.map(Round._1).toString());
+      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp2.setBackground(color);
     }

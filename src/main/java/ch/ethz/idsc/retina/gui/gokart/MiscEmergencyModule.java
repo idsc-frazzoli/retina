@@ -50,7 +50,7 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
   public void getEvent(MiscGetEvent miscGetEvent) {
     {
       Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
-      flag |= !VOLTAGE_RANGE.apply(voltage).equals(voltage);
+      flag |= VOLTAGE_RANGE.isOutside(voltage);
     }
     flag |= miscGetEvent.isEmergency();
   }

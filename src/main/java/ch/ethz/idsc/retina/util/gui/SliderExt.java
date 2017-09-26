@@ -10,7 +10,6 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class SliderExt implements ChangeListener {
@@ -20,7 +19,7 @@ public class SliderExt implements ChangeListener {
 
   public final JSlider jSlider;
   public final JLabel jLabel = new JLabel();
-  public Function<Scalar, Scalar> physics;
+  public Function<Integer, Scalar> physics;
 
   private SliderExt(JSlider jSlider) {
     this.jSlider = jSlider;
@@ -34,9 +33,10 @@ public class SliderExt implements ChangeListener {
     if (Objects.isNull(physics)) {
       stringBuilder.append(jSlider.getValue());
     } else {
-      Scalar scalar = physics.apply(RealScalar.of(jSlider.getValue()));
+      final int value = jSlider.getValue();
+      Scalar scalar = physics.apply(value);
       stringBuilder.append(scalar.toString());
-      String toolTip = "" + jSlider.getValue();
+      String toolTip = "" + value;
       jLabel.setToolTipText(toolTip);
       jSlider.setToolTipText(toolTip);
     }

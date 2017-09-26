@@ -6,10 +6,16 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
 public class LinmotGetEvent extends DataEvent {
+  /** degree celsius */
+  // TODO NRJ check valid range, cite source
+  public static final Clip TEMPERATURE_RANGE = Clip.function( //
+      Quantity.of(2, "C"), //
+      Quantity.of(110, "C"));
   /** 16 bytes */
   public static final int LENGTH = 16;
   // TODO NRJ document conversion factor

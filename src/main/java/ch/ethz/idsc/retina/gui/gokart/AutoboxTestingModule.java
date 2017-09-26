@@ -31,6 +31,7 @@ public class AutoboxTestingModule extends AbstractModule {
   @Override
   protected void first() throws Exception {
     RimoSocket.INSTANCE.addGetListener(rimoComponent);
+    RimoSocket.INSTANCE.addPutListener(rimoComponent);
     RimoSocket.INSTANCE.addProvider(rimoComponent.rimoPutProvider);
     addTab(rimoComponent);
     // ---
@@ -55,6 +56,7 @@ public class AutoboxTestingModule extends AbstractModule {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeGetListener(rimoComponent);
+        RimoSocket.INSTANCE.removePutListener(rimoComponent);
         RimoSocket.INSTANCE.removeProvider(rimoComponent.rimoPutProvider);
         // ---
         LinmotSocket.INSTANCE.removeGetListener(linmotComponent);

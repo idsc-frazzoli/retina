@@ -24,14 +24,19 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGetListener {
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 500; // 500[ms]
+  private static final Scalar AXIS_DELTA = Quantity.of(1.2, "m");
+  private static final Scalar TIRE_L = Quantity.of(+0.54, "m");
+  private static final Scalar TIRE_R = Quantity.of(-0.54, "m");
   // ---
   private final TimeKeeper timeKeeper = new TimeKeeper();
   private GenericXboxPadJoystick _joystick;
@@ -40,8 +45,8 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
   // TODO NRJ test simple drive
   public DriveMode driveMode = DriveMode.FULL_CONTROL;
   private SteerGetEvent steerGetEvent;
-  private final DifferentialSpeed dsL = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(+0.54));
-  private final DifferentialSpeed dsR = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-0.54));
+  private final DifferentialSpeed dsL = new DifferentialSpeed(AXIS_DELTA, TIRE_L);
+  private final DifferentialSpeed dsR = new DifferentialSpeed(AXIS_DELTA, TIRE_R);
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
       new Rice1StateSpaceModel(RealScalar.of(1)), //
       MidpointIntegrator.INSTANCE, //
@@ -61,11 +66,26 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
 
   /** steering */
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
+    @SuppressWarnings("incomplete-switch")
     @Override
     public Optional<SteerPutEvent> getPutEvent() {
       if (hasJoystick()) {
-        double value = -_joystick.getRightKnobDirectionRight();
-        return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, (float) value));
+        GenericXboxPadJoystick joystick = _joystick;
+        Scalar value = RealScalar.ZERO;
+        switch (driveMode) {
+        case SIMPLE_DRIVE: {
+          value = RealScalar.of(-joystick.getRightKnobDirectionRight()).multiply(torqueAmp);
+          break;
+        }
+        case FULL_CONTROL: {
+          if (joystick.isButtonPressedB())
+            value = torqueAmp;
+          if (joystick.isButtonPressedX())
+            value = torqueAmp.negate();
+          break;
+        }
+        }
+        return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, value.number().doubleValue()));
       }
       return Optional.empty();
     }
@@ -148,6 +168,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
       return ProviderRank.MANUAL;
     }
   };
+  public Scalar torqueAmp = RationalScalar.of(1, 2);
 
   private static long now() {
     return System.currentTimeMillis();

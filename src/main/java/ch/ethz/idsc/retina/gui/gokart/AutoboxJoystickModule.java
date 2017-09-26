@@ -20,10 +20,16 @@ import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
 import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 
 public class AutoboxJoystickModule extends AbstractModule {
   private final AutoboxGenericXboxPadJoystick instance = new AutoboxGenericXboxPadJoystick();
   private final JFrame jFrame = new JFrame("joystick");
+  private final Tensor TORQUE = Subdivide.of(RealScalar.ZERO, RationalScalar.of(1, 2), 5);
 
   @Override
   protected void first() throws Exception {
@@ -53,11 +59,19 @@ public class AutoboxJoystickModule extends AbstractModule {
         spinnerLabel.addSpinnerListener(i -> instance.speedLimit = i);
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
       }
+      {
+        SpinnerLabel<Object> spinnerLabel = new SpinnerLabel<>();
+        Object[] values = TORQUE.stream().map(Scalar.class::cast).toArray();
+        spinnerLabel.setArray(values);
+        spinnerLabel.setValueSafe(RationalScalar.of(1, 5));
+        spinnerLabel.addSpinnerListener(i -> instance.torqueAmp = (Scalar) i);
+        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(60, 28), "max torque limit");
+      }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     // ---
     jFrame.setContentPane(jPanel);
-    jFrame.setBounds(200, 200, 200, 100);
+    jFrame.setBounds(200, 200, 280, 70);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
