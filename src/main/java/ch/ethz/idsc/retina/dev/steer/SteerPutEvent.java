@@ -15,6 +15,11 @@ public class SteerPutEvent extends DataEvent {
   public static final Word CMD_ON = Word.createByte("ON", (byte) 1);
   public static final List<Word> COMMANDS = Arrays.asList( //
       CMD_OFF, CMD_ON);
+
+  public static final SteerPutEvent from(ByteBuffer byteBuffer) {
+    return new SteerPutEvent(Word.createByte("", byteBuffer.get()), byteBuffer.getFloat());
+  }
+
   // ---
   private final byte command;
   private final float torque;
@@ -30,6 +35,10 @@ public class SteerPutEvent extends DataEvent {
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(command);
     byteBuffer.putFloat(torque);
+  }
+
+  public float getTorque() {
+    return torque;
   }
 
   @Override
