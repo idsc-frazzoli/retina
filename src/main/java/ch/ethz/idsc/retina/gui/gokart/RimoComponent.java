@@ -19,12 +19,10 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, RimoPutListener {
   private final SpinnerLabel<Word> spinnerLabelLCmd = new SpinnerLabel<>();
@@ -91,22 +89,18 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
     {
       Scalar temp = rimoGetL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
-      double tempMotL = temp.number().doubleValue();
-      Scalar scalarL = RealScalar.of(tempMotL / 10);
-      scalarL = Clip.unit().apply(scalarL);
-      Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
-      Color colorL = ColorFormat.toColor(vectorL);
-      rimoGetFieldsL.jTF_temperature_motor.setBackground(colorL);
+      Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
     {
       Scalar temp = rimoGetR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
-      double tempMotR = temp.number().doubleValue();
-      Scalar scalarR = RealScalar.of(tempMotR / 10);
-      scalarR = Clip.unit().apply(scalarR);
-      Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
-      Color colorR = ColorFormat.toColor(vectorR);
-      rimoGetFieldsR.jTF_temperature_motor.setBackground(colorR);
+      Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
+      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+      Color color = ColorFormat.toColor(vector);
+      rimoGetFieldsR.jTF_temperature_motor.setBackground(color);
     }
   }
 

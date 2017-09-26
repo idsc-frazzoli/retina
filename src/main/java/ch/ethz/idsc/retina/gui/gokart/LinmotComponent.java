@@ -126,9 +126,7 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
-      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.apply(temp);
-      value = value.subtract(LinmotGetEvent.TEMP_MIN) //
-          .divide(LinmotGetEvent.TEMP_MAX.subtract(LinmotGetEvent.TEMP_MIN));
+      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp1.setBackground(color);
@@ -136,9 +134,7 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     {
       Scalar temp = linmotGetEvent.getWindingTemperature2();
       jTextFieldWindingTemp2.setText(temp.map(Round._1).toString());
-      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.apply(temp);
-      value = value.subtract(LinmotGetEvent.TEMP_MIN) //
-          .divide(LinmotGetEvent.TEMP_MAX.subtract(LinmotGetEvent.TEMP_MIN));
+      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp2.setBackground(color);

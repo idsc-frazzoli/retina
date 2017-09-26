@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -44,7 +45,7 @@ public class RimoPutTire implements Serializable {
 
   /** @return convert rad/min to rad/s */
   public Scalar getAngularRate() {
-    return Quantity.of(rate * MIN_TO_S, "s^-1");
+    return Quantity.of(RealScalar.of(rate * MIN_TO_S), RimoGetTire.RATE_UNIT);
   }
 
   void insert(ByteBuffer byteBuffer) {

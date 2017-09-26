@@ -16,10 +16,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class RimoGetFields {
-  // TODO not final design
-  public static final Scalar RATE_MIN = Quantity.of(-1, "s^-1");
-  public static final Scalar RATE_MAX = Quantity.of(+1, "s^-1");
-  public static final Clip RATE_RANGE = Clip.function(RATE_MIN, RATE_MAX);
+  private static final Clip RATE_RANGE = Clip.function( //
+      Quantity.of(-1, RimoGetTire.RATE_UNIT), //
+      Quantity.of(+1, RimoGetTire.RATE_UNIT));
   // ---
   JTextField jTF_status_word; // 2
   JTextField jTF_actual_speed; // 4
@@ -42,9 +41,7 @@ public class RimoGetFields {
 
   public void updateRateColor(RimoPutTire rimoPutTire, RimoGetTire rimoGetTire) {
     Scalar scalar = rimoPutTire.getAngularRate().subtract(rimoGetTire.getAngularRate());
-    scalar = RATE_RANGE.apply(scalar).subtract(RATE_MIN).divide(RATE_MAX.subtract(RATE_MIN));
-    // scalar = scalar.number().divide(RealScalar.of(2)).add(RealScalar.of(0.5));
-    Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
+    Tensor vector = ColorDataGradients.THERMOMETER.apply(RATE_RANGE.rescale(scalar));
     Color color = ColorFormat.toColor(vector);
     jTF_actual_speed.setBackground(color);
   }

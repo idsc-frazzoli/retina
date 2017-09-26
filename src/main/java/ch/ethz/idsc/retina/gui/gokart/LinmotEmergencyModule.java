@@ -44,11 +44,11 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     {
       Scalar temperature = linmotGetEvent.getWindingTemperature1();
-      flag |= !LinmotGetEvent.TEMPERATURE_RANGE.apply(temperature).equals(temperature);
+      flag |= LinmotGetEvent.TEMPERATURE_RANGE.isOutside(temperature);
     }
     {
       Scalar temperature = linmotGetEvent.getWindingTemperature2();
-      flag |= !LinmotGetEvent.TEMPERATURE_RANGE.apply(temperature).equals(temperature);
+      flag |= LinmotGetEvent.TEMPERATURE_RANGE.isOutside(temperature);
     }
   }
 }

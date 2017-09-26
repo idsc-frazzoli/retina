@@ -13,9 +13,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LinmotGetEvent extends DataEvent {
   /** degree celsius */
   // TODO NRJ check valid range, cite source
-  public static final Scalar TEMP_MIN = Quantity.of(2, "C");
-  public static final Scalar TEMP_MAX = Quantity.of(110, "C");
-  public static final Clip TEMPERATURE_RANGE = Clip.function(TEMP_MIN, TEMP_MAX);
+  public static final Clip TEMPERATURE_RANGE = Clip.function( //
+      Quantity.of(2, "C"), //
+      Quantity.of(110, "C"));
   /** 16 bytes */
   public static final int LENGTH = 16;
   // TODO NRJ document conversion factor

@@ -6,16 +6,19 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear
  * wheel */
 public class RimoGetTire implements Serializable {
-  static final int LENGTH = 16;
+  /* package */ static final int LENGTH = 16;
+  public static final Unit RATE_UNIT = Unit.of("rad*s^-1");
   // TODO NRJ check allowed ratings, comment magic const
-  public static final Clip TEMPERATURE_RANGE = //
-      Clip.function(Quantity.of(10, "C"), Quantity.of(80, "C"));
+  public static final Clip TEMPERATURE_RANGE = Clip.function( //
+      Quantity.of(10, "C"), //
+      Quantity.of(80, "C"));
   /** m */
   public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
@@ -57,12 +60,7 @@ public class RimoGetTire implements Serializable {
 
   /** @return convert rad/min to rad/s */
   public Scalar getAngularRate() {
-    return Quantity.of(actual_rate * MIN_TO_S, "s^-1");
-  }
-
-  @Deprecated
-  public short getActualRateRaw() {
-    return actual_rate;
+    return Quantity.of(actual_rate * MIN_TO_S, RATE_UNIT);
   }
 
   public Scalar getBusVoltage() {
