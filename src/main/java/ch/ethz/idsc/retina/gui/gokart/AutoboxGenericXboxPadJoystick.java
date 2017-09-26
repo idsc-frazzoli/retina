@@ -61,10 +61,25 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
 
   /** steering */
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
+    @SuppressWarnings("incomplete-switch")
     @Override
     public Optional<SteerPutEvent> getPutEvent() {
       if (hasJoystick()) {
-        double value = -_joystick.getRightKnobDirectionRight();
+        GenericXboxPadJoystick joystick = _joystick;
+        double value = 0;
+        switch (driveMode) {
+        case SIMPLE_DRIVE: {
+          value = -joystick.getRightKnobDirectionRight();
+          break;
+        }
+        case FULL_CONTROL: {
+          if (joystick.isButtonPressedB())
+            value = 1;
+          if (joystick.isButtonPressedX())
+            value = -1;
+          break;
+        }
+        }
         return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, (float) value));
       }
       return Optional.empty();

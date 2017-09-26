@@ -57,7 +57,7 @@ public class AutoboxJoystickModule extends AbstractModule {
     }
     // ---
     jFrame.setContentPane(jPanel);
-    jFrame.setBounds(200, 200, 200, 100);
+    jFrame.setBounds(200, 200, 200, 70);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override

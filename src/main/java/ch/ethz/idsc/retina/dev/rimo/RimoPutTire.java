@@ -7,11 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class RimoPutTire implements Serializable {
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0);
+  public static final double MIN_TO_S = 1 / 60.0;
 
   public static RimoPutTire withSpeed(short speed) {
     return new RimoPutTire(OPERATION, speed);
@@ -24,20 +27,28 @@ public class RimoPutTire implements Serializable {
   public static final short MAX_SPEED = 6500;
   // ---
   final short command;
-  /** speed in rad/min */
-  final short speed;
+  /** angular rate in rad/min */
+  final short rate;
 
-  public RimoPutTire(Word command, short speed) {
+  public RimoPutTire(Word command, short rate) {
     this.command = command.getShort();
-    this.speed = speed;
+    this.rate = rate;
   }
 
-  public short getSpeedRaw() {
-    return speed;
+  /** only for use in display
+   * 
+   * @return */
+  public short getRateRaw() {
+    return rate;
+  }
+
+  /** @return convert rad/min to rad/s */
+  public Scalar getAngularRate() {
+    return Quantity.of(rate * MIN_TO_S, "s^-1");
   }
 
   void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(command);
-    byteBuffer.putShort(speed);
+    byteBuffer.putShort(rate);
   }
 }

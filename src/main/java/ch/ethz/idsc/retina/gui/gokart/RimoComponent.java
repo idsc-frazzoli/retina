@@ -24,7 +24,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, RimoPutListener {
@@ -35,9 +34,7 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
   /** default message used only for display information */
-  private RimoPutTire rimoPutTireL = new RimoPutTire(RimoPutTire.OPERATION, (short) 0);
-  /** default message used only for display information */
-  private RimoPutTire rimoPutTireR = new RimoPutTire(RimoPutTire.OPERATION, (short) 0);
+  private RimoPutEvent rimoPutEvent = RimoPutEvent.STOP;
 
   public RimoComponent() {
     // LEFT
@@ -88,28 +85,13 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
     RimoGetTire rimoGetR = rimoGetEvent.getR;
     rimoGetFieldsL.updateText(rimoGetL);
     rimoGetFieldsR.updateText(rimoGetR);
-    {
-      double speedDiff = rimoPutTireL.getSpeedRaw() - rimoGetL.actual_speed;
-      Scalar scalar = RealScalar.of(speedDiff);
-      scalar = Clip.function(-500, 500).apply(scalar);
-      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
-      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
-      Color color = ColorFormat.toColor(vector);
-      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
-    }
-    {
-      double speedDiff = rimoPutTireR.getSpeedRaw() - rimoGetR.actual_speed;
-      Scalar scalar = RealScalar.of(speedDiff);
-      scalar = Clip.function(-500, 500).apply(scalar);
-      scalar = scalar.divide(RealScalar.of(1000)).add(RealScalar.of(0.5));
-      Tensor vector = ColorDataGradients.THERMOMETER.apply(scalar);
-      Color color = ColorFormat.toColor(vector);
-      rimoGetFieldsL.jTF_actual_speed.setBackground(color);
-    }
+    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetL);
+    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetR);
+    // TODO NRJ temperature readings are always 0 !
     {
       Scalar temp = rimoGetL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
-      double tempMotL = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
+      double tempMotL = temp.number().doubleValue();
       Scalar scalarL = RealScalar.of(tempMotL / 10);
       scalarL = Clip.unit().apply(scalarL);
       Tensor vectorL = ColorDataGradients.THERMOMETER.apply(scalarL);
@@ -119,7 +101,7 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
     {
       Scalar temp = rimoGetR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
-      double tempMotR = ((Quantity) temp).value().number().doubleValue(); // TODO temporary
+      double tempMotR = temp.number().doubleValue();
       Scalar scalarR = RealScalar.of(tempMotR / 10);
       scalarR = Clip.unit().apply(scalarR);
       Tensor vectorR = ColorDataGradients.THERMOMETER.apply(scalarR);
@@ -131,9 +113,9 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
   public final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
     public Optional<RimoPutEvent> getPutEvent() {
-      rimoPutTireL = new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue());
-      rimoPutTireR = new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue());
-      return Optional.of(new RimoPutEvent(rimoPutTireL, rimoPutTireR));
+      return Optional.of(new RimoPutEvent( //
+          new RimoPutTire(spinnerLabelLCmd.getValue(), (short) sliderExtLVel.jSlider.getValue()), //
+          new RimoPutTire(spinnerLabelRCmd.getValue(), (short) sliderExtRVel.jSlider.getValue())));
     }
 
     @Override
@@ -145,7 +127,8 @@ class RimoComponent extends AutoboxTestingComponent implements RimoGetListener, 
   @Override
   public void putEvent(RimoPutEvent rimoPutEvent) {
     // TODO also assign spinner labels
-    sliderExtLVel.jSlider.setValue(rimoPutEvent.putL.getSpeedRaw());
-    sliderExtRVel.jSlider.setValue(rimoPutEvent.putR.getSpeedRaw());
+    this.rimoPutEvent = rimoPutEvent;
+    sliderExtLVel.jSlider.setValue(rimoPutEvent.putL.getRateRaw());
+    sliderExtRVel.jSlider.setValue(rimoPutEvent.putR.getRateRaw());
   }
 }
