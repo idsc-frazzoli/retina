@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 public class LinmotTakeoverModule extends AbstractModule implements LinmotGetListener, LinmotPutListener, LinmotPutProvider {
   @Override
@@ -20,7 +21,7 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
   }
 
   private boolean isActive = false;
-  private boolean takeover = false;
+  private final TimedFuse timedFuse = new TimedFuse(0.07);
 
   @Override
   protected void last() {
@@ -29,12 +30,9 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override
   public void getEvent(LinmotGetEvent getEvent) {
-    // TODO Auto-generated method stub
     int difference = getEvent.demand_position - getEvent.actual_position;
-    System.out.println(difference);
-    if (isActive && difference >= 20000) {
-      takeover = true;
-    }
+    // System.out.println(difference);
+    timedFuse.register(isActive && difference >= 20000);
   }
 
   @Override
@@ -44,8 +42,7 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    // TODO Auto-generated method stub
-    if (takeover) {
+    if (timedFuse.isBlown()) {
       LinmotPutEvent takeOverEvent = new LinmotPutEvent(LinmotPutConfiguration.CMD_OFF_MODE, LinmotPutConfiguration.MC_ZEROS);
       return Optional.of(takeOverEvent);
     }
@@ -54,7 +51,6 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override
   public void putEvent(LinmotPutEvent putEvent) {
-    // TODO Auto-generated method stub
     isActive = putEvent.control_word == LinmotPutConfiguration.CMD_OPERATION.getShort();
   }
 }

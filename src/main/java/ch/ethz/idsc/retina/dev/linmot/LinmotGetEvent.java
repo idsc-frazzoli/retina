@@ -18,6 +18,8 @@ public class LinmotGetEvent extends DataEvent {
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
       Quantity.of(2, CELSIUS), //
       Quantity.of(110, CELSIUS));
+  // TODO NRJ magic const
+  public static final Clip POSITION_DELTA = Clip.function(-20000, 20000);
   /** 16 bytes */
   public static final int LENGTH = 16;
   // TODO NRJ document conversion factor
@@ -77,5 +79,9 @@ public class LinmotGetEvent extends DataEvent {
   @Override
   protected int length() {
     return LENGTH;
+  }
+
+  public int getPositionDiscrepancyRaw() {
+    return demand_position - actual_position;
   }
 }
