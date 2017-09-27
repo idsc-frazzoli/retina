@@ -25,3 +25,11 @@ grid on
 plot(timeGet(idsVel),vel(idsVel), 'go');
 
 Jest = estimateJ(vel,idsVel, torque, idsTorque, timeGet)
+
+%%
+J = Jest;
+s = tf('s');
+
+G = (1/J * 1 / s^2);
+
+pidTuner(G);
