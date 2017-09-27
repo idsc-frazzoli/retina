@@ -30,25 +30,16 @@ public class AutoboxTestingModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    // TODO NRJ try addAll
-    RimoSocket.INSTANCE.addGetListener(rimoComponent);
-    RimoSocket.INSTANCE.addPutListener(rimoComponent);
-    RimoSocket.INSTANCE.addPutProvider(rimoComponent);
+    RimoSocket.INSTANCE.addAll(rimoComponent);
     addTab(rimoComponent);
     // ---
-    LinmotSocket.INSTANCE.addGetListener(linmotComponent);
-    LinmotSocket.INSTANCE.addPutListener(linmotComponent);
-    LinmotSocket.INSTANCE.addPutProvider(linmotComponent);
+    LinmotSocket.INSTANCE.addAll(linmotComponent);
     addTab(linmotComponent);
     // ---
-    SteerSocket.INSTANCE.addGetListener(steerComponent);
-    SteerSocket.INSTANCE.addPutListener(steerComponent);
-    SteerSocket.INSTANCE.addPutProvider(steerComponent);
+    SteerSocket.INSTANCE.addAll(steerComponent);
     addTab(steerComponent);
     // ---
-    MiscSocket.INSTANCE.addGetListener(miscComponent);
-    MiscSocket.INSTANCE.addPutListener(miscComponent);
-    MiscSocket.INSTANCE.addPutProvider(miscComponent);
+    MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
     // ---
     jTabbedPane.setSelectedIndex(0);
@@ -59,21 +50,10 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        RimoSocket.INSTANCE.removeGetListener(rimoComponent);
-        RimoSocket.INSTANCE.removePutListener(rimoComponent);
-        RimoSocket.INSTANCE.removeProvider(rimoComponent);
-        // ---
-        LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
-        LinmotSocket.INSTANCE.removePutListener(linmotComponent);
-        LinmotSocket.INSTANCE.removeProvider(linmotComponent);
-        // ---
-        SteerSocket.INSTANCE.removeGetListener(steerComponent);
-        SteerSocket.INSTANCE.removePutListener(steerComponent);
-        SteerSocket.INSTANCE.removeProvider(steerComponent);
-        // ---
-        MiscSocket.INSTANCE.removeGetListener(miscComponent);
-        MiscSocket.INSTANCE.removePutListener(miscComponent);
-        MiscSocket.INSTANCE.removeProvider(miscComponent);
+        RimoSocket.INSTANCE.removeAll(rimoComponent);
+        LinmotSocket.INSTANCE.removeAll(linmotComponent);
+        SteerSocket.INSTANCE.removeAll(steerComponent);
+        MiscSocket.INSTANCE.removeAll(miscComponent);
         System.out.println("removed listeners and providers");
       }
     });

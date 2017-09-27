@@ -140,7 +140,6 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
     LinmotPutEvent linmotPutEvent = //
         new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
     linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
@@ -152,6 +151,10 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
 
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
-    // TODO NRJ Auto-generated method stub
+    initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
+    // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
+    // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);
+    // sliderExtDec.jSlider.setValue(linmotPutEvent.deceleration);
   }
 }
