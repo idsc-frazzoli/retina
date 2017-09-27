@@ -1,5 +1,5 @@
 function ids = findTimeIntervals(sigIn, timeBounds,time)
-
+sigIn = sigIn - sigIn(1);
 N = length(timeBounds);
 ids = [];
 absSig = abs(sigIn);

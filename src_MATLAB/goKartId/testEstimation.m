@@ -1,6 +1,6 @@
 clear all
 
-Jtarget = 2.345e-4; %kgm^2
+Jtarget = 2.345; %kgm^2
 
 
 
@@ -25,8 +25,17 @@ hold on
 grid on
 plot(time(ids),vel(ids), 'go');
 
+%debug output
+figure
+plot(time, pos);
+hold on
+grid on
+plot(time(ids),pos(ids), 'go');
+
 
 Jest = estimateJ(vel,ids, torque, ids, time)
+Jest = estimateJ_pos(pos,ids, torque, ids, time)
+
 return
 
 %% analysis
