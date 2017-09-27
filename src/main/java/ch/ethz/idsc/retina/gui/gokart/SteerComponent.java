@@ -7,8 +7,10 @@ import java.util.Optional;
 
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -17,19 +19,28 @@ import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.sca.Round;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
+  public static final double MAX_ANGLE = 0.6743167638778687;
   // ---
+  private final JToggleButton enable = new JToggleButton("controller");
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
   private final SteerAngleTracker steerAngleTracker = new SteerAngleTracker();
+  private final PDSteerPositionControl positionController = new PDSteerPositionControl();
 
   public SteerComponent() {
+    {
+      JToolBar jToolBar = createRow("command");
+      jToolBar.add(enable);
+    }
     {
       JToolBar jToolBar = createRow("command");
       spinnerLabelLw.setList(SteerPutEvent.COMMANDS);
@@ -61,7 +72,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
     steerAngleTracker.getEvent(steerGetEvent);
-    double angle = steerAngleTracker.getSteeringAngle(steerGetEvent);
+    double angle = steerAngleTracker.getSteeringAngleRelative(steerGetEvent);
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
@@ -91,7 +102,14 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
-        giveTorque(sliderExtTorque.jSlider.getValue()).number().doubleValue()));
+    double currAngle = steerAngleTracker.getCurrAngle();
+    double desPos = sliderExtTorque.jSlider.getValue() * MAX_ANGLE / RESOLUTION;
+    double errPos = desPos - currAngle;
+    double cmd = positionController.iterate(errPos);
+    System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
+    if (enable.isSelected()) {
+      return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), cmd));
+    }
+    return Optional.empty();
   }
 }
