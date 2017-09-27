@@ -27,7 +27,7 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
   @Override
   protected void first() throws Exception {
     MiscSocket.INSTANCE.addGetListener(this);
-    RimoSocket.INSTANCE.addProvider(this);
+    RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
   }
 
   @Override
-  public Optional<RimoPutEvent> getPutEvent() {
+  public Optional<RimoPutEvent> putEvent() {
     return Optional.ofNullable(flag ? RimoPutEvent.STOP : null);
   }
 

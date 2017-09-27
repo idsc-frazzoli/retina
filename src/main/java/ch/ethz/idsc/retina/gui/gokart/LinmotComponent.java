@@ -14,11 +14,8 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -28,7 +25,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Round;
 
-class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListener {
+class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
   private final JButton initButton = new JButton("Init");
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
@@ -62,13 +59,13 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.COMMANDS.get(1));
+      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.CMD_OFF_MODE);
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
       spinnerLabelHdr.setList(LinmotPutConfiguration.HEADER);
-      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.HEADER.get(0));
+      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.MC_ZEROS);
       spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
@@ -123,6 +120,7 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     // TODO simplify using new Clip API
+    // TODO NRJ add colors for demand and actual position
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
@@ -141,22 +139,25 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     }
   }
 
-  public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
-    @Override
-    public Optional<LinmotPutEvent> getPutEvent() {
-      initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
-      LinmotPutEvent linmotPutEvent = //
-          new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
-      linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-      linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-      linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-      linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
-      return Optional.of(linmotPutEvent);
-    }
+  @Override
+  public Optional<LinmotPutEvent> putEvent() {
+    LinmotPutEvent linmotPutEvent = //
+        new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
+    linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
+    linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
+    linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
+    linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+    return Optional.of(linmotPutEvent);
+  }
 
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.TESTING;
-    }
-  };
+  @Override
+  public void putEvent(LinmotPutEvent linmotPutEvent) {
+    initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    spinnerLabelCtrl.setValue(LinmotPutConfiguration.findControlWord(linmotPutEvent.control_word));
+    spinnerLabelHdr.setValue(LinmotPutConfiguration.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
+    // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
+    // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
+    // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);
+    // sliderExtDec.jSlider.setValue(linmotPutEvent.deceleration);
+  }
 }

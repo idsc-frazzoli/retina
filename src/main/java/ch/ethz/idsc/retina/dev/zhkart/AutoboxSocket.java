@@ -64,7 +64,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
       @Override
       public void run() {
         for (PutProvider<PE> putProvider : providers) {
-          Optional<PE> optional = putProvider.getPutEvent();
+          Optional<PE> optional = putProvider.putEvent();
           if (optional.isPresent())
             try {
               PE putEvent = optional.get();
@@ -97,7 +97,44 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   }
 
   /***************************************************/
-  public final void addProvider(PutProvider<PE> putProvider) {
+  public final void addAll(Object object) {
+    if (object instanceof PutProvider) {
+      @SuppressWarnings("unchecked")
+      PutProvider<PE> putProvider = (PutProvider<PE>) object;
+      addPutProvider(putProvider);
+    }
+    if (object instanceof GetListener) {
+      @SuppressWarnings("unchecked")
+      GetListener<GE> getListener = (GetListener<GE>) object;
+      addGetListener(getListener);
+    }
+    if (object instanceof PutListener) {
+      @SuppressWarnings("unchecked")
+      PutListener<PE> putListener = (PutListener<PE>) object;
+      addPutListener(putListener);
+    }
+  }
+
+  public final void removeAll(Object object) {
+    if (object instanceof PutProvider) {
+      @SuppressWarnings("unchecked")
+      PutProvider<PE> putProvider = (PutProvider<PE>) object;
+      removeProvider(putProvider);
+    }
+    if (object instanceof GetListener) {
+      @SuppressWarnings("unchecked")
+      GetListener<GE> getListener = (GetListener<GE>) object;
+      removeGetListener(getListener);
+    }
+    if (object instanceof PutListener) {
+      @SuppressWarnings("unchecked")
+      PutListener<PE> putListener = (PutListener<PE>) object;
+      removePutListener(putListener);
+    }
+  }
+
+  /***************************************************/
+  public final void addPutProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
       throw new RuntimeException();

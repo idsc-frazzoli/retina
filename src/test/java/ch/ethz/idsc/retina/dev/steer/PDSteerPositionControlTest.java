@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import junit.framework.TestCase;
 
 public class PDSteerPositionControlTest extends TestCase {
+  @SuppressWarnings("unused")
   public void testSimple() {
     PDSteerPositionControl test = new PDSteerPositionControl();
     test.iterate(1);
@@ -19,6 +20,7 @@ public class PDSteerPositionControlTest extends TestCase {
     }
   }
 
+  @SuppressWarnings("unused")
   public void testSimple2() {
     PDSteerPositionControl test = new PDSteerPositionControl();
     // test.iterate(1);

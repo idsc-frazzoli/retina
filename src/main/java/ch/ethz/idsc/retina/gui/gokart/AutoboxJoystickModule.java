@@ -13,6 +13,7 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -35,10 +36,11 @@ public class AutoboxJoystickModule extends AbstractModule {
   protected void first() throws Exception {
     GenericXboxPadLcmClient.INSTANCE.addListener(instance);
     // ---
-    RimoSocket.INSTANCE.addProvider(instance.rimoPutProvider);
-    LinmotSocket.INSTANCE.addProvider(instance.linmotPutProvider);
-    SteerSocket.INSTANCE.addProvider(instance.steerPutProvider);
+    RimoSocket.INSTANCE.addPutProvider(instance.rimoPutProvider);
+    LinmotSocket.INSTANCE.addPutProvider(instance.linmotPutProvider);
+    SteerSocket.INSTANCE.addPutProvider(instance.steerPutProvider);
     SteerSocket.INSTANCE.addGetListener(instance);
+    MiscSocket.INSTANCE.addPutProvider(instance.miscPutProvider);
     // ---
     JPanel jPanel = new JPanel(new BorderLayout());
     {
@@ -80,6 +82,7 @@ public class AutoboxJoystickModule extends AbstractModule {
         LinmotSocket.INSTANCE.removeProvider(instance.linmotPutProvider);
         SteerSocket.INSTANCE.removeProvider(instance.steerPutProvider);
         SteerSocket.INSTANCE.removeGetListener(instance);
+        MiscSocket.INSTANCE.removeProvider(instance.miscPutProvider);
         // ---
         System.out.println("removed listeners and providers");
         GenericXboxPadLcmClient.INSTANCE.removeListener(instance);

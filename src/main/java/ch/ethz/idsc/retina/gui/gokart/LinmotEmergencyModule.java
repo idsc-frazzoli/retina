@@ -11,17 +11,17 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.Scalar;
 
 /** sends stop command if either winding temperature is outside valid range */
 public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
   // ---
   private boolean flag = false;
+  // TODO NRJ detect anomaly on brake... perhaps put in different module?
 
   @Override
   protected void first() throws Exception {
     LinmotSocket.INSTANCE.addGetListener(this);
-    RimoSocket.INSTANCE.addProvider(this);
+    RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
@@ -36,19 +36,13 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
   }
 
   @Override
-  public Optional<RimoPutEvent> getPutEvent() {
+  public Optional<RimoPutEvent> putEvent() {
     return Optional.ofNullable(flag ? RimoPutEvent.STOP : null);
   }
 
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    {
-      Scalar temperature = linmotGetEvent.getWindingTemperature1();
-      flag |= LinmotGetEvent.TEMPERATURE_RANGE.isOutside(temperature);
-    }
-    {
-      Scalar temperature = linmotGetEvent.getWindingTemperature2();
-      flag |= LinmotGetEvent.TEMPERATURE_RANGE.isOutside(temperature);
-    }
+    flag |= !linmotGetEvent.isSafeWindingTemperature1();
+    flag |= !linmotGetEvent.isSafeWindingTemperature2();
   }
 }

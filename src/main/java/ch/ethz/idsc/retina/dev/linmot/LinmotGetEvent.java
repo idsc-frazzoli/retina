@@ -6,16 +6,18 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
 public class LinmotGetEvent extends DataEvent {
+  private static final Unit CELSIUS = Unit.of("degC");
   /** degree celsius */
   // TODO NRJ check valid range, cite source
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
-      Quantity.of(2, "C"), //
-      Quantity.of(110, "C"));
+      Quantity.of(2, CELSIUS), //
+      Quantity.of(110, CELSIUS));
   /** 16 bytes */
   public static final int LENGTH = 16;
   // TODO NRJ document conversion factor
@@ -39,12 +41,20 @@ public class LinmotGetEvent extends DataEvent {
 
   /** @return temperature of winding 1 in degree Celsius */
   public Scalar getWindingTemperature1() {
-    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, "C");
+    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, CELSIUS);
+  }
+
+  public boolean isSafeWindingTemperature1() {
+    return TEMPERATURE_RANGE.isInside(getWindingTemperature1());
   }
 
   /** @return temperature of winding 2 in degree Celsius */
   public Scalar getWindingTemperature2() {
-    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, "C");
+    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, CELSIUS);
+  }
+
+  public boolean isSafeWindingTemperature2() {
+    return TEMPERATURE_RANGE.isInside(getWindingTemperature2());
   }
 
   public String toInfoString() {

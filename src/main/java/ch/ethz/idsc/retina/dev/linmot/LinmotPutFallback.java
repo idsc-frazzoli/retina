@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
   }
 
   @Override
-  public Optional<LinmotPutEvent> getPutEvent() {
+  public Optional<LinmotPutEvent> putEvent() {
     // TODO NRJ check if this is good choice
     return Optional.of(new LinmotPutEvent( //
         LinmotPutConfiguration.CMD_OFF_MODE, //

@@ -26,8 +26,8 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
   private LinmotSocket() {
     super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS));
     // ---
-    addProvider(LinmotCalibrationProvider.INSTANCE);
-    addProvider(LinmotPutFallback.INSTANCE);
+    addPutProvider(LinmotCalibrationProvider.INSTANCE);
+    addPutProvider(LinmotPutFallback.INSTANCE);
   }
 
   @Override

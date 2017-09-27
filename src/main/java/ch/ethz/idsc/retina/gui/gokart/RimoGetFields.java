@@ -9,7 +9,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -17,8 +16,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class RimoGetFields {
   private static final Clip RATE_RANGE = Clip.function( //
-      Quantity.of(-1, RimoGetTire.RATE_UNIT), //
-      Quantity.of(+1, RimoGetTire.RATE_UNIT));
+      Quantity.of(-3, RimoGetTire.RATE_UNIT), //
+      Quantity.of(+3, RimoGetTire.RATE_UNIT));
   // ---
   JTextField jTF_status_word; // 2
   JTextField jTF_actual_speed; // 4
@@ -41,7 +40,7 @@ public class RimoGetFields {
 
   public void updateRateColor(RimoPutTire rimoPutTire, RimoGetTire rimoGetTire) {
     Scalar scalar = rimoPutTire.getAngularRate().subtract(rimoGetTire.getAngularRate());
-    Tensor vector = ColorDataGradients.THERMOMETER.apply(RATE_RANGE.rescale(scalar));
+    Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(RATE_RANGE.rescale(scalar));
     Color color = ColorFormat.toColor(vector);
     jTF_actual_speed.setBackground(color);
   }

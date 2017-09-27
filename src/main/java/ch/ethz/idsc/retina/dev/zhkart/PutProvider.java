@@ -8,5 +8,5 @@ public interface PutProvider<T> {
   ProviderRank getProviderRank();
 
   /** @return */
-  Optional<T> getPutEvent();
+  Optional<T> putEvent();
 }

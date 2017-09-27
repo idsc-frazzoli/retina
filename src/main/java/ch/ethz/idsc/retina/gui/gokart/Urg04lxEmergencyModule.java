@@ -21,7 +21,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
   protected void first() throws Exception {
     urg04lxLcmClient.startSubscriptions();
     urg04lxLcmClient.urg04lxDecoder.addRayListener(this);
-    RimoSocket.INSTANCE.addProvider(this);
+    RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
   }
 
   @Override
-  public Optional<RimoPutEvent> getPutEvent() {
+  public Optional<RimoPutEvent> putEvent() {
     if (now() < last + WATCHDOG_MS)
       return Optional.empty();
     return Optional.of(RimoPutEvent.STOP);

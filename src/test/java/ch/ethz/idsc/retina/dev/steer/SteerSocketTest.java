@@ -9,16 +9,16 @@ import junit.framework.TestCase;
 public class SteerSocketTest extends TestCase {
   public void testSimple() {
     try {
-      SteerSocket.INSTANCE.addProvider(SteerPutFallback.INSTANCE);
+      SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
       assertTrue(false);
     } catch (Exception exception) {
       // ---
     }
     SteerSocket.INSTANCE.removeProvider(SteerPutFallback.INSTANCE);
-    SteerSocket.INSTANCE.addProvider(SteerPutFallback.INSTANCE);
+    SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
     SteerPutProvider spp1 = new SteerPutProvider() {
       @Override
-      public Optional<SteerPutEvent> getPutEvent() {
+      public Optional<SteerPutEvent> putEvent() {
         return null;
       }
 
@@ -32,15 +32,15 @@ public class SteerSocketTest extends TestCase {
         return "add1";
       }
     };
-    SteerSocket.INSTANCE.addProvider(spp1);
+    SteerSocket.INSTANCE.addPutProvider(spp1);
     try {
-      SteerSocket.INSTANCE.addProvider(spp1);
+      SteerSocket.INSTANCE.addPutProvider(spp1);
     } catch (Exception exception) {
       // ---
     }
     SteerPutProvider spp2 = new SteerPutProvider() {
       @Override
-      public Optional<SteerPutEvent> getPutEvent() {
+      public Optional<SteerPutEvent> putEvent() {
         return null;
       }
 
@@ -54,7 +54,7 @@ public class SteerSocketTest extends TestCase {
         return "add2";
       }
     };
-    SteerSocket.INSTANCE.addProvider(spp2);
+    SteerSocket.INSTANCE.addPutProvider(spp2);
     // System.out.println(SteerSocket.INSTANCE.providers);
   }
 }
