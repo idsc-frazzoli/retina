@@ -97,7 +97,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     spinnerLabelRimoR.setValue(COMMANDS.get(miscPutEvent.resetRimoR));
     spinnerLabelLinmot.setValue(COMMANDS.get(miscPutEvent.resetLinmot));
     spinnerLabelSteer.setValue(COMMANDS.get(miscPutEvent.resetSteer));
-    spinnerLabelLed.setValue(COMMANDS.get(miscPutEvent.ledControl));
+    spinnerLabelLed.setValue(LEDCONTROL.get(miscPutEvent.ledControl));
   }
 
   @Override
