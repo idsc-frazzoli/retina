@@ -3,8 +3,13 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Optional;
 
+import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -21,6 +26,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import idsc.BinaryBlob;
+import lcm.lcm.LCM;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
@@ -33,6 +40,11 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JTextField[] jTextField = new JTextField[11];
   private final SteerAngleTracker steerAngleTracker = new SteerAngleTracker();
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
+  private final JButton stepLeft = new JButton("step Left");
+  private final JButton stepRight = new JButton("step Right");
+  private final JButton resetSteps = new JButton("reset Steps");
+  private boolean leftStepActive = false;
+  private boolean rightStepActive = false;
 
   public SteerComponent() {
     {
@@ -50,6 +62,31 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
       sliderExtTorque.physics = SteerComponent::giveTorque;
       sliderExtTorque.addToComponent(jToolBar);
+    }
+    {
+      JToolBar jToolBar = createRow("step");
+      jToolBar.add(stepLeft);
+      stepLeft.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          leftStepActive = true;
+        }
+      });
+      jToolBar.add(stepRight);
+      stepRight.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          rightStepActive = true;
+        }
+      });
+      jToolBar.add(resetSteps);
+      resetSteps.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          rightStepActive = false;
+          leftStepActive = false;
+        }
+      });
     }
     addSeparator();
     { // reception
@@ -102,9 +139,28 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public Optional<SteerPutEvent> putEvent() {
     double currAngle = steerAngleTracker.getCurrAngle();
     double desPos = sliderExtTorque.jSlider.getValue() * MAX_ANGLE / RESOLUTION;
+    if (leftStepActive)
+      desPos = -0.65;
+    if (rightStepActive)
+      desPos = 0.65;
+    // System.out.println(desPos);
     double errPos = desPos - currAngle;
     double cmd = positionController.iterate(errPos);
     // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
+    {
+      BinaryBlob binaryBlob = new BinaryBlob();
+      binaryBlob.data = new byte[8];
+      binaryBlob.data_length = 8;
+      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+      byteBuffer.putDouble(errPos);
+      try {
+        LCM.getSingleton().publish("myChannel", binaryBlob);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
     if (enable.isSelected()) {
       return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), cmd));
     }
