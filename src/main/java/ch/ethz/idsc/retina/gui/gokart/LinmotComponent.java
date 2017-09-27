@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
@@ -119,6 +120,9 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     // TODO NRJ figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
+    Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
+    jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
+        Gui.INSTANCE.TEMPERATURE.apply(LinmotGetEvent.POSITION_DELTA.rescale(scalar))));
     // TODO simplify using new Clip API
     // TODO NRJ add colors for demand and actual position
     {
