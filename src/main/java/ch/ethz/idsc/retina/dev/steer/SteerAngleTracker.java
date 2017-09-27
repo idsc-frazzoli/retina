@@ -16,19 +16,18 @@ public class SteerAngleTracker implements SteerGetListener {
   }
 
   private double getSteeringAngle(SteerGetEvent steerGetEvent) {
-    //getEvent(steerGetEvent);
+    // getEvent(steerGetEvent);
     double width = width();
     if (width == 0)
       return 0;
     double angle = steerGetEvent.getSteeringAngle();
-    return angle - (max + min)*0.5; //offsetting to [-0.65, 0.65]
+    return angle - (max + min) * 0.5; // offsetting to [-0.65, 0.65]
   }
 
-  
   public double getCurrAngle() {
     return currAngle;
   }
-  
+
   public double width() {
     return max - min;
   }

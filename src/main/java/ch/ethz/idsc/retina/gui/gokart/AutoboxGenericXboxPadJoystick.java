@@ -16,6 +16,8 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
+import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
@@ -159,6 +161,26 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
         linmotPutEvent.acceleration = 500;
         linmotPutEvent.deceleration = 500;
         return Optional.of(linmotPutEvent);
+      }
+      return Optional.empty();
+    }
+
+    @Override
+    public ProviderRank getProviderRank() {
+      return ProviderRank.MANUAL;
+    }
+  };
+  /** reset Misc **/
+  public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
+    @Override
+    public Optional<MiscPutEvent> putEvent() {
+      if (hasJoystick()) {
+        byte resetValue = (byte) (_joystick.isButtonPressedBlack() ? 1 : 0);
+        MiscPutEvent miscPutEvent = new MiscPutEvent();
+        miscPutEvent.resetRimoL = resetValue;
+        miscPutEvent.resetRimoR = resetValue;
+        // TODO NRJ not final values
+        return Optional.of(miscPutEvent);
       }
       return Optional.empty();
     }

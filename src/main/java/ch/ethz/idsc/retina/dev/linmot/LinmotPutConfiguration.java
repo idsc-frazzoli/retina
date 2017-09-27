@@ -36,4 +36,16 @@ public enum LinmotPutConfiguration {
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
   public static final int DECELERATION_INIT = 500;
+
+  public static Word findWord(List<Word> list, short value) {
+    return list.stream().filter(w -> w.getShort() == value).findFirst().get();
+  }
+
+  public static Word findControlWord(short value) {
+    return findWord(COMMANDS, value);
+  }
+
+  public static Word findHeaderWord(short value) {
+    return findWord(HEADER, value);
+  }
 }

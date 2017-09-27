@@ -59,13 +59,13 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.COMMANDS.get(1));
+      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.CMD_OFF_MODE);
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
       spinnerLabelHdr.setList(LinmotPutConfiguration.HEADER);
-      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.HEADER.get(0));
+      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.MC_ZEROS);
       spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
@@ -120,6 +120,7 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     // TODO simplify using new Clip API
+    // TODO NRJ add colors for demand and actual position
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
@@ -152,6 +153,8 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    spinnerLabelCtrl.setValue(LinmotPutConfiguration.findControlWord(linmotPutEvent.control_word));
+    spinnerLabelHdr.setValue(LinmotPutConfiguration.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
     // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);

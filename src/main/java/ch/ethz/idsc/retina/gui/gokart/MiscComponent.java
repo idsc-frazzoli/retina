@@ -93,7 +93,11 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
 
   @Override
   public void putEvent(MiscPutEvent miscPutEvent) {
-    // TODO NRJ Auto-generated method stub
+    spinnerLabelRimoL.setValue(COMMANDS.get(miscPutEvent.resetRimoL));
+    spinnerLabelRimoR.setValue(COMMANDS.get(miscPutEvent.resetRimoR));
+    spinnerLabelLinmot.setValue(COMMANDS.get(miscPutEvent.resetLinmot));
+    spinnerLabelSteer.setValue(COMMANDS.get(miscPutEvent.resetSteer));
+    spinnerLabelLed.setValue(COMMANDS.get(miscPutEvent.ledControl));
   }
 
   @Override

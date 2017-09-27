@@ -47,6 +47,13 @@ public enum LinmotCalibrationProvider implements LinmotPutProvider {
       timestamp += 200;
       queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
+    {
+      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+          LinmotPutConfiguration.CMD_OPERATION, //
+          LinmotPutConfiguration.MC_POSITION); //
+      timestamp += 200;
+      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
+    }
   }
 
   @Override

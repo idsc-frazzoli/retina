@@ -19,10 +19,8 @@ import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.sca.Round;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
@@ -106,7 +104,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     double desPos = sliderExtTorque.jSlider.getValue() * MAX_ANGLE / RESOLUTION;
     double errPos = desPos - currAngle;
     double cmd = positionController.iterate(errPos);
-    System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
+    // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
     if (enable.isSelected()) {
       return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), cmd));
     }
