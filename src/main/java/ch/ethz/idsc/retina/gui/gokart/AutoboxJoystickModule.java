@@ -35,9 +35,9 @@ public class AutoboxJoystickModule extends AbstractModule {
   protected void first() throws Exception {
     GenericXboxPadLcmClient.INSTANCE.addListener(instance);
     // ---
-    RimoSocket.INSTANCE.addProvider(instance.rimoPutProvider);
-    LinmotSocket.INSTANCE.addProvider(instance.linmotPutProvider);
-    SteerSocket.INSTANCE.addProvider(instance.steerPutProvider);
+    RimoSocket.INSTANCE.addPutProvider(instance.rimoPutProvider);
+    LinmotSocket.INSTANCE.addPutProvider(instance.linmotPutProvider);
+    SteerSocket.INSTANCE.addPutProvider(instance.steerPutProvider);
     SteerSocket.INSTANCE.addGetListener(instance);
     // ---
     JPanel jPanel = new JPanel(new BorderLayout());

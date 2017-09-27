@@ -25,7 +25,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   private SteerSocket() {
     super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS));
     // ---
-    addProvider(SteerPutFallback.INSTANCE);
+    addPutProvider(SteerPutFallback.INSTANCE);
   }
 
   @Override

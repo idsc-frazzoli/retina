@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
   }
 
   @Override
-  public Optional<MiscPutEvent> getPutEvent() {
+  public Optional<MiscPutEvent> putEvent() {
     return Optional.of(new MiscPutEvent());
   }
 }

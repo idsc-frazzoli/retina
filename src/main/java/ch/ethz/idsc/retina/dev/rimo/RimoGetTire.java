@@ -14,11 +14,12 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * wheel */
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 16;
+  private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit RATE_UNIT = Unit.of("rad*s^-1");
   // TODO NRJ check allowed ratings, comment magic const
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
-      Quantity.of(10, "C"), //
-      Quantity.of(80, "C"));
+      Quantity.of(10, CELSIUS), //
+      Quantity.of(80, CELSIUS));
   /** m */
   public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
@@ -69,12 +70,12 @@ public class RimoGetTire implements Serializable {
 
   public Scalar getTemperatureMotor() {
     // TODO NRJ right now only senses zeros
-    return Quantity.of(temperature_motor, "C");
+    return Quantity.of(temperature_motor, CELSIUS);
   }
 
   public Scalar getTemperatureHeatsink() {
     // TODO NRJ right now only senses zeros
-    return Quantity.of(temperature_heatsink, "C");
+    return Quantity.of(temperature_heatsink, CELSIUS);
   }
 
   public String toInfoString() {

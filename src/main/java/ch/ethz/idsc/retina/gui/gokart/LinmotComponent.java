@@ -14,11 +14,8 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -28,7 +25,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Round;
 
-class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListener {
+class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
   private final JButton initButton = new JButton("Init");
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
@@ -141,22 +138,20 @@ class LinmotComponent extends AutoboxTestingComponent implements LinmotGetListen
     }
   }
 
-  public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
-    @Override
-    public Optional<LinmotPutEvent> getPutEvent() {
-      initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
-      LinmotPutEvent linmotPutEvent = //
-          new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
-      linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-      linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-      linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-      linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
-      return Optional.of(linmotPutEvent);
-    }
+  @Override
+  public Optional<LinmotPutEvent> putEvent() {
+    initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    LinmotPutEvent linmotPutEvent = //
+        new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
+    linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
+    linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
+    linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
+    linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
+    return Optional.of(linmotPutEvent);
+  }
 
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.TESTING;
-    }
-  };
+  @Override
+  public void putEvent(LinmotPutEvent linmotPutEvent) {
+    // TODO NRJ Auto-generated method stub
+  }
 }

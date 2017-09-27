@@ -11,10 +11,7 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -23,9 +20,9 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
-class SteerComponent extends AutoboxTestingComponent implements SteerGetListener {
-  public static final int AMP = 1000;
-  public static final double FACTOR = 0.5;
+class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
+  public static final int RESOLUTION = 1000;
+  public static final double MAX_TORQUE = 0.5;
   // ---
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
@@ -41,7 +38,7 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
     }
     { // command speed
       JToolBar jToolBar = createRow("torque");
-      sliderExtTorque = SliderExt.wrap(new JSlider(-AMP, AMP, 0)); // values are divided by 1000
+      sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
       sliderExtTorque.physics = SteerComponent::giveTorque;
       sliderExtTorque.addToComponent(jToolBar);
     }
@@ -84,19 +81,17 @@ class SteerComponent extends AutoboxTestingComponent implements SteerGetListener
   }
 
   private static Scalar giveTorque(int value) {
-    return RealScalar.of(value * FACTOR / AMP);
+    return RealScalar.of(value * MAX_TORQUE / RESOLUTION);
   }
 
-  public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.TESTING;
-    }
+  @Override
+  public void putEvent(SteerPutEvent putEvent) {
+    // TODO NRJ Auto-generated method stub
+  }
 
-    @Override
-    public Optional<SteerPutEvent> getPutEvent() {
-      return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
-          giveTorque(sliderExtTorque.jSlider.getValue()).number().doubleValue()));
-    }
-  };
+  @Override
+  public Optional<SteerPutEvent> putEvent() {
+    return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), //
+        giveTorque(sliderExtTorque.jSlider.getValue()).number().doubleValue()));
+  }
 }

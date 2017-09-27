@@ -29,9 +29,9 @@ enum RunTaskGui {
     modules.add(LinmotEmergencyModule.class);
     // ---
     modules.add(AutoboxLcmServerModule.class);
+    modules.add(AutoboxSocketModule.class);
     modules.add(AutoboxTestingModule.class);
     modules.add(AutoboxJoystickModule.class);
-    modules.add(AutoboxSocketModule.class);
     // ---
     new TaskGui(modules);
   }

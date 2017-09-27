@@ -13,9 +13,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.zhkart.GetListener;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.dev.zhkart.PutListener;
+import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 
-abstract class AutoboxTestingComponent {
+abstract class AutoboxTestingComponent<GE, PE> implements GetListener<GE>, PutListener<PE>, PutProvider<PE> {
   public static final int MAX_USHORT = 65535;
   // ---
   public static final int WEST_WIDTH = 140;
@@ -97,5 +101,10 @@ abstract class AutoboxTestingComponent {
 
   protected boolean isJoystickEnabled() {
     return isJoystickEnabled;
+  }
+
+  @Override
+  public final ProviderRank getProviderRank() {
+    return ProviderRank.TESTING;
   }
 }

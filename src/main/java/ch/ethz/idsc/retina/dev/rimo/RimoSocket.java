@@ -25,7 +25,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private RimoSocket() {
     super(DatagramSocketManager.local(new byte[RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS));
     // ---
-    addProvider(RimoPutFallback.INSTANCE);
+    addPutProvider(RimoPutFallback.INSTANCE);
   }
 
   @Override

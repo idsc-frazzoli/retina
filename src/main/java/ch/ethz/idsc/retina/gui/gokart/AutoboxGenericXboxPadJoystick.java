@@ -68,7 +68,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @SuppressWarnings("incomplete-switch")
     @Override
-    public Optional<SteerPutEvent> getPutEvent() {
+    public Optional<SteerPutEvent> putEvent() {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _joystick;
         Scalar value = RealScalar.ZERO;
@@ -101,7 +101,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
 
     @SuppressWarnings("incomplete-switch")
     @Override
-    public Optional<RimoPutEvent> getPutEvent() {
+    public Optional<RimoPutEvent> putEvent() {
       final Scalar now = timeKeeper.now();
       Scalar push = RealScalar.ZERO;
       if (hasJoystick())
@@ -144,7 +144,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
   /** breaking */
   public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
-    public Optional<LinmotPutEvent> getPutEvent() {
+    public Optional<LinmotPutEvent> putEvent() {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _joystick;
         double value = joystick.getLeftKnobDirectionDown();
@@ -153,7 +153,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
             (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
             LinmotPutConfiguration.TARGETPOS_MAX);
         LinmotPutEvent linmotPutEvent = LinmotPutEvent.NORMAL_MODE;
-        // TODO NRJ check values
+        // TODO NRJ check values and put into static creator
         linmotPutEvent.target_position = (short) pos;
         linmotPutEvent.max_velocity = 1000;
         linmotPutEvent.acceleration = 500;

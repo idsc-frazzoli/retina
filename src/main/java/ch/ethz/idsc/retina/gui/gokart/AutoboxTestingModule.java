@@ -20,31 +20,35 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 public class AutoboxTestingModule extends AbstractModule {
-  private final List<AutoboxTestingComponent> list = new LinkedList<>();
+  private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final RimoComponent rimoComponent = new RimoComponent();
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
-  public final JFrame jFrame = new JFrame();
+  private final JFrame jFrame = new JFrame();
 
   @Override
   protected void first() throws Exception {
+    // TODO NRJ try addAll
     RimoSocket.INSTANCE.addGetListener(rimoComponent);
     RimoSocket.INSTANCE.addPutListener(rimoComponent);
-    RimoSocket.INSTANCE.addProvider(rimoComponent.rimoPutProvider);
+    RimoSocket.INSTANCE.addPutProvider(rimoComponent);
     addTab(rimoComponent);
     // ---
     LinmotSocket.INSTANCE.addGetListener(linmotComponent);
-    LinmotSocket.INSTANCE.addProvider(linmotComponent.linmotPutProvider);
+    LinmotSocket.INSTANCE.addPutListener(linmotComponent);
+    LinmotSocket.INSTANCE.addPutProvider(linmotComponent);
     addTab(linmotComponent);
     // ---
     SteerSocket.INSTANCE.addGetListener(steerComponent);
-    SteerSocket.INSTANCE.addProvider(steerComponent.steerPutProvider);
+    SteerSocket.INSTANCE.addPutListener(steerComponent);
+    SteerSocket.INSTANCE.addPutProvider(steerComponent);
     addTab(steerComponent);
     // ---
     MiscSocket.INSTANCE.addGetListener(miscComponent);
-    MiscSocket.INSTANCE.addProvider(miscComponent.miscPutProvider);
+    MiscSocket.INSTANCE.addPutListener(miscComponent);
+    MiscSocket.INSTANCE.addPutProvider(miscComponent);
     addTab(miscComponent);
     // ---
     jTabbedPane.setSelectedIndex(0);
@@ -57,16 +61,19 @@ public class AutoboxTestingModule extends AbstractModule {
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeGetListener(rimoComponent);
         RimoSocket.INSTANCE.removePutListener(rimoComponent);
-        RimoSocket.INSTANCE.removeProvider(rimoComponent.rimoPutProvider);
+        RimoSocket.INSTANCE.removeProvider(rimoComponent);
         // ---
         LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
-        LinmotSocket.INSTANCE.removeProvider(linmotComponent.linmotPutProvider);
+        LinmotSocket.INSTANCE.removePutListener(linmotComponent);
+        LinmotSocket.INSTANCE.removeProvider(linmotComponent);
         // ---
         SteerSocket.INSTANCE.removeGetListener(steerComponent);
-        SteerSocket.INSTANCE.removeProvider(steerComponent.steerPutProvider);
+        SteerSocket.INSTANCE.removePutListener(steerComponent);
+        SteerSocket.INSTANCE.removeProvider(steerComponent);
         // ---
         MiscSocket.INSTANCE.removeGetListener(miscComponent);
-        MiscSocket.INSTANCE.removeProvider(miscComponent.miscPutProvider);
+        MiscSocket.INSTANCE.removePutListener(miscComponent);
+        MiscSocket.INSTANCE.removeProvider(miscComponent);
         System.out.println("removed listeners and providers");
       }
     });
@@ -79,12 +86,12 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.dispose();
   }
 
-  private void addTab(AutoboxTestingComponent interfaceComponent) {
-    list.add(interfaceComponent);
-    String string = interfaceComponent.getClass().getSimpleName();
+  private void addTab(AutoboxTestingComponent<?, ?> autoboxTestingComponent) {
+    list.add(autoboxTestingComponent);
+    String string = autoboxTestingComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);
     JPanel jPanel = new JPanel(new BorderLayout());
-    jPanel.add(interfaceComponent.getComponent(), BorderLayout.NORTH);
+    jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
   }

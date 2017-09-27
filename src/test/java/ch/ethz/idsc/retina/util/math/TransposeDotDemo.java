@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 
 public enum TransposeDotDemo {
   ;
+  @SuppressWarnings("unused")
   public static void main(String[] args) {
     Tensor s = RandomVariate.of(UniformDistribution.unit(), 30000, 3);
     Tensor st = Transpose.of(s);
