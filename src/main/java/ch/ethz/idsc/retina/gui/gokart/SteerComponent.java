@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Optional;
 
 import javax.swing.JSlider;
@@ -28,6 +30,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public static final double MAX_ANGLE = 0.6743167638778687;
   // ---
   private final JToggleButton enable = new JToggleButton("controller");
+  private final JTextField kpConst = new JTextField();
+  private final JTextField kdConst = new JTextField();
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
@@ -40,6 +44,30 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       jToolBar.add(enable);
     }
     {
+      JToolBar jToolBar = createRow("Kp");
+      kpConst.setPreferredSize(new Dimension(180, 28));
+      kpConst.setText("" + positionController.Kp);
+      kpConst.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          positionController.Kp = Double.parseDouble(kpConst.getText());
+        }
+      });
+      jToolBar.add(kpConst);
+    }
+    {
+      JToolBar jToolBar = createRow("Kd");
+      kdConst.setPreferredSize(new Dimension(180, 28));
+      kdConst.setText("" + positionController.Kd);
+      kdConst.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          positionController.Kd = Double.parseDouble(kdConst.getText());
+        }
+      });
+      jToolBar.add(kdConst);
+    }
+    {
       JToolBar jToolBar = createRow("command");
       spinnerLabelLw.setList(SteerPutEvent.COMMANDS);
       spinnerLabelLw.setValueSafe(SteerPutEvent.CMD_ON);
@@ -48,7 +76,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     { // command speed
       JToolBar jToolBar = createRow("torque");
       sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
-      sliderExtTorque.physics = SteerComponent::giveTorque;
       sliderExtTorque.addToComponent(jToolBar);
     }
     addSeparator();
