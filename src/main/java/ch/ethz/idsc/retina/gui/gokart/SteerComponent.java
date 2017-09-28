@@ -31,7 +31,6 @@ import lcm.lcm.LCM;
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
-  public static final double MAX_ANGLE = 0.6743167638778687;
   // ---
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final JTextField kpConst = new JTextField();
@@ -128,7 +127,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
     final boolean isCalibrated = SteerAngleTracker.INSTANCE.isCalibrated();
-    final double angle = isCalibrated ? SteerAngleTracker.INSTANCE.getSteeringAngle() : 0;
+    final double angle = isCalibrated ? SteerAngleTracker.INSTANCE.getSteeringValue() : 0;
     final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
     jToggleController.setEnabled(isCalibrated);
     // ---
@@ -157,15 +156,17 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public Optional<SteerPutEvent> putEvent() {
     if (SteerAngleTracker.INSTANCE.isCalibrated()) {
-      final double currAngle = SteerAngleTracker.INSTANCE.getCurrentAngle();
-      double desPos = sliderExtTorque.jSlider.getValue() * MAX_ANGLE / RESOLUTION;
-      if (leftStepActive)
-        desPos = -0.65;
-      if (rightStepActive)
-        desPos = +0.65;
+      final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+      double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
+      {
+        if (leftStepActive)
+          desPos = -0.65;
+        if (rightStepActive)
+          desPos = +0.65;
+      }
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
-      double cmd = positionController.iterate(errPos);
+      final double torqueCmd = positionController.iterate(errPos);
       // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
       {
         BinaryBlob binaryBlob = new BinaryBlob();
@@ -177,7 +178,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         LCM.getSingleton().publish("myChannel", binaryBlob);
       }
       if (jToggleController.isSelected())
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), cmd));
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd));
     }
     return Optional.empty();
   }

@@ -20,13 +20,13 @@ public enum SteerAngleTracker implements SteerGetListener {
     return SOFT - 0.01 < width && width < HARD + 0.10; // <- 0.05 is insufficient
   }
 
-  public double getSteeringAngle() {
+  public double getSteeringValue() {
     if (!isCalibrated())
       throw new RuntimeException();
     return intervalTracker.getValueCentered();
   }
 
-  public double getCurrentAngle() {
+  public double getValueWithOffset() {
     if (!isCalibrated())
       throw new RuntimeException();
     return intervalTracker.getValue();
