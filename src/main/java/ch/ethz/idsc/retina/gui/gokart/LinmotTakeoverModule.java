@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -45,7 +45,7 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
   @Override
   public Optional<LinmotPutEvent> putEvent() {
     if (timedFuse.isBlown()) {
-      LinmotPutEvent takeOverEvent = new LinmotPutEvent(LinmotPutConfiguration.CMD_OFF_MODE, LinmotPutConfiguration.MC_ZEROS);
+      LinmotPutEvent takeOverEvent = new LinmotPutEvent(LinmotPutHelper.CMD_OFF_MODE, LinmotPutHelper.MC_ZEROS);
       return Optional.of(takeOverEvent);
     }
     return Optional.empty();
@@ -53,6 +53,6 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override
   public void putEvent(LinmotPutEvent putEvent) {
-    isActive = putEvent.control_word == LinmotPutConfiguration.CMD_OPERATION.getShort();
+    isActive = putEvent.control_word == LinmotPutHelper.CMD_OPERATION.getShort();
   }
 }

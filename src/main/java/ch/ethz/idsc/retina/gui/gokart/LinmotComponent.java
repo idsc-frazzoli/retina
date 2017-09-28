@@ -14,8 +14,8 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -59,47 +59,47 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     }
     {
       JToolBar jToolBar = createRow("control word");
-      spinnerLabelCtrl.setList(LinmotPutConfiguration.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutConfiguration.CMD_OFF_MODE);
+      spinnerLabelCtrl.setList(LinmotPutHelper.COMMANDS);
+      spinnerLabelCtrl.setValueSafe(LinmotPutHelper.CMD_OFF_MODE);
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
-      spinnerLabelHdr.setList(LinmotPutConfiguration.HEADER);
-      spinnerLabelHdr.setValueSafe(LinmotPutConfiguration.MC_ZEROS);
+      spinnerLabelHdr.setList(LinmotPutHelper.HEADER);
+      spinnerLabelHdr.setValueSafe(LinmotPutHelper.MC_ZEROS);
       spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
       JToolBar jToolBar = createRow("target pos");
       sliderExtTPos = SliderExt.wrap(new JSlider( //
-          LinmotPutConfiguration.TARGETPOS_MIN, //
-          LinmotPutConfiguration.TARGETPOS_MAX, //
-          LinmotPutConfiguration.TARGETPOS_INIT));
+          LinmotPutHelper.TARGETPOS_MIN, //
+          LinmotPutHelper.TARGETPOS_MAX, //
+          LinmotPutHelper.TARGETPOS_INIT));
       sliderExtTPos.addToComponent(jToolBar);
       // sliderExtF2.setValueShort(init.target_position);
     }
     { // max velocity
       JToolBar jToolBar = createRow("max velocity");
       sliderExtMVel = SliderExt.wrap(new JSlider( //
-          LinmotPutConfiguration.MAXVELOCITY_MIN, //
-          LinmotPutConfiguration.MAXVELOCITY_MAX, //
-          LinmotPutConfiguration.MAXVELOCITY_INIT));
+          LinmotPutHelper.MAXVELOCITY_MIN, //
+          LinmotPutHelper.MAXVELOCITY_MAX, //
+          LinmotPutHelper.MAXVELOCITY_INIT));
       sliderExtMVel.addToComponent(jToolBar);
     }
     { // acceleration
       JToolBar jToolBar = createRow("acceleration");
       sliderExtAcc = SliderExt.wrap(new JSlider( //
-          LinmotPutConfiguration.ACCELERATION_MIN, //
-          LinmotPutConfiguration.ACCELERATION_MAX, //
-          LinmotPutConfiguration.ACCELERATION_INIT));
+          LinmotPutHelper.ACCELERATION_MIN, //
+          LinmotPutHelper.ACCELERATION_MAX, //
+          LinmotPutHelper.ACCELERATION_INIT));
       sliderExtAcc.addToComponent(jToolBar);
     }
     { // deceleration
       JToolBar jToolBar = createRow("deceleration");
       sliderExtDec = SliderExt.wrap(new JSlider( //
-          LinmotPutConfiguration.DECELERATION_MIN, //
-          LinmotPutConfiguration.DECELERATION_MAX, //
-          LinmotPutConfiguration.DECELERATION_INIT));
+          LinmotPutHelper.DECELERATION_MIN, //
+          LinmotPutHelper.DECELERATION_MAX, //
+          LinmotPutHelper.DECELERATION_INIT));
       sliderExtDec.addToComponent(jToolBar);
     }
     addSeparator();
@@ -157,8 +157,8 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
-    spinnerLabelCtrl.setValue(LinmotPutConfiguration.findControlWord(linmotPutEvent.control_word));
-    spinnerLabelHdr.setValue(LinmotPutConfiguration.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
+    spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
+    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
     // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);

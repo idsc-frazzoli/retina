@@ -13,8 +13,8 @@ import ch.ethz.idsc.owly.math.state.StateTime;
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
@@ -157,17 +157,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _joystick;
         double value = joystick.getLeftKnobDirectionDown();
-        int pos = (int) //
-        Math.min(Math.max(LinmotPutConfiguration.TARGETPOS_MIN, //
-            (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
-            LinmotPutConfiguration.TARGETPOS_MAX);
-        LinmotPutEvent linmotPutEvent = LinmotPutEvent.NORMAL_MODE;
-        // TODO NRJ check values and put into static creator
-        linmotPutEvent.target_position = (short) pos;
-        linmotPutEvent.max_velocity = 1000;
-        linmotPutEvent.acceleration = 500;
-        linmotPutEvent.deceleration = 500;
-        return Optional.of(linmotPutEvent);
+        return Optional.of(LinmotPutHelper.operationToRelativePosition(value));
       }
       return Optional.empty();
     }
@@ -186,7 +176,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
         MiscPutEvent miscPutEvent = new MiscPutEvent();
         miscPutEvent.resetRimoL = resetValue;
         miscPutEvent.resetRimoR = resetValue;
-        // TODO NRJ not final values
+        // TODO NRJ not final logic
         return Optional.of(miscPutEvent);
       }
       return Optional.empty();
