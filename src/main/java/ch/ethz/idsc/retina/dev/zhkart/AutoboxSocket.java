@@ -119,7 +119,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     if (object instanceof PutProvider) {
       @SuppressWarnings("unchecked")
       PutProvider<PE> putProvider = (PutProvider<PE>) object;
-      removeProvider(putProvider);
+      removePutProvider(putProvider);
     }
     if (object instanceof GetListener) {
       @SuppressWarnings("unchecked")
@@ -140,7 +140,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
       throw new RuntimeException();
   }
 
-  public final void removeProvider(PutProvider<PE> putProvider) {
+  public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
     if (!removed)
       new RuntimeException("provider was not listed").printStackTrace();

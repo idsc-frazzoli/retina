@@ -78,11 +78,11 @@ public class AutoboxJoystickModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        RimoSocket.INSTANCE.removeProvider(instance.rimoPutProvider);
-        LinmotSocket.INSTANCE.removeProvider(instance.linmotPutProvider);
-        SteerSocket.INSTANCE.removeProvider(instance.steerPutProvider);
+        RimoSocket.INSTANCE.removePutProvider(instance.rimoPutProvider);
+        LinmotSocket.INSTANCE.removePutProvider(instance.linmotPutProvider);
+        SteerSocket.INSTANCE.removePutProvider(instance.steerPutProvider);
         SteerSocket.INSTANCE.removeGetListener(instance);
-        MiscSocket.INSTANCE.removeProvider(instance.miscPutProvider);
+        MiscSocket.INSTANCE.removePutProvider(instance.miscPutProvider);
         // ---
         System.out.println("removed listeners and providers");
         GenericXboxPadLcmClient.INSTANCE.removeListener(instance);

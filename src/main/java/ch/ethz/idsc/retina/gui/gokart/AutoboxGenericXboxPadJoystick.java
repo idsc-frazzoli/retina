@@ -115,7 +115,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener, SteerGet
         case SIMPLE_DRIVE: {
           StateTime rate = episodeIntegrator.tail();
           Scalar speed = rate.state().Get(0);
-          Scalar theta = RealScalar.of(steerGetEvent.getSteeringAngle());
+          Scalar theta = RealScalar.of(steerGetEvent.getGcpRelRckPos());
           Scalar sL = dsL.get(speed, theta);
           Scalar sR = dsR.get(speed, theta);
           return Optional.of(RimoPutEvent.withSpeeds( //

@@ -26,7 +26,7 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
 
   @Override
   protected void last() {
-    RimoSocket.INSTANCE.removeProvider(this);
+    RimoSocket.INSTANCE.removePutProvider(this);
     LinmotSocket.INSTANCE.removeGetListener(this);
   }
 

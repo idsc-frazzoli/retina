@@ -59,8 +59,7 @@ public class SteerGetEvent extends DataEvent {
     return LENGTH;
   }
 
-  public double getSteeringAngle() {
-    // TODO NRJ not final formula for steering angle
+  public double getGcpRelRckPos() {
     return gcpRelRckPos;
   }
 }

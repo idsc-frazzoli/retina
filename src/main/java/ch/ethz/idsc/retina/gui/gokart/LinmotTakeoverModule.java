@@ -15,13 +15,16 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 public class LinmotTakeoverModule extends AbstractModule implements LinmotGetListener, LinmotPutListener, LinmotPutProvider {
+  private static final double DURATION_S = 0.04;
+  private static final double THRESHOLD_POS_DELTA = 20000;
+
   @Override
   protected void first() throws Exception {
     LinmotSocket.INSTANCE.addAll(this);
   }
 
   private boolean isActive = false;
-  private final TimedFuse timedFuse = new TimedFuse(0.07);
+  private final TimedFuse timedFuse = new TimedFuse(DURATION_S);
 
   @Override
   protected void last() {
@@ -31,8 +34,7 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
   @Override
   public void getEvent(LinmotGetEvent getEvent) {
     int difference = getEvent.demand_position - getEvent.actual_position;
-    // System.out.println(difference);
-    timedFuse.register(isActive && difference >= 20000);
+    timedFuse.register(isActive && difference >= THRESHOLD_POS_DELTA);
   }
 
   @Override
