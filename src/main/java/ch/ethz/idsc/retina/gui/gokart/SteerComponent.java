@@ -23,7 +23,6 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import idsc.BinaryBlob;
@@ -32,15 +31,14 @@ import lcm.lcm.LCM;
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
-  public static final double MAX_ANGLE = 0.6743167638778687;
   // ---
-  private final JToggleButton enable = new JToggleButton("controller");
+  private final JToggleButton jToggleController = new JToggleButton("controller");
   private final JTextField kpConst = new JTextField();
   private final JTextField kdConst = new JTextField();
+  private final JTextField tqLimit = new JTextField();
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private final SteerAngleTracker steerAngleTracker = new SteerAngleTracker();
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
@@ -51,31 +49,28 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public SteerComponent() {
     {
       JToolBar jToolBar = createRow("command");
-      jToolBar.add(enable);
+      jToolBar.add(jToggleController);
     }
     {
       JToolBar jToolBar = createRow("Kp");
       kpConst.setPreferredSize(new Dimension(180, 28));
       kpConst.setText("" + positionController.Kp);
-      kpConst.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          positionController.Kp = Double.parseDouble(kpConst.getText());
-        }
-      });
+      kpConst.addActionListener(e -> positionController.Kp = Double.parseDouble(kpConst.getText()));
       jToolBar.add(kpConst);
     }
     {
       JToolBar jToolBar = createRow("Kd");
       kdConst.setPreferredSize(new Dimension(180, 28));
       kdConst.setText("" + positionController.Kd);
-      kdConst.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          positionController.Kd = Double.parseDouble(kdConst.getText());
-        }
-      });
+      kdConst.addActionListener(e -> positionController.Kd = Double.parseDouble(kdConst.getText()));
       jToolBar.add(kdConst);
+    }
+    {
+      JToolBar jToolBar = createRow("Torque limit");
+      tqLimit.setPreferredSize(new Dimension(180, 28));
+      tqLimit.setText("" + positionController.torqueLimit);
+      tqLimit.addActionListener(e -> positionController.torqueLimit = Double.parseDouble(tqLimit.getText()));
+      jToolBar.add(tqLimit);
     }
     {
       JToolBar jToolBar = createRow("command");
@@ -131,8 +126,10 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    steerAngleTracker.getEvent(steerGetEvent);
-    double angle = steerAngleTracker.getSteeringAngleRelative(steerGetEvent);
+    final boolean isCalibrated = SteerAngleTracker.INSTANCE.isCalibrated();
+    final double angle = isCalibrated ? SteerAngleTracker.INSTANCE.getSteeringValue() : 0;
+    final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
+    jToggleController.setEnabled(isCalibrated);
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
@@ -141,8 +138,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
-    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos + " " + angle);
-    {
+    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos + " " + descr);
+    if (isCalibrated) {
       Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
       jTextField[7].setBackground(color);
     }
@@ -151,43 +148,37 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
   }
 
-  private static Scalar giveTorque(int value) {
-    return RealScalar.of(value * MAX_TORQUE / RESOLUTION);
-  }
-
   @Override
   public void putEvent(SteerPutEvent putEvent) {
-    // TODO NRJ Auto-generated method stub
+    // nothing to do here
   }
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    double currAngle = steerAngleTracker.getCurrAngle();
-    double desPos = sliderExtTorque.jSlider.getValue() * MAX_ANGLE / RESOLUTION;
-    if (leftStepActive)
-      desPos = -0.65;
-    if (rightStepActive)
-      desPos = 0.65;
-    // System.out.println(desPos);
-    double errPos = desPos - currAngle;
-    double cmd = positionController.iterate(errPos);
-    // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
-    {
-      BinaryBlob binaryBlob = new BinaryBlob();
-      binaryBlob.data = new byte[8];
-      binaryBlob.data_length = 8;
-      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-      byteBuffer.putDouble(errPos);
-      try {
-        LCM.getSingleton().publish("myChannel", binaryBlob);
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+    if (SteerAngleTracker.INSTANCE.isCalibrated()) {
+      final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+      double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
+      {
+        if (leftStepActive)
+          desPos = -0.65;
+        if (rightStepActive)
+          desPos = +0.65;
       }
-    }
-    if (enable.isSelected()) {
-      return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), cmd));
+      // System.out.println(desPos);
+      double errPos = desPos - currAngle;
+      final double torqueCmd = positionController.iterate(errPos);
+      // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
+      {
+        BinaryBlob binaryBlob = new BinaryBlob();
+        binaryBlob.data = new byte[8];
+        binaryBlob.data_length = 8;
+        ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.putDouble(errPos);
+        LCM.getSingleton().publish("myChannel", binaryBlob);
+      }
+      if (jToggleController.isSelected())
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd));
     }
     return Optional.empty();
   }

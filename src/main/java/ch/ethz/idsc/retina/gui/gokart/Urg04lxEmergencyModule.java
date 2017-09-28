@@ -26,7 +26,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
 
   @Override
   protected void last() {
-    RimoSocket.INSTANCE.removeProvider(this);
+    RimoSocket.INSTANCE.removePutProvider(this);
     urg04lxLcmClient.urg04lxDecoder.removeRayListener(this);
     urg04lxLcmClient.stopSubscriptions();
   }

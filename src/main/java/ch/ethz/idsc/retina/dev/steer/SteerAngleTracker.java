@@ -1,42 +1,34 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-public class SteerAngleTracker implements SteerGetListener {
-  private double min = +1e10;
-  private double max = -1e10;
-  private double currAngle = 0;
+import ch.ethz.idsc.retina.util.math.IntervalTracker;
 
-  public double getSteeringAngleRelative(SteerGetEvent steerGetEvent) {
-    getEvent(steerGetEvent);
-    double width = width();
-    if (width == 0)
-      return 0;
-    double angle = steerGetEvent.getSteeringAngle();
-    return (2 * angle - max - min) / width;
-  }
-
-  private double getSteeringAngle(SteerGetEvent steerGetEvent) {
-    // getEvent(steerGetEvent);
-    double width = width();
-    if (width == 0)
-      return 0;
-    double angle = steerGetEvent.getSteeringAngle();
-    return angle - (max + min) * 0.5; // offsetting to [-0.65, 0.65]
-  }
-
-  public double getCurrAngle() {
-    return currAngle;
-  }
-
-  public double width() {
-    return max - min;
-  }
+public enum SteerAngleTracker implements SteerGetListener {
+  INSTANCE;
+  // ---
+  private static final double SOFT = 1.357;
+  private static final double HARD = 1.405;
+  private final IntervalTracker intervalTracker = new IntervalTracker();
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    double angle = steerGetEvent.getSteeringAngle();
-    min = Math.min(min, angle);
-    max = Math.max(max, angle);
-    currAngle = getSteeringAngle(steerGetEvent);
+    intervalTracker.setValue(steerGetEvent.getGcpRelRckPos());
+  }
+
+  public boolean isCalibrated() {
+    double width = intervalTracker.getWidth();
+    return SOFT - 0.01 < width && width < HARD + 0.10; // <- 0.05 is insufficient
+  }
+
+  public double getSteeringValue() {
+    if (!isCalibrated())
+      throw new RuntimeException();
+    return intervalTracker.getValueCentered();
+  }
+
+  public double getValueWithOffset() {
+    if (!isCalibrated())
+      throw new RuntimeException();
+    return intervalTracker.getValue();
   }
 }

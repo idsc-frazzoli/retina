@@ -42,7 +42,7 @@ enum GokartSteerLogExport {
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-          tableGet.append(Tensors.vector(event.utime - tic, steerGetEvent.motAsp_CANInput, steerGetEvent.getSteeringAngle()));
+          tableGet.append(Tensors.vector(event.utime - tic, steerGetEvent.motAsp_CANInput, steerGetEvent.getGcpRelRckPos()));
           // System.out.println(steerGetEvent.getSteeringAngle());
           ++countGet;
         } else //

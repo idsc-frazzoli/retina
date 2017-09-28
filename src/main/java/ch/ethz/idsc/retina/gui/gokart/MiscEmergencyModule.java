@@ -32,7 +32,7 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   protected void last() {
-    RimoSocket.INSTANCE.removeProvider(this);
+    RimoSocket.INSTANCE.removePutProvider(this);
     MiscSocket.INSTANCE.removeGetListener(this);
   }
 
