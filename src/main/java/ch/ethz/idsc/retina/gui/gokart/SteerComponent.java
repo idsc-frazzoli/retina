@@ -23,8 +23,10 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.sca.Round;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
@@ -43,9 +45,13 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
+  private final JButton calibrate = new JButton("calibrate");
   private boolean leftStepActive = false;
   private boolean rightStepActive = false;
-
+  private boolean calibrateReq = false;
+  private boolean calibrated = false;
+  private long startTime;
+  
   public SteerComponent() {
     {
       JToolBar jToolBar = createRow("command");
@@ -108,6 +114,19 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         }
       });
     }
+    {
+      { // command speed
+        JToolBar jToolBar = createRow("calibration");
+        jToolBar.add(calibrate);
+        calibrate.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            calibrateReq = true;
+            startTime = System.currentTimeMillis();
+          }
+        });
+      }
+    }
     addSeparator();
     { // reception
       jTextField[0] = createReading("motAsp_CANInput");
@@ -155,6 +174,20 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
+    if (calibrateReq && !calibrated) {
+      
+      long currTime = System.currentTimeMillis();
+      //System.out.println(Tensors.vector(currTime - startTime).map(Round._3));
+      
+      if (currTime - startTime < 3000)
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.2));
+
+      if (currTime - startTime < 6000)
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.2));
+      else
+        calibrated = true;
+    }
+    
     if (SteerAngleTracker.INSTANCE.isCalibrated()) {
       final double currAngle = SteerAngleTracker.INSTANCE.getSteeringValue();
       double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
@@ -167,7 +200,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
       final double torqueCmd = positionController.iterate(errPos);
-      // System.out.println(Tensors.vector(cmd, currAngle).map(Round._3));
+      // System.out.println(Tensors.vector(currAngle).map(Round._3));
       {
         BinaryBlob binaryBlob = new BinaryBlob();
         binaryBlob.data = new byte[8];
