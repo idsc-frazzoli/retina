@@ -179,10 +179,16 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       long currTime = System.currentTimeMillis();
       //System.out.println(Tensors.vector(currTime - startTime).map(Round._3));
       
-      if (currTime - startTime < 3000)
+      if (currTime - startTime < 1000)
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.1));
+      
+      if (currTime - startTime < 2000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.2));
 
-      if (currTime - startTime < 6000)
+      if (currTime - startTime < 4000)
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.1));
+      
+      if (currTime - startTime < 5000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.2));
       else
         calibrated = true;
@@ -193,9 +199,9 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
       {
         if (leftStepActive)
-          desPos = -0.65;
-        if (rightStepActive)
           desPos = +0.65;
+        if (rightStepActive)
+          desPos = -0.65;
       }
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
@@ -203,11 +209,12 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       // System.out.println(Tensors.vector(currAngle).map(Round._3));
       {
         BinaryBlob binaryBlob = new BinaryBlob();
-        binaryBlob.data = new byte[8];
-        binaryBlob.data_length = 8;
+        binaryBlob.data = new byte[16];
+        binaryBlob.data_length = 16;
         ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.putDouble(errPos);
+        byteBuffer.putDouble(desPos);
+        byteBuffer.putDouble(currAngle);
         LCM.getSingleton().publish("myChannel", binaryBlob);
       }
       if (jToggleController.isSelected())
