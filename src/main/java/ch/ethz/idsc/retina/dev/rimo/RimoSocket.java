@@ -23,7 +23,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   // ---
 
   private RimoSocket() {
-    super(DatagramSocketManager.local(new byte[RimoGetEvent.LENGTH], RimoSocket.LOCAL_PORT, RimoSocket.LOCAL_ADDRESS));
+    super(DatagramSocketManager.local(new byte[RimoGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
     // ---
     addPutProvider(RimoPutFallback.INSTANCE);
   }
@@ -43,6 +43,6 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   @Override
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
-        InetAddress.getByName(RimoSocket.REMOTE_ADDRESS), RimoSocket.REMOTE_PORT);
+        InetAddress.getByName(REMOTE_ADDRESS), REMOTE_PORT);
   }
 }

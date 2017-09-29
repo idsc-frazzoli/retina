@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.util.math;
 
 public class IntervalTracker {
-  private double min = +1e10;
-  private double max = -1e10;
+  private double min = Double.POSITIVE_INFINITY;
+  private double max = Double.NEGATIVE_INFINITY;
   private double last_value = 0;
 
   public double getValueCentered() {
@@ -18,9 +18,9 @@ public class IntervalTracker {
     return max - min;
   }
 
-  public void setValue(double angle) {
-    min = Math.min(min, angle);
-    max = Math.max(max, angle);
-    last_value = angle;
+  public void setValue(double value) {
+    min = Math.min(min, value);
+    max = Math.max(max, value);
+    last_value = value;
   }
 }

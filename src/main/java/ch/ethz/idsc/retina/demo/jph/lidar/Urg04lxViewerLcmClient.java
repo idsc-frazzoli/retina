@@ -27,11 +27,11 @@ enum Urg04lxViewerLcmClient {
       LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
       urg04lxLcmClient.urg04lxDecoder.addRayListener(lidarRotationProvider);
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
-      lidarAngularFiringCollector.addListener(urg04lxFrame);
+      lidarAngularFiringCollector.addListener(urg04lxFrame.urg04lxRender);
     }
     {
       Urg04lxRangeProvider urg04lxRangeProvider = new Urg04lxRangeProvider();
-      urg04lxRangeProvider.addListener(urg04lxFrame);
+      urg04lxRangeProvider.addListener(urg04lxFrame.urg04lxRender);
       urg04lxLcmClient.urg04lxDecoder.addRayListener(urg04lxRangeProvider);
     }
     urg04lxLcmClient.startSubscriptions();

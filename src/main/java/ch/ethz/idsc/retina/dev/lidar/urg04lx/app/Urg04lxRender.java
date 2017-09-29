@@ -11,14 +11,20 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
+import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
+import ch.ethz.idsc.retina.util.math.UniformResample;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -35,7 +41,7 @@ import ch.ethz.idsc.tensor.sca.Power;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sin;
 
-public class Urg04lxRender {
+public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListener {
   /** points closer than 2[cm] == 0.02[m] are discarded */
   public static final Scalar THRESHOLD = RealScalar.of(0.02); // [m]
   public static final Scalar RAMERDOUGLASPEUKER = RealScalar.of(0.05); // 5[cm] == 0.05[m]
@@ -54,6 +60,8 @@ public class Urg04lxRender {
   private Scalar METER_TO_PIXEL; // [m] to [pixel]
   private int ofs_x;
   private int ofs_y;
+  public Scalar threshold = RealScalar.of(30);
+  public Scalar ds_value = RealScalar.of(0.03);
 
   public Urg04lxRender() {
     direction = Transpose.of(Tensors.of(Cos.of(angle), Sin.of(angle)));
@@ -178,7 +186,21 @@ public class Urg04lxRender {
 
   private List<Tensor> _pointcloud;
 
-  public void setPointcloud(List<Tensor> pointcloud) {
-    _pointcloud = pointcloud;
+  @Override
+  public void range(Urg04lxRangeEvent urg04lxRangeEvent) {
+    setEvent(urg04lxRangeEvent);
+  }
+
+  @Override
+  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+    FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
+    // int limit = floatBuffer.limit();
+    Tensor points = Tensors.vector(i -> Tensors.of( //
+        DoubleScalar.of(floatBuffer.get()), //
+        DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
+    List<Tensor> result = new UniformResample(threshold, ds_value).apply(points);
+    System.out.println(points.length() + " -> blocks = " + result.size());
+    // TODO there was a repaint here?
+    _pointcloud = result;
   }
 }

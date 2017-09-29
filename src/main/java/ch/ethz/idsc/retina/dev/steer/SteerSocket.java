@@ -23,7 +23,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   // ---
 
   private SteerSocket() {
-    super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], SteerSocket.LOCAL_PORT, SteerSocket.LOCAL_ADDRESS));
+    super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
     // ---
     addGetListener(SteerAngleTracker.INSTANCE);
     addPutProvider(SteerPutFallback.INSTANCE);
@@ -42,6 +42,6 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   @Override
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
-        InetAddress.getByName(SteerSocket.REMOTE_ADDRESS), SteerSocket.REMOTE_PORT);
+        InetAddress.getByName(REMOTE_ADDRESS), REMOTE_PORT);
   }
 }

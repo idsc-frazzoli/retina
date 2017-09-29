@@ -8,6 +8,7 @@ public enum SteerAngleTracker implements SteerGetListener {
   // ---
   private static final double SOFT = 1.357;
   private static final double HARD = 1.405;
+  // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
 
   @Override

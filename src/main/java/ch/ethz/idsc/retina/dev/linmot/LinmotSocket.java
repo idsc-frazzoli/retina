@@ -24,7 +24,7 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
   // ---
 
   private LinmotSocket() {
-    super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LinmotSocket.LOCAL_PORT, LinmotSocket.LOCAL_ADDRESS));
+    super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
     // ---
     addPutProvider(LinmotCalibrationProvider.INSTANCE);
     addPutProvider(LinmotPutFallback.INSTANCE);
@@ -43,6 +43,6 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
   @Override
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, //
-        InetAddress.getByName(LinmotSocket.REMOTE_ADDRESS), LinmotSocket.REMOTE_PORT);
+        InetAddress.getByName(REMOTE_ADDRESS), REMOTE_PORT);
   }
 }
