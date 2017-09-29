@@ -156,7 +156,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public Optional<SteerPutEvent> putEvent() {
     if (SteerAngleTracker.INSTANCE.isCalibrated()) {
-      final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+      final double currAngle = SteerAngleTracker.INSTANCE.getSteeringValue();
       double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
       {
         if (leftStepActive)
