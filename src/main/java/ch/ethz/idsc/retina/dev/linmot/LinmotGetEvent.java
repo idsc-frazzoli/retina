@@ -27,6 +27,7 @@ public class LinmotGetEvent extends DataEvent {
   // ---
   public final short status_word;
   public final short state_variable;
+  // TODO document units
   public final int actual_position;
   public final int demand_position;
   private final short winding_temp1;

@@ -5,7 +5,8 @@ import ch.ethz.idsc.tensor.img.ColorDataFunction;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-public enum Gui {
+// TODO remove once updated
+enum Gui {
   INSTANCE;
   // ---
   public final ColorDataFunction TEMPERATURE;

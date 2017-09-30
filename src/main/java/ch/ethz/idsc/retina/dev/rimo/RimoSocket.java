@@ -30,9 +30,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
 
   @Override
   protected RimoGetEvent createGetEvent(ByteBuffer byteBuffer) {
-    RimoGetTire rimoGetL = new RimoGetTire(byteBuffer);
-    RimoGetTire rimoGetR = new RimoGetTire(byteBuffer);
-    return new RimoGetEvent(rimoGetL, rimoGetR);
+    return new RimoGetEvent(byteBuffer);
   }
 
   @Override
