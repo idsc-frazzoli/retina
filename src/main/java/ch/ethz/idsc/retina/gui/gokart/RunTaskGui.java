@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
+import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
@@ -35,7 +36,7 @@ enum RunTaskGui {
     modules.add(AutoboxTestingModule.class);
     modules.add(AutoboxJoystickModule.class);
     // ---
-    modules.add(LocalViewModule.class);
+    modules.add(LocalViewLcmModule.class);
     // ---
     new TaskGui(modules);
   }

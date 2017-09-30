@@ -13,6 +13,12 @@ import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 
+/** listen to specific urg04lx channel and decode urg messages
+ * 
+ * Hint:
+ * 1) create new Urg04lxLcmClient("front") // modify name of lidar if necessary
+ * 2) add all ray listeners to the urg04lxDecoder
+ * 3) call startSubscriptions() */
 public class Urg04lxLcmClient implements LcmClientInterface, LCMSubscriber {
   public final Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
   private final String lidarId;

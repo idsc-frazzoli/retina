@@ -52,9 +52,9 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
   private final IntervalClock intervalClock = new IntervalClock();
   /** p.2 Detection Area: 240 [deg] */
   private final Tensor angle = Subdivide.of(-120 * Math.PI / 180, 120 * Math.PI / 180, INDEX_LAST).unmodifiable();
-  private final Tensor direction;
+  private final Tensor direction = Transpose.of(Tensors.of(Cos.of(angle), Sin.of(angle)));
   private final Tensor gridlines = Tensors.empty();
-  /** range contains distances in [mm] for 682 angles */
+  /** range contains distances in [m] for 682 angles */
   private Tensor _range = Tensors.empty();
   long timestamp = -1;
   private Scalar METER_TO_PIXEL; // [m] to [pixel]
@@ -64,7 +64,6 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
   public Scalar ds_value = RealScalar.of(0.03);
 
   public Urg04lxRender() {
-    direction = Transpose.of(Tensors.of(Cos.of(angle), Sin.of(angle)));
     for (Tensor radius : Tensors.vector(1, 2, 3, 4, 5))
       gridlines.append(direction.multiply(radius.Get()));
     setZoom(0);
@@ -187,7 +186,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
   private List<Tensor> _pointcloud;
 
   @Override
-  public void range(Urg04lxRangeEvent urg04lxRangeEvent) {
+  public void urg04lxRange(Urg04lxRangeEvent urg04lxRangeEvent) {
     setEvent(urg04lxRangeEvent);
   }
 
@@ -200,7 +199,6 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
     List<Tensor> result = new UniformResample(threshold, ds_value).apply(points);
     System.out.println(points.length() + " -> blocks = " + result.size());
-    // TODO there was a repaint here?
     _pointcloud = result;
   }
 }

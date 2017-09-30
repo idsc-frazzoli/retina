@@ -14,7 +14,7 @@ public class Urg04lxRealtimeListener implements Urg04lxRangeListener {
   }
 
   @Override
-  public void range(Urg04lxRangeEvent urg04lxEvent) {
+  public void urg04lxRange(Urg04lxRangeEvent urg04lxEvent) {
     realtimeSleeper.now(urg04lxEvent.timestamp * MILLI_TO_NANO);
   }
 }

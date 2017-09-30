@@ -25,7 +25,7 @@ public class Urg04lxRangeProvider implements LidarRayDataListener {
     double[] range = new double[Urg04lxDevice.MAX_POINTS];
     for (int index = 0; index < Urg04lxDevice.MAX_POINTS; ++index)
       range[index] = (byteBuffer.getShort() & 0xffff) * Urg04lxSpacialProvider.TO_METER;
-    Urg04lxRangeEvent urg04lxEvent = new Urg04lxRangeEvent(usec, range);
-    listeners.forEach(listener -> listener.range(urg04lxEvent));
+    Urg04lxRangeEvent urg04lxRangeEvent = new Urg04lxRangeEvent(usec, range);
+    listeners.forEach(listener -> listener.urg04lxRange(urg04lxRangeEvent));
   }
 }
