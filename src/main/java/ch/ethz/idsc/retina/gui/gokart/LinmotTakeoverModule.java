@@ -44,10 +44,8 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    if (timedFuse.isBlown()) {
-      LinmotPutEvent takeOverEvent = new LinmotPutEvent(LinmotPutHelper.CMD_OFF_MODE, LinmotPutHelper.MC_ZEROS);
-      return Optional.of(takeOverEvent);
-    }
+    if (timedFuse.isBlown())
+      return Optional.of(LinmotPutHelper.OFF_MODE_EVENT);
     return Optional.empty();
   }
 

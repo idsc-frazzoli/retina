@@ -11,9 +11,6 @@ import ch.ethz.idsc.retina.util.data.Word;
 public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
   private static final int LENGTH = 12;
-  public static final LinmotPutEvent NORMAL_MODE = new LinmotPutEvent( //
-      LinmotPutHelper.CMD_OPERATION, //
-      LinmotPutHelper.MC_POSITION);
   // ---
   public final short control_word;
   public final short motion_cmd_hdr;

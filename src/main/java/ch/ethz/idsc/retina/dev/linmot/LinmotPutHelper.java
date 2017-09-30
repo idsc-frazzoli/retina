@@ -36,6 +36,12 @@ public enum LinmotPutHelper {
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
   public static final int DECELERATION_INIT = 500;
+  // ---
+  /** off-mode event is used as fallback control and when
+   * human driver takes over control of the break by foot */
+  public static final LinmotPutEvent OFF_MODE_EVENT = new LinmotPutEvent( //
+      LinmotPutHelper.CMD_OFF_MODE, //
+      LinmotPutHelper.MC_ZEROS);
 
   public static LinmotPutEvent operationToRelativePosition(double value) {
     return operationToPosition((short) //
@@ -43,7 +49,7 @@ public enum LinmotPutHelper {
   }
 
   public static LinmotPutEvent operationToPosition(short pos) {
-    // TODO JAN use this in the gui...
+    // TODO NRJ use this in the gui...
     final LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, //
         LinmotPutHelper.MC_POSITION);
