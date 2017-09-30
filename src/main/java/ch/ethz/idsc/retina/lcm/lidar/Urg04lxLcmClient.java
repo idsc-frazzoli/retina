@@ -1,17 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDecoder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
-import idsc.BinaryBlob;
-import lcm.lcm.LCM;
-import lcm.lcm.LCMDataInputStream;
-import lcm.lcm.LCMSubscriber;
+import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 
 /** listen to specific urg04lx channel and decode urg messages
  * 
@@ -19,7 +13,7 @@ import lcm.lcm.LCMSubscriber;
  * 1) create new Urg04lxLcmClient("front") // modify name of lidar if necessary
  * 2) add all ray listeners to the urg04lxDecoder
  * 3) call startSubscriptions() */
-public class Urg04lxLcmClient implements LcmClientInterface, LCMSubscriber {
+public class Urg04lxLcmClient extends BinaryLcmClient {
   public final Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
   private final String lidarId;
 
@@ -28,28 +22,12 @@ public class Urg04lxLcmClient implements LcmClientInterface, LCMSubscriber {
   }
 
   @Override
-  public void startSubscriptions() {
-    LCM.getSingleton().subscribe(name(), this);
-  }
-
-  @Override
-  public void stopSubscriptions() {
-    LCM.getSingleton().unsubscribe(name(), this);
-  }
-
-  private String name() {
+  protected String name() {
     return Urg04lxDevice.channel(lidarId);
   }
 
   @Override
-  public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-    try {
-      BinaryBlob binaryBlob = new BinaryBlob(ins);
-      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-      urg04lxDecoder.lasers(byteBuffer);
-    } catch (IOException exception) {
-      exception.printStackTrace();
-    }
+  protected void digest(ByteBuffer byteBuffer) {
+    urg04lxDecoder.lasers(byteBuffer);
   }
 }

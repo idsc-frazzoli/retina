@@ -106,7 +106,6 @@ public class Mark8Decoder implements LidarRayDataProvider {
   }
 
   public static void main(String[] args) throws Exception {
-    Mark8Decoder mark8Decoder = new Mark8Decoder();
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(new LidarRotationListener() {
       @Override
@@ -115,9 +114,9 @@ public class Mark8Decoder implements LidarRayDataProvider {
         // System.out.println(lidarRotationEvent);
       }
     });
-    mark8Decoder.addRayListener(lidarRotationProvider);
-    mark8Decoder.addRayListener(new Mark8SpacialProvider());
-    Mark8LcmClient mark8LcmClient = new Mark8LcmClient(mark8Decoder, "center");
+    Mark8LcmClient mark8LcmClient = new Mark8LcmClient("center");
+    mark8LcmClient.mark8Decoder.addRayListener(lidarRotationProvider);
+    mark8LcmClient.mark8Decoder.addRayListener(new Mark8SpacialProvider());
     mark8LcmClient.startSubscriptions();
     Thread.sleep(10000);
   }

@@ -7,11 +7,11 @@ import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDecoder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxSpacialProvider;
 
-public class SimpleUrg04lxLcmClient {
+public class Urg04lxLcmHandler {
   private final Urg04lxLcmClient urg04lxLcmClient;
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
 
-  public SimpleUrg04lxLcmClient(String lidarId) {
+  public Urg04lxLcmHandler(String lidarId) {
     urg04lxLcmClient = new Urg04lxLcmClient(lidarId);
     // THE ORDER IS IMPORTANT:
     // 1) update spacial info

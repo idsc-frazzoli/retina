@@ -10,8 +10,11 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 public enum SteerLcmServer implements SteerGetListener, SteerPutListener {
   INSTANCE;
   // ---
-  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher("autobox.steer.get");
-  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher("autobox.steer.put");
+  public static final String CHANNEL_GET = "autobox.steer.get";
+  public static final String CHANNEL_PUT = "autobox.steer.put";
+  // ---
+  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher(CHANNEL_GET);
+  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher(CHANNEL_PUT);
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {

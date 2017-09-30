@@ -7,13 +7,14 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 
 public class LinmotGetLcmClient extends SimpleLcmClient<LinmotGetListener> {
-  public LinmotGetLcmClient() {
-    super(LinmotLcmServer.CHANNEL_GET);
+  @Override
+  protected void digest(ByteBuffer byteBuffer) {
+    LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
+    listeners.forEach(listener -> listener.getEvent(linmotGetEvent));
   }
 
   @Override
-  protected void createEvent(ByteBuffer byteBuffer) {
-    LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
-    listeners.forEach(listener -> listener.getEvent(linmotGetEvent));
+  protected String name() {
+    return LinmotLcmServer.CHANNEL_GET;
   }
 }

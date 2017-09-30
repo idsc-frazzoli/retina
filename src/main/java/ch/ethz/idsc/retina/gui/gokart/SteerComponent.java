@@ -138,7 +138,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
-    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos + " " + descr);
+    jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos() + " " + descr);
     if (isCalibrated) {
       Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
       jTextField[7].setBackground(color);
