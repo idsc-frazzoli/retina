@@ -4,22 +4,23 @@ package ch.ethz.idsc.retina.dev.davis.io;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** lists the events in a text file */
-public class DavisEventsTextWriter implements DavisDvsEventListener, AutoCloseable {
+public class DavisEventsTextWriter implements DavisDvsListener, AutoCloseable {
   private final BufferedWriter bufferedWriter;
   private final DavisExportControl davisExportControl;
 
-  public DavisEventsTextWriter(File directory, DavisExportControl davisExportControl) throws Exception {
+  public DavisEventsTextWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "events.txt")));
     this.davisExportControl = davisExportControl;
   }
 
   @Override
-  public void dvs(DavisDvsEvent davisDvsEvent) {
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (davisExportControl.isActive())
       try {
         int mapped = davisExportControl.mapTime(davisDvsEvent.time);
@@ -34,7 +35,7 @@ public class DavisEventsTextWriter implements DavisDvsEventListener, AutoCloseab
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() throws IOException {
     bufferedWriter.close();
   }
 }

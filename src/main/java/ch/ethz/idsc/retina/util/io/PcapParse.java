@@ -1,5 +1,4 @@
 // code by jph
-// TODO cite web reference
 package ch.ethz.idsc.retina.util.io;
 
 import java.io.File;
@@ -8,14 +7,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
 
-/** information taken from
- * "Hani's blog: A look at the pcap file format" */
+/** file description taken from "Hani's blog: A look at the pcap file format"
+ * http://www.kroosec.com/2012/10/a-look-at-pcap-file-format.html
+ * 
+ * implementation is standalone */
 public class PcapParse {
   private static final int HEADER_ID = 0xa1b2c3d4;
 
-  public static void of(File file, ByteArrayConsumer packetConsumer) throws Exception {
-    new PcapParse(file, packetConsumer);
+  /** @param file
+   * @param pcapPacketListeners
+   * @throws Exception */
+  public static void of(File file, PcapPacketListener... pcapPacketListeners) throws IOException {
+    new PcapParse(file, Arrays.asList(pcapPacketListeners));
   }
   // ---
 
@@ -24,7 +30,7 @@ public class PcapParse {
   private int max_size;
   private byte[] packet_data;
 
-  private PcapParse(File file, ByteArrayConsumer packetConsumer) throws Exception {
+  private PcapParse(File file, List<PcapPacketListener> pcapPacketListeners) throws IOException {
     try (InputStream inputStream = new FileInputStream(file)) {
       this.inputStream = inputStream;
       _globalHeader();
@@ -33,14 +39,16 @@ public class PcapParse {
         inputStream.read(packet_header); // packet header
         ByteBuffer byteBuffer = ByteBuffer.wrap(packet_header);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.getInt(); // sec
-        byteBuffer.getInt(); // msec
-        // The third field is 4 bytes long and contains the size of the saved packet data in our file in bytes.
+        int sec = byteBuffer.getInt(); // sec
+        int usec = byteBuffer.getInt(); // microseconds [0...999999]
+        // The third field is 4 bytes long and contains the size of the saved packet
+        // data in our file in bytes.
         int length = byteBuffer.getInt(); // size
         if (max_size < length)
           System.err.println(length + " " + max_size);
         _assert(length <= max_size);
-        // The Fourth field is 4 bytes long too and contains the length of the packet as it was captured on the wire.
+        // The Fourth field is 4 bytes long too and contains the length of the packet as
+        // it was captured on the wire.
         int length_data = byteBuffer.getInt(); // size
         _assert(length_data <= length);
         _assert(length_data <= max_size);
@@ -48,7 +56,7 @@ public class PcapParse {
         // packet data
         int number = inputStream.read(packet_data, 0, length);
         _assert(number == length);
-        packetConsumer.accept(packet_data, length_data);
+        pcapPacketListeners.forEach(listener -> listener.pcapPacket(sec, usec, packet_data, length_data));
       }
     }
   }

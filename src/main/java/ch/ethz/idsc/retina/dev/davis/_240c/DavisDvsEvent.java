@@ -10,9 +10,9 @@ public class DavisDvsEvent implements DavisEvent {
   public final int x;
   /** up-down pixel location, y=0 corresponds to far up */
   public final int y;
-  /** polarity:
-   * 0 represents a transition from bright to dark (jAERViewer shows 0 in red)
-   * 1 represents a transition from dark to bright (jAERViewer shows 1 in green) */
+  /** polarity: 0 represents a transition from bright to dark (jAERViewer shows 0
+   * in red) 1 represents a transition from dark to bright (jAERViewer shows 1 in
+   * green) */
   public final int i;
 
   public DavisDvsEvent(int time, int x, int y, int i) {

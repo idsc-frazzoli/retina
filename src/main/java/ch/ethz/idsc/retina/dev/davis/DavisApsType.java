@@ -6,4 +6,5 @@ public enum DavisApsType {
   SIG, // signal read
   DIF, // difference SIG - RST
   ;
+  public final String extension = "." + name().toLowerCase();
 }

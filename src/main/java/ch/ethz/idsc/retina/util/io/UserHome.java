@@ -5,6 +5,10 @@ import java.io.File;
 
 public enum UserHome {
   ;
+  /** for the special input filename == "" the function returns the user home directory
+   * 
+   * @param filename
+   * @return */
   public static File file(String filename) {
     return new File(System.getProperty("user.home"), filename);
   }

@@ -3,27 +3,27 @@ package ch.ethz.idsc.retina.util;
 
 import java.util.Objects;
 
-/** slows down playback to realtime
+/** functionality is used to slow down playback to realtime
  * 
- * 1) nano seconds
- * 2) long encoding */
+ * 1) nano seconds 2) long encoding */
 public class RealtimeSleeper {
   private static final long MICRO = 1000000;
   // ---
-  private final double speed;
+  /** factor of real-time */
+  private final double factor;
   private Long ref = null;
   private long tic;
   private long sleepTotal = 0;
 
-  /** Example:
-   * speed of 0.5 will slow down playback to half realtime speed
+  /** Example: speed of 0.5 will slow down playback to half real-time speed
    * 
-   * @param speed */
-  public RealtimeSleeper(double speed) {
-    this.speed = speed;
+   * @param factor */
+  public RealtimeSleeper(double factor) {
+    this.factor = factor;
   }
 
-  /** @param time in nano seconds */
+  /** @param time in nano seconds
+   * @see System#nanoTime() */
   public void now(long time) {
     if (notInitialized()) {
       ref = time;
@@ -31,7 +31,7 @@ public class RealtimeSleeper {
     } else {
       long act = time - ref;
       long toc = System.nanoTime() - tic;
-      final long sleep = Math.round(act - toc * speed);
+      final long sleep = Math.round(act - toc * factor);
       if (0 < sleep)
         try {
           long millis = sleep / MICRO;
@@ -42,6 +42,14 @@ public class RealtimeSleeper {
           exception.printStackTrace();
         }
     }
+  }
+
+  /** timestamp used in pcap format
+   * 
+   * @param sec
+   * @param usec micro seconds in range [0, 1, ..., 999999] */
+  public void now(int sec, int usec) {
+    now(sec * 1000_000_000L + usec * 1000L);
   }
 
   private boolean notInitialized() {

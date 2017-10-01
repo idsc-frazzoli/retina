@@ -16,23 +16,23 @@ enum DavisDatagramClientDemo {
   public static void main(String[] args) throws Exception {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisDecoder davisDecoder = davisDevice.createDecoder();
-    DavisViewerFrame davisImageDisplay = new DavisViewerFrame(davisDevice);
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(davisDevice);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
-    davisImageDisplay.setStatistics(davisEventStatistics);
+    davisViewerFrame.setStatistics(davisEventStatistics);
     // subscribe to dvs events:
     DavisDvsDatagramClient dvsDatagramClient = new DavisDvsDatagramClient();
     AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(Davis240c.INSTANCE, 20_000);
-    dvsDatagramClient.davisDvsDatagramDecoder.addListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisImageDisplay);
+    dvsDatagramClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // subscribe to aps events:
     DavisApsDatagramClient apsDatagramClient = new DavisApsDatagramClient();
-    apsDatagramClient.davisApsDatagramDecoder.addListener(davisImageDisplay);
+    apsDatagramClient.davisApsDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     // subscribe to imu events:
     DavisImuDatagramClient imuDatagramClient = new DavisImuDatagramClient();
-    imuDatagramClient.addListener(davisImageDisplay);
+    imuDatagramClient.addListener(davisViewerFrame.davisViewerComponent);
     // ---
     new Thread(() -> {
       dvsDatagramClient.start();
@@ -40,7 +40,7 @@ enum DavisDatagramClientDemo {
     new Thread(() -> {
       imuDatagramClient.start();
     }).start();
-    apsDatagramClient.start(); // TODO at the moment this is a blocking call !?
+    apsDatagramClient.start(); // <- blocking call
     System.out.println("here");
   }
 }

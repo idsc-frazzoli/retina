@@ -8,9 +8,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 public final class RowPanel {
-  private GridBagLayout gridBagLayout = new GridBagLayout();
-  public JPanel jPanel = new JPanel(gridBagLayout);
-  private GridBagConstraints gridBagConstraints = new GridBagConstraints();
+  private final GridBagLayout gridBagLayout = new GridBagLayout();
+  public final JPanel jPanel = new JPanel(gridBagLayout);
+  private final GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
   public RowPanel() {
     gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -18,10 +18,10 @@ public final class RowPanel {
     jPanel.setOpaque(false);
   }
 
-  public void add(JComponent myJComponent) {
+  public void add(JComponent jComponent) {
     ++gridBagConstraints.gridy; // initially -1
-    gridBagLayout.setConstraints(myJComponent, gridBagConstraints);
-    jPanel.add(myJComponent);
+    gridBagLayout.setConstraints(jComponent, gridBagConstraints);
+    jPanel.add(jComponent);
     jPanel.repaint();
   }
 }

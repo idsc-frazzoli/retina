@@ -1,0 +1,68 @@
+// code by jph
+package ch.ethz.idsc.retina.lcm.lidar;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lcm.LcmClientInterface;
+import idsc.BinaryBlob;
+import lcm.lcm.LCM;
+import lcm.lcm.LCMDataInputStream;
+import lcm.lcm.LCMSubscriber;
+
+/** reference implementation of an lcm client that listens and decodes hdl32e
+ * publications and allows listeners to receive the data
+ * 
+ * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
+public class VelodyneLcmClient implements LcmClientInterface {
+  private final VelodyneModel velodyneModel;
+  private final VelodyneDecoder velodyneDecoder;
+  private final String lidarId;
+
+  public VelodyneLcmClient(VelodyneModel velodyneModel, VelodyneDecoder velodyneDecoder, String lidarId) {
+    this.velodyneModel = velodyneModel;
+    this.velodyneDecoder = velodyneDecoder;
+    this.lidarId = lidarId;
+  }
+
+  @Override
+  public void startSubscriptions() {
+    LCM lcm = LCM.getSingleton();
+    if (velodyneDecoder.hasRayListeners())
+      lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            velodyneDecoder.lasers(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
+        }
+      });
+    if (velodyneDecoder.hasPosListeners())
+      lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
+        @Override
+        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
+          try {
+            BinaryBlob binaryBlob = new BinaryBlob(ins);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            velodyneDecoder.positioning(byteBuffer);
+          } catch (IOException exception) {
+            exception.printStackTrace();
+          }
+        }
+      });
+  }
+
+  @Override
+  public void stopSubscriptions() {
+    // TODO Auto-generated method stub
+  }
+}

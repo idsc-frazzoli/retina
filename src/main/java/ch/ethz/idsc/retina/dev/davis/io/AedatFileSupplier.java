@@ -6,20 +6,20 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.core.StartAndStoppable;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** parser for aedat version 2.0
  * 
  * Quotes from the iniLabs User Guide DAVIS240:
  * 
- * "An .aedat file contains headers, where each header line starts with '#'
- * and ends with the hex characters 0x0D 0x0A (CRLF, windows line ending).
- * Then there are a series of 8-byte words."
+ * "An .aedat file contains headers, where each header line starts with '#' and
+ * ends with the hex characters 0x0D 0x0A (CRLF, windows line ending). Then
+ * there are a series of 8-byte words."
  * 
- * "An IMU sample is a subclass of an APS type event. 7 words are sent in series,
- * these being 3 axes for accel, temperature, and 3 axes for gyro -
- * TODO look at jAER’s IMUSample class for more info." */
+ * "An IMU sample is a subclass of an APS type event. 7 words are sent in
+ * series, these being 3 axes for accel, temperature, and 3 axes for gyro - TODO
+ * look at jAER’s IMUSample class for more info." */
 public class AedatFileSupplier implements StartAndStoppable {
   private static final int BUFFER_SIZE = 8 * 512;
   // ---

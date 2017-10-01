@@ -8,8 +8,9 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
 public class DavisApsDatagramDecoder {
   private final BufferedImage bufferedImage;
@@ -35,7 +36,8 @@ public class DavisApsDatagramDecoder {
   }
 
   public void decode(ByteBuffer byteBuffer) {
-    // if client is started before server, x was observed not to be in range, e.g. x==-1
+    // if client is started before server, x was observed not to be in range, e.g.
+    // x==-1
     int x = byteBuffer.getShort();
     // TODO check that value in valid range
     isComplete &= x == x_next;
@@ -47,8 +49,8 @@ public class DavisApsDatagramDecoder {
     }
     x_next = x;
     if (x == 240) {
-      final boolean complete = isComplete;
-      listeners.forEach(listener -> listener.image(time, bufferedImage, complete));
+      ColumnTimedImage columnTimedImage = new ColumnTimedImage(time, bufferedImage, isComplete);
+      listeners.forEach(listener -> listener.columnTimedImage(columnTimedImage));
       isComplete = true;
       x_next = 0;
     }

@@ -1,51 +1,52 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.retina.core.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
+/** the images are exported with timestamp of the first column, i.e. the earliest
+ * available timestamp.
+ * 
+ * this is consistent with the logs provided by the Robotics and Perception
+ * Group as verified by inspection, see http://rpg.ifi.uzh.ch/ */
 public class DavisPngImageWriter implements ColumnTimedImageListener, AutoCloseable {
+  private static final String EXTENSION = "png";
+  // ---
   private final File directory;
   private final DavisExportControl davisExportControl;
-  private final BufferedWriter bufferedWriterBeg;
-  private final BufferedWriter bufferedWriterEnd;
+  private final BufferedWriter bufferedWriter;
   private int count = 0;
 
-  /** @param directory base
-   * @throws Exception */
-  public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws Exception {
+  /** @param directory base in which a sub directory "images" is created
+   * @throws IOException */
+  public DavisPngImageWriter(File directory, DavisExportControl davisExportControl) throws IOException {
     this.directory = directory;
     this.davisExportControl = davisExportControl;
     File images = new File(directory, "images");
     images.mkdir();
-    bufferedWriterBeg = new BufferedWriter(new FileWriter(new File(directory, "images_begin.txt")));
-    bufferedWriterEnd = new BufferedWriter(new FileWriter(new File(directory, "images.txt")));
+    GlobalAssert.that(images.isDirectory());
+    bufferedWriter = new BufferedWriter(new FileWriter(new File(directory, "images.txt")));
   }
 
   @Override
-  public void image(int[] time, BufferedImage bufferedImage, boolean isComplete) {
+  public void columnTimedImage(ColumnTimedImage columnTimedImage) {
     if (davisExportControl.isActive()) {
       try {
-        final String string = String.format("images/frame_%08d.png", count);
+        final String string = String.format("images/frame_%08d.%s", count, EXTENSION);
         File file = new File(directory, string);
-        ImageIO.write(bufferedImage, "png", file);
+        ImageIO.write(columnTimedImage.bufferedImage, EXTENSION, file);
         // ---
-        {
-          int selected = time[0];
-          final double stamp = davisExportControl.mapTime(selected) * 1e-6;
-          bufferedWriterBeg.write(String.format("%.6f %s\n", stamp, string));
-        }
-        {
-          int selected = time[time.length - 1];
-          final double stamp = davisExportControl.mapTime(selected) * 1e-6;
-          bufferedWriterEnd.write(String.format("%.6f %s\n", stamp, string));
-        }
+        final int selected = columnTimedImage.time[0];
+        final double stamp = davisExportControl.mapTime(selected) * 1e-6;
+        bufferedWriter.write(String.format("%.6f %s\n", stamp, string));
       } catch (Exception exception) {
         exception.printStackTrace();
       }
@@ -56,8 +57,11 @@ public class DavisPngImageWriter implements ColumnTimedImageListener, AutoClosea
   }
 
   @Override
-  public void close() throws Exception {
-    bufferedWriterBeg.close();
-    bufferedWriterEnd.close();
+  public void close() throws IOException {
+    bufferedWriter.close();
+  }
+
+  public int total_frames() {
+    return count;
   }
 }

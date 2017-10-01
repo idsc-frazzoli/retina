@@ -15,3 +15,7 @@ buildNumber.properties
 testall.sh
 gendocs.sh
 
+# data fiels
+*.log
+*.csv
+

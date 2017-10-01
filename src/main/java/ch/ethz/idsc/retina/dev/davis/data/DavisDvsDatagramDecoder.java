@@ -5,14 +5,14 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 public class DavisDvsDatagramDecoder {
-  private final List<DavisDvsEventListener> listeners = new LinkedList<>();
+  private final List<DavisDvsListener> listeners = new LinkedList<>();
 
-  public void addListener(DavisDvsEventListener davisDvsEventListener) {
-    listeners.add(davisDvsEventListener);
+  public void addDvsListener(DavisDvsListener listener) {
+    listeners.add(listener);
   }
 
   public boolean hasListeners() {
@@ -40,7 +40,7 @@ public class DavisDvsDatagramDecoder {
       final int y = byteBuffer.get() & 0xff;
       final int i = misc & 1;
       DavisDvsEvent davisDvsEvent = new DavisDvsEvent(time, x, y, i);
-      listeners.forEach(listener -> listener.dvs(davisDvsEvent));
+      listeners.forEach(listener -> listener.davisDvs(davisDvsEvent));
     }
     ++total;
     if (total % 1000 == 0 && missed_print != missed) {

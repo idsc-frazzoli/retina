@@ -3,10 +3,9 @@ package ch.ethz.idsc.retina.util;
 
 import java.util.Objects;
 
-/** slows down playback to realtime
+/** functionality is used to slow down playback to realtime
  * 
- * 1) micro seconds
- * 2) int encoding */
+ * 1) micro seconds 2) int encoding */
 public class IntRealtimeSleeper {
   private static final long MICRO = 1000000;
   // ---
@@ -15,8 +14,7 @@ public class IntRealtimeSleeper {
   private long tic;
   private long sleepTotal = 0;
 
-  /** Example:
-   * speed of 0.5 will slow down playback to half realtime speed
+  /** Example: speed of 0.5 will slow down playback to half realtime speed
    * 
    * @param speed */
   public IntRealtimeSleeper(double speed) {

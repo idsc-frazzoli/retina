@@ -1,0 +1,72 @@
+// code by jph
+// developed together with swisstrolley+
+package ch.ethz.idsc.retina.lcm;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import ch.ethz.idsc.retina.sys.GitRevHead;
+import ch.ethz.idsc.retina.sys.SystemTimestamp;
+
+/**
+ * 
+ */
+public class LcmLogProcess implements AutoCloseable {
+  /** standard on linux, non-final so that configurable at runtime */
+  public static String BINARY = "/usr/local/bin/lcm-logger";
+  /** split file every 50 MB */
+  public static String SPLIT_MB = "50";
+
+  public static LcmLogProcess createDefault(File directory) throws Exception {
+    return new LcmLogProcess(new File(directory, defaultFilename()));
+  }
+
+  // function is not for use from the outside
+  private static String defaultFilename() {
+    String gitHash = GitRevHead.getHash();
+    gitHash = gitHash.substring(0, Math.min(gitHash.length(), 8));
+    return String.join("_", SystemTimestamp.file(), gitHash) + ".lcm";
+  }
+
+  // ---
+  private final File file;
+  private final Process process;
+
+  /** @param file
+   * reference to absolute path of log file
+   * @throws Exception
+   * if file already exists or log process cannot be started */
+  public LcmLogProcess(final File file) throws Exception {
+    if (file.exists())
+      throw new RuntimeException();
+    this.file = file;
+    // ---
+    List<String> list = Arrays.asList( //
+        BINARY, "--quiet", "--increment", "--split-mb=" + SPLIT_MB, file.toString());
+    ProcessBuilder processBuilder = new ProcessBuilder(list);
+    process = processBuilder.start();
+    System.out.println(new Date() + " lcm-logger: started");
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      // the print out will not always show up
+      // even if the shutdown hook is called !
+      System.out.println(new Date() + " lcm-logger: isAlive=" + process.isAlive());
+      process.destroy();
+    }));
+  }
+
+  @Override
+  public void close() throws Exception {
+    // TODO outputstream Ctrl+C ?
+    // ... something like "Ctrl+C" via the process.inputstream
+    if (Objects.nonNull(process))
+      process.destroy();
+  }
+
+  public File file() {
+    String string = file.toString() + ".00"; // TODO is this not sufficiently generic
+    return new File(string);
+  }
+}

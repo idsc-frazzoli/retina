@@ -24,6 +24,10 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
+## Velodyne VLP-16
+
+* 3D-point cloud visualization
+
 ## Velodyne HDL-32E
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=abOYEIdBgRs)
@@ -36,16 +40,45 @@ intensity as 360[deg] panorama
 
 ![intensity](https://user-images.githubusercontent.com/4012178/29026760-c29ebbce-7b7d-11e7-9854-9280594cb462.gif)
 
+## Quanergy Mark8
+
+* 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=DjvEijz14co)
+
 # DVS
 
 ## IniLabs DAVIS240C
 
+<table>
+<tr>
+<td>
+
+![05tram](https://user-images.githubusercontent.com/4012178/30553969-2948547a-9ca3-11e7-91e8-159806c7e329.gif)
+
+<td>
+
+![04peds](https://user-images.githubusercontent.com/4012178/30553578-f3429ce2-9ca1-11e7-8870-85078c8aa96c.gif)
+
+<td>
+
+![00scene](https://user-images.githubusercontent.com/4012178/30553889-e59c0a5a-9ca2-11e7-8cc3-08de77e21e5e.gif)
+
+</tr>
+</table>
+
 .aedat files
 
 * parsing and visualization
-* conversion to text+png format
+* conversion to text+png format as used by the Robotics and Perception Group at UZH
 * loss-less compression of DVS events by the factor of 2
 * compression of raw APS data by factor 8 (where the ADC values are reduced from 10 bit to 8 bit)
+
+### Device Settings
+
+Quote from Luca/iniLabs:
+* *Two parameters that are intended to control framerate:* `APS.Exposure` and `APS.FrameDelay`
+* `APS.RowSettle` *is used to tell the ADC how many cycles to delay before reading a pixel value, and due to the ADC we're using, it takes at least three cycles for the value of the current pixel to be output by the ADC, so an absolute minimum value there is 3. Better 5-8, to allow the value to settle. Indeed changing this affects the framerate, as it directly changes how much time you spend reading a pixel, but anything lower than 3 gets you the wrong pixel, and usually under 5-6 gives you degraded image quality.*
+
+We observed that in *global shutter mode*, during signal image capture the stream of events is suppressed. Whereas, in *rolling shutter mode* the events are more evenly distributed.
 
 ## streaming DAT files
 
@@ -101,3 +134,10 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
 
 * `ch.ethz.idsc.tensor`
 * `ch.ethz.idsc.lcm-java`
+
+## References
+
+The library is used in the projects:
+* `owly3d`
+
+The repository has over `40` unit tests.

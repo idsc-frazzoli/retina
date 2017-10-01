@@ -4,13 +4,12 @@ package ch.ethz.idsc.retina.dev.davis.data;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.DavisImuEventListener;
+import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImuEvent;
 
 /** the conversion formulas are trimmed to match the values in the jAER demo
- * therefore the absolute values should be correct
- * the ordering */
-public class DavisImuFrameCollector implements DavisImuEventListener {
+ * therefore the absolute values should be correct the ordering */
+public class DavisImuFrameCollector implements DavisImuListener {
   private static final double G_TO_M_S2 = 9.81;
   private static final float accelSensitivityScaleFactorM_S2PerLsb = (float) (G_TO_M_S2 * 2.0 / 8192);
   private static final float temperatureScaleFactorDegCPerLsb = 1f / 340;
@@ -26,7 +25,7 @@ public class DavisImuFrameCollector implements DavisImuEventListener {
   }
 
   @Override
-  public void imu(DavisImuEvent davisImuEvent) {
+  public void davisImu(DavisImuEvent davisImuEvent) {
     int ordinal = davisImuEvent.index;
     switch (ordinal) {
     case 0:
