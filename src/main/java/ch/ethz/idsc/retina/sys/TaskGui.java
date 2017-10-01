@@ -31,7 +31,9 @@ public class TaskGui {
       });
       jpanel.add(jToggleButton);
     }
+    // ---
     jpanel.add(new TaskManagerStatus().toggle);
+    // ---
     JButton termButton = new JButton("Terminate ALL");
     termButton.addActionListener(e -> {
       ModuleAuto.terminateAll();

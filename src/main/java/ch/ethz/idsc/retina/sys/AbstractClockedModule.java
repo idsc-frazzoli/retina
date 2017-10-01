@@ -13,15 +13,12 @@ import java.util.TimerTask;
 public abstract class AbstractClockedModule extends AbstractModule {
   // always private
   private Timer timer = new Timer(getClass().getSimpleName()); // <- this is the thread
-  // private volatile long lastRun = 0;
-  // private volatile long timeOut = 0;
-  // private volatile boolean firstDone = false;
 
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
 
-  /** Initialisation for user implementation. Runs before runEventModule() is ever
-   * called. */
+  /** Initialisation for user implementation.
+   * Runs before runEventModule() is ever called. */
   @Override
   protected abstract void first() throws Exception;
 
@@ -42,24 +39,16 @@ public abstract class AbstractClockedModule extends AbstractModule {
       @Override
       public void run() {
         runAlgo();
-        // lastRun = SystemTimestamp.get();
       }
     };
-    // timeOut = Math.round((getPeriod() * 1000) * 3);
-    // ModuleAuto.watch(getClass(), this);
-    timer.schedule(timerTask, 0, Math.round((getPeriod() * 1000)));
+    timer.schedule(timerTask, 0, Math.round(getPeriod() * 1000));
   }
 
   @Override
   protected final void terminate() {
     // order of launch() reversed
-    if (timer != null) {
+    if (timer != null)
       timer.cancel();
-    }
     last();
   }
-  // protected final boolean isLagging() {
-  // return (SystemTimestamp.get() - lastRun > timeOut) && (timer != null) &&
-  // firstDone;
-  // }
 }

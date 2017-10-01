@@ -36,6 +36,8 @@ enum RunTaskGui {
     modules.add(AutoboxTestingModule.class);
     modules.add(AutoboxJoystickModule.class);
     // ---
+    modules.add(GokartStatusLcmModule.class);
+    // ---
     modules.add(LocalViewLcmModule.class);
     // ---
     new TaskGui(modules);
