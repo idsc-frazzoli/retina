@@ -23,7 +23,7 @@ import lcm.logging.Log.Event;
 enum GokartSteerLogExport {
   ;
   public static void main(String[] args) throws IOException {
-    File file = new File("/home/jelavice", "20170927T192959_868e105d.lcm.00"); // put hte filename here
+    File file = new File("/home/jelavice", "20170929T201201_becad644.lcm.00"); // put hte filename here
     Log log = new Log(file.toString(), "r");
     long countGet = 0;
     long countPut = 0;
@@ -32,7 +32,7 @@ enum GokartSteerLogExport {
     Tensor tablePutRef = Tensors.empty();
     tableGet.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("motAsp_CANInput"), StringScalar.of("gcpRelRckPos")));
     tablePut.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("torque")));
-    tablePutRef.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("position")));
+    tablePutRef.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("positionRef"),  StringScalar.of("position")));
     Long tic = null;
     try {
       while (true) {
@@ -61,7 +61,8 @@ enum GokartSteerLogExport {
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           double value = byteBuffer.getDouble();
-          tablePutRef.append(Tensors.vector(event.utime - tic, value));
+          double value2 = byteBuffer.getDouble();
+          tablePutRef.append(Tensors.vector(event.utime - tic, value, value2));
         }
       }
     } catch (Exception exception) {

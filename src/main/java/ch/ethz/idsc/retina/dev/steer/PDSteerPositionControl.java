@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.dev.steer;
 
 public class PDSteerPositionControl {
-  public double Kp = 2.5;
-  public double Kd = 0.2;
+  public double Kp = 2.5; // 5
+  public double Kd = 0.2; // 0.5 , 5 and 0.5 hit the saturation limit of 0.5
   public double torqueLimit = 0.5;
   // ---
   private double dt = 0.020; // TODO NRJ use realtime
