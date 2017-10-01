@@ -17,6 +17,7 @@ public class RimoGetTire implements Serializable {
   private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit RATE_UNIT = Unit.of("rad*s^-1");
   // TODO NRJ check allowed ratings, comment magic const
+  // TODO NRJ make emergency stop if too hot
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
       Quantity.of(10, CELSIUS), //
       Quantity.of(80, CELSIUS));

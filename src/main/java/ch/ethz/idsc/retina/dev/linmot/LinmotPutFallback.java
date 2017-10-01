@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
+/** when no entity controls the break, then
+ * the break is commanded to be in off-mode */
 /* package */ enum LinmotPutFallback implements LinmotPutProvider {
   INSTANCE;
   // ---
@@ -15,9 +17,6 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    // TODO NRJ check if this is good choice
-    return Optional.of(new LinmotPutEvent( //
-        LinmotPutConfiguration.CMD_OFF_MODE, //
-        LinmotPutConfiguration.MC_ZEROS));
+    return Optional.of(LinmotPutHelper.OFF_MODE_EVENT);
   }
 }

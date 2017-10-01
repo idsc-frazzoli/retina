@@ -1,11 +1,14 @@
+// code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
 import ch.ethz.idsc.tensor.img.ColorDataFunction;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-public enum Gui {
+// TODO remove once updated
+enum Gui {
   INSTANCE;
+  // ---
   public final ColorDataFunction TEMPERATURE;
   public final ColorDataFunction TEMPERATURE_LIGHT;
 

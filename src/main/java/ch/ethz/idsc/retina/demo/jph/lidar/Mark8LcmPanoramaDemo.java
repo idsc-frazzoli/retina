@@ -3,20 +3,17 @@ package ch.ethz.idsc.retina.demo.jph.lidar;
 
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
-import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8PanoramaProvider;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
 enum Mark8LcmPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {
-    Mark8Decoder mark8Decoder = new Mark8Decoder();
-    LcmClientInterface lcmClientInterface = new Mark8LcmClient(mark8Decoder, "center");
+    Mark8LcmClient lcmClientInterface = new Mark8LcmClient("center");
     LidarPanoramaProvider lidarPanoramaProvider = new Mark8PanoramaProvider();
     // ---
-    VelodyneUtils.panorama(mark8Decoder, lidarPanoramaProvider);
+    VelodyneUtils.panorama(lcmClientInterface.mark8Decoder, lidarPanoramaProvider);
     lcmClientInterface.startSubscriptions();
   }
 }

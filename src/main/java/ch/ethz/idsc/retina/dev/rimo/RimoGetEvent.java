@@ -11,9 +11,9 @@ public class RimoGetEvent extends DataEvent {
   public final RimoGetTire getL;
   public final RimoGetTire getR;
 
-  public RimoGetEvent(RimoGetTire getL, RimoGetTire getR) {
-    this.getL = getL;
-    this.getR = getR;
+  public RimoGetEvent(ByteBuffer byteBuffer) {
+    getL = new RimoGetTire(byteBuffer);
+    getR = new RimoGetTire(byteBuffer);
   }
 
   @Override

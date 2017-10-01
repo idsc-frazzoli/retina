@@ -32,7 +32,7 @@ enum GokartSteerLogExport {
     Tensor tablePutRef = Tensors.empty();
     tableGet.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("motAsp_CANInput"), StringScalar.of("gcpRelRckPos")));
     tablePut.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("torque")));
-    tablePutRef.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("positionRef"),  StringScalar.of("position")));
+    tablePutRef.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("positionRef"), StringScalar.of("position")));
     Long tic = null;
     try {
       while (true) {

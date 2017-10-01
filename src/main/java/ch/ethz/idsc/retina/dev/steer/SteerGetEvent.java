@@ -18,7 +18,7 @@ public class SteerGetEvent extends DataEvent {
   public final float estMotTrq_CANInput;
   public final float estMotTrq_Qual;
   // ---
-  public final float gcpRelRckPos;
+  private final float gcpRelRckPos;
   public final float gcpRelRckQual;
   public final float gearRat;
   public final float halfRckPos;
@@ -59,6 +59,11 @@ public class SteerGetEvent extends DataEvent {
     return LENGTH;
   }
 
+  /** gcpRelRckPos == offset + factor * steering_angle
+   * 
+   * the offset has to be determined in a calibration procedure
+   * 
+   * @return relative position */
   public double getGcpRelRckPos() {
     return gcpRelRckPos;
   }

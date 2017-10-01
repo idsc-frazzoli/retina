@@ -1,52 +1,31 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.lidar;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
-import idsc.BinaryBlob;
-import lcm.lcm.LCM;
-import lcm.lcm.LCMDataInputStream;
-import lcm.lcm.LCMSubscriber;
+import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 
 /** reference implementation of an lcm client that listens and decodes mark8
  * publications and allows listeners to receive the data
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class Mark8LcmClient implements LcmClientInterface, LCMSubscriber {
-  private final Mark8Decoder mark8Decoder;
+public class Mark8LcmClient extends BinaryLcmClient {
+  public final Mark8Decoder mark8Decoder = new Mark8Decoder();
   private final String lidarId;
 
-  public Mark8LcmClient(Mark8Decoder mark8Decoder, String lidarId) {
-    this.mark8Decoder = mark8Decoder;
+  public Mark8LcmClient(String lidarId) {
     this.lidarId = lidarId;
   }
 
   @Override
-  public void startSubscriptions() {
-    LCM.getSingleton().subscribe(name(), this);
+  protected void digest(ByteBuffer byteBuffer) {
+    mark8Decoder.lasers(byteBuffer);
   }
 
   @Override
-  public void stopSubscriptions() {
-    LCM.getSingleton().unsubscribe(name(), this);
-  }
-
-  @Override
-  public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-    try {
-      BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
-      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-      mark8Decoder.lasers(byteBuffer);
-    } catch (IOException exception) {
-      exception.printStackTrace();
-    }
-  }
-
-  private String name() {
+  protected String name() {
     return Mark8Device.channel(lidarId);
   }
 }

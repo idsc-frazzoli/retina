@@ -10,8 +10,11 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 public enum LinmotLcmServer implements LinmotGetListener, LinmotPutListener {
   INSTANCE;
   // ---
-  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher("autobox.linmot.get");
-  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher("autobox.linmot.put");
+  public static final String CHANNEL_GET = "autobox.linmot.get";
+  public static final String CHANNEL_PUT = "autobox.linmot.put";
+  // ---
+  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher(CHANNEL_GET);
+  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher(CHANNEL_PUT);
 
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {

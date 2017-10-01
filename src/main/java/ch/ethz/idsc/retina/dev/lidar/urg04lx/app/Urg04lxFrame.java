@@ -8,8 +8,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.nio.FloatBuffer;
-import java.util.List;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -17,17 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.math.UniformResample;
-import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -44,12 +37,12 @@ import ch.ethz.idsc.tensor.sca.Round;
  * device/tool. The sensor is not for use in military applications.
  * 
  * typically the distances up to 5[m] can be measured correctly. */
-public class Urg04lxFrame implements Urg04lxRangeListener, LidarRayBlockListener {
+public class Urg04lxFrame {
+  private final Timer timer = new Timer();
+  // ---
   public final JFrame jFrame = new JFrame();
-  private final Urg04lxRender urg04lxRender = new Urg04lxRender();
+  public final Urg04lxRender urg04lxRender = new Urg04lxRender();
   private int zoom = 0;
-  private Scalar threshold = RealScalar.of(30);
-  private Scalar ds_value = RealScalar.of(0.03);
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics g) {
@@ -70,14 +63,14 @@ public class Urg04lxFrame implements Urg04lxRangeListener, LidarRayBlockListener
           SpinnerLabel<Scalar> spinnerLabel = new SpinnerLabel<>();
           spinnerLabel.setStream(Subdivide.of(10, 200, 19).stream().map(Scalar.class::cast));
           spinnerLabel.setIndex(2);
-          spinnerLabel.addSpinnerListener(scalar -> threshold = N.DOUBLE.of(scalar));
+          spinnerLabel.addSpinnerListener(scalar -> urg04lxRender.threshold = N.DOUBLE.of(scalar));
           spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "ds");
         }
         {
           SpinnerLabel<Scalar> spinnerLabel = new SpinnerLabel<>();
           spinnerLabel.setStream(Subdivide.of(0.01, 0.1, 9).map(Round._2).stream().map(Scalar.class::cast));
           spinnerLabel.setIndex(2);
-          spinnerLabel.addSpinnerListener(scalar -> ds_value = N.DOUBLE.of(scalar));
+          spinnerLabel.addSpinnerListener(scalar -> urg04lxRender.ds_value = N.DOUBLE.of(scalar));
           spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "ds");
         }
         jPanel.add(jToolBar, BorderLayout.NORTH);
@@ -93,24 +86,21 @@ public class Urg04lxFrame implements Urg04lxRangeListener, LidarRayBlockListener
         System.out.println(zoom);
       }
     });
+    { // periodic task for rendering
+      final TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+          jComponent.repaint();
+        }
+      };
+      timer.schedule(timerTask, 100, 50);
+    }
+    jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent windowEvent) {
+        timer.cancel();
+      }
+    });
     jFrame.setVisible(true);
-  }
-
-  @Override
-  public void range(Urg04lxRangeEvent urg04lxRangeEvent) {
-    urg04lxRender.setEvent(urg04lxRangeEvent);
-  }
-
-  @Override
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    // int limit = floatBuffer.limit();
-    Tensor points = Tensors.vector(i -> Tensors.of( //
-        DoubleScalar.of(floatBuffer.get()), //
-        DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    List<Tensor> result = new UniformResample(threshold, ds_value).apply(points);
-    System.out.println(points.length() + " -> blocks = " + result.size());
-    urg04lxRender.setPointcloud(result);
-    jComponent.repaint();
   }
 }

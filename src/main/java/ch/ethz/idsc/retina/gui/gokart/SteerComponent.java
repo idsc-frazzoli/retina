@@ -16,17 +16,15 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.sca.Round;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
@@ -51,7 +49,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private boolean calibrateReq = false;
   private boolean calibrated = false;
   private long startTime;
-  
+
   public SteerComponent() {
     {
       JToolBar jToolBar = createRow("command");
@@ -145,8 +143,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    final boolean isCalibrated = SteerAngleTracker.INSTANCE.isCalibrated();
-    final double angle = isCalibrated ? SteerAngleTracker.INSTANCE.getSteeringValue() : 0;
+    final boolean isCalibrated = SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    final double angle = isCalibrated ? SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue() : 0;
     final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
     jToggleController.setEnabled(isCalibrated);
     // ---
@@ -157,7 +155,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
-    jTextField[7].setText("" + steerGetEvent.gcpRelRckPos + " " + descr);
+    jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos() + " " + descr);
     if (isCalibrated) {
       Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
       jTextField[7].setBackground(color);
@@ -174,28 +172,23 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
+    // TODO NRJ like linmot calib design
     if (calibrateReq && !calibrated) {
-      
       long currTime = System.currentTimeMillis();
-      //System.out.println(Tensors.vector(currTime - startTime).map(Round._3));
-      
+      // System.out.println(Tensors.vector(currTime - startTime).map(Round._3));
       if (currTime - startTime < 1000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.1));
-      
       if (currTime - startTime < 2000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.2));
-
       if (currTime - startTime < 4000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.1));
-      
       if (currTime - startTime < 5000)
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.2));
       else
         calibrated = true;
     }
-    
-    if (SteerAngleTracker.INSTANCE.isCalibrated()) {
-      final double currAngle = SteerAngleTracker.INSTANCE.getSteeringValue();
+    if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
+      final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue();
       double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
       {
         if (leftStepActive)

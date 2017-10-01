@@ -13,17 +13,17 @@ import ch.ethz.idsc.owly.math.state.StateTime;
 import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutConfiguration;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -72,12 +72,12 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
     @Override
     public Optional<SteerPutEvent> putEvent() {
       if (hasJoystick())
-        if (SteerAngleTracker.INSTANCE.isCalibrated()) {
+        if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
           GenericXboxPadJoystick joystick = _joystick;
           Scalar value = RealScalar.ZERO;
           switch (driveMode) {
           case SIMPLE_DRIVE: {
-            final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+            final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getValueWithOffset();
             double desPos = -joystick.getRightKnobDirectionRight() * SteerPutEvent.MAX_ANGLE;
             double errPos = desPos - currAngle;
             final double torqueCmd = positionController.iterate(errPos);
@@ -118,10 +118,10 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
         GenericXboxPadJoystick joystick = _joystick;
         switch (driveMode) {
         case SIMPLE_DRIVE: {
-          if (SteerAngleTracker.INSTANCE.isCalibrated()) {
+          if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
             StateTime rate = episodeIntegrator.tail();
             Scalar speed = rate.state().Get(0);
-            Scalar theta = RealScalar.of(SteerAngleTracker.INSTANCE.getSteeringValue());
+            Scalar theta = RealScalar.of(SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue());
             Scalar sL = dsL.get(speed, theta);
             Scalar sR = dsR.get(speed, theta);
             return Optional.of(RimoPutEvent.withSpeeds( //
@@ -157,17 +157,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
       if (hasJoystick()) {
         GenericXboxPadJoystick joystick = _joystick;
         double value = joystick.getLeftKnobDirectionDown();
-        int pos = (int) //
-        Math.min(Math.max(LinmotPutConfiguration.TARGETPOS_MIN, //
-            (LinmotPutConfiguration.TARGETPOS_MIN * value + LinmotPutConfiguration.TARGETPOS_INIT)), //
-            LinmotPutConfiguration.TARGETPOS_MAX);
-        LinmotPutEvent linmotPutEvent = LinmotPutEvent.NORMAL_MODE;
-        // TODO NRJ check values and put into static creator
-        linmotPutEvent.target_position = (short) pos;
-        linmotPutEvent.max_velocity = 1000;
-        linmotPutEvent.acceleration = 500;
-        linmotPutEvent.deceleration = 500;
-        return Optional.of(linmotPutEvent);
+        return Optional.of(LinmotPutHelper.operationToRelativePosition(value));
       }
       return Optional.empty();
     }
@@ -186,7 +176,7 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
         MiscPutEvent miscPutEvent = new MiscPutEvent();
         miscPutEvent.resetRimoL = resetValue;
         miscPutEvent.resetRimoR = resetValue;
-        // TODO NRJ not final values
+        // TODO NRJ not final logic
         return Optional.of(miscPutEvent);
       }
       return Optional.empty();

@@ -6,7 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.Word;
 
-public enum LinmotPutConfiguration {
+public enum LinmotPutHelper {
   ;
   public static final Word CMD_HOME = Word.createShort("HOME", (short) 0x083f);
   public static final Word CMD_OPERATION = Word.createShort("OPERATION", (short) 0x003f);
@@ -36,7 +36,31 @@ public enum LinmotPutConfiguration {
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
   public static final int DECELERATION_INIT = 500;
+  // ---
+  /** off-mode event is used as fallback control and when
+   * human driver takes over control of the break by foot */
+  public static final LinmotPutEvent OFF_MODE_EVENT = new LinmotPutEvent( //
+      LinmotPutHelper.CMD_OFF_MODE, //
+      LinmotPutHelper.MC_ZEROS);
 
+  public static LinmotPutEvent operationToRelativePosition(double value) {
+    return operationToPosition((short) //
+    Math.min(Math.max(TARGETPOS_MIN, (TARGETPOS_MIN * value + TARGETPOS_INIT)), TARGETPOS_MAX));
+  }
+
+  public static LinmotPutEvent operationToPosition(short pos) {
+    // TODO NRJ use this in the gui...
+    final LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+        LinmotPutHelper.CMD_OPERATION, //
+        LinmotPutHelper.MC_POSITION);
+    linmotPutEvent.target_position = pos;
+    linmotPutEvent.max_velocity = MAXVELOCITY_INIT;
+    linmotPutEvent.acceleration = ACCELERATION_INIT;
+    linmotPutEvent.deceleration = DECELERATION_INIT;
+    return linmotPutEvent;
+  }
+
+  // TODO move function
   public static Word findWord(List<Word> list, short value) {
     return list.stream().filter(w -> w.getShort() == value).findFirst().get();
   }

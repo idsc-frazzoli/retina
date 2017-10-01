@@ -27,7 +27,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
   private final RimoGetFields rimoGetFieldsR = new RimoGetFields();
   /** default message used only for display information */
-  private RimoPutEvent rimoPutEvent = RimoPutEvent.STOP;
+  private RimoGetEvent rimoGetEvent;
 
   public RimoComponent() {
     // LEFT
@@ -74,15 +74,11 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
 
   @Override
   public void getEvent(RimoGetEvent rimoGetEvent) {
-    RimoGetTire rimoGetL = rimoGetEvent.getL;
-    RimoGetTire rimoGetR = rimoGetEvent.getR;
-    rimoGetFieldsL.updateText(rimoGetL);
-    rimoGetFieldsR.updateText(rimoGetR);
-    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetL);
-    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetR);
-    // TODO NRJ temperature readings are always 0 !
+    this.rimoGetEvent = rimoGetEvent;
+    rimoGetFieldsL.updateText(rimoGetEvent.getL);
+    rimoGetFieldsR.updateText(rimoGetEvent.getR);
     {
-      Scalar temp = rimoGetL.getTemperatureMotor();
+      Scalar temp = rimoGetEvent.getL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
@@ -90,7 +86,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
     {
-      Scalar temp = rimoGetR.getTemperatureMotor();
+      Scalar temp = rimoGetEvent.getR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
@@ -101,10 +97,12 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
 
   @Override
   public void putEvent(RimoPutEvent rimoPutEvent) {
-    // TODO also assign spinner labels
-    this.rimoPutEvent = rimoPutEvent;
+    /** as long as there is only 1 valid command word,
+     * there is no need to update the spinner label */
     sliderExtLVel.jSlider.setValue(rimoPutEvent.putL.getRateRaw());
     sliderExtRVel.jSlider.setValue(rimoPutEvent.putR.getRateRaw());
+    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getL);
+    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getR);
   }
 
   @Override

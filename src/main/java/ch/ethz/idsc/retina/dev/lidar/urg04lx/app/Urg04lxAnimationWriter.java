@@ -25,7 +25,7 @@ public class Urg04lxAnimationWriter implements Urg04lxRangeListener {
   }
 
   @Override
-  public void range(Urg04lxRangeEvent urg04lxEvent) {
+  public void urg04lxRange(Urg04lxRangeEvent urg04lxEvent) {
     urg04lxRender.setEvent(urg04lxEvent);
     urg04lxRender.render((Graphics2D) image.getGraphics(), dimension);
     try {

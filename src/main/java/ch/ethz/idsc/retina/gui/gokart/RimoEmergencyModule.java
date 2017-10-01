@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -29,7 +29,7 @@ public class RimoEmergencyModule extends AbstractModule implements RimoPutProvid
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    boolean isOk = SteerAngleTracker.INSTANCE.isCalibrated();
+    boolean isOk = SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
     return Optional.ofNullable(isOk ? null : RimoPutEvent.STOP);
   }
 }

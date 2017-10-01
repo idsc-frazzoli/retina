@@ -20,12 +20,10 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
  * <li>the socket is closed when stop() is called
  * </ul>
  * 
- * <p>
- * reception callback and send() are available only when the socket is open,
+ * <p>reception callback and send() are available only when the socket is open,
  * i.e. in between a start() and a stop() call
  * 
- * <p>
- * the implementation is used to communicate with the Velodyne lidars, Quanergy
+ * <p>the implementation is used to communicate with the Velodyne lidars, Quanergy
  * lidars, and the dSpace micro-Autobox */
 public abstract class DatagramSocketManager implements StartAndStoppable {
   /** Quote from DatagramSocket javadoc:

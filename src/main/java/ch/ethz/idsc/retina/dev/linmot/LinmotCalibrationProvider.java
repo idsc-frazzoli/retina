@@ -21,36 +21,33 @@ public enum LinmotCalibrationProvider implements LinmotPutProvider {
     long timestamp = System.currentTimeMillis();
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutConfiguration.CMD_ERR_ACK, //
-          LinmotPutConfiguration.MC_ZEROS);
+          LinmotPutHelper.CMD_ERR_ACK, //
+          LinmotPutHelper.MC_ZEROS);
       timestamp += 200;
       queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutConfiguration.CMD_OFF_MODE, //
-          LinmotPutConfiguration.MC_ZEROS);
       timestamp += 200;
-      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
+      queue.add(new TimedPutEvent<>(timestamp, LinmotPutHelper.OFF_MODE_EVENT));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutConfiguration.CMD_HOME, //
-          LinmotPutConfiguration.MC_ZEROS);
+          LinmotPutHelper.CMD_HOME, //
+          LinmotPutHelper.MC_ZEROS);
       timestamp += 4000;
       queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutConfiguration.CMD_OPERATION, //
-          LinmotPutConfiguration.MC_ZEROS); //
+          LinmotPutHelper.CMD_OPERATION, //
+          LinmotPutHelper.MC_ZEROS); //
       timestamp += 200;
       queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutConfiguration.CMD_OPERATION, //
-          LinmotPutConfiguration.MC_POSITION); //
+          LinmotPutHelper.CMD_OPERATION, //
+          LinmotPutHelper.MC_POSITION); //
       timestamp += 200;
       queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
     }
