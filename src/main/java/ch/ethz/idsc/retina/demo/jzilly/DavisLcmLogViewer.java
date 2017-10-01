@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.demo.jzilly;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.demo.DavisSerial;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmViewer;
 import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
