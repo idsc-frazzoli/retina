@@ -2,8 +2,8 @@
 clear all
 close all
 clc
-get = csvread('sysid_get.csv',1,0);
-put = csvread('sysid_put.csv',1,0);
+get = csvread('/home/jelavice/Downloads/sysid_get.csv',1,0);
+put = csvread('/home/jelavice/Downloads/sysid_put.csv',1,0);
 
 torque = put(:,2);
 timePut = put(:,1) / 1e6; %convert us to s
@@ -59,7 +59,7 @@ Jest = estimateJ_pos(pos,idsPos, torque, idsTorque, timeGet)
 return;
 
 %%
-J = Jest;
+J = Jest; % 0.0166 when the kart is in the air
 s = tf('s');
 
 G = (1/J * 1 / s^2);
@@ -67,6 +67,6 @@ G = (1/J * 1 / s^2);
 pidTuner(G);
 
 
-margin(G * (2.2 + 0.2*s))
+margin(G * (2.5 + 0.2*s))
 grid on
 
