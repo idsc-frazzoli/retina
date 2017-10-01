@@ -3,9 +3,7 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 
-public enum SteerAngleTracker implements SteerGetListener {
-  INSTANCE;
-  // ---
+public class SteerAngleTracker implements SteerGetListener {
   private static final double SOFT = 1.357;
   private static final double HARD = 1.405;
   // ---

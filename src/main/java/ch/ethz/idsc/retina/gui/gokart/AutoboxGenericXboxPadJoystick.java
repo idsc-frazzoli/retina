@@ -21,9 +21,9 @@ import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.DriveMode;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -72,12 +72,12 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
     @Override
     public Optional<SteerPutEvent> putEvent() {
       if (hasJoystick())
-        if (SteerAngleTracker.INSTANCE.isCalibrated()) {
+        if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
           GenericXboxPadJoystick joystick = _joystick;
           Scalar value = RealScalar.ZERO;
           switch (driveMode) {
           case SIMPLE_DRIVE: {
-            final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+            final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getValueWithOffset();
             double desPos = -joystick.getRightKnobDirectionRight() * SteerPutEvent.MAX_ANGLE;
             double errPos = desPos - currAngle;
             final double torqueCmd = positionController.iterate(errPos);
@@ -118,10 +118,10 @@ public class AutoboxGenericXboxPadJoystick implements JoystickListener {
         GenericXboxPadJoystick joystick = _joystick;
         switch (driveMode) {
         case SIMPLE_DRIVE: {
-          if (SteerAngleTracker.INSTANCE.isCalibrated()) {
+          if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
             StateTime rate = episodeIntegrator.tail();
             Scalar speed = rate.state().Get(0);
-            Scalar theta = RealScalar.of(SteerAngleTracker.INSTANCE.getSteeringValue());
+            Scalar theta = RealScalar.of(SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue());
             Scalar sL = dsL.get(speed, theta);
             Scalar sR = dsR.get(speed, theta);
             return Optional.of(RimoPutEvent.withSpeeds( //

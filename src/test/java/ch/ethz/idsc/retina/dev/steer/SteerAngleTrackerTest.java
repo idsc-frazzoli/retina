@@ -5,6 +5,6 @@ import junit.framework.TestCase;
 
 public class SteerAngleTrackerTest extends TestCase {
   public void testSimple() {
-    assertFalse(SteerAngleTracker.INSTANCE.isCalibrated());
+    assertFalse(SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated());
   }
 }

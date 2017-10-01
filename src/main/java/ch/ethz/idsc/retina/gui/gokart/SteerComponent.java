@@ -16,9 +16,9 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -126,8 +126,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    final boolean isCalibrated = SteerAngleTracker.INSTANCE.isCalibrated();
-    final double angle = isCalibrated ? SteerAngleTracker.INSTANCE.getSteeringValue() : 0;
+    final boolean isCalibrated = SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    final double angle = isCalibrated ? SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue() : 0;
     final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
     jToggleController.setEnabled(isCalibrated);
     // ---
@@ -155,8 +155,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    if (SteerAngleTracker.INSTANCE.isCalibrated()) {
-      final double currAngle = SteerAngleTracker.INSTANCE.getValueWithOffset();
+    if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
+      final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getValueWithOffset();
       double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
       {
         if (leftStepActive)
