@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.owly.gui.Gui;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -17,6 +18,7 @@ import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
@@ -81,7 +83,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       Scalar temp = rimoGetEvent.getL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
+      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
       rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
@@ -89,7 +91,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       Scalar temp = rimoGetEvent.getR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
+      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
       rimoGetFieldsR.jTF_temperature_motor.setBackground(color);
     }

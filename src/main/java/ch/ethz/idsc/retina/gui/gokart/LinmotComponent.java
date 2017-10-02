@@ -122,7 +122,7 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
-        Gui.INSTANCE.TEMPERATURE.apply(LinmotGetEvent.POSITION_DELTA.rescale(scalar))));
+        ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.POSITION_DELTA.rescale(scalar))));
     // TODO simplify using new Clip API
     // TODO NRJ add colors for demand and actual position
     {

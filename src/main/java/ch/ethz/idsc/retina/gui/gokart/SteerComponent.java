@@ -45,8 +45,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
   private final JButton calibrate = new JButton("calibrate");
-  private boolean leftStepActive = false;
-  private boolean rightStepActive = false;
 
   public SteerComponent() {
     {
@@ -116,8 +114,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         calibrate.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // calibrateReq = true;
-            // startTime = System.currentTimeMillis();
             SteerCalibrationProvider.INSTANCE.schedule();
           }
         });

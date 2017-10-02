@@ -21,7 +21,6 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   // ---
   private static final int SEND_PERIOD_MS = 20;
   // ---
-  
   private final SteerAngleTracker steerAngleTracker = new SteerAngleTracker();
 
   private SteerSocket() {
@@ -29,7 +28,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
     // ---
     addGetListener(steerAngleTracker);
     addPutProvider(SteerPutFallback.INSTANCE);
-    addPutProvider(SteerCalibrationProvider.INSTANCE); 
+    addPutProvider(SteerCalibrationProvider.INSTANCE);
   }
 
   @Override
