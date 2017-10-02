@@ -22,10 +22,14 @@ public class RimoPutFields {
         spinnerLabelCmd.getValue(), //
         (short) sliderExtVel.jSlider.getValue());
     rimoPutTire.trigger = spinnerLabelTrigger.getValue().getByte();
-    rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText());
-    rimoPutTire.mainIndex = (short) Integer.parseInt(jTextfieldSdoMainIndex.getText());
-    rimoPutTire.subIndex = (byte) Integer.parseInt(jTextfieldSdoSubIndex.getText());
-    rimoPutTire.sdoData = Integer.parseInt(jTextfieldSdoData.getText());
+    try {
+      rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText());
+      rimoPutTire.mainIndex = (short) Integer.parseInt(jTextfieldSdoMainIndex.getText());
+      rimoPutTire.subIndex = (byte) Integer.parseInt(jTextfieldSdoSubIndex.getText());
+      rimoPutTire.sdoData = Integer.parseInt(jTextfieldSdoData.getText());
+    } catch (Exception exception) {
+      System.out.println("cannot parse text field as number");
+    }
     return rimoPutTire;
   }
 }
