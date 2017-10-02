@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * two of the events are received simultaneously: for the left and right rear
  * wheel */
 public class RimoGetTire implements Serializable {
-  /* package */ static final int LENGTH = 16;
+  /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit RATE_UNIT = Unit.of("rad*s^-1");
   // TODO NRJ check allowed ratings, comment magic const
@@ -37,6 +37,7 @@ public class RimoGetTire implements Serializable {
   private final short temperature_motor;
   /** C */
   private final short temperature_heatsink;
+  public final SdoMessage sdoMessage;
 
   /** @param byteBuffer
    * of which 16 bytes are read */
@@ -48,6 +49,7 @@ public class RimoGetTire implements Serializable {
     error_code = byteBuffer.getInt(); // 12
     temperature_motor = byteBuffer.getShort(); // 14
     temperature_heatsink = byteBuffer.getShort(); // 16
+    sdoMessage = new SdoMessage(byteBuffer); // 24
   }
 
   void encode(ByteBuffer byteBuffer) {
@@ -58,6 +60,7 @@ public class RimoGetTire implements Serializable {
     byteBuffer.putInt(error_code);
     byteBuffer.putShort(temperature_motor);
     byteBuffer.putShort(temperature_heatsink);
+    sdoMessage.encode(byteBuffer);
   }
 
   /** @return convert rad/min to rad/s */

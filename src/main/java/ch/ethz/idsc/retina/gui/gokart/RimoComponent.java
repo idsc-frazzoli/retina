@@ -85,6 +85,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     rimoGetFields.jTF_error_code = createReading(side + " error code");
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
+    rimoGetFields.jTF_SdoMessage = createReading(side + " SDO message");
   }
 
   @Override
