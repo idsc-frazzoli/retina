@@ -8,6 +8,8 @@ import ch.ethz.idsc.owly.gui.ren.GridRender;
 import ch.ethz.idsc.owly.math.Se2Utils;
 import ch.ethz.idsc.owly.model.car.VehicleModel;
 import ch.ethz.idsc.owly.model.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
+import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
@@ -17,12 +19,15 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class LocalViewLcmModule extends AbstractModule {
   private static final Tensor OFFSET_MARK8 = Se2Utils.toSE2Matrix(Tensors.vector(-0.3, 0.0, 0.03));
-  private static final Tensor OFFSET_URG04 = Se2Utils.toSE2Matrix(Tensors.vector(1.2, 0.0, 0.0));
+  /** angle calibrated on 2.10.2017 */
+  private static final Tensor OFFSET_URG04 = Se2Utils.toSE2Matrix(Tensors.vector(1.2, 0.0, 0.05));
   // ---
   private final TimerFrame timerFrame = new TimerFrame();
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler("front");
   private final Mark8LcmHandler mark8LcmHandler = new Mark8LcmHandler("center");
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
+  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
 
   @Override
   protected void first() throws Exception {
@@ -38,6 +43,8 @@ public class LocalViewLcmModule extends AbstractModule {
     // ---
     GokartRender gokartRender = new GokartRender(vehicleModel);
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
+    linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+    gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     // ---
     {
@@ -48,6 +55,8 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     rimoGetLcmClient.startSubscriptions();
+    linmotGetLcmClient.startSubscriptions();
+    gokartStatusLcmClient.startSubscriptions();
     // ---
     timerFrame.jFrame.setVisible(true);
   }
@@ -56,6 +65,8 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void last() {
     urg04lxLcmHandler.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
+    linmotGetLcmClient.stopSubscriptions();
+    gokartStatusLcmClient.stopSubscriptions();
     timerFrame.close();
   }
 

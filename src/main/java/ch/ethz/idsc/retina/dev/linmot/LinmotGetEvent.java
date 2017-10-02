@@ -27,8 +27,9 @@ public class LinmotGetEvent extends DataEvent {
   // ---
   public final short status_word;
   public final short state_variable;
-  // TODO document units
+  // negative values correspond to a pushed brake
   public final int actual_position;
+  // same unit as actual_position
   public final int demand_position;
   private final short winding_temp1;
   private final short winding_temp2;
@@ -80,6 +81,11 @@ public class LinmotGetEvent extends DataEvent {
   @Override
   protected int length() {
     return LENGTH;
+  }
+
+  public Scalar getActualPosition() {
+    // actual position of 100000 corresponds to 1 cm
+    return Quantity.of(actual_position * 1e-7, "m");
   }
 
   public int getPositionDiscrepancyRaw() {

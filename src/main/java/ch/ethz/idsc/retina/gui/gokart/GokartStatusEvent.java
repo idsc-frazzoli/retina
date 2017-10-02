@@ -4,12 +4,18 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 
 public class GokartStatusEvent extends DataEvent {
   public final float steeringAngle;
 
   public GokartStatusEvent(float steeringAngle) {
     this.steeringAngle = steeringAngle;
+  }
+
+  public GokartStatusEvent(ByteBuffer byteBuffer) {
+    steeringAngle = byteBuffer.getFloat();
   }
 
   @Override
@@ -20,5 +26,9 @@ public class GokartStatusEvent extends DataEvent {
   @Override
   protected int length() {
     return 4;
+  }
+
+  public Scalar getSteeringAngle() {
+    return RealScalar.of(steeringAngle);
   }
 }
