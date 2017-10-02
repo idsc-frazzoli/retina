@@ -15,6 +15,12 @@ public class RimoPutTire implements Serializable {
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0);
+  public static final Word trigOff = Word.createByte("OFF", (byte) 0);
+  public static final Word trigOn = Word.createByte("ON", (byte) 1);
+  public static final List<Word> TRIGGERS = Arrays.asList( //
+      trigOff, //
+      trigOn //
+  );
   public static final double MIN_TO_S = 1 / 60.0;
 
   public static RimoPutTire withSpeed(short speed) {
@@ -23,13 +29,18 @@ public class RimoPutTire implements Serializable {
 
   // ---
   /** 4 bytes encoding length */
-  /* package */ static final int LENGTH = 4;
+  /* package */ static final int LENGTH = 13;
   /** according to tests on the bench, the max effective speed is ~6300 */
   public static final short MAX_SPEED = 6500;
   // ---
   final short command;
   /** angular rate in rad/min */
   final short rate;
+  public byte trigger;
+  public byte sdoCommand;
+  public short mainIndex;
+  public byte subIndex;
+  public byte[] sdoData = new byte[4];
 
   public RimoPutTire(Word command, short rate) {
     this.command = command.getShort();
@@ -51,5 +62,10 @@ public class RimoPutTire implements Serializable {
   void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(command);
     byteBuffer.putShort(rate);
+    byteBuffer.put(trigger);
+    byteBuffer.put(sdoCommand);
+    byteBuffer.putShort(mainIndex);
+    byteBuffer.put(subIndex);
+    byteBuffer.put(sdoData);
   }
 }
