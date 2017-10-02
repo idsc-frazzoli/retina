@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart.top;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class GokartRender implements RenderInterface {
@@ -43,8 +45,11 @@ public class GokartRender implements RenderInterface {
           Tensors.vector(rimoGetEvent.getR.getAngularRate().number(), 0)));
     }
     if (Objects.nonNull(linmotGetEvent)) {
-      // linmotGetEvent.
-      // TODO draw brake
+      Tensor brakePosition = Tensors.vector(1.0, 0.05);
+      graphics.setColor(Color.BLACK);
+      graphics.draw(geometricLayer.toVector( //
+          brakePosition, //
+          Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * 10, 0)));
     }
     if (Objects.nonNull(steerGetEvent)) {
       double angle = steerGetEvent.getGcpRelRckPos();
