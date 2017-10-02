@@ -40,7 +40,7 @@ public class RimoPutTire implements Serializable {
   public byte sdoCommand;
   public short mainIndex;
   public byte subIndex;
-  public byte[] sdoData = new byte[4];
+  public int sdoData;
 
   public RimoPutTire(Word command, short rate) {
     this.command = command.getShort();
@@ -66,6 +66,6 @@ public class RimoPutTire implements Serializable {
     byteBuffer.put(sdoCommand);
     byteBuffer.putShort(mainIndex);
     byteBuffer.put(subIndex);
-    byteBuffer.put(sdoData);
+    byteBuffer.putInt(sdoData);
   }
 }

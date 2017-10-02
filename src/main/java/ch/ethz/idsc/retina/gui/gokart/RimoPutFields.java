@@ -16,4 +16,16 @@ public class RimoPutFields {
   final JTextField jTextfieldSdoMainIndex = new JTextField(8);
   final JTextField jTextfieldSdoSubIndex = new JTextField(5);
   final JTextField jTextfieldSdoData = new JTextField(20);
+
+  public RimoPutTire getPutTire() {
+    RimoPutTire rimoPutTire = new RimoPutTire( //
+        spinnerLabelCmd.getValue(), //
+        (short) sliderExtVel.jSlider.getValue());
+    rimoPutTire.trigger = spinnerLabelTrigger.getValue().getByte();
+    rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText());
+    rimoPutTire.mainIndex = (short) Integer.parseInt(jTextfieldSdoMainIndex.getText());
+    rimoPutTire.subIndex = (byte) Integer.parseInt(jTextfieldSdoSubIndex.getText());
+    rimoPutTire.sdoData = Integer.parseInt(jTextfieldSdoData.getText());
+    return rimoPutTire;
+  }
 }

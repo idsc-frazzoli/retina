@@ -123,7 +123,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   @Override
   public Optional<RimoPutEvent> putEvent() {
     return Optional.of(new RimoPutEvent( //
-        new RimoPutTire(rimoPutFieldsL.spinnerLabelCmd.getValue(), (short) rimoPutFieldsL.sliderExtVel.jSlider.getValue()), //
-        new RimoPutTire(rimoPutFieldsR.spinnerLabelCmd.getValue(), (short) rimoPutFieldsR.sliderExtVel.jSlider.getValue())));
+        rimoPutFieldsL.getPutTire(), //
+        rimoPutFieldsR.getPutTire()));
   }
 }
