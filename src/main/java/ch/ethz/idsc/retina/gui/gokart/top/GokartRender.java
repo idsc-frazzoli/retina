@@ -65,8 +65,8 @@ public class GokartRender implements RenderInterface {
     }
     if (Objects.nonNull(gokartStatusEvent)) {
       double angle = gokartStatusEvent.steeringAngle;
-      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
-      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
+      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
+      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(+48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GRAY);
       graphics.draw(geometricLayer.toVector( //

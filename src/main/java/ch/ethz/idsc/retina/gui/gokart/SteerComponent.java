@@ -16,6 +16,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
+import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -46,9 +47,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton calibrate = new JButton("calibrate");
   private boolean leftStepActive = false;
   private boolean rightStepActive = false;
-  private boolean calibrateReq = false;
-  private boolean calibrated = false;
-  private long startTime;
 
   public SteerComponent() {
     {
@@ -93,22 +91,21 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       stepLeft.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          leftStepActive = true;
+          sliderExtTorque.jSlider.setValue((int) (-RESOLUTION * 0.9));
         }
       });
       jToolBar.add(stepRight);
       stepRight.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          rightStepActive = true;
+          sliderExtTorque.jSlider.setValue((int) (+RESOLUTION * 0.9));
         }
       });
       jToolBar.add(resetSteps);
       resetSteps.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          rightStepActive = false;
-          leftStepActive = false;
+          sliderExtTorque.jSlider.setValue(0);
         }
       });
     }
@@ -119,8 +116,9 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         calibrate.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            calibrateReq = true;
-            startTime = System.currentTimeMillis();
+            // calibrateReq = true;
+            // startTime = System.currentTimeMillis();
+            SteerCalibrationProvider.INSTANCE.schedule();
           }
         });
       }
@@ -168,34 +166,14 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public void putEvent(SteerPutEvent putEvent) {
     // nothing to do here
+    calibrate.setEnabled(SteerCalibrationProvider.INSTANCE.isIdle());
   }
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    // TODO NRJ like linmot calib design
-    if (calibrateReq && !calibrated) {
-      long currTime = System.currentTimeMillis();
-      // System.out.println(Tensors.vector(currTime - startTime).map(Round._3));
-      if (currTime - startTime < 1000)
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.1));
-      if (currTime - startTime < 2000)
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), 0.2));
-      if (currTime - startTime < 4000)
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.1));
-      if (currTime - startTime < 5000)
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), -0.2));
-      else
-        calibrated = true;
-    }
     if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
       final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue();
-      double desPos = sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
-      {
-        if (leftStepActive)
-          desPos = +0.65;
-        if (rightStepActive)
-          desPos = -0.65;
-      }
+      double desPos = -sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
       final double torqueCmd = positionController.iterate(errPos);
