@@ -33,6 +33,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
   // ---
+  private final JButton calibrate = new JButton("calibrate");
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final JTextField kpConst = new JTextField();
   private final JTextField kdConst = new JTextField();
@@ -44,12 +45,18 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
-  private final JButton calibrate = new JButton("calibrate");
 
-  // TODO EJDH calib and control in 1 row
   public SteerComponent() {
-    {
+    { // calibration and controller
       JToolBar jToolBar = createRow("command");
+      jToolBar.add(calibrate);
+      calibrate.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          SteerCalibrationProvider.INSTANCE.schedule();
+        }
+      });
+      // ---
       jToolBar.add(jToggleController);
     }
     {
@@ -107,18 +114,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
           sliderExtTorque.jSlider.setValue(0);
         }
       });
-    }
-    {
-      { // command speed
-        JToolBar jToolBar = createRow("calibration");
-        jToolBar.add(calibrate);
-        calibrate.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            SteerCalibrationProvider.INSTANCE.schedule();
-          }
-        });
-      }
     }
     addSeparator();
     { // reception

@@ -154,6 +154,9 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    if (linmotPutEvent.isOperational()) {
+      sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
+    }
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
     spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);

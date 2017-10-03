@@ -93,4 +93,9 @@ public class LinmotGetEvent extends DataEvent {
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
   }
+
+  public boolean isOperational() {
+    // FIXME NRJ check for the word and variable for operation mode
+    return false;
+  }
 }
