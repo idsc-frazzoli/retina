@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owly.data.TimeKeeper;
 import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
+import ch.ethz.idsc.owly.math.car.DifferentialSpeed;
 import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
 import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO JAN breakup joystick modes into two classes
 public class AutoboxGenericXboxPadJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 500; // 500[ms]

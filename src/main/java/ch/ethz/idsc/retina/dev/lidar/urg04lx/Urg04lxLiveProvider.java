@@ -23,6 +23,14 @@ import ch.ethz.idsc.retina.util.io.UserHome;
  * requires that the binary "urg_binaryprovider" is located at
  * /home/{username}/Public/urg_binaryprovider
  * 
+ * you can download the binary from
+ * https://polybox.ethz.ch/index.php/s/IkO51LOeZMOL79u
+ * and make it executable using
+ * <pre>
+ * sudo chmod +x /home/{username}/Public/urg_binaryprovider
+ * </pre>
+ * 
+ * the binary is based on the official urg library located at
  * https://sourceforge.net/projects/urgnetwork/files/urg_library/
  * 
  * Quote from datasheet: The light source of the sensor is infrared laser of
