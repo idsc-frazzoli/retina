@@ -6,8 +6,11 @@ public class PDSteerPositionControl {
   public double Kd = 0.2; // 0.5 , 5 and 0.5 hit the saturation limit of 0.5
   public double torqueLimit = 0.5;
   // ---
-  private double dt = 0.020; // TODO NRJ use realtime
-  private double lastPos_error = 0; // TODO NRJ pos error initially incorrect in the first iteration
+  // TODO EJDH use realtime (with cap at 0.05?)
+  private double dt = 0.020;
+  // TODO EJDH probably not serious problem:
+  // pos error initially incorrect in the first iteration
+  private double lastPos_error = 0;
 
   public double iterate(final double pos_error) {
     double pPart = pos_error * Kp;

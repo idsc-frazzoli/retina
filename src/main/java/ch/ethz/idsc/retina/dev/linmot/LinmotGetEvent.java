@@ -84,6 +84,7 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   public Scalar getActualPosition() {
+    // TODO NRJ make 1e-7 a static final above
     // actual position of 100000 corresponds to 1 cm
     return Quantity.of(actual_position * 1e-7, "m");
   }

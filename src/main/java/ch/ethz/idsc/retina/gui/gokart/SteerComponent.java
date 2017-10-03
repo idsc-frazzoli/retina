@@ -46,6 +46,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton resetSteps = new JButton("reset Steps");
   private final JButton calibrate = new JButton("calibrate");
 
+  // TODO EJDH calib and control in 1 row
   public SteerComponent() {
     {
       JToolBar jToolBar = createRow("command");
@@ -161,8 +162,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void putEvent(SteerPutEvent putEvent) {
-    // nothing to do here
     calibrate.setEnabled(SteerCalibrationProvider.INSTANCE.isIdle());
+    // TODO EJDH display actual torque sent in new text field
   }
 
   @Override
@@ -175,6 +176,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       final double torqueCmd = positionController.iterate(errPos);
       // System.out.println(Tensors.vector(currAngle).map(Round._3));
       {
+        // TODO EJDH extract to separate class
         BinaryBlob binaryBlob = new BinaryBlob();
         binaryBlob.data = new byte[16];
         binaryBlob.data_length = 16;
