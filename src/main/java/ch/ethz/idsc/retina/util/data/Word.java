@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
+import java.util.List;
+
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Word {
@@ -10,6 +12,13 @@ public class Word {
 
   public static Word createByte(String string, byte value) {
     return new Word(string, value, 1);
+  }
+
+  /** @param list of words to extract word of given value
+   * @param value
+   * @return */
+  public static Word findShort(List<Word> list, short value) {
+    return list.stream().filter(word -> word.getShort() == value).findFirst().get();
   }
 
   // ---

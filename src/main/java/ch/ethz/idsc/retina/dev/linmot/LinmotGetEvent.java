@@ -12,18 +12,21 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
 public class LinmotGetEvent extends DataEvent {
+  /** 16 bytes */
+  public static final int LENGTH = 16;
+  // TODO NRJ document conversion factor
+  private static final double TO_DEGREE_CELSIUS = 0.1;
+  /** actual position of 100000 corresponds to 1 cm
+   * demand position uses the same scale */
+  private static final double GET_POSITION_TO_METER = 1e-7;
   private static final Unit CELSIUS = Unit.of("degC");
   /** degree celsius */
   // TODO NRJ check valid range, cite source
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
       Quantity.of(2, CELSIUS), //
       Quantity.of(110, CELSIUS));
-  // TODO NRJ magic const
-  public static final Clip POSITION_DELTA = Clip.function(-20000, 20000);
-  /** 16 bytes */
-  public static final int LENGTH = 16;
-  // TODO NRJ document conversion factor
-  private static final double TO_DEGREE_CELSIUS = 0.1;
+  /** bounds established using experimentation */
+  public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
   // ---
   public final short status_word;
   public final short state_variable;
@@ -84,11 +87,15 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   public Scalar getActualPosition() {
-    // actual position of 100000 corresponds to 1 cm
-    return Quantity.of(actual_position * 1e-7, "m");
+    return Quantity.of(actual_position * GET_POSITION_TO_METER, "m");
   }
 
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
+  }
+
+  public boolean isOperational() {
+    // FIXME NRJ check for the word and variable for operation mode
+    return false;
   }
 }

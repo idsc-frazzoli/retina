@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8SpacialProvider;
 public class Mark8LcmHandler {
   /** in the workshop, the lidar produces 37000 points per revolution
    * the value here is a crude upper bound */
-  public static final int MAX_COORDINATES = 5500 * 8;
+  public static final int MAX_COORDINATES = 10500 * 8;
   // ---
   private final Mark8LcmClient mark8LcmClient;
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //

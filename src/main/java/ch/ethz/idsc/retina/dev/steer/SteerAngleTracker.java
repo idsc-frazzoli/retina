@@ -19,6 +19,8 @@ public class SteerAngleTracker implements SteerGetListener {
     return SOFT - 0.01 < width && width < HARD + 0.10; // <- 0.05 is insufficient
   }
 
+  /** @return value centered around 0
+   * zero means driving straight */
   public double getSteeringValue() {
     if (!isCalibrated())
       throw new RuntimeException();

@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.owly.gui.Gui;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;

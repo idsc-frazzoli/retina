@@ -117,14 +117,11 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
-    // TODO NRJ figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
-        ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.POSITION_DELTA.rescale(scalar))));
-    // TODO simplify using new Clip API
-    // TODO NRJ add colors for demand and actual position
+        ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.NOMINAL_POSITION_DELTA.rescale(scalar))));
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
@@ -157,6 +154,9 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    if (linmotPutEvent.isOperational()) {
+      sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
+    }
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
     spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);

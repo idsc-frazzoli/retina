@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class LocalViewLcmModule extends AbstractModule {
-  private static final Tensor OFFSET_MARK8 = Se2Utils.toSE2Matrix(Tensors.vector(-0.3, 0.0, 0.03));
+  private static final Tensor OFFSET_MARK8 = Se2Utils.toSE2Matrix(Tensors.vector(-0.35, 0.0, 0.025));
   /** angle calibrated on 2.10.2017 */
   private static final Tensor OFFSET_URG04 = Se2Utils.toSE2Matrix(Tensors.vector(1.2, 0.0, 0.05));
   // ---

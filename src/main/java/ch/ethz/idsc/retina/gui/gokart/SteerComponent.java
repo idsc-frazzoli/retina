@@ -33,6 +33,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
   // ---
+  private final JButton calibrate = new JButton("calibrate");
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final JTextField kpConst = new JTextField();
   private final JTextField kdConst = new JTextField();
@@ -44,11 +45,18 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
-  private final JButton calibrate = new JButton("calibrate");
 
   public SteerComponent() {
-    {
+    { // calibration and controller
       JToolBar jToolBar = createRow("command");
+      jToolBar.add(calibrate);
+      calibrate.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          SteerCalibrationProvider.INSTANCE.schedule();
+        }
+      });
+      // ---
       jToolBar.add(jToggleController);
     }
     {
@@ -107,18 +115,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         }
       });
     }
-    {
-      { // command speed
-        JToolBar jToolBar = createRow("calibration");
-        jToolBar.add(calibrate);
-        calibrate.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            SteerCalibrationProvider.INSTANCE.schedule();
-          }
-        });
-      }
-    }
     addSeparator();
     { // reception
       jTextField[0] = createReading("motAsp_CANInput");
@@ -161,8 +157,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void putEvent(SteerPutEvent putEvent) {
-    // nothing to do here
     calibrate.setEnabled(SteerCalibrationProvider.INSTANCE.isIdle());
+    // TODO EJDH display actual torque sent in new text field
   }
 
   @Override
@@ -175,6 +171,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       final double torqueCmd = positionController.iterate(errPos);
       // System.out.println(Tensors.vector(currAngle).map(Round._3));
       {
+        // TODO EJDH extract to separate class
         BinaryBlob binaryBlob = new BinaryBlob();
         binaryBlob.data = new byte[16];
         binaryBlob.data_length = 16;

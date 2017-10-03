@@ -7,8 +7,9 @@ import ch.ethz.idsc.retina.dev.zhkart.TimedPutEvent;
 public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<LinmotPutEvent> {
   public static final LinmotCalibrationProvider INSTANCE = new LinmotCalibrationProvider();
 
-  private LinmotCalibrationProvider() {}
-  
+  private LinmotCalibrationProvider() {
+  }
+
   public void schedule() {
     long timestamp = System.currentTimeMillis();
     {
