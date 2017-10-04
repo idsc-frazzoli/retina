@@ -6,9 +6,7 @@ public class PDSteerPositionControl {
   public double Kd = 0.2; // 0.5 , 5 and 0.5 hit the saturation limit of 0.5
   public double torqueLimit = 0.5;
   // ---
-  // TODO EJDH use realtime (with cap at 0.05?)
-  private double dt = 0.020;
-  // TODO EJDH probably not serious problem:
+  private final double dt = (SteerSocket.SEND_PERIOD_MS * 1e-3);
   // pos error initially incorrect in the first iteration
   private double lastPos_error = 0;
 
