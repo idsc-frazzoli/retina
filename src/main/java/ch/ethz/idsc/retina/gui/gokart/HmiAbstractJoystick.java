@@ -102,10 +102,9 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     @Override
     public Optional<LinmotPutEvent> putEvent() {
       if (hasJoystick()) {
-        // FIXME NRJ logic should be true with &= requirements!
-        boolean status = false;
-        status |= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
-        status |= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
+        boolean status = true;
+        status &= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
+        status &= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
         if (status) {
           double value = _joystick.getLeftKnobDirectionDown();
           return Optional.of(LinmotPutHelper.operationToRelativePosition(value));

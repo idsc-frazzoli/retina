@@ -94,8 +94,13 @@ public class LinmotGetEvent extends DataEvent {
     return demand_position - actual_position;
   }
 
+  private static final int ENABLE_OPERATION = 2;
+  private static final int HOMED = 11;
+
+  // TODO NRJ test & confirm
   public boolean isOperational() {
-    // FIXME NRJ check for the word and variable for operation mode
-    return false;
+    boolean en_op = (status_word & (1 << ENABLE_OPERATION)) != 0;
+    boolean homed = (status_word & (1 << HOMED)) != 0;
+    return en_op && homed;
   }
 }
