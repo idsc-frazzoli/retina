@@ -16,32 +16,32 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
           LinmotPutHelper.CMD_ERR_ACK, //
           LinmotPutHelper.MC_ZEROS);
       timestamp += 200;
-      add(timestamp, linmotPutEvent);
+      doUntil(timestamp, linmotPutEvent);
     }
     {
       timestamp += 200;
-      add(timestamp, LinmotPutHelper.OFF_MODE_EVENT);
+      doUntil(timestamp, LinmotPutHelper.OFF_MODE_EVENT);
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
           LinmotPutHelper.CMD_HOME, //
           LinmotPutHelper.MC_ZEROS);
       timestamp += 4000;
-      add(timestamp, linmotPutEvent);
+      doUntil(timestamp, linmotPutEvent);
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
           LinmotPutHelper.CMD_OPERATION, //
           LinmotPutHelper.MC_ZEROS); //
       timestamp += 200;
-      add(timestamp, linmotPutEvent);
+      doUntil(timestamp, linmotPutEvent);
     }
     {
       LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
           LinmotPutHelper.CMD_OPERATION, //
           LinmotPutHelper.MC_POSITION); //
       timestamp += 200;
-      add(timestamp, linmotPutEvent);
+      doUntil(timestamp, linmotPutEvent);
     }
   }
 }
