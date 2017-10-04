@@ -21,12 +21,14 @@ import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
-public class AutoboxFullJoystickModule extends AbstractModule {
-  private final AutoboxAbstractJoystick joystickInstance = new AutoboxFullControlJoystick();
-  private final JFrame jFrame = new JFrame("joystick");
+public abstract class JoystickAbstractModule extends AbstractModule {
+  private final JFrame jFrame = new JFrame(getClass().getSimpleName());
+
+  protected abstract HmiAbstractJoystick createJoystick();
 
   @Override
-  protected void first() throws Exception {
+  protected final void first() throws Exception {
+    final HmiAbstractJoystick joystickInstance = createJoystick();
     GenericXboxPadLcmClient.INSTANCE.addListener(joystickInstance);
     // ---
     RimoSocket.INSTANCE.addPutProvider(joystickInstance.getRimoPutProvider());
@@ -59,6 +61,8 @@ public class AutoboxFullJoystickModule extends AbstractModule {
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removePutProvider(joystickInstance.getRimoPutProvider());
         LinmotSocket.INSTANCE.removePutProvider(joystickInstance.linmotPutProvider);
+        LinmotSocket.INSTANCE.removePutListener(joystickInstance.linmotPutListener);
+        LinmotSocket.INSTANCE.removeGetListener(joystickInstance.linmotGetListener);
         SteerSocket.INSTANCE.removePutProvider(joystickInstance.steerPutProvider);
         MiscSocket.INSTANCE.removePutProvider(joystickInstance.miscPutProvider);
         // ---
@@ -70,7 +74,7 @@ public class AutoboxFullJoystickModule extends AbstractModule {
   }
 
   @Override
-  protected void last() {
+  protected final void last() {
     jFrame.setVisible(false);
     jFrame.dispose();
   }
