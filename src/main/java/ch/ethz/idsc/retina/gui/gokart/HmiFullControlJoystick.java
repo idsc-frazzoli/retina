@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public class AutoboxFullControlJoystick extends AutoboxAbstractJoystick {
+public class HmiFullControlJoystick extends HmiAbstractJoystick {
   /** tire speed */
   private final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     int sign = 1;

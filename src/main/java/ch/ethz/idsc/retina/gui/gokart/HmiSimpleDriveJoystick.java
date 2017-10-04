@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * differential speed on rear wheels according to steering angle
  * 
  * TODO NRJ still uses velocity control for RIMO */
-public class AutoboxSimpleDriveJoystick extends AutoboxAbstractJoystick {
+public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   private static final Scalar AXIS_DELTA = Quantity.of(1.2, "m");
   private static final Scalar TIRE_L = Quantity.of(+0.54, "m");
   private static final Scalar TIRE_R = Quantity.of(-0.54, "m");

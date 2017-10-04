@@ -23,7 +23,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
-public abstract class AutoboxAbstractJoystick implements JoystickListener {
+public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 500; // 500[ms]
   // ---
