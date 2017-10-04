@@ -8,14 +8,15 @@ import java.util.Queue;
 public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implements PutProvider<PE> {
   private final Queue<TimedPutEvent<PE>> queue = new PriorityQueue<>();
 
-  // TODO EJDH protected constructor
+  protected AutoboxCalibrationProvider() {
+  }
+
   public final boolean isIdle() {
     return queue.isEmpty();
   }
 
-  // TODO EJDH function takes 2 parameters long, putevent, create timed... inside function
-  protected void add(TimedPutEvent<PE> timedPutEvent) {
-    queue.add(timedPutEvent);
+  protected void add(long time, PE putEvent) {
+    queue.add(new TimedPutEvent<>(time, putEvent));
   }
 
   @Override

@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Optional;
 
 import javax.swing.JButton;
@@ -26,8 +24,6 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import idsc.BinaryBlob;
-import lcm.lcm.LCM;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
@@ -45,6 +41,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
+  private final JTextField torquePut;
 
   public SteerComponent() {
     { // calibration and controller
@@ -87,9 +84,13 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
-      JToolBar jToolBar = createRow("torque");
+      JToolBar jToolBar = createRow("position");
       sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
       sliderExtTorque.addToComponent(jToolBar);
+    }
+    {
+      // JToolBar jToolBar = createRow("Torque");
+      torquePut = createReading("torque");
     }
     {
       JToolBar jToolBar = createRow("step");
@@ -158,7 +159,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   @Override
   public void putEvent(SteerPutEvent putEvent) {
     calibrate.setEnabled(SteerCalibrationProvider.INSTANCE.isIdle());
-    // TODO EJDH display actual torque sent in new text field
+    torquePut.setText("" + putEvent.getTorque());
   }
 
   @Override
@@ -169,18 +170,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
       final double torqueCmd = positionController.iterate(errPos);
-      // System.out.println(Tensors.vector(currAngle).map(Round._3));
-      {
-        // TODO EJDH extract to separate class
-        BinaryBlob binaryBlob = new BinaryBlob();
-        binaryBlob.data = new byte[16];
-        binaryBlob.data_length = 16;
-        ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.putDouble(desPos);
-        byteBuffer.putDouble(currAngle);
-        LCM.getSingleton().publish("myChannel", binaryBlob);
-      }
+      ControllerInfoPublish.publish(desPos, currAngle);
       if (jToggleController.isSelected())
         return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd));
     }

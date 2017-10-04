@@ -21,8 +21,8 @@ import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
-public class AutoboxJoystickModule extends AbstractModule {
-  private final AutoboxAbstractJoystick joystickInstance = new AutoboxSimpleDriveJoystick();
+public class AutoboxFullJoystickModule extends AbstractModule {
+  private final AutoboxAbstractJoystick joystickInstance = new AutoboxFullControlJoystick();
   private final JFrame jFrame = new JFrame("joystick");
 
   @Override
