@@ -33,6 +33,12 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
+      PathRender pathRender = new PathRender();
+      gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(pathRender);
+    }
+    // ---
+    {
       LidarRender lidarRender = new LidarRender(OFFSET_URG04);
       lidarRender.setColor(new Color(128, 0, 0, 128));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
@@ -41,11 +47,13 @@ public class LocalViewLcmModule extends AbstractModule {
     final VehicleModel vehicleModel = RimoSinusIonModel.standard();
     timerFrame.geometricComponent.addRenderInterface(new VehicleFootprintRender(vehicleModel));
     // ---
-    GokartRender gokartRender = new GokartRender(vehicleModel);
-    rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
-    linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-    gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
-    timerFrame.geometricComponent.addRenderInterface(gokartRender);
+    {
+      GokartRender gokartRender = new GokartRender(vehicleModel);
+      rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
+      linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(gokartRender);
+    }
     // ---
     {
       LidarRender lidarRender = new LidarRender(OFFSET_MARK8);

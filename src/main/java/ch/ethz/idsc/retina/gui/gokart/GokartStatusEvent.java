@@ -28,6 +28,11 @@ public class GokartStatusEvent extends DataEvent {
     return 4;
   }
 
+  public boolean isSteeringCalibrated() {
+    return !Float.isNaN(steeringAngle);
+  }
+
+  /** @return NaN if steering is not calibrated */
   public Scalar getSteeringAngle() {
     return RealScalar.of(steeringAngle);
   }
