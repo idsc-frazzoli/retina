@@ -9,6 +9,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
 public class HmiFullControlJoystick extends HmiAbstractJoystick {
+  @Override
+  protected double breakStrength() {
+    return _joystick.getLeftKnobDirectionDown();
+  }
+
   /** tire speed */
   private final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     int sign = 1;

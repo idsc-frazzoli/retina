@@ -105,10 +105,9 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
         boolean status = true;
         status &= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
         status &= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
-        if (status) {
-          double value = _joystick.getLeftKnobDirectionDown();
-          return Optional.of(LinmotPutHelper.operationToRelativePosition(value));
-        }
+        if (status)
+          return Optional.of( //
+              LinmotPutHelper.operationToRelativePosition(breakStrength()));
       }
       return Optional.empty();
     }
@@ -120,6 +119,10 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   };
 
   public abstract RimoPutProvider getRimoPutProvider();
+
+  /** @return value in the interval [0, 1]
+   * 0 means no break, and 1 means all the way */
+  protected abstract double breakStrength();
 
   public final void setSpeedLimit(int speedLimit) {
     this.speedLimit = speedLimit;

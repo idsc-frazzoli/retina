@@ -37,6 +37,14 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
       new Rice1StateSpaceModel(RealScalar.of(1)), //
       MidpointIntegrator.INSTANCE, //
       new StateTime(Array.zeros(1), RealScalar.ZERO));
+
+  @Override
+  protected double breakStrength() {
+    return Math.max( //
+        _joystick.getLeftSliderUnitValue(), //
+        _joystick.getRightSliderUnitValue());
+  }
+
   /** tire speed */
   private final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
@@ -44,7 +52,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
       final Scalar now = timeKeeper.now();
       Scalar push = RealScalar.ZERO;
       if (hasJoystick())
-        push = RealScalar.of(_joystick.getRightKnobDirectionUp() * getSpeedLimit());
+        push = RealScalar.of(_joystick.getLeftKnobDirectionUp() * getSpeedLimit());
       episodeIntegrator.move(Tensors.of(push), now);
       if (hasJoystick()) {
         // GenericXboxPadJoystick joystick = _joystick;
