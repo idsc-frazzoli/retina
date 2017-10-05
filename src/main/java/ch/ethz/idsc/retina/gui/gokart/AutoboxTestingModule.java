@@ -26,7 +26,7 @@ public class AutoboxTestingModule extends AbstractModule {
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
-  private final JFrame jFrame = new JFrame();
+  private final JFrame jFrame = new JFrame("Monitor and Testing");
 
   @Override
   protected void first() throws Exception {
@@ -34,25 +34,29 @@ public class AutoboxTestingModule extends AbstractModule {
     addTab(rimoComponent);
     // ---
     LinmotSocket.INSTANCE.addAll(linmotComponent);
+    LinmotSocket.INSTANCE.addPutListener(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
     SteerSocket.INSTANCE.addAll(steerComponent);
+    SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
     // ---
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
     // ---
-    jTabbedPane.setSelectedIndex(0);
+    jTabbedPane.setSelectedIndex(1);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(100, 80, 500, 700);
+    jFrame.setBounds(300, 80, 500, 800);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeAll(rimoComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent);
+        LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
         SteerSocket.INSTANCE.removeAll(steerComponent);
+        SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
         MiscSocket.INSTANCE.removeAll(miscComponent);
         System.out.println("removed listeners and providers");
       }
@@ -74,5 +78,9 @@ public class AutoboxTestingModule extends AbstractModule {
     jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
+  }
+
+  public static void main(String[] args) throws Exception {
+    new AutoboxTestingModule().first();
   }
 }

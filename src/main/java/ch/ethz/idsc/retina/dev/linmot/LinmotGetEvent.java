@@ -94,8 +94,12 @@ public class LinmotGetEvent extends DataEvent {
     return demand_position - actual_position;
   }
 
+  // bits set for guaranteed operation:
+  // bit 0, 1, 2, 4, 5, 11
+  private static final int OPERATIONAL_MASK = 1 + 2 + 4 + 16 + 32 + 2048;
+
   public boolean isOperational() {
-    // FIXME NRJ check for the word and variable for operation mode
-    return false;
+    // TODO NRJ this check is too strict
+    return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
   }
 }

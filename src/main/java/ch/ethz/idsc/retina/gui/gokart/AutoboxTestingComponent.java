@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ abstract class AutoboxTestingComponent<GE, PE> implements GetListener<GE>, PutLi
   // ---
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
+  public static final int HEIGHT_CBOX = 15;
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
   private final RowPanel rowTitle = new RowPanel();
@@ -88,6 +90,15 @@ abstract class AutoboxTestingComponent<GE, PE> implements GetListener<GE>, PutLi
     jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, HEIGHT));
     jToolBar1.add(jLabel);
     addPair(jToolBar1, jTextField);
+    return jTextField;
+  }
+
+  public JCheckBox createReadingCheckbox(String title) {
+    JCheckBox jTextField = new JCheckBox(title);
+    jTextField.setEnabled(false);
+    JLabel jLabel = new JLabel(" ");
+    jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, HEIGHT_CBOX));
+    addPair(jLabel, jTextField, HEIGHT_CBOX);
     return jTextField;
   }
 

@@ -14,8 +14,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -33,8 +31,6 @@ public class GokartRender implements RenderInterface {
   private LinmotGetEvent linmotGetEvent;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   // ---
-  private SteerGetEvent steerGetEvent;
-  public final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
@@ -64,9 +60,9 @@ public class GokartRender implements RenderInterface {
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
     if (Objects.nonNull(gokartStatusEvent)) {
-      double angle = gokartStatusEvent.steeringAngle;
-      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
-      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(+48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
+      Scalar angle = gokartStatusEvent.getSteeringAngle();
+      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), angle);
+      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(+48.0 / 118.0), angle);
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GRAY);
       graphics.draw(geometricLayer.toVector( //

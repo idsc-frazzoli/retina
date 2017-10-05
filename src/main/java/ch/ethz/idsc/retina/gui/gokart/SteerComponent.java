@@ -14,7 +14,6 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -29,7 +28,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public static final int RESOLUTION = 1000;
   public static final double MAX_TORQUE = 0.5;
   // ---
-  private final JButton calibrate = new JButton("calibrate");
+  public final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final JTextField kpConst = new JTextField();
   private final JTextField kdConst = new JTextField();
@@ -46,13 +45,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public SteerComponent() {
     { // calibration and controller
       JToolBar jToolBar = createRow("command");
-      jToolBar.add(calibrate);
-      calibrate.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          SteerCalibrationProvider.INSTANCE.schedule();
-        }
-      });
+      jToolBar.add(steerInitButton.getComponent());
       // ---
       jToolBar.add(jToggleController);
     }
@@ -158,7 +151,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void putEvent(SteerPutEvent putEvent) {
-    calibrate.setEnabled(SteerCalibrationProvider.INSTANCE.isIdle());
     torquePut.setText("" + putEvent.getTorque());
   }
 

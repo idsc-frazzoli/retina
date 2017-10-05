@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class GokartStatusEvent extends DataEvent {
-  public final float steeringAngle;
+  private final float steeringAngle;
 
   public GokartStatusEvent(float steeringAngle) {
     this.steeringAngle = steeringAngle;
@@ -28,6 +28,11 @@ public class GokartStatusEvent extends DataEvent {
     return 4;
   }
 
+  public boolean isSteeringCalibrated() {
+    return !Float.isNaN(steeringAngle);
+  }
+
+  /** @return NaN if steering is not calibrated */
   public Scalar getSteeringAngle() {
     return RealScalar.of(steeringAngle);
   }
