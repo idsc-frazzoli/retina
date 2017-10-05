@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class GokartStatusEvent extends DataEvent {
-  public final float steeringAngle;
+  private final float steeringAngle;
 
   public GokartStatusEvent(float steeringAngle) {
     this.steeringAngle = steeringAngle;
