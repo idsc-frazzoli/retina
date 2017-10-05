@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -41,6 +42,7 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   private final JTextField jTextFieldDemandPosition;
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
+  private final JCheckBox[] jCheckBoxStatusWord = new JCheckBox[16];
 
   public LinmotComponent() {
     {
@@ -105,6 +107,10 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     addSeparator();
     {
       jTextFieldStatusWord = createReading("status word");
+      // ---
+      for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index)
+        jCheckBoxStatusWord[index] = createReadingCheckbox(LinmotStatusWord.TITLES[index]);
+      // ---
       jTextFieldStateVariable = createReading("state variable");
       jTextFieldActualPosition = createReading("actual pos.");
       jTextFieldDemandPosition = createReading("demand pos.");
@@ -116,6 +122,10 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
+    for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index) {
+      boolean selected = (linmotGetEvent.status_word & (1 << index)) != 0;
+      jCheckBoxStatusWord[index].setSelected(selected);
+    }
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);

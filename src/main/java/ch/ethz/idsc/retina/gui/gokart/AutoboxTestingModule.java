@@ -26,7 +26,7 @@ public class AutoboxTestingModule extends AbstractModule {
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
-  private final JFrame jFrame = new JFrame();
+  private final JFrame jFrame = new JFrame("Monitor and Testing");
 
   @Override
   protected void first() throws Exception {
@@ -42,10 +42,10 @@ public class AutoboxTestingModule extends AbstractModule {
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
     // ---
-    jTabbedPane.setSelectedIndex(0);
+    jTabbedPane.setSelectedIndex(1);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(100, 80, 500, 700);
+    jFrame.setBounds(300, 80, 500, 800);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
@@ -74,5 +74,9 @@ public class AutoboxTestingModule extends AbstractModule {
     jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
     JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, jScrollPane);
+  }
+
+  public static void main(String[] args) throws Exception {
+    new AutoboxTestingModule().first();
   }
 }
