@@ -94,13 +94,12 @@ public class LinmotGetEvent extends DataEvent {
     return demand_position - actual_position;
   }
 
-  private static final int ENABLE_OPERATION = 2;
-  private static final int HOMED = 11;
+  // bits set for guaranteed operation:
+  // bit 0, 1, 2, 4, 5, 11
+  private static final int OPERATIONAL_MASK = 1 + 2 + 4 + 16 + 32 + 2048;
 
-  // TODO NRJ test & confirm
   public boolean isOperational() {
-    boolean en_op = (status_word & (1 << ENABLE_OPERATION)) != 0;
-    boolean homed = (status_word & (1 << HOMED)) != 0;
-    return en_op && homed;
+    // TODO NRJ this check is too strict
+    return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
   }
 }

@@ -25,7 +25,7 @@ abstract class AutoboxTestingComponent<GE, PE> implements GetListener<GE>, PutLi
   // ---
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
-  public static final int HEIGHT_CBOX = 16;
+  public static final int HEIGHT_CBOX = 15;
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
   private final RowPanel rowTitle = new RowPanel();

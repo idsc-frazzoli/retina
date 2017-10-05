@@ -13,7 +13,7 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
   protected AutoboxCalibrationProvider() {
   }
 
-  private final void removeOld() {
+  private synchronized void removeOld() {
     TimedPutEvent<PE> timedPutEvent = queue.peek();
     while (Objects.nonNull(timedPutEvent)) {
       if (timedPutEvent.time_ms < System.currentTimeMillis()) {
@@ -30,8 +30,8 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
     return queue.isEmpty();
   }
 
-  protected final void doUntil(long time, PE putEvent) {
-    queue.add(new TimedPutEvent<>(time, putEvent));
+  protected synchronized final void doUntil(long time_ms, PE putEvent) {
+    queue.add(new TimedPutEvent<>(time_ms, putEvent));
   }
 
   @Override
@@ -41,12 +41,11 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
 
   @Override
   public final Optional<PE> putEvent() {
-    removeOld();
+    removeOld(); // <- mandatory
     // ---
     TimedPutEvent<PE> timedPutEvent = queue.peek();
     if (Objects.nonNull(timedPutEvent))
-      if (System.currentTimeMillis() < timedPutEvent.time_ms)
-        return Optional.of(timedPutEvent.putEvent);
+      return Optional.of(timedPutEvent.putEvent);
     return Optional.empty();
   }
 }
