@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
@@ -31,7 +31,7 @@ public abstract class JoystickAbstractModule extends AbstractModule {
   @Override
   protected final void first() throws Exception {
     final HmiAbstractJoystick joystickInstance = createJoystick();
-    GenericXboxPadLcmClient.INSTANCE.addListener(joystickInstance);
+    JoystickLcmClient.INSTANCE.addListener(joystickInstance);
     // ---
     RimoSocket.INSTANCE.addPutProvider(joystickInstance.getRimoPutProvider());
     LinmotSocket.INSTANCE.addPutProvider(joystickInstance.linmotPutProvider);
@@ -75,7 +75,7 @@ public abstract class JoystickAbstractModule extends AbstractModule {
         MiscSocket.INSTANCE.removePutProvider(joystickInstance.miscPutProvider);
         // ---
         System.out.println("removed listeners and providers");
-        GenericXboxPadLcmClient.INSTANCE.removeListener(joystickInstance);
+        JoystickLcmClient.INSTANCE.removeListener(joystickInstance);
       }
     });
     jFrame.setVisible(true);

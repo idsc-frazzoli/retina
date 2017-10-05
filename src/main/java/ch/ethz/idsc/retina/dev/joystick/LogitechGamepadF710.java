@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-public final class LogitechGamepadF710 extends JoystickEvent {
+public final class LogitechGamepadF710 extends JoystickEvent implements GokartJoystickInterface {
   @Override
   public JoystickType type() {
     return JoystickType.LOGITECH_GAMEPAD_F710;
@@ -31,10 +31,12 @@ public final class LogitechGamepadF710 extends JoystickEvent {
     return isButtonPressed(5);
   }
 
+  @Override
   public boolean isButtonPressedBack() {
     return isButtonPressed(6);
   }
 
+  @Override
   public boolean isButtonPressedStart() {
     return isButtonPressed(7);
   }
@@ -47,30 +49,22 @@ public final class LogitechGamepadF710 extends JoystickEvent {
     return isButtonPressed(10);
   }
 
-  /** value is 1.0 if left knob is held to the far right value is -1.0 if left knob
-   * is held to the far left
-   * 
-   * @return values in the unit interval [0, 1] */
+  @Override
   public double getLeftKnobDirectionRight() {
     return getAxisValue(0);
   }
 
-  /** value is 1.0 if left knob is pulled towards user value is -1.0 if left knob
-   * is pushed away from user
-   * 
-   * @return values in the unit interval [0, 1] */
+  @Override
   public double getLeftKnobDirectionDown() {
     return getAxisValue(1);
   }
 
-  /** value is 1.0 if left knob is pushed away from user value is -1.0 if left knob
-   * is pulled towards user
-   * 
-   * @return values in the unit interval [0, 1] */
+  @Override
   public double getLeftKnobDirectionUp() {
     return -getLeftKnobDirectionDown();
   }
 
+  @Override
   public double getRightKnobDirectionRight() {
     return getAxisValue(3);
   }
@@ -83,19 +77,13 @@ public final class LogitechGamepadF710 extends JoystickEvent {
     return -getRightKnobDirectionDown();
   }
 
-  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
-   * the way
-   * 
-   * @return value in the unit interval [0,1] */
+  @Override
   public double getLeftSliderUnitValue() {
     double axis = getAxisValue(2);
     return (axis + 1) * 0.5;
   }
 
-  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
-   * the way
-   * 
-   * @return value in the unit interval [0,1] */
+  @Override
   public double getRightSliderUnitValue() {
     double axis = getAxisValue(5);
     return (axis + 1) * 0.5;

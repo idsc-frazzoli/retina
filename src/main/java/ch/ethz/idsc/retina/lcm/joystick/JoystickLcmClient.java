@@ -10,43 +10,41 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 
-public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
-  private final JoystickType joystickType;
+public enum JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
+  INSTANCE;
+  // ---
   private final List<JoystickListener> listeners = new CopyOnWriteArrayList<>();
-
-  public JoystickLcmClient(JoystickType joystickType) {
-    this.joystickType = joystickType;
-  }
 
   public void addListener(JoystickListener joystickListener) {
     listeners.add(joystickListener);
   }
 
   public void removeListener(JoystickListener joystickListener) {
-    listeners.remove(joystickListener);
+    boolean removed = listeners.remove(joystickListener);
+    if (!removed)
+      System.err.println("joystick not found.");
   }
 
   @Override
   public void startSubscriptions() {
-    LCM.getSingleton().subscribe(name(), this);
+    LCM.getSingleton().subscribe(_name(), this);
   }
 
   @Override
   public void stopSubscriptions() {
     if (!listeners.isEmpty())
       System.err.println("warning: listeners still precent, yet unsubscribe");
-    LCM.getSingleton().unsubscribe(name(), this);
+    LCM.getSingleton().unsubscribe(_name(), this);
   }
 
-  private String name() {
-    return "joystick." + joystickType.name().toLowerCase();
+  private String _name() {
+    return "joystick.*";
   }
 
   @Override

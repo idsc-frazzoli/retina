@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
@@ -28,7 +28,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private static final int WATCHDOG_MS = 500; // 500[ms]
   // ---
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
-  GenericXboxPadJoystick _joystick;
+  GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
@@ -40,7 +40,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
 
   @Override
   public final void joystick(JoystickEvent joystickEvent) {
-    _joystick = (GenericXboxPadJoystick) joystickEvent;
+    _joystick = (GokartJoystickInterface) joystickEvent;
     tic_joystick = now();
   }
 
@@ -69,14 +69,14 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
     @Override
     public Optional<MiscPutEvent> putEvent() {
-      if (hasJoystick()) {
-        byte resetValue = (byte) (_joystick.isButtonPressedBlack() ? 1 : 0);
-        MiscPutEvent miscPutEvent = new MiscPutEvent();
-        miscPutEvent.resetRimoL = resetValue;
-        miscPutEvent.resetRimoR = resetValue;
-        // TODO NRJ not final logic
-        return Optional.of(miscPutEvent);
-      }
+      // if (hasJoystick()) {
+      // byte resetValue = (byte) (_joystick.isButtonPressedBlack() ? 1 : 0);
+      // MiscPutEvent miscPutEvent = new MiscPutEvent();
+      // miscPutEvent.resetRimoL = resetValue;
+      // miscPutEvent.resetRimoR = resetValue;
+      // TODO NRJ not final logic
+      // return Optional.of(miscPutEvent);
+      // }
       return Optional.empty();
     }
 
