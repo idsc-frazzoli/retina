@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TaskGui;
@@ -22,6 +23,7 @@ enum RunTaskGui {
     modules.add(LoggerModule.class);
     // ---
     modules.add(Hdl32eLcmServerModule.class);
+    modules.add(Vlp16LcmServerModule.class);
     modules.add(Mark8LcmServerModule.class);
     modules.add(Urg04lxLcmServerModule.class);
     // ---
