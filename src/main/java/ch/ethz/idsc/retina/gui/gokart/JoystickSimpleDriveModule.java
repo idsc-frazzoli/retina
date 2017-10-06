@@ -6,4 +6,8 @@ public class JoystickSimpleDriveModule extends JoystickAbstractModule {
   protected HmiAbstractJoystick createJoystick() {
     return new HmiSimpleDriveJoystick();
   }
+
+  public static void main(String[] args) throws Exception {
+    new JoystickSimpleDriveModule().first();
+  }
 }

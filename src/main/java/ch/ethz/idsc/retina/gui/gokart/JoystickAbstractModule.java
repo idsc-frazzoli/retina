@@ -1,14 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -28,6 +25,8 @@ public abstract class JoystickAbstractModule extends AbstractModule {
 
   protected abstract HmiAbstractJoystick createJoystick();
 
+  ToolbarsComponent toolbarsComponent = new ToolbarsComponent();
+
   @Override
   protected final void first() throws Exception {
     final HmiAbstractJoystick joystickInstance = createJoystick();
@@ -42,25 +41,26 @@ public abstract class JoystickAbstractModule extends AbstractModule {
     SteerSocket.INSTANCE.addPutListener(steerInitButton);
     MiscSocket.INSTANCE.addPutProvider(joystickInstance.miscPutProvider);
     // ---
-    JPanel jPanel = new JPanel(new BorderLayout());
     {
-      JToolBar jToolBar = new JToolBar();
-      jToolBar.setFloatable(false);
-      jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
-      {
-        SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-        spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
-        spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
-        spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
-        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
-      }
+      JToolBar jToolBar = toolbarsComponent.createRow("linmot");
       jToolBar.add(linmotInitButton.getComponent());
+    }
+    {
+      JToolBar jToolBar = toolbarsComponent.createRow("steer");
       jToolBar.add(steerInitButton.getComponent());
-      jPanel.add(jToolBar, BorderLayout.NORTH);
+    }
+    toolbarsComponent.addSeparator();
+    {
+      JToolBar jToolBar = toolbarsComponent.createRow("max speed");
+      SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
+      spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
+      spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
+      spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
+      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
     }
     // ---
-    jFrame.setContentPane(jPanel);
-    jFrame.setBounds(200, 200, 380, 70);
+    jFrame.setContentPane(toolbarsComponent.getScrollPane());
+    jFrame.setBounds(200, 200, 320, 270);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
