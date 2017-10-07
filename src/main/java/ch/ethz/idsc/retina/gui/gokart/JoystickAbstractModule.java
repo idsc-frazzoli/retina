@@ -1,66 +1,87 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.lcm.joystick.GenericXboxPadLcmClient;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
-public abstract class JoystickAbstractModule extends AbstractModule {
+public abstract class JoystickAbstractModule extends AbstractClockedModule {
   private final JFrame jFrame = new JFrame(getClass().getSimpleName());
   public final LinmotInitButton linmotInitButton = new LinmotInitButton();
   public final SteerInitButton steerInitButton = new SteerInitButton();
+  private HmiAbstractJoystick joystickInstance;
+  private ToolbarsComponent toolbarsComponent = new ToolbarsComponent();
+  private JTextField jTextFieldJoystickLast;
+  private JTextField jTextFieldVoltage;
+  private final MiscGetListener miscGetListener = new MiscGetListener() {
+    @Override
+    public void getEvent(MiscGetEvent miscGetEvent) {
+      jTextFieldVoltage.setText("" + miscGetEvent.getSteerBatteryVoltage());
+    }
+  };
 
   protected abstract HmiAbstractJoystick createJoystick();
 
   @Override
   protected final void first() throws Exception {
-    final HmiAbstractJoystick joystickInstance = createJoystick();
-    GenericXboxPadLcmClient.INSTANCE.addListener(joystickInstance);
+    joystickInstance = createJoystick();
+    JoystickLcmClient joystickLcmClient = JoystickLcmClient.any();
+    joystickLcmClient.addListener(joystickInstance);
+    // ---
+    {
+      JToolBar jToolBar = toolbarsComponent.createRow("Linmot brake");
+      jToolBar.add(linmotInitButton.getComponent());
+    }
+    {
+      JToolBar jToolBar = toolbarsComponent.createRow("Steer");
+      jToolBar.add(steerInitButton.getComponent());
+    }
+    {
+      jTextFieldVoltage = toolbarsComponent.createReading("Steer voltage");
+    }
+    toolbarsComponent.addSeparator();
+    {
+      jTextFieldJoystickLast = toolbarsComponent.createReading("Joystick");
+    }
+    {
+      JToolBar jToolBar = toolbarsComponent.createRow("max speed");
+      SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
+      spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
+      spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
+      spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
+      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
+    }
+    // ---
+    joystickLcmClient.startSubscriptions();
     // ---
     RimoSocket.INSTANCE.addPutProvider(joystickInstance.getRimoPutProvider());
     LinmotSocket.INSTANCE.addPutProvider(joystickInstance.linmotPutProvider);
     LinmotSocket.INSTANCE.addPutListener(joystickInstance.linmotPutListener);
     LinmotSocket.INSTANCE.addGetListener(joystickInstance.linmotGetListener);
-    LinmotSocket.INSTANCE.addPutListener(linmotInitButton);
+    LinmotSocket.INSTANCE.addAll(linmotInitButton);
     SteerSocket.INSTANCE.addPutProvider(joystickInstance.steerPutProvider);
-    SteerSocket.INSTANCE.addPutListener(steerInitButton);
-    MiscSocket.INSTANCE.addPutProvider(joystickInstance.miscPutProvider);
+    SteerSocket.INSTANCE.addAll(steerInitButton);
+    MiscSocket.INSTANCE.addGetListener(miscGetListener);
     // ---
-    JPanel jPanel = new JPanel(new BorderLayout());
-    {
-      JToolBar jToolBar = new JToolBar();
-      jToolBar.setFloatable(false);
-      jToolBar.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
-      {
-        SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-        spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
-        spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
-        spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
-        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
-      }
-      jToolBar.add(linmotInitButton.getComponent());
-      jToolBar.add(steerInitButton.getComponent());
-      jPanel.add(jToolBar, BorderLayout.NORTH);
-    }
-    // ---
-    jFrame.setContentPane(jPanel);
-    jFrame.setBounds(200, 200, 380, 70);
+    jFrame.setContentPane(toolbarsComponent.getScrollPane());
+    jFrame.setBounds(200, 200, 380, 270);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
@@ -69,13 +90,14 @@ public abstract class JoystickAbstractModule extends AbstractModule {
         LinmotSocket.INSTANCE.removePutProvider(joystickInstance.linmotPutProvider);
         LinmotSocket.INSTANCE.removePutListener(joystickInstance.linmotPutListener);
         LinmotSocket.INSTANCE.removeGetListener(joystickInstance.linmotGetListener);
-        LinmotSocket.INSTANCE.removePutListener(linmotInitButton);
+        LinmotSocket.INSTANCE.removeAll(linmotInitButton);
         SteerSocket.INSTANCE.removePutProvider(joystickInstance.steerPutProvider);
-        SteerSocket.INSTANCE.removePutListener(steerInitButton);
-        MiscSocket.INSTANCE.removePutProvider(joystickInstance.miscPutProvider);
+        SteerSocket.INSTANCE.removeAll(steerInitButton);
+        MiscSocket.INSTANCE.removeGetListener(miscGetListener);
         // ---
         System.out.println("removed listeners and providers");
-        GenericXboxPadLcmClient.INSTANCE.removeListener(joystickInstance);
+        joystickLcmClient.stopSubscriptions();
+        joystickLcmClient.removeListener(joystickInstance);
       }
     });
     jFrame.setVisible(true);
@@ -85,5 +107,17 @@ public abstract class JoystickAbstractModule extends AbstractModule {
   protected final void last() {
     jFrame.setVisible(false);
     jFrame.dispose();
+  }
+
+  @Override
+  protected void runAlgo() {
+    boolean hasJoystick = joystickInstance.hasJoystick();
+    jTextFieldJoystickLast.setText("" + hasJoystick);
+    jTextFieldJoystickLast.setBackground(hasJoystick ? Color.GREEN : Color.RED);
+  }
+
+  @Override
+  protected double getPeriod() {
+    return 0.05;
   }
 }

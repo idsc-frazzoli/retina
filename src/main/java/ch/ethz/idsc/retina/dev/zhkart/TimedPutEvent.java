@@ -11,7 +11,7 @@ public class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
   }
 
   @Override
-  public int compareTo(TimedPutEvent<T> arg0) {
-    return Long.compare(time_ms, arg0.time_ms);
+  public int compareTo(TimedPutEvent<T> timedPutEvent) {
+    return Long.compare(time_ms, timedPutEvent.time_ms);
   }
 }

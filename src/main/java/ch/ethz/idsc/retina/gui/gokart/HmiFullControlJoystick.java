@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
@@ -21,7 +21,7 @@ public class HmiFullControlJoystick extends HmiAbstractJoystick {
     @Override
     public Optional<RimoPutEvent> putEvent() {
       if (hasJoystick()) {
-        GenericXboxPadJoystick joystick = _joystick;
+        GokartJoystickInterface joystick = _joystick;
         if (joystick.isButtonPressedBack())
           sign = -1;
         if (joystick.isButtonPressedStart())

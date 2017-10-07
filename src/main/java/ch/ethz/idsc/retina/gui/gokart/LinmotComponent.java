@@ -48,13 +48,13 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutHelper.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutHelper.CMD_OFF_MODE);
+      spinnerLabelCtrl.setValueSafe(LinmotPutHelper.CMD_OPERATION);
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
       spinnerLabelHdr.setList(LinmotPutHelper.HEADER);
-      spinnerLabelHdr.setValueSafe(LinmotPutHelper.MC_ZEROS);
+      spinnerLabelHdr.setValueSafe(LinmotPutHelper.MC_POSITION);
       spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos

@@ -39,8 +39,8 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
           list.add("width=" + lidarPanoramaRef.getWidth());
           BufferedImage bufferedImage = lidarPanoramaRef.distances();
           final int width = bufferedImage.getWidth();
-          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, jFrame);
-          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, jFrame);
+          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, null);
+          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, null);
         }
       }
       {

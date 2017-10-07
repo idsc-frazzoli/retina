@@ -48,7 +48,8 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         }
     }
   };
-  private final Set<PutProvider<PE>> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private final Set<PutProvider<PE>> providers = //
+      new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private Timer timer;
 
   protected AutoboxSocket(DatagramSocketManager datagramSocketManager) {
@@ -76,7 +77,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
               exception.printStackTrace();
             }
         }
-        System.err.println("no command provided");
+        System.err.println("no command provided in " + getClass().getSimpleName());
       }
     }, 70, getPeriod());
   }

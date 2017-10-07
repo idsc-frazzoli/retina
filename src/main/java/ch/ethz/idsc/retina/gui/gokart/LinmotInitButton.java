@@ -1,15 +1,21 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.util.Objects;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 
-public class LinmotInitButton implements LinmotPutListener {
-  private final JButton jButton = new JButton("Linmot Init.");
+/** gui element to initiate calibration procedure of linmot break */
+public class LinmotInitButton implements LinmotPutListener, LinmotGetListener {
+  private final JButton jButton = new JButton("Init");
+  private LinmotGetEvent _getEvent;
 
   public LinmotInitButton() {
     jButton.setEnabled(false);
@@ -18,7 +24,17 @@ public class LinmotInitButton implements LinmotPutListener {
 
   @Override
   public void putEvent(LinmotPutEvent putEvent) {
-    jButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    jButton.setEnabled(isEnabled());
+  }
+
+  @Override
+  public void getEvent(LinmotGetEvent getEvent) {
+    _getEvent = getEvent;
+  }
+
+  private boolean isEnabled() {
+    boolean nonOperational = Objects.isNull(_getEvent) || !_getEvent.isOperational();
+    return LinmotCalibrationProvider.INSTANCE.isIdle() && nonOperational;
   }
 
   public JComponent getComponent() {

@@ -17,7 +17,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
 
-  /** Initialisation for user implementation.
+  /** Initialization for user implementation.
    * Runs before runEventModule() is ever called. */
   @Override
   protected abstract void first() throws Exception;

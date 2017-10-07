@@ -33,6 +33,11 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
+      TrigonometryRender trigonometryRender = new TrigonometryRender();
+      gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
+    }
+    {
       PathRender pathRender = new PathRender();
       gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(pathRender);

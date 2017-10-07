@@ -11,14 +11,14 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
 
   public void schedule() {
     long timestamp = System.currentTimeMillis();
-    doUntil(timestamp += 200, new LinmotPutEvent( //
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
         LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
-    doUntil(timestamp += 200, LinmotPutHelper.OFF_MODE_EVENT);
-    doUntil(timestamp += 4000, new LinmotPutEvent( //
+    eventUntil(timestamp += 200, LinmotPutHelper.OFF_MODE_EVENT);
+    eventUntil(timestamp += 4000, new LinmotPutEvent( //
         LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
-    doUntil(timestamp += 200, new LinmotPutEvent( //
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
-    doUntil(timestamp += 200, new LinmotPutEvent( //
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
   }
 }

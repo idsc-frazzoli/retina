@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-public final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
+public final class LogitechGamepadF710 extends JoystickEvent implements GokartJoystickInterface {
   @Override
   public JoystickType type() {
-    return JoystickType.GENERIC_XBOX_PAD;
+    return JoystickType.LOGITECH_GAMEPAD_F710;
   }
 
   public boolean isButtonPressedA() {
@@ -15,19 +15,19 @@ public final class GenericXboxPadJoystick extends JoystickEvent implements Gokar
     return isButtonPressed(1);
   }
 
-  public boolean isButtonPressedBlack() {
+  public boolean isButtonPressedX() {
     return isButtonPressed(2);
   }
 
-  public boolean isButtonPressedX() {
+  public boolean isButtonPressedY() {
     return isButtonPressed(3);
   }
 
-  public boolean isButtonPressedY() {
+  public boolean isButtonPressedLB() {
     return isButtonPressed(4);
   }
 
-  public boolean isButtonPressedWhite() {
+  public boolean isButtonPressedRB() {
     return isButtonPressed(5);
   }
 
@@ -42,11 +42,11 @@ public final class GenericXboxPadJoystick extends JoystickEvent implements Gokar
   }
 
   public boolean isButtonPressedLeftKnob() {
-    return isButtonPressed(8);
+    return isButtonPressed(9);
   }
 
   public boolean isButtonPressedRightKnob() {
-    return isButtonPressed(9);
+    return isButtonPressed(10);
   }
 
   @Override

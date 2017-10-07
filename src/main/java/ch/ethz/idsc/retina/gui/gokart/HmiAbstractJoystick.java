@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GenericXboxPadJoystick;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
@@ -13,8 +13,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
@@ -28,7 +26,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private static final int WATCHDOG_MS = 500; // 500[ms]
   // ---
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
-  GenericXboxPadJoystick _joystick;
+  GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
@@ -40,8 +38,9 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
 
   @Override
   public final void joystick(JoystickEvent joystickEvent) {
-    _joystick = (GenericXboxPadJoystick) joystickEvent;
+    _joystick = (GokartJoystickInterface) joystickEvent;
     tic_joystick = now();
+    // System.out.println("joystick recv");
   }
 
   /** steering */
@@ -56,26 +55,6 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
           final double torqueCmd = positionController.iterate(desPos - currAngle);
           return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd));
         }
-      }
-      return Optional.empty();
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
-    }
-  };
-  /** reset Misc **/
-  public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
-    @Override
-    public Optional<MiscPutEvent> putEvent() {
-      if (hasJoystick()) {
-        byte resetValue = (byte) (_joystick.isButtonPressedBlack() ? 1 : 0);
-        MiscPutEvent miscPutEvent = new MiscPutEvent();
-        miscPutEvent.resetRimoL = resetValue;
-        miscPutEvent.resetRimoR = resetValue;
-        // TODO NRJ not final logic
-        return Optional.of(miscPutEvent);
       }
       return Optional.empty();
     }

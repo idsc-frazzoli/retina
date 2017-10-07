@@ -1,15 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -34,7 +31,7 @@ public class AutoboxTestingModule extends AbstractModule {
     addTab(rimoComponent);
     // ---
     LinmotSocket.INSTANCE.addAll(linmotComponent);
-    LinmotSocket.INSTANCE.addPutListener(linmotComponent.linmotInitButton);
+    LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
     SteerSocket.INSTANCE.addAll(steerComponent);
@@ -54,7 +51,7 @@ public class AutoboxTestingModule extends AbstractModule {
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeAll(rimoComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent);
-        LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
+        LinmotSocket.INSTANCE.removeAll(linmotComponent.linmotInitButton);
         SteerSocket.INSTANCE.removeAll(steerComponent);
         SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
         MiscSocket.INSTANCE.removeAll(miscComponent);
@@ -74,10 +71,10 @@ public class AutoboxTestingModule extends AbstractModule {
     list.add(autoboxTestingComponent);
     String string = autoboxTestingComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);
-    JPanel jPanel = new JPanel(new BorderLayout());
-    jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
-    JScrollPane jScrollPane = new JScrollPane(jPanel);
-    jTabbedPane.addTab(string, jScrollPane);
+    // JPanel jPanel = new JPanel(new BorderLayout());
+    // jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
+    // JScrollPane jScrollPane = new JScrollPane(jPanel);
+    jTabbedPane.addTab(string, autoboxTestingComponent.getScrollPane());
   }
 
   public static void main(String[] args) throws Exception {
