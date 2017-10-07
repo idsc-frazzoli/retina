@@ -26,9 +26,13 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 class PathRender implements RenderInterface {
   /** center of rear axle */
+  // TODO redundant
   private static final StateTime CENTER = //
-      new StateTime(Tensors.vector(-0.4, 0, 0), RealScalar.ZERO);
+      new StateTime(Tensors.vector(-0.47, 0, 0), RealScalar.ZERO);
   private static final double HALF_WIDTH = 0.7;
+  /** axle distance */
+  // TODO redundant
+  private static final double AXD = 1.2;
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
@@ -44,15 +48,16 @@ class PathRender implements RenderInterface {
       final Tensor p2;
       if (Sign.isPositive(angle)) {
         p1 = Tensors.vector(0.0, +HALF_WIDTH, 1);
-        p2 = Tensors.vector(1.2, -HALF_WIDTH, 1);
+        p2 = Tensors.vector(AXD, -HALF_WIDTH, 1);
       } else {
-        p1 = Tensors.vector(1.2, +HALF_WIDTH, 1);
+        p1 = Tensors.vector(AXD, +HALF_WIDTH, 1);
         p2 = Tensors.vector(0.0, -HALF_WIDTH, 1);
       }
       {
         final Flow flow_forward = StateSpaceModels.createFlow( //
             Se2StateSpaceModel.INSTANCE, Tensors.of(angle, RealScalar.ONE));
-        final Tensor center_forward = Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
+        final Tensor center_forward = //
+            Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
@@ -67,7 +72,8 @@ class PathRender implements RenderInterface {
       {
         final Flow flow_reverse = StateSpaceModels.createFlow( //
             Se2StateSpaceModel.INSTANCE, Tensors.of(angle, RealScalar.ONE.negate()));
-        final Tensor center_reverse = Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
+        final Tensor center_reverse = //
+            Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {
