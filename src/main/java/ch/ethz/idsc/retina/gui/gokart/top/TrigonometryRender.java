@@ -21,6 +21,9 @@ import ch.ethz.idsc.tensor.Tensors;
 public class TrigonometryRender implements RenderInterface {
   // TODO redundant
   public static final Scalar LR = DoubleScalar.of(-0.47); // rear axle distance from COG [m]
+  /** axle distance */
+  // TODO redundant
+  private static final Scalar AXD = RealScalar.of(1.2);
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
@@ -28,7 +31,7 @@ public class TrigonometryRender implements RenderInterface {
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
-      Optional<Scalar> optional = TurningGeometry.offset_y(RealScalar.of(1.2), gokartStatusEvent.getSteeringAngle());
+      Optional<Scalar> optional = TurningGeometry.offset_y(AXD, gokartStatusEvent.getSteeringAngle());
       if (optional.isPresent()) {
         Scalar offset_y = optional.get();
         Tensor center = Tensors.of(LR, offset_y);
