@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 public enum JoystickLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    JoystickLcmClient joystickLcmClient = JoystickLcmClient.INSTANCE;
+    JoystickLcmClient joystickLcmClient = JoystickLcmClient.any();
     joystickLcmClient.addListener(joystickEvent -> {
       System.out.println(joystickEvent.toInfoString());
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
