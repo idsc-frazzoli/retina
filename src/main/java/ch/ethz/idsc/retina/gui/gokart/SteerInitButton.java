@@ -9,8 +9,9 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutListener;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 
+/** gui element to initiate calibration procedure of steering wheel */
 public class SteerInitButton implements SteerPutListener {
-  private final JButton jButton = new JButton("Steer Calib.");
+  private final JButton jButton = new JButton("Calibration");
 
   public SteerInitButton() {
     jButton.setEnabled(false);
@@ -23,8 +24,8 @@ public class SteerInitButton implements SteerPutListener {
   }
 
   private boolean isEnabled() {
-    return SteerCalibrationProvider.INSTANCE.isIdle() //
-        && !SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    return SteerCalibrationProvider.INSTANCE.isIdle() && nonCalibrated;
   }
 
   public JComponent getComponent() {

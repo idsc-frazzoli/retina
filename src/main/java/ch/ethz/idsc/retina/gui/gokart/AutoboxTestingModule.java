@@ -31,8 +31,7 @@ public class AutoboxTestingModule extends AbstractModule {
     addTab(rimoComponent);
     // ---
     LinmotSocket.INSTANCE.addAll(linmotComponent);
-    LinmotSocket.INSTANCE.addPutListener(linmotComponent.linmotInitButton);
-    LinmotSocket.INSTANCE.addGetListener(linmotComponent.linmotInitButton);
+    LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
     SteerSocket.INSTANCE.addAll(steerComponent);
@@ -52,8 +51,7 @@ public class AutoboxTestingModule extends AbstractModule {
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeAll(rimoComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent);
-        LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
-        LinmotSocket.INSTANCE.removeGetListener(linmotComponent.linmotInitButton);
+        LinmotSocket.INSTANCE.removeAll(linmotComponent.linmotInitButton);
         SteerSocket.INSTANCE.removeAll(steerComponent);
         SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
         MiscSocket.INSTANCE.removeAll(miscComponent);

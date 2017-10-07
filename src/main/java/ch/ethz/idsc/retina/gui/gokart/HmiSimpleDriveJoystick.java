@@ -53,6 +53,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
       Scalar push = RealScalar.ZERO;
       if (hasJoystick())
         push = RealScalar.of(_joystick.getLeftKnobDirectionUp() * getSpeedLimit());
+      // FIXME use increments
       episodeIntegrator.move(Tensors.of(push), now);
       if (hasJoystick()) {
         // GenericXboxPadJoystick joystick = _joystick;

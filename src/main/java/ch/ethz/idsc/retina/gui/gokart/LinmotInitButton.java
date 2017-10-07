@@ -12,8 +12,10 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 
+/** gui element to initiate calibration procedure of linmot break */
 public class LinmotInitButton implements LinmotPutListener, LinmotGetListener {
-  private final JButton jButton = new JButton("Linmot Init.");
+  private final JButton jButton = new JButton("Init");
+  private LinmotGetEvent _getEvent;
 
   public LinmotInitButton() {
     jButton.setEnabled(false);
@@ -25,16 +27,14 @@ public class LinmotInitButton implements LinmotPutListener, LinmotGetListener {
     jButton.setEnabled(isEnabled());
   }
 
-  LinmotGetEvent _getEvent;
-
   @Override
   public void getEvent(LinmotGetEvent getEvent) {
     _getEvent = getEvent;
   }
 
   private boolean isEnabled() {
-    return LinmotCalibrationProvider.INSTANCE.isIdle() //
-        && (Objects.isNull(_getEvent) || !_getEvent.isOperational());
+    boolean nonOperational = Objects.isNull(_getEvent) || !_getEvent.isOperational();
+    return LinmotCalibrationProvider.INSTANCE.isIdle() && nonOperational;
   }
 
   public JComponent getComponent() {

@@ -13,8 +13,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
@@ -42,6 +40,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   public final void joystick(JoystickEvent joystickEvent) {
     _joystick = (GokartJoystickInterface) joystickEvent;
     tic_joystick = now();
+    // System.out.println("joystick recv");
   }
 
   /** steering */
@@ -57,26 +56,6 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
           return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd));
         }
       }
-      return Optional.empty();
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.MANUAL;
-    }
-  };
-  /** reset Misc **/
-  public final MiscPutProvider miscPutProvider = new MiscPutProvider() {
-    @Override
-    public Optional<MiscPutEvent> putEvent() {
-      // if (hasJoystick()) {
-      // byte resetValue = (byte) (_joystick.isButtonPressedBlack() ? 1 : 0);
-      // MiscPutEvent miscPutEvent = new MiscPutEvent();
-      // miscPutEvent.resetRimoL = resetValue;
-      // miscPutEvent.resetRimoR = resetValue;
-      // TODO NRJ not final logic
-      // return Optional.of(miscPutEvent);
-      // }
       return Optional.empty();
     }
 

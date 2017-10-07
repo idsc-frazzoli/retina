@@ -12,10 +12,12 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
   public void schedule() {
     long timestamp = System.currentTimeMillis();
     // TODO this torque is magic constant, change it
-    doUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, 0.1));
-    doUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, 0.2));
-    doUntil(timestamp += 2000, new SteerPutEvent(SteerPutEvent.CMD_ON, -0.1));
-    doUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, -0.2));
-    doUntil(timestamp += 500, new SteerPutEvent(SteerPutEvent.CMD_ON, 0.1));
+    final double full = 0.2;
+    final double half = full * 0.5;
+    eventUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, half));
+    eventUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, full));
+    eventUntil(timestamp += 2000, new SteerPutEvent(SteerPutEvent.CMD_ON, -half));
+    eventUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, -full));
+    eventUntil(timestamp += 500, new SteerPutEvent(SteerPutEvent.CMD_ON, half));
   }
 }
