@@ -4,6 +4,8 @@ package ch.ethz.idsc.retina.dev.steer;
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 
 public final class SteerAngleTracker implements SteerGetListener {
+  /** value found by experimentation */
+  public static final double MAX_ANGLE = 0.6743167638778687;
   /** values found by experimentation */
   private static final double SOFT = 1.357;
   private static final double HARD = 1.405;
@@ -23,6 +25,7 @@ public final class SteerAngleTracker implements SteerGetListener {
 
   /** @return value centered around 0
    * zero means driving straight */
+  // TODO NRJ document sign means left/right
   public double getSteeringValue() {
     if (!isCalibrated())
       throw new RuntimeException();
