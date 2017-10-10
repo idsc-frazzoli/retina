@@ -1,3 +1,4 @@
+// code by edo
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.nio.ByteBuffer;
@@ -8,6 +9,8 @@ import lcm.lcm.LCM;
 
 public enum ControllerInfoPublish {
   ;
+  public static final String CHANNEL = "myChannel";
+
   public static void publish(double desPos, double currAngle) {
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data = new byte[16];
@@ -16,6 +19,6 @@ public enum ControllerInfoPublish {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putDouble(desPos);
     byteBuffer.putDouble(currAngle);
-    LCM.getSingleton().publish("myChannel", binaryBlob);
+    LCM.getSingleton().publish(CHANNEL, binaryBlob);
   }
 }
