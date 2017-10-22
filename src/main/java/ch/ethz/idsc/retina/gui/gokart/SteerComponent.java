@@ -14,6 +14,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
+import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -158,7 +159,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public Optional<SteerPutEvent> putEvent() {
     if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
       final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue();
-      double desPos = -sliderExtTorque.jSlider.getValue() * SteerPutEvent.MAX_ANGLE / RESOLUTION;
+      double desPos = -sliderExtTorque.jSlider.getValue() * SteerAngleTracker.MAX_ANGLE / RESOLUTION;
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
       final double torqueCmd = positionController.iterate(errPos);

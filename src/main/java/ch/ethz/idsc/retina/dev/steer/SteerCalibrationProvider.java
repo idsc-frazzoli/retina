@@ -6,11 +6,13 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
 public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPutEvent> {
   public static final SteerCalibrationProvider INSTANCE = new SteerCalibrationProvider();
 
+  // ---
   private SteerCalibrationProvider() {
   }
 
-  public void schedule() {
-    long timestamp = System.currentTimeMillis();
+  @Override
+  protected void protected_schedule() {
+    long timestamp = now();
     // TODO this torque is magic constant, change it
     final double full = 0.2;
     final double half = full * 0.5;

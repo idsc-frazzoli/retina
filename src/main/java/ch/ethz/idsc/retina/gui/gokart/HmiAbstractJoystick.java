@@ -23,7 +23,7 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
 public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
-  private static final int WATCHDOG_MS = 500; // 500[ms]
+  private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
   GokartJoystickInterface _joystick;
@@ -51,7 +51,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
         final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
         if (steerAngleTracker.isCalibrated()) {
           final double currAngle = steerAngleTracker.getSteeringValue();
-          double desPos = -_joystick.getRightKnobDirectionRight() * SteerPutEvent.MAX_ANGLE;
+          double desPos = -_joystick.getRightKnobDirectionRight() * SteerAngleTracker.MAX_ANGLE;
           final double torqueCmd = positionController.iterate(desPos - currAngle);
           return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd));
         }

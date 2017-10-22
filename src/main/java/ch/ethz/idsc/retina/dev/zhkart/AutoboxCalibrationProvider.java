@@ -54,7 +54,16 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
     return Optional.empty();
   }
 
-  private static long now() {
+  public synchronized final void schedule() {
+    if (isIdle())
+      protected_schedule();
+    else
+      new RuntimeException().printStackTrace();
+  }
+
+  protected abstract void protected_schedule();
+
+  protected static long now() {
     return System.currentTimeMillis();
   }
 }

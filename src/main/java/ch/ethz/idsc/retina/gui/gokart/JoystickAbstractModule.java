@@ -11,6 +11,8 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
@@ -30,10 +32,17 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
   private ToolbarsComponent toolbarsComponent = new ToolbarsComponent();
   private JTextField jTextFieldJoystickLast;
   private JTextField jTextFieldVoltage;
+  private JTextField jTextFieldTemperature;
   private final MiscGetListener miscGetListener = new MiscGetListener() {
     @Override
     public void getEvent(MiscGetEvent miscGetEvent) {
       jTextFieldVoltage.setText("" + miscGetEvent.getSteerBatteryVoltage());
+    }
+  };
+  private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
+    @Override
+    public void getEvent(LinmotGetEvent linmotGetEvent) {
+      jTextFieldTemperature.setText("" + linmotGetEvent.getWindingTemperatureMax());
     }
   };
 
@@ -56,6 +65,9 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     {
       jTextFieldVoltage = toolbarsComponent.createReading("Steer voltage");
     }
+    {
+      jTextFieldTemperature = toolbarsComponent.createReading("Linmot temp.");
+    }
     toolbarsComponent.addSeparator();
     {
       jTextFieldJoystickLast = toolbarsComponent.createReading("Joystick");
@@ -75,6 +87,7 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     LinmotSocket.INSTANCE.addPutProvider(joystickInstance.linmotPutProvider);
     LinmotSocket.INSTANCE.addPutListener(joystickInstance.linmotPutListener);
     LinmotSocket.INSTANCE.addGetListener(joystickInstance.linmotGetListener);
+    LinmotSocket.INSTANCE.addGetListener(linmotGetListener);
     LinmotSocket.INSTANCE.addAll(linmotInitButton);
     SteerSocket.INSTANCE.addPutProvider(joystickInstance.steerPutProvider);
     SteerSocket.INSTANCE.addAll(steerInitButton);
@@ -90,6 +103,7 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
         LinmotSocket.INSTANCE.removePutProvider(joystickInstance.linmotPutProvider);
         LinmotSocket.INSTANCE.removePutListener(joystickInstance.linmotPutListener);
         LinmotSocket.INSTANCE.removeGetListener(joystickInstance.linmotGetListener);
+        LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
         LinmotSocket.INSTANCE.removeAll(linmotInitButton);
         SteerSocket.INSTANCE.removePutProvider(joystickInstance.steerPutProvider);
         SteerSocket.INSTANCE.removeAll(steerInitButton);

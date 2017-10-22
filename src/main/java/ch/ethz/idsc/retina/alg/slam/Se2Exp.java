@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.mat.MatrixExp;
+import ch.ethz.idsc.tensor.lie.MatrixExp;
 
 public enum Se2Exp {
   ;
@@ -21,6 +21,7 @@ public enum Se2Exp {
    * @param theta
    * @return */
   public static Tensor of(Scalar x, Scalar y, Scalar theta) {
+    // TODO matrix has analytic expression
     Tensor matrix = Array.zeros(3, 3);
     matrix.set(theta, 1, 0);
     matrix.set(theta.negate(), 0, 1);

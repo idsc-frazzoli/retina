@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
@@ -62,6 +63,12 @@ public class LinmotGetEvent extends DataEvent {
 
   public boolean isSafeWindingTemperature2() {
     return TEMPERATURE_RANGE.isInside(getWindingTemperature2());
+  }
+
+  public Scalar getWindingTemperatureMax() {
+    return Max.of( //
+        getWindingTemperature1(), //
+        getWindingTemperature2());
   }
 
   public String toInfoString() {

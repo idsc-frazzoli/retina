@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.retina.util.data.TimedFuse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -20,8 +20,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class MiscEmergencyModule extends AbstractModule implements MiscGetListener, RimoPutProvider {
   private static final Clip VOLTAGE_RANGE = Clip.function( //
       Quantity.of(10.7, "V"), //
-      Quantity.of(15, "V"));
+      Quantity.of(13.0, "V"));
   // ---
+  private TimedFuse timedFuse = new TimedFuse(0.5);
   private boolean flag = false;
 
   @Override
@@ -43,15 +44,12 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(flag ? RimoPutEvent.STOP : null);
+    return Optional.ofNullable(timedFuse.isBlown() || flag ? RimoPutEvent.STOP : null);
   }
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    {
-      Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
-      flag |= VOLTAGE_RANGE.isOutside(voltage);
-    }
+    timedFuse.register(VOLTAGE_RANGE.isOutside(miscGetEvent.getSteerBatteryVoltage()));
     flag |= miscGetEvent.isEmergency();
   }
 }
