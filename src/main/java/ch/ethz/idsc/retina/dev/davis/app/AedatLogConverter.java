@@ -45,7 +45,7 @@ public enum AedatLogConverter {
     davisImageProvider.addListener(pngImageWriter);
     davisDecoder.addSigListener(davisImageProvider);
     // ---
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 20000);
+    AccumulatedEventsGrayImage accumulateDvsImage = new AccumulatedEventsGrayImage(davisDevice, 20000);
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();

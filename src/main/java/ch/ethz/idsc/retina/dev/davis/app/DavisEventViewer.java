@@ -24,7 +24,7 @@ public enum DavisEventViewer {
     DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
     davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
-    AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, 50000);
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, 50000);
     davisDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.lcm.davis;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
@@ -37,10 +37,10 @@ public class DavisLcmServer {
   // ---
   public final DavisDecoder davisDecoder;
 
-  /** @param serial
-   * for instance "FX2_02460045"
-   * @param cameraId */
-  public DavisLcmServer(String serial, String cameraId, DavisApsType... types) {
+  /** @param serial for instance "FX2_02460045"
+   * @param cameraId determines the channel name "davis240c.cameraId.aps", "davis240c.cameraId.imu"
+   * @param davisApsTypes */
+  public DavisLcmServer(String serial, String cameraId, DavisApsType... davisApsTypes) {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     {
       DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
@@ -48,7 +48,7 @@ public class DavisLcmServer {
       davisDvsBlockCollector.setListener(davisDvsBlockListener);
       davisDecoder.addDvsListener(davisDvsBlockCollector);
     }
-    Set<DavisApsType> set = new HashSet<>(Arrays.asList(types));
+    Set<DavisApsType> set = EnumSet.copyOf(Arrays.asList(davisApsTypes));
     if (set.contains(DavisApsType.RST))
       davisDecoder.addRstListener(create(cameraId, DavisApsType.RST)); // RST
     if (set.contains(DavisApsType.SIG))
