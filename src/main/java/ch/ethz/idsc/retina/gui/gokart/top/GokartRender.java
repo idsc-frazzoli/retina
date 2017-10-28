@@ -6,10 +6,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.math.SteeringWheelAngle;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.math.car.SteeringWheelAngle;
-import ch.ethz.idsc.owly.model.car.VehicleModel;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;

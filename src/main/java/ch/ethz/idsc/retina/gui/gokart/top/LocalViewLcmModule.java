@@ -3,11 +3,11 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
 
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owly.gui.TimerFrame;
 import ch.ethz.idsc.owly.gui.ren.GridRender;
 import ch.ethz.idsc.owly.math.se2.Se2Utils;
-import ch.ethz.idsc.owly.model.car.VehicleModel;
-import ch.ethz.idsc.owly.model.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;

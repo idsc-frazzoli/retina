@@ -6,10 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.core.WheelInterface;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.model.car.VehicleModel;
-import ch.ethz.idsc.owly.model.car.WheelInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 class VehicleFootprintRender implements RenderInterface {

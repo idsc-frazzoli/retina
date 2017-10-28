@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owly.data.TimeKeeper;
 import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
-import ch.ethz.idsc.owly.math.car.DifferentialSpeed;
 import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
 import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
