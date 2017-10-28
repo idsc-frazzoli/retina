@@ -38,7 +38,7 @@ public class DavisDirectorySupplier implements StartAndStoppable {
           StringTokenizer stringTokenizer = new StringTokenizer(line);
           int time = (int) (Double.parseDouble(stringTokenizer.nextToken()) * 1e6);
           String imagelocation = stringTokenizer.nextToken();
-          // FIXME
+          // FIXME unfinished implementation
         }
         String line = br_events.readLine();
         if (Objects.isNull(line)) {

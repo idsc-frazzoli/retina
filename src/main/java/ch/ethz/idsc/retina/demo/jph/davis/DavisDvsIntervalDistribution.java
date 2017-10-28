@@ -36,6 +36,7 @@ enum DavisDvsIntervalDistribution {
         } catch (IOException e1) {
           e1.printStackTrace();
         }
+        davisLcmClient.stopSubscriptions();
       }
     });
   }

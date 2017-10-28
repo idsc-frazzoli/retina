@@ -46,6 +46,10 @@ public class Mark8Decoder implements LidarRayDataProvider {
     }
   }
 
+  private static int usec(int timestamp_seconds, int timestamp_nanos) {
+    return timestamp_seconds * 1_000_000 + timestamp_nanos / 1000;
+  }
+
   private void lasersMark8(ByteBuffer byteBuffer) {
     byteBuffer.order(ByteOrder.BIG_ENDIAN);
     final int header = byteBuffer.getInt();
@@ -55,7 +59,7 @@ public class Mark8Decoder implements LidarRayDataProvider {
     // ---
     int timestamp_seconds = byteBuffer.getInt();
     int timestamp_nanos = byteBuffer.getInt(); // 31 bit == 2147483648
-    int usec = timestamp_seconds * 1_000_000 + timestamp_nanos / 1000; // TODO
+    int usec = usec(timestamp_seconds, timestamp_nanos);
     listeners.forEach(listener -> listener.timestamp(usec, 3));
     // byteBuffer.get(); // api_version_major
     // byteBuffer.get(); // api_version_minor
@@ -87,7 +91,7 @@ public class Mark8Decoder implements LidarRayDataProvider {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     int timestamp_seconds = byteBuffer.getInt();
     int timestamp_nanos = byteBuffer.getInt(); // 31 bit == 2147483648
-    int usec = timestamp_seconds * 1_000_000 + timestamp_nanos / 1000; // TODO
+    int usec = usec(timestamp_seconds, timestamp_nanos);
     listeners.forEach(listener -> listener.timestamp(usec, returns));
     // READ FIRING DATA [50]
     int length = returns * 24;

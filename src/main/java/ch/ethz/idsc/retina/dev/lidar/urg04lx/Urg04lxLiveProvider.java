@@ -82,7 +82,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
                   long tic = System.currentTimeMillis();
                   listeners.forEach(listener -> listener.accept(array, array.length));
                   long duration = System.currentTimeMillis() - tic;
-                  // TODO enhance readout
+                  // TODO investigate in order to enhance readout
                   Thread.sleep(Math.max(0, 95 - duration));
                 } else
                   throw new RuntimeException("data corrupt");

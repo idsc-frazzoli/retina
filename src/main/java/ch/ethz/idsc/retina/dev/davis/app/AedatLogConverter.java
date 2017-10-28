@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.dev.davis.io.DavisSimpleImageWriter;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */
-// TODO class name not final
 public enum AedatLogConverter {
   ;
   /** @param aedat file as source

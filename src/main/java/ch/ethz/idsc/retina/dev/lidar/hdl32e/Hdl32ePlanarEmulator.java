@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
 
 /** extracts points at horizontal level */
 public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
-  // private static final double ANGLE_FACTOR = Math.PI / 18000.0;
   private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
@@ -43,9 +42,6 @@ public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    // final double angle = rotational * ANGLE_FACTOR;
-    // final float dx = (float) Math.cos(angle);
-    // final float dy = (float) -Math.sin(angle);
     float dx = TRIGONOMETRY.dx(rotational);
     float dy = TRIGONOMETRY.dy(rotational);
     final float[] coords = new float[2];

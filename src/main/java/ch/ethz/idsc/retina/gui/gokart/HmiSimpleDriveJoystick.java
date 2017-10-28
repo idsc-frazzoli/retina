@@ -34,7 +34,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   private final DifferentialSpeed dsL = new DifferentialSpeed(AXIS_DELTA, TIRE_L);
   private final DifferentialSpeed dsR = new DifferentialSpeed(AXIS_DELTA, TIRE_R);
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
-      new Rice1StateSpaceModel(RealScalar.of(1)), //
+      Rice1StateSpaceModel.of(RealScalar.ZERO), //
       MidpointIntegrator.INSTANCE, //
       new StateTime(Array.zeros(1), RealScalar.ZERO));
 

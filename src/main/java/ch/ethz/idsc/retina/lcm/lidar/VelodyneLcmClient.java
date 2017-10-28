@@ -4,6 +4,8 @@ package ch.ethz.idsc.retina.lcm.lidar;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collection;
+import java.util.HashSet;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
@@ -12,6 +14,7 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
+import lcm.lcm.SubscriptionRecord;
 
 /** reference implementation of an lcm client that listens and decodes hdl32e
  * publications and allows listeners to receive the data
@@ -21,6 +24,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
   private final VelodyneModel velodyneModel;
   private final VelodyneDecoder velodyneDecoder;
   private final String lidarId;
+  private final Collection<SubscriptionRecord> subscriptions = new HashSet<>();
 
   public VelodyneLcmClient(VelodyneModel velodyneModel, VelodyneDecoder velodyneDecoder, String lidarId) {
     this.velodyneModel = velodyneModel;
@@ -32,7 +36,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
     if (velodyneDecoder.hasRayListeners())
-      lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(VelodyneLcmChannels.ray(velodyneModel, lidarId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -44,9 +48,9 @@ public class VelodyneLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
     if (velodyneDecoder.hasPosListeners())
-      lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(VelodyneLcmChannels.pos(velodyneModel, lidarId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -58,11 +62,12 @@ public class VelodyneLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
   }
 
   @Override
   public void stopSubscriptions() {
-    // TODO Auto-generated method stub
+    LCM.getSingleton().unsubscribeAll(subscriptions);
+    subscriptions.clear();
   }
 }

@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.dev.davis.app.AedatLogConverter;
 enum AedatLogConverterDemo {
   ;
   public static void main(String[] args) throws Exception {
-    // TODO configure
     final File file1 = new File("/Users/julianzilly/Desktop/Projects/logged_data/", "DAVIS240C-2017-08-25T15-42-35+0200-02460010-0.aedat");
     long tic = System.nanoTime();
     AedatLogConverter.of(file1, new File("/Users/julianzilly/Desktop/Projects/logged_data/rec1/"));
