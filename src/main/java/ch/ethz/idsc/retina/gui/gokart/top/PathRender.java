@@ -10,7 +10,7 @@ import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
 import ch.ethz.idsc.owly.math.StateSpaceModels;
 import ch.ethz.idsc.owly.math.flow.Flow;
-import ch.ethz.idsc.owly.math.flow.RungeKutta4Integrator;
+import ch.ethz.idsc.owly.math.se2.Se2Integrator;
 import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.owly.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owly.math.state.StateIntegrator;
@@ -41,7 +41,7 @@ class PathRender implements RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
-          RungeKutta4Integrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+          Se2Integrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
       // ---
       final Scalar angle = gokartStatusEvent.getSteeringAngle();
       final Tensor p1;
