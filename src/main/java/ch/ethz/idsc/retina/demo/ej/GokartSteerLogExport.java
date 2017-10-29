@@ -7,11 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.gui.gokart.ControllerInfoPublish;
 import ch.ethz.idsc.retina.util.GlobalAssert;
-import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.tensor.StringScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

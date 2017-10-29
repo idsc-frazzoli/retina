@@ -18,10 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame {

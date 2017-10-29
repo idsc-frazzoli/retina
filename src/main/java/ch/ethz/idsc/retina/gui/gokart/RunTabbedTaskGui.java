@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 
-enum RunTaskTabGui {
+enum RunTabbedTaskGui {
   ;
   public static void main(String[] args) {
     TabbedTaskGui taskTabGui = new TabbedTaskGui();

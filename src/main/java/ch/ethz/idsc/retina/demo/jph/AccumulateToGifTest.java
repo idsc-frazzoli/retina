@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.File;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.AccumulateToGif;
 import ch.ethz.idsc.retina.dev.dvs.io.dat.DatFileSupplier;
@@ -10,7 +11,6 @@ import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.ImagesDvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.ProceduralDvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.Waves;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 /** visualization of events in data sets as animated gif's */
 enum AccumulateToGifTest {

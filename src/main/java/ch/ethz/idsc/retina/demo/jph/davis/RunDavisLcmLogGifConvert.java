@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.demo.jph.davis;
 
 import java.io.File;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogGifConvert;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 enum RunDavisLcmLogGifConvert {
   ;
