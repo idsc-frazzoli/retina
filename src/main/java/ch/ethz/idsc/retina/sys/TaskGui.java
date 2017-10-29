@@ -52,7 +52,8 @@ public class TaskGui {
     jframe.setVisible(true);
   }
 
-  public String getName(Class<?> module) {
-    return StringBrew.putSpaceBefCaps(module.getSimpleName());
+  private static String getName(Class<?> module) {
+    String name = StringBrew.putSpaceBefCaps(module.getSimpleName());
+    return name.endsWith(" Module") ? name.substring(0, name.length() - 7) : name;
   }
 }

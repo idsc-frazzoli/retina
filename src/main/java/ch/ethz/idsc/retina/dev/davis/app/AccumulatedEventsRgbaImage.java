@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.ImageFormat;
  * fixed duration positive events appear in white color negative events appear
  * in black color */
 public class AccumulatedEventsRgbaImage implements DavisDvsListener {
-  private static final int CLEAR_BYTE = 0;
+  // private static final int CLEAR_BYTE = 0;
   // ---
   private final int width;
   private final int height;
@@ -70,7 +70,7 @@ public class AccumulatedEventsRgbaImage implements DavisDvsListener {
       last += interval;
     }
     // int polarity = dvsDavisEvent.i == 0 ? 0 : 255;
-    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
+    // int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
     // bytes[index] = ColorFormat.toInt(Tensors.vector(dvsDavisEvent.darkToBright() ? 255 : 0, dvsDavisEvent.darkToBright() ? 0 : 255, 0, 255));
     tensor.set(RealScalar.of(255), dvsDavisEvent.y, dvsDavisEvent.x, 3);
   }

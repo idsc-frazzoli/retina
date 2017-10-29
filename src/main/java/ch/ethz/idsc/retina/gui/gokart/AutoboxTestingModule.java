@@ -45,7 +45,6 @@ public class AutoboxTestingModule extends AbstractModule {
     // ---
     jFrame.setContentPane(jTabbedPane);
     jFrame.setBounds(300, 80, 500, 800);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -58,6 +57,7 @@ public class AutoboxTestingModule extends AbstractModule {
         System.out.println("removed listeners and providers");
       }
     });
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }
 
@@ -77,7 +77,13 @@ public class AutoboxTestingModule extends AbstractModule {
     jTabbedPane.addTab(string, autoboxTestingComponent.getScrollPane());
   }
 
+  public static void standalone() throws Exception {
+    AutoboxTestingModule autoboxTestingModule = new AutoboxTestingModule();
+    autoboxTestingModule.first();
+    autoboxTestingModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  }
+
   public static void main(String[] args) throws Exception {
-    new AutoboxTestingModule().first();
+    standalone();
   }
 }

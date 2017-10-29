@@ -21,6 +21,7 @@ public enum AccumulateToGif {
    * @param window_us
    * @param rate_us
    * @throws Exception */
+  @SuppressWarnings("deprecation")
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us, int rate_us) throws Exception {
     DvsEventStatistics dvsEventStatistics = new DvsEventStatistics();
     AnimationWriter gsw = AnimationWriter.of(gifFile, rate_us / 1000);
