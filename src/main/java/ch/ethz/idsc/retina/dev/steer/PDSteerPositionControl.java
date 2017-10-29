@@ -7,9 +7,9 @@ public class PDSteerPositionControl {
   private double lastPos_error = 0;
 
   public double iterate(final double pos_error) {
-    double Kp = SteerParameters.GLOBAL.Kp.number().doubleValue(); // 5
-    double Kd = SteerParameters.GLOBAL.Kd.number().doubleValue();
-    double torqueLimit = SteerParameters.GLOBAL.torqueLimit.number().doubleValue();
+    double Kp = SteerConfig.GLOBAL.Kp.number().doubleValue(); // 5
+    double Kd = SteerConfig.GLOBAL.Kd.number().doubleValue();
+    double torqueLimit = SteerConfig.GLOBAL.torqueLimit.number().doubleValue();
     // ---
     // TODO computation using Scalars
     double pPart = pos_error * Kp;

@@ -6,9 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.nio.FloatBuffer;
+import java.util.function.Supplier;
 
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
+import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -16,12 +18,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 class LidarRender implements RenderInterface, LidarRayBlockListener {
-  private final Tensor matrix;
+  private final Supplier<Tensor> supplier;
   private Tensor _points = Tensors.empty();
   private Color color = Color.BLACK;
 
-  public LidarRender(Tensor matrix) {
-    this.matrix = matrix;
+  public LidarRender(Supplier<Tensor> supplier) {
+    this.supplier = supplier;
   }
 
   public void setColor(Color color) {
@@ -30,11 +32,14 @@ class LidarRender implements RenderInterface, LidarRayBlockListener {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    Tensor matrix = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(matrix);
-    graphics.setColor(Color.GREEN);
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
-      graphics.fill(new Ellipse2D.Double(point2D.getX() - 2, point2D.getY() - 2, 5, 5));
+      Point2D width = geometricLayer.toPoint2D(Tensors.vector(0.1, 0));
+      double w = point2D.distance(width);
+      graphics.setColor(new Color(0, 128, 0, 128));
+      graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
     Tensor points = _points;
     graphics.setColor(color);

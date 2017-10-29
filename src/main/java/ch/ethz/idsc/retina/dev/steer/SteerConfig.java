@@ -1,14 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.gui.gokart.GokartResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-public class SteerParameters {
-  public static SteerParameters GLOBAL = GokartResources.load(new SteerParameters());
+public class SteerConfig implements Serializable {
+  public static SteerConfig GLOBAL = GokartResources.load(new SteerConfig());
 
-  private SteerParameters() {
+  private SteerConfig() {
   }
 
   // ---

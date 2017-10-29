@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.steer.SteerParameters;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 
 class PropertiesComponent extends ToolbarsComponent {
@@ -64,7 +64,7 @@ class PropertiesComponent extends ToolbarsComponent {
 
   public static void main(String[] args) {
     JFrame jFrame = new JFrame();
-    PropertiesComponent pc = new PropertiesComponent(SteerParameters.GLOBAL);
+    PropertiesComponent pc = new PropertiesComponent(SteerConfig.GLOBAL);
     jFrame.setContentPane(pc.getScrollPane());
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 400, 300);
