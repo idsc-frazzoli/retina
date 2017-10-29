@@ -17,21 +17,21 @@ import junit.framework.TestCase;
 
 public class TensorPropertiesTest extends TestCase {
   public void testStore() throws Exception {
-    ParamCont ori = new ParamCont();
+    ParamContainer ori = new ParamContainer();
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
     ori.shape = Tensors.fromString("{1,2,3}");
     ori.abc = RealScalar.ONE;
     Properties properties = TensorProperties.extract(ori);
     // properties.list(System.out);
     {
-      ParamCont pc = new ParamCont();
+      ParamContainer pc = new ParamContainer();
       TensorProperties.insert(properties, pc);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
       assertEquals(ori.abc, pc.abc);
     }
     {
-      ParamCont pc = TensorProperties.newInstance(properties, ParamCont.class);
+      ParamContainer pc = TensorProperties.newInstance(properties, ParamContainer.class);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
       assertEquals(ori.abc, pc.abc);
@@ -42,8 +42,8 @@ public class TensorPropertiesTest extends TestCase {
     Properties properties = new Properties();
     properties.setProperty("maxTor", "123[m]");
     properties.setProperty("shape", "{3   [s*kg],8*I}");
-    ParamCont pc = new ParamCont();
-    Field[] fields = ParamCont.class.getFields();
+    ParamContainer pc = new ParamContainer();
+    Field[] fields = ParamContainer.class.getFields();
     for (Field field : fields)
       if (!Modifier.isStatic(field.getModifiers()))
         try {

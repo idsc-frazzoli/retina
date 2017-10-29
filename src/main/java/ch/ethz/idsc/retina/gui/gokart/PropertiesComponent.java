@@ -2,8 +2,6 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Dimension;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +21,11 @@ class PropertiesComponent extends ToolbarsComponent {
   private final Object object;
   private final Map<Field, JTextField> map = new HashMap<>();
 
-  private Properties updateInstance() {
+  private void updateInstance() {
     Properties properties = new Properties();
     for (Entry<Field, JTextField> entry : map.entrySet())
       properties.setProperty(entry.getKey().getName(), entry.getValue().getText());
     TensorProperties.insert(properties, object);
-    return properties;
   }
 
   public PropertiesComponent(Object object) {
@@ -37,22 +34,14 @@ class PropertiesComponent extends ToolbarsComponent {
       JToolBar jToolBar = createRow("Actions");
       {
         JButton jButton = new JButton("udpate");
-        jButton.addActionListener(e -> {
-          updateInstance();
-        });
+        jButton.addActionListener(e -> updateInstance());
         jToolBar.add(jButton);
       }
       {
         JButton jButton = new JButton("save");
         jButton.addActionListener(e -> {
-          Properties properties = updateInstance();
-          String name = object.getClass().getSimpleName() + ".properties";
-          try {
-            // TODO global dir
-            properties.store(new FileOutputStream(new File("resources/properties", name)), null);
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
+          updateInstance();
+          GokartResources.save(object);
         });
         jToolBar.add(jButton);
       }

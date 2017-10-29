@@ -31,4 +31,14 @@ public class ParametersModule extends AbstractModule {
     PropertiesComponent propertiesComponent = new PropertiesComponent(object);
     jTabbedPane.addTab(object.getClass().getSimpleName(), propertiesComponent.getScrollPane());
   }
+
+  public static void standalone() throws Exception {
+    ParametersModule parametersModule = new ParametersModule();
+    parametersModule.first();
+    parametersModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  }
+
+  public static void main(String[] args) throws Exception {
+    standalone();
+  }
 }
