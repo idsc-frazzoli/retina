@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.lcm.davis;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collection;
+import java.util.HashSet;
 
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
@@ -14,6 +16,7 @@ import idsc.DavisImu;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
+import lcm.lcm.SubscriptionRecord;
 
 public class DavisLcmClient implements LcmClientInterface {
   private final String cameraId;
@@ -21,6 +24,7 @@ public class DavisLcmClient implements LcmClientInterface {
   public final DavisApsDatagramDecoder davisSigDatagramDecoder = new DavisApsDatagramDecoder();
   public final DavisApsDatagramDecoder davisRstDatagramDecoder = new DavisApsDatagramDecoder();
   public final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
+  private final Collection<SubscriptionRecord> subscriptions = new HashSet<>();
 
   public DavisLcmClient(String cameraId) {
     this.cameraId = cameraId;
@@ -30,7 +34,7 @@ public class DavisLcmClient implements LcmClientInterface {
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
     if (davisDvsDatagramDecoder.hasListeners())
-      lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(DavisDvsBlockPublisher.channel(cameraId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -39,9 +43,9 @@ public class DavisLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
     if (davisSigDatagramDecoder.hasListeners())
-      lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.SIG), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.SIG), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -50,9 +54,9 @@ public class DavisLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
     if (davisRstDatagramDecoder.hasListeners())
-      lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.RST), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(DavisApsBlockPublisher.channel(cameraId, DavisApsType.RST), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -61,9 +65,9 @@ public class DavisLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
     if (davisImuLcmDecoder.hasListeners())
-      lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
+      subscriptions.add(lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
         @Override
         public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
           try {
@@ -72,12 +76,13 @@ public class DavisLcmClient implements LcmClientInterface {
             exception.printStackTrace();
           }
         }
-      });
+      }));
   }
 
   @Override
   public void stopSubscriptions() {
-    // TODO Auto-generated method stub
+    LCM.getSingleton().unsubscribeAll(subscriptions);
+    subscriptions.clear();
   }
 
   public void digestDvs(BinaryBlob dvsBinaryBlob) {

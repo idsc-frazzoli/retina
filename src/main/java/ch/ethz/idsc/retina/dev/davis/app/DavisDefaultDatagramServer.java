@@ -20,7 +20,7 @@ public enum DavisDefaultDatagramServer {
   // ---
   public final DavisDecoder davisDecoder;
 
-  @SuppressWarnings("unused")
+  @SuppressWarnings({ "unused", "resource" })
   private DavisDefaultDatagramServer() {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     // ---

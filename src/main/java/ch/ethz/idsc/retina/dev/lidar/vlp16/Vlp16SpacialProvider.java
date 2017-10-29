@@ -17,12 +17,11 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   public static final float[] IR = new float[LASERS];
   public static final float[] IZ = new float[LASERS];
   private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
-  // public static final double ANGLE_FACTOR = Math.PI / 18000.0;
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = 10; // TODO magic const
+  /* package for testing */ int limit_lo = 10; // TODO document magic const for closest threshold
   private int usec;
 
   public Vlp16SpacialProvider() {
@@ -54,9 +53,6 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
 
   @Override
   public void scan(int azimuth, ByteBuffer byteBuffer) {
-    // final double angle = azimuth * ANGLE_FACTOR;
-    // float dx = (float) Math.cos(angle);
-    // float dy = (float) -Math.sin(angle);
     float dx = TRIGONOMETRY.dx(azimuth);
     float dy = TRIGONOMETRY.dy(azimuth);
     float[] coords = new float[3];

@@ -27,6 +27,14 @@ public class DavisDvsEvent implements DavisEvent {
     return time;
   }
 
+  public boolean brightToDark() {
+    return i == 0;
+  }
+
+  public boolean darkToBright() {
+    return i == 1;
+  }
+
   @Override
   public String toString() { // function will be removed after debug phase
     return String.format("dvs %8d  (%4d, %3d) %d", time, x, y, i);

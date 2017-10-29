@@ -3,8 +3,9 @@ package ch.ethz.idsc.retina.lcm.davis;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsImage;
+import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
+import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 
@@ -22,7 +23,7 @@ public enum DavisLcmViewer {
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     DavisViewerFrame davisViewerFrame = new DavisViewerFrame(davisDevice);
     // handle dvs
-    AccumulatedEventsImage accumulatedEventsImage = new AccumulatedEventsImage(davisDevice, period);
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
@@ -43,5 +44,30 @@ public enum DavisLcmViewer {
     // start to listen
     davisLcmClient.startSubscriptions();
     // return davisLcmViewer;
+  }
+
+  public static void createQuickStandlone(String cameraId, int period) {
+    DavisDevice davisDevice = Davis240c.INSTANCE;
+    DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
+    DavisQuickFrame davisViewerFrame = new DavisQuickFrame(davisDevice);
+    // handle dvs
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
+    // handle dif
+    DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+    davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
+    SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
+    davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
+    signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
+    // start to listen
+    davisLcmClient.startSubscriptions();
+    // return davisLcmViewer;
+    // try {
+    // Thread.sleep(3000);
+    // } catch (Exception exception) {
+    // exception.printStackTrace();
+    // }
+    // davisLcmClient.stopSubscriptions();
   }
 }

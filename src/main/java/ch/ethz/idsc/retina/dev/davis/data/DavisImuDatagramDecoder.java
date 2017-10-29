@@ -12,14 +12,19 @@ public class DavisImuDatagramDecoder {
     listeners.add(davisImuFrameListener);
   }
 
+  @SuppressWarnings("unused")
   private short pacid_next = -1;
+  @SuppressWarnings("unused")
   private int missed;
+  @SuppressWarnings("unused")
   private int missed_print;
+  @SuppressWarnings("unused")
   private long total;
 
   public void decode(ByteBuffer byteBuffer) {
     byteBuffer.position(0);
     int time = byteBuffer.getInt();
+    @SuppressWarnings("unused")
     short pacid = byteBuffer.getShort(); // running id of packet
     // if (pacid_next != pacid)
     // System.err.println("imu packet missing " + pacid_next);

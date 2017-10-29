@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owly.data.TimeKeeper;
 import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
-import ch.ethz.idsc.owly.math.car.DifferentialSpeed;
 import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
 import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
@@ -34,7 +34,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   private final DifferentialSpeed dsL = new DifferentialSpeed(AXIS_DELTA, TIRE_L);
   private final DifferentialSpeed dsR = new DifferentialSpeed(AXIS_DELTA, TIRE_R);
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
-      new Rice1StateSpaceModel(RealScalar.of(1)), //
+      Rice1StateSpaceModel.of(RealScalar.ZERO), //
       MidpointIntegrator.INSTANCE, //
       new StateTime(Array.zeros(1), RealScalar.ZERO));
 

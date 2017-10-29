@@ -56,6 +56,7 @@ public class Mark8Inspector implements LidarRayDataListener {
         int i1 = b1.get() & 0xff;
         int i2 = b2.get() & 0xff;
         Tensor r = Tensors.vector(rotational, laser, d0, d1, d2, i0, i1, i2);
+        r.length(); // eliminate unused warning
         // System.out.println(Pretty.of(r));
       }
     }

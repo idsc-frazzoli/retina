@@ -1,13 +1,23 @@
 // code by niam jen wei
+// modified by jph
 package ch.ethz.idsc.retina.sys;
 
 import java.util.Date;
 import java.util.Set;
 
-import javax.swing.JToggleButton;
+import javax.swing.JButton;
 
 /** Class to return the individual thread status currently running in the JVM. */
 public class TaskManagerStatus {
+  public final JButton jButton = new JButton("Status");
+
+  public TaskManagerStatus() {
+    jButton.addActionListener(e -> {
+      countThreads();
+      getThreadStatus();
+    });
+  }
+
   public static String countThreads() {
     StringBuilder msg = new StringBuilder();
     msg.append("Total threads: " + Thread.activeCount() + "\n");
@@ -28,19 +38,5 @@ public class TaskManagerStatus {
     }
     System.out.println(new Date() + msg.toString());
     return msg.toString();
-  }
-
-  public JToggleButton toggle;
-
-  public TaskManagerStatus() {
-    toggle = new JToggleButton("Thread Status");
-    toggle.addActionListener(e -> {
-      boolean isSelected = toggle.isSelected();
-      if (isSelected) {
-        toggle.setSelected(false);
-        countThreads();
-        getThreadStatus();
-      }
-    });
   }
 }

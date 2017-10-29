@@ -9,13 +9,13 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
-import ch.ethz.idsc.retina.util.io.UserHome;
 import ch.ethz.idsc.retina.util.math.Constant;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;

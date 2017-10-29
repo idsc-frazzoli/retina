@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
 
-// TODO lot's of magic const in this class
 public class DavisDvsDatagramClient {
   public final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
 

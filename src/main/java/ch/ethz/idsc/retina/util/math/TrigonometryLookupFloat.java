@@ -3,11 +3,13 @@ package ch.ethz.idsc.retina.util.math;
 
 import java.nio.FloatBuffer;
 
+/** rapid lookup of cos/sin values
+ * instead of calls to {@link Math#cos(double)} etc. */
 public class TrigonometryLookupFloat {
   private final float[] array;
 
   /** @param length of complete revolution
-   * @param flip */
+   * @param flip true for clockwise, false for ccw */
   public TrigonometryLookupFloat(int length, boolean flip) {
     array = new float[2 * length];
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);

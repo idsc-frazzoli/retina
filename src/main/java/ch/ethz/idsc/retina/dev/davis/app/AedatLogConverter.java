@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.dev.davis.io.DavisSimpleImageWriter;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */
-// TODO class name not final
 public enum AedatLogConverter {
   ;
   /** @param aedat file as source
@@ -45,7 +44,7 @@ public enum AedatLogConverter {
     davisImageProvider.addListener(pngImageWriter);
     davisDecoder.addSigListener(davisImageProvider);
     // ---
-    AccumulatedEventsImage accumulateDvsImage = new AccumulatedEventsImage(davisDevice, 20000);
+    AccumulatedEventsGrayImage accumulateDvsImage = new AccumulatedEventsGrayImage(davisDevice, 20000);
     {
       File debug = new File(directory, "events_debug");
       debug.mkdir();

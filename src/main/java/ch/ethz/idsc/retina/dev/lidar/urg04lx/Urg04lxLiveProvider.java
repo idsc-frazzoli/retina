@@ -9,10 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 /** Hint: the sensor requires a warm-up time of half a minute or so.
  * attempts to connect immediately after power up will fail.
@@ -82,7 +82,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
                   long tic = System.currentTimeMillis();
                   listeners.forEach(listener -> listener.accept(array, array.length));
                   long duration = System.currentTimeMillis() - tic;
-                  // TODO enhance readout
+                  // TODO investigate in order to enhance readout
                   Thread.sleep(Math.max(0, 95 - duration));
                 } else
                   throw new RuntimeException("data corrupt");

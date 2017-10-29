@@ -2,57 +2,50 @@
 package ch.ethz.idsc.retina.sys;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 /** is invoked from {@link RunGuiMain} */
 public class TaskGui {
+  public final JFrame jFrame = new JFrame();
+
   public TaskGui(List<Class<?>> modules) {
-    JFrame jframe = new JFrame();
-    jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    JPanel top = new JPanel(new BorderLayout());
-    JPanel jpanel = new JPanel();
-    for (Class<?> m : modules) {
-      JToggleButton jToggleButton = new JToggleButton(getName(m));
-      jToggleButton.addActionListener(e -> {
-        if (jToggleButton.isSelected()) {
-          ModuleAuto.runOne(m);
-        } else {
-          ModuleAuto.terminateOne(m);
-        }
-      });
-      jpanel.add(jToggleButton);
-    }
-    // ---
-    jpanel.add(new TaskManagerStatus().toggle);
-    // ---
-    JButton termButton = new JButton("Terminate ALL");
-    termButton.addActionListener(e -> {
-      ModuleAuto.terminateAll();
-      for (Component comp : jpanel.getComponents()) {
-        if (comp instanceof JToggleButton) {
-          ((JToggleButton) comp).setSelected(false);
-        }
+    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(WindowEvent windowEvent) {
+        System.out.println("closing all modules");
+        ModuleAuto.terminateAll();
       }
     });
-    jpanel.add(termButton);
-    jpanel.setLayout(new GridLayout(jpanel.getComponentCount(), 1));
-    top.add("North", jpanel);
-    JScrollPane jscrollpane = new JScrollPane(top);
-    jframe.setContentPane(jscrollpane);
-    jframe.setSize(300, 600);
-    jframe.setVisible(true);
-  }
-
-  public String getName(Class<?> module) {
-    return StringBrew.putSpaceBefCaps(module.getSimpleName());
+    // ---
+    TaskComponent taskComponent = new TaskComponent(modules);
+    // TODO create modules for those:
+    // tc.jpanel.add(new TaskManagerStatus().toggle);
+    // ---
+    //
+    JPanel jPanel = new JPanel(new BorderLayout());
+    JToolBar jToolBar = new JToolBar();
+    jToolBar.setFloatable(false);
+    {
+      jToolBar.add(new TaskManagerStatus().jButton);
+    }
+    {
+      JButton termButton = new JButton("Terminate All");
+      termButton.addActionListener(e -> taskComponent.terminateAll());
+      jToolBar.add(termButton);
+    }
+    jPanel.add("North", jToolBar);
+    jPanel.add("Center", taskComponent.jScrollPane);
+    jFrame.setContentPane(jPanel);
+    jFrame.setSize(300, 600);
+    jFrame.setVisible(true);
   }
 }

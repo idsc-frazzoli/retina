@@ -3,11 +3,13 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
 
+import javax.swing.WindowConstants;
+
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owly.gui.TimerFrame;
 import ch.ethz.idsc.owly.gui.ren.GridRender;
-import ch.ethz.idsc.owly.math.Se2Utils;
-import ch.ethz.idsc.owly.model.car.VehicleModel;
-import ch.ethz.idsc.owly.model.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;
@@ -80,6 +82,7 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     // ---
+    timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
   }
 
@@ -92,7 +95,13 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.close();
   }
 
+  public static void standalone() throws Exception {
+    LocalViewLcmModule autoboxTestingModule = new LocalViewLcmModule();
+    autoboxTestingModule.first();
+    autoboxTestingModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  }
+
   public static void main(String[] args) throws Exception {
-    new LocalViewLcmModule().first();
+    standalone();
   }
 }

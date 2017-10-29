@@ -11,6 +11,7 @@ public enum JoystickLcmClientDemo {
     joystickLcmClient.addListener(joystickEvent -> {
       System.out.println(joystickEvent.toInfoString());
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
+      gokartJoystickInterface.hashCode();
       // System.out.print("L-knob R=" +
       // genericXboxPadJoystick.getLeftKnobDirectionRight() + " ");
       // System.out.print("slider L=" +
