@@ -74,6 +74,7 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     // ---
+    timerFrame.configCoordinateOffset(400, 500);
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
   }

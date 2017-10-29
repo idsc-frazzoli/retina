@@ -17,4 +17,7 @@ public class SteerConfig implements Serializable {
   public Scalar Kp = RealScalar.of(2.5); // 5
   public Scalar Kd = RealScalar.of(0.2); // 0.5 hits the saturation limit of 0.5
   public Scalar torqueLimit = RealScalar.of(0.5);
+  // ---
+  /** conversion factor from measured steer column angle to front wheel angle */
+  public Scalar column2steer = RealScalar.of(1.0);
 }
