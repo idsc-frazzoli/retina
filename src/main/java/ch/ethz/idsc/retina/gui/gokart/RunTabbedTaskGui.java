@@ -37,6 +37,7 @@ enum RunTabbedTaskGui {
     ));
     taskTabGui.tab("gui", Arrays.asList( //
         SpyModule.class, //
+        ParametersModule.class, //
         AutoboxTestingModule.class, //
         JoystickSimpleDriveModule.class, //
         JoystickFullControlModule.class, //

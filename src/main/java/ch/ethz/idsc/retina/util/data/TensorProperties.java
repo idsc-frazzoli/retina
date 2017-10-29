@@ -66,7 +66,7 @@ public enum TensorProperties {
     return insert(properties, cls.newInstance());
   }
 
-  private static boolean isTracked(Field field) {
+  public static boolean isTracked(Field field) {
     int mod = field.getModifiers();
     if (!Modifier.isFinal(mod) && !Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
       Class<?> type = field.getType();

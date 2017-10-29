@@ -71,9 +71,6 @@ public class AutoboxTestingModule extends AbstractModule {
     list.add(autoboxTestingComponent);
     String string = autoboxTestingComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);
-    // JPanel jPanel = new JPanel(new BorderLayout());
-    // jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
-    // JScrollPane jScrollPane = new JScrollPane(jPanel);
     jTabbedPane.addTab(string, autoboxTestingComponent.getScrollPane());
   }
 

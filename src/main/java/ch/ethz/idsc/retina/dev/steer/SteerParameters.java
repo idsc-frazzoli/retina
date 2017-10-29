@@ -12,6 +12,6 @@ public class SteerParameters {
       TensorProperties.retrieve(new File("resources/properties"), new SteerParameters());
   // ---
   public Scalar Kp = RealScalar.of(2.5); // 5
-  public Scalar Kd = RealScalar.of(0.2); // 0.5 , 5 and 0.5 hit the saturation limit of 0.5
+  public Scalar Kd = RealScalar.of(0.2); // 0.5 hits the saturation limit of 0.5
   public Scalar torqueLimit = RealScalar.of(0.5);
 }

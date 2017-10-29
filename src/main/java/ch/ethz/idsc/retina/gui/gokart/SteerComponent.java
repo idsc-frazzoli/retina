@@ -31,9 +31,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   // ---
   public final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
-  private final JTextField kpConst = new JTextField();
-  private final JTextField kdConst = new JTextField();
-  private final JTextField tqLimit = new JTextField();
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
@@ -49,27 +46,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       jToolBar.add(steerInitButton.getComponent());
       // ---
       jToolBar.add(jToggleController);
-    }
-    {
-      JToolBar jToolBar = createRow("Kp");
-      kpConst.setPreferredSize(new Dimension(180, 28));
-      kpConst.setText("" + positionController.Kp);
-      kpConst.addActionListener(e -> positionController.Kp = Double.parseDouble(kpConst.getText()));
-      jToolBar.add(kpConst);
-    }
-    {
-      JToolBar jToolBar = createRow("Kd");
-      kdConst.setPreferredSize(new Dimension(180, 28));
-      kdConst.setText("" + positionController.Kd);
-      kdConst.addActionListener(e -> positionController.Kd = Double.parseDouble(kdConst.getText()));
-      jToolBar.add(kdConst);
-    }
-    {
-      JToolBar jToolBar = createRow("Torque limit");
-      tqLimit.setPreferredSize(new Dimension(180, 28));
-      tqLimit.setText("" + positionController.torqueLimit);
-      tqLimit.addActionListener(e -> positionController.torqueLimit = Double.parseDouble(tqLimit.getText()));
-      jToolBar.add(tqLimit);
     }
     {
       JToolBar jToolBar = createRow("command");

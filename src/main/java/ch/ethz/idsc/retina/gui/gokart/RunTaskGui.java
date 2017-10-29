@@ -33,6 +33,7 @@ enum RunTaskGui {
     modules.add(LinmotEmergencyModule.class);
     modules.add(LinmotTakeoverModule.class);
     // ---
+    modules.add(ParametersModule.class);
     modules.add(AutoboxLcmServerModule.class);
     modules.add(AutoboxSocketModule.class);
     modules.add(AutoboxTestingModule.class);
