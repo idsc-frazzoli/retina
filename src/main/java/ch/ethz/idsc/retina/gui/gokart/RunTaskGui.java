@@ -26,6 +26,7 @@ enum RunTaskGui {
     modules.add(Vlp16LcmServerModule.class);
     modules.add(Mark8LcmServerModule.class);
     modules.add(Urg04lxLcmServerModule.class);
+    modules.add(DavisOverviewModule.class);
     // ---
     modules.add(Urg04lxEmergencyModule.class);
     modules.add(MiscEmergencyModule.class);

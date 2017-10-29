@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.lcm.davis;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
-import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsRgbaImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
@@ -52,7 +51,7 @@ public enum DavisLcmViewer {
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     DavisQuickFrame davisViewerFrame = new DavisQuickFrame(davisDevice);
     // handle dvs
-    AccumulatedEventsRgbaImage accumulatedEventsImage = new AccumulatedEventsRgbaImage(davisDevice, period);
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle dif
@@ -64,5 +63,11 @@ public enum DavisLcmViewer {
     // start to listen
     davisLcmClient.startSubscriptions();
     // return davisLcmViewer;
+    // try {
+    // Thread.sleep(3000);
+    // } catch (Exception exception) {
+    // exception.printStackTrace();
+    // }
+    // davisLcmClient.stopSubscriptions();
   }
 }

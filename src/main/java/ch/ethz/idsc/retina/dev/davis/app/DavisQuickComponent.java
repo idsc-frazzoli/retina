@@ -41,7 +41,7 @@ public class DavisQuickComponent {
       if (Objects.nonNull(difImage))
         graphics.drawImage(difImage, 0, 0, width, height, null);
       if (imageCopy.hasValue())
-        graphics.drawImage(imageCopy.get(), 0, 0, width, height, null);
+        graphics.drawImage(imageCopy.get(), 0, height, width, height, null);
       // ---
       graphics.setColor(Color.RED);
       graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 10);

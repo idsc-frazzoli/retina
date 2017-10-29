@@ -21,7 +21,9 @@ import ch.ethz.idsc.tensor.io.ImageFormat;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-public class AccumulatedEventsRgbaImage implements DavisDvsListener {
+@Deprecated
+class AccumulatedEventsRgbaImage implements DavisDvsListener {
+  // FIXME implementation is mal-functional
   // private static final int CLEAR_BYTE = 0;
   // ---
   private final int width;
