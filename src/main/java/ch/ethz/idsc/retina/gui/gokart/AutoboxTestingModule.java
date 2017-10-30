@@ -44,7 +44,7 @@ public class AutoboxTestingModule extends AbstractModule {
     jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(300, 80, 500, 800);
+    jFrame.setBounds(300, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
