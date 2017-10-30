@@ -29,6 +29,8 @@ class ParametersComponent extends ToolbarsComponent {
   // ---
   private final Object object;
   private final Map<Field, JTextField> map = new HashMap<>();
+  private final JButton jButtonUpdate = new JButton("udpate");
+  private final JButton jButtonSave = new JButton("save");
 
   private void updateInstance() {
     Properties properties = new Properties();
@@ -42,19 +44,17 @@ class ParametersComponent extends ToolbarsComponent {
     {
       JToolBar jToolBar = createRow("Actions");
       {
-        JButton jButton = new JButton("udpate");
-        jButton.addActionListener(e -> updateInstance());
-        jButton.setToolTipText("parse values in text fields into live memory");
-        jToolBar.add(jButton);
+        jButtonUpdate.addActionListener(e -> updateInstance());
+        jButtonUpdate.setToolTipText("parse values in text fields into live memory");
+        jToolBar.add(jButtonUpdate);
       }
       {
-        JButton jButton = new JButton("save");
-        jButton.addActionListener(e -> {
+        jButtonSave.addActionListener(e -> {
           updateInstance();
           GokartResources.save(object);
         });
-        jButton.setToolTipText("update values to memory, and save to disk");
-        jToolBar.add(jButton);
+        jButtonSave.setToolTipText("update values to memory, and save to disk");
+        jToolBar.add(jButtonSave);
       }
     }
     addSeparator();
@@ -68,11 +68,8 @@ class ParametersComponent extends ToolbarsComponent {
           jTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-              Tensor tensor = Tensors.fromString(jTextField.getText());
-              boolean nok = tensor.flatten(-1) //
-                  .filter(scalar -> scalar instanceof StringScalar) //
-                  .findAny().isPresent();
-              jTextField.setBackground(nok ? FAIL : Color.WHITE);
+              jTextField.setBackground(isOk(jTextField.getText()) ? Color.WHITE : FAIL);
+              checkFields();
             }
           });
           map.put(field, jTextField);
@@ -80,6 +77,21 @@ class ParametersComponent extends ToolbarsComponent {
           // ---
         }
     }
+  }
+
+  private void checkFields() {
+    boolean status = true;
+    for (Entry<Field, JTextField> entry : map.entrySet())
+      status &= isOk(entry.getValue().getText());
+    jButtonUpdate.setEnabled(status);
+    jButtonSave.setEnabled(status);
+  }
+
+  private static boolean isOk(String string) {
+    Tensor tensor = Tensors.fromString(string);
+    return !tensor.flatten(-1) //
+        .filter(scalar -> scalar instanceof StringScalar) //
+        .findAny().isPresent();
   }
 
   public static void main(String[] args) {

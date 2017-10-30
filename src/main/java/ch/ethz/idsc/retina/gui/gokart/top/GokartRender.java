@@ -68,9 +68,9 @@ public class GokartRender implements RenderInterface {
     }
     if (Objects.nonNull(gokartStatusEvent)) {
       Scalar angle = gokartStatusEvent.getSteeringAngle();
-      // TODO magic const
-      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), angle);
-      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(+48.0 / 118.0), angle);
+      Scalar ratioL = ChassisGeometry.GLOBAL.ratioSteering();
+      Scalar angleL = SteeringWheelAngle.of(ratioL.negate(), angle); // TODO why is sign like this? and not swapped
+      Scalar angleR = SteeringWheelAngle.of(ratioL, angle);
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
