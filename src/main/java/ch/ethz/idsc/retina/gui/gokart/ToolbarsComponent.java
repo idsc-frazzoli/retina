@@ -70,12 +70,12 @@ class ToolbarsComponent {
     rowActor.add(center);
   }
 
-  public JTextField createReading(String title) {
+  /***************************************************/
+  /** @param title
+   * @return editable text field that allows user modification */
+  protected JTextField createEditing(String title) {
     JTextField jTextField = new JTextField(20);
     jTextField.setText("<unknown>");
-    jTextField.setEditable(false);
-    jTextField.setEnabled(false);
-    jTextField.setDisabledTextColor(Color.BLACK);
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
@@ -86,7 +86,18 @@ class ToolbarsComponent {
     return jTextField;
   }
 
-  public JCheckBox createReadingCheckbox(String title) {
+  /***************************************************/
+  /** @param title
+   * @return non-editable text field to display values */
+  protected JTextField createReading(String title) {
+    JTextField jTextField = createEditing(title);
+    jTextField.setEditable(false);
+    jTextField.setEnabled(false);
+    jTextField.setDisabledTextColor(Color.BLACK);
+    return jTextField;
+  }
+
+  protected JCheckBox createReadingCheckbox(String title) {
     JCheckBox jTextField = new JCheckBox(title);
     jTextField.setEnabled(false);
     JLabel jLabel = new JLabel(" ");
@@ -95,6 +106,7 @@ class ToolbarsComponent {
     return jTextField;
   }
 
+  /***************************************************/
   public JComponent getScrollPane() {
     JPanel jPanel = new JPanel(new BorderLayout());
     jPanel.add(this.jPanel, BorderLayout.NORTH);

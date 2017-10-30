@@ -30,7 +30,7 @@ public class ParametersModule extends AbstractModule {
   }
 
   private void addTab(Object object) {
-    PropertiesComponent propertiesComponent = new PropertiesComponent(object);
+    ParametersComponent propertiesComponent = new ParametersComponent(object);
     jTabbedPane.addTab(object.getClass().getSimpleName(), propertiesComponent.getScrollPane());
   }
 
