@@ -22,6 +22,7 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
@@ -138,10 +139,10 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       double desPos = -sliderExtTorque.jSlider.getValue() * SteerAngleTracker.MAX_ANGLE / RESOLUTION;
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
-      final double torqueCmd = positionController.iterate(errPos);
+      Scalar torqueCmd = positionController.iterate(RealScalar.of(errPos));
       ControllerInfoPublish.publish(desPos, currAngle);
       if (jToggleController.isSelected())
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd));
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd.number().doubleValue()));
     }
     return Optional.empty();
   }

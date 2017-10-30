@@ -65,6 +65,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     // final Scalar LF = DoubleScalar.of(+0.645); // front axle distance from COG [m]
     // final Scalar LR = DoubleScalar.of(-0.4); // rear axle distance from COG [m]
     // measured:
+    // TODO redundant
     final Scalar LF = DoubleScalar.of(+0.72); // front axle distance from COG [m]
     final Scalar LR = DoubleScalar.of(-0.47); // rear axle distance from COG [m]
     // data-sheet:

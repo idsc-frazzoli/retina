@@ -25,15 +25,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 class PathRender implements RenderInterface {
-  /** center of rear axle */
-  // TODO redundant
-  private static final StateTime CENTER = //
-      new StateTime(Tensors.vector(-0.47, 0, 0), RealScalar.ZERO);
-  private static final double HALF_WIDTH = 0.7;
-  /** axle distance */
-  // TODO redundant
-  private static final double AXD = 1.2;
-  // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
@@ -43,16 +34,21 @@ class PathRender implements RenderInterface {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
           Se2Integrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
       // ---
-      final Scalar angle = gokartStatusEvent.getSteeringAngle();
+      Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
+      Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
+      final Scalar angle = gokartStatusEvent.getSteeringAngle();
       if (Sign.isPositive(angle)) {
-        p1 = Tensors.vector(0.0, +HALF_WIDTH, 1);
-        p2 = Tensors.vector(AXD, -HALF_WIDTH, 1);
+        p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
+        p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);
       } else {
-        p1 = Tensors.vector(AXD, +HALF_WIDTH, 1);
-        p2 = Tensors.vector(0.0, -HALF_WIDTH, 1);
+        p1 = Tensors.of(XAD, YHW, RealScalar.ONE);
+        p2 = Tensors.of(RealScalar.ZERO, YHW.negate(), RealScalar.ONE);
       }
+      Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
+      // center of rear axle
+      StateTime CENTER = new StateTime(Tensors.of(XAR, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
         final Flow flow_forward = StateSpaceModels.createFlow( //
             Se2StateSpaceModel.INSTANCE, Tensors.of(angle, RealScalar.ONE));

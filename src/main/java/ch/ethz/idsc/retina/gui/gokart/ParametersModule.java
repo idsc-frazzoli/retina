@@ -6,6 +6,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -15,6 +16,7 @@ public class ParametersModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
+    addTab(ChassisGeometry.GLOBAL);
     addTab(SensorsConfig.GLOBAL);
     addTab(SteerConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
