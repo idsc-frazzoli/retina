@@ -72,7 +72,10 @@ class ParametersComponent extends ToolbarsComponent {
               checkFields();
             }
           });
-          // TODO JZ add action listener to quick update single parameter
+          jTextField.addActionListener(e -> {
+            if (checkFields())
+              updateInstance();
+          });
           map.put(field, jTextField);
         } catch (Exception exception) {
           // ---
@@ -80,12 +83,13 @@ class ParametersComponent extends ToolbarsComponent {
     }
   }
 
-  private void checkFields() {
+  private boolean checkFields() {
     boolean status = true;
     for (Entry<Field, JTextField> entry : map.entrySet())
       status &= isOk(entry.getValue().getText());
     jButtonUpdate.setEnabled(status);
     jButtonSave.setEnabled(status);
+    return status;
   }
 
   private static boolean isOk(String string) {

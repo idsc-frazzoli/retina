@@ -10,7 +10,6 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16PanoramaProvider;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
-// TODO JZ create an abstract module
 enum Vlp16LcmPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {

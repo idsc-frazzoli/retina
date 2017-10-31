@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.sys.TaskGui;
 
 enum RunTaskGui {
   ;
-  // TODO JZ add vlp16 panorama
   public static void main(String[] args) {
     List<Class<?>> modules = new ArrayList<>();
     modules.add(SpyModule.class);
@@ -45,6 +44,7 @@ enum RunTaskGui {
     modules.add(GokartStatusLcmModule.class);
     // ---
     modules.add(LocalViewLcmModule.class);
+    modules.add(PanoramaViewModule.class);
     // ---
     new TaskGui(modules);
   }
