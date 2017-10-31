@@ -72,6 +72,7 @@ class ParametersComponent extends ToolbarsComponent {
               checkFields();
             }
           });
+          // TODO JZ add action listener to quick update single parameter
           map.put(field, jTextField);
         } catch (Exception exception) {
           // ---

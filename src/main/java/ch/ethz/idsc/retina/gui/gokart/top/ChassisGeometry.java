@@ -25,6 +25,7 @@ public class ChassisGeometry implements Serializable {
   public Scalar yHalfWidth = Quantity.of(0.7, "m");
   /** distance from x-axis to front tire */
   public Scalar yTireFront = Quantity.of(0.48, "m");
+  // TODO JZ add front/rear tire radius and width
   /***************************************************/
   private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
 
