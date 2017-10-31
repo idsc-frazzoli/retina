@@ -20,6 +20,8 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 
 public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
@@ -52,8 +54,8 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
         if (steerAngleTracker.isCalibrated()) {
           final double currAngle = steerAngleTracker.getSteeringValue();
           double desPos = -_joystick.getRightKnobDirectionRight() * SteerAngleTracker.MAX_ANGLE;
-          final double torqueCmd = positionController.iterate(desPos - currAngle);
-          return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd));
+          final Scalar torqueCmd = positionController.iterate(RealScalar.of(desPos - currAngle));
+          return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd.number().doubleValue()));
         }
       }
       return Optional.empty();

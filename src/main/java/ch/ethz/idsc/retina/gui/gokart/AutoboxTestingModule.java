@@ -27,9 +27,6 @@ public class AutoboxTestingModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    RimoSocket.INSTANCE.addAll(rimoComponent);
-    addTab(rimoComponent);
-    // ---
     LinmotSocket.INSTANCE.addAll(linmotComponent);
     LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
@@ -38,13 +35,16 @@ public class AutoboxTestingModule extends AbstractModule {
     SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
     // ---
+    RimoSocket.INSTANCE.addAll(rimoComponent);
+    addTab(rimoComponent);
+    // ---
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
     // ---
-    jTabbedPane.setSelectedIndex(1);
+    jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(300, 80, 500, 800);
+    jFrame.setBounds(300, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {

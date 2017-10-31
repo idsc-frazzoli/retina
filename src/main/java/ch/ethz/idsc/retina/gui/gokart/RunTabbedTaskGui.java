@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Arrays;
 
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
@@ -15,13 +16,15 @@ import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 
 enum RunTabbedTaskGui {
   ;
+  // TODO JZ add vlp16 panorama
   public static void main(String[] args) {
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
-    taskTabGui.tab("sensor", Arrays.asList( //
+    taskTabGui.tab("devices", Arrays.asList( //
         Hdl32eLcmServerModule.class, //
         Vlp16LcmServerModule.class, //
         Mark8LcmServerModule.class, //
-        Urg04lxLcmServerModule.class //
+        Urg04lxLcmServerModule.class, //
+        AutoboxSocketModule.class //
     ));
     taskTabGui.tab("lcm", Arrays.asList( //
         AutoboxLcmServerModule.class, //
@@ -41,7 +44,8 @@ enum RunTabbedTaskGui {
         AutoboxTestingModule.class, //
         JoystickSimpleDriveModule.class, //
         JoystickFullControlModule.class, //
-        LocalViewLcmModule.class //
+        LocalViewLcmModule.class, //
+        DavisOverviewModule.class //
     ));
     taskTabGui.jFrame.setVisible(true);
   }

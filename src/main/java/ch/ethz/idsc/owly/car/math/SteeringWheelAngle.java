@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * <a href="https://en.wikipedia.org/wiki/Ackermann_steering_geometry">Ackermann steering geometry</a> */
 public enum SteeringWheelAngle {
   ;
+  // TODO JZ make class design like DifferentialSpeed
   /** (px, py) is front wheel position measured from center of rear axle in local car coordinates
    * 
    * px is typically positive

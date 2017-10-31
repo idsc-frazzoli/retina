@@ -1,6 +1,7 @@
 // code by rvmoos and jph
 package ch.ethz.idsc.retina.dev.steer;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
@@ -11,11 +12,11 @@ public class PDSteerPositionControlTest extends TestCase {
   @SuppressWarnings("unused")
   public void testSimple() {
     PDSteerPositionControl test = new PDSteerPositionControl();
-    test.iterate(1);
-    test.iterate(1);
-    test.iterate(1);
+    test.iterate(RealScalar.ONE);
+    test.iterate(RealScalar.ONE);
+    test.iterate(RealScalar.ONE);
     for (int i = 0; i < 10; i++) {
-      double value = test.iterate(0);
+      Scalar value = test.iterate(RealScalar.ZERO);
       // System.out.println(value);
     }
   }
@@ -29,7 +30,7 @@ public class PDSteerPositionControlTest extends TestCase {
     Distribution distribution = NormalDistribution.standard();
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = RandomVariate.of(distribution);
-      double value = test.iterate(err_pos.number().doubleValue() * .01);
+      Scalar value = test.iterate(err_pos.multiply(RealScalar.of(0.01)));
       // System.out.println(value);
     }
   }

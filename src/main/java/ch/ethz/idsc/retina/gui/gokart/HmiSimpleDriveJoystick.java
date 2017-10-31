@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * TODO NRJ still uses velocity control for RIMO */
 public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
+  // TODO JZ move into GokartChassis!
   private static final Scalar AXIS_DELTA = Quantity.of(1.2, "m");
   private static final Scalar TIRE_L = Quantity.of(+0.54, "m");
   private static final Scalar TIRE_R = Quantity.of(-0.54, "m");

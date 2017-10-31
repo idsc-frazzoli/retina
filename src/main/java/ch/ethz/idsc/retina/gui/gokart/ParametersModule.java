@@ -5,7 +5,9 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.steer.SteerParameters;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 public class ParametersModule extends AbstractModule {
@@ -14,7 +16,9 @@ public class ParametersModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    addTab(SteerParameters.GLOBAL);
+    addTab(ChassisGeometry.GLOBAL);
+    addTab(SensorsConfig.GLOBAL);
+    addTab(SteerConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     jFrame.setBounds(600, 80, 400, 400);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -28,7 +32,7 @@ public class ParametersModule extends AbstractModule {
   }
 
   private void addTab(Object object) {
-    PropertiesComponent propertiesComponent = new PropertiesComponent(object);
+    ParametersComponent propertiesComponent = new ParametersComponent(object);
     jTabbedPane.addTab(object.getClass().getSimpleName(), propertiesComponent.getScrollPane());
   }
 
