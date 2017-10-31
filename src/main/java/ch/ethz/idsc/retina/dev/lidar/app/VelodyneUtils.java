@@ -11,13 +11,14 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 
 public enum VelodyneUtils {
   ;
-  public static void panorama(LidarRayDataProvider lidarRayDataProvider, LidarPanoramaProvider lidarPanoramaProvider) {
+  public static LidarPanoramaFrame panorama(LidarRayDataProvider lidarRayDataProvider, LidarPanoramaProvider lidarPanoramaProvider) {
     LidarPanoramaFrame lidarPanoramaFrame = new LidarPanoramaFrame();
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarPanoramaProvider);
     lidarPanoramaProvider.addListener(lidarPanoramaFrame);
     lidarRayDataProvider.addRayListener(lidarRotationProvider);
     lidarRayDataProvider.addRayListener(lidarPanoramaProvider);
+    return lidarPanoramaFrame;
   }
 
   public static LidarAngularFiringCollector createCollector32(VelodyneDecoder velodyneDecoder) {

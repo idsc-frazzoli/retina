@@ -15,25 +15,19 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** position control for steering
  * differential speed on rear wheels according to steering angle
  * 
  * TODO NRJ still uses velocity control for RIMO */
 public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
-  // TODO JZ move into GokartChassis!
-  private static final Scalar AXIS_DELTA = Quantity.of(1.2, "m");
-  private static final Scalar TIRE_L = Quantity.of(+0.54, "m");
-  private static final Scalar TIRE_R = Quantity.of(-0.54, "m");
   // ---
   private final TimeKeeper timeKeeper = new TimeKeeper();
-  private final DifferentialSpeed dsL = new DifferentialSpeed(AXIS_DELTA, TIRE_L);
-  private final DifferentialSpeed dsR = new DifferentialSpeed(AXIS_DELTA, TIRE_R);
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
       Rice1StateSpaceModel.of(RealScalar.ZERO), //
       MidpointIntegrator.INSTANCE, //
@@ -60,6 +54,10 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
         // GenericXboxPadJoystick joystick = _joystick;
         final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
         if (steerAngleTracker.isCalibrated()) {
+          Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
+          Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
+          DifferentialSpeed dsL = new DifferentialSpeed(axisDelta, yTireRear);
+          DifferentialSpeed dsR = new DifferentialSpeed(axisDelta, yTireRear.negate());
           StateTime rate = episodeIntegrator.tail();
           Scalar speed = rate.state().Get(0);
           Scalar theta = RealScalar.of(steerAngleTracker.getSteeringValue());

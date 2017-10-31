@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Optional;
 
+import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 
@@ -30,7 +31,19 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   /** default message used only for display information */
   private RimoGetEvent rimoGetEvent;
 
+  private void setZero() {
+    sliderExtRVel.jSlider.setValue(0);
+    sliderExtLVel.jSlider.setValue(0);
+  }
+
   public RimoComponent() {
+    // STOP BUTTON
+    {
+      JToolBar jToolBar = createRow("Actions");
+      JButton stopButton = new JButton("STOP");
+      jToolBar.add(stopButton);
+      stopButton.addActionListener(e -> setZero());
+    }
     // LEFT
     {
       JToolBar jToolBar = createRow("LEFT command");

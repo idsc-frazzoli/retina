@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 
 enum RunTabbedTaskGui {
   ;
-  // TODO JZ add vlp16 panorama
   public static void main(String[] args) {
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     taskTabGui.tab("devices", Arrays.asList( //
@@ -45,6 +44,7 @@ enum RunTabbedTaskGui {
         JoystickSimpleDriveModule.class, //
         JoystickFullControlModule.class, //
         LocalViewLcmModule.class, //
+        PanoramaViewModule.class, //
         DavisOverviewModule.class //
     ));
     taskTabGui.jFrame.setVisible(true);
