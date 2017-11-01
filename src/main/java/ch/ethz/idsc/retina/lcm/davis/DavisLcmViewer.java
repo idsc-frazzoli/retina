@@ -8,6 +8,8 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.DavisViewerFrame;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
+import ch.ethz.idsc.retina.util.TimedImageEvent;
+import ch.ethz.idsc.retina.util.TimedImageListener;
 
 /** opens a frame to visualize sensor data from the Davis240c camera which is
  * received via three lcm channels
@@ -70,4 +72,22 @@ public enum DavisLcmViewer {
     // }
     // davisLcmClient.stopSubscriptions();
   }
+  public static void createUDPpublisher(String cameraId, int period) {
+    DavisDevice davisDevice = Davis240c.INSTANCE;
+    DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
+    // handle dvs
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    accumulatedEventsImage.addListener(new TimedImageListener() {
+      @Override
+      public void timedImage(TimedImageEvent timedImageEvent) {
+        System.out.println("encoding"+timedImageEvent.time);
+      }
+    });
+  
+    // start to listen
+    davisLcmClient.startSubscriptions();
+    // return davisLcmViewer;
+  }
 }
+

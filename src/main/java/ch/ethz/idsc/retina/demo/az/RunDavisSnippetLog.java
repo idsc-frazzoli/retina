@@ -10,7 +10,7 @@ enum RunDavisSnippetLog {
   public static void main(String[] args) {
     int period_ms = 5000;
     File lcmDir = new File("/home/ale/Datasets/ourCityscape_lcm");
-    File uzhDir = new File("/home/ale/Datasets/ourCityscape_uzh");
+    File uzhDir = new File("/home/ale/Datasets/ourCityscape_uzh_test");
     new DavisSnippetLog(period_ms, lcmDir, uzhDir);
   }
 }
