@@ -1,3 +1,4 @@
+// code by az
 package ch.ethz.idsc.retina.demo.az;
 
 import java.net.DatagramPacket;
@@ -23,7 +24,7 @@ public class UDPexample {
     // ---
     {
       s1.start();
-    byte[] data2send = new byte[43200]; 
+      byte[] data2send = new byte[43200];
       for (int count = 0; count < 100; ++count) {
         Thread.sleep(200);
         System.out.println("s1 sends");

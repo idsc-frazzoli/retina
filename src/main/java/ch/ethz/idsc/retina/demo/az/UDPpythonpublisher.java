@@ -1,8 +1,8 @@
+// code by az
 package ch.ethz.idsc.retina.demo.az;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -28,6 +28,7 @@ public class UDPpythonpublisher implements TimedImageListener {
   JFrame jframe = new JFrame();
   BufferedImage img = null;
   JComponent jcomponent = new JComponent() {
+    @Override
     protected void paintComponent(java.awt.Graphics g) {
       if (img != null)
         g.drawImage(img, 0, 0, null);
@@ -67,11 +68,6 @@ public class UDPpythonpublisher implements TimedImageListener {
     // return davisLcmViewer;
     p.jframe.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
-        // TODO Auto-generated method stub
-      }
-
-      @Override
       public void windowClosed(WindowEvent e) {
         davisLcmClient.stopSubscriptions();
         p.close();
@@ -86,7 +82,6 @@ public class UDPpythonpublisher implements TimedImageListener {
 
   @Override
   public void timedImage(TimedImageEvent timedImageEvent) {
-    // timedImageEvent.bufferedImage.getRaster();
     WritableRaster writableRaster = timedImageEvent.bufferedImage.getRaster();
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     byte[] data = dataBufferByte.getData();
