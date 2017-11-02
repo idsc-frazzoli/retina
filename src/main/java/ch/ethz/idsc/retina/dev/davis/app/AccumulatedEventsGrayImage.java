@@ -26,7 +26,7 @@ public class AccumulatedEventsGrayImage implements DavisDvsListener {
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
-  private final int interval;
+  private final int interval; // TODO does not have to be final
   private Integer last = null;
 
   /** @param interval [us] */
@@ -52,23 +52,26 @@ public class AccumulatedEventsGrayImage implements DavisDvsListener {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     final int delta = dvsDavisEvent.time - last;
-    if (delta < 0) {
+    if (delta < 0) { // this case happens during davis log playback when skipping to the front
       System.err.println("dvs image clear due to reverse timing");
       clearImage();
       last = dvsDavisEvent.time;
     } else //
+    // TODO treat case: 20 * interval < delta
+    // TODO change ordering of conditions
     if (interval < delta) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
     }
-    int polarity = dvsDavisEvent.i == 0 ? 0 : 255;
+    int polarity = dvsDavisEvent.brightToDark() ? 0 : 255;
     int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
     bytes[index] = (byte) polarity;
   }
 
   private void clearImage() {
+    // TODO try graphics.drawImage... may be faster
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 }
