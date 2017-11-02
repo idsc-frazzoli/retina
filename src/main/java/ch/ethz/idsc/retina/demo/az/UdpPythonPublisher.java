@@ -17,7 +17,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.SAEexpdecayImage;
+import ch.ethz.idsc.retina.dev.davis.app.SAEExpDecayImage;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
@@ -30,13 +30,11 @@ class UdpPythonPublisher implements TimedImageListener {
   // ---
   private final DatagramSocketManager dsm;
   private final JFrame jFrame = new JFrame();
-  // private BufferedImage bufferedImage = null;
-  private final ImageCopy imagecopy =  new ImageCopy();
+  private final ImageCopy imageCopy = new ImageCopy();
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-     // if (Objects.nonNull(bufferedImage))
-        graphics.drawImage(imagecopy.get(), 0, 0, null);
+      graphics.drawImage(imageCopy.get(), 0, 0, null);
     };
   };
   private final InetAddress inetAddress;
@@ -62,8 +60,7 @@ class UdpPythonPublisher implements TimedImageListener {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-    //bufferedImage = timedImageEvent.bufferedImage;
-    imagecopy.update(timedImageEvent.bufferedImage);
+    imageCopy.update(timedImageEvent.bufferedImage);
     jComponent.repaint();
   }
 
@@ -75,7 +72,7 @@ class UdpPythonPublisher implements TimedImageListener {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     // handle dvs
-    SAEexpdecayImage accumulatedEventsImage = new SAEexpdecayImage(davisDevice, period);
+    SAEExpDecayImage accumulatedEventsImage = new SAEExpDecayImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     UdpPythonPublisher udpPythonPublisher = new UdpPythonPublisher();
     accumulatedEventsImage.addListener(udpPythonPublisher);
@@ -83,7 +80,7 @@ class UdpPythonPublisher implements TimedImageListener {
     davisLcmClient.startSubscriptions();
     udpPythonPublisher.jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosed(WindowEvent e) {
+      public void windowClosed(WindowEvent windowEvent) {
         davisLcmClient.stopSubscriptions();
         udpPythonPublisher.close();
       }

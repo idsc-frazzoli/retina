@@ -18,19 +18,19 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-public class SAEexpdecayImage implements DavisDvsListener {
+public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
-  private final int width;
+  protected final int width;
   private final int height;
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
-  private final byte[] bytes;
-  private final int interval; // TODO does not have to be final
+  protected final byte[] bytes;
+  protected final int interval; // TODO does not have to be final
   private Integer last = null;
 
   /** @param interval [us] */
-  public SAEexpdecayImage(DavisDevice davisDevice, int interval) {
+  public AbstractAccumulatedImage(DavisDevice davisDevice, int interval) {
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
@@ -43,7 +43,7 @@ public class SAEexpdecayImage implements DavisDvsListener {
     clearImage();
   }
 
-  public void addListener(TimedImageListener timedImageListener) {
+  public final void addListener(TimedImageListener timedImageListener) {
     listeners.add(timedImageListener);
   }
 
@@ -64,18 +64,14 @@ public class SAEexpdecayImage implements DavisDvsListener {
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
+    } else {
+      assign(delta, dvsDavisEvent);
     }
-    double normts = 1.0 - delta/(double)interval;
-    double scaledts = -3.0*normts;
-    double decayedts = Math.exp(scaledts);
-    int polarity = dvsDavisEvent.brightToDark() ? -1 : 1;
-    double grayscale = 127.5*(1+decayedts*polarity);
-    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
-    bytes[index] = (byte) grayscale;
   }
 
+  protected abstract void assign(int delta, DavisDvsEvent dvsDavisEvent);
+
   private void clearImage() {
-    // TODO try graphics.drawImage... may be faster
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 }
