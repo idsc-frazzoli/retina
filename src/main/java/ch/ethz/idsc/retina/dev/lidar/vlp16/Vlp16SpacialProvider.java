@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity */
@@ -16,7 +16,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
   public static final float[] IR = new float[LASERS];
   public static final float[] IZ = new float[LASERS];
-  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
+  private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true);
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   // ---

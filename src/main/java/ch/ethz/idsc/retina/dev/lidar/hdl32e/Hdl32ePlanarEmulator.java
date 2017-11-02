@@ -9,11 +9,11 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
-import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** extracts points at horizontal level */
 public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
-  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
+  private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true);
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
