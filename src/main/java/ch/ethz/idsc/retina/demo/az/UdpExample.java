@@ -7,7 +7,8 @@ import java.net.InetAddress;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-public class UDPexample {
+enum UdpExample {
+  ;
   public static void main(String[] args) throws Exception {
     final int S1_PORT = 6780;
     final int S2_PORT = 6785;
