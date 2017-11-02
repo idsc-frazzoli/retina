@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-public class AccumulatedEventsGrayImage implements DavisDvsListener {
+public class SAEexpdecayImage implements DavisDvsListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   private final int width;
@@ -30,7 +30,7 @@ public class AccumulatedEventsGrayImage implements DavisDvsListener {
   private Integer last = null;
 
   /** @param interval [us] */
-  public AccumulatedEventsGrayImage(DavisDevice davisDevice, int interval) {
+  public SAEexpdecayImage(DavisDevice davisDevice, int interval) {
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
@@ -65,9 +65,13 @@ public class AccumulatedEventsGrayImage implements DavisDvsListener {
       clearImage();
       last += interval;
     }
-    int value = dvsDavisEvent.brightToDark() ? 0 : 255;
+    double normts = 1.0 - delta/(double)interval;
+    double scaledts = -3.0*normts;
+    double decayedts = Math.exp(scaledts);
+    int polarity = dvsDavisEvent.brightToDark() ? -1 : 1;
+    double grayscale = 127.5*(1+decayedts*polarity);
     int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
-    bytes[index] = (byte) value;
+    bytes[index] = (byte) grayscale;
   }
 
   private void clearImage() {
