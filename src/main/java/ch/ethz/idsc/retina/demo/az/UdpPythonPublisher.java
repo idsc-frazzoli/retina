@@ -31,7 +31,7 @@ class UdpPythonPublisher implements TimedImageListener {
   // ---
   private final DatagramSocketManager dsm;
   private final JFrame jFrame = new JFrame();
-  private BufferedImage bufferedImage = null;
+  private BufferedImage bufferedImage = null; // TODO use ImageCopy
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -41,7 +41,7 @@ class UdpPythonPublisher implements TimedImageListener {
   };
   private final InetAddress inetAddress;
 
-  public UdpPythonPublisher() throws UnknownHostException {
+  UdpPythonPublisher() throws UnknownHostException {
     final int S1_PORT = 6780; // port on which to listen
     final String LADDR = "localhost";
     dsm = DatagramSocketManager.local(new byte[4], S1_PORT, LADDR); // we don't expect to receive data
