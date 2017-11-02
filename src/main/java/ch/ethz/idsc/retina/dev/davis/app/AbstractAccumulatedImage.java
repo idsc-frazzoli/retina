@@ -59,12 +59,13 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     } else //
     // TODO treat case: 20 * interval < delta
     // TODO change ordering of conditions
-    if (interval < delta) {
+    if (interval <= delta) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
-    } else {
+    } else { // delta < interval
+      // GlobalAssert.that(delta < interval);
       assign(delta, dvsDavisEvent);
     }
   }

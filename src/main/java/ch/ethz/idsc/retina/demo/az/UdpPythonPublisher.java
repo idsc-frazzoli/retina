@@ -89,6 +89,6 @@ class UdpPythonPublisher implements TimedImageListener {
   }
 
   public static void main(String[] args) throws Exception {
-    createUDPpublisher("overview", 50000);
+    createUDPpublisher("overview", 50_000); // 50_000 us == 50 ms
   }
 }
