@@ -18,6 +18,7 @@ import ch.ethz.idsc.owly.math.region.NegativeHalfspaceRegion;
 import ch.ethz.idsc.owly.math.region.RegionUnion;
 import ch.ethz.idsc.owly.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owly.math.state.StateIntegrator;
+import ch.ethz.idsc.owly.math.state.StateTime;
 import ch.ethz.idsc.owly.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -48,9 +49,9 @@ public class DriftExtTest extends TestCase {
     // ---
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         eta, stateIntegrator, controls, obstacleQuery, goalInterface);
-    trajectoryPlanner.represent = x -> x.extract(3, 6); // consider only (beta,r,Ux)
+    trajectoryPlanner.represent = x -> x.state().extract(3, 6); // consider only (beta,r,Ux)
     // ---
-    trajectoryPlanner.insertRoot(Tensors.vector(0, 0, 0, 0, 0, 1));
+    trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 0, 0, 0, 1), RealScalar.ZERO));
     int iters = Expand.maxSteps(trajectoryPlanner, 2000);
     System.out.println("drift iterations:" + iters);
     assertTrue(iters < 1900);

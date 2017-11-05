@@ -117,7 +117,7 @@ public class TireForces {
    * @param index
    * @return */
   /* package */ Tensor get_ui_3(Scalar delta, int index) { // as in doc
-    Tensor rotation_3 = Rodriguez.of(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, delta.negate()));
+    Tensor rotation_3 = Rodriguez.exp(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, delta.negate()));
     Tensor tangent_3 = carState.u_3d().add(Cross.of(carState.rate_3d(), vehicleModel.wheel(index).lever()));
     return rotation_3.dot(tangent_3).extract(0, 2);
   }

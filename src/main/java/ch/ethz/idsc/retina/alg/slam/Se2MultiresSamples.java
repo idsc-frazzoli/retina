@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.alg.slam;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.owly.math.se2.Se2Exp;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
