@@ -25,7 +25,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame {
-  private final JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   @SuppressWarnings("unused")
   private DavisEventStatistics davisEventStatistics;
   // private Tensor eventCount = Array.zeros(3);

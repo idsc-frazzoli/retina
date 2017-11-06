@@ -45,7 +45,8 @@ enum RunTabbedTaskGui {
         JoystickFullControlModule.class, //
         LocalViewLcmModule.class, //
         PanoramaViewModule.class, //
-        DavisOverviewModule.class //
+        DavisOverviewModule.class, //
+        DavisDetailModule.class //
     ));
     taskTabGui.jFrame.setVisible(true);
   }

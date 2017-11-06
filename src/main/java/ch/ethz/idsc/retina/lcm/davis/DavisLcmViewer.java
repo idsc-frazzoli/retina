@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
  * </ul> */
 public enum DavisLcmViewer {
   ;
+  // TODO obsolete due to DavisDetailModule
   public static void createStandlone(String cameraId, int period) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
