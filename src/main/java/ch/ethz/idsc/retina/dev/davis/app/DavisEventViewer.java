@@ -43,6 +43,6 @@ public enum DavisEventViewer {
     davisEventProvider.start();
     davisEventProvider.stop();
     davisEventStatistics.print();
-    davisViewerFrame.close();
+    // davisViewerFrame.close();
   }
 }

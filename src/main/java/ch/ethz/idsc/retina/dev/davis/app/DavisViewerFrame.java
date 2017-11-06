@@ -36,7 +36,6 @@ public class DavisViewerFrame {
 
   public DavisViewerFrame(DavisDevice davisDevice) {
     jFrame.setBounds(100, 100, 730, 500);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
     {
@@ -68,9 +67,10 @@ public class DavisViewerFrame {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent windowEvent) {
-        close();
+        timer.cancel();
       }
     });
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
     {
       TimerTask timerTask = new TimerTask() {
@@ -81,12 +81,6 @@ public class DavisViewerFrame {
       };
       timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
     }
-  }
-
-  public void close() {
-    timer.cancel();
-    jFrame.setVisible(false);
-    jFrame.dispose();
   }
 
   public void setStatistics(DavisEventStatistics davisEventStatistics) {
