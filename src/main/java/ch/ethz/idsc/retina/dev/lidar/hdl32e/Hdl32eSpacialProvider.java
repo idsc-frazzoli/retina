@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
-import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity
@@ -20,7 +20,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   private static final float[] IR = new float[LASERS];
   private static final float[] IZ = new float[LASERS];
   // private static final double ANGLE_FACTOR = Math.PI / 18000;
-  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(36000, true);
+  private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true);
   /** quote from the user's manual, p.12: "the interleaving firing pattern is
    * designed to avoid potential ghosting caused primarily by retro-reflection" */
   private static final int[] ORDERING = new int[] { //

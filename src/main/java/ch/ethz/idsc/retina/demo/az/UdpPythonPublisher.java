@@ -4,14 +4,12 @@ package ch.ethz.idsc.retina.demo.az;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Objects;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -19,10 +17,11 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
+import ch.ethz.idsc.retina.dev.davis.app.SAEExpDecayImage;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 class UdpPythonPublisher implements TimedImageListener {
@@ -31,12 +30,11 @@ class UdpPythonPublisher implements TimedImageListener {
   // ---
   private final DatagramSocketManager dsm;
   private final JFrame jFrame = new JFrame();
-  private BufferedImage bufferedImage = null; // TODO use ImageCopy
+  private final ImageCopy imageCopy = new ImageCopy();
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      if (Objects.nonNull(bufferedImage))
-        graphics.drawImage(bufferedImage, 0, 0, null);
+      graphics.drawImage(imageCopy.get(), 0, 0, null);
     };
   };
   private final InetAddress inetAddress;
@@ -62,7 +60,7 @@ class UdpPythonPublisher implements TimedImageListener {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-    bufferedImage = timedImageEvent.bufferedImage;
+    imageCopy.update(timedImageEvent.bufferedImage);
     jComponent.repaint();
   }
 
@@ -74,22 +72,15 @@ class UdpPythonPublisher implements TimedImageListener {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period);
+    SAEExpDecayImage accumulatedEventsImage = new SAEExpDecayImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(new TimedImageListener() {
-      @Override
-      public void timedImage(TimedImageEvent timedImageEvent) {
-        // TODO remove this listener altogether...
-        System.out.println("encoding" + timedImageEvent.time);
-      }
-    });
     UdpPythonPublisher udpPythonPublisher = new UdpPythonPublisher();
     accumulatedEventsImage.addListener(udpPythonPublisher);
     // start to listen
     davisLcmClient.startSubscriptions();
     udpPythonPublisher.jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosed(WindowEvent e) {
+      public void windowClosed(WindowEvent windowEvent) {
         davisLcmClient.stopSubscriptions();
         udpPythonPublisher.close();
       }
@@ -98,6 +89,6 @@ class UdpPythonPublisher implements TimedImageListener {
   }
 
   public static void main(String[] args) throws Exception {
-    createUDPpublisher("overview", 50000);
+    createUDPpublisher("overview", 50_000); // 50_000 us == 50 ms
   }
 }

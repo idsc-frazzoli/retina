@@ -5,12 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.owly.demo.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owly.demo.se2.Se2CarIntegrator;
+import ch.ethz.idsc.owly.demo.se2.Se2Controls;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.math.StateSpaceModels;
 import ch.ethz.idsc.owly.math.flow.Flow;
-import ch.ethz.idsc.owly.math.se2.Se2Integrator;
 import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.owly.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owly.math.state.StateIntegrator;
@@ -32,7 +31,7 @@ class PathRender implements RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
-          Se2Integrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+          Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
       // ---
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
@@ -50,8 +49,7 @@ class PathRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(XAR, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
-        final Flow flow_forward = StateSpaceModels.createFlow( //
-            Se2StateSpaceModel.INSTANCE, Tensors.of(angle, RealScalar.ONE));
+        final Flow flow_forward = Se2Controls.singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //
             Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -66,8 +64,7 @@ class PathRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
       {
-        final Flow flow_reverse = StateSpaceModels.createFlow( //
-            Se2StateSpaceModel.INSTANCE, Tensors.of(angle, RealScalar.ONE.negate()));
+        final Flow flow_reverse = Se2Controls.singleton(RealScalar.ONE.negate(), angle);
         final Tensor center_reverse = //
             Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
