@@ -2,6 +2,9 @@
 package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.WindowConstants;
 
@@ -41,11 +44,18 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      LidarRender lidarRender = new PlanarLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      lidarRender.setColor(new Color(128, 192, 128, 64));
+      urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
       lidarRender.setColor(new Color(128, 0, 0, 128));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
+    // ---
     final VehicleModel vehicleModel = RimoSinusIonModel.standard();
     timerFrame.geometricComponent.addRenderInterface(new VehicleFootprintRender(vehicleModel));
     // ---
@@ -58,13 +68,13 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.mark8);
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.mark8);
       lidarRender.setColor(new Color(0, 128, 0, 128));
       mark8LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
@@ -91,6 +101,18 @@ public class LocalViewLcmModule extends AbstractModule {
   public static void standalone() throws Exception {
     LocalViewLcmModule autoboxTestingModule = new LocalViewLcmModule();
     autoboxTestingModule.first();
+    autoboxTestingModule.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        // TODO Auto-generated method stub
+      }
+
+      @Override
+      public void windowClosed(WindowEvent e) {
+        Rectangle r = autoboxTestingModule.timerFrame.jFrame.getBounds();
+        System.out.println(r);
+      }
+    });
     autoboxTestingModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 

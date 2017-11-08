@@ -95,8 +95,7 @@ class ParametersComponent extends ToolbarsComponent {
   private static boolean isOk(String string) {
     Tensor tensor = Tensors.fromString(string);
     return !tensor.flatten(-1) //
-        .filter(scalar -> scalar instanceof StringScalar) //
-        .findAny().isPresent();
+        .anyMatch(scalar -> scalar instanceof StringScalar);
   }
 
   public static void main(String[] args) {
