@@ -1,5 +1,6 @@
 // code by az
 package ch.ethz.idsc.retina.dev.davis.app;
+
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 

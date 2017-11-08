@@ -25,4 +25,7 @@ public final class LoggerModule extends AbstractModule {
       exception.printStackTrace();
     }
   }
+  public static void main(String[] args) throws Exception {
+    new LoggerModule().first();
+  }
 }
