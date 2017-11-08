@@ -18,6 +18,7 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.StringScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -51,7 +52,7 @@ class ParametersComponent extends ToolbarsComponent {
       {
         jButtonSave.addActionListener(e -> {
           updateInstance();
-          GokartResources.save(object);
+          AppResources.save(object);
         });
         jButtonSave.setToolTipText("update values to memory, and save to disk");
         jToolBar.add(jButtonSave);

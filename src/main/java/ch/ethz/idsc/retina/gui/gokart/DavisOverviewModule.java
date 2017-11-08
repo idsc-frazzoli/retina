@@ -11,11 +11,15 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 // TODO the channel name and period are hardcoded :-( 
 public class DavisOverviewModule extends AbstractModule {
   private DavisLcmClient davisLcmClient;
   private DavisQuickFrame davisViewerFrame;
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -36,6 +40,7 @@ public class DavisOverviewModule extends AbstractModule {
     signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
     // start to listen
     davisLcmClient.startSubscriptions();
+    windowConfiguration.attach(getClass(), davisViewerFrame.jFrame);
     davisViewerFrame.jFrame.setVisible(true);
   }
 

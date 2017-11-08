@@ -67,4 +67,9 @@ public class TensorPropertiesTest extends TestCase {
     assertFalse(pc.shape.stream().anyMatch(scalar -> scalar instanceof StringScalar));
     assertEquals(pc.shape.length(), 2);
   }
+
+  public void testUsername() {
+    String name = System.getProperty("user.name");
+    assertFalse(name.isEmpty());
+  }
 }

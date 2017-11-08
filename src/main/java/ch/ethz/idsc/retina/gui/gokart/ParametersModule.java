@@ -9,10 +9,14 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class ParametersModule extends AbstractModule {
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final JFrame jFrame = new JFrame("Parameters");
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -20,7 +24,7 @@ public class ParametersModule extends AbstractModule {
     addTab(SensorsConfig.GLOBAL);
     addTab(SteerConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(600, 80, 400, 400);
+    windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }

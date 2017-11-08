@@ -2,9 +2,6 @@
 package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
-import java.awt.Rectangle;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.WindowConstants;
 
@@ -19,6 +16,8 @@ import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class LocalViewLcmModule extends AbstractModule {
   private final TimerFrame timerFrame = new TimerFrame();
@@ -28,6 +27,8 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -84,6 +85,7 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     // ---
+    windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
@@ -101,18 +103,6 @@ public class LocalViewLcmModule extends AbstractModule {
   public static void standalone() throws Exception {
     LocalViewLcmModule autoboxTestingModule = new LocalViewLcmModule();
     autoboxTestingModule.first();
-    autoboxTestingModule.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        // TODO Auto-generated method stub
-      }
-
-      @Override
-      public void windowClosed(WindowEvent e) {
-        Rectangle r = autoboxTestingModule.timerFrame.jFrame.getBounds();
-        System.out.println(r);
-      }
-    });
     autoboxTestingModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 

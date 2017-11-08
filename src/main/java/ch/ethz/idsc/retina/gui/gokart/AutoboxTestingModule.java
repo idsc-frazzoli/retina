@@ -15,6 +15,8 @@ import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
@@ -24,6 +26,8 @@ public class AutoboxTestingModule extends AbstractModule {
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
   private final JFrame jFrame = new JFrame("Monitor and Testing");
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -44,7 +48,6 @@ public class AutoboxTestingModule extends AbstractModule {
     jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(300, 80, 500, 700);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -57,6 +60,7 @@ public class AutoboxTestingModule extends AbstractModule {
         System.out.println("removed listeners and providers");
       }
     });
+    windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }

@@ -35,7 +35,7 @@ public class DavisViewerFrame {
       davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
 
   public DavisViewerFrame(DavisDevice davisDevice) {
-    jFrame.setBounds(100, 100, 730, 500);
+    // jFrame.setBounds(100, 100, 730, 500);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
     {
@@ -71,7 +71,7 @@ public class DavisViewerFrame {
       }
     });
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    jFrame.setVisible(true);
+    // jFrame.setVisible(true);
     {
       TimerTask timerTask = new TimerTask() {
         @Override
