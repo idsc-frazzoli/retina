@@ -17,7 +17,6 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.SAEExpDecayImage;
 import ch.ethz.idsc.retina.dev.davis.app.SAEGausDecayImage;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
