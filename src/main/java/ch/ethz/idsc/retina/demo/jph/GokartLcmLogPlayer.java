@@ -12,7 +12,8 @@ enum GokartLcmLogPlayer {
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     // cfg.logFile = "/media/datahaki/media/ethz/lcmlog/20171003T173555_db6268ca.lcm.00";
-    cfg.logFile = "/media/datahaki/media/ethz/lcmlog/20171030T120648_2c52725e.lcm.00_videodemo2";
+    // cfg.logFile = "/media/datahaki/media/ethz/lcmlog/20171030T120648_2c52725e.lcm.00_videodemo2";
+    cfg.logFile = "/media/datahaki/media/ethz/lcmlog/20171107T151536_9639c7f9.lcm.00_test_labday";
     cfg.speed = RationalScalar.of(1, 4);
     LogPlayer.create(cfg);
   }

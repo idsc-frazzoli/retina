@@ -11,10 +11,14 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16PanoramaProvider;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class PanoramaViewModule extends AbstractModule {
   VelodyneLcmClient velodyneLcmClient;
   LidarPanoramaFrame panoramaFrame;
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -25,7 +29,9 @@ public class PanoramaViewModule extends AbstractModule {
     LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider();
     // ---
     panoramaFrame = VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
+    windowConfiguration.attach(getClass(), panoramaFrame.jFrame);
     panoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    panoramaFrame.jFrame.setVisible(true);
     velodyneLcmClient.startSubscriptions();
   }
 

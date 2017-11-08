@@ -7,6 +7,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
+/** background processes that coordinates the communication
+ * between pc and micro-autobox */
 public class AutoboxSocketModule extends AbstractModule {
   @Override
   protected void first() throws Exception {

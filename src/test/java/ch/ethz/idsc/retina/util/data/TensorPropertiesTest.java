@@ -64,7 +64,12 @@ public class TensorPropertiesTest extends TestCase {
           exception.printStackTrace();
         }
     assertTrue(pc.maxTor instanceof Quantity);
-    assertFalse(pc.shape.stream().filter(scalar -> scalar instanceof StringScalar).findAny().isPresent());
+    assertFalse(pc.shape.stream().anyMatch(scalar -> scalar instanceof StringScalar));
     assertEquals(pc.shape.length(), 2);
+  }
+
+  public void testUsername() {
+    String name = System.getProperty("user.name");
+    assertFalse(name.isEmpty());
   }
 }

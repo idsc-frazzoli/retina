@@ -10,13 +10,16 @@ import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TabbedTaskGui;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 enum RunTabbedTaskGui {
   ;
   public static void main(String[] args) {
+    WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     taskTabGui.tab("devices", Arrays.asList( //
         Hdl32eLcmServerModule.class, //
@@ -41,12 +44,15 @@ enum RunTabbedTaskGui {
         SpyModule.class, //
         ParametersModule.class, //
         AutoboxTestingModule.class, //
+        AutboxProviderModule.class, //
         JoystickSimpleDriveModule.class, //
         JoystickFullControlModule.class, //
         LocalViewLcmModule.class, //
         PanoramaViewModule.class, //
-        DavisOverviewModule.class //
+        DavisOverviewModule.class, //
+        DavisDetailModule.class //
     ));
+    wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }
 }

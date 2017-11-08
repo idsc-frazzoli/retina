@@ -25,7 +25,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame {
-  private final JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   @SuppressWarnings("unused")
   private DavisEventStatistics davisEventStatistics;
   // private Tensor eventCount = Array.zeros(3);
@@ -35,8 +35,7 @@ public class DavisViewerFrame {
       davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
 
   public DavisViewerFrame(DavisDevice davisDevice) {
-    jFrame.setBounds(100, 100, 730, 500);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    // jFrame.setBounds(100, 100, 730, 500);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
     {
@@ -68,10 +67,11 @@ public class DavisViewerFrame {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent windowEvent) {
-        close();
+        timer.cancel();
       }
     });
-    jFrame.setVisible(true);
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    // jFrame.setVisible(true);
     {
       TimerTask timerTask = new TimerTask() {
         @Override
@@ -81,12 +81,6 @@ public class DavisViewerFrame {
       };
       timer.schedule(timerTask, 100, 33); // 33 ms -> 30 Hz
     }
-  }
-
-  public void close() {
-    timer.cancel();
-    jFrame.setVisible(false);
-    jFrame.dispose();
   }
 
   public void setStatistics(DavisEventStatistics davisEventStatistics) {

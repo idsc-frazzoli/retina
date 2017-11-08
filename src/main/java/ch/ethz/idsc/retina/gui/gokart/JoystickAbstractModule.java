@@ -22,10 +22,14 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public abstract class JoystickAbstractModule extends AbstractClockedModule {
   private final JFrame jFrame = new JFrame(getClass().getSimpleName());
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
   public final LinmotInitButton linmotInitButton = new LinmotInitButton();
   public final SteerInitButton steerInitButton = new SteerInitButton();
   private HmiAbstractJoystick joystickInstance;
@@ -94,8 +98,6 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     MiscSocket.INSTANCE.addGetListener(miscGetListener);
     // ---
     jFrame.setContentPane(toolbarsComponent.getScrollPane());
-    jFrame.setBounds(200, 200, 380, 270);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -114,6 +116,8 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
         joystickLcmClient.removeListener(joystickInstance);
       }
     });
+    windowConfiguration.attach(getClass(), jFrame);
+    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setVisible(true);
   }
 

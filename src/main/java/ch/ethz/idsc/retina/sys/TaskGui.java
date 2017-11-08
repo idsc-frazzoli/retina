@@ -22,7 +22,7 @@ public class TaskGui {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
         System.out.println("closing all modules");
-        ModuleAuto.terminateAll();
+        ModuleAuto.INSTANCE.terminateAll();
       }
     });
     // ---

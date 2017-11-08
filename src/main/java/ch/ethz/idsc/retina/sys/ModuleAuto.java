@@ -1,6 +1,8 @@
 // code by swisstrolley+
 package ch.ethz.idsc.retina.sys;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,26 +18,28 @@ import java.util.Map;
 public enum ModuleAuto {
   INSTANCE;
   // Maps for holding the module list
-  private static Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
-  private static Map<Class<?>, AbstractModule> watchList = new LinkedHashMap<>();
+  private Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
+  private Map<Class<?>, AbstractModule> watchList = new LinkedHashMap<>();
 
   /** Methods for launching the modules */
-  public static void runAll(List<Class<?>> modules) {
+  public void runAll(List<Class<?>> modules) {
     System.out.println(new Date() + " Module Auto: Launch all");
     for (Class<?> module : modules)
       runOne(module);
     System.out.println(new Date() + " Module Auto: Launch all done");
   }
 
-  public static void terminateAll() {
+  /** terminates modules non-parallel and in reverse order of launching */
+  public void terminateAll() {
     System.out.println(new Date() + " Module Auto: Terminate all");
-    moduleMap.values().stream().parallel() //
-        .forEach(AbstractModule::terminate);
+    List<AbstractModule> list = new ArrayList<>(moduleMap.values());
+    Collections.reverse(list);
+    list.stream().forEach(AbstractModule::terminate);
     moduleMap.clear();
     System.out.println(new Date() + " Module Auto: Terminate all done");
   }
 
-  public static void runOne(Class<?> module) {
+  public void runOne(Class<?> module) {
     if (moduleMap.containsKey(module)) {
       System.out.println(new Date() + " Module Auto: Already launched: " + module);
       return;
@@ -50,7 +54,7 @@ public enum ModuleAuto {
     }
   }
 
-  public static void terminateOne(Class<?> module) {
+  public void terminateOne(Class<?> module) {
     if (watchList.containsKey(module))
       watchList.remove(module);
     if (moduleMap.containsKey(module)) {
@@ -61,7 +65,7 @@ public enum ModuleAuto {
     }
   }
 
-  public static void watch(Class<?> module, AbstractModule abstractModule) {
+  public void watch(Class<?> module, AbstractModule abstractModule) {
     if (watchList.containsKey(module)) {
       System.out.println(new Date() + " Module Auto: Already watching: " + module);
       return;

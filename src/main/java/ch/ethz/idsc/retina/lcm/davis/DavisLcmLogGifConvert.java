@@ -35,7 +35,7 @@ public class DavisLcmLogGifConvert {
       // ---
       DavisGifImageWriter davisGifImageWriter = //
           new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 100, fitec);
-      SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
+      SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
       // ---
