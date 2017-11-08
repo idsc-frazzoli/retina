@@ -19,11 +19,10 @@ public class TabbedTaskGui {
       @Override
       public void windowClosed(WindowEvent e) {
         System.out.println("closed");
-        ModuleAuto.terminateAll(); // TODO tentative
+        ModuleAuto.INSTANCE.terminateAll();
       }
     });
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setSize(300, 400);
   }
 
   public void tab(String title, List<Class<?>> modules) {

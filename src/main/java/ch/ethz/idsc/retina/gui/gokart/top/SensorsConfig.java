@@ -3,12 +3,12 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.retina.gui.gokart.GokartResources;
+import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class SensorsConfig implements Serializable {
-  public static SensorsConfig GLOBAL = GokartResources.load(new SensorsConfig());
+  public static SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
 
   private SensorsConfig() {
   }

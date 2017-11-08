@@ -16,6 +16,8 @@ import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class LocalViewLcmModule extends AbstractModule {
   private final TimerFrame timerFrame = new TimerFrame();
@@ -25,6 +27,8 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
@@ -41,11 +45,18 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      LidarRender lidarRender = new PlanarLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      lidarRender.setColor(new Color(128, 192, 128, 64));
+      urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
       lidarRender.setColor(new Color(128, 0, 0, 128));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
+    // ---
     final VehicleModel vehicleModel = RimoSinusIonModel.standard();
     timerFrame.geometricComponent.addRenderInterface(new VehicleFootprintRender(vehicleModel));
     // ---
@@ -58,13 +69,13 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.mark8);
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.mark8);
       lidarRender.setColor(new Color(0, 128, 0, 128));
       mark8LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new LidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
@@ -74,6 +85,7 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     // ---
+    windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);

@@ -3,13 +3,13 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.retina.gui.gokart.GokartResources;
+import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class SteerConfig implements Serializable {
-  public static SteerConfig GLOBAL = GokartResources.load(new SteerConfig());
+  public static SteerConfig GLOBAL = AppResources.load(new SteerConfig());
 
   private SteerConfig() {
   }

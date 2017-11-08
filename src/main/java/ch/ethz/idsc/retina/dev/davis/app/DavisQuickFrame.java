@@ -21,9 +21,6 @@ public class DavisQuickFrame {
   public final DavisQuickComponent davisViewerComponent = new DavisQuickComponent();
 
   public DavisQuickFrame(DavisDevice davisDevice) {
-    int width = davisDevice.getWidth() * 2;
-    int height = davisDevice.getHeight() * 4;
-    jFrame.setBounds(100, 100, width, height + 10);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;

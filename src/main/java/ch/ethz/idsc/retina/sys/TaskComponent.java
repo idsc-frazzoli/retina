@@ -24,9 +24,9 @@ class TaskComponent {
       JToggleButton jToggleButton = new JToggleButton(getName(module));
       jToggleButton.addActionListener(e -> {
         if (jToggleButton.isSelected())
-          ModuleAuto.runOne(module);
+          ModuleAuto.INSTANCE.runOne(module);
         else
-          ModuleAuto.terminateOne(module);
+          ModuleAuto.INSTANCE.terminateOne(module);
       });
       jpanel.add(jToggleButton);
       map.put(module, jToggleButton);
@@ -36,7 +36,7 @@ class TaskComponent {
 
   public void terminateAll() {
     for (Entry<Class<?>, JToggleButton> entry : map.entrySet()) {
-      ModuleAuto.terminateOne(entry.getKey());
+      ModuleAuto.INSTANCE.terminateOne(entry.getKey());
       entry.getValue().setSelected(false);
     }
   }

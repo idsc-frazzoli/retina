@@ -57,6 +57,8 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     datagramSocketManager.addListener(byteArrayConsumer);
   }
 
+  private PutProvider<PE> putProviderActive = null;
+
   @Override
   public final void start() {
     datagramSocketManager.start();
@@ -68,6 +70,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
           Optional<PE> optional = putProvider.putEvent();
           if (optional.isPresent())
             try {
+              putProviderActive = putProvider;
               PE putEvent = optional.get();
               byte[] data = putEvent.asArray();
               datagramSocketManager.send(getDatagramPacket(data));
@@ -80,6 +83,12 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
     }, 70, getPeriod());
+  }
+
+  public final String getPutProviderDesc() {
+    if (Objects.nonNull(putProviderActive))
+      return putProviderActive.getClass().getSimpleName();
+    return "<null>";
   }
 
   protected abstract long getPeriod();
