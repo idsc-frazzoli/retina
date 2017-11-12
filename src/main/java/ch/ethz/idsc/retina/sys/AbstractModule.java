@@ -22,7 +22,7 @@ public abstract class AbstractModule {
           first();
           return; // <- this will exit thread
         } catch (Exception e) {
-          System.out.println(new Date() + " Abstract Module: failed launch: " + object.getClass().getSimpleName());
+          System.err.println(new Date() + " Abstract Module: failed launch: " + object.getClass().getSimpleName());
           try {
             Thread.sleep(5000);
           } catch (InterruptedException e1) {

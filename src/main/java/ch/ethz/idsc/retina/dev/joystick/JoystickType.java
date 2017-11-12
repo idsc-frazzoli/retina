@@ -8,11 +8,14 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 /** DO NOT INSERT NEW JOYSTICKS BETWEEN EXISTING JOYSTICKS INSTEAD, APPEND NEW
  * JOYSTICKS TO LIST */
 public enum JoystickType {
+  /** tested on GUID=030000004c0e00001035000070000000 */
   GENERIC_XBOX_PAD( //
       () -> new GenericXboxPadJoystick(), 6, 10, 1), //
   /** tested on GUID=030000006d0400001fc2000005030000 */
   LOGITECH_GAMEPAD_F710( //
       () -> new LogitechGamepadF710(), 6, 11, 1), //
+  /** tested on GUID=03000000bd1200002fa0000010010000 */
+  HAMA_5AXIS12BUTTON_WITH_POV(() -> new Hama5Axis12ButtonWithPov(), 4, 12, 1), //
   /** reported to not be reliable! */
   // PC_PS3_ANDROID( //
   // () -> new PCPS3AndroidJoystick(), 4, 15, 1), //
