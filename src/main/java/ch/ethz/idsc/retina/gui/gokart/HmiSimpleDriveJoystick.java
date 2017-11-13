@@ -64,7 +64,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
           Scalar sL = dsL.get(speed, theta);
           Scalar sR = dsR.get(speed, theta);
           return Optional.of(RimoPutEvent.withSpeeds( //
-              sL.number().shortValue(), //
+              (short) -sL.number().shortValue(), //
               sR.number().shortValue()));
         }
       }

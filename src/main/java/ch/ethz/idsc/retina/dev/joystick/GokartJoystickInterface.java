@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.joystick;
 
 /** interface implemented by a {@link JoystickEvent}
  * to qualify for controlling a gokart like robot */
+// TODO duplicate interface and rename functions to functionalNames: "forwardSpeed", turnAngle()...
 public interface GokartJoystickInterface {
   /** value is 1.0 if left knob is pulled towards user value is -1.0 if left knob
    * is pushed away from user

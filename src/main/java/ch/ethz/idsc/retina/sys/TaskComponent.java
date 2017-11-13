@@ -16,7 +16,9 @@ class TaskComponent {
   private final Map<Class<?>, JToggleButton> map = new HashMap<>();
   private final JPanel jpanel = new JPanel();
   private final JPanel top = new JPanel(new BorderLayout());
-  public final JScrollPane jScrollPane = new JScrollPane(top);
+  final JScrollPane jScrollPane = new JScrollPane(top, //
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, //
+      JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // TODO specify scroll options
 
   public TaskComponent(List<Class<?>> modules) {
     jpanel.setLayout(new GridLayout(modules.size(), 1));
