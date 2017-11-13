@@ -27,16 +27,18 @@ public class RimoGetFields {
   JTextField jTF_error_code; // 10
   JTextField jTF_temperature_motor; // 14
   JTextField jTF_temperature_heatsink; // 16
-  // ---
+  JTextField jTF_SdoMessage; // 24
 
-  public void updateText(RimoGetTire rimoGetEvent) {
-    jTF_status_word.setText(String.format("%04X", rimoGetEvent.status_word));
-    jTF_actual_speed.setText(rimoGetEvent.getAngularRate().map(Round._3).toString());
-    jTF_rms_motor_current.setText("" + rimoGetEvent.rms_motor_current);
-    jTF_dc_bus_voltage.setText(rimoGetEvent.getBusVoltage().map(Round._1).toString());
-    jTF_error_code.setText("" + rimoGetEvent.error_code);
-    jTF_temperature_motor.setText(rimoGetEvent.getTemperatureMotor().toString());
-    jTF_temperature_heatsink.setText(rimoGetEvent.getTemperatureHeatsink().toString());
+  // ---
+  public void updateText(RimoGetTire rimoGetTire) {
+    jTF_status_word.setText(String.format("%04X", rimoGetTire.status_word));
+    jTF_actual_speed.setText(rimoGetTire.getAngularRate().map(Round._3).toString());
+    jTF_rms_motor_current.setText("" + rimoGetTire.rms_motor_current);
+    jTF_dc_bus_voltage.setText(rimoGetTire.getBusVoltage().map(Round._1).toString());
+    jTF_error_code.setText("" + rimoGetTire.error_code);
+    jTF_temperature_motor.setText(rimoGetTire.getTemperatureMotor().toString());
+    jTF_temperature_heatsink.setText(rimoGetTire.getTemperatureHeatsink().toString());
+    jTF_SdoMessage.setText(rimoGetTire.sdoMessage.toString());
   }
 
   public void updateRateColor(RimoPutTire rimoPutTire, RimoGetTire rimoGetTire) {
