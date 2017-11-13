@@ -109,10 +109,10 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   @Override
   public void getEvent(RimoGetEvent rimoGetEvent) {
     this.rimoGetEvent = rimoGetEvent;
-    rimoGetFieldsL.updateText(rimoGetEvent.getL);
-    rimoGetFieldsR.updateText(rimoGetEvent.getR);
+    rimoGetFieldsL.updateText(rimoGetEvent.getTireL);
+    rimoGetFieldsR.updateText(rimoGetEvent.getTireR);
     {
-      Scalar temp = rimoGetEvent.getL.getTemperatureMotor();
+      Scalar temp = rimoGetEvent.getTireL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
@@ -120,7 +120,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
     {
-      Scalar temp = rimoGetEvent.getR.getTemperatureMotor();
+      Scalar temp = rimoGetEvent.getTireR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
@@ -135,8 +135,8 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
      * there is no need to update the spinner label */
     rimoPutFieldsL.sliderExtVel.jSlider.setValue(rimoPutEvent.putL.getRateRaw());
     rimoPutFieldsR.sliderExtVel.jSlider.setValue(rimoPutEvent.putR.getRateRaw());
-    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getL);
-    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getR);
+    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
+    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
   }
 
   @Override

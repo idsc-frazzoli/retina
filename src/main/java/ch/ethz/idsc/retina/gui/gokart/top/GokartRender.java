@@ -53,10 +53,10 @@ public class GokartRender implements RenderInterface {
       graphics.setColor(Color.GREEN);
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
-          Tensors.vector(rimoGetEvent.getL.getAngularRate().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rimoGetEvent.getTireL.getAngularRate().number().doubleValue() * 1e-2, 0)));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(3).lever(), //
-          Tensors.vector(rimoGetEvent.getR.getAngularRate().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rimoGetEvent.getTireR.getAngularRate().number().doubleValue() * 1e-2, 0)));
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);
