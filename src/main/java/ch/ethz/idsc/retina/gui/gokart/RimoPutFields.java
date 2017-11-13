@@ -24,19 +24,25 @@ public class RimoPutFields {
   final JTextField jTextfieldSdoSubIndex = new JTextField(5);
   final JTextField jTextfieldSdoData = new JTextField(20);
 
+  public RimoPutFields() {
+    jTextfieldSdoCommand.setToolTipText("enter value in hex notation, for instance f00d");
+  }
+
   public RimoPutTire getPutTire() {
     RimoPutTire rimoPutTire = new RimoPutTire( //
         spinnerLabelCmd.getValue(), //
         (short) sliderExtVel.jSlider.getValue(), //
         (short) sliderExtTrq.jSlider.getValue());
     rimoPutTire.trigger = spinnerLabelTrigger.getValue().getByte();
+    boolean isTriggered = rimoPutTire.trigger != 0;
     try {
-      rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText());
-      rimoPutTire.mainIndex = (short) Integer.parseInt(jTextfieldSdoMainIndex.getText());
-      rimoPutTire.subIndex = (byte) Integer.parseInt(jTextfieldSdoSubIndex.getText());
-      rimoPutTire.sdoData = Integer.parseInt(jTextfieldSdoData.getText());
+      rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText(), 16);
+      rimoPutTire.mainIndex = (short) Integer.parseInt(jTextfieldSdoMainIndex.getText(), 16);
+      rimoPutTire.subIndex = (byte) Integer.parseInt(jTextfieldSdoSubIndex.getText(), 16);
+      rimoPutTire.sdoData = Integer.parseInt(jTextfieldSdoData.getText(), 16);
     } catch (Exception exception) {
-      System.out.println("cannot parse text field as number");
+      if (isTriggered)
+        System.out.println("problem: " + rimoPutTire.toSDOHexString());
     }
     return rimoPutTire;
   }

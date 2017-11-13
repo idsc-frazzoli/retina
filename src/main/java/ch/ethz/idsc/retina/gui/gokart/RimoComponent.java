@@ -100,6 +100,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
     // TODO NRJ background according to error code
     rimoGetFields.jTF_error_code = createReading(side + " error code");
+    rimoGetFields.jTF_error_code_emergency = createReading(side + " emergcy");
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
     rimoGetFields.jTF_temperature_heatsink = createReading(side + " temp. heatsink");
     rimoGetFields.jTF_SdoMessage = createReading(side + " SDO message");

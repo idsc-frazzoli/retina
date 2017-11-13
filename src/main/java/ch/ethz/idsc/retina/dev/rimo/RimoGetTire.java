@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -80,6 +81,10 @@ public class RimoGetTire implements Serializable {
   public Scalar getTemperatureHeatsink() {
     // TODO NRJ right now only senses zeros
     return Quantity.of(temperature_heatsink, CELSIUS);
+  }
+
+  public Optional<RimoEmergencyError> getEmergencyError() {
+    return RimoEmergencyErrors.INSTANCE.ofCode((short) (error_code & 0xffff));
   }
 
   public String toInfoString() {

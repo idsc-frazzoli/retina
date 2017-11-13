@@ -2,9 +2,11 @@
 package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
+import java.util.Optional;
 
 import javax.swing.JTextField;
 
+import ch.ethz.idsc.retina.dev.rimo.RimoEmergencyError;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.tensor.Scalar;
@@ -25,6 +27,7 @@ public class RimoGetFields {
   JTextField jTF_rms_motor_current; // 6
   JTextField jTF_dc_bus_voltage; // 8
   JTextField jTF_error_code; // 10
+  JTextField jTF_error_code_emergency; // 10
   JTextField jTF_temperature_motor; // 14
   JTextField jTF_temperature_heatsink; // 16
   JTextField jTF_SdoMessage; // 24
@@ -36,6 +39,10 @@ public class RimoGetFields {
     jTF_rms_motor_current.setText("" + rimoGetTire.rms_motor_current);
     jTF_dc_bus_voltage.setText(rimoGetTire.getBusVoltage().map(Round._1).toString());
     jTF_error_code.setText("" + rimoGetTire.error_code);
+    {
+      Optional<RimoEmergencyError> optional = rimoGetTire.getEmergencyError();
+      jTF_error_code_emergency.setText(optional.isPresent() ? optional.get().name() : "");
+    }
     jTF_temperature_motor.setText(rimoGetTire.getTemperatureMotor().toString());
     jTF_temperature_heatsink.setText(rimoGetTire.getTemperatureHeatsink().toString());
     jTF_SdoMessage.setText(rimoGetTire.sdoMessage.toString());

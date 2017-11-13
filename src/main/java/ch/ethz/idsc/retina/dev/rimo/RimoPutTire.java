@@ -80,4 +80,8 @@ public class RimoPutTire implements Serializable {
     byteBuffer.put(subIndex); // 10
     byteBuffer.putInt(sdoData); // 11 ... total == 15
   }
+
+  public String toSDOHexString() {
+    return String.format("%02x %04x.%02x %08x", sdoCommand, mainIndex, subIndex, sdoData);
+  }
 }
