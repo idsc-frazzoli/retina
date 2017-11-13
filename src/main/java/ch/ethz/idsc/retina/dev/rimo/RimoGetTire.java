@@ -33,6 +33,10 @@ public class RimoGetTire implements Serializable {
   public final short rms_motor_current;
   /** cV */
   private final short dc_bus_voltage;
+  /** TODO NRJ the meaning of the error_code still has to be determined
+   * observed examples when engines have just been started:
+   * _LEFT 0x23400008
+   * RIGHT 0x23100008 */
   public final int error_code;
   /** C */
   private final short temperature_motor;
@@ -84,7 +88,9 @@ public class RimoGetTire implements Serializable {
   }
 
   public Optional<RimoEmergencyError> getEmergencyError() {
-    return RimoEmergencyErrors.INSTANCE.ofCode((short) (error_code & 0xffff));
+    /** documentation on the definite decoding of the error code is not available
+     * we suspect the 2 hi bytes are the emergency error code */
+    return RimoEmergencyErrors.INSTANCE.ofCode((short) (error_code >> 16));
   }
 
   public String toInfoString() {
@@ -93,5 +99,9 @@ public class RimoGetTire implements Serializable {
         rms_motor_current, dc_bus_voltage, //
         error_code, //
         temperature_motor, temperature_heatsink);
+  }
+
+  public int getErrorCodeMasked() {
+    return error_code & 0x00ffffff;
   }
 }

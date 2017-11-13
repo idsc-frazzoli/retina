@@ -38,7 +38,7 @@ public class RimoGetFields {
     jTF_actual_speed.setText(rimoGetTire.getAngularRate().map(Round._3).toString());
     jTF_rms_motor_current.setText("" + rimoGetTire.rms_motor_current);
     jTF_dc_bus_voltage.setText(rimoGetTire.getBusVoltage().map(Round._1).toString());
-    jTF_error_code.setText("" + rimoGetTire.error_code);
+    jTF_error_code.setText(String.format("%08X", rimoGetTire.error_code));
     {
       Optional<RimoEmergencyError> optional = rimoGetTire.getEmergencyError();
       jTF_error_code_emergency.setText(optional.isPresent() ? optional.get().name() : "");
