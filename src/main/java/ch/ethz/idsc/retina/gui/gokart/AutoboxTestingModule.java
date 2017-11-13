@@ -1,15 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -18,6 +15,8 @@ import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
@@ -26,18 +25,22 @@ public class AutoboxTestingModule extends AbstractModule {
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
-  private final JFrame jFrame = new JFrame();
+  private final JFrame jFrame = new JFrame("Monitor and Testing");
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
-    RimoSocket.INSTANCE.addAll(rimoComponent);
-    addTab(rimoComponent);
-    // ---
     LinmotSocket.INSTANCE.addAll(linmotComponent);
+    LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
     SteerSocket.INSTANCE.addAll(steerComponent);
+    SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
+    // ---
+    RimoSocket.INSTANCE.addAll(rimoComponent);
+    addTab(rimoComponent);
     // ---
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
@@ -45,18 +48,20 @@ public class AutoboxTestingModule extends AbstractModule {
     jTabbedPane.setSelectedIndex(0);
     // ---
     jFrame.setContentPane(jTabbedPane);
-    jFrame.setBounds(100, 80, 500, 700);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removeAll(rimoComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent);
+        LinmotSocket.INSTANCE.removeAll(linmotComponent.linmotInitButton);
         SteerSocket.INSTANCE.removeAll(steerComponent);
+        SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
         MiscSocket.INSTANCE.removeAll(miscComponent);
         System.out.println("removed listeners and providers");
       }
     });
+    windowConfiguration.attach(getClass(), jFrame);
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }
 
@@ -70,9 +75,16 @@ public class AutoboxTestingModule extends AbstractModule {
     list.add(autoboxTestingComponent);
     String string = autoboxTestingComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);
-    JPanel jPanel = new JPanel(new BorderLayout());
-    jPanel.add(autoboxTestingComponent.getComponent(), BorderLayout.NORTH);
-    JScrollPane jScrollPane = new JScrollPane(jPanel);
-    jTabbedPane.addTab(string, jScrollPane);
+    jTabbedPane.addTab(string, autoboxTestingComponent.getScrollPane());
+  }
+
+  public static void standalone() throws Exception {
+    AutoboxTestingModule autoboxTestingModule = new AutoboxTestingModule();
+    autoboxTestingModule.first();
+    autoboxTestingModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  }
+
+  public static void main(String[] args) throws Exception {
+    standalone();
   }
 }

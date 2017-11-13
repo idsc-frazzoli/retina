@@ -3,16 +3,13 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Optional;
 
-import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
@@ -27,7 +24,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Round;
 
 class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
-  private final JButton initButton = new JButton("Init");
+  public final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
   private final SliderExt sliderExtTPos;
@@ -41,32 +38,23 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   private final JTextField jTextFieldDemandPosition;
   private final JTextField jTextFieldWindingTemp1;
   private final JTextField jTextFieldWindingTemp2;
+  private final JCheckBox[] jCheckBoxStatusWord = new JCheckBox[16];
 
   public LinmotComponent() {
     {
       JToolBar jToolBar = createRow("Special Routines");
-      initButton.setEnabled(false);
-      initButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-          if (LinmotCalibrationProvider.INSTANCE.isIdle())
-            LinmotCalibrationProvider.INSTANCE.schedule();
-          else
-            System.out.println("queue not empty yet");
-        }
-      });
-      jToolBar.add(initButton);
+      jToolBar.add(linmotInitButton.getComponent());
     }
     {
       JToolBar jToolBar = createRow("control word");
       spinnerLabelCtrl.setList(LinmotPutHelper.COMMANDS);
-      spinnerLabelCtrl.setValueSafe(LinmotPutHelper.CMD_OFF_MODE);
+      spinnerLabelCtrl.setValueSafe(LinmotPutHelper.CMD_OPERATION);
       spinnerLabelCtrl.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
       JToolBar jToolBar = createRow("motion cmd hdr");
       spinnerLabelHdr.setList(LinmotPutHelper.HEADER);
-      spinnerLabelHdr.setValueSafe(LinmotPutHelper.MC_ZEROS);
+      spinnerLabelHdr.setValueSafe(LinmotPutHelper.MC_POSITION);
       spinnerLabelHdr.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // target pos
@@ -105,6 +93,11 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     addSeparator();
     {
       jTextFieldStatusWord = createReading("status word");
+      // ---
+      for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index)
+        jCheckBoxStatusWord[index] = //
+            createReadingCheckbox(index + " " + LinmotStatusWord.TITLES[index]);
+      // ---
       jTextFieldStateVariable = createReading("state variable");
       jTextFieldActualPosition = createReading("actual pos.");
       jTextFieldDemandPosition = createReading("demand pos.");
@@ -116,15 +109,16 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
+    for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index) {
+      boolean selected = (linmotGetEvent.status_word & (1 << index)) != 0;
+      jCheckBoxStatusWord[index].setSelected(selected);
+    }
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
-    // TODO NRJ figure out units for position
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
-        Gui.INSTANCE.TEMPERATURE.apply(LinmotGetEvent.POSITION_DELTA.rescale(scalar))));
-    // TODO simplify using new Clip API
-    // TODO NRJ add colors for demand and actual position
+        ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.NOMINAL_POSITION_DELTA.rescale(scalar))));
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
@@ -156,7 +150,8 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
 
   @Override
   public void putEvent(LinmotPutEvent linmotPutEvent) {
-    initButton.setEnabled(LinmotCalibrationProvider.INSTANCE.isIdle());
+    if (linmotPutEvent.isOperational())
+      sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
     spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);

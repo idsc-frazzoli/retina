@@ -16,7 +16,7 @@ public class DavisApsDatagramServer implements DavisApsBlockListener, AutoClosea
   private DatagramPacket datagramPacket = null;
 
   public DavisApsDatagramServer(DavisApsBlockCollector davisApsBlockCollector) {
-    davisApsBlockCollector.setListener(this); // TODO design dubious
+    davisApsBlockCollector.setListener(this); // design not canonic
     ByteBuffer byteBuffer = davisApsBlockCollector.byteBuffer();
     byte[] data = byteBuffer.array();
     int length = data.length;

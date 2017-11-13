@@ -23,7 +23,6 @@ public class SteerPutEvent extends DataEvent {
   // ---
   private final byte command;
   private final float torque;
-  public static final double MAX_ANGLE = 0.6743167638778687;
 
   /** @param command
    * @param torque TODO NRJ determine valid range */

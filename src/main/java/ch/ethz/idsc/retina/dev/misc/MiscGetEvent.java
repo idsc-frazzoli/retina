@@ -26,7 +26,6 @@ public class MiscGetEvent extends DataEvent {
   public Scalar getSteerBatteryVoltage() {
     // maps the output of the ADC(0-1) to the real input voltage (0V-5V)
     // 2.8 accounts for the resitance value of the voltage divider
-    // TODO NRJ ask MAC state ohm of resistors
     return Quantity.of(batteryAdc * 5 * 2.8, "V");
   }
 

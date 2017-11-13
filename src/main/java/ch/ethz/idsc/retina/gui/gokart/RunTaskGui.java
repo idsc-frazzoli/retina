@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
+import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TaskGui;
@@ -22,8 +23,11 @@ enum RunTaskGui {
     modules.add(LoggerModule.class);
     // ---
     modules.add(Hdl32eLcmServerModule.class);
+    modules.add(Vlp16LcmServerModule.class);
     modules.add(Mark8LcmServerModule.class);
     modules.add(Urg04lxLcmServerModule.class);
+    modules.add(DavisOverviewModule.class);
+    modules.add(DavisDetailModule.class);
     // ---
     modules.add(Urg04lxEmergencyModule.class);
     modules.add(MiscEmergencyModule.class);
@@ -31,14 +35,17 @@ enum RunTaskGui {
     modules.add(LinmotEmergencyModule.class);
     modules.add(LinmotTakeoverModule.class);
     // ---
+    modules.add(ParametersModule.class);
     modules.add(AutoboxLcmServerModule.class);
     modules.add(AutoboxSocketModule.class);
     modules.add(AutoboxTestingModule.class);
-    modules.add(AutoboxJoystickModule.class);
+    modules.add(JoystickSimpleDriveModule.class);
+    modules.add(JoystickFullControlModule.class);
     // ---
     modules.add(GokartStatusLcmModule.class);
     // ---
     modules.add(LocalViewLcmModule.class);
+    modules.add(PanoramaViewModule.class);
     // ---
     new TaskGui(modules);
   }

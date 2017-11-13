@@ -1,72 +1,29 @@
 // code by nisaak, rvmoos, and jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
 
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
-import ch.ethz.idsc.retina.dev.zhkart.TimedPutEvent;
-
-public enum LinmotCalibrationProvider implements LinmotPutProvider {
-  INSTANCE;
+/** the procedure re-initializes linmot brake from any initial condition.
+ * the procedure leaves the linmot in positioning mode so that
+ * position commands are executed */
+public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<LinmotPutEvent> {
+  public static final LinmotCalibrationProvider INSTANCE = new LinmotCalibrationProvider();
   // ---
-  private final Queue<TimedPutEvent<LinmotPutEvent>> queue = new PriorityQueue<>();
 
-  public boolean isIdle() {
-    return queue.isEmpty();
-  }
-
-  public void schedule() {
-    long timestamp = System.currentTimeMillis();
-    {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutHelper.CMD_ERR_ACK, //
-          LinmotPutHelper.MC_ZEROS);
-      timestamp += 200;
-      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
-    }
-    {
-      timestamp += 200;
-      queue.add(new TimedPutEvent<>(timestamp, LinmotPutHelper.OFF_MODE_EVENT));
-    }
-    {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutHelper.CMD_HOME, //
-          LinmotPutHelper.MC_ZEROS);
-      timestamp += 4000;
-      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
-    }
-    {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutHelper.CMD_OPERATION, //
-          LinmotPutHelper.MC_ZEROS); //
-      timestamp += 200;
-      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
-    }
-    {
-      LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
-          LinmotPutHelper.CMD_OPERATION, //
-          LinmotPutHelper.MC_POSITION); //
-      timestamp += 200;
-      queue.add(new TimedPutEvent<>(timestamp, linmotPutEvent));
-    }
+  private LinmotCalibrationProvider() {
   }
 
   @Override
-  public ProviderRank getProviderRank() {
-    return ProviderRank.CALIBRATION;
-  }
-
-  @Override
-  public Optional<LinmotPutEvent> putEvent() {
-    while (!queue.isEmpty()) {
-      TimedPutEvent<LinmotPutEvent> timedPutEvent = queue.peek();
-      if (timedPutEvent.time_ms < System.currentTimeMillis())
-        queue.poll();
-      else
-        return Optional.of(timedPutEvent.putEvent);
-    }
-    return Optional.empty();
+  protected void protected_schedule() {
+    long timestamp = now();
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
+        LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
+    eventUntil(timestamp += 200, LinmotPutHelper.OFF_MODE_EVENT);
+    eventUntil(timestamp += 4000, new LinmotPutEvent( //
+        LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
+        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
+    eventUntil(timestamp += 200, new LinmotPutEvent( //
+        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
   }
 }

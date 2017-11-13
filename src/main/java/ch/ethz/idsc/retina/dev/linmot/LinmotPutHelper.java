@@ -60,16 +60,11 @@ public enum LinmotPutHelper {
     return linmotPutEvent;
   }
 
-  // TODO move function
-  public static Word findWord(List<Word> list, short value) {
-    return list.stream().filter(w -> w.getShort() == value).findFirst().get();
-  }
-
   public static Word findControlWord(short value) {
-    return findWord(COMMANDS, value);
+    return Word.findShort(COMMANDS, value);
   }
 
   public static Word findHeaderWord(short value) {
-    return findWord(HEADER, value);
+    return Word.findShort(HEADER, value);
   }
 }

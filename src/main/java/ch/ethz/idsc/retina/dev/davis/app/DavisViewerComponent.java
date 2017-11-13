@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -22,7 +21,7 @@ import ch.ethz.idsc.retina.util.img.ImageHistogram;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class DavisViewerComponent implements DavisImuFrameListener {
-  private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
+  // private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
   // ---
   BufferedImage sigImage = null;
   BufferedImage rstImage = null;

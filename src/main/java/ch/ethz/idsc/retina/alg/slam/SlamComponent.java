@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 
 import ch.ethz.idsc.retina.util.Bulletin;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
@@ -23,7 +22,6 @@ import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class SlamComponent implements SlamListener {
-  private static final JLabel JLABEL = new JLabel();
   private static final int W_HALF = OccupancyMap.WIDTH / 2;
   // ---
   private final ImageCopy bufferedImageCopy = new ImageCopy();
@@ -32,7 +30,7 @@ public class SlamComponent implements SlamListener {
     @Override
     protected void paintComponent(Graphics g) {
       Graphics2D graphics = (Graphics2D) g;
-      graphics.drawImage(bufferedImageCopy.get(), 0, 0, JLABEL);
+      graphics.drawImage(bufferedImageCopy.get(), 0, 0, null);
       if (Objects.nonNull(_slamEvent)) {
         Tensor pose = _slamEvent.global_pose;
         {

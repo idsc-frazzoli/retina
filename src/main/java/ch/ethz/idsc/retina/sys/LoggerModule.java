@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.sys;
 
 import java.util.Date;
 
+import ch.ethz.idsc.owly.demo.util.UserHome;
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
-import ch.ethz.idsc.retina.util.io.UserHome;
 
 /** invokes lcm logger binary as Process that records all lcm-messages
  * into binary files for later playback */
@@ -24,5 +24,9 @@ public final class LoggerModule extends AbstractModule {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    new LoggerModule().first();
   }
 }

@@ -9,9 +9,11 @@ public class TimedFuse {
   private final double period;
   private Stopwatch stopwatch = null;
   private boolean fuse_blown = false;
+  public boolean showInfo = false;
 
-  public TimedFuse(double window) {
-    this.period = window;
+  /** @param period in [s] */
+  public TimedFuse(double period) {
+    this.period = period;
   }
 
   public void register(boolean blowing_fuse) {
@@ -21,7 +23,8 @@ public class TimedFuse {
       fuse_blown |= period < stopwatch.display_seconds();
     } else {
       if (Objects.nonNull(stopwatch)) {
-        System.out.println("reset watchdog after: " + stopwatch.display_seconds());
+        if (showInfo)
+          System.out.println("reset watchdog after: " + stopwatch.display_seconds());
         stopwatch = null;
       }
     }

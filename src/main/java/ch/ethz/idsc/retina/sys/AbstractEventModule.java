@@ -1,4 +1,4 @@
-// code by swisstrolley+ and jph
+// code by njenwei, swisstrolley+, and jph
 package ch.ethz.idsc.retina.sys;
 
 import java.util.Timer;
@@ -33,18 +33,29 @@ public abstract class AbstractEventModule extends AbstractModule {
 
   @Override
   protected final void launch() throws Exception {
-    first();
     thread = new Thread(() -> {
-      while (!thread.isInterrupted()) {
-        if (pollEvent()) {
-          runAlgo();
-        } else {
-          try {
-            Thread.sleep(sleepTime);
-          } catch (InterruptedException e) {
-            return;
+      try {
+        first();
+      } catch (InterruptedException exception) {
+        return;
+      } catch (Exception exception) {
+        exception.printStackTrace();
+        return;
+      }
+      try {
+        while (!thread.isInterrupted()) {
+          if (pollEvent()) {
+            runAlgo();
+          } else {
+            try {
+              Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+              return;
+            }
           }
         }
+      } catch (Exception e1) {
+        e1.printStackTrace();
       }
     });
     thread.setName(getClass().getSimpleName());
@@ -58,6 +69,10 @@ public abstract class AbstractEventModule extends AbstractModule {
     if (thread != null) {
       thread.interrupt();
     }
-    last();
+    try {
+      last();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 }

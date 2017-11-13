@@ -6,23 +6,22 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.math.SteeringWheelAngle;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.math.car.SteeringWheelAngle;
-import ch.ethz.idsc.owly.model.car.VehicleModel;
+import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.lie.AngleVector;
+import ch.ethz.idsc.tensor.alg.Join;
 
 public class GokartRender implements RenderInterface {
   private final VehicleModel vehicleModel;
@@ -33,14 +32,18 @@ public class GokartRender implements RenderInterface {
   private LinmotGetEvent linmotGetEvent;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   // ---
-  private SteerGetEvent steerGetEvent;
-  public final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
   public GokartRender(VehicleModel vehicleModel) {
     this.vehicleModel = vehicleModel;
   }
+
+  // TODO magic const
+  private static final double TR = 0.13;
+  private static final double TW = 0.07;
+  public static final Tensor FRONT_TIRE = Tensors.matrixDouble( //
+      new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -64,17 +67,19 @@ public class GokartRender implements RenderInterface {
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
     if (Objects.nonNull(gokartStatusEvent)) {
-      double angle = gokartStatusEvent.steeringAngle;
-      Scalar angleL = SteeringWheelAngle.of(RealScalar.of(48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
-      Scalar angleR = SteeringWheelAngle.of(RealScalar.of(-48.0 / 118.0), gokartStatusEvent.getSteeringAngle());
+      Scalar angle = gokartStatusEvent.getSteeringAngle();
+      Scalar ratioL = ChassisGeometry.GLOBAL.ratioSteering();
+      Scalar angleL = SteeringWheelAngle.of(ratioL.negate(), angle); // TODO why is sign like this? and not swapped
+      Scalar angleR = SteeringWheelAngle.of(ratioL, angle);
       graphics.setStroke(new BasicStroke(2));
-      graphics.setColor(Color.GRAY);
-      graphics.draw(geometricLayer.toVector( //
-          vehicleModel.wheel(0).lever(), //
-          AngleVector.of(angleL).multiply(RealScalar.of(0.3))));
-      graphics.draw(geometricLayer.toVector( //
-          vehicleModel.wheel(1).lever(), //
-          AngleVector.of(angleR).multiply(RealScalar.of(0.3))));
+      graphics.setColor(new Color(128, 128, 128, 128));
+      Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
+      for (int index = 0; index < 4; ++index) {
+        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(vehicleModel.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
+        geometricLayer.pushMatrix(matrix);
+        graphics.fill(geometricLayer.toPath2D(FRONT_TIRE));
+        geometricLayer.popMatrix();
+      }
     }
     graphics.setStroke(new BasicStroke());
   }

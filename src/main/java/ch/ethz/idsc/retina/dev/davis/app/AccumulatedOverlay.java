@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.swing.JLabel;
-
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -47,7 +45,7 @@ public class AccumulatedOverlay implements DavisDvsListener {
     public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
       Graphics graphics = modif.getGraphics();
-      graphics.drawImage(columnTimedImage.bufferedImage, 0, 0, new JLabel());
+      graphics.drawImage(columnTimedImage.bufferedImage, 0, 0, null);
       background = ImageFormat.from(modif);
     }
   };

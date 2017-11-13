@@ -39,7 +39,7 @@ public enum DavisLcmLogUzhConvert {
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
       // ---
       DavisPngImageWriter davisPngImageWriter = new DavisPngImageWriter(directory, fitec);
-      SignalResetDifference signalResetDifference = new SignalResetDifference(davisImageBuffer);
+      SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
       signalResetDifference.addListener(davisPngImageWriter);
       davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
       davisLcmClient.davisSigDatagramDecoder.addListener(fitec);

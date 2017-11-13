@@ -3,24 +3,25 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class GokartStatusEvent extends DataEvent {
-  public final float steeringAngle;
+  private final float steerColumnAngle;
 
-  public GokartStatusEvent(float steeringAngle) {
-    this.steeringAngle = steeringAngle;
+  public GokartStatusEvent(float steerColumnAngle) {
+    this.steerColumnAngle = steerColumnAngle;
   }
 
   public GokartStatusEvent(ByteBuffer byteBuffer) {
-    steeringAngle = byteBuffer.getFloat();
+    steerColumnAngle = byteBuffer.getFloat();
   }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putFloat(steeringAngle);
+    byteBuffer.putFloat(steerColumnAngle);
   }
 
   @Override
@@ -28,7 +29,12 @@ public class GokartStatusEvent extends DataEvent {
     return 4;
   }
 
+  public boolean isSteeringCalibrated() {
+    return !Float.isNaN(steerColumnAngle);
+  }
+
+  /** @return NaN if steering is not calibrated */
   public Scalar getSteeringAngle() {
-    return RealScalar.of(steeringAngle);
+    return RealScalar.of(steerColumnAngle).multiply(SteerConfig.GLOBAL.column2steer);
   }
 }

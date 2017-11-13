@@ -20,7 +20,7 @@ public class DavisDvsBlockCollector implements DavisDvsListener {
   }
 
   int numel = 0;
-  int pacid = 0; // TODO increment
+  int pacid = 0;
   int offset;
 
   @Override

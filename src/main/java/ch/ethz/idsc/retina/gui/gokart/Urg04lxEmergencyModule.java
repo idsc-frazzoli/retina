@@ -11,11 +11,14 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 /** sends stop command if front lidar is not operational */
 public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
   private static final int WATCHDOG_MS = 500; // 500[ms]
+  // ---
   private final Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient("front");
+  private final TimedFuse timedFuse = new TimedFuse(WATCHDOG_MS * 1e-3);
 
   @Override
   protected void first() throws Exception {
@@ -31,11 +34,9 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
     urg04lxLcmClient.stopSubscriptions();
   }
 
-  private long last = now();
-
   @Override
   public void timestamp(int usec, int type) {
-    last = now();
+    timedFuse.register(false);
   }
 
   @Override
@@ -50,12 +51,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    if (now() < last + WATCHDOG_MS)
-      return Optional.empty();
-    return Optional.of(RimoPutEvent.STOP);
-  }
-
-  private static long now() {
-    return System.currentTimeMillis();
+    timedFuse.register(true);
+    return timedFuse.isBlown() ? Optional.of(RimoPutEvent.STOP) : Optional.empty();
   }
 }

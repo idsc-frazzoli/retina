@@ -23,10 +23,10 @@ public class Se2MultiresSamples {
       for (int x = -1; x <= 1; ++x)
         for (int y = -1; y <= 1; ++y)
           for (int t = -1; t <= 1; ++t)
-            next.append(Se2Exp.of( //
+            next.append(Se2Exp.of(Tensors.of( //
                 shf.multiply(RealScalar.of(x)), //
                 shf.multiply(RealScalar.of(y)), //
-                ang.multiply(RealScalar.of(t))));
+                ang.multiply(RealScalar.of(t)))));
       list.add(next);
       // ---
       ang = ang.multiply(DECR);

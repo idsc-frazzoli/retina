@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 
 public class GokartStatusLcmModule extends AbstractClockedModule {
   public static final String CHANNEL = "gokart.status.get";
+  public static final double PERIOD_S = 0.01;
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL);
 
@@ -26,7 +27,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
 
   @Override
   protected double getPeriod() {
-    return 0.05;
+    return PERIOD_S;
   }
 
   @Override

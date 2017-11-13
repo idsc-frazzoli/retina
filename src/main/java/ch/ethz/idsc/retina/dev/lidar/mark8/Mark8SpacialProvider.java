@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.util.math.TrigonometryLookupFloat;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 public class Mark8SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 8;
@@ -24,7 +24,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
   // confirmation through experiments
   private static final double[] M8_VERTICAL_ANGLES = { //
       -0.318505, -0.2692, -0.218009, -0.165195, -0.111003, -0.0557982, 0.0, 0.0557982 };
-  private static final TrigonometryLookupFloat TRIGONOMETRY = new TrigonometryLookupFloat(10400, false);
+  private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(10400, false);
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   private int usec;

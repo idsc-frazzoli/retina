@@ -47,4 +47,9 @@ public class LinmotPutEvent extends DataEvent {
   protected int length() {
     return LENGTH;
   }
+
+  public boolean isOperational() {
+    return control_word == LinmotPutHelper.CMD_OPERATION.getShort() //
+        && motion_cmd_hdr == LinmotPutHelper.MC_POSITION.getShort();
+  }
 }

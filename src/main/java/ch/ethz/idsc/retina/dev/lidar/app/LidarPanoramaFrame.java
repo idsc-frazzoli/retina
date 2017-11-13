@@ -39,8 +39,8 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
           list.add("width=" + lidarPanoramaRef.getWidth());
           BufferedImage bufferedImage = lidarPanoramaRef.distances();
           final int width = bufferedImage.getWidth();
-          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, jFrame);
-          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, jFrame);
+          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, null);
+          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, null);
         }
       }
       {
@@ -67,10 +67,8 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
   }
 
   public LidarPanoramaFrame() {
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 1700, 300);
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setContentPane(jComponent);
-    jFrame.setVisible(true);
   }
 
   @Override
@@ -86,6 +84,7 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
 
   @Override
   public void close() {
+    jFrame.setVisible(false);
     jFrame.dispose();
   }
 }

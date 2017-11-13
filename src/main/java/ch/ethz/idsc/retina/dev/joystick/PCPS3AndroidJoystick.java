@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.joystick;
 public final class PCPS3AndroidJoystick extends JoystickEvent {
   @Override
   public JoystickType type() {
-    return JoystickType.PC_PS3_ANDROID;
+    return null; // JoystickType.PC_PS3_ANDROID;
   }
 
   public boolean isButtonPressedA() {

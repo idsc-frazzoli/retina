@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Optional;
 
+import javax.swing.JButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -13,6 +14,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
@@ -23,7 +25,12 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   /** default message used only for display information */
   private RimoGetEvent rimoGetEvent;
 
+  // private void setZero() {
+  // sliderExtRVel.jSlider.setValue(0);
+  // sliderExtLVel.jSlider.setValue(0);
+  // }
   public RimoComponent() {
+    // <<<<<<< HEAD
     assign(rimoPutFieldsL, "LEFT");
     assign(rimoPutFieldsR, "RIGHT");
     addSeparator();
@@ -34,6 +41,15 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   }
 
   private void assign(RimoPutFields rimoPutFields, String side) {
+    // =======
+    // STOP BUTTON
+    {
+      JToolBar jToolBar = createRow("Actions");
+      JButton stopButton = new JButton("STOP");
+      jToolBar.add(stopButton);
+      // stopButton.addActionListener(e -> setZero());
+    }
+    // >>>>>>> master
     // LEFT
     {
       JToolBar jToolBar = createRow(side + " command");
@@ -97,7 +113,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       Scalar temp = rimoGetEvent.getL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
+      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
       rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
@@ -105,7 +121,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       Scalar temp = rimoGetEvent.getR.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = Gui.INSTANCE.TEMPERATURE_LIGHT.apply(scalar);
+      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
       rimoGetFieldsR.jTF_temperature_motor.setBackground(color);
     }

@@ -48,13 +48,16 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         }
     }
   };
-  private final Set<PutProvider<PE>> providers = new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private final Set<PutProvider<PE>> providers = //
+      new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private Timer timer;
 
   protected AutoboxSocket(DatagramSocketManager datagramSocketManager) {
     this.datagramSocketManager = datagramSocketManager;
     datagramSocketManager.addListener(byteArrayConsumer);
   }
+
+  private PutProvider<PE> putProviderActive = null;
 
   @Override
   public final void start() {
@@ -67,6 +70,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
           Optional<PE> optional = putProvider.putEvent();
           if (optional.isPresent())
             try {
+              putProviderActive = putProvider;
               PE putEvent = optional.get();
               byte[] data = putEvent.asArray();
               datagramSocketManager.send(getDatagramPacket(data));
@@ -76,9 +80,15 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
               exception.printStackTrace();
             }
         }
-        System.err.println("no command provided");
+        System.err.println("no command provided in " + getClass().getSimpleName());
       }
     }, 70, getPeriod());
+  }
+
+  public final String getPutProviderDesc() {
+    if (Objects.nonNull(putProviderActive))
+      return putProviderActive.getClass().getSimpleName();
+    return "<null>";
   }
 
   protected abstract long getPeriod();

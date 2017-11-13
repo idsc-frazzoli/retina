@@ -24,7 +24,7 @@ public class DavisTallyEvent {
 
   public void register(int time) {
     int index = binIndex(time);
-    if (0 <= index && index < bin.length) { // TODO check negative!!!
+    if (0 <= index && index < bin.length) {
       ++bin[index];
       binLast = Math.max(binLast, index);
     }
@@ -49,7 +49,7 @@ public class DavisTallyEvent {
   public void setMax(int time) {
     last = time;
     int index = binIndex(time);
-    if (0 <= index && index < bin.length) { // TODO check negative!!!
+    if (0 <= index && index < bin.length) {
       binLast = index;
     }
   }

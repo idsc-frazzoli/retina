@@ -15,4 +15,6 @@ public enum LidarLcm {
   public static final String MARK8_LAB0 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-09-05.00.m8_urg";
   public static final String MARK8_LAB1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-09-05.01.m8_urg";
   public static final String MARK8_LAB2 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-09-05.02.m8_urg";
+  // ---
+  public static final String MARK8_LAB3 = "/media/datahaki/media/ethz/lcmlog/20171003T162112_db6268ca.lcm.00_switch_first";
 }

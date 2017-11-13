@@ -7,23 +7,27 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart */
 public class LinmotGetEvent extends DataEvent {
+  /** 16 bytes */
+  public static final int LENGTH = 16;
+  // TODO NRJ document conversion factor
+  private static final double TO_DEGREE_CELSIUS = 0.1;
+  /** actual position of 100000 corresponds to 1 cm
+   * demand position uses the same scale */
+  private static final double GET_POSITION_TO_METER = 1e-7;
   private static final Unit CELSIUS = Unit.of("degC");
   /** degree celsius */
   // TODO NRJ check valid range, cite source
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
       Quantity.of(2, CELSIUS), //
       Quantity.of(110, CELSIUS));
-  // TODO NRJ magic const
-  public static final Clip POSITION_DELTA = Clip.function(-20000, 20000);
-  /** 16 bytes */
-  public static final int LENGTH = 16;
-  // TODO NRJ document conversion factor
-  private static final double TO_DEGREE_CELSIUS = 0.1;
+  /** bounds established using experimentation */
+  public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
   // ---
   public final short status_word;
   public final short state_variable;
@@ -61,6 +65,12 @@ public class LinmotGetEvent extends DataEvent {
     return TEMPERATURE_RANGE.isInside(getWindingTemperature2());
   }
 
+  public Scalar getWindingTemperatureMax() {
+    return Max.of( //
+        getWindingTemperature1(), //
+        getWindingTemperature2());
+  }
+
   public String toInfoString() {
     return String.format("%d %d %d %d %d %d", //
         status_word, state_variable, //
@@ -84,11 +94,19 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   public Scalar getActualPosition() {
-    // actual position of 100000 corresponds to 1 cm
-    return Quantity.of(actual_position * 1e-7, "m");
+    return Quantity.of(actual_position * GET_POSITION_TO_METER, "m");
   }
 
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
+  }
+
+  // bits set for guaranteed operation:
+  // bit 0, 1, 2, 4, 5, 11
+  private static final int OPERATIONAL_MASK = 1 + 2 + 4 + 16 + 32 + 2048;
+
+  public boolean isOperational() {
+    // TODO NRJ this check is too strict
+    return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
   }
 }
