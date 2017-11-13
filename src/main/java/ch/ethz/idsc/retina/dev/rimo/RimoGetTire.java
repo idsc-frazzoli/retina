@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -32,6 +33,10 @@ public class RimoGetTire implements Serializable {
   public final short rms_motor_current;
   /** cV */
   private final short dc_bus_voltage;
+  /** TODO NRJ the meaning of the error_code still has to be determined
+   * observed examples when engines have just been started:
+   * _LEFT 0x23400008
+   * RIGHT 0x23100008 */
   public final int error_code;
   /** C */
   private final short temperature_motor;
@@ -82,11 +87,21 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(temperature_heatsink, CELSIUS);
   }
 
+  public Optional<RimoEmergencyError> getEmergencyError() {
+    /** documentation on the definite decoding of the error code is not available
+     * we suspect the 2 hi bytes are the emergency error code */
+    return RimoEmergencyErrors.INSTANCE.ofCode((short) (error_code >> 16));
+  }
+
   public String toInfoString() {
     return String.format("%d %d %d %d %d %d %d", //
         status_word, actual_rate, //
         rms_motor_current, dc_bus_voltage, //
         error_code, //
         temperature_motor, temperature_heatsink);
+  }
+
+  public int getErrorCodeMasked() {
+    return error_code & 0x00ffffff;
   }
 }
