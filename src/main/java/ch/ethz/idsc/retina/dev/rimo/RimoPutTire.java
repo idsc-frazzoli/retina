@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class RimoPutTire implements Serializable {
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
-  public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0);
+  public static final RimoPutTire STOP = withSpeed((short) 0);
   public static final Word trigOff = Word.createByte("OFF", (byte) 0);
   public static final Word trigOn = Word.createByte("ON", (byte) 1);
   public static final List<Word> TRIGGERS = Arrays.asList( //
@@ -24,27 +24,37 @@ public class RimoPutTire implements Serializable {
   public static final double MIN_TO_S = 1 / 60.0;
 
   public static RimoPutTire withSpeed(short speed) {
-    return new RimoPutTire(OPERATION, speed);
+    return new RimoPutTire(OPERATION, speed, (short) 0);
   }
 
   // ---
   /** 4 bytes encoding length */
-  /* package */ static final int LENGTH = 13;
-  /** according to tests on the bench, the max effective speed is ~6300 */
-  public static final short MAX_SPEED = 6500;
+  /* package */ static final int LENGTH = 15;
+  /** the datasheet bounds the speed between -8000 and 8000
+   * according to tests on the bench,
+   * the max effective speed is ~6300 */
+  public static final short MIN_SPEED = -6500;
+  public static final short MAX_SPEED = +6500;
+  /** the torque bounds are taken from the datasheet
+   * the unit of the torque is in ARMS, i.e. ampere average root-mean square */
+  public static final short MIN_TORQUE = -2317;
+  public static final short MAX_TORQUE = +2316;
   // ---
   final short command;
   /** angular rate in rad/min */
   final short rate;
+  final short torque;
+  // ---
   public byte trigger;
   public byte sdoCommand;
   public short mainIndex;
   public byte subIndex;
   public int sdoData;
 
-  public RimoPutTire(Word command, short rate) {
+  public RimoPutTire(Word command, short rate, short torque) {
     this.command = command.getShort();
     this.rate = rate;
+    this.torque = torque;
   }
 
   /** only for use in display
@@ -60,12 +70,14 @@ public class RimoPutTire implements Serializable {
   }
 
   void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putShort(command);
-    byteBuffer.putShort(rate);
-    byteBuffer.put(trigger);
-    byteBuffer.put(sdoCommand);
-    byteBuffer.putShort(mainIndex);
-    byteBuffer.put(subIndex);
-    byteBuffer.putInt(sdoData);
+    byteBuffer.putShort(command); // 0
+    byteBuffer.putShort(rate); // 2
+    byteBuffer.putShort(torque); // 4
+    // ---
+    byteBuffer.put(trigger); // 6
+    byteBuffer.put(sdoCommand); // 7
+    byteBuffer.putShort(mainIndex); // 8
+    byteBuffer.put(subIndex); // 10
+    byteBuffer.putInt(sdoData); // 11 ... total == 15
   }
 }

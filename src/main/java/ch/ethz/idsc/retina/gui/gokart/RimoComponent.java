@@ -25,31 +25,28 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   /** default message used only for display information */
   private RimoGetEvent rimoGetEvent;
 
-  // private void setZero() {
-  // sliderExtRVel.jSlider.setValue(0);
-  // sliderExtLVel.jSlider.setValue(0);
-  // }
+  private void setZero() {
+    rimoPutFieldsL.setZero();
+    rimoPutFieldsR.setZero();
+  }
+
   public RimoComponent() {
-    // <<<<<<< HEAD
+    { // STOP BUTTON
+      JToolBar jToolBar = createRow("Actions");
+      JButton stopButton = new JButton("STOP");
+      jToolBar.add(stopButton);
+      stopButton.addActionListener(e -> setZero());
+    }
     assign(rimoPutFieldsL, "LEFT");
     assign(rimoPutFieldsR, "RIGHT");
-    addSeparator();
     // reception
+    addSeparator();
     assign(rimoGetFieldsL, "LEFT");
     addSeparator();
     assign(rimoGetFieldsR, "RIGHT");
   }
 
   private void assign(RimoPutFields rimoPutFields, String side) {
-    // =======
-    // STOP BUTTON
-    {
-      JToolBar jToolBar = createRow("Actions");
-      JButton stopButton = new JButton("STOP");
-      jToolBar.add(stopButton);
-      // stopButton.addActionListener(e -> setZero());
-    }
-    // >>>>>>> master
     // LEFT
     {
       JToolBar jToolBar = createRow(side + " command");
@@ -60,6 +57,10 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     { // command speed
       JToolBar jToolBar = createRow(side + " speed");
       rimoPutFields.sliderExtVel.addToComponent(jToolBar);
+    }
+    { // command torque
+      JToolBar jToolBar = createRow(side + " torque");
+      rimoPutFields.sliderExtTrq.addToComponent(jToolBar);
     }
     {// TRIGGER
       JToolBar jToolBar = createRow("Trigger");

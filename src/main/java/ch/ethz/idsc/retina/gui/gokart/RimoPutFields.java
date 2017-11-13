@@ -1,3 +1,4 @@
+// code by rvmoos and jph
 package ch.ethz.idsc.retina.gui.gokart;
 
 import javax.swing.JSlider;
@@ -8,9 +9,15 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 
+/** gui elements to configure message sent for a single rear tire:
+ * operation mode (2 bytes)
+ * speed (2 bytes)
+ * torque (2 bytes)
+ * sdo message (9 bytes) */
 public class RimoPutFields {
   final SpinnerLabel<Word> spinnerLabelCmd = new SpinnerLabel<>();
-  final SliderExt sliderExtVel = SliderExt.wrap(new JSlider(-RimoPutTire.MAX_SPEED, RimoPutTire.MAX_SPEED, 0));
+  final SliderExt sliderExtVel = SliderExt.wrap(new JSlider(RimoPutTire.MIN_SPEED, RimoPutTire.MAX_SPEED, 0));
+  final SliderExt sliderExtTrq = SliderExt.wrap(new JSlider(RimoPutTire.MIN_TORQUE, RimoPutTire.MAX_TORQUE, 0));
   final SpinnerLabel<Word> spinnerLabelTrigger = new SpinnerLabel<>();
   final JTextField jTextfieldSdoCommand = new JTextField(5);
   final JTextField jTextfieldSdoMainIndex = new JTextField(8);
@@ -20,7 +27,8 @@ public class RimoPutFields {
   public RimoPutTire getPutTire() {
     RimoPutTire rimoPutTire = new RimoPutTire( //
         spinnerLabelCmd.getValue(), //
-        (short) sliderExtVel.jSlider.getValue());
+        (short) sliderExtVel.jSlider.getValue(), //
+        (short) sliderExtTrq.jSlider.getValue());
     rimoPutTire.trigger = spinnerLabelTrigger.getValue().getByte();
     try {
       rimoPutTire.sdoCommand = (byte) Integer.parseInt(jTextfieldSdoCommand.getText());
@@ -31,5 +39,10 @@ public class RimoPutFields {
       System.out.println("cannot parse text field as number");
     }
     return rimoPutTire;
+  }
+
+  public void setZero() {
+    sliderExtVel.jSlider.setValue(0);
+    sliderExtTrq.jSlider.setValue(0);
   }
 }
