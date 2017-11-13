@@ -44,6 +44,7 @@ enum RunTabbedTaskGui {
         SpyModule.class, //
         ParametersModule.class, //
         AutoboxTestingModule.class, //
+        RimoMetronomeModule.class, //
         AutboxProviderModule.class, //
         JoystickSimpleDriveModule.class, //
         JoystickFullControlModule.class, //

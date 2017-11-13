@@ -8,8 +8,9 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 
+/** parameters for PD controller of steering */
 public class SteerConfig implements Serializable {
-  public static SteerConfig GLOBAL = AppResources.load(new SteerConfig());
+  public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
 
   private SteerConfig() {
   }
