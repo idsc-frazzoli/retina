@@ -16,7 +16,7 @@ public class ChassisGeometry implements Serializable {
   private ChassisGeometry() {
   }
 
-  // ---
+  /***************************************************/
   /** front axle distance from COG [m] */
   public Scalar xAxleFront = Quantity.of(+0.72, "m");
   /** rear axle distance from COG [m] */

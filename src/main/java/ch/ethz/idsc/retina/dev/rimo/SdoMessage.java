@@ -1,12 +1,13 @@
+// code by rvmoos
 package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
 
 public class SdoMessage {
-  public byte sdoCommand;
-  public short mainIndex;
-  public byte subIndex;
-  public int sdoData;
+  public final byte sdoCommand;
+  public final short mainIndex;
+  public final byte subIndex;
+  public final int sdoData;
 
   public SdoMessage(ByteBuffer byteBuffer) {
     sdoCommand = byteBuffer.get();
