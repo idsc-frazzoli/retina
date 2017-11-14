@@ -8,18 +8,18 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 public class RimoGetEvent extends DataEvent {
   public static final int LENGTH = 2 * RimoGetTire.LENGTH;
   // ---
-  public final RimoGetTire getL;
-  public final RimoGetTire getR;
+  public final RimoGetTire getTireL;
+  public final RimoGetTire getTireR;
 
   public RimoGetEvent(ByteBuffer byteBuffer) {
-    getL = new RimoGetTire(byteBuffer);
-    getR = new RimoGetTire(byteBuffer);
+    getTireL = new RimoGetTire(byteBuffer);
+    getTireR = new RimoGetTire(byteBuffer);
   }
 
   @Override
   protected void insert(ByteBuffer byteBuffer) {
-    getL.encode(byteBuffer);
-    getR.encode(byteBuffer);
+    getTireL.encode(byteBuffer);
+    getTireR.encode(byteBuffer);
   }
 
   @Override

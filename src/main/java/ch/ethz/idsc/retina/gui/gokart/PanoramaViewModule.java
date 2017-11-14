@@ -22,7 +22,6 @@ public class PanoramaViewModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    // TODO Auto-generated method stub
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");

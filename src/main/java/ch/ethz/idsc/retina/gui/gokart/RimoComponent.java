@@ -109,10 +109,10 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   @Override
   public void getEvent(RimoGetEvent rimoGetEvent) {
     this.rimoGetEvent = rimoGetEvent;
-    rimoGetFieldsL.updateText(rimoGetEvent.getL);
-    rimoGetFieldsR.updateText(rimoGetEvent.getR);
+    rimoGetFieldsL.updateText(rimoGetEvent.getTireL);
+    rimoGetFieldsR.updateText(rimoGetEvent.getTireR);
     {
-      Scalar temp = rimoGetEvent.getL.getTemperatureMotor();
+      Scalar temp = rimoGetEvent.getTireL.getTemperatureMotor();
       rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
@@ -120,8 +120,8 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
     }
     {
-      Scalar temp = rimoGetEvent.getR.getTemperatureMotor();
-      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      Scalar temp = rimoGetEvent.getTireR.getTemperatureMotor();
+      rimoGetFieldsR.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
@@ -133,10 +133,11 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   public void putEvent(RimoPutEvent rimoPutEvent) {
     /** as long as there is only 1 valid command word,
      * there is no need to update the spinner label */
-    rimoPutFieldsL.sliderExtVel.jSlider.setValue(rimoPutEvent.putL.getRateRaw());
-    rimoPutFieldsR.sliderExtVel.jSlider.setValue(rimoPutEvent.putR.getRateRaw());
-    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getL);
-    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getR);
+    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
+    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
+    // ---
+    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
+    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
   }
 
   @Override

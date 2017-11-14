@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class SensorsConfig implements Serializable {
-  public static SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
+  public static final SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
 
   private SensorsConfig() {
   }

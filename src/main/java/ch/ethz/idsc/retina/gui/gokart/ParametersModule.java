@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
@@ -23,6 +24,7 @@ public class ParametersModule extends AbstractModule {
     addTab(ChassisGeometry.GLOBAL);
     addTab(SensorsConfig.GLOBAL);
     addTab(SteerConfig.GLOBAL);
+    addTab(RimoConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

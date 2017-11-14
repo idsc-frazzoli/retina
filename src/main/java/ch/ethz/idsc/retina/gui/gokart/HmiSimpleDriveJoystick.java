@@ -42,6 +42,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
 
   /** tire speed */
   private final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
+    // TODO geh vom gas falls bremse gedrueckt ist
     @Override
     public Optional<RimoPutEvent> putEvent() {
       final Scalar now = timeKeeper.now();

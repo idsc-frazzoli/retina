@@ -11,12 +11,12 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class ChassisGeometry implements Serializable {
-  public static ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
+  public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
 
   private ChassisGeometry() {
   }
 
-  // ---
+  /***************************************************/
   /** front axle distance from COG [m] */
   public Scalar xAxleFront = Quantity.of(+0.72, "m");
   /** rear axle distance from COG [m] */

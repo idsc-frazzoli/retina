@@ -20,7 +20,7 @@ public enum LinmotPutHelper {
   public static final List<Word> HEADER = Arrays.asList( //
       MC_POSITION, MC_ZEROS); //
   // ---
-  // TODO NRJ document empirical justification for all magic numbers
+  /** all magic numbers are justified through experimentation */
   public static final int TARGETPOS_MIN = -500;
   public static final int TARGETPOS_MAX = -48;
   public static final int TARGETPOS_INIT = -50;

@@ -19,7 +19,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private static final int REMOTE_PORT = 5000;
   private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
   // ---
-  private static final int SEND_PERIOD_MS = 20;
+  static final int SEND_PERIOD_MS = 20;
   // ---
 
   private RimoSocket() {

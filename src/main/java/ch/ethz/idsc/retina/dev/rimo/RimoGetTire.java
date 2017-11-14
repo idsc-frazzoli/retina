@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");
-  public static final Unit RATE_UNIT = Unit.of("rad*s^-1");
+  public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
   // TODO NRJ check allowed ratings, comment magic const
   // TODO NRJ make emergency stop if too hot
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
@@ -70,7 +70,7 @@ public class RimoGetTire implements Serializable {
 
   /** @return convert rad/min to rad/s */
   public Scalar getAngularRate() {
-    return Quantity.of(actual_rate * MIN_TO_S, RATE_UNIT);
+    return Quantity.of(actual_rate * MIN_TO_S, UNIT_RATE);
   }
 
   public Scalar getBusVoltage() {

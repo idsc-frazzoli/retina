@@ -13,8 +13,7 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
   @Override
   protected void protected_schedule() {
     long timestamp = now();
-    // TODO this torque is magic constant, change it
-    final double full = 0.2;
+    final double full = SteerConfig.GLOBAL.calibration.number().doubleValue();
     final double half = full * 0.5;
     eventUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, half));
     eventUntil(timestamp += 1000, new SteerPutEvent(SteerPutEvent.CMD_ON, full));
