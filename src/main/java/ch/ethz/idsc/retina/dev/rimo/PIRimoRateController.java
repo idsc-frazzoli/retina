@@ -8,8 +8,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class PIRimoRateController {
   private final Scalar dt = Quantity.of(RimoSocket.SEND_PERIOD_MS * 1e-3, "s");
   /** pos error initially incorrect in the first iteration */
-  private Scalar lastVel_error = Quantity.of(0, RimoGetTire.RATE_UNIT);
-  private Scalar lastTor_value = Quantity.of(0, RimoGetTire.RATE_UNIT);
+  private Scalar lastVel_error = Quantity.of(0, RimoGetTire.UNIT_RATE);
+  private Scalar lastTor_value = Quantity.of(0, RimoGetTire.UNIT_RATE);
 
   /** @param vel_error
    * @return */

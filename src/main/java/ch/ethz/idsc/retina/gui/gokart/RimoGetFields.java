@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class RimoGetFields {
   private static final Clip RATE_RANGE = Clip.function( //
-      Quantity.of(-3, RimoGetTire.RATE_UNIT), //
-      Quantity.of(+3, RimoGetTire.RATE_UNIT));
+      Quantity.of(-3, RimoGetTire.UNIT_RATE), //
+      Quantity.of(+3, RimoGetTire.UNIT_RATE));
   // ---
   JTextField jTF_status_word; // 2
   JTextField jTF_actual_speed; // 4

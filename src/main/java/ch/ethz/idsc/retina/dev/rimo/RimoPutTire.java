@@ -10,8 +10,10 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 
 public class RimoPutTire implements Serializable {
+  public static final Unit UNIT_TORQUE = Unit.of("ARMS");
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   public static final RimoPutTire STOP = withSpeed((short) 0);
@@ -64,9 +66,16 @@ public class RimoPutTire implements Serializable {
     return rate;
   }
 
+  /** only for use in display
+   * 
+   * @return */
+  public short getTorqueRaw() {
+    return torque;
+  }
+
   /** @return convert rad/min to rad/s */
   public Scalar getAngularRate() {
-    return Quantity.of(RealScalar.of(rate * MIN_TO_S), RimoGetTire.RATE_UNIT);
+    return Quantity.of(RealScalar.of(rate * MIN_TO_S), RimoGetTire.UNIT_RATE);
   }
 
   void insert(ByteBuffer byteBuffer) {

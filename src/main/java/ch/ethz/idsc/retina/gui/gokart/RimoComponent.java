@@ -121,7 +121,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     }
     {
       Scalar temp = rimoGetEvent.getTireR.getTemperatureMotor();
-      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
+      rimoGetFieldsR.jTF_temperature_motor.setText(temp.toString());
       Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
       Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
       Color color = ColorFormat.toColor(vector);
@@ -133,8 +133,9 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   public void putEvent(RimoPutEvent rimoPutEvent) {
     /** as long as there is only 1 valid command word,
      * there is no need to update the spinner label */
-    rimoPutFieldsL.sliderExtVel.jSlider.setValue(rimoPutEvent.putL.getRateRaw());
-    rimoPutFieldsR.sliderExtVel.jSlider.setValue(rimoPutEvent.putR.getRateRaw());
+    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
+    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
+    // ---
     rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
     rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
   }

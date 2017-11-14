@@ -47,6 +47,11 @@ public class RimoPutFields {
     return rimoPutTire;
   }
 
+  public void updateGuiElements(RimoPutTire rimoPutTire) {
+    sliderExtVel.jSlider.setValue(rimoPutTire.getRateRaw());
+    sliderExtTrq.jSlider.setValue(rimoPutTire.getTorqueRaw());
+  }
+
   public void setZero() {
     sliderExtVel.jSlider.setValue(0);
     sliderExtTrq.jSlider.setValue(0);

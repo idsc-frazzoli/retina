@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owly.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.rimo.PIRimoRateController;
+import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
@@ -20,15 +20,15 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** module to test rimo torque control for a given target speed */
 public class RimoMetronomeModule extends AbstractModule implements RimoPutProvider, RimoGetListener {
   public static final Scalar HALF_PERIOD = RealScalar.of(2);
   // ---
-  private final PIRimoRateController piL = new PIRimoRateController();
   private final Stopwatch stopwatch = Stopwatch.started();
+  private final PIRimoRateController piL = new PIRimoRateController();
+  private final PIRimoRateController piR = new PIRimoRateController();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -63,20 +63,35 @@ public class RimoMetronomeModule extends AbstractModule implements RimoPutProvid
     Scalar remaind = Mod.function(HALF_PERIOD.multiply(RealScalar.of(2))).apply(seconds);
     boolean isPassive = Scalars.lessThan(remaind, HALF_PERIOD);
     // ---
-    Unit ARMS = Unit.of("ARMS");
-    Scalar torque = Quantity.of(0, ARMS);
-    try {
-      Scalar vel_target = Quantity.of(isPassive ? 0 : 50, RimoGetTire.RATE_UNIT);
-      Scalar vel_measur = rimoGetEvent.getTireL.getAngularRate();
-      Scalar vel_error = vel_target.subtract(vel_measur);
-      torque = piL.iterate(vel_error);
-      System.out.println(vel_error + " " + torque);
-    } catch (Exception exception) {
-      // ---
+    short valueL = 0;
+    {
+      Scalar torque = Quantity.of(0, RimoPutTire.UNIT_TORQUE);
+      try {
+        Scalar vel_target = isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi;
+        Scalar vel_measur = rimoGetEvent.getTireL.getAngularRate();
+        Scalar vel_error = vel_target.subtract(vel_measur);
+        torque = piL.iterate(vel_error);
+      } catch (Exception exception) {
+        // ---
+      }
+      valueL = QuantityMagnitude.singleton(RimoPutTire.UNIT_TORQUE).apply(torque).number().shortValue();
     }
-    short tvalue = QuantityMagnitude.singleton(ARMS).apply(torque).number().shortValue();
-    RimoPutTire putL = new RimoPutTire(RimoPutTire.OPERATION, (short) 0, tvalue);
-    RimoPutEvent rimoPutEvent = new RimoPutEvent(putL, RimoPutTire.STOP);
+    short valueR = 0;
+    {
+      Scalar torque = Quantity.of(0, RimoPutTire.UNIT_TORQUE);
+      try {
+        Scalar vel_target = isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi;
+        Scalar vel_measur = rimoGetEvent.getTireR.getAngularRate();
+        Scalar vel_error = vel_target.subtract(vel_measur);
+        torque = piR.iterate(vel_error);
+      } catch (Exception exception) {
+        // ---
+      }
+      valueR = QuantityMagnitude.singleton(RimoPutTire.UNIT_TORQUE).apply(torque).number().shortValue();
+    }
+    RimoPutTire putL = new RimoPutTire(RimoPutTire.OPERATION, (short) 0, valueL);
+    RimoPutTire putR = new RimoPutTire(RimoPutTire.OPERATION, (short) 0, valueR);
+    RimoPutEvent rimoPutEvent = new RimoPutEvent(putL, putR);
     return Optional.of(rimoPutEvent);
   }
 }
