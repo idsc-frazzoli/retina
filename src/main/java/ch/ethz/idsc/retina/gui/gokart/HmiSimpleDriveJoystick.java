@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** position control for steering
  * differential speed on rear wheels according to steering angle
@@ -31,7 +31,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
       Rice1StateSpaceModel.of(RealScalar.ZERO), //
       MidpointIntegrator.INSTANCE, //
-      new StateTime(Array.zeros(1), RealScalar.ZERO));
+      new StateTime(Tensors.fromString("{0[rad*s^-1]}"), Quantity.of(0, "s")));
 
   @Override
   protected double breakStrength() {
@@ -46,9 +46,9 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
     @Override
     public Optional<RimoPutEvent> putEvent() {
       final Scalar now = timeKeeper.now();
-      Scalar push = RealScalar.ZERO;
+      Scalar push = Quantity.of(0, "rad*s^-1");
       if (hasJoystick())
-        push = RealScalar.of(_joystick.getLeftKnobDirectionUp() * getSpeedLimit());
+        push = getSpeedLimit().multiply(RealScalar.of(_joystick.getLeftKnobDirectionUp()));
       // FIXME use increments
       episodeIntegrator.move(Tensors.of(push), now);
       if (hasJoystick()) {
@@ -64,9 +64,10 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
           Scalar theta = RealScalar.of(steerAngleTracker.getSteeringValue());
           Scalar sL = dsL.get(speed, theta);
           Scalar sR = dsR.get(speed, theta);
-          return Optional.of(RimoPutEvent.withSpeeds( //
-              (short) -sL.number().shortValue(), //
-              sR.number().shortValue()));
+          System.out.println(sL);
+          // return Optional.of(RimoPutEvent.withSpeeds( //
+          // (short) -sL.number().shortValue(), //
+          // sR.number().shortValue()));
         }
       }
       return Optional.empty();

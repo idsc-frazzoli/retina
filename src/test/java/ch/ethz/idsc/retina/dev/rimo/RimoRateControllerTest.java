@@ -7,11 +7,11 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
 import junit.framework.TestCase;
 
-public class PIRimoRateControllerTest extends TestCase {
+public class RimoRateControllerTest extends TestCase {
   public void testSimple() {
-    PIRimoRateController c = new PIRimoRateController();
+    RimoRateController rimoRateController = new RimoRateController();
     Scalar vel_error = Quantity.of(31, RimoGetTire.UNIT_RATE); // rad*s^-1
-    Scalar arms = c.iterate(vel_error);
+    Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
   }
 }

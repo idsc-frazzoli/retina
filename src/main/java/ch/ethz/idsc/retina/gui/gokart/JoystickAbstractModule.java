@@ -25,6 +25,8 @@ import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public abstract class JoystickAbstractModule extends AbstractClockedModule {
   private final JFrame jFrame = new JFrame(getClass().getSimpleName());
@@ -78,8 +80,8 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     }
     {
       JToolBar jToolBar = toolbarsComponent.createRow("max speed");
-      SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setArray(0, 500, 1000, 2000, 4000, (int) RimoPutTire.MAX_SPEED);
+      SpinnerLabel<Scalar> spinnerLabel = new SpinnerLabel<>();
+      spinnerLabel.setArray(Quantity.of(50, "rad*s^-1"));
       spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
       spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
       spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");

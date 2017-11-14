@@ -28,9 +28,10 @@ public class HmiFullControlJoystick extends HmiAbstractJoystick {
           sign = 1;
         double wheelL = joystick.getLeftSliderUnitValue();
         double wheelR = joystick.getRightSliderUnitValue();
-        return Optional.of(RimoPutEvent.withSpeeds( //
-            (short) (wheelL * getSpeedLimit() * sign), //
-            (short) (wheelR * getSpeedLimit() * sign)));
+        // FIXME
+        // return Optional.of(RimoPutEvent.withSpeeds( //
+        // (short) (wheelL * getSpeedLimit() * sign), //
+        // (short) (wheelR * getSpeedLimit() * sign)));
       }
       return Optional.empty();
     }

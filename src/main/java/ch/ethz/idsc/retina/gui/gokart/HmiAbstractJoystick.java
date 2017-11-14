@@ -22,6 +22,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
@@ -32,7 +33,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
-  private int speedLimit = 1000;
+  private Scalar speedLimit = Quantity.of(50, "rad*s^-1"); // TODO
 
   final boolean hasJoystick() {
     return Objects.nonNull(_joystick) && now() < tic_joystick + WATCHDOG_MS;
@@ -105,11 +106,11 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
    * 0 means no break, and 1 means all the way */
   protected abstract double breakStrength();
 
-  public final void setSpeedLimit(int speedLimit) {
+  public final void setSpeedLimit(Scalar speedLimit) {
     this.speedLimit = speedLimit;
   }
 
-  public final int getSpeedLimit() {
+  public final Scalar getSpeedLimit() {
     return speedLimit;
   }
 
