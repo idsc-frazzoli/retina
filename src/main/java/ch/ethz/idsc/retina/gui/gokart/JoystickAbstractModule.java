@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
@@ -27,6 +28,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO still can close window other than through tabbed gui
 public abstract class JoystickAbstractModule extends AbstractClockedModule {
   private final JFrame jFrame = new JFrame(getClass().getSimpleName());
   private final WindowConfiguration windowConfiguration = //
@@ -80,15 +82,22 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     {
       JToolBar jToolBar = toolbarsComponent.createRow("max speed");
       SpinnerLabel<Scalar> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setArray(Quantity.of(50, "rad*s^-1"));
+      spinnerLabel.setArray( //
+          Quantity.of(0, RimoGetTire.UNIT_RATE), //
+          Quantity.of(10, RimoGetTire.UNIT_RATE), //
+          Quantity.of(50, RimoGetTire.UNIT_RATE), //
+          Quantity.of(100, RimoGetTire.UNIT_RATE), //
+          Quantity.of(200, RimoGetTire.UNIT_RATE) //
+      );
       spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
       spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
-      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "max speed limit");
+      spinnerLabel.addToComponentReduced(jToolBar, new Dimension(160, 28), "max speed limit");
     }
     // ---
     joystickLcmClient.startSubscriptions();
     // ---
     RimoSocket.INSTANCE.addPutProvider(joystickInstance.getRimoPutProvider());
+    RimoSocket.INSTANCE.addGetListener(joystickInstance.rimoRateControllerWrap);
     LinmotSocket.INSTANCE.addPutProvider(joystickInstance.linmotPutProvider);
     LinmotSocket.INSTANCE.addPutListener(joystickInstance.linmotPutListener);
     LinmotSocket.INSTANCE.addGetListener(joystickInstance.linmotGetListener);
@@ -103,6 +112,7 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
         RimoSocket.INSTANCE.removePutProvider(joystickInstance.getRimoPutProvider());
+        RimoSocket.INSTANCE.removeGetListener(joystickInstance.rimoRateControllerWrap);
         LinmotSocket.INSTANCE.removePutProvider(joystickInstance.linmotPutProvider);
         LinmotSocket.INSTANCE.removePutListener(joystickInstance.linmotPutListener);
         LinmotSocket.INSTANCE.removeGetListener(joystickInstance.linmotGetListener);

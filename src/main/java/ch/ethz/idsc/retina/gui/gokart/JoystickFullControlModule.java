@@ -6,4 +6,8 @@ public class JoystickFullControlModule extends JoystickAbstractModule {
   protected HmiAbstractJoystick createJoystick() {
     return new HmiFullControlJoystick();
   }
+
+  public static void main(String[] args) throws Exception {
+    new JoystickFullControlModule().first();
+  }
 }

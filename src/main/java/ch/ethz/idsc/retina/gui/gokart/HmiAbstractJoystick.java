@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -28,6 +29,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
+  public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
   GokartJoystickInterface _joystick;
   private long tic_joystick;
@@ -110,6 +112,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     this.speedLimit = speedLimit;
   }
 
+  /** @return quantity with unit rad*s^-1 */
   public final Scalar getSpeedLimit() {
     return speedLimit;
   }

@@ -46,8 +46,8 @@ public class RimoMetronomeModule extends AbstractModule implements RimoPutProvid
     Scalar remaind = Mod.function(HALF_PERIOD.multiply(RealScalar.of(2))).apply(seconds);
     boolean isPassive = Scalars.lessThan(remaind, HALF_PERIOD);
     // ---
-    Scalar vel_targetL = isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi;
-    Scalar vel_targetR = isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi;
-    return rimoRateControllerWrap.iterate(vel_targetL, vel_targetR);
+    return rimoRateControllerWrap.iterate( //
+        isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi, //
+        isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi);
   }
 }
