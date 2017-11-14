@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owly.data.TimeKeeper;
-import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
+import ch.ethz.idsc.owly.demo.rice.Duncan1StateSpaceModel;
 import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
 import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
@@ -29,7 +29,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   // ---
   private final TimeKeeper timeKeeper = new TimeKeeper();
   private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
-      Rice1StateSpaceModel.of(RealScalar.ZERO), //
+      new Duncan1StateSpaceModel(Quantity.of(1, "s^-1")), //
       MidpointIntegrator.INSTANCE, //
       new StateTime(Tensors.fromString("{0[rad*s^-1]}"), Quantity.of(0, "s")));
 

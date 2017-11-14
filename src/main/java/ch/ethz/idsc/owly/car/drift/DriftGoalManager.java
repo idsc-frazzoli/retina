@@ -21,7 +21,7 @@ public class DriftGoalManager extends SimpleTrajectoryRegionQuery implements Goa
   }
 
   // ---
-  private DriftGoalManager(Region region) {
+  private DriftGoalManager(Region<Tensor> region) {
     super(new TimeInvariantRegion(region));
   }
 

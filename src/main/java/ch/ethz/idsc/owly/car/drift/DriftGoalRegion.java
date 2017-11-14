@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public class DriftGoalRegion implements Region {
+public class DriftGoalRegion implements Region<Tensor> {
   private final Tensor goalState;
   private final Tensor tolerance;
 

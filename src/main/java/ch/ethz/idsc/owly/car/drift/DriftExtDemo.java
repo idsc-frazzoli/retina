@@ -3,6 +3,7 @@ package ch.ethz.idsc.owly.car.drift;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -46,11 +47,11 @@ enum DriftExtDemo {
     // ---
     TrajectoryRegionQuery obstacleQuery = //
         SimpleTrajectoryRegionQuery.timeInvariant( //
-            RegionUnion.of( //
+            RegionUnion.wrap(Arrays.asList( //
                 new NegativeHalfspaceRegion(4) // ensure that r is non-negative
                 , // impose that x < Threshold
                 new HyperplaneRegion(Tensors.vector(-1, 0, 0, 0, 0, 0), RealScalar.of(12)) //
-            ));
+            )));
     // ---
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         eta, stateIntegrator, controls, obstacleQuery, goalInterface);

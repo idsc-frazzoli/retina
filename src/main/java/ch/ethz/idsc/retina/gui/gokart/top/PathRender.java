@@ -6,9 +6,10 @@ import java.awt.Graphics2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.owly.demo.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owly.demo.se2.Se2Controls;
+import ch.ethz.idsc.owly.demo.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
+import ch.ethz.idsc.owly.math.StateSpaceModels;
 import ch.ethz.idsc.owly.math.flow.Flow;
 import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.owly.math.state.FixedStateIntegrator;
@@ -21,6 +22,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 class PathRender implements RenderInterface {
@@ -49,7 +51,7 @@ class PathRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(XAR, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
-        final Flow flow_forward = Se2Controls.singleton(RealScalar.ONE, angle);
+        final Flow flow_forward = singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //
             Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -64,7 +66,7 @@ class PathRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
       {
-        final Flow flow_reverse = Se2Controls.singleton(RealScalar.ONE.negate(), angle);
+        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), angle);
         final Tensor center_reverse = //
             Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -79,5 +81,10 @@ class PathRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
     }
+  }
+
+  /* package for testing */ static Flow singleton(Scalar speed, Tensor rate) {
+    return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
+        N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate.multiply(speed))));
   }
 }

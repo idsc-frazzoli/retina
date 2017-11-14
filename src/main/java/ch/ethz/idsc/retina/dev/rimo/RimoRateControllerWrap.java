@@ -7,6 +7,7 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 
+/** the controller has to be subscribed to rimo get events */
 public class RimoRateControllerWrap implements RimoGetListener {
   private final RimoRateController piL = new RimoRateController();
   private final RimoRateController piR = new RimoRateController();
