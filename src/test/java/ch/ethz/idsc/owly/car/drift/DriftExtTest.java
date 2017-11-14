@@ -2,6 +2,7 @@
 package ch.ethz.idsc.owly.car.drift;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -41,11 +42,11 @@ public class DriftExtTest extends TestCase {
             0.05, 0.05, 0.25));
     // ---
     TrajectoryRegionQuery obstacleQuery = SimpleTrajectoryRegionQuery.timeInvariant( //
-        RegionUnion.of( //
+        RegionUnion.wrap(Arrays.asList( //
             new NegativeHalfspaceRegion(4) // ensure that r is non-negative
             , // impose that x < Threshold
             new HyperplaneRegion(Tensors.vector(-1, 0, 0, 0, 0, 0), RealScalar.of(10)) //
-        ));
+        )));
     // ---
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         eta, stateIntegrator, controls, obstacleQuery, goalInterface);

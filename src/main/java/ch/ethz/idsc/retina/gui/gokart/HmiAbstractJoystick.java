@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -22,17 +23,19 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public abstract class HmiAbstractJoystick implements JoystickListener {
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
+  public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
   private final PDSteerPositionControl positionController = new PDSteerPositionControl();
   GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
-  private int speedLimit = 1000;
+  private Scalar speedLimit = Quantity.of(50, "rad*s^-1"); // TODO
 
   final boolean hasJoystick() {
     return Objects.nonNull(_joystick) && now() < tic_joystick + WATCHDOG_MS;
@@ -105,11 +108,12 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
    * 0 means no break, and 1 means all the way */
   protected abstract double breakStrength();
 
-  public final void setSpeedLimit(int speedLimit) {
+  public final void setSpeedLimit(Scalar speedLimit) {
     this.speedLimit = speedLimit;
   }
 
-  public final int getSpeedLimit() {
+  /** @return quantity with unit rad*s^-1 */
+  public final Scalar getSpeedLimit() {
     return speedLimit;
   }
 

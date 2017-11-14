@@ -52,7 +52,7 @@ public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
   @Override
   public void stopSubscriptions() {
     if (!listeners.isEmpty())
-      System.err.println("warning: listeners still precent, yet unsubscribe");
+      System.err.println("warning: listeners still present, yet unsubscribe");
     LCM.getSingleton().unsubscribe(_name(), this);
   }
 

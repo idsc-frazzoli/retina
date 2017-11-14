@@ -7,6 +7,8 @@ import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 
 public class HmiFullControlJoystick extends HmiAbstractJoystick {
   @Override
@@ -25,12 +27,12 @@ public class HmiFullControlJoystick extends HmiAbstractJoystick {
         if (joystick.isButtonPressedBack())
           sign = -1;
         if (joystick.isButtonPressedStart())
-          sign = 1;
-        double wheelL = joystick.getLeftSliderUnitValue();
-        double wheelR = joystick.getRightSliderUnitValue();
-        return Optional.of(RimoPutEvent.withSpeeds( //
-            (short) (wheelL * getSpeedLimit() * sign), //
-            (short) (wheelR * getSpeedLimit() * sign)));
+          sign = +1;
+        Scalar wheelL = RealScalar.of(joystick.getLeftSliderUnitValue() * sign);
+        Scalar wheelR = RealScalar.of(joystick.getRightSliderUnitValue() * sign);
+        return rimoRateControllerWrap.iterate( //
+            getSpeedLimit().multiply(wheelL), //
+            getSpeedLimit().multiply(wheelR));
       }
       return Optional.empty();
     }

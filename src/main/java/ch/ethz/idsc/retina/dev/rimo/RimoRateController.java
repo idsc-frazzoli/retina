@@ -5,7 +5,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class PIRimoRateController {
+/* package */ class RimoRateController {
   private final Scalar dt = Quantity.of(RimoSocket.SEND_PERIOD_MS * 1e-3, "s");
   /** pos error initially incorrect in the first iteration */
   private Scalar lastVel_error = Quantity.of(0, RimoGetTire.UNIT_RATE);

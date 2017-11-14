@@ -3,23 +3,14 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owly.data.TimeKeeper;
-import ch.ethz.idsc.owly.demo.rice.Rice1StateSpaceModel;
-import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
-import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
-import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
-import ch.ethz.idsc.owly.math.state.StateTime;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
-import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** position control for steering
  * differential speed on rear wheels according to steering angle
@@ -28,10 +19,10 @@ import ch.ethz.idsc.tensor.alg.Array;
 public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   // ---
   private final TimeKeeper timeKeeper = new TimeKeeper();
-  private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
-      Rice1StateSpaceModel.of(RealScalar.ZERO), //
-      MidpointIntegrator.INSTANCE, //
-      new StateTime(Array.zeros(1), RealScalar.ZERO));
+  // private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
+  // new Duncan1StateSpaceModel(Quantity.of(1, "s^-1")), //
+  // MidpointIntegrator.INSTANCE, //
+  // new StateTime(Tensors.fromString("{0[rad*s^-1]}"), Quantity.of(0, "s")));
 
   @Override
   protected double breakStrength() {
@@ -45,28 +36,30 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
     // TODO geh vom gas falls bremse gedrueckt ist
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      final Scalar now = timeKeeper.now();
-      Scalar push = RealScalar.ZERO;
+      // final Scalar now = timeKeeper.now();
+      Scalar speed = Quantity.of(0, RimoGetTire.UNIT_RATE);
       if (hasJoystick())
-        push = RealScalar.of(_joystick.getLeftKnobDirectionUp() * getSpeedLimit());
-      // FIXME use increments
-      episodeIntegrator.move(Tensors.of(push), now);
+        speed = getSpeedLimit().multiply(RealScalar.of(_joystick.getLeftKnobDirectionUp()));
+      // FIXME use increments, check units
+      // episodeIntegrator.move(Tensors.of(speed), now);
       if (hasJoystick()) {
         // GenericXboxPadJoystick joystick = _joystick;
-        final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
-        if (steerAngleTracker.isCalibrated()) {
-          Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-          Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
-          DifferentialSpeed dsL = new DifferentialSpeed(axisDelta, yTireRear);
-          DifferentialSpeed dsR = new DifferentialSpeed(axisDelta, yTireRear.negate());
-          StateTime rate = episodeIntegrator.tail();
-          Scalar speed = rate.state().Get(0);
-          Scalar theta = RealScalar.of(steerAngleTracker.getSteeringValue());
-          Scalar sL = dsL.get(speed, theta);
-          Scalar sR = dsR.get(speed, theta);
-          return Optional.of(RimoPutEvent.withSpeeds( //
-              (short) -sL.number().shortValue(), //
-              sR.number().shortValue()));
+        // final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
+        // if (steerAngleTracker.isCalibrated()) // FIXME
+        {
+          // Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
+          // Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
+          // DifferentialSpeed dsL = new DifferentialSpeed(axisDelta, yTireRear);
+          // DifferentialSpeed dsR = new DifferentialSpeed(axisDelta, yTireRear.negate());
+          // StateTime rate = episodeIntegrator.tail();
+          // Scalar speed = rate.state().Get(0);
+          // Scalar theta = RealScalar.of(steerAngleTracker.getSteeringValue());
+          // Scalar sL = dsL.get(speed, theta);
+          // Scalar sR = dsR.get(speed, theta);
+          // System.out.println(sL);
+          return rimoRateControllerWrap.iterate( //
+              speed, //
+              speed);
         }
       }
       return Optional.empty();
