@@ -3,6 +3,8 @@ package ch.ethz.idsc.owly.car.math;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Cos;
 import junit.framework.TestCase;
@@ -10,12 +12,50 @@ import junit.framework.TestCase;
 public class DifferentialSpeedTest extends TestCase {
   public void testSimple() {
     DifferentialSpeed ds = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(.5));
-    Scalar v = RealScalar.of(4);
-    Scalar beta = RealScalar.of(+.3);
+    Scalar speed = RealScalar.of(+4.0);
+    Scalar angle = RealScalar.of(+0.3);
     // confirmed with mathematica
-    assertTrue(Chop._10.close(ds.get(v.divide(Cos.FUNCTION.apply(beta)), beta), RealScalar.of(3.4844395839839613)));
-    assertEquals(ds.get(v, RealScalar.ZERO), v);
-    assertTrue(Chop._10.close(ds.get(v.divide(Cos.FUNCTION.apply(beta)), beta.negate()), RealScalar.of(4.515560416016039)));
+    assertTrue(Chop._10.close(ds.get(speed.divide(Cos.FUNCTION.apply(angle)), angle), RealScalar.of(3.4844395839839613)));
+    assertEquals(ds.get(speed, RealScalar.ZERO), speed);
+    assertTrue(Chop._10.close(ds.get(speed.divide(Cos.FUNCTION.apply(angle)), angle.negate()), RealScalar.of(4.515560416016039)));
+  }
+
+  public void testQuantityForward() {
+    Scalar y_offset = Quantity.of(0.5, "m");
+    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    Scalar speed = Quantity.of(+4.0, "m*s^-1");
+    {
+      Scalar angle = RealScalar.of(+0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireL, tireR));
+    }
+    {
+      Scalar angle = RealScalar.of(-0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireR, tireL));
+    }
+  }
+
+  public void testQuantityReverse() {
+    Scalar y_offset = Quantity.of(0.5, "m");
+    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    Scalar speed = Quantity.of(-4.0, "m*s^-1");
+    {
+      Scalar angle = RealScalar.of(+0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireR, tireL));
+    }
+    {
+      Scalar angle = RealScalar.of(-0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireL, tireR));
+    }
   }
 
   public void testStraight() {
