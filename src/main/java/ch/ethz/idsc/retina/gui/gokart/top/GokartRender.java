@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.owly.car.core.VehicleModel;
-import ch.ethz.idsc.owly.car.math.SteeringWheelAngle;
+import ch.ethz.idsc.owly.car.math.AckermannSteering;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
 import ch.ethz.idsc.owly.math.se2.Se2Utils;
@@ -66,11 +66,16 @@ public class GokartRender implements RenderInterface {
           brakePosition, //
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
-    if (Objects.nonNull(gokartStatusEvent)) {
+    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
       Scalar angle = gokartStatusEvent.getSteeringAngle();
-      Scalar ratioL = ChassisGeometry.GLOBAL.ratioSteering();
-      Scalar angleL = SteeringWheelAngle.of(ratioL.negate(), angle); // TODO why is sign like this? and not swapped
-      Scalar angleR = SteeringWheelAngle.of(ratioL, angle);
+      Scalar angleL = new AckermannSteering( //
+          ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
+          ChassisGeometry.GLOBAL.yTireFrontMeter()) //
+              .angle(angle);
+      Scalar angleR = new AckermannSteering( //
+          ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
+          ChassisGeometry.GLOBAL.yTireFrontMeter().negate()) //
+              .angle(angle);
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);

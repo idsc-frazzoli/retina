@@ -1,0 +1,33 @@
+// code by jph
+package ch.ethz.idsc.owly.car.math;
+
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.TensorRuntimeException;
+import ch.ethz.idsc.tensor.sca.ArcTan;
+import ch.ethz.idsc.tensor.sca.Tan;
+
+/** formula to convert steering angle to (front-)wheel angle
+ * so that no friction arises in the ideal/no-slip scenario.
+ * 
+ * formula simplified from document by marcello and panos
+ * 
+ * see also
+ * <a href="https://en.wikipedia.org/wiki/Ackermann_steering_geometry">Ackermann steering geometry</a> */
+public class AckermannSteering {
+  private final Scalar factor;
+
+  /** @param x_front non-zero distance from rear to front axis
+   * @param y_offset distance from center of axis to tire */
+  public AckermannSteering(Scalar x_front, Scalar y_offset) {
+    if (Scalars.isZero(x_front))
+      throw TensorRuntimeException.of(x_front);
+    factor = y_offset.divide(x_front);
+  }
+
+  public Scalar angle(Scalar delta) {
+    Scalar tan = Tan.of(delta);
+    return ArcTan.of(tan.divide(RealScalar.ONE.subtract(factor.multiply(tan))));
+  }
+}

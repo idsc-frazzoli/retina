@@ -7,10 +7,21 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 
 public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
+  private static boolean notify_flag = true;
+
   @Override
   protected void digest(ByteBuffer byteBuffer) {
-    RimoGetEvent event = new RimoGetEvent(byteBuffer);
-    listeners.forEach(listener -> listener.getEvent(event));
+    try {
+      // the protocol has changed from speed control to torque control
+      // previous log files will produce an error
+      RimoGetEvent event = new RimoGetEvent(byteBuffer);
+      listeners.forEach(listener -> listener.getEvent(event));
+    } catch (Exception exception) {
+      if (notify_flag) {
+        notify_flag = false;
+        System.err.println("RimoGetLcmClient protocol change");
+      }
+    }
   }
 
   @Override

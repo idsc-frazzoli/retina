@@ -63,6 +63,7 @@ public abstract class DefaultCarModel implements VehicleModel {
     Tensor rear_center = Mean.of(Tensors.vector(i -> wheel(2 + i).lever(), 2));
     Tensor p1L = wheel(0).lever().subtract(rear_center);
     Tensor p1R = wheel(1).lever().subtract(rear_center);
+    // TODO replace by ackermann steering
     return Tensors.of( //
         SteeringWheelAngle.of(p1L.Get(1).divide(p1L.Get(0)), delta), // 1L
         SteeringWheelAngle.of(p1R.Get(1).divide(p1R.Get(0)), delta), // 1R
