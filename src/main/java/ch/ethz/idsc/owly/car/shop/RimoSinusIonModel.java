@@ -126,7 +126,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public CarSteering steering() {
-    return CarSteering.FRONT;
+    return CarSteering.BOTH;
   }
 
   // at the extreme the tires are inclined as 18 [deg] to 35 [deg]
