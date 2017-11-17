@@ -68,14 +68,11 @@ public class GokartRender implements RenderInterface {
     }
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
       Scalar angle = gokartStatusEvent.getSteeringAngle();
-      Scalar angleL = new AckermannSteering( //
+      Tensor pair = new AckermannSteering( //
           ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
-          ChassisGeometry.GLOBAL.yTireFrontMeter()) //
-              .angle(angle);
-      Scalar angleR = new AckermannSteering( //
-          ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
-          ChassisGeometry.GLOBAL.yTireFrontMeter().negate()) //
-              .angle(angle);
+          ChassisGeometry.GLOBAL.yTireFrontMeter()).pair(angle);
+      Scalar angleL = pair.Get(0);
+      Scalar angleR = pair.Get(1);
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);

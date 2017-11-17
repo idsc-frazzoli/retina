@@ -12,11 +12,11 @@ import ch.ethz.idsc.tensor.sca.Sin;
 public class DifferentialSpeed {
   private final Scalar factor;
 
-  /** @param x_front non-zero distance from rear to front axis
+  /** @param x_front non-zero distance from rear to front axis where the steering is assumed to take place
    * @param y_offset distance from center of rear axis to tire */
   public DifferentialSpeed(Scalar x_front, Scalar y_offset) {
     if (Scalars.isZero(x_front))
-      throw TensorRuntimeException.of(x_front);
+      throw TensorRuntimeException.of(x_front, y_offset);
     factor = y_offset.divide(x_front);
   }
 
