@@ -33,7 +33,7 @@ public class DifferentialSpeed {
    * @param y_offset distance from center of rear axis to tire */
   public DifferentialSpeed(Scalar x_front, Scalar y_offset) {
     if (Scalars.isZero(x_front))
-      throw TensorRuntimeException.of(x_front);
+      throw TensorRuntimeException.of(x_front, y_offset);
     factor = y_offset.divide(x_front);
   }
 

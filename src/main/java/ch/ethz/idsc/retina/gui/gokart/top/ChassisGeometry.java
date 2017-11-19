@@ -47,7 +47,7 @@ public class ChassisGeometry implements Serializable {
     return TOMETER.apply(yTireRear);
   }
 
-  public Scalar ratioSteering() {
-    return TOMETER.apply(yTireFront).divide(xAxleDistanceMeter());
+  public Scalar yTireFrontMeter() {
+    return TOMETER.apply(yTireFront);
   }
 }

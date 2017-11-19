@@ -20,9 +20,9 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
-import ch.ethz.idsc.tensor.StringScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.StringScalar;
 
 class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 14);
