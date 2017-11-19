@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import ch.ethz.idsc.owly.data.GlobalAssert;
 import ch.ethz.idsc.owly.glc.core.GlcNode;
-import ch.ethz.idsc.tensor.StringScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.sca.N;
 
 class GlcNodeExport {
