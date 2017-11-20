@@ -5,12 +5,12 @@ import junit.framework.TestCase;
 
 public class SteerAngleTrackerTest extends TestCase {
   public void testSimple() {
-    assertFalse(new SteerAngleTracker().isCalibrated());
+    assertFalse(new SteerColumnTracker().isCalibrated());
   }
 
   public void testSimpleFail() {
     try {
-      new SteerAngleTracker().getSteeringValue();
+      new SteerColumnTracker().getSteeringValue();
       assertTrue(false);
     } catch (Exception exception) {
       // ---

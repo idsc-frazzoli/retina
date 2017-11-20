@@ -15,8 +15,8 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
-import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -30,7 +30,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
   public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
-  private final PDSteerPositionControl positionController = new PDSteerPositionControl();
+  private final SteerPositionControl positionController = new SteerPositionControl();
   GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
@@ -53,12 +53,13 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     @Override
     public Optional<SteerPutEvent> putEvent() {
       if (hasJoystick()) {
-        final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
+        final SteerColumnTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
         if (steerAngleTracker.isCalibrated()) {
-          final double currAngle = steerAngleTracker.getSteeringValue();
-          double desPos = -_joystick.getRightKnobDirectionRight() * SteerAngleTracker.MAX_ANGLE;
-          final Scalar torqueCmd = positionController.iterate(RealScalar.of(desPos - currAngle));
-          return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_ON, torqueCmd.number().doubleValue()));
+          final Scalar currAngle = steerAngleTracker.getSteeringValue();
+          Scalar desPos = RealScalar.of(-_joystick.getRightKnobDirectionRight()).multiply(SteerColumnTracker.MAX_SCE);
+          final Scalar torqueCmd = //
+              positionController.iterate(Quantity.of(desPos.subtract(currAngle), SteerPutEvent.UNIT_ENCODER));
+          return Optional.of(SteerPutEvent.createOn(torqueCmd));
         }
       }
       return Optional.empty();

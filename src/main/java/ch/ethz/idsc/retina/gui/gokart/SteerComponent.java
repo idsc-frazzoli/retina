@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,18 +12,17 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
@@ -35,7 +33,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private final PDSteerPositionControl positionController = new PDSteerPositionControl();
+  private final SteerPositionControl steerPositionControl = new SteerPositionControl();
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
@@ -105,8 +103,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    final boolean isCalibrated = SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
-    final double angle = isCalibrated ? SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue() : 0;
+    final boolean isCalibrated = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
+    final Scalar angle = isCalibrated ? SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue() : RealScalar.ZERO;
     final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
     jToggleController.setEnabled(isCalibrated);
     // ---
@@ -119,8 +117,9 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
     jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos() + " " + descr);
     if (isCalibrated) {
-      Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
-      jTextField[7].setBackground(color);
+      // TODO reintroduce
+      // Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
+      // jTextField[7].setBackground(color);
     }
     jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
     jTextField[9].setText("" + steerGetEvent.gearRat);
@@ -134,16 +133,19 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    if (SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated()) {
-      final double currAngle = SteerSocket.INSTANCE.getSteerAngleTracker().getSteeringValue();
-      double desPos = -sliderExtTorque.jSlider.getValue() * SteerAngleTracker.MAX_ANGLE / RESOLUTION;
+    if (SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated()) {
+      final Scalar currAngle = SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue(); // SCE
+      Scalar desPos = RationalScalar.of(-sliderExtTorque.jSlider.getValue(), RESOLUTION).multiply(SteerColumnTracker.MAX_SCE);
       // System.out.println("here " + desPos);
       // System.out.println(desPos);
-      double errPos = desPos - currAngle;
-      Scalar torqueCmd = positionController.iterate(RealScalar.of(errPos));
-      ControllerInfoPublish.publish(desPos, currAngle);
-      if (jToggleController.isSelected())
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd.number().doubleValue()));
+      Scalar errPos = desPos.subtract(currAngle);
+      Scalar torqueCmd = steerPositionControl.iterate(errPos);
+      ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, this is only for tuning
+      if (jToggleController.isSelected()) {
+        return Optional.of(new SteerPutEvent( //
+            spinnerLabelLw.getValue(), //
+            SteerPutEvent.NEWTON_METER.apply(torqueCmd).number().doubleValue()));
+      }
     }
     return Optional.empty();
   }

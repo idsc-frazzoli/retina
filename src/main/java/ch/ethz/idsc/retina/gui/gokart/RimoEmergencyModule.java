@@ -29,7 +29,7 @@ public class RimoEmergencyModule extends AbstractModule implements RimoPutProvid
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    boolean isOk = SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    boolean isOk = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
     return Optional.ofNullable(isOk ? null : RimoPutEvent.STOP);
   }
 }

@@ -7,8 +7,9 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
 /** misc information sent to micro-autobox */
 public class MiscPutEvent extends DataEvent {
-  private static final int LENGTH = 5;
+  private static final int LENGTH = 6;
   // ---
+  public byte resetConnection;
   public byte resetRimoL;
   public byte resetRimoR;
   public byte resetLinmot;
@@ -17,6 +18,7 @@ public class MiscPutEvent extends DataEvent {
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
+    byteBuffer.put(resetConnection);
     byteBuffer.put(resetRimoL);
     byteBuffer.put(resetRimoR);
     byteBuffer.put(resetLinmot);

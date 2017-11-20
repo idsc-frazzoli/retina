@@ -24,7 +24,7 @@ public class SteerInitButton implements SteerPutListener {
   }
 
   private boolean isEnabled() {
-    boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerAngleTracker().isCalibrated();
+    boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
     return SteerCalibrationProvider.INSTANCE.isIdle() && nonCalibrated;
   }
 
