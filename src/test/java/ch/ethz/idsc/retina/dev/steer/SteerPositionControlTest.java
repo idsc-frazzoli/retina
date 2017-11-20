@@ -12,12 +12,13 @@ import junit.framework.TestCase;
 public class SteerPositionControlTest extends TestCase {
   public void testSimple() {
     SteerPositionControl test = new SteerPositionControl();
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
-    for (int i = 0; i < 10; i++) {
+    test.iterate(Quantity.of(.1, SteerPutEvent.UNIT_ENCODER));
+    test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
+    test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
+    for (int i = 0; i < 1000; i++) {
       Scalar value = test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
       SteerPutEvent.NEWTON_METER.apply(value);
+      // System.out.println(value);
     }
   }
 

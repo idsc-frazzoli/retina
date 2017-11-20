@@ -7,7 +7,7 @@ import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.math.Deadzone;
 import ch.ethz.idsc.owly.math.PhysicalConstants;
 import ch.ethz.idsc.owly.math.StateSpaceModel;
-import ch.ethz.idsc.owly.math.r2.Cross2D;
+import ch.ethz.idsc.retina.util.math.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

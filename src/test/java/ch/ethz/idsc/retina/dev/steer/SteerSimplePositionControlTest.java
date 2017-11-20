@@ -9,21 +9,20 @@ import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class SteerPositionIDControlTest extends TestCase {
+public class SteerSimplePositionControlTest extends TestCase {
   public void testSimple() {
-    SteerPositionIDControl test = new SteerPositionIDControl();
-    test.iterate(Quantity.of(.1, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
-    for (int i = 0; i < 1000; i++) {
+    SteerSimplePositionControl test = new SteerSimplePositionControl();
+    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    for (int i = 0; i < 10; i++) {
       Scalar value = test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
       SteerPutEvent.NEWTON_METER.apply(value);
-      // System.out.println(value);
     }
   }
 
   public void testSimple2() {
-    SteerPositionIDControl test = new SteerPositionIDControl();
+    SteerSimplePositionControl test = new SteerSimplePositionControl();
     Distribution distribution = NormalDistribution.standard();
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = Quantity.of(RandomVariate.of(distribution), SteerPutEvent.UNIT_ENCODER);

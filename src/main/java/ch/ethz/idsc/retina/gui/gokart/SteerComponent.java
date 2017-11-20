@@ -15,7 +15,7 @@ import javax.swing.JToolBar;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPositionComboControl;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
@@ -34,7 +34,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private final SteerPositionComboControl steerPositionControl = new SteerPositionComboControl();
+  private final SteerPositionControl steerPositionControl = new SteerPositionControl();
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");

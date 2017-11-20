@@ -11,7 +11,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1" */
 /* package */ class RimoRateController {
-  private final Scalar dt = Quantity.of(RimoSocket.SEND_PERIOD_MS * 1e-3, "s");
+  private static final Scalar DT = Quantity.of(RimoSocket.SEND_PERIOD_MS * 1e-3, "s");
+  // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastVel_error = Quantity.of(0, RimoGetTire.UNIT_RATE); // unit "rad*s^-1"
   private Scalar lastTor_value = Quantity.of(0, RimoPutTire.UNIT_TORQUE); // unit "ARMS"
@@ -20,7 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @return value with unit "ARMS" */
   public Scalar iterate(Scalar vel_error) {
     Scalar pPart = vel_error.subtract(lastVel_error).multiply(RimoConfig.GLOBAL.Kp);
-    Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(dt);
+    Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT);
     lastVel_error = vel_error;
     Scalar tor_value = lastTor_value.add(pPart).add(iPart);
     lastTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // anti-windup

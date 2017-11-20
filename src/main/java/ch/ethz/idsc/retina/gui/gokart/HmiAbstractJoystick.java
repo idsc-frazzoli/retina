@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
-import ch.ethz.idsc.retina.dev.steer.SteerPositionIDControl;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -40,7 +40,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
   public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
-  private final SteerPositionIDControl positionController = new SteerPositionIDControl();
+  private final SteerPositionControl positionController = new SteerPositionControl();
   GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
