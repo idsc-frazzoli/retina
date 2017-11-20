@@ -14,10 +14,11 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** information sent to micro-autobox to control the steering servo */
 public class SteerPutEvent extends DataEvent {
-  /** imaginary unit that encodes position */
-  public static final Unit UNIT_ENCODER = Unit.of("ENC");
+  /** imaginary unit that encodes angular/rotational position of steer column */
+  public static final Unit UNIT_ENCODER = Unit.of("SCE");
   public static final Unit UNIT_TORQUE = Unit.of("N*m");
   public static final ScalarUnaryOperator NEWTON_METER = QuantityMagnitude.singleton(UNIT_TORQUE);
+  public static final ScalarUnaryOperator ENCODER = QuantityMagnitude.singleton(UNIT_ENCODER);
   public static final int LENGTH = 5;
   public static final Word CMD_OFF = Word.createByte("OFF", (byte) 0);
   public static final Word CMD_ON = Word.createByte("ON", (byte) 1);

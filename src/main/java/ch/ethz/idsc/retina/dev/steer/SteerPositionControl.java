@@ -10,7 +10,7 @@ public class SteerPositionControl {
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
 
-  /** @param pos_error in "ENC"
+  /** @param pos_error in "SCE"
    * @return */
   public Scalar iterate(Scalar pos_error) {
     Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp);

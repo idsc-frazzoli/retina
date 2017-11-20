@@ -7,7 +7,8 @@ import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
@@ -45,7 +46,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
       // episodeIntegrator.move(Tensors.of(speed), now);
       if (hasJoystick()) {
         // GenericXboxPadJoystick joystick = _joystick;
-        final SteerAngleTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerAngleTracker();
+        final SteerColumnTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
         if (steerAngleTracker.isCalibrated()) {
           Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
           Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
@@ -53,7 +54,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
           DifferentialSpeed dsR = new DifferentialSpeed(axisDelta, yTireRear.negate());
           // StateTime rate = episodeIntegrator.tail();
           // Scalar speed = rate.state().Get(0);
-          Scalar theta = RealScalar.of(steerAngleTracker.getSteeringValue());
+          Scalar theta = SteerConfig.getAngleFromSCE(steerAngleTracker.getSteeringValue());
           return rimoRateControllerWrap.iterate( //
               dsL.get(speed, theta), //
               dsR.get(speed, theta));
