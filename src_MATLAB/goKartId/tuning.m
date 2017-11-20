@@ -4,9 +4,9 @@
 clear all
 close all
 clc
-get = csvread('/home/jelavice/sysid_get.csv',1,0);
-put = csvread('/home/jelavice/sysid_put.csv',1,0);
-putRef = csvread('/home/jelavice/sysid_putRef.csv',1,0);
+get = csvread('/home/datahaki/sysid_get.csv',1,0);
+put = csvread('/home/datahaki/sysid_put.csv',1,0);
+putRef = csvread('/home/datahaki/sysid_putRef.csv',1,0);
 
 %unfortunately times are different
 

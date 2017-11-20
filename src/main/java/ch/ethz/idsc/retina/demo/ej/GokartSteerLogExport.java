@@ -24,7 +24,7 @@ import lcm.logging.Log.Event;
 enum GokartSteerLogExport {
   ;
   public static void main(String[] args) throws IOException {
-    File file = new File("/home/jelavice", "20170929T201201_becad644.lcm.00"); // put hte filename here
+    File file = UserHome.file("20171120T210940_46f687f6.lcm.00"); // put hte filename here
     Log log = new Log(file.toString(), "r");
     long countGet = 0;
     long countPut = 0;

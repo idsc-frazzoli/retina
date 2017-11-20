@@ -10,7 +10,7 @@ public final class SteerColumnTracker implements SteerGetListener {
   public static final Scalar MAX_SCE = Quantity.of(0.6743167638778687, SteerPutEvent.UNIT_ENCODER);
   /** values found by experimentation */
   private static final double SOFT = 1.357;
-  private static final double HARD = 1.405;
+  private static final double HARD = 1.7; // 1.405; // FIXME
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
 
