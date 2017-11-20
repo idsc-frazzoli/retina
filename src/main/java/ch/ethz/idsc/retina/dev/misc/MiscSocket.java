@@ -26,6 +26,7 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
     super(DatagramSocketManager.local(new byte[MiscGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
     // ---
     addPutProvider(MiscPutFallback.INSTANCE);
+    addPutProvider(MiscIgnitionProvider.INSTANCE);
   }
 
   @Override

@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.util.math.IntervalTracker;
 
 public final class SteerAngleTracker implements SteerGetListener {
   /** value found by experimentation */
-  public static final double MAX_ANGLE = 0.6743167638778687;
+  public static final double MAX_ANGLE = 0.6743167638778687; // TODO UNITless, should use our own fake unit
   /** values found by experimentation */
   private static final double SOFT = 1.357;
   private static final double HARD = 1.405;
@@ -26,7 +26,7 @@ public final class SteerAngleTracker implements SteerGetListener {
   /** @return value centered around 0
    * zero means driving straight */
   // TODO NRJ document sign means left/right
-  public double getSteeringValue() {
+  public double getSteeringValue() { // TODO should use Quantity
     if (!isCalibrated())
       throw new RuntimeException();
     return intervalTracker.getValueCentered();

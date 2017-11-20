@@ -3,14 +3,18 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -38,6 +42,17 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   private final JTextField jTextFieldBat;
 
   public MiscComponent() {
+    {
+      JToolBar jToolBar = createRow("Connection");
+      JButton jButton = new JButton("Reset"); // TODO enable only when getMsg indicates need!
+      jButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          MiscIgnitionProvider.INSTANCE.schedule();
+        }
+      });
+      jToolBar.add(jButton);
+    }
     {
       JToolBar jToolBar = createRow("resetRimoL");
       spinnerLabelRimoL.setList(COMMANDS);
@@ -79,7 +94,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   public void getEvent(MiscGetEvent miscGetEvent) {
     // jTextFieldEmg.setText("" + miscGetEvent.emergency);
     {
-      jTextFieldEmg.setText("" + miscGetEvent.isEmergency());
+      jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
       jTextFieldEmg.setBackground(color);
     }

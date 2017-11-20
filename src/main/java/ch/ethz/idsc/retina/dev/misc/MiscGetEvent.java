@@ -22,6 +22,10 @@ public class MiscGetEvent extends DataEvent {
     return emergency != 0;
   }
 
+  public byte getEmergency() {
+    return emergency;
+  }
+
   /** @return the voltage of the front battery in volts */
   public Scalar getSteerBatteryVoltage() {
     // maps the output of the ADC(0-1) to the real input voltage (0V-5V)

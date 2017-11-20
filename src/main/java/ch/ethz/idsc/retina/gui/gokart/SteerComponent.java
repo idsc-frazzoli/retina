@@ -13,9 +13,9 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.dev.steer.PDSteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerAngleTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.data.Word;
@@ -25,6 +25,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
@@ -35,7 +36,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
-  private final PDSteerPositionControl positionController = new PDSteerPositionControl();
+  private final SteerPositionControl pdSteerPositionControl = new SteerPositionControl();
   private final JButton stepLeft = new JButton("step Left");
   private final JButton stepRight = new JButton("step Right");
   private final JButton resetSteps = new JButton("reset Steps");
@@ -140,10 +141,13 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       // System.out.println("here " + desPos);
       // System.out.println(desPos);
       double errPos = desPos - currAngle;
-      Scalar torqueCmd = positionController.iterate(RealScalar.of(errPos));
-      ControllerInfoPublish.publish(desPos, currAngle);
-      if (jToggleController.isSelected())
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), torqueCmd.number().doubleValue()));
+      Scalar torqueCmd = pdSteerPositionControl.iterate(Quantity.of(errPos, SteerPutEvent.UNIT_ENCODER));
+      ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, this is only for tuning
+      if (jToggleController.isSelected()) {
+        return Optional.of(new SteerPutEvent( //
+            spinnerLabelLw.getValue(), //
+            SteerPutEvent.NEWTON_METER.apply(torqueCmd).number().doubleValue()));
+      }
     }
     return Optional.empty();
   }
