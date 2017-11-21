@@ -4,6 +4,8 @@ package ch.ethz.idsc.owly.car.math;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Cos;
@@ -36,6 +38,29 @@ public class DifferentialSpeedTest extends TestCase {
       Scalar tireL = tireRearL.get(speed, angle);
       Scalar tireR = tireRearR.get(speed, angle);
       assertTrue(Scalars.lessThan(tireR, tireL));
+    }
+  }
+
+  public void testQuantityPair() {
+    Scalar y_offset = Quantity.of(0.5, "m");
+    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    Scalar speed = Quantity.of(+4.0, "m*s^-1");
+    {
+      Scalar angle = RealScalar.of(+0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireL, tireR));
+      Tensor pair = tireRearL.pair(speed, angle);
+      assertEquals(pair, Tensors.of(tireL, tireR));
+    }
+    {
+      Scalar angle = RealScalar.of(-0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireR, tireL));
+      Tensor pair = tireRearL.pair(speed, angle);
+      assertEquals(pair, Tensors.of(tireL, tireR));
     }
   }
 

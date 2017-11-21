@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 
 public class HmiFullControlJoystick extends HmiAbstractJoystick {
   @Override
@@ -30,9 +31,9 @@ public class HmiFullControlJoystick extends HmiAbstractJoystick {
           sign = +1;
         Scalar wheelL = RealScalar.of(joystick.getLeftSliderUnitValue() * sign);
         Scalar wheelR = RealScalar.of(joystick.getRightSliderUnitValue() * sign);
-        return rimoRateControllerWrap.iterate( //
+        return rimoRateControllerWrap.iterate(Tensors.of( //
             getSpeedLimit().multiply(wheelL), //
-            getSpeedLimit().multiply(wheelR));
+            getSpeedLimit().multiply(wheelR)));
       }
       return Optional.empty();
     }

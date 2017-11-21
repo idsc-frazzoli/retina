@@ -3,7 +3,9 @@ package ch.ethz.idsc.owly.car.math;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
@@ -43,6 +45,19 @@ public class DifferentialSpeed {
   public Scalar get(Scalar speed, Scalar angle) {
     Scalar cos = Cos.FUNCTION.apply(angle);
     Scalar sin = Sin.FUNCTION.apply(angle);
-    return speed.multiply(cos.subtract(factor.multiply(sin)));
+    return cos.subtract(factor.multiply(sin)).multiply(speed);
+  }
+
+  /** computes speed for two tires the second of which is at a location mirrored
+   * along the x-axis from the first tire.
+   * 
+   * @param speed
+   * @param angle
+   * @return */
+  public Tensor pair(Scalar speed, Scalar angle) {
+    Scalar cos = Cos.FUNCTION.apply(angle);
+    Scalar sin = Sin.FUNCTION.apply(angle);
+    Scalar res = factor.multiply(sin);
+    return Tensors.of(cos.subtract(res), cos.add(res)).multiply(speed);
   }
 }

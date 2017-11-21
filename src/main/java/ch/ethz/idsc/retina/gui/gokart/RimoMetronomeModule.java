@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** module to test rimo torque control for a given target speed */
@@ -46,8 +47,8 @@ public class RimoMetronomeModule extends AbstractModule implements RimoPutProvid
     Scalar remaind = Mod.function(HALF_PERIOD.multiply(RealScalar.of(2))).apply(seconds);
     boolean isPassive = Scalars.lessThan(remaind, HALF_PERIOD);
     // ---
-    return rimoRateControllerWrap.iterate( //
+    return rimoRateControllerWrap.iterate(Tensors.of( //
         isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi, //
-        isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi);
+        isPassive ? RimoConfig.GLOBAL.testPulseLo : RimoConfig.GLOBAL.testPulseHi));
   }
 }
