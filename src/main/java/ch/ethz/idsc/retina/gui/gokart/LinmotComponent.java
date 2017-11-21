@@ -13,6 +13,7 @@ import javax.swing.JToolBar;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -94,9 +95,9 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     {
       jTextFieldStatusWord = createReading("status word");
       // ---
-      for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index)
-        jCheckBoxStatusWord[index] = //
-            createReadingCheckbox(index + " " + LinmotStatusWord.TITLES[index]);
+      for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values())
+        jCheckBoxStatusWord[lsw.ordinal()] = //
+            createReadingCheckbox(lsw.ordinal() + " " + lsw);
       // ---
       jTextFieldStateVariable = createReading("state variable");
       jTextFieldActualPosition = createReading("actual pos.");
@@ -109,9 +110,9 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
-    for (int index = 0; index < LinmotStatusWord.TITLES.length; ++index) {
-      boolean selected = (linmotGetEvent.status_word & (1 << index)) != 0;
-      jCheckBoxStatusWord[index].setSelected(selected);
+    for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values()) {
+      boolean selected = (linmotGetEvent.status_word & (1 << lsw.ordinal())) != 0;
+      jCheckBoxStatusWord[lsw.ordinal()].setSelected(selected);
     }
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
     jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);

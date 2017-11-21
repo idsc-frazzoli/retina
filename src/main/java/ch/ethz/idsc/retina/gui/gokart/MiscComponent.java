@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
@@ -39,11 +41,12 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   private final SpinnerLabel<Word> spinnerLabelSteer = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLed = new SpinnerLabel<>();
   private final JTextField jTextFieldEmg;
+  private final JCheckBox[] jCheckBoxStatusWord = new JCheckBox[2];
   private final JTextField jTextFieldBat;
 
   public MiscComponent() {
     {
-      JToolBar jToolBar = createRow("Connection");
+      JToolBar jToolBar = createRow("Communication");
       JButton jButton = new JButton("Reset"); // TODO enable only when getMsg indicates need!
       jButton.addActionListener(new ActionListener() {
         @Override
@@ -86,6 +89,9 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     addSeparator();
     { // reception
       jTextFieldEmg = createReading("emergency");
+      for (MiscEmergencyBit meb : MiscEmergencyBit.values())
+        jCheckBoxStatusWord[meb.ordinal()] = //
+            createReadingCheckbox(meb.ordinal() + " " + meb);
       jTextFieldBat = createReading("battery");
     }
   }
@@ -97,6 +103,10 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
       jTextFieldEmg.setBackground(color);
+    }
+    for (MiscEmergencyBit meb : MiscEmergencyBit.values()) {
+      boolean selected = (miscGetEvent.getEmergency() & (1 << meb.ordinal())) != 0;
+      jCheckBoxStatusWord[meb.ordinal()].setSelected(selected);
     }
     {
       Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
