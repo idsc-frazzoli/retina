@@ -7,9 +7,9 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.owly.car.math.TurningGeometry;
 import ch.ethz.idsc.owly.gui.GeometricLayer;
 import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.retina.dev.steer.TurningGeometry;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.Scalar;

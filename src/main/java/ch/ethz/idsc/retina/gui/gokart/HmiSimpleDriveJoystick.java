@@ -43,7 +43,7 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
           Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
           Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
           DifferentialSpeed differentialSpeed = new DifferentialSpeed(axisDelta, yTireRear);
-          Scalar theta = SteerConfig.getAngleFromSCE(steerColumnTracker.getSteeringValue());
+          Scalar theta = SteerConfig.getAngleFromSCE(steerColumnTracker.getEncoderValueCentered());
           return rimoRateControllerWrap.iterate(differentialSpeed.pair(speed, theta));
         }
       }

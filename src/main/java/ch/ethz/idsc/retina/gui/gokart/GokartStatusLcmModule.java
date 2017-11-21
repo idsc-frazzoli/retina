@@ -19,7 +19,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
   protected void runAlgo() {
     boolean isCalibrated = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
     float steeringAngle = isCalibrated //
-        ? SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue().number().floatValue()
+        ? SteerSocket.INSTANCE.getSteerColumnTracker().getEncoderValueCentered().number().floatValue()
         : Float.NaN;
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(steeringAngle);
     binaryBlobPublisher.accept(gokartStatusEvent.asArray());

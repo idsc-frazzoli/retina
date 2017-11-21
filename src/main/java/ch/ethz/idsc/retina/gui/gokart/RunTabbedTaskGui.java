@@ -36,7 +36,7 @@ enum RunTabbedTaskGui {
     taskTabGui.tab("watchdog", Arrays.asList( //
         Urg04lxEmergencyModule.class, //
         MiscEmergencyModule.class, //
-        RimoEmergencyModule.class, //
+        SteerEmergencyModule.class, //
         LinmotEmergencyModule.class, //
         LinmotTakeoverModule.class //
     ));

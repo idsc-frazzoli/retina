@@ -22,7 +22,6 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
@@ -31,13 +30,17 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
-  private final SliderExt sliderExtTorque;
+  private final SliderExt sliderPosition;
+  private final JTextField torquePut;
+  private final JTextField rangeWidth;
+  private final JTextField rangePos;
   private final JTextField[] jTextField = new JTextField[11];
   private final SteerPositionControl steerPositionControl = new SteerPositionControl();
   private final JButton stepLeft = new JButton("Left");
   private final JButton stepRight = new JButton("Right");
   private final JButton stepReset = new JButton("Reset");
-  private final JTextField torquePut;
+  // ---
+  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
 
   public SteerComponent() {
     { // calibration and controller
@@ -55,11 +58,13 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     }
     { // command speed
       JToolBar jToolBar = createRow("Position");
-      sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
-      sliderExtTorque.addToComponent(jToolBar);
+      sliderPosition = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
+      sliderPosition.addToComponent(jToolBar);
     }
     {
       torquePut = createReading("Torque");
+      rangeWidth = createReading("RangeWidth");
+      rangePos = createReading("RangePos");
     }
     {
       JToolBar jToolBar = createRow("Step");
@@ -68,7 +73,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         @Override
         public void actionPerformed(ActionEvent event) {
           double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
-          sliderExtTorque.jSlider.setValue((int) (-RESOLUTION * stepOfLimit));
+          sliderPosition.jSlider.setValue((int) (-RESOLUTION * stepOfLimit));
         }
       });
       jToolBar.add(stepRight);
@@ -76,14 +81,14 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
         @Override
         public void actionPerformed(ActionEvent event) {
           double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
-          sliderExtTorque.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
+          sliderPosition.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
         }
       });
       jToolBar.add(stepReset);
       stepReset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
-          sliderExtTorque.jSlider.setValue(0);
+          sliderPosition.jSlider.setValue(0);
         }
       });
     }
@@ -105,10 +110,16 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    final boolean isCalibrated = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
-    final Scalar angle = isCalibrated ? SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue() : RealScalar.ZERO;
-    final String descr = isCalibrated ? "" + angle : "CALIBRATION MISS";
+    final boolean isCalibrated = steerColumnTracker.isCalibrated();
     jToggleController.setEnabled(isCalibrated);
+    // ---
+    {
+      rangeWidth.setText("" + steerColumnTracker.getIntervalWidth());
+      String angle = isCalibrated //
+          ? steerColumnTracker.getEncoderValueCentered().toString() //
+          : "NOT CALIBRATED";
+      rangePos.setText(angle);
+    }
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
@@ -117,12 +128,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
-    jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos() + " " + descr);
-    if (isCalibrated) {
-      // TODO reintroduce
-      // Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(RealScalar.of((angle + 1) / 2)));
-      // jTextField[7].setBackground(color);
-    }
+    jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos());
     jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
     jTextField[9].setText("" + steerGetEvent.gearRat);
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
@@ -135,9 +141,9 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    if (SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated()) {
-      final Scalar currAngle = SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue(); // SCE
-      Scalar desPos = RationalScalar.of(-sliderExtTorque.jSlider.getValue(), RESOLUTION).multiply(SteerColumnTracker.MAX_SCE);
+    if (steerColumnTracker.isCalibrated()) {
+      final Scalar currAngle = steerColumnTracker.getEncoderValueCentered(); // SCE
+      Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION).multiply(SteerColumnTracker.MAX_SCE);
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
