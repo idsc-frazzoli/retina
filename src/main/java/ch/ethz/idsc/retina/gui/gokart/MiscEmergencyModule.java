@@ -9,20 +9,15 @@ import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 /** sends stop command if steer battery voltage is outside of valid range
  * or if emergency flag is set in {@link MiscGetEvent} */
 public class MiscEmergencyModule extends AbstractModule implements MiscGetListener, RimoPutProvider {
-  private static final Clip VOLTAGE_RANGE = Clip.function( //
-      Quantity.of(10.7, "V"), //
-      Quantity.of(13.0, "V"));
-  // ---
-  private TimedFuse timedFuse = new TimedFuse(0.5);
+  private final TimedFuse timedFuse = new TimedFuse(0.5);
   private boolean flag = false;
 
   @Override
@@ -49,7 +44,8 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    timedFuse.register(VOLTAGE_RANGE.isOutside(miscGetEvent.getSteerBatteryVoltage()));
-    flag |= miscGetEvent.isEmergency();
+    timedFuse.register(SteerConfig.GLOBAL.operatingVoltageClip() //
+        .isOutside(miscGetEvent.getSteerBatteryVoltage()));
+    flag |= miscGetEvent.isEmergency(); // comm timeout, or manual switch
   }
 }
