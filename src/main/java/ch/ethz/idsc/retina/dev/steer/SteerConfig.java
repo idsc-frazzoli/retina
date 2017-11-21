@@ -11,7 +11,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-/** parameters for PD controller of steering */
+/** parameters for PID controller of steering
+ * 
+ * there are 2 special units related to the manufacturer of the steering column:
+ * "SCE" steer-column encoder
+ * "SCT" steer-column torque */
 public class SteerConfig implements Serializable, ConfigurableMarker {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
 
@@ -39,6 +43,8 @@ public class SteerConfig implements Serializable, ConfigurableMarker {
     return Clip.function(voltageLo, voltageHi);
   }
 
+  /** @return symmetric interval centered at zero that bounds the torque
+   * applied to the steering wheel */
   public Clip torqueLimitClip() {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }

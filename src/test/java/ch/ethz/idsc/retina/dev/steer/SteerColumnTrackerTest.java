@@ -10,7 +10,7 @@ public class SteerColumnTrackerTest extends TestCase {
 
   public void testSimpleFail() {
     try {
-      new SteerColumnTracker().getSteeringValue();
+      new SteerColumnTracker().getEncoderValueCentered();
       assertTrue(false);
     } catch (Exception exception) {
       // ---

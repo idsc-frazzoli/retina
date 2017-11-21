@@ -5,10 +5,10 @@ import junit.framework.TestCase;
 
 public class IntervalTrackerTest extends TestCase {
   public void testSimple() {
-    IntervalTracker it = new IntervalTracker();
-    assertTrue(Double.isNaN(it.getValue()));
-    assertTrue(Double.isNaN(it.getValueCentered()));
-    assertTrue(Double.isInfinite(it.getWidth()));
+    IntervalTracker intervalTracker = new IntervalTracker();
+    assertTrue(Double.isNaN(intervalTracker.getValue()));
+    assertTrue(Double.isNaN(intervalTracker.getValueCentered()));
+    assertTrue(Double.isInfinite(intervalTracker.getWidth()));
   }
 
   public void testActive() {

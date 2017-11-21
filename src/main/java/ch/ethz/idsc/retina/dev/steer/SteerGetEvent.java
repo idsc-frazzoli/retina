@@ -5,11 +5,14 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
-/** information received from micro-autobox about steering */
+/** information received from micro-autobox about steering
+ * 
+ * the manufacturer of the steering column does <em>not</em>
+ * share details about the exact meaning of the values sent by
+ * the device, therefore our documentation also lacks clues. */
 public class SteerGetEvent extends DataEvent {
   public static final int LENGTH = 44;
   // ---
-  // TODO NRJ document variables
   public final float motAsp_CANInput;
   public final float motAsp_Qual;
   public final float tsuTrq_CANInput;
@@ -64,7 +67,7 @@ public class SteerGetEvent extends DataEvent {
    * the offset has to be determined in a calibration procedure
    * 
    * @return relative position */
-  public double getGcpRelRckPos() {
+  public float getGcpRelRckPos() {
     return gcpRelRckPos;
   }
 }

@@ -10,8 +10,8 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** sends stop command if steer angle is not calibrated */
-public class RimoEmergencyModule extends AbstractModule implements RimoPutProvider {
+/** sends stop command if steer angle is not calibrated or tracking is unhealthy */
+public class SteerEmergencyModule extends AbstractModule implements RimoPutProvider {
   @Override
   protected void first() throws Exception {
     RimoSocket.INSTANCE.addPutProvider(this);
@@ -29,7 +29,7 @@ public class RimoEmergencyModule extends AbstractModule implements RimoPutProvid
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    boolean isOk = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
+    boolean isOk = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
     return Optional.ofNullable(isOk ? null : RimoPutEvent.STOP);
   }
 }

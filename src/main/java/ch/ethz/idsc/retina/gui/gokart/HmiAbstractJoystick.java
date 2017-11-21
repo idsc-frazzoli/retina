@@ -63,9 +63,9 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     @Override
     public Optional<SteerPutEvent> putEvent() {
       if (hasJoystick()) {
-        final SteerColumnTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
-        if (steerAngleTracker.isCalibrated()) {
-          final Scalar currAngle = steerAngleTracker.getSteeringValue();
+        final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+        if (steerColumnTracker.isCalibrated()) {
+          final Scalar currAngle = steerColumnTracker.getEncoderValueCentered();
           Scalar desPos = RealScalar.of(-_joystick.getRightKnobDirectionRight()).multiply(SteerColumnTracker.MAX_SCE);
           final Scalar torqueCmd = //
               positionController.iterate(Quantity.of(desPos.subtract(currAngle), SteerPutEvent.UNIT_ENCODER));
