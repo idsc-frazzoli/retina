@@ -17,7 +17,7 @@ public class SteerSimplePositionControlTest extends TestCase {
     test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
     for (int i = 0; i < 10; i++) {
       Scalar value = test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
-      SteerPutEvent.NEWTON_METER.apply(value);
+      SteerPutEvent.RTORQUE.apply(value);
     }
   }
 
@@ -27,7 +27,7 @@ public class SteerSimplePositionControlTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = Quantity.of(RandomVariate.of(distribution), SteerPutEvent.UNIT_ENCODER);
       Scalar value = test.iterate(err_pos.multiply(RealScalar.of(0.01)));
-      SteerPutEvent.NEWTON_METER.apply(value);
+      SteerPutEvent.RTORQUE.apply(value);
     }
   }
 }

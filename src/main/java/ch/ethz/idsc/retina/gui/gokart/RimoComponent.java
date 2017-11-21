@@ -18,8 +18,6 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
-  private static final boolean SHOW_CMD_AND_SPEED = true;
-  // ---
   private final RimoPutFields rimoPutFieldsL = new RimoPutFields();
   private final RimoPutFields rimoPutFieldsR = new RimoPutFields();
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();
@@ -50,13 +48,13 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   }
 
   private void assign(RimoPutFields rimoPutFields, String side) {
-    if (SHOW_CMD_AND_SPEED) { // operation mode
+    { // operation mode
       JToolBar jToolBar = createRow(side + " command");
       rimoPutFields.spinnerLabelCmd.setList(RimoPutTire.COMMANDS);
       rimoPutFields.spinnerLabelCmd.setValueSafe(RimoPutTire.OPERATION);
       rimoPutFields.spinnerLabelCmd.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
-    if (SHOW_CMD_AND_SPEED) { // command speed
+    { // command speed
       JToolBar jToolBar = createRow(side + " speed");
       rimoPutFields.sliderExtVel.addToComponent(jToolBar);
     }

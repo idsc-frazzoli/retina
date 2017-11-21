@@ -145,7 +145,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       if (jToggleController.isSelected()) {
         return Optional.of(new SteerPutEvent( //
             spinnerLabelLw.getValue(), //
-            SteerPutEvent.NEWTON_METER.apply(torqueCmd).number().doubleValue()));
+            SteerPutEvent.RTORQUE.apply(torqueCmd).number().doubleValue()));
       }
     }
     return Optional.empty();

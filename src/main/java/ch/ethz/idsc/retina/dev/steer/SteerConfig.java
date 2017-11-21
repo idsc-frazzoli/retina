@@ -19,11 +19,11 @@ public class SteerConfig implements Serializable, ConfigurableMarker {
   }
 
   /***************************************************/
-  public Scalar calibration = Quantity.of(1.0, "N*m");
-  public Scalar Ki = Quantity.of(5.7, "SCE^-1*N*m*s^-1");
-  public Scalar Kp = Quantity.of(7.2, "SCE^-1*N*m");
-  public Scalar Kd = Quantity.of(0.82, "SCE^-1*N*m*s");
-  public Scalar torqueLimit = Quantity.of(1.5, "N*m");
+  public Scalar calibration = Quantity.of(1.0, "SCT");
+  public Scalar Ki = Quantity.of(5.7, "SCE^-1*SCT*s^-1");
+  public Scalar Kp = Quantity.of(7.2, "SCE^-1*SCT");
+  public Scalar Kd = Quantity.of(0.82, "SCE^-1*SCT*s");
+  public Scalar torqueLimit = Quantity.of(1.5, "SCT");
   // ---
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");

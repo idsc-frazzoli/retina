@@ -17,8 +17,8 @@ public class SteerPositionControl {
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
-  private Scalar lastTor_value = Quantity.of(0, SteerPutEvent.UNIT_TORQUE); // unit "N*m"
-  private Scalar lastIPt_value = Quantity.of(0, SteerPutEvent.UNIT_TORQUE); // unit "N*m"
+  private Scalar lastTor_value = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE); // unit "N*m"
+  private Scalar lastIPt_value = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE); // unit "N*m"
 
   /** @param pos_error in "SCE"
    * @return "N*m" */
