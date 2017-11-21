@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.retina.gui.gokart.ConfigurableMarker;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PD controller of steering */
-public class SteerConfig implements Serializable {
+public class SteerConfig implements Serializable, ConfigurableMarker {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
 
   private SteerConfig() {
@@ -26,7 +27,8 @@ public class SteerConfig implements Serializable {
   // ---
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
-  public Scalar stepPercent = RealScalar.of(0.5);
+  /** 0.5 corresponds to 50% of torque limit */
+  public Scalar stepOfLimit = RealScalar.of(0.5);
 
   /***************************************************/
   public Clip torqueLimitClip() {

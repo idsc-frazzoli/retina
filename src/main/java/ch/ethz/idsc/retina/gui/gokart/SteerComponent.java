@@ -27,7 +27,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
 class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
-  // public static final double MAX_TORQUE = 0.5; // FIXME not relevant
   // ---
   public final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
@@ -67,22 +66,23 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       jToolBar.add(stepLeft);
       stepLeft.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
-          // TODO clean up
-          sliderExtTorque.jSlider.setValue((int) (-RESOLUTION * SteerConfig.GLOBAL.stepPercent.number().doubleValue()));
+        public void actionPerformed(ActionEvent event) {
+          double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
+          sliderExtTorque.jSlider.setValue((int) (-RESOLUTION * stepOfLimit));
         }
       });
       jToolBar.add(stepRight);
       stepRight.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
-          sliderExtTorque.jSlider.setValue((int) (+RESOLUTION * SteerConfig.GLOBAL.stepPercent.number().doubleValue()));
+        public void actionPerformed(ActionEvent event) {
+          double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
+          sliderExtTorque.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
         }
       });
       jToolBar.add(resetSteps);
       resetSteps.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           sliderExtTorque.jSlider.setValue(0);
         }
       });
@@ -139,7 +139,6 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
       final Scalar currAngle = SteerSocket.INSTANCE.getSteerColumnTracker().getSteeringValue(); // SCE
       Scalar desPos = RationalScalar.of(-sliderExtTorque.jSlider.getValue(), RESOLUTION).multiply(SteerColumnTracker.MAX_SCE);
       // System.out.println("here " + desPos);
-      // System.out.println(desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
       ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, this is only for tuning
