@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.swing.JButton;
@@ -128,8 +129,10 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
     rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
     // ---
-    rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
-    rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
+    if (Objects.nonNull(rimoGetEvent)) { // may not be received yet 
+      rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
+      rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
+    }
   }
 
   @Override
