@@ -17,7 +17,7 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   private static final int REMOTE_PORT = 5003;
   private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
   // ---
-  private static final int SEND_PERIOD_MS = 20;
+  private static final int SEND_PERIOD_MS = 20; // == 50 Hz
   // ---
 
   private MiscSocket() {

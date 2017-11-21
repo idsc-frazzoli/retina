@@ -21,12 +21,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * TODO NRJ still uses velocity control for RIMO */
 public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
-  // ---
-  // private final TimeKeeper timeKeeper = new TimeKeeper();
-  // private final EpisodeIntegrator episodeIntegrator = new SimpleEpisodeIntegrator( //
-  // new Duncan1StateSpaceModel(Quantity.of(1, "s^-1")), //
-  // MidpointIntegrator.INSTANCE, //
-  // new StateTime(Tensors.fromString("{0[rad*s^-1]}"), Quantity.of(0, "s")));
   @Override
   protected double breakStrength() {
     return Math.max( //
@@ -39,25 +33,18 @@ public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
     // TODO geh vom gas falls bremse gedrueckt ist
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      // final Scalar now = timeKeeper.now();
       Scalar speed = Quantity.of(0, RimoGetTire.UNIT_RATE);
       if (hasJoystick())
         speed = getSpeedLimit().multiply(RealScalar.of(_joystick.getLeftKnobDirectionUp()));
-      // episodeIntegrator.move(Tensors.of(speed), now);
       if (hasJoystick()) {
         // GenericXboxPadJoystick joystick = _joystick;
-        final SteerColumnTracker steerAngleTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
-        if (steerAngleTracker.isCalibrated()) {
+        final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+        if (steerColumnTracker.isCalibrated()) {
           Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
           Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
-          DifferentialSpeed dsL = new DifferentialSpeed(axisDelta, yTireRear);
-          DifferentialSpeed dsR = new DifferentialSpeed(axisDelta, yTireRear.negate());
-          // StateTime rate = episodeIntegrator.tail();
-          // Scalar speed = rate.state().Get(0);
-          Scalar theta = SteerConfig.getAngleFromSCE(steerAngleTracker.getSteeringValue());
-          return rimoRateControllerWrap.iterate( //
-              dsL.get(speed, theta), //
-              dsR.get(speed, theta));
+          DifferentialSpeed differentialSpeed = new DifferentialSpeed(axisDelta, yTireRear);
+          Scalar theta = SteerConfig.getAngleFromSCE(steerColumnTracker.getSteeringValue());
+          return rimoRateControllerWrap.iterate(differentialSpeed.pair(speed, theta));
         }
       }
       return Optional.empty();

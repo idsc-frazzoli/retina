@@ -38,6 +38,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       stopButton.addActionListener(e -> setZero());
     }
     assign(rimoPutFieldsL, "LEFT");
+    addSeparator();
     assign(rimoPutFieldsR, "RIGHT");
     // reception
     addSeparator();
@@ -47,8 +48,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
   }
 
   private void assign(RimoPutFields rimoPutFields, String side) {
-    // LEFT
-    {
+    { // operation mode
       JToolBar jToolBar = createRow(side + " command");
       rimoPutFields.spinnerLabelCmd.setList(RimoPutTire.COMMANDS);
       rimoPutFields.spinnerLabelCmd.setValueSafe(RimoPutTire.OPERATION);
@@ -68,25 +68,17 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
       rimoPutFields.spinnerLabelTrigger.setValueSafe(RimoPutTire.trigOff);
       rimoPutFields.spinnerLabelTrigger.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
-    // SDO COMMAND
-    {
+    { // SDO COMMAND
       JToolBar jToolBar = createRow("SDO command");
       // rimoPutFields.jTextfieldSdoCommand.setMinimumSize(new Dimension(130, 28));
       jToolBar.add(rimoPutFields.jTextfieldSdoCommand);
       rimoPutFields.jTextfieldSdoCommand.setText("0");
-      jToolBar.add(rimoPutFields.jTextfieldSdoMainIndex);
+      jToolBar.add(rimoPutFields.jTextfieldSdoMainIndex); // SDO MAIN INDEX
       rimoPutFields.jTextfieldSdoMainIndex.setText("0");
-      jToolBar.add(rimoPutFields.jTextfieldSdoSubIndex);
+      jToolBar.add(rimoPutFields.jTextfieldSdoSubIndex); // SDO SUBINDEX
       rimoPutFields.jTextfieldSdoSubIndex.setText("0");
     }
-    // SDO MAIN INDEX
-    // JToolBar jToolBar = createRow("SDO main index");
-    // SDO SUBINDEX
-    {
-      // JToolBar jToolBar = createRow("SDO subindex");
-    }
-    // SDO DATA
-    {
+    { // SDO DATA
       JToolBar jToolBar = createRow("SDO data");
       jToolBar.add(rimoPutFields.jTextfieldSdoData);
       rimoPutFields.jTextfieldSdoData.setText("0");

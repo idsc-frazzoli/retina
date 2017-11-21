@@ -36,6 +36,7 @@ public class AckermannSteering {
   /** @param delta
    * @return steering angle for two wheels located at +y_offset and -y_offset
    * as is the symmetric standard configuration of most vehicles */
+  // implementation is redundant to angle function in order to reuse the computation of the tangens
   public Tensor pair(Scalar delta) {
     Scalar tan = Tan.of(delta);
     Scalar tan_factor = tan.multiply(factor);

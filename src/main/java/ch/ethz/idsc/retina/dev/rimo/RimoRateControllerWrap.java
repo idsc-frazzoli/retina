@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -21,17 +22,19 @@ public class RimoRateControllerWrap implements RimoGetListener {
     this.rimoGetEvent = rimoGetEvent;
   }
 
-  public Optional<RimoPutEvent> iterate(Scalar vel_targetL, Scalar vel_targetR) {
+  public Optional<RimoPutEvent> iterate(Tensor pair) {
     if (Objects.nonNull(rimoGetEvent))
       try {
         short valueL = 0;
         short valueR = 0;
         {
+          Scalar vel_targetL = pair.Get(0);
           Scalar vel_error = vel_targetL.subtract(rimoGetEvent.getTireL.getAngularRate());
           Scalar torque = piL.iterate(vel_error);
           valueL = ARMS.apply(torque).number().shortValue();
         }
         {
+          Scalar vel_targetR = pair.Get(1);
           Scalar vel_error = vel_targetR.subtract(rimoGetEvent.getTireR.getAngularRate());
           Scalar torque = piR.iterate(vel_error);
           valueR = ARMS.apply(torque).number().shortValue();
