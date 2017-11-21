@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -13,6 +15,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
@@ -26,6 +29,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public abstract class HmiAbstractJoystick implements JoystickListener {
+  public static final List<Scalar> SPEEDS = Arrays.asList( //
+      Quantity.of(0, RimoGetTire.UNIT_RATE), //
+      Quantity.of(10, RimoGetTire.UNIT_RATE), //
+      Quantity.of(50, RimoGetTire.UNIT_RATE), //
+      Quantity.of(100, RimoGetTire.UNIT_RATE), //
+      Quantity.of(200, RimoGetTire.UNIT_RATE) //
+  );
   /** no joystick info older than watchdog period is used */
   private static final int WATCHDOG_MS = 250; // 250[ms]
   // ---
@@ -35,7 +45,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
-  private Scalar speedLimit = Quantity.of(50, "rad*s^-1"); // TODO
+  private Scalar speedLimit = SPEEDS.get(0);
 
   final boolean hasJoystick() {
     return Objects.nonNull(_joystick) && now() < tic_joystick + WATCHDOG_MS;

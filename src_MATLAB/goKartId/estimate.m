@@ -59,7 +59,7 @@ Jest = estimateJ_pos(pos,idsPos, torque, idsTorque, timeGet)
 return;
 
 %%
-J = Jest; % 0.0166 when the kart is in the air
+J = 0.0166; % 0.0166 when the kart is in the air
 s = tf('s');
 
 G = (1/J * 1 / s^2);
@@ -67,6 +67,11 @@ G = (1/J * 1 / s^2);
 pidTuner(G);
 
 
-margin(G * (2.5 + 0.2*s))
+margin(G * (10 + 0.6*s))
 grid on
+
+C = 10 + s*0.6;
+
+
+margin(G*C)
 

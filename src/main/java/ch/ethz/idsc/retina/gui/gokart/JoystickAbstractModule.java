@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
@@ -26,7 +25,6 @@ import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO still can close window other than through tabbed gui
 public abstract class JoystickAbstractModule extends AbstractClockedModule {
@@ -82,13 +80,7 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
     {
       JToolBar jToolBar = toolbarsComponent.createRow("max speed");
       SpinnerLabel<Scalar> spinnerLabel = new SpinnerLabel<>();
-      spinnerLabel.setArray( //
-          Quantity.of(0, RimoGetTire.UNIT_RATE), //
-          Quantity.of(10, RimoGetTire.UNIT_RATE), //
-          Quantity.of(50, RimoGetTire.UNIT_RATE), //
-          Quantity.of(100, RimoGetTire.UNIT_RATE), //
-          Quantity.of(200, RimoGetTire.UNIT_RATE) //
-      );
+      spinnerLabel.setList(HmiAbstractJoystick.SPEEDS); //
       spinnerLabel.setValueSafe(joystickInstance.getSpeedLimit());
       spinnerLabel.addSpinnerListener(i -> joystickInstance.setSpeedLimit(i));
       spinnerLabel.addToComponentReduced(jToolBar, new Dimension(160, 28), "max speed limit");

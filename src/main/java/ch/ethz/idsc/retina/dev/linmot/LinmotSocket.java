@@ -8,14 +8,12 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 /**  */
 public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> {
   public static final LinmotSocket INSTANCE = new LinmotSocket();
   // ---
   private static final int LOCAL_PORT = 5001;
-  private static final String LOCAL_ADDRESS = "192.168.1.1";
   // ---
   private static final int REMOTE_PORT = 5001;
   private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
@@ -24,7 +22,7 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
   // ---
 
   private LinmotSocket() {
-    super(DatagramSocketManager.local(new byte[LinmotGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
+    super(LinmotGetEvent.LENGTH, LOCAL_PORT);
     // ---
     addPutProvider(LinmotCalibrationProvider.INSTANCE);
     addPutProvider(LinmotPutFallback.INSTANCE);

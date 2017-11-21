@@ -8,13 +8,11 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
-import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   public static final SteerSocket INSTANCE = new SteerSocket();
   /** local */
   private static final int LOCAL_PORT = 5002;
-  private static final String LOCAL_ADDRESS = "192.168.1.1";
   /** remote */
   private static final int REMOTE_PORT = 5002;
   private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
@@ -24,7 +22,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   private final SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
 
   private SteerSocket() {
-    super(DatagramSocketManager.local(new byte[SteerGetEvent.LENGTH], LOCAL_PORT, LOCAL_ADDRESS));
+    super(SteerGetEvent.LENGTH, LOCAL_PORT);
     // ---
     addGetListener(steerColumnTracker);
     addPutProvider(SteerPutFallback.INSTANCE);
