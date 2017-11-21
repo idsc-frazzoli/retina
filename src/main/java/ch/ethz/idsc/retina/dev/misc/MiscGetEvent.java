@@ -8,6 +8,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MiscGetEvent extends DataEvent {
+  // maps the output of the ADC(0-1) to the real input voltage (0V-5V)
+  // 2.8 accounts for the resitance value of the voltage divider
+  private static final double CONVERSION_V = 5 * 2.8; // 5 * 2.8
+  // ---
   public static final int LENGTH = 5;
   // ---
   private final byte emergency;
@@ -22,15 +26,20 @@ public class MiscGetEvent extends DataEvent {
     return emergency != 0;
   }
 
+  public boolean isCommTimeout() {
+    int mask = 1 << MiscEmergencyBit.COMM_TIMEOUT.ordinal();
+    return (emergency & mask) == mask;
+  }
+
+  /** @return emergency status byte
+   * @see MiscEmergencyBit */
   public byte getEmergency() {
     return emergency;
   }
 
   /** @return the voltage of the front battery in volts */
   public Scalar getSteerBatteryVoltage() {
-    // maps the output of the ADC(0-1) to the real input voltage (0V-5V)
-    // 2.8 accounts for the resitance value of the voltage divider
-    return Quantity.of(batteryAdc * 5 * 2.8, "V");
+    return Quantity.of(batteryAdc * CONVERSION_V, "V");
   }
 
   @Override

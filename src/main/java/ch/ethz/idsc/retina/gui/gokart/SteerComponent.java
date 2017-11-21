@@ -34,35 +34,35 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   private final SliderExt sliderExtTorque;
   private final JTextField[] jTextField = new JTextField[11];
   private final SteerPositionControl steerPositionControl = new SteerPositionControl();
-  private final JButton stepLeft = new JButton("step Left");
-  private final JButton stepRight = new JButton("step Right");
-  private final JButton resetSteps = new JButton("reset Steps");
+  private final JButton stepLeft = new JButton("Left");
+  private final JButton stepRight = new JButton("Right");
+  private final JButton stepReset = new JButton("Reset");
   private final JTextField torquePut;
 
   public SteerComponent() {
     { // calibration and controller
-      JToolBar jToolBar = createRow("command");
+      JToolBar jToolBar = createRow("Mode");
       jToolBar.add(steerInitButton.getComponent());
       // ---
+      jToggleController.setEnabled(false);
       jToolBar.add(jToggleController);
     }
     {
-      JToolBar jToolBar = createRow("command");
+      JToolBar jToolBar = createRow("Command");
       spinnerLabelLw.setList(SteerPutEvent.COMMANDS);
       spinnerLabelLw.setValueSafe(SteerPutEvent.CMD_ON);
       spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
-      JToolBar jToolBar = createRow("position");
+      JToolBar jToolBar = createRow("Position");
       sliderExtTorque = SliderExt.wrap(new JSlider(-RESOLUTION, RESOLUTION, 0));
       sliderExtTorque.addToComponent(jToolBar);
     }
     {
-      // JToolBar jToolBar = createRow("Torque");
-      torquePut = createReading("torque");
+      torquePut = createReading("Torque");
     }
     {
-      JToolBar jToolBar = createRow("step");
+      JToolBar jToolBar = createRow("Step");
       jToolBar.add(stepLeft);
       stepLeft.addActionListener(new ActionListener() {
         @Override
@@ -79,8 +79,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
           sliderExtTorque.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
         }
       });
-      jToolBar.add(resetSteps);
-      resetSteps.addActionListener(new ActionListener() {
+      jToolBar.add(stepReset);
+      stepReset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
           sliderExtTorque.jSlider.setValue(0);

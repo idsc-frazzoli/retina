@@ -35,6 +35,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   );
   private static final Scalar BATTERY_LOW = Quantity.of(11, "V");
   // ---
+  private final JButton jButtonCommReset = new JButton("Reset"); // TODO enable only when getMsg indicates need!
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -47,35 +48,35 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   public MiscComponent() {
     {
       JToolBar jToolBar = createRow("Communication");
-      JButton jButton = new JButton("Reset"); // TODO enable only when getMsg indicates need!
-      jButton.addActionListener(new ActionListener() {
+      jButtonCommReset.setEnabled(false);
+      jButtonCommReset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           MiscIgnitionProvider.INSTANCE.schedule();
         }
       });
-      jToolBar.add(jButton);
+      jToolBar.add(jButtonCommReset);
     }
     {
-      JToolBar jToolBar = createRow("resetRimoL");
+      JToolBar jToolBar = createRow("Reset RimoL");
       spinnerLabelRimoL.setList(COMMANDS);
       spinnerLabelRimoL.setValueSafe(COMMANDS.get(0));
       spinnerLabelRimoL.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     {
-      JToolBar jToolBar = createRow("resetRimoR");
+      JToolBar jToolBar = createRow("Reset RimoR");
       spinnerLabelRimoR.setList(COMMANDS);
       spinnerLabelRimoR.setValueSafe(COMMANDS.get(0));
       spinnerLabelRimoR.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     {
-      JToolBar jToolBar = createRow("resetLinmot");
+      JToolBar jToolBar = createRow("Reset Linmot");
       spinnerLabelLinmot.setList(COMMANDS);
       spinnerLabelLinmot.setValueSafe(COMMANDS.get(0));
       spinnerLabelLinmot.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     {
-      JToolBar jToolBar = createRow("resetSteer");
+      JToolBar jToolBar = createRow("Reset Steer");
       spinnerLabelSteer.setList(COMMANDS);
       spinnerLabelSteer.setValueSafe(COMMANDS.get(0));
       spinnerLabelSteer.addToComponent(jToolBar, new Dimension(200, 20), "");
@@ -88,17 +89,18 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     }
     addSeparator();
     { // reception
-      jTextFieldEmg = createReading("emergency");
+      jTextFieldEmg = createReading("Emergency");
       for (MiscEmergencyBit meb : MiscEmergencyBit.values())
         jCheckBoxStatusWord[meb.ordinal()] = //
             createReadingCheckbox(meb.ordinal() + " " + meb);
-      jTextFieldBat = createReading("battery");
+      jTextFieldBat = createReading("Battery");
     }
   }
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    // jTextFieldEmg.setText("" + miscGetEvent.emergency);
+    jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout());
+    // ---
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
