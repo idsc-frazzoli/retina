@@ -52,8 +52,9 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
       new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private Timer timer;
 
-  protected AutoboxSocket(DatagramSocketManager datagramSocketManager) {
-    this.datagramSocketManager = datagramSocketManager;
+  protected AutoboxSocket(int length, int local_port) {
+    datagramSocketManager = //
+        DatagramSocketManager.local(new byte[length], local_port, AutoboxDevice.LOCAL_ADDRESS);
     datagramSocketManager.addListener(byteArrayConsumer);
   }
 
