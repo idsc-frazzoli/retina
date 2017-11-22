@@ -2,9 +2,16 @@
 
 <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Sensor interfaces and data processing in Java 8.
+Sensor and actuator interfaces, Gokart software in Java 8.
 
 Version `0.0.1` 
+
+The code in the `retina` repository operates a heavy and fast robot that may endanger living creatures.
+We follow best practices and coding standards to protect from avoidable errors.
+
+see
+[video1](https://www.youtube.com/watch?v=t3oAqQlWoyo), and
+[video2](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
 
 The implementation includes
 
