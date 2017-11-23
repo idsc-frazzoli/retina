@@ -46,6 +46,7 @@ public class LidarHuePanorama implements LidarPanorama {
    * @param distance 256 == 0.512[m] */
   @Override
   public void setReading(int address, float distance, byte _intensity) {
+    // TODO JAN not efficient, use lookup table!
     distances[address] = Hue.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();
     intensity[address] = Hue.of(_intensity * INTENSITY_WRAP + 0.5, 1, 1, 1).getRGB();
   }

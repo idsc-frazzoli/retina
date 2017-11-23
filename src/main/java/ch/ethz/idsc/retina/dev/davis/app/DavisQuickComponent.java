@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -32,19 +33,23 @@ public class DavisQuickComponent {
       imageCopy.update(timedImageEvent.bufferedImage);
     }
   };
-  final JComponent jComponent = new JComponent() {
+  public final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      Dimension dimension = getSize();
-      int width = dimension.width;
-      int height = width * 180 / 240;
-      if (Objects.nonNull(difImage))
-        graphics.drawImage(difImage, 0, 0, width, height, null);
-      if (imageCopy.hasValue())
-        graphics.drawImage(imageCopy.get(), 0, height, width, height, null);
-      // ---
-      graphics.setColor(Color.RED);
-      graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 10);
+      drawComponent((Graphics2D) graphics);
     }
   };
+
+  public void drawComponent(Graphics2D graphics) {
+    Dimension dimension = jComponent.getSize();
+    int width = dimension.width;
+    int height = width * 180 / 240;
+    if (Objects.nonNull(difImage))
+      graphics.drawImage(difImage, 0, 0, width, height, null);
+    if (imageCopy.hasValue())
+      graphics.drawImage(imageCopy.get(), 0, height, width, height, null);
+    // ---
+    graphics.setColor(Color.RED);
+    graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 10);
+  }
 }

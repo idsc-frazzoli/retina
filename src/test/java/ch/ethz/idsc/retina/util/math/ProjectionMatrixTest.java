@@ -19,7 +19,7 @@ public class ProjectionMatrixTest extends TestCase {
     assertFalse(viewport.fromProjected(project.dot(Tensors.vector(-1, -1, 1, 1))).isPresent());
     Optional<Tensor> optional = viewport.fromProjected(project.dot(Tensors.vector(-2, -1, -2, 1)));
     assertTrue(optional.isPresent());
-    System.out.println(optional.get());
+    // System.out.println(optional.get());
   }
 
   public void testToPixel() {
@@ -28,6 +28,33 @@ public class ProjectionMatrixTest extends TestCase {
     assertFalse(viewport.toPixel(project.dot(Tensors.vector(-20, -1, -10, 1))).isPresent());
     Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(-2, -1, -10, 1)));
     assertTrue(optional.isPresent());
+  }
+
+  public void testToPixel1() {
+    Viewport viewport = Viewport.create(240, 180);
+    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), RealScalar.of(1), RealScalar.of(100));
+    // assertFalse(viewport.toPixel(project.dot(Tensors.vector(-20, -1, -10, 1))).isPresent());
+    {
+      Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(-2, -1, -10, 1)));
+      // System.out.println(optional.get());
+      assertTrue(optional.isPresent());
+    }
+    {
+      Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(+2, -1, -10, 1)));
+      // System.out.println(optional.get());
+      assertTrue(optional.isPresent());
+    }
+    {
+      Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(+2, +1, -10, 1)));
+      // System.out.println(optional.get());
+      assertTrue(optional.isPresent());
+    }
+    {
+      Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(0, 0, -10, 1)));
+      // System.out.println(optional.get());
+      assertEquals(optional.get(), new Point(120, 90));
+      assertTrue(optional.isPresent());
+    }
   }
 
   public void testFail() {

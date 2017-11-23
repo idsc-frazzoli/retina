@@ -26,6 +26,6 @@ public class Vlp16LcmHandler {
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    velodyneLcmClient.startSubscriptions();
+    velodyneLcmClient.startSubscriptions(); // TODO is it consistent to auto start and never stop!?
   }
 }

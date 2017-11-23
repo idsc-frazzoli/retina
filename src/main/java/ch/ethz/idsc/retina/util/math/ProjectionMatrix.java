@@ -1,4 +1,5 @@
 // code by jph
+// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -13,7 +14,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 public enum ProjectionMatrix {
   ;
-  // TODO document from online resource
   /** @param fovy
    * @param aspect
    * @param zNear
@@ -24,8 +24,7 @@ public enum ProjectionMatrix {
         RealScalar.of(fovy), RealScalar.of(aspect), RealScalar.of(zNear), RealScalar.of(zFar));
   }
 
-  // https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
-  /** @param fovy field of view angle, in degrees, in the y direction
+  /** @param fovy field of view angle in the y direction
    * @param aspect ratio of x (width) to y (height)
    * @param zNear distance from the viewer to the near clipping plane (always positive)
    * @param zFar distance from the viewer to the far clipping plane (always positive)

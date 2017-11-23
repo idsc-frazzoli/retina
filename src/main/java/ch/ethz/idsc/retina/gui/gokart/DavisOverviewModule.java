@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
@@ -20,6 +21,7 @@ public class DavisOverviewModule extends AbstractModule {
   private DavisQuickFrame davisViewerFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
+  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler("center");
 
   @Override
   protected void first() throws Exception {
@@ -27,7 +29,9 @@ public class DavisOverviewModule extends AbstractModule {
     int period_us = 10_000;
     DavisDevice davisDevice = Davis240c.INSTANCE;
     davisLcmClient = new DavisLcmClient(cameraId);
-    davisViewerFrame = new DavisQuickFrame(davisDevice);
+    DavisLidarComponent davisLidarComponent = new DavisLidarComponent();
+    vlp16LcmHandler.lidarAngularFiringCollector.addListener(davisLidarComponent);
+    davisViewerFrame = new DavisQuickFrame(davisDevice, davisLidarComponent);
     // handle dvs
     AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period_us);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
