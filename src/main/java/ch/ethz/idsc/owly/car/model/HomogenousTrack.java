@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owly.car.model;
 
+import ch.ethz.idsc.owl.math.FrictionCoefficients;
 import ch.ethz.idsc.owly.car.core.TrackInterface;
-import ch.ethz.idsc.owly.math.FrictionCoefficients;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 

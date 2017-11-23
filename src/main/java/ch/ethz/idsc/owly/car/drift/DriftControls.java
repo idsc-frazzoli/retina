@@ -4,9 +4,9 @@ package ch.ethz.idsc.owly.car.drift;
 import java.util.Collection;
 import java.util.HashSet;
 
-import ch.ethz.idsc.owly.math.StateSpaceModel;
-import ch.ethz.idsc.owly.math.StateSpaceModels;
-import ch.ethz.idsc.owly.math.flow.Flow;
+import ch.ethz.idsc.owl.math.StateSpaceModel;
+import ch.ethz.idsc.owl.math.StateSpaceModels;
+import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

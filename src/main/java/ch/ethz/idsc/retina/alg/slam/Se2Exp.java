@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.alg.slam;
 
-import ch.ethz.idsc.owly.math.se2.Se2Utils;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 
 public enum Se2Exp {

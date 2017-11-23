@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.owly.car.model;
 
+import ch.ethz.idsc.owl.math.FrictionCoefficients;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.CHatchbackModel;
-import ch.ethz.idsc.owly.math.FrictionCoefficients;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

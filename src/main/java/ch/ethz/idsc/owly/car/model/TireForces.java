@@ -2,11 +2,11 @@
 // code adapted by jph
 package ch.ethz.idsc.owly.car.model;
 
+import ch.ethz.idsc.owl.math.FrictionCoefficients;
+import ch.ethz.idsc.owl.math.PhysicalConstants;
+import ch.ethz.idsc.owl.math.planar.Cross2D;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.math.RobustSlip;
-import ch.ethz.idsc.owly.math.FrictionCoefficients;
-import ch.ethz.idsc.owly.math.PhysicalConstants;
-import ch.ethz.idsc.retina.util.math.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

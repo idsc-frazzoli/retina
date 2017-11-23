@@ -5,10 +5,10 @@ import java.awt.Color;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.owl.gui.TimerFrame;
+import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owly.gui.TimerFrame;
-import ch.ethz.idsc.owly.gui.ren.GridRender;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;

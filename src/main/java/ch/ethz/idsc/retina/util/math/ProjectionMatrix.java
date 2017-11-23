@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owly.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

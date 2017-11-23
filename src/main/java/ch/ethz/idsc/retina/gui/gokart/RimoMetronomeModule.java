@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owly.data.Stopwatch;
+import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;

@@ -6,11 +6,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.math.AckermannSteering;
-import ch.ethz.idsc.owly.gui.GeometricLayer;
-import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;

@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import ch.ethz.idsc.owl.math.flow.MidpointIntegrator;
+import ch.ethz.idsc.owl.math.state.EpisodeIntegrator;
+import ch.ethz.idsc.owl.math.state.SimpleEpisodeIntegrator;
+import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owly.demo.rice.Duncan1StateSpaceModel;
-import ch.ethz.idsc.owly.math.flow.MidpointIntegrator;
-import ch.ethz.idsc.owly.math.state.EpisodeIntegrator;
-import ch.ethz.idsc.owly.math.state.SimpleEpisodeIntegrator;
-import ch.ethz.idsc.owly.math.state.StateTime;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
