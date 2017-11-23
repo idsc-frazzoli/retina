@@ -66,7 +66,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     {// TRIGGER
       JToolBar jToolBar = createRow("Trigger");
       rimoPutFields.spinnerLabelTrigger.setList(RimoPutTire.TRIGGERS);
-      rimoPutFields.spinnerLabelTrigger.setValueSafe(RimoPutTire.trigOff);
+      rimoPutFields.spinnerLabelTrigger.setValueSafe(RimoPutTire.TRIG_OFF);
       rimoPutFields.spinnerLabelTrigger.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // SDO COMMAND
@@ -129,7 +129,7 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
     rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
     // ---
-    if (Objects.nonNull(rimoGetEvent)) { // may not be received yet 
+    if (Objects.nonNull(rimoGetEvent)) { // may not be received yet
       rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
       rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
     }

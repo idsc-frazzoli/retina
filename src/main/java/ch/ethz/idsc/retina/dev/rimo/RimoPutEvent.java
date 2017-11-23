@@ -7,16 +7,7 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
 public class RimoPutEvent extends DataEvent {
   private static final int LENGTH = 2 * RimoPutTire.LENGTH;
-  public static final RimoPutEvent STOP = new RimoPutEvent( //
-      RimoPutTire.STOP, //
-      RimoPutTire.STOP);
-
-  public static RimoPutEvent withSpeeds(short velL, short velR) {
-    return new RimoPutEvent( //
-        RimoPutTire.withSpeed(velL), //
-        RimoPutTire.withSpeed(velR)); //
-  }
-
+  public static final RimoPutEvent STOP = new RimoPutEvent(RimoPutTire.STOP, RimoPutTire.STOP);
   // ---
   public final RimoPutTire putL;
   public final RimoPutTire putR;
