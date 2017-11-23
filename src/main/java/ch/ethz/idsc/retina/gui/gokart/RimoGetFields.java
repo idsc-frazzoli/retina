@@ -35,7 +35,7 @@ public class RimoGetFields {
   // ---
   public void updateText(RimoGetTire rimoGetTire) {
     jTF_status_word.setText(String.format("%04X", rimoGetTire.status_word));
-    jTF_actual_speed.setText(rimoGetTire.getAngularRate().map(Round._3).toString());
+    jTF_actual_speed.setText(rimoGetTire.getAngularRate_Y().map(Round._3).toString());
     jTF_rms_motor_current.setText("" + rimoGetTire.rms_motor_current);
     jTF_dc_bus_voltage.setText(rimoGetTire.getBusVoltage().map(Round._1).toString());
     jTF_error_code.setText(String.format("%08X", rimoGetTire.error_code));
@@ -49,7 +49,7 @@ public class RimoGetFields {
   }
 
   public void updateRateColor(RimoPutTire rimoPutTire, RimoGetTire rimoGetTire) {
-    Scalar scalar = rimoPutTire.getAngularRate().subtract(rimoGetTire.getAngularRate());
+    Scalar scalar = rimoGetTire.getAngularRate_Y();
     Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(RATE_RANGE.rescale(scalar));
     Color color = ColorFormat.toColor(vector);
     jTF_actual_speed.setBackground(color);

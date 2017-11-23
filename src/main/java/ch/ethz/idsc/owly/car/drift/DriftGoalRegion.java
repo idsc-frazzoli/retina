@@ -1,7 +1,7 @@
 // code by edo
 package ch.ethz.idsc.owly.car.drift;
 
-import ch.ethz.idsc.owly.math.region.Region;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

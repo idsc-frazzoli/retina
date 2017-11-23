@@ -9,7 +9,8 @@ public class SdoMessage {
   public final byte subIndex;
   public final int sdoData;
 
-  public SdoMessage(ByteBuffer byteBuffer) {
+  /** @param byteBuffer from which 8 bytes are read */
+  SdoMessage(ByteBuffer byteBuffer) {
     sdoCommand = byteBuffer.get();
     mainIndex = byteBuffer.getShort();
     subIndex = byteBuffer.get();

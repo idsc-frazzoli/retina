@@ -25,23 +25,26 @@ public class RimoRateControllerWrap implements RimoGetListener {
   public Optional<RimoPutEvent> iterate(Tensor pair) {
     if (Objects.nonNull(rimoGetEvent))
       try {
-        short valueL = 0;
-        short valueR = 0;
+        short armsL_raw = 0;
+        short armsR_raw = 0;
         {
           Scalar vel_targetL = pair.Get(0);
-          Scalar vel_error = vel_targetL.subtract(rimoGetEvent.getTireL.getAngularRate());
+          Scalar vel_error = vel_targetL.subtract(rimoGetEvent.getTireL.getAngularRate_Y());
           Scalar torque = piL.iterate(vel_error);
-          valueL = ARMS.apply(torque).number().shortValue();
+          short valueL_Yaxis = ARMS.apply(torque).number().shortValue();
+          armsL_raw = (short) -valueL_Yaxis; // negative sign LEFT
         }
         {
           Scalar vel_targetR = pair.Get(1);
-          Scalar vel_error = vel_targetR.subtract(rimoGetEvent.getTireR.getAngularRate());
+          Scalar vel_error = vel_targetR.subtract(rimoGetEvent.getTireR.getAngularRate_Y());
           Scalar torque = piR.iterate(vel_error);
-          valueR = ARMS.apply(torque).number().shortValue();
+          short valueR_Yaxis = ARMS.apply(torque).number().shortValue();
+          armsR_raw = (short) +valueR_Yaxis; // positive sign RIGHT
         }
         return Optional.of(new RimoPutEvent( //
-            new RimoPutTire(RimoPutTire.OPERATION, (short) 0, valueL), //
-            new RimoPutTire(RimoPutTire.OPERATION, (short) 0, valueR)));
+            new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
+            new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
+        ));
       } catch (Exception exception) {
         System.err.println(exception.getMessage());
       }

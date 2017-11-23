@@ -12,8 +12,8 @@ public class RimoGetEvent extends DataEvent {
   public final RimoGetTire getTireR;
 
   public RimoGetEvent(ByteBuffer byteBuffer) {
-    getTireL = new RimoGetTire(byteBuffer);
-    getTireR = new RimoGetTire(byteBuffer);
+    getTireL = new RimoGetTire(byteBuffer, -1);
+    getTireR = new RimoGetTire(byteBuffer, +1);
   }
 
   @Override

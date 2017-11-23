@@ -7,28 +7,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
 public class RimoPutTire implements Serializable {
   public static final Unit UNIT_TORQUE = Unit.of("ARMS");
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
-  public static final RimoPutTire STOP = withSpeed((short) 0);
-  public static final Word trigOff = Word.createByte("OFF", (byte) 0);
-  public static final Word trigOn = Word.createByte("ON", (byte) 1);
-  public static final List<Word> TRIGGERS = Arrays.asList( //
-      trigOff, //
-      trigOn //
-  );
-  public static final double MIN_TO_S = 1 / 60.0;
-
-  public static RimoPutTire withSpeed(short speed) {
-    return new RimoPutTire(OPERATION, speed, (short) 0);
-  }
-
+  public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0, (short) 0);
+  public static final Word TRIG_OFF = Word.createByte("OFF", (byte) 0);
+  public static final Word TRIG_ON = Word.createByte("ON", (byte) 1);
+  public static final List<Word> TRIGGERS = Arrays.asList(TRIG_OFF, TRIG_ON);
   // ---
   /** 4 bytes encoding length */
   /* package */ static final int LENGTH = 15;
@@ -42,10 +30,10 @@ public class RimoPutTire implements Serializable {
   public static final short MIN_TORQUE = -2317;
   public static final short MAX_TORQUE = +2316;
   // ---
-  final short command;
+  private final short command;
   /** angular rate in rad/min */
-  final short rate;
-  final short torque;
+  private final short rate;
+  private final short torque;
   // ---
   public byte trigger;
   public byte sdoCommand;
@@ -53,6 +41,9 @@ public class RimoPutTire implements Serializable {
   public byte subIndex;
   public int sdoData;
 
+  /** @param command raw value
+   * @param rate raw value
+   * @param torque raw value */
   public RimoPutTire(Word command, short rate, short torque) {
     this.command = command.getShort();
     this.rate = rate;
@@ -71,11 +62,6 @@ public class RimoPutTire implements Serializable {
    * @return */
   public short getTorqueRaw() {
     return torque;
-  }
-
-  /** @return convert rad/min to rad/s */
-  public Scalar getAngularRate() {
-    return Quantity.of(RealScalar.of(rate * MIN_TO_S), RimoGetTire.UNIT_RATE);
   }
 
   void insert(ByteBuffer byteBuffer) {

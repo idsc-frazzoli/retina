@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owly.data.Stopwatch;
+import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Parallelize;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Transpose;

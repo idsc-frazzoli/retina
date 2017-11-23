@@ -7,8 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owly.gui.GeometricLayer;
-import ch.ethz.idsc.owly.math.se2.Se2Utils;
+import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owly.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.DoubleScalar;

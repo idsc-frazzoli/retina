@@ -27,8 +27,10 @@ public class RimoGetTire implements Serializable {
   public static final double MIN_TO_S = 1 / 60.0;
   // ---
   public final short status_word;
-  /** rad/min */
-  private final short actual_rate;
+  /** actual_rate has unit rad/min */
+  // ACTUAL_RATE SHALL BE PRIVATE DUE TO THE REQUIRED SIGN CORRECTION
+  // NEVER CONSIDER USING THE RAW VALUE OUTSIDE THIS CLASS !
+  private final short actual_rate; // STRICTLY PRIVATE !
   /** ARMS */
   public final short rms_motor_current;
   /** cV */
@@ -43,10 +45,13 @@ public class RimoGetTire implements Serializable {
   /** C */
   private final short temperature_heatsink;
   public final SdoMessage sdoMessage;
+  private final int sign;
 
-  /** @param byteBuffer
-   * of which 16 bytes are read */
-  public RimoGetTire(ByteBuffer byteBuffer) {
+  /** @param byteBuffer of which 24 bytes are read
+   * @param sign to standardize the angular rate around the y-axis,
+   * the current firmware on the micro-autobox requires
+   * -1 for the LEFT wheel, and +1 for the RIGHT wheel */
+  RimoGetTire(ByteBuffer byteBuffer, int sign) {
     status_word = byteBuffer.getShort(); // 2
     actual_rate = byteBuffer.getShort(); // 4
     rms_motor_current = byteBuffer.getShort(); // 6
@@ -55,6 +60,8 @@ public class RimoGetTire implements Serializable {
     temperature_motor = byteBuffer.getShort(); // 14
     temperature_heatsink = byteBuffer.getShort(); // 16
     sdoMessage = new SdoMessage(byteBuffer); // 24
+    // ---
+    this.sign = sign;
   }
 
   void encode(ByteBuffer byteBuffer) {
@@ -68,9 +75,10 @@ public class RimoGetTire implements Serializable {
     sdoMessage.encode(byteBuffer);
   }
 
-  /** @return convert rad/min to rad/s */
-  public Scalar getAngularRate() {
-    return Quantity.of(actual_rate * MIN_TO_S, UNIT_RATE);
+  /** @return rotational rate around the y-axis with unit rad/s
+   * a positive value usually corresponds to forward motion of the vehicle */
+  public Scalar getAngularRate_Y() {
+    return Quantity.of(actual_rate * sign * MIN_TO_S, UNIT_RATE);
   }
 
   public Scalar getBusVoltage() {

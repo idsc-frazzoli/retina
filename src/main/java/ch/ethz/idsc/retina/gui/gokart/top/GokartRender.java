@@ -6,11 +6,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.math.AckermannSteering;
-import ch.ethz.idsc.owly.gui.GeometricLayer;
-import ch.ethz.idsc.owly.gui.RenderInterface;
-import ch.ethz.idsc.owly.math.se2.Se2Utils;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -53,10 +53,10 @@ public class GokartRender implements RenderInterface {
       graphics.setColor(Color.GREEN);
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
-          Tensors.vector(rimoGetEvent.getTireL.getAngularRate().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rimoGetEvent.getTireL.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(3).lever(), //
-          Tensors.vector(rimoGetEvent.getTireR.getAngularRate().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rimoGetEvent.getTireR.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);

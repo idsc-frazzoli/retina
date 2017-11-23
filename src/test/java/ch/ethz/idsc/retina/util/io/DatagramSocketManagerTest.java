@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.io;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.owly.data.Stopwatch;
+import ch.ethz.idsc.owl.data.Stopwatch;
 import junit.framework.TestCase;
 
 public class DatagramSocketManagerTest extends TestCase {

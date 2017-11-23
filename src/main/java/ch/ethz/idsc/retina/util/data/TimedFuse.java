@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.data;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.owly.data.Stopwatch;
+import ch.ethz.idsc.owl.data.Stopwatch;
 
 public class TimedFuse {
   private final double period;
