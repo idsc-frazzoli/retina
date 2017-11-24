@@ -110,6 +110,7 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
   @Override
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
+    jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
     for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values()) {
       boolean selected = (linmotGetEvent.status_word & (1 << lsw.ordinal())) != 0;
       jCheckBoxStatusWord[lsw.ordinal()].setSelected(selected);

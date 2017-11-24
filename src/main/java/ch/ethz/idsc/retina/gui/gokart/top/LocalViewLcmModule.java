@@ -80,12 +80,12 @@ public class LocalViewLcmModule extends AbstractModule {
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
-    {
-      LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
-      // lidarRender.setColor(new Color(128, 0, 0, 255));
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-      timerFrame.geometricComponent.addRenderInterface(lidarRender);
-    }
+    // {
+    // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+    // // lidarRender.setColor(new Color(128, 0, 0, 255));
+    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+    // timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    // }
     // ---
     rimoGetLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();

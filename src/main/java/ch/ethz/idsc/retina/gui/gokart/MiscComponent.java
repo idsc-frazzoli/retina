@@ -35,7 +35,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   );
   private static final Scalar BATTERY_LOW = Quantity.of(11, "V");
   // ---
-  private final JButton jButtonCommReset = new JButton("Reset"); // TODO enable only when getMsg indicates need!
+  private final JButton jButtonCommReset = new JButton("Reset");
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();

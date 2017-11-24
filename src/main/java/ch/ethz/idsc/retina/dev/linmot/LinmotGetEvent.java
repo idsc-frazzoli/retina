@@ -11,21 +11,21 @@ import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
- * break of the gokart */
+ * break of the gokart
+ * 
+ * LONGTERM NRJ cite source for temperature range and other magic const */
 public class LinmotGetEvent extends DataEvent {
   /** 16 bytes */
   public static final int LENGTH = 16;
-  // TODO NRJ document conversion factor
+  /** conversion factor 0.1 taken from data sheet */
   private static final double TO_DEGREE_CELSIUS = 0.1;
   /** actual position of 100000 corresponds to 1 cm
    * demand position uses the same scale */
   private static final double GET_POSITION_TO_METER = 1e-7;
   private static final Unit CELSIUS = Unit.of("degC");
   /** degree celsius */
-  // TODO NRJ check valid range, cite source
   public static final Clip TEMPERATURE_RANGE = Clip.function( //
-      Quantity.of(2, CELSIUS), //
-      Quantity.of(110, CELSIUS));
+      Quantity.of(2, CELSIUS), Quantity.of(110, CELSIUS));
   /** bounds established using experimentation */
   public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
   // ---

@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 public class LidarRayBlockEvent {
-  // TODO still have to agree on/confirm a universal time-stamp
+  // LONGTERM still have to agree on/confirm a universal time-stamp
   public final int usec;
   public final FloatBuffer floatBuffer;
   public final ByteBuffer byteBuffer;

@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
-// TODO rename
 public enum DavisDefaultExportControl implements DavisExportControl {
   INSTANCE;
   // ---

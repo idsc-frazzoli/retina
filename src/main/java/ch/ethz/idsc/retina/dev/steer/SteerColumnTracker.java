@@ -48,8 +48,10 @@ public final class SteerColumnTracker implements SteerGetListener {
     return intervalTracker.getWidth();
   }
 
-  /** @return value centered around 0 zero means driving straight */
-  // TODO NRJ document sign means left/right
+  /** @return value centered around zero
+   * Sign.of(value) == 0 means driving straight
+   * Sign.of(value) == +1 means driving right
+   * Sign.of(value) == -1 means driving left */
   public Scalar getEncoderValueCentered() {
     if (!isCalibrated())
       throw new RuntimeException();

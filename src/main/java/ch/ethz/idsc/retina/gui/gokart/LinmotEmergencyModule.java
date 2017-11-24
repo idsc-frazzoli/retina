@@ -12,9 +12,10 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** sends stop command if either winding temperature is outside valid range */
+/** sends stop command if either winding temperature is outside valid range
+ * 
+ * module needs to be started after linmot calibration procedure */
 public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
-  // ---
   private boolean isEmergency = false;
 
   @Override

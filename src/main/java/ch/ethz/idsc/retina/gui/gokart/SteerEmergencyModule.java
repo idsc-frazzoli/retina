@@ -22,14 +22,15 @@ public class SteerEmergencyModule extends AbstractModule implements RimoPutProvi
     RimoSocket.INSTANCE.removePutProvider(this);
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    boolean isOk = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
-    return Optional.ofNullable(isOk ? null : RimoPutEvent.STOP);
+    boolean isCalibratedAndHealthy = //
+        SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
+    return Optional.ofNullable(isCalibratedAndHealthy ? null : RimoPutEvent.STOP);
   }
 }
