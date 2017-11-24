@@ -26,7 +26,7 @@ public class ResetDavisApsCorrection implements DavisApsCorrection, DavisApsList
 
   @Override
   public void davisAps(DavisApsEvent davisApsEvent) {
-    // TODO use incremental method
+    // TODO LT use incremental method
     pitchblack[davisApsEvent.y + davisApsEvent.x * 180] = davisApsEvent.adc();
   }
 }

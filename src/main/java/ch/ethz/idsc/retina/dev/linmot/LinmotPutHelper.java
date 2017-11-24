@@ -49,7 +49,6 @@ public enum LinmotPutHelper {
   }
 
   public static LinmotPutEvent operationToPosition(short pos) {
-    // TODO NRJ use this in the gui...
     final LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, //
         LinmotPutHelper.MC_POSITION);

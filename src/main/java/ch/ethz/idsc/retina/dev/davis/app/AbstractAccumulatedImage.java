@@ -26,7 +26,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
-  protected final int interval; // TODO does not have to be final
+  protected final int interval; // LONGTERM does not have to be final
   private Integer last = null;
 
   /** @param interval [us] */

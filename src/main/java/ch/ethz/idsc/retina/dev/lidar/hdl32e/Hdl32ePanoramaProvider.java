@@ -43,7 +43,7 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
     final int x = lidarPanorama.getWidth();
     lidarPanorama.setAngle(RealScalar.of(rotational));
     if (x < MAX_WIDTH) {
-      for (int laser = 0; laser < Hdl32eDevice.LASERS; ++laser) {
+      for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
         int distance = byteBuffer.getShort() & 0xffff;
         byte intensity = byteBuffer.get(); // 255 == most intensive return
         lidarPanorama.setReading(x + index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
@@ -54,6 +54,6 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
 
   @Override
   protected LidarPanorama supply() {
-    return new LidarGrayscalePanorama(MAX_WIDTH, Hdl32eDevice.LASERS);
+    return new LidarGrayscalePanorama(MAX_WIDTH, Hdl32eDevice.INSTANCE.LASERS);
   }
 }

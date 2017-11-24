@@ -14,14 +14,13 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public enum DavisEventViewer {
   ;
-  // TODO arguments not final ...
   // TODO code somewhat redundant to DavisDatagramClientDemo
   public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
-    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE); // TODO
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE);
     davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
     AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, 50000);

@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-public class DavisDirectorySupplier implements StartAndStoppable {
+/* package */ class DavisDirectorySupplier implements StartAndStoppable {
   private final BufferedReader br_events;
   private final BufferedReader br_images;
 
@@ -38,7 +38,7 @@ public class DavisDirectorySupplier implements StartAndStoppable {
           StringTokenizer stringTokenizer = new StringTokenizer(line);
           int time = (int) (Double.parseDouble(stringTokenizer.nextToken()) * 1e6);
           String imagelocation = stringTokenizer.nextToken();
-          // FIXME unfinished implementation
+          // LONGTERM unfinished implementation
         }
         String line = br_events.readLine();
         if (Objects.isNull(line)) {

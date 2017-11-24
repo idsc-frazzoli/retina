@@ -130,11 +130,11 @@ public class RimoSinusIonModel extends DefaultCarModel {
   }
 
   // at the extreme the tires are inclined as 18 [deg] to 35 [deg]
-  private static final Scalar maxDelta = DoubleScalar.of(25 * Math.PI / 180); // maximal steering angle [rad]
+  private static final Scalar MAX_DELTA = DoubleScalar.of(25 * Math.PI / 180); // maximal steering angle [rad]
   // maximal motor torque [Nm], with gears included
-  private static final Scalar maxPress = DoubleScalar.of(4.0); // TODO no info yet
-  private static final Scalar maxThb = DoubleScalar.of(1000.0); // max handbrake torque [Nm]
-  private static final Scalar maxThrottle = DoubleScalar.of(100.0); // TODO no info yet
+  private static final Scalar MAX_PRESS = DoubleScalar.of(4.0); // TODO no info yet
+  private static final Scalar MAX_THB = DoubleScalar.of(1000.0); // max handbrake torque [Nm]
+  private static final Scalar MAX_THROTTLE = DoubleScalar.of(100.0); // TODO no info yet
 
   @Override
   public CarControl createControl(Tensor u) {
@@ -143,11 +143,11 @@ public class RimoSinusIonModel extends DefaultCarModel {
     if (!Clip.unit().of(u.Get(3)).equals(u.Get(3)))
       throw TensorRuntimeException.of(u.Get(3));
     // ---
-    Scalar delta = u.Get(0).multiply(maxDelta);
-    Scalar brake = u.Get(1).multiply(maxPress);
-    Scalar handbrake = u.Get(2).multiply(maxThb);
+    Scalar delta = u.Get(0).multiply(MAX_DELTA);
+    Scalar brake = u.Get(1).multiply(MAX_PRESS);
+    Scalar handbrake = u.Get(2).multiply(MAX_THB);
     Tensor throttleV = MotorTorques.electonicGokart( //
-        u.Get(3).multiply(maxThrottle), u.Get(4).multiply(maxThrottle));
+        u.Get(3).multiply(MAX_THROTTLE), u.Get(4).multiply(MAX_THROTTLE));
     return new CarControl(delta, brake, handbrake, throttleV);
   }
 

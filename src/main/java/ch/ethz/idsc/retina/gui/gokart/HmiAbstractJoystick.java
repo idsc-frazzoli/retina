@@ -101,8 +101,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
         status &= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
         status &= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
         if (status)
-          return Optional.of( //
-              LinmotPutHelper.operationToRelativePosition(breakStrength()));
+          return Optional.of(LinmotPutHelper.operationToRelativePosition(breakStrength()));
       }
       return Optional.empty();
     }

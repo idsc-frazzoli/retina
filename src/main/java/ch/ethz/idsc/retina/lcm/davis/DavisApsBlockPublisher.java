@@ -29,7 +29,8 @@ public class DavisApsBlockPublisher implements DavisApsBlockListener {
     final int length = byteBuffer.remaining();
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data_length = length;
-    binaryBlob.data = new byte[length]; // TODO try assigning byte buf array
+    // TODO try assigning byte buffer array, also in DavisDvsBlockPublisher
+    binaryBlob.data = new byte[length];
     byteBuffer.get(binaryBlob.data);
     lcm.publish(channel, binaryBlob);
   }

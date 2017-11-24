@@ -17,7 +17,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.SAEGausDecayImage;
+import ch.ethz.idsc.retina.dev.davis.app.SAEGaussDecayImage;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
@@ -72,7 +72,7 @@ class UdpPythonPublisher implements TimedImageListener {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     // handle dvs
-    SAEGausDecayImage accumulatedEventsImage = new SAEGausDecayImage(davisDevice, period);
+    SAEGaussDecayImage accumulatedEventsImage = new SAEGaussDecayImage(davisDevice, period);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     UdpPythonPublisher udpPythonPublisher = new UdpPythonPublisher();
     accumulatedEventsImage.addListener(udpPythonPublisher);

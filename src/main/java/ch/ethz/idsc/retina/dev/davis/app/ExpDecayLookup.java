@@ -1,10 +1,12 @@
 // code by az and jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-public class ExpDecayLookup {
+/* package */ class ExpDecayLookup {
   private final byte[] array;
 
-  /** @param max for lookup in the interval [0, ..., max - 1] */
+  /** @param length
+   * @param factor
+   * @param polarity */
   public ExpDecayLookup(int length, double factor, double polarity) {
     array = new byte[length + 1];
     for (int delta = 0; delta <= length; ++delta) {

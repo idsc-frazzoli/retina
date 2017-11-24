@@ -9,7 +9,7 @@ import java.util.Map;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 
 public class DvsEventLast implements DvsEventDigest {
-  // TODO use integer as index -> DvsEvent[]
+  // TODO LT use integer as index -> DvsEvent[]
   private final Map<Point, DvsEvent> map = new HashMap<>();
 
   @Override

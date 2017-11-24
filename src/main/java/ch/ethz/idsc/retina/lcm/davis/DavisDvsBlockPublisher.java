@@ -29,7 +29,7 @@ public class DavisDvsBlockPublisher implements DavisDvsBlockListener {
   public void dvsBlock(int length, ByteBuffer byteBuffer) {
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data_length = length;
-    binaryBlob.data = new byte[length]; // TODO try assigning byte buf array
+    binaryBlob.data = new byte[length];
     byteBuffer.get(binaryBlob.data);
     lcm.publish(channel, binaryBlob);
   }

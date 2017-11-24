@@ -8,20 +8,16 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about the status of a motor usually
- * two of the events are received simultaneously: for the left and right rear
- * wheel */
+ * two of the events are received simultaneously: for the left and right rear wheel
+ * 
+ * LONGTERM NRJ temperature readings non-zero, check allowed ratings
+ * LONGTERM NRJ the meaning of the error_code still has to be determined */
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
-  // TODO NRJ check allowed ratings, comment magic const
-  // TODO NRJ make emergency stop if too hot
-  public static final Clip TEMPERATURE_RANGE = Clip.function( //
-      Quantity.of(10, CELSIUS), //
-      Quantity.of(80, CELSIUS));
   /** m */
   public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
@@ -35,10 +31,10 @@ public class RimoGetTire implements Serializable {
   public final short rms_motor_current;
   /** cV */
   private final short dc_bus_voltage;
-  /** TODO NRJ the meaning of the error_code still has to be determined
-   * observed examples when engines have just been started:
+  /** observed examples when engines have just been started:
    * _LEFT 0x23400008
-   * RIGHT 0x23100008 */
+   * RIGHT 0x23100008
+   * the motors are operational despite these readings. */
   public final int error_code;
   /** C */
   private final short temperature_motor;
@@ -85,13 +81,13 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(dc_bus_voltage, "V");
   }
 
+  /** @return 0[degC] */
   public Scalar getTemperatureMotor() {
-    // TODO NRJ right now only senses zeros
     return Quantity.of(temperature_motor, CELSIUS);
   }
 
+  /** @return 0[degC] */
   public Scalar getTemperatureHeatsink() {
-    // TODO NRJ right now only senses zeros
     return Quantity.of(temperature_heatsink, CELSIUS);
   }
 

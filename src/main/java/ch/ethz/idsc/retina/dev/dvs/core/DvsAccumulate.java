@@ -18,7 +18,7 @@ public enum DvsAccumulate {
     double[][] image = new double[dimension.width][dimension.height];
     for (DvsEvent dvsEvent : dvsEventBuffer.collection()) {
       long impact = window_us - (time_us - dvsEvent.time_us);
-      // TODO investigate corner cases
+      // LONGTERM investigate corner cases
       // if (age<0)
       // System.out.println("age negative "+age);
       image[dvsEvent.x][dvsEvent.y] += impact * factor[dvsEvent.i];

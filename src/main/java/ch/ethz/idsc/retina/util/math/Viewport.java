@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Optional;
 
@@ -16,6 +17,10 @@ public class Viewport {
 
   public static Viewport create(int width, int height) {
     return new Viewport(RealScalar.of(width), RealScalar.of(height));
+  }
+
+  public static Viewport create(Dimension dimension) {
+    return create(dimension.width, dimension.height);
   }
 
   // ---
@@ -47,7 +52,6 @@ public class Viewport {
 
   public Optional<Tensor> fromProjected(Tensor tensor) {
     if (Sign.isPositive(tensor.Get(3))) {
-      System.out.println(tensor);
       Scalar xn = tensor.Get(0).divide(tensor.Get(3)).add(NUM_ONE).multiply(half_width);
       Scalar yn = NUM_ONE.subtract(tensor.Get(1).divide(tensor.Get(3))).multiply(half_height);
       return Optional.of(Tensors.of(xn, yn));

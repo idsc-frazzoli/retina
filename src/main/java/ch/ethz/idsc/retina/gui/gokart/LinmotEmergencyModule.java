@@ -12,11 +12,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** sends stop command if either winding temperature is outside valid range */
+/** sends stop command if either winding temperature is outside valid range
+ * 
+ * module needs to be started after linmot calibration procedure */
 public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
-  // ---
-  private boolean flag = false;
-  // TODO NRJ detect anomaly on brake... perhaps put in different module?
+  private boolean isEmergency = false;
 
   @Override
   protected void first() throws Exception {
@@ -30,19 +30,20 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
     LinmotSocket.INSTANCE.removeGetListener(this);
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(flag ? RimoPutEvent.STOP : null);
+    return Optional.ofNullable(isEmergency ? RimoPutEvent.STOP : null);
   }
 
-  @Override
+  @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    flag |= !linmotGetEvent.isSafeWindingTemperature1();
-    flag |= !linmotGetEvent.isSafeWindingTemperature2();
+    isEmergency |= !linmotGetEvent.isOperational();
+    isEmergency |= !linmotGetEvent.isSafeWindingTemperature1();
+    isEmergency |= !linmotGetEvent.isSafeWindingTemperature2();
   }
 }

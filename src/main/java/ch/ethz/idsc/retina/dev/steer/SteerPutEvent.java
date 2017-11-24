@@ -31,19 +31,22 @@ public class SteerPutEvent extends DataEvent {
   /** @param torque with unit "SCT"
    * @return */
   public static final SteerPutEvent createOn(Scalar torque) {
-    return new SteerPutEvent(CMD_ON, RTORQUE.apply(torque).number().doubleValue());
+    return new SteerPutEvent(CMD_ON, RTORQUE.apply(torque).number().floatValue());
   }
 
   // ---
   private final byte command;
   private final float torque;
 
-  /** @param command
-   * @param torque TODO NRJ determine valid range */
-  // TODO this could be private in the future
-  public SteerPutEvent(Word command, double torque) {
+  /** Remark: the exact valid range of the torque value is not known due to secrecy
+   * by the manufacturer of the steering column. Also we don't know the mapping of
+   * the torque value to a physical meaningful unit, e.g. N*m.
+   * 
+   * @param command
+   * @param torque typically in the interval [-1.5, +1.5] */
+  public SteerPutEvent(Word command, float torque) {
     this.command = command.getByte();
-    this.torque = (float) torque;
+    this.torque = torque;
   }
 
   @Override

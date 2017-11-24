@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-public final class PCPS3AndroidJoystick extends JoystickEvent {
+/* package */ final class PCPS3AndroidJoystick extends JoystickEvent {
   @Override
   public JoystickType type() {
     return null; // JoystickType.PC_PS3_ANDROID;

@@ -51,7 +51,7 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
       lidarRender.setColor(new Color(128, 0, 0, 128));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
@@ -69,17 +69,23 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.mark8);
+      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.mark8);
       lidarRender.setColor(new Color(0, 128, 0, 128));
       mark8LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new ProjectedLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
+    // {
+    // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+    // // lidarRender.setColor(new Color(128, 0, 0, 255));
+    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+    // timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    // }
     // ---
     rimoGetLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
@@ -93,6 +99,7 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void last() {
+    vlp16LcmHandler.stopSubscriptions();
     urg04lxLcmHandler.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();

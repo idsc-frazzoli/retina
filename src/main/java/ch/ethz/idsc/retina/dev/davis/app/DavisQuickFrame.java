@@ -18,9 +18,10 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 public class DavisQuickFrame {
   public final JFrame jFrame = new JFrame();
   private final Timer timer = new Timer();
-  public final DavisQuickComponent davisViewerComponent = new DavisQuickComponent();
+  public final DavisQuickComponent davisViewerComponent;
 
-  public DavisQuickFrame(DavisDevice davisDevice) {
+  public DavisQuickFrame(DavisDevice davisDevice, DavisQuickComponent davisViewerComponent) {
+    this.davisViewerComponent = davisViewerComponent;
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
