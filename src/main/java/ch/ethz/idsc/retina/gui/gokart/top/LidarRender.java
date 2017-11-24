@@ -45,8 +45,8 @@ abstract class LidarRender implements RenderInterface, LidarRayBlockListener {
         double x = floatBuffer.get();
         double y = floatBuffer.get();
         double z = floatBuffer.get();
-        if (z < 0.1) // height ? TODO magic constant
-          points.append(Tensors.vectorDouble(x, y, z));
+        // no filter based on height
+        points.append(Tensors.vectorDouble(x, y, z));
       }
       _points = points;
     }

@@ -6,8 +6,9 @@ public enum ProviderRank {
   GODMODE, //
   /** for instance when the battery is low, bumper has contact, flat tire, ... */
   EMERGENCY, //
-  /** for instance when linmot break calibration,
-   * or steer calibration */
+  /** for instance when
+   * 1) linmot break calibration, or
+   * 2) steer calibration */
   CALIBRATION, //
   /** for instance when controlling with joystick */
   MANUAL, //

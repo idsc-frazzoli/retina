@@ -7,13 +7,14 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class ProjectionMatrixTest extends TestCase {
   public void testSimple() {
     // ProjectionMatrix.perspective(1.1, dimension.width / (double) dimension.height, 1, 100);
     Viewport viewport = Viewport.create(240, 180);
-    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), RealScalar.of(1), RealScalar.of(100));
+    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100));
     // Optional<Tensor> optional = ;
     assertFalse(viewport.fromProjected(project.dot(Tensors.vector(-1, -1, 0, 1))).isPresent());
     assertFalse(viewport.fromProjected(project.dot(Tensors.vector(-1, -1, 1, 1))).isPresent());
@@ -24,7 +25,7 @@ public class ProjectionMatrixTest extends TestCase {
 
   public void testToPixel() {
     Viewport viewport = Viewport.create(240, 180);
-    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), RealScalar.of(1), RealScalar.of(100));
+    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100));
     assertFalse(viewport.toPixel(project.dot(Tensors.vector(-20, -1, -10, 1))).isPresent());
     Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(-2, -1, -10, 1)));
     assertTrue(optional.isPresent());
@@ -32,7 +33,7 @@ public class ProjectionMatrixTest extends TestCase {
 
   public void testToPixel1() {
     Viewport viewport = Viewport.create(240, 180);
-    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), RealScalar.of(1), RealScalar.of(100));
+    Tensor project = ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100));
     // assertFalse(viewport.toPixel(project.dot(Tensors.vector(-20, -1, -10, 1))).isPresent());
     {
       Optional<Point> optional = viewport.toPixel(project.dot(Tensors.vector(-2, -1, -10, 1)));

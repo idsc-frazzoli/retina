@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
+import ch.ethz.idsc.retina.gui.gokart.SteerEmergencyModule;
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -33,6 +34,12 @@ public final class SteerColumnTracker implements SteerGetListener {
     return SOFT < width;
   }
 
+  /** if {@link #isCalibrated()} returns true but {@link #isCalibratedAndHealthy()}
+   * returns false, the steering and brake can still be maneuvered, but the gokart
+   * should be stopped.
+   * 
+   * @return false if the interval tracker returns a value outside the nominal range
+   * @see SteerEmergencyModule */
   public boolean isCalibratedAndHealthy() {
     return isCalibrated() && intervalTracker.getWidth() < HARD;
   }

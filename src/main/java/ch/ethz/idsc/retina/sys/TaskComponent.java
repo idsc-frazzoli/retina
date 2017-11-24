@@ -18,7 +18,7 @@ class TaskComponent {
   private final JPanel top = new JPanel(new BorderLayout());
   final JScrollPane jScrollPane = new JScrollPane(top, //
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, //
-      JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // TODO specify scroll options
+      JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
   public TaskComponent(List<Class<?>> modules) {
     jpanel.setLayout(new GridLayout(modules.size(), 1));

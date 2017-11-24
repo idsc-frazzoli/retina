@@ -6,9 +6,9 @@ import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Cot;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -20,19 +20,20 @@ public enum ProjectionMatrix {
    * @param zFar
    * @return */
   public static Tensor of(double fovy, double aspect, double zNear, double zFar) {
-    return of( //
-        RealScalar.of(fovy), RealScalar.of(aspect), RealScalar.of(zNear), RealScalar.of(zFar));
+    return of(RealScalar.of(fovy), RealScalar.of(aspect), Clip.function(zNear, zFar));
   }
 
-  /** @param fovy field of view angle in the y direction
+  /** zNear positive distance from the viewer to the near clipping plane
+   * zFar positive distance from the viewer to the far clipping plane greater than zNear
+   * 
+   * @param fovy field of view angle in the y direction
    * @param aspect ratio of x (width) to y (height)
-   * @param zNear distance from the viewer to the near clipping plane (always positive)
-   * @param zFar distance from the viewer to the far clipping plane (always positive)
-   * @return */
-  // TODO consider to input Clip for zNear and zFar
-  public static Tensor of(Scalar fovy, Scalar aspect, Scalar zNear, Scalar zFar) {
+   * @param clip from zNear and zFar
+   * @return matrix with dimensions 4 x 4 */
+  public static Tensor of(Scalar fovy, Scalar aspect, Clip clip) {
+    Scalar zNear = clip.min();
+    Scalar zFar = clip.max();
     GlobalAssert.that(Sign.isPositive(zNear));
-    GlobalAssert.that(Scalars.lessThan(zNear, zFar));
     Scalar f = Cot.of(fovy.multiply(RationalScalar.of(1, 2)));
     Tensor matrix = Array.zeros(4, 4);
     matrix.set(f.divide(aspect), 0, 0);

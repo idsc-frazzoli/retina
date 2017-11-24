@@ -27,10 +27,6 @@ public class TaskGui {
     });
     // ---
     TaskComponent taskComponent = new TaskComponent(modules);
-    // TODO create modules for those:
-    // tc.jpanel.add(new TaskManagerStatus().toggle);
-    // ---
-    //
     JPanel jPanel = new JPanel(new BorderLayout());
     JToolBar jToolBar = new JToolBar();
     jToolBar.setFloatable(false);

@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-// TODO the channel name and period are hardcoded :-( 
+/** contains hard-coded channel names and magic constants */
 public class DavisOverviewModule extends AbstractModule {
   private DavisLcmClient davisLcmClient;
   private DavisQuickFrame davisViewerFrame;
@@ -59,7 +59,7 @@ public class DavisOverviewModule extends AbstractModule {
   public static void standalone() throws Exception {
     DavisOverviewModule davisDetailModule = new DavisOverviewModule();
     davisDetailModule.first();
-    davisDetailModule.davisViewerFrame // that's a bit much :-(
+    davisDetailModule.davisViewerFrame //
         .jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
