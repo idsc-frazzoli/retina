@@ -25,11 +25,15 @@ public class AngleVectorLookupFloat {
     }
   }
 
+  /** @param rotational
+   * @return Math.cos at given rotational index */
   public float dx(int rotational) {
     rotational <<= 1;
     return array[rotational];
   }
 
+  /** @param rotational
+   * @return Math.sin at given rotational index */
   public float dy(int rotational) {
     rotational <<= 1;
     return array[rotational + 1];

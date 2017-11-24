@@ -99,6 +99,7 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void last() {
+    vlp16LcmHandler.stopSubscriptions();
     urg04lxLcmHandler.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();

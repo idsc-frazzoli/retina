@@ -6,7 +6,7 @@ package ch.ethz.idsc.retina.dev.joystick;
  * axis 2 = handbrake flat == +1 (up -> -1)
  * axis 3 = stick twist cw direction, i.e. right
  * axis 4 == NO ID */
-public class Hama5Axis12ButtonWithPov extends JoystickEvent implements GokartJoystickInterface {
+/* package */ class Hama5Axis12ButtonWithPov extends JoystickEvent implements GokartJoystickInterface {
   @Override
   public double getLeftKnobDirectionDown() {
     return getAxisValue(1);
@@ -40,8 +40,7 @@ public class Hama5Axis12ButtonWithPov extends JoystickEvent implements GokartJoy
 
   @Override
   public boolean isButtonPressedBack() {
-    // TODO
-    return false;
+    return false; // TODO button is not supported
   }
 
   @Override

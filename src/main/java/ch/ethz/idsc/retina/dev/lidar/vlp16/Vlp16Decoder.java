@@ -103,7 +103,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
           @SuppressWarnings("unused")
           int flag = byteBuffer.getShort() & 0xffff;
           final int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
-          ae.now(azimuth); // TODO should be obsolete since azimuth is the same as before
+          ae.now(azimuth); // should be obsolete since azimuth is the same as before
           // ---
           final int position = byteBuffer.position();
           rayListeners.forEach(listener -> {

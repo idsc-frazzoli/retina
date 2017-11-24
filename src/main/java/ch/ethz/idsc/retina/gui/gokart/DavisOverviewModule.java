@@ -50,6 +50,7 @@ public class DavisOverviewModule extends AbstractModule {
 
   @Override
   protected void last() {
+    vlp16LcmHandler.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
     davisViewerFrame.jFrame.setVisible(false);
     davisViewerFrame.jFrame.dispose();

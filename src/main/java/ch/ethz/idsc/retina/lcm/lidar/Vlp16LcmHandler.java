@@ -14,11 +14,12 @@ public class Vlp16LcmHandler {
   // ---
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(MAX_COORDINATES, 3);
+  private final VelodyneLcmClient velodyneLcmClient;
 
   public Vlp16LcmHandler(String lidarId) {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-    VelodyneLcmClient velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, lidarId);
+    velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, lidarId);
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
@@ -26,6 +27,10 @@ public class Vlp16LcmHandler {
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    velodyneLcmClient.startSubscriptions(); // TODO is it consistent to auto start and never stop!?
+    velodyneLcmClient.startSubscriptions();
+  }
+
+  public void stopSubscriptions() {
+    velodyneLcmClient.stopSubscriptions();
   }
 }

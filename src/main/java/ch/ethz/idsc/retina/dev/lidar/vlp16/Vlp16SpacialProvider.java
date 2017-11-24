@@ -8,17 +8,14 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity */
 public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
-  public static final float[] IR = new float[LASERS];
-  public static final float[] IZ = new float[LASERS];
-  private static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true);
-  public static final double TO_METER = 0.002;
-  public static final float TO_METER_FLOAT = (float) TO_METER;
+  private final float[] IR = new float[LASERS];
+  private final float[] IZ = new float[LASERS];
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO document magic const for closest threshold
@@ -38,7 +35,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
    * @param closest
    * in [m] */
   public void setLimitLo(double closest) {
-    limit_lo = (int) (closest / TO_METER);
+    limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }
 
   @Override
@@ -53,15 +50,15 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
 
   @Override
   public void scan(int azimuth, ByteBuffer byteBuffer) {
-    float dx = TRIGONOMETRY.dx(azimuth);
-    float dy = TRIGONOMETRY.dy(azimuth);
+    float dx = VelodyneStatics.TRIGONOMETRY.dx(azimuth);
+    float dy = VelodyneStatics.TRIGONOMETRY.dy(azimuth);
     float[] coords = new float[3];
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
       int intensity = byteBuffer.get() & 0xff;
       if (limit_lo <= distance) {
         // "report distance to the nearest 0.2 cm" => 2 mm
-        float range = distance * TO_METER_FLOAT; // convert to [m]
+        float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
         coords[0] = IR[laser] * range * dx;
         coords[1] = IR[laser] * range * dy;
         coords[2] = IZ[laser] * range;
