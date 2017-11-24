@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,13 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.img.ColorFormat;
 
 class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
   private final RimoPutFields rimoPutFieldsL = new RimoPutFields();
@@ -91,7 +85,6 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     rimoGetFields.jTF_actual_speed = createReading(side + " actual speed");
     rimoGetFields.jTF_rms_motor_current = createReading(side + " rms current");
     rimoGetFields.jTF_dc_bus_voltage = createReading(side + " dc bus voltage");
-    // TODO NRJ background according to error code
     rimoGetFields.jTF_error_code = createReading(side + " error code");
     rimoGetFields.jTF_error_code_emergency = createReading(side + " emergcy");
     rimoGetFields.jTF_temperature_motor = createReading(side + " temp. motor");
@@ -104,22 +97,6 @@ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> 
     this.rimoGetEvent = rimoGetEvent;
     rimoGetFieldsL.updateText(rimoGetEvent.getTireL);
     rimoGetFieldsR.updateText(rimoGetEvent.getTireR);
-    {
-      Scalar temp = rimoGetEvent.getTireL.getTemperatureMotor();
-      rimoGetFieldsL.jTF_temperature_motor.setText(temp.toString());
-      Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
-      Color color = ColorFormat.toColor(vector);
-      rimoGetFieldsL.jTF_temperature_motor.setBackground(color);
-    }
-    {
-      Scalar temp = rimoGetEvent.getTireR.getTemperatureMotor();
-      rimoGetFieldsR.jTF_temperature_motor.setText(temp.toString());
-      Scalar scalar = RimoGetTire.TEMPERATURE_RANGE.rescale(temp);
-      Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(scalar);
-      Color color = ColorFormat.toColor(vector);
-      rimoGetFieldsR.jTF_temperature_motor.setBackground(color);
-    }
   }
 
   @Override

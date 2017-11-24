@@ -11,9 +11,7 @@ import java.util.Objects;
 import ch.ethz.idsc.retina.sys.GitRevHead;
 import ch.ethz.idsc.retina.sys.SystemTimestamp;
 
-/**
- * 
- */
+/** process to log lcm traffic */
 public class LcmLogProcess implements AutoCloseable {
   /** standard on linux, non-final so that configurable at runtime */
   public static String BINARY = "/usr/local/bin/lcm-logger";
@@ -37,9 +35,8 @@ public class LcmLogProcess implements AutoCloseable {
 
   /** @param file
    * reference to absolute path of log file
-   * @throws Exception
-   * if file already exists or log process cannot be started */
-  public LcmLogProcess(final File file) throws Exception {
+   * @throws Exception if file already exists or log process cannot be started */
+  private LcmLogProcess(final File file) throws Exception {
     if (file.exists())
       throw new RuntimeException();
     this.file = file;
@@ -59,14 +56,16 @@ public class LcmLogProcess implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    // TODO outputstream Ctrl+C ?
-    // ... something like "Ctrl+C" via the process.inputstream
     if (Objects.nonNull(process))
       process.destroy();
   }
 
+  /** the lcm-logger binary starts logging into a file with name terminating with ".00"
+   * once the size limit is reached, the extension will increase to ".01" etc.
+   * 
+   * @return first file created by lcm-logger */
   public File file() {
-    String string = file.toString() + ".00"; // TODO is this not sufficiently generic
+    String string = file.toString() + ".00";
     return new File(string);
   }
 }
