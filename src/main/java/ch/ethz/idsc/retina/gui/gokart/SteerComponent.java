@@ -143,16 +143,15 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnTracker.isCalibrated()) {
       final Scalar currAngle = steerColumnTracker.getEncoderValueCentered(); // SCE
-      Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION).multiply(SteerColumnTracker.MAX_SCE);
+      Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION) //
+          .multiply(SteerColumnTracker.MAX_SCE);
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
-      ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, this is only for tuning
-      if (jToggleController.isSelected()) {
-        return Optional.of(new SteerPutEvent( //
-            spinnerLabelLw.getValue(), //
-            SteerPutEvent.RTORQUE.apply(torqueCmd).number().doubleValue()));
-      }
+      ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, only for tuning
+      if (jToggleController.isSelected())
+        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), // <- command
+            SteerPutEvent.RTORQUE.apply(torqueCmd).number().floatValue())); // <- torque
     }
     return Optional.empty();
   }
