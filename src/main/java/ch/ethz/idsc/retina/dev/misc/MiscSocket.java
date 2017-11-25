@@ -34,7 +34,6 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
 
   @Override
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
-    return new DatagramPacket(data, data.length, //
-        AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
+    return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }
 }

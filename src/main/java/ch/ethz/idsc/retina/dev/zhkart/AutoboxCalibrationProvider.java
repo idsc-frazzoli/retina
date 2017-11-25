@@ -7,6 +7,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
+import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 
 /** base class for all calibration providers
@@ -17,7 +18,8 @@ import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
  * 
  * <p>Examples of calibration providers are
  * {@link LinmotCalibrationProvider}
- * {@link SteerCalibrationProvider} */
+ * {@link SteerCalibrationProvider}
+ * {@link MiscIgnitionProvider} */
 public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implements PutProvider<PE> {
   private static final long MAX_FUTURE_MS = 10_000;
   // ---

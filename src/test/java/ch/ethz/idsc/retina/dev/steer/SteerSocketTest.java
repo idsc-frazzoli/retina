@@ -12,12 +12,6 @@ public class SteerSocketTest extends TestCase {
   }
 
   public void testSimple() {
-    try {
-      SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
-      assertTrue(false);
-    } catch (Exception exception) {
-      // ---
-    }
     SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
     SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
     SteerPutProvider spp1 = new SteerPutProvider() {

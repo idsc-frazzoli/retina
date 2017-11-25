@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * LONGTERM NRJ cite source for temperature range and other magic const */
 public class LinmotGetEvent extends DataEvent {
   /** 16 bytes */
-  public static final int LENGTH = 16;
+  /* package */ static final int LENGTH = 16;
   /** conversion factor 0.1 taken from data sheet */
   private static final double TO_DEGREE_CELSIUS = 0.1;
   /** actual position of 100000 corresponds to 1 cm
