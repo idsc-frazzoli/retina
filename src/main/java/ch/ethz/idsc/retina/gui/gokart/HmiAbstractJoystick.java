@@ -41,14 +41,14 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   // ---
   public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
   private final SteerPositionControl positionController = new SteerPositionControl();
-  GokartJoystickInterface _joystick;
+  private GokartJoystickInterface _joystick;
   private long tic_joystick;
   private LinmotGetEvent _linmotGetEvent;
   private LinmotPutEvent _linmotPutEvent;
   private Scalar speedLimit = SPEEDS.get(0);
 
-  final boolean hasJoystick() {
-    return Objects.nonNull(_joystick) && now() < tic_joystick + WATCHDOG_MS;
+  final Optional<GokartJoystickInterface> getJoystick() {
+    return Optional.ofNullable(now() < tic_joystick + WATCHDOG_MS ? _joystick : null);
   }
 
   @Override
@@ -62,11 +62,12 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   public final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
-      if (hasJoystick()) {
+      Optional<GokartJoystickInterface> optional = getJoystick();
+      if (optional.isPresent()) {
         final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
         if (steerColumnTracker.isCalibrated()) {
           final Scalar currAngle = steerColumnTracker.getEncoderValueCentered();
-          Scalar desPos = RealScalar.of(-_joystick.getRightKnobDirectionRight()).multiply(SteerColumnTracker.MAX_SCE);
+          Scalar desPos = RealScalar.of(optional.get().getSteerLeft()).multiply(SteerColumnTracker.MAX_SCE);
           final Scalar torqueCmd = //
               positionController.iterate(Quantity.of(desPos.subtract(currAngle), SteerPutEvent.UNIT_ENCODER));
           return Optional.of(SteerPutEvent.createOn(torqueCmd));
@@ -96,12 +97,14 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   public final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
     public Optional<LinmotPutEvent> putEvent() {
-      if (hasJoystick()) {
+      Optional<GokartJoystickInterface> optional = getJoystick();
+      if (optional.isPresent()) {
+        // TODO see if this is mandatory
         boolean status = true;
         status &= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
         status &= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
         if (status)
-          return Optional.of(LinmotPutHelper.operationToRelativePosition(breakStrength()));
+          return Optional.of(LinmotPutHelper.operationToRelativePosition(breakStrength(optional.get())));
       }
       return Optional.empty();
     }
@@ -116,7 +119,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
 
   /** @return value in the interval [0, 1]
    * 0 means no break, and 1 means all the way */
-  protected abstract double breakStrength();
+  protected abstract double breakStrength(GokartJoystickInterface gokartJoystickInterface);
 
   public final void setSpeedLimit(Scalar speedLimit) {
     this.speedLimit = speedLimit;

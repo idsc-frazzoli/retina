@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.util.Optional;
 
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
@@ -18,18 +19,17 @@ import ch.ethz.idsc.tensor.Scalar;
  * differential speed on rear wheels according to steering angle */
 public class HmiSimpleDriveJoystick extends HmiAbstractJoystick {
   @Override
-  protected double breakStrength() {
-    return Math.max( //
-        _joystick.getLeftSliderUnitValue(), //
-        _joystick.getRightSliderUnitValue());
+  protected double breakStrength(GokartJoystickInterface gokartJoystickInterface) {
+    return gokartJoystickInterface.getBreakSecondary();
   }
 
   /** tire speed */
   private final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      if (hasJoystick()) {
-        Scalar speed = getSpeedLimit().multiply(RealScalar.of(_joystick.getLeftKnobDirectionUp()));
+      Optional<GokartJoystickInterface> optional = getJoystick();
+      if (optional.isPresent()) {
+        Scalar speed = getSpeedLimit().multiply(RealScalar.of(optional.get().getAheadAverage()));
         final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
         if (steerColumnTracker.isCalibrated()) {
           Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();

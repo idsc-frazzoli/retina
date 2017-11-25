@@ -5,12 +5,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Optional;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -132,13 +134,13 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
 
   @Override
   protected void runAlgo() {
-    boolean hasJoystick = joystickInstance.hasJoystick();
-    jTextFieldJoystickLast.setText("" + hasJoystick);
-    jTextFieldJoystickLast.setBackground(hasJoystick ? Color.GREEN : Color.RED);
+    Optional<GokartJoystickInterface> optional = joystickInstance.getJoystick();
+    jTextFieldJoystickLast.setText("" + optional.isPresent());
+    jTextFieldJoystickLast.setBackground(optional.isPresent() ? Color.GREEN : Color.RED);
   }
 
   @Override
   protected double getPeriod() {
-    return 0.05;
+    return 0.05; // TODO document magic const
   }
 }

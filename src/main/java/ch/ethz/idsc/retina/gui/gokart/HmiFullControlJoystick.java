@@ -13,8 +13,8 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class HmiFullControlJoystick extends HmiAbstractJoystick {
   @Override
-  protected double breakStrength() {
-    return _joystick.getLeftKnobDirectionDown();
+  protected double breakStrength(GokartJoystickInterface gokartJoystickInterface) {
+    return gokartJoystickInterface.getBreakStrength();
   }
 
   /** tire speed */
@@ -23,14 +23,14 @@ public class HmiFullControlJoystick extends HmiAbstractJoystick {
 
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      if (hasJoystick()) {
-        GokartJoystickInterface joystick = _joystick;
-        if (joystick.isButtonPressedBack())
-          sign = -1;
-        if (joystick.isButtonPressedStart())
-          sign = +1;
-        Scalar wheelL = RealScalar.of(joystick.getLeftSliderUnitValue() * sign);
-        Scalar wheelR = RealScalar.of(joystick.getRightSliderUnitValue() * sign);
+      Optional<GokartJoystickInterface> optional = getJoystick();
+      if (optional.isPresent()) {
+        GokartJoystickInterface joystick = optional.get();
+        Optional<Integer> speed = joystick.getSpeedMultiplierOptional();
+        if (speed.isPresent())
+          sign = speed.get();
+        Scalar wheelL = RealScalar.of(joystick.getAheadTireLeft_Unit() * sign);
+        Scalar wheelR = RealScalar.of(joystick.getAheadTireRight_Unit() * sign);
         return rimoRateControllerWrap.iterate(Tensors.of( //
             getSpeedLimit().multiply(wheelL), //
             getSpeedLimit().multiply(wheelR)));

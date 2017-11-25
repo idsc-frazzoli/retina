@@ -19,9 +19,13 @@ public abstract class JoystickEvent {
   }
 
   /** @param index of axis
-   * @return value in unit interval [0, 1] */
+   * @return value in unit interval [0, 1] */ // FIXME is this a joke? the interval should be [-1 1]
   protected final double getAxisValue(int index) {
     return _axes[index] / (double) Byte.MAX_VALUE;
+  }
+
+  protected final double getSliderValue(int index) {
+    return (getAxisValue(index) + 1) * 0.5;
   }
 
   protected final int getHat(int index) {
