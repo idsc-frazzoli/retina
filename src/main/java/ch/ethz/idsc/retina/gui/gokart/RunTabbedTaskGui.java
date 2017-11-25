@@ -11,8 +11,6 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
-import ch.ethz.idsc.retina.lcm.mod.Mark8LcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -27,11 +25,9 @@ enum RunTabbedTaskGui {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     taskTabGui.tab("dev", Arrays.asList( //
-        Hdl32eLcmServerModule.class, //
-        Vlp16LcmServerModule.class, //
-        Mark8LcmServerModule.class, //
-        Urg04lxLcmServerModule.class, //
-        AutoboxSocketModule.class //
+        AutoboxSocketModule.class, // sensing and actuation
+        Vlp16LcmServerModule.class, // sensing
+        Urg04lxLcmServerModule.class // sensing
     ));
     taskTabGui.tab("lcm", Arrays.asList( //
         AutoboxLcmServerModule.class, //

@@ -8,7 +8,7 @@ public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEven
 
   @Override
   protected void protected_schedule() {
-    long timestamp = now();
+    long timestamp = now_ms();
     {
       MiscPutEvent miscPutEvent = new MiscPutEvent();
       miscPutEvent.resetConnection = 1;

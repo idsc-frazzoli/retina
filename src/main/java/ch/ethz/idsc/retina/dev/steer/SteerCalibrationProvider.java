@@ -17,7 +17,7 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
 
   @Override
   protected void protected_schedule() {
-    final long timestamp = now();
+    final long timestamp = now_ms();
     final Scalar full = SteerConfig.GLOBAL.calibration;
     // final Scalar half = full.multiply(HALF);
     final int oneside_ms = 3000;

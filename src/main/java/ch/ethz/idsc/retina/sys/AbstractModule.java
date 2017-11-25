@@ -51,7 +51,7 @@ public abstract class AbstractModule {
 
   /** function launch() should init everything quickly and then return. If launch
    * procedure encounters problems (such as hardware failure, files missing, ...)
-   * en exception is thrown.
+   * an exception is thrown.
    *
    * In particular, launch() should not block indefinitely.
    *

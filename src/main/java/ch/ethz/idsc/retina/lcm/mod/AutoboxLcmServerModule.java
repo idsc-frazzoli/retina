@@ -11,6 +11,11 @@ import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
+/** module subscribes and unsubscribes to all micro-autobox channels
+ * and publishes the traffic via lcm.
+ * 
+ * One application is to log the messages received from and
+ * the commands sent to the micro-autobox. */
 public class AutoboxLcmServerModule extends AbstractModule {
   @Override
   protected void first() throws Exception {
