@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.dev.dvs.supply;
 import java.awt.Dimension;
 import java.util.PriorityQueue;
 
+import ch.ethz.idsc.owl.math.noise.SimplexContinuousNoise;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.util.math.SimplexNoise;
 
 public class ProceduralDvsEventSupplier implements DvsEventSupplier {
   private final static long SEC_TO_USEC = 1_000_000;
@@ -33,7 +33,7 @@ public class ProceduralDvsEventSupplier implements DvsEventSupplier {
     long time = dvsEvent.time_us;
     if (duration < time)
       throw new RuntimeException();
-    double incr = 0.25 + SimplexNoise.at(dvsEvent.x * 0.01, dvsEvent.y * 0.01) * 0.003;
+    double incr = 0.25 + SimplexContinuousNoise.FUNCTION.at(dvsEvent.x * 0.01, dvsEvent.y * 0.01) * 0.003;
     long next = time + Math.round(incr * SEC_TO_USEC);
     if (next <= time) {
       System.out.println(next + " " + time + " " + incr);

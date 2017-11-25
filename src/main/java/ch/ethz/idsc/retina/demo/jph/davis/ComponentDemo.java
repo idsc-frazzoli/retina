@@ -33,7 +33,7 @@ enum ComponentDemo {
     DvsEventComponents dec = new DvsEventComponents(dimension, del);
     final int maxsize = dimension.height * dimension.width;
     Tensor palette = //
-        Tensors.vector(i -> Constant.GoldenAngle.value.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
+        Tensors.vector(i -> Constant.GOLDEN_ANGLE.value.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
     AnimationWriter gsw = null;

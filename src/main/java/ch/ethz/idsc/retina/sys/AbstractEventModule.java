@@ -16,13 +16,11 @@ public abstract class AbstractEventModule extends AbstractModule {
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
 
-  /** Initialisation for user implementation. Runs before runEventModule() is ever
-   * called. */
+  /** Initialization for user implementation. Runs before runEventModule() is ever called. */
   @Override
   protected abstract void first() throws Exception;
 
-  /** Graceful closure for user implementation Runs after runEventModule() is
-   * terminated for good. */
+  /** Graceful closure for user implementation Runs after runEventModule() is terminated for good. */
   @Override
   protected abstract void last();
 
@@ -54,13 +52,12 @@ public abstract class AbstractEventModule extends AbstractModule {
             }
           }
         }
-      } catch (Exception e1) {
-        e1.printStackTrace();
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
     });
     thread.setName(getClass().getSimpleName());
     thread.start();
-    // ModuleAuto.watch(getClass(), this);
   }
 
   @Override

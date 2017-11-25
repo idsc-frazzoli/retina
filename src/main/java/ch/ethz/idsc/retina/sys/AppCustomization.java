@@ -5,6 +5,8 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 
+/** user specific customization
+ * for instance location of windows */
 public enum AppCustomization {
   ;
   private static File file(Class<?> cls) {
