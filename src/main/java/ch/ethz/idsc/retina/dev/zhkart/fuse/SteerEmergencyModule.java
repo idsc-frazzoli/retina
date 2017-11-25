@@ -33,6 +33,6 @@ public final class SteerEmergencyModule extends AbstractModule implements RimoPu
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     isBlown |= !SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
-    return Optional.ofNullable(isBlown ? RimoPutEvent.STOP : null); // deactivate throttle
+    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null); // deactivate throttle
   }
 }

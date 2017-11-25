@@ -12,8 +12,8 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private static final int LOCAL_PORT = 5000;
   private static final int REMOTE_PORT = 5000;
   // ---
-  /** the communication rate affects the torque control */
-  /* package */ static final int SEND_PERIOD_MS = 20; // 50[Hz]
+  /** the communication rate affects the torque PI control */
+  private static final int SEND_PERIOD_MS = 20; // 50[Hz]
   // ---
   public static final RimoSocket INSTANCE = new RimoSocket();
 

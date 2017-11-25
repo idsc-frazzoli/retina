@@ -13,7 +13,7 @@ public class RimoPutTire implements Serializable {
   public static final Unit UNIT_TORQUE = Unit.of("ARMS");
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
-  public static final RimoPutTire STOP = new RimoPutTire(OPERATION, (short) 0, (short) 0);
+  /* package */ static final RimoPutTire PASSIVE = new RimoPutTire(OPERATION, (short) 0, (short) 0);
   public static final Word TRIG_OFF = Word.createByte("OFF", (byte) 0);
   public static final Word TRIG_ON = Word.createByte("ON", (byte) 1);
   public static final List<Word> TRIGGERS = Arrays.asList(TRIG_OFF, TRIG_ON);
@@ -21,8 +21,7 @@ public class RimoPutTire implements Serializable {
   /** 4 bytes encoding length */
   /* package */ static final int LENGTH = 15;
   /** the datasheet bounds the speed between -8000 and 8000
-   * according to tests on the bench,
-   * the max effective speed is ~6300 */
+   * according to tests on the bench the max effective speed is ~6300 */
   public static final short MIN_SPEED = -6500;
   public static final short MAX_SPEED = +6500;
   /** the torque bounds are taken from the datasheet

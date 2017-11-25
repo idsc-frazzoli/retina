@@ -54,6 +54,6 @@ public final class Urg04lxEmergencyModule extends AbstractModule implements Lida
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.STOP : null);
+    return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.PASSIVE : null);
   }
 }

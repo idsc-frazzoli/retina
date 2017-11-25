@@ -7,6 +7,10 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import junit.framework.TestCase;
 
 public class SteerSocketTest extends TestCase {
+  public void testRate() {
+    assertEquals(SteerSocket.INSTANCE.getPeriod(), 20);
+  }
+
   public void testSimple() {
     try {
       SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);

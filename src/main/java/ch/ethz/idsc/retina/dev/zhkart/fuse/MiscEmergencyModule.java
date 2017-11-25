@@ -55,6 +55,6 @@ public final class MiscEmergencyModule extends AbstractModule implements MiscGet
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     isBlown |= watchdog_steerVoltage.isBlown();
-    return Optional.ofNullable(isBlown ? RimoPutEvent.STOP : null); // deactivate throttle
+    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null); // deactivate throttle
   }
 }

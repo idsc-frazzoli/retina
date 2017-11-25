@@ -57,6 +57,6 @@ public final class LinmotEmergencyModule extends AbstractModule implements Linmo
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     isBlown |= watchdog.isBlown(); // if status of linmot was not established for a timeout period
-    return Optional.ofNullable(isBlown ? RimoPutEvent.STOP : null); // deactivate throttle
+    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null); // deactivate throttle
   }
 }

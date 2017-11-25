@@ -11,11 +11,10 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 /** socket for communication with the micro-autobox to
  * send commands and receive readings regarding steering */
 public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
-  /** local */
   private static final int LOCAL_PORT = 5002;
-  /** remote */
   private static final int REMOTE_PORT = 5002;
-  /* package */ static final int SEND_PERIOD_MS = 20;
+  /** communication rate affects the steering PID controller */
+  private static final int SEND_PERIOD_MS = 20;
   // ---
   public static final SteerSocket INSTANCE = new SteerSocket();
   // ---
