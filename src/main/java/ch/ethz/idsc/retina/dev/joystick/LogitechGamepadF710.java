@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-import java.util.Optional;
-
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -124,12 +122,7 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
   /***************************************************/
   @Override // from GokartJoystickInterface
   public double getBreakStrength() {
-    return Math.max(0, getLeftKnobDirectionDown());
-  }
-
-  @Override // from GokartJoystickInterface
-  public double getBreakSecondary() {
-    return Math.max(getLeftSliderUnitValue(), getRightSliderUnitValue());
+    return Math.max(0, getRightKnobDirectionDown());
   }
 
   @Override // from GokartJoystickInterface
@@ -147,14 +140,5 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
     return Tensors.vectorDouble( //
         getLeftSliderUnitValue(), //
         getRightSliderUnitValue());
-  }
-
-  @Override
-  public Optional<Integer> getSpeedMultiplierOptional() {
-    if (isButtonPressedStart())
-      return Optional.of(+1);
-    if (isButtonPressedBack())
-      return Optional.of(-1);
-    return Optional.empty();
   }
 }

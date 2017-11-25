@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-import java.util.Optional;
-
 import ch.ethz.idsc.tensor.Tensor;
 
 /** interface implemented by a {@link JoystickEvent}
@@ -17,20 +15,12 @@ public interface GokartJoystickInterface {
    * @return value in the interval [-1, 1] */
   double getSteerLeft();
 
-  /***************************************************/
-  // FIXME only 1 brake
   /** @return double in the interval [0, 1] */
-  double getBreakStrength(); // used in full control
-
-  /***************************************************/
-  /** @return double in the interval [0, 1] */
-  double getBreakSecondary(); // used in simple drive
+  double getBreakStrength();
 
   /** @return double in the interval [-1, 1] */
-  double getAheadAverage(); // used in simple drive
+  double getAheadAverage();
 
-  /** @return in the interval [0, 1] */
+  /** @return vector with length 2 */
   Tensor getAheadPair_Unit();
-
-  Optional<Integer> getSpeedMultiplierOptional();
 }

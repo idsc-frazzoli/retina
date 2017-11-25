@@ -4,22 +4,29 @@ package ch.ethz.idsc.retina.dev.zhkart.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 public class LinmotJoystickModule extends AbstractModule implements LinmotPutProvider {
+  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+
   @Override
   protected void first() throws Exception {
+    joystickLcmClient.startSubscriptions();
     LinmotSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
   protected void last() {
     LinmotSocket.INSTANCE.removePutProvider(this);
+    joystickLcmClient.stopSubscriptions();
   }
 
   /***************************************************/
@@ -30,9 +37,9 @@ public class LinmotJoystickModule extends AbstractModule implements LinmotPutPro
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    Optional<GokartJoystickInterface> optional = null; // FIXME
+    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
     if (optional.isPresent()) {
-      GokartJoystickInterface joystick = optional.get();
+      GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
       return Optional.of(LinmotPutHelper.operationToRelativePosition(joystick.getBreakStrength()));
     }
     return Optional.empty();
