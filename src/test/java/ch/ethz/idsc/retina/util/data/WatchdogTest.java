@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class WatchdogTest extends TestCase {
   public void testSimple() throws Exception {
-    Watchdog watchdog = new Watchdog(0.1);
+    Watchdog watchdog = new Watchdog(0.05);
     assertFalse(watchdog.isBlown());
     Thread.sleep(20);
     assertFalse(watchdog.isBlown());
@@ -15,7 +15,15 @@ public class WatchdogTest extends TestCase {
     assertFalse(watchdog.isBlown());
     watchdog.pacify();
     assertFalse(watchdog.isBlown());
-    Thread.sleep(120);
+    Thread.sleep(70);
+    assertTrue(watchdog.isBlown());
+  }
+
+  public void testLazy() throws Exception {
+    Watchdog watchdog = new Watchdog(0.05);
+    assertFalse(watchdog.isBlown());
+    Thread.sleep(70);
+    watchdog.pacify();
     assertTrue(watchdog.isBlown());
   }
 }

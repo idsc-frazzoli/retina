@@ -4,11 +4,11 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.util.Arrays;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
-import ch.ethz.idsc.retina.gui.gokart.fuse.LinmotEmergencyModule;
-import ch.ethz.idsc.retina.gui.gokart.fuse.LinmotTakeoverModule;
-import ch.ethz.idsc.retina.gui.gokart.fuse.MiscEmergencyModule;
-import ch.ethz.idsc.retina.gui.gokart.fuse.SteerEmergencyModule;
-import ch.ethz.idsc.retina.gui.gokart.fuse.Urg04lxEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;

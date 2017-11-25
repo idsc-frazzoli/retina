@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.fuse;
+package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if front lidar is not operational */
 public final class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
-  private static final int WATCHDOG_MS = 500; // 500[ms]
+  private static final int WATCHDOG_MS = 400; // 500[ms]
   // ---
   private final Urg04lxLcmClient urg04lxLcmClient = //
       new Urg04lxLcmClient(GokartLcmChannel.URG04LX_FRONT);

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.fuse;
+package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
 import java.util.Optional;
 
