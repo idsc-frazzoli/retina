@@ -40,7 +40,8 @@ public abstract class JoystickEvent {
     byteBuffer.get(_hats);
   }
 
-  public final String toInfoString() {
+  @Override
+  public String toString() {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(type().name());
     for (int index = 0; index < _axes.length; ++index)

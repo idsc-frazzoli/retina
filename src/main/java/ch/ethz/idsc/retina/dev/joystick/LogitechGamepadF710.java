@@ -3,6 +3,9 @@ package ch.ethz.idsc.retina.dev.joystick;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+
 public final class LogitechGamepadF710 extends JoystickEvent implements GokartJoystickInterface {
   @Override
   public JoystickType type() {
@@ -140,13 +143,10 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
   }
 
   @Override // from GokartJoystickInterface
-  public double getAheadTireLeft_Unit() {
-    return getLeftSliderUnitValue();
-  }
-
-  @Override // from GokartJoystickInterface
-  public double getAheadTireRight_Unit() {
-    return getRightSliderUnitValue();
+  public Tensor getAheadPair_Unit() {
+    return Tensors.vectorDouble( //
+        getLeftSliderUnitValue(), //
+        getRightSliderUnitValue());
   }
 
   @Override

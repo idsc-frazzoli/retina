@@ -28,9 +28,10 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 
-// TODO still can close window other than through tabbed gui
 public abstract class JoystickAbstractModule extends AbstractClockedModule {
-  private final JFrame jFrame = new JFrame(getClass().getSimpleName());
+  private static final double DISPLAY_PERIOD_MS = 0.05; // 0.05[s] == 20[Hz]
+  // ---
+  protected final JFrame jFrame = new JFrame(getClass().getSimpleName());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   public final LinmotInitButton linmotInitButton = new LinmotInitButton();
@@ -117,12 +118,12 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
         MiscSocket.INSTANCE.removeGetListener(miscGetListener);
         // ---
         System.out.println("removed listeners and providers");
-        joystickLcmClient.stopSubscriptions();
         joystickLcmClient.removeListener(joystickInstance);
+        joystickLcmClient.stopSubscriptions();
       }
     });
     windowConfiguration.attach(getClass(), jFrame);
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }
 
@@ -135,12 +136,12 @@ public abstract class JoystickAbstractModule extends AbstractClockedModule {
   @Override
   protected void runAlgo() {
     Optional<GokartJoystickInterface> optional = joystickInstance.getJoystick();
-    jTextFieldJoystickLast.setText("" + optional.isPresent());
+    jTextFieldJoystickLast.setText(optional.isPresent() ? optional.get().toString() : "<unknown>");
     jTextFieldJoystickLast.setBackground(optional.isPresent() ? Color.GREEN : Color.RED);
   }
 
   @Override
   protected double getPeriod() {
-    return 0.05; // TODO document magic const
+    return DISPLAY_PERIOD_MS;
   }
 }

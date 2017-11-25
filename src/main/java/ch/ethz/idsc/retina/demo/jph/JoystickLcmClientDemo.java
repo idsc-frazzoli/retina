@@ -9,7 +9,7 @@ public enum JoystickLcmClientDemo {
   public static void main(String[] args) throws Exception {
     JoystickLcmClient joystickLcmClient = JoystickLcmClient.any();
     joystickLcmClient.addListener(joystickEvent -> {
-      System.out.println(joystickEvent.toInfoString());
+      System.out.println(joystickEvent);
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
       gokartJoystickInterface.hashCode();
       // System.out.print("L-knob R=" +

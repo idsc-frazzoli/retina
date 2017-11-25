@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,6 +18,7 @@ import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
+import lcm.lcm.SubscriptionRecord;
 
 public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
   /** @return */
@@ -28,6 +30,7 @@ public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
   private final List<JoystickListener> listeners = new CopyOnWriteArrayList<>();
   private final String pattern;
   private final Set<String> set = new HashSet<>();
+  private SubscriptionRecord subscriptionRecord;
 
   /** @param pattern for instance "generic_xbox_pad" or "*" for all */
   public JoystickLcmClient(String pattern) {
@@ -46,18 +49,19 @@ public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
 
   @Override
   public void startSubscriptions() {
-    LCM.getSingleton().subscribe(_name(), this);
+    subscriptionRecord = LCM.getSingleton().subscribe(_name(), this);
   }
 
   @Override
   public void stopSubscriptions() {
     if (!listeners.isEmpty())
-      System.err.println("warning: listeners still present, yet unsubscribe");
-    LCM.getSingleton().unsubscribe(_name(), this);
+      System.err.println("warning: joystick listeners still present, yet unsubscribe");
+    if (Objects.nonNull(subscriptionRecord))
+      LCM.getSingleton().unsubscribe(subscriptionRecord);
   }
 
   private String _name() {
-    return "joystick." + pattern;
+    return "joystick." + pattern; // subscribe to all channels, you must specify ".*", not "*"
   }
 
   @Override

@@ -48,14 +48,13 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
   private Scalar speedLimit = SPEEDS.get(0);
 
   final Optional<GokartJoystickInterface> getJoystick() {
-    return Optional.ofNullable(now() < tic_joystick + WATCHDOG_MS ? _joystick : null);
+    return Optional.ofNullable(now_ms() < tic_joystick + WATCHDOG_MS ? _joystick : null);
   }
 
   @Override
   public final void joystick(JoystickEvent joystickEvent) {
     _joystick = (GokartJoystickInterface) joystickEvent;
-    tic_joystick = now();
-    // System.out.println("joystick recv");
+    tic_joystick = now_ms();
   }
 
   /** steering */
@@ -99,7 +98,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     public Optional<LinmotPutEvent> putEvent() {
       Optional<GokartJoystickInterface> optional = getJoystick();
       if (optional.isPresent()) {
-        // TODO see if this is mandatory
+        // TODO see if this status check is mandatory
         boolean status = true;
         status &= Objects.nonNull(_linmotGetEvent) && _linmotGetEvent.isOperational();
         status &= Objects.nonNull(_linmotPutEvent) && _linmotPutEvent.isOperational();
@@ -130,7 +129,7 @@ public abstract class HmiAbstractJoystick implements JoystickListener {
     return speedLimit;
   }
 
-  private static long now() {
+  private static long now_ms() {
     return System.currentTimeMillis();
   }
 }

@@ -3,6 +3,9 @@ package ch.ethz.idsc.retina.dev.joystick;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
   @Override
   public JoystickType type() {
@@ -141,16 +144,13 @@ import java.util.Optional;
   }
 
   @Override // from GokartJoystickInterface
-  public double getAheadTireLeft_Unit() {
-    return getLeftSliderUnitValue();
+  public Tensor getAheadPair_Unit() {
+    return Tensors.vectorDouble( //
+        getLeftSliderUnitValue(), //
+        getRightSliderUnitValue());
   }
 
-  @Override
-  public double getAheadTireRight_Unit() {
-    return getRightSliderUnitValue();
-  }
-
-  @Override
+  @Override // from GokartJoystickInterface
   public Optional<Integer> getSpeedMultiplierOptional() {
     if (isButtonPressedStart())
       return Optional.of(+1);
