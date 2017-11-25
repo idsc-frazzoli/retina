@@ -17,6 +17,11 @@ public class MiscGetEvent extends DataEvent {
   private final byte emergency;
   private final float batteryAdc;
 
+  /** the byteBuffer has the following content
+   * byte emergency (== 0 if no problem)
+   * float battery adc
+   * 
+   * @param byteBuffer */
   public MiscGetEvent(ByteBuffer byteBuffer) {
     emergency = byteBuffer.get();
     batteryAdc = byteBuffer.getFloat();

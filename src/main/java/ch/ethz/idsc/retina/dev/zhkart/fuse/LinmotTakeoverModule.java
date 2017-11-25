@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** module detects when human presses the break while the software
  * is controlling the break
@@ -27,7 +27,7 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
   private static final double THRESHOLD_POS_DELTA = 20000;
   /** determined by operation status of linmot */
   private boolean isLinmotActive = false;
-  private final TimedFuse timedFuse = new TimedFuse(DURATION_S);
+  private final Watchdog timedFuse = new Watchdog(DURATION_S);
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -41,7 +41,8 @@ public class LinmotTakeoverModule extends AbstractModule implements LinmotGetLis
 
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent getEvent) {
-    timedFuse.register(isLinmotActive && getEvent.getPositionDiscrepancyRaw() >= THRESHOLD_POS_DELTA);
+    // if (isLinmotActive && getEvent.getPositionDiscrepancyRaw() >= THRESHOLD_POS_DELTA)
+    // timedFuse.pacify(); // FIXME
   }
 
   @Override // from LinmotPutListener

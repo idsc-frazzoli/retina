@@ -12,13 +12,15 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if steer battery voltage is outside of valid range
  * or if emergency flag is set in {@link MiscGetEvent} */
 public class MiscEmergencyModule extends AbstractModule implements MiscGetListener, RimoPutProvider {
-  private final TimedFuse timedFuse = new TimedFuse(0.5);
-  private boolean flag = false;
+  private static final long VOLTAGE_TIMEOUT_MS = 400;
+  // ---
+  private final Watchdog watchdog_steerVoltage = new Watchdog(VOLTAGE_TIMEOUT_MS * 1e-3);
+  private boolean isBlown = false;
 
   @Override
   protected void first() throws Exception {
@@ -32,20 +34,21 @@ public class MiscEmergencyModule extends AbstractModule implements MiscGetListen
     MiscSocket.INSTANCE.removeGetListener(this);
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(timedFuse.isBlown() || flag ? RimoPutEvent.STOP : null);
+    isBlown |= watchdog_steerVoltage.isBlown();
+    return Optional.ofNullable(isBlown ? RimoPutEvent.STOP : null);
   }
 
-  @Override
+  @Override // from MiscGetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
-    timedFuse.register(SteerConfig.GLOBAL.operatingVoltageClip() //
-        .isOutside(miscGetEvent.getSteerBatteryVoltage()));
-    flag |= miscGetEvent.isEmergency(); // comm timeout, or manual switch
+    if (SteerConfig.GLOBAL.operatingVoltageClip().isInside(miscGetEvent.getSteerBatteryVoltage()))
+      watchdog_steerVoltage.pacify();
+    isBlown |= miscGetEvent.isEmergency(); // comm timeout, or manual switch
   }
 }
