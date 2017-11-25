@@ -16,6 +16,7 @@ public class RimoConfig implements Serializable {
   }
 
   /***************************************************/
+  public Scalar rateLimit = Quantity.of(20, "rad*s^-1");
   public Scalar Kp = Quantity.of(40, "ARMS*rad^-1*s"); // 40
   public Scalar Ki = Quantity.of(15, "ARMS*rad^-1"); // 15
   public Scalar torqueLimit = Quantity.of(400, "ARMS");

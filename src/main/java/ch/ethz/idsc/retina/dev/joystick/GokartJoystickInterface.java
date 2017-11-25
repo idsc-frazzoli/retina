@@ -18,6 +18,7 @@ public interface GokartJoystickInterface {
   double getSteerLeft();
 
   /***************************************************/
+  // FIXME only 1 brake
   /** @return double in the interval [0, 1] */
   double getBreakStrength(); // used in full control
 

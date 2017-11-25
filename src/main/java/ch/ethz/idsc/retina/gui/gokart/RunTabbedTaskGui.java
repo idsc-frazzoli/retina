@@ -9,6 +9,9 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
+import ch.ethz.idsc.retina.dev.zhkart.joy.RimoJoystickModule;
+import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
@@ -53,8 +56,9 @@ enum RunTabbedTaskGui {
     ));
     taskTabGui.tab("track", Arrays.asList( //
         AutboxProviderModule.class, //
-        JoystickSimpleDriveModule.class, //
-        JoystickFullControlModule.class //
+        LinmotJoystickModule.class, //
+        SteerJoystickModule.class, //
+        RimoJoystickModule.class //
     ));
     wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
