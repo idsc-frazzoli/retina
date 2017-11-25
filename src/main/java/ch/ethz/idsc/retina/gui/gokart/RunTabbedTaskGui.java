@@ -4,6 +4,11 @@ package ch.ethz.idsc.retina.gui.gokart;
 import java.util.Arrays;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
+import ch.ethz.idsc.retina.gui.gokart.fuse.LinmotEmergencyModule;
+import ch.ethz.idsc.retina.gui.gokart.fuse.LinmotTakeoverModule;
+import ch.ethz.idsc.retina.gui.gokart.fuse.MiscEmergencyModule;
+import ch.ethz.idsc.retina.gui.gokart.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.retina.gui.gokart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
@@ -21,7 +26,7 @@ enum RunTabbedTaskGui {
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
-    taskTabGui.tab("devices", Arrays.asList( //
+    taskTabGui.tab("dev", Arrays.asList( //
         Hdl32eLcmServerModule.class, //
         Vlp16LcmServerModule.class, //
         Mark8LcmServerModule.class, //
@@ -33,25 +38,27 @@ enum RunTabbedTaskGui {
         GokartStatusLcmModule.class, //
         LoggerModule.class //
     ));
-    taskTabGui.tab("watchdog", Arrays.asList( //
+    taskTabGui.tab("fuse", Arrays.asList( //
         Urg04lxEmergencyModule.class, //
         MiscEmergencyModule.class, //
         SteerEmergencyModule.class, //
         LinmotEmergencyModule.class, //
         LinmotTakeoverModule.class //
     ));
-    taskTabGui.tab("gui", Arrays.asList( //
+    taskTabGui.tab("lab", Arrays.asList( //
         SpyModule.class, //
         ParametersModule.class, //
         AutoboxTestingModule.class, //
         RimoMetronomeModule.class, //
-        AutboxProviderModule.class, //
-        JoystickSimpleDriveModule.class, //
-        JoystickFullControlModule.class, //
         LocalViewLcmModule.class, //
         PanoramaViewModule.class, //
         DavisOverviewModule.class, //
         DavisDetailModule.class //
+    ));
+    taskTabGui.tab("track", Arrays.asList( //
+        AutboxProviderModule.class, //
+        JoystickSimpleDriveModule.class, //
+        JoystickFullControlModule.class //
     ));
     wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);

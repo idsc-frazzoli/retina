@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 
+/** not thread safe */
 public class TimedFuse {
   private final double period;
   private Stopwatch stopwatch = null;
@@ -16,21 +17,23 @@ public class TimedFuse {
     this.period = period;
   }
 
+  /** @param blowing_fuse if true fuse timeout counter is continued,
+   * false resets timeout counter */
   public void register(boolean blowing_fuse) {
-    if (blowing_fuse) {
-      if (Objects.isNull(stopwatch))
-        stopwatch = Stopwatch.started();
-      fuse_blown |= period < stopwatch.display_seconds();
-    } else {
-      if (Objects.nonNull(stopwatch)) {
-        if (showInfo)
-          System.out.println("reset watchdog after: " + stopwatch.display_seconds());
-        stopwatch = null;
-      }
+    if (blowing_fuse)
+      isBlown();
+    else //
+    if (Objects.nonNull(stopwatch)) {
+      if (showInfo)
+        System.out.println("reset watchdog after: " + stopwatch.display_seconds());
+      stopwatch = null;
     }
   }
 
   public boolean isBlown() {
+    if (Objects.isNull(stopwatch))
+      stopwatch = Stopwatch.started();
+    fuse_blown |= period < stopwatch.display_seconds();
     return fuse_blown;
   }
 
