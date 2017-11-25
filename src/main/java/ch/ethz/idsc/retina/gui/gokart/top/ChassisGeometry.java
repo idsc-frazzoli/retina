@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.retina.gui.gokart.ConfigurableMarker;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -11,7 +10,7 @@ import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-public class ChassisGeometry implements Serializable, ConfigurableMarker {
+public class ChassisGeometry implements Serializable {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
 
   private ChassisGeometry() {

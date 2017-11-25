@@ -11,20 +11,23 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
  * share details about the exact meaning of the values sent by
  * the device, therefore our documentation also lacks clues. */
 public class SteerGetEvent extends DataEvent {
-  public static final int LENGTH = 44;
+  /* package */ static final int LENGTH = 44;
   // ---
   public final float motAsp_CANInput;
-  public final float motAsp_Qual;
+  public final float motAsp_Qual; // constant 2.0
   public final float tsuTrq_CANInput;
-  public final float tsuTrq_Qual;
+  public final float tsuTrq_Qual; // constant 2.0
+  /** the difference between refMotTrq_CANInput and estMotTrq_CANInput
+   * is typically small */
   public final float refMotTrq_CANInput;
   public final float estMotTrq_CANInput;
-  public final float estMotTrq_Qual;
+  public final float estMotTrq_Qual; // constant 2.0
   // ---
+  /** angular position relative to fixed but initially unknown offset */
   private final float gcpRelRckPos;
-  public final float gcpRelRckQual;
-  public final float gearRat;
-  public final float halfRckPos;
+  public final float gcpRelRckQual; // constant 2.0
+  public final float gearRat; // constant 22.0
+  public final float halfRckPos; // constant 72.0
 
   public SteerGetEvent(ByteBuffer byteBuffer) {
     motAsp_CANInput = byteBuffer.getFloat();
@@ -66,7 +69,8 @@ public class SteerGetEvent extends DataEvent {
    * 
    * the offset has to be determined in a calibration procedure
    * 
-   * @return relative position */
+   * @return relative angular position with respect to positive z-axis, i.e.
+   * increasing values correspond to ccw rotation */
   public float getGcpRelRckPos() {
     return gcpRelRckPos;
   }
