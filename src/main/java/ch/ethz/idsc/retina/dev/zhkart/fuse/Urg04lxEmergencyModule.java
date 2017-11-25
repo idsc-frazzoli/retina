@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if front lidar is not operational */
 public final class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
-  private static final int WATCHDOG_MS = 400; // 500[ms]
+  private static final int WATCHDOG_MS = 400; // 400[ms]
   // ---
   private final Urg04lxLcmClient urg04lxLcmClient = //
       new Urg04lxLcmClient(GokartLcmChannel.URG04LX_FRONT);
@@ -38,7 +38,7 @@ public final class Urg04lxEmergencyModule extends AbstractModule implements Lida
 
   @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
-    watchdog.pacify();
+    watchdog.pacify(); // <- at nominal rate the watchdog is notified every 100[ms]
   }
 
   @Override
@@ -46,6 +46,7 @@ public final class Urg04lxEmergencyModule extends AbstractModule implements Lida
     // ---
   }
 
+  /***************************************************/
   @Override
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;

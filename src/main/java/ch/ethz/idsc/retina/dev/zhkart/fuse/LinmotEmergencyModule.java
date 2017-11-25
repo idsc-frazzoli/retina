@@ -11,12 +11,21 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
-/** sends stop command if either winding temperature is outside valid range
+/** sends stop command if either of the conditions was true
+ * 1) linmot messages have not been received for a timeout period, e.g. 50[ms]
+ * 2) linmot status is "not-operational"
+ * 3) linmot winding temperature is outside valid range
  * 
- * module needs to be started after linmot calibration procedure */
-public class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
-  private boolean isEmergency = false;
+ * module needs to be started after linmot calibration procedure otherwise
+ * the linmot will not read "operational" */
+public final class LinmotEmergencyModule extends AbstractModule implements LinmotGetListener, RimoPutProvider {
+  /** the micro-autobox sends messages at 250[Hz], i.e. at intervals of 4[ms] */
+  private static final long LINMOT_TIMEOUT_MS = 50;
+  // ---
+  private final Watchdog watchdog = new Watchdog(LINMOT_TIMEOUT_MS * 1e-3);
+  private boolean isBlown = false;
 
   @Override
   protected void first() throws Exception {
@@ -30,6 +39,16 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
     LinmotSocket.INSTANCE.removeGetListener(this);
   }
 
+  /***************************************************/
+  @Override // from LinmotGetListener
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    watchdog.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
+    isBlown |= !linmotGetEvent.isOperational();
+    isBlown |= !linmotGetEvent.isSafeWindingTemperature1();
+    isBlown |= !linmotGetEvent.isSafeWindingTemperature2();
+  }
+
+  /***************************************************/
   @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
@@ -37,13 +56,7 @@ public class LinmotEmergencyModule extends AbstractModule implements LinmotGetLi
 
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(isEmergency ? RimoPutEvent.STOP : null);
-  }
-
-  @Override // from LinmotGetListener
-  public void getEvent(LinmotGetEvent linmotGetEvent) {
-    isEmergency |= !linmotGetEvent.isOperational();
-    isEmergency |= !linmotGetEvent.isSafeWindingTemperature1();
-    isEmergency |= !linmotGetEvent.isSafeWindingTemperature2();
+    isBlown |= watchdog.isBlown(); // if status of linmot was not established for a timeout period
+    return Optional.ofNullable(isBlown ? RimoPutEvent.STOP : null); // deactivate throttle
   }
 }

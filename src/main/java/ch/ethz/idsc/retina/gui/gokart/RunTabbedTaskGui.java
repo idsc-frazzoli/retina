@@ -38,13 +38,6 @@ enum RunTabbedTaskGui {
         GokartStatusLcmModule.class, //
         LoggerModule.class //
     ));
-    taskTabGui.tab("fuse", Arrays.asList( //
-        Urg04lxEmergencyModule.class, //
-        MiscEmergencyModule.class, //
-        SteerEmergencyModule.class, //
-        LinmotEmergencyModule.class, //
-        LinmotTakeoverModule.class //
-    ));
     taskTabGui.tab("lab", Arrays.asList( //
         SpyModule.class, //
         ParametersModule.class, //
@@ -54,6 +47,13 @@ enum RunTabbedTaskGui {
         PanoramaViewModule.class, //
         DavisOverviewModule.class, //
         DavisDetailModule.class //
+    ));
+    taskTabGui.tab("fuse", Arrays.asList( //
+        Urg04lxEmergencyModule.class, //
+        MiscEmergencyModule.class, //
+        SteerEmergencyModule.class, //
+        LinmotEmergencyModule.class, //
+        LinmotTakeoverModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
         AutboxProviderModule.class, //
