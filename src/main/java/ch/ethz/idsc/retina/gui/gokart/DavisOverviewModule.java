@@ -21,7 +21,7 @@ public class DavisOverviewModule extends AbstractModule {
   private DavisQuickFrame davisViewerFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler("center");
+  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
 
   @Override
   protected void first() throws Exception {

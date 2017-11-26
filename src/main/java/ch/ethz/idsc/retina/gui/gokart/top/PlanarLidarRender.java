@@ -9,8 +9,9 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** draw polygon */
 class PlanarLidarRender extends LidarRender {
-  private static final Tensor ORIGIN = Tensors.vectorDouble(0, 0);
+  private static final Tensor ORIGIN = Tensors.vectorDouble(0, 0).unmodifiable();
 
   public PlanarLidarRender(Supplier<Tensor> supplier) {
     super(supplier);

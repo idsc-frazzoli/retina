@@ -24,7 +24,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final TimerFrame timerFrame = new TimerFrame();
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Mark8LcmHandler mark8LcmHandler = new Mark8LcmHandler("center");
-  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler("center");
+  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
@@ -35,8 +35,9 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
-      TrigonometryRender trigonometryRender = new TrigonometryRender();
+      TrigonometryRender trigonometryRender = new TrigonometryRender(() -> SensorsConfig.GLOBAL.urg04lx);
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
+      urg04lxLcmHandler.lidarAngularFiringCollector.addListener(trigonometryRender);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {
