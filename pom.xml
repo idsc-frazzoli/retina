@@ -28,8 +28,8 @@
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>owly</artifactId>
-			<version>0.1.0</version>
+			<artifactId>owl</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jchart2d</groupId>

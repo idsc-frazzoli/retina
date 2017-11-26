@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import java.awt.Graphics2D;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

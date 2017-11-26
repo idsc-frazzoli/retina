@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import ch.ethz.idsc.owly.demo.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;

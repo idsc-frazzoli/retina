@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.sys;
 
 import java.util.Date;
 
-import ch.ethz.idsc.owly.demo.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
 
 /** invokes lcm logger binary as Process that records all lcm-messages

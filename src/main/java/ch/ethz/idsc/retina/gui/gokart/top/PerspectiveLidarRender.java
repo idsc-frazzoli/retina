@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;
 import ch.ethz.idsc.tensor.DoubleScalar;

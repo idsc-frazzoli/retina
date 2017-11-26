@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owly.demo.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;

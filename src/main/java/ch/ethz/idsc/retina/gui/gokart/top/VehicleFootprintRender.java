@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
-import ch.ethz.idsc.owl.gui.GeometricLayer;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.core.WheelInterface;
 import ch.ethz.idsc.tensor.Tensor;

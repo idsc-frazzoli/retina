@@ -5,8 +5,8 @@ import java.awt.Color;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.gui.TimerFrame;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
+import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;

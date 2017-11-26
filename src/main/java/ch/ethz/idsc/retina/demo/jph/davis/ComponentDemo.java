@@ -9,7 +9,7 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.owly.demo.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventComponents;
