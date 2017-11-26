@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoJoystickModule;
@@ -52,7 +53,8 @@ enum RunTabbedTaskGui {
         MiscEmergencyModule.class, //
         SteerEmergencyModule.class, //
         LinmotEmergencyModule.class, //
-        LinmotTakeoverModule.class //
+        LinmotTakeoverModule.class, //
+        Urg04lxClearanceModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
         AutboxProviderModule.class, //
