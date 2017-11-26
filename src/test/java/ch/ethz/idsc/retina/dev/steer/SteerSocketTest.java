@@ -7,15 +7,13 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import junit.framework.TestCase;
 
 public class SteerSocketTest extends TestCase {
+  public void testRate() {
+    assertEquals(SteerSocket.INSTANCE.getPeriod(), 20);
+  }
+
   public void testSimple() {
-    try {
-      SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
-      assertTrue(false);
-    } catch (Exception exception) {
-      // ---
-    }
-    SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
-    SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
+    // SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
+    // SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
     SteerPutProvider spp1 = new SteerPutProvider() {
       @Override
       public Optional<SteerPutEvent> putEvent() {

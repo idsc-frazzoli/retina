@@ -5,16 +5,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
+import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
-import ch.ethz.idsc.owly.demo.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owly.demo.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -25,6 +25,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
+/** draw blue lines of prediction of traces of gokart */
 class PathRender implements RenderInterface {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;

@@ -15,7 +15,7 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
 
   @Override
   protected void protected_schedule() {
-    long timestamp = now();
+    long timestamp = now_ms();
     eventUntil(timestamp += 200, new LinmotPutEvent( //
         LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
     eventUntil(timestamp += 200, LinmotPutHelper.OFF_MODE_EVENT);

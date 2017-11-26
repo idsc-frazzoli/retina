@@ -5,10 +5,11 @@ import java.awt.Color;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.gui.TimerFrame;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
+import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;
@@ -21,9 +22,9 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class LocalViewLcmModule extends AbstractModule {
   private final TimerFrame timerFrame = new TimerFrame();
-  private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler("front");
+  private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Mark8LcmHandler mark8LcmHandler = new Mark8LcmHandler("center");
-  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler("center");
+  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
@@ -34,8 +35,9 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
-      TrigonometryRender trigonometryRender = new TrigonometryRender();
+      TrigonometryRender trigonometryRender = new TrigonometryRender(() -> SensorsConfig.GLOBAL.urg04lx);
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
+      urg04lxLcmHandler.lidarAngularFiringCollector.addListener(trigonometryRender);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {

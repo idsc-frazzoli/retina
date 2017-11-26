@@ -36,7 +36,8 @@ public class GokartStatusEvent extends DataEvent {
     return !Float.isNaN(steerColumnEncoder);
   }
 
-  /** @return NaN if steering is not calibrated */
+  /** @return scalar without unit but with interpretation in radians,
+   * NaN if steering is not calibrated */
   public Scalar getSteeringAngle() {
     return UnitSystem.SI().apply( //
         Quantity.of(steerColumnEncoder, SteerPutEvent.UNIT_ENCODER) //

@@ -19,9 +19,15 @@ public abstract class JoystickEvent {
   }
 
   /** @param index of axis
-   * @return value in unit interval [0, 1] */
+   * @return value in interval [-1, 1] */
   protected final double getAxisValue(int index) {
     return _axes[index] / (double) Byte.MAX_VALUE;
+  }
+
+  /** @param index of axis/slider
+   * @return value in the interval [0, 1] */
+  protected final double getSliderValue(int index) {
+    return (getAxisValue(index) + 1) * 0.5;
   }
 
   protected final int getHat(int index) {
@@ -36,7 +42,8 @@ public abstract class JoystickEvent {
     byteBuffer.get(_hats);
   }
 
-  public final String toInfoString() {
+  @Override
+  public String toString() {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(type().name());
     for (int index = 0; index < _axes.length; ++index)

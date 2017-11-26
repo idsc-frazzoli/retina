@@ -1,6 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
+
+/** rank of a {@link PutProvider} in order of priority
+ * 
+ * for instance, messages for calibration have higher precedence than messages for testing */
+@SafetyCritical
 public enum ProviderRank {
   /** not used */
   GODMODE, //
@@ -15,7 +21,8 @@ public enum ProviderRank {
   /** for instance when testing actuators in gui */
   TESTING, //
   /** for instance when lidar detects approaching obstacle
-   * that is too fast to be considered by the path planner */
+   * that is too fast to be considered by the path planner
+   * safety control may override autonomous logic */
   SAFETY, //
   /** path planner */
   AUTONOMOUS, //

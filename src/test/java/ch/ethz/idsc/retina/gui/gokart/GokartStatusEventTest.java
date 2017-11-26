@@ -15,4 +15,11 @@ public class GokartStatusEventTest extends TestCase {
     assertFalse(NumberQ.of(s));
     assertEquals(s.toString(), "NaN");
   }
+
+  public void testUnitless() {
+    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
+    assertTrue(gokartStatusEvent.isSteeringCalibrated());
+    Scalar s = gokartStatusEvent.getSteeringAngle();
+    assertFalse(s instanceof Quantity);
+  }
 }

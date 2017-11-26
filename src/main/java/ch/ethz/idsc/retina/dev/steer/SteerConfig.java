@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.retina.gui.gokart.ConfigurableMarker;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,7 +15,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * there are 2 special units related to the manufacturer of the steering column:
  * "SCE" steer-column encoder
  * "SCT" steer-column torque */
-public class SteerConfig implements Serializable, ConfigurableMarker {
+public class SteerConfig implements Serializable {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
 
   private SteerConfig() {

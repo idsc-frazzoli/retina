@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.dev.rimo;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
@@ -10,15 +9,13 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 
 public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
-  public static final RimoSocket INSTANCE = new RimoSocket();
-  // ---
   private static final int LOCAL_PORT = 5000;
-  // ---
   private static final int REMOTE_PORT = 5000;
-  private static final String REMOTE_ADDRESS = AutoboxDevice.REMOTE_ADDRESS;
   // ---
-  static final int SEND_PERIOD_MS = 20;
+  /** the communication rate affects the torque PI control */
+  private static final int SEND_PERIOD_MS = 20; // 50[Hz]
   // ---
+  public static final RimoSocket INSTANCE = new RimoSocket();
 
   private RimoSocket() {
     super(RimoGetEvent.LENGTH, LOCAL_PORT);
@@ -38,7 +35,6 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
 
   @Override
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
-    return new DatagramPacket(data, data.length, //
-        InetAddress.getByName(REMOTE_ADDRESS), REMOTE_PORT);
+    return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }
 }

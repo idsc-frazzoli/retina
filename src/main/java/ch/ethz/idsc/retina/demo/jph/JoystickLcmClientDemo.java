@@ -1,25 +1,24 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import java.util.Optional;
+
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 
 public enum JoystickLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    JoystickLcmClient joystickLcmClient = JoystickLcmClient.any();
-    joystickLcmClient.addListener(joystickEvent -> {
-      System.out.println(joystickEvent.toInfoString());
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
-      gokartJoystickInterface.hashCode();
-      // System.out.print("L-knob R=" +
-      // genericXboxPadJoystick.getLeftKnobDirectionRight() + " ");
-      // System.out.print("slider L=" +
-      // genericXboxPadJoystick.getLeftSliderUnitValue() + " ");
-      // System.out.print("button A=" + genericXboxPadJoystick.getLeftSliderUnitValue() + " ");
-      // System.out.println();
-    });
+    JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
     joystickLcmClient.startSubscriptions();
-    Thread.sleep(10000);
+    for (int index = 0; index < 50; ++index) {
+      Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+      if (optional.isPresent())
+        System.out.println(optional.get());
+      Thread.sleep(250);
+    }
+    joystickLcmClient.stopSubscriptions();
+    System.out.println("end");
   }
 }

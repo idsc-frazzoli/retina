@@ -30,4 +30,21 @@ public class ProviderRankTest extends TestCase {
     // fails without arraylist
     assertEquals(new ArrayList<>(csls), Arrays.asList(0, 2, 5, 10));
   }
+
+  public void testMorePriority() {
+    Queue<ProviderRank> queue = new PriorityQueue<>();
+    queue.add(ProviderRank.CALIBRATION);
+    queue.add(ProviderRank.TESTING);
+    queue.add(ProviderRank.MANUAL);
+    queue.add(ProviderRank.EMERGENCY);
+    queue.add(ProviderRank.FALLBACK);
+    queue.add(ProviderRank.GODMODE);
+    // System.out.println(new ArrayList<>(queue));
+    assertEquals(queue.poll(), ProviderRank.GODMODE);
+    assertEquals(queue.poll(), ProviderRank.EMERGENCY);
+    assertEquals(queue.poll(), ProviderRank.CALIBRATION);
+    assertEquals(queue.poll(), ProviderRank.MANUAL);
+    assertEquals(queue.poll(), ProviderRank.TESTING);
+    assertEquals(queue.poll(), ProviderRank.FALLBACK);
+  }
 }

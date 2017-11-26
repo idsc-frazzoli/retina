@@ -7,6 +7,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Cos;
 import junit.framework.TestCase;
@@ -53,6 +55,32 @@ public class DifferentialSpeedTest extends TestCase {
       assertTrue(Scalars.lessThan(tireL, tireR));
       Tensor pair = tireRearL.pair(speed, angle);
       assertEquals(pair, Tensors.of(tireL, tireR));
+    }
+    {
+      Scalar angle = RealScalar.of(-0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireR, tireL));
+      Tensor pair = tireRearL.pair(speed, angle);
+      assertEquals(pair, Tensors.of(tireL, tireR));
+    }
+  }
+
+  public void testQuantityPairRadians() {
+    Scalar y_offset = Quantity.of(0.5, "m");
+    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    Scalar speed = Quantity.of(+4.0, "rad*s^-1");
+    {
+      Scalar angle = RealScalar.of(+0.3);
+      Scalar tireL = tireRearL.get(speed, angle);
+      Scalar tireR = tireRearR.get(speed, angle);
+      assertTrue(Scalars.lessThan(tireL, tireR));
+      Tensor pair = tireRearL.pair(speed, angle);
+      // System.out.println(pair);
+      assertEquals(pair, Tensors.of(tireL, tireR));
+      assertEquals(Units.of(pair.Get(0)), Unit.of("rad*s^-1"));
+      assertEquals(Units.of(pair.Get(1)), Unit.of("rad*s^-1"));
     }
     {
       Scalar angle = RealScalar.of(-0.3);

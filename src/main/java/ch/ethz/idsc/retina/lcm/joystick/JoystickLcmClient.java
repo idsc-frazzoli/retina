@@ -4,74 +4,57 @@ package ch.ethz.idsc.retina.lcm.joystick;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
+import lcm.lcm.SubscriptionRecord;
 
 public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
-  /** @return */
-  public static JoystickLcmClient any() {
-    return new JoystickLcmClient("*");
-  }
-
+  private static final int TIMEOUT_MS = 200;
   // ---
-  private final List<JoystickListener> listeners = new CopyOnWriteArrayList<>();
   private final String pattern;
-  private final Set<String> set = new HashSet<>();
+  private SubscriptionRecord subscriptionRecord;
 
-  /** @param pattern for instance "generic_xbox_pad" or "*" for all */
+  /** @param pattern for instance "generic_xbox_pad" */
   public JoystickLcmClient(String pattern) {
     this.pattern = pattern;
   }
 
-  public void addListener(JoystickListener joystickListener) {
-    listeners.add(joystickListener);
-  }
-
-  public void removeListener(JoystickListener joystickListener) {
-    boolean removed = listeners.remove(joystickListener);
-    if (!removed)
-      System.err.println("joystick not found.");
-  }
-
   @Override
   public void startSubscriptions() {
-    LCM.getSingleton().subscribe(_name(), this);
+    subscriptionRecord = LCM.getSingleton().subscribe("joystick." + pattern, this);
   }
 
   @Override
   public void stopSubscriptions() {
-    if (!listeners.isEmpty())
-      System.err.println("warning: listeners still present, yet unsubscribe");
-    LCM.getSingleton().unsubscribe(_name(), this);
+    if (Objects.nonNull(subscriptionRecord))
+      LCM.getSingleton().unsubscribe(subscriptionRecord);
   }
 
-  private String _name() {
-    return "joystick." + pattern;
-  }
+  private long timeStamp = 0;
+  private JoystickEvent joystickEvent = null;
 
   @Override
   public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-    set.add(channel);
-    if (set.size() == 1)
-      try {
-        BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
-        ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-        listeners.forEach(listener -> listener.joystick(joystickEvent));
-      } catch (IOException exception) {
-        exception.printStackTrace();
-      }
+    try {
+      BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
+      ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+      joystickEvent = JoystickDecoder.decode(byteBuffer);
+      timeStamp = System.currentTimeMillis();
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public Optional<JoystickEvent> getJoystick() {
+    return Optional.ofNullable(System.currentTimeMillis() < timeStamp + TIMEOUT_MS ? joystickEvent : null);
   }
 }

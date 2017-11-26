@@ -22,6 +22,8 @@ public class RimoRateControllerWrap implements RimoGetListener {
     this.rimoGetEvent = rimoGetEvent;
   }
 
+  /** @param pair vector of length == 2 with desired angular rates on the left and right rear wheel
+   * @return */
   public Optional<RimoPutEvent> iterate(Tensor pair) {
     if (Objects.nonNull(rimoGetEvent))
       try {

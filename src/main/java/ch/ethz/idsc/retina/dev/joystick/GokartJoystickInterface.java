@@ -1,43 +1,26 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.tensor.Tensor;
+
 /** interface implemented by a {@link JoystickEvent}
- * to qualify for controlling a gokart like robot */
-// TODO duplicate interface and rename functions to functionalNames: "forwardSpeed", turnAngle()...
+ * to qualify for controlling a gokart like robot
+ * 
+ * two modes are supported:
+ * 1) simple drive
+ * 2) full control */
 public interface GokartJoystickInterface {
-  /** value is 1.0 if left knob is pulled towards user value is -1.0 if left knob
-   * is pushed away from user
+  /** positive value is interpreted as ccw rotation
    * 
-   * @return values in the unit interval [0, 1] */
-  double getLeftKnobDirectionDown();
+   * @return value in the interval [-1, 1] */
+  double getSteerLeft();
 
-  /** value is 1.0 if left knob is pushed away from user value is -1.0 if left knob
-   * is pulled towards user
-   * 
-   * @return values in the unit interval [0, 1] */
-  double getLeftKnobDirectionUp();
+  /** @return double in the interval [0, 1] */
+  double getBreakStrength();
 
-  /** value is 1.0 if left knob is held to the far right value is -1.0 if left knob
-   * is held to the far left
-   * 
-   * @return values in the unit interval [0, 1] */
-  double getLeftKnobDirectionRight();
+  /** @return double in the interval [-1, 1] */
+  double getAheadAverage();
 
-  double getRightKnobDirectionRight();
-
-  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
-   * the way
-   * 
-   * @return value in the unit interval [0,1] */
-  double getLeftSliderUnitValue();
-
-  /** value is 0.0 if slider is passive, and 1.0 if slider is pressed inwards all
-   * the way
-   * 
-   * @return value in the unit interval [0,1] */
-  double getRightSliderUnitValue();
-
-  boolean isButtonPressedBack();
-
-  boolean isButtonPressedStart();
+  /** @return vector with length 2 */
+  Tensor getAheadPair_Unit();
 }

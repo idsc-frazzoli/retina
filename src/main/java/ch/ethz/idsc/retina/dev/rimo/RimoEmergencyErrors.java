@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public enum RimoEmergencyErrors {
+/* package */ enum RimoEmergencyErrors {
   INSTANCE;
   // ---
   private final Map<Short, RimoEmergencyError> map = new HashMap<>();

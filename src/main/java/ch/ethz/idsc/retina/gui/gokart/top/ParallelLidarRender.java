@@ -8,7 +8,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owl.gui.GeometricLayer;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

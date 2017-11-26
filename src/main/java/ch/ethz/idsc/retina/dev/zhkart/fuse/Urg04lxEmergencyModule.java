@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -9,16 +9,18 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if front lidar is not operational */
-public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
-  private static final int WATCHDOG_MS = 500; // 500[ms]
+public final class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
+  private static final int WATCHDOG_MS = 400; // 400[ms]
   // ---
-  private final Urg04lxLcmClient urg04lxLcmClient = new Urg04lxLcmClient("front");
-  private final TimedFuse timedFuse = new TimedFuse(WATCHDOG_MS * 1e-3);
+  private final Urg04lxLcmClient urg04lxLcmClient = //
+      new Urg04lxLcmClient(GokartLcmChannel.URG04LX_FRONT);
+  private final Watchdog watchdog = new Watchdog(WATCHDOG_MS * 1e-3);
 
   @Override
   protected void first() throws Exception {
@@ -34,9 +36,9 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
     urg04lxLcmClient.stopSubscriptions();
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
-    timedFuse.register(false);
+    watchdog.pacify(); // <- at nominal rate the watchdog is notified every 100[ms]
   }
 
   @Override
@@ -44,6 +46,7 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
     // ---
   }
 
+  /***************************************************/
   @Override
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
@@ -51,7 +54,6 @@ public class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDa
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    timedFuse.register(true);
-    return timedFuse.isBlown() ? Optional.of(RimoPutEvent.STOP) : Optional.empty();
+    return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.PASSIVE : null);
   }
 }

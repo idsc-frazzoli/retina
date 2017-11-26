@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.4.3</version>
+			<version>0.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
@@ -28,14 +28,11 @@
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>owly</artifactId>
-			<version>0.1.0</version>
+			<artifactId>owl</artifactId>
+			<version>0.0.1</version>
 		</dependency>
-		<dependency>
-			<groupId>net.sf.jchart2d</groupId>
-			<artifactId>jchart2d</artifactId>
-			<version>3.3.2</version>
-		</dependency>
+		<!-- <dependency> <groupId>net.sf.jchart2d</groupId> <artifactId>jchart2d</artifactId> 
+			<version>3.3.2</version> </dependency> -->
 		<!-- <dependency> <groupId>org.tensorflow</groupId> <artifactId>tensorflow</artifactId> 
 			<version>1.3.0</version> </dependency> -->
 		<dependency>
@@ -64,8 +61,8 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>owly-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/owly/mvn-repo/</url>
+			<id>owl-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/owl/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

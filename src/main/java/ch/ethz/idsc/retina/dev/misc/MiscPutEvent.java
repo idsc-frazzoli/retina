@@ -9,6 +9,9 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 public class MiscPutEvent extends DataEvent {
   private static final int LENGTH = 6;
   // ---
+  /** table of values for resetConnection:
+   * 0 - for normal operation
+   * 1 - to acknowledge communication timeout */
   public byte resetConnection;
   public byte resetRimoL;
   public byte resetRimoR;

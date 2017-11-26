@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 
 public class RimoGetEvent extends DataEvent {
-  public static final int LENGTH = 2 * RimoGetTire.LENGTH;
+  /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH;
   // ---
   public final RimoGetTire getTireL;
   public final RimoGetTire getTireR;

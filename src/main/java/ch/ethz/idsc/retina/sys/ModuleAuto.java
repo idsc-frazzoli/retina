@@ -17,9 +17,8 @@ import java.util.Map;
  * This should be reliable as if the main fails... (it will never happen). */
 public enum ModuleAuto {
   INSTANCE;
-  // Maps for holding the module list
+  /** map for holding the module list */
   private Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
-  private Map<Class<?>, AbstractModule> watchList = new LinkedHashMap<>();
 
   /** Methods for launching the modules */
   public void runAll(List<Class<?>> modules) {
@@ -49,27 +48,17 @@ public enum ModuleAuto {
       System.out.println(new Date() + " Module Auto: Launching: " + module);
       instance.launch();
       moduleMap.put(module, instance);
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 
   public void terminateOne(Class<?> module) {
-    if (watchList.containsKey(module))
-      watchList.remove(module);
     if (moduleMap.containsKey(module)) {
       AbstractModule abstractModule = moduleMap.get(module);
       moduleMap.remove(module);
       System.out.println(new Date() + " Module Auto: Terminating: " + module);
       abstractModule.terminate();
     }
-  }
-
-  public void watch(Class<?> module, AbstractModule abstractModule) {
-    if (watchList.containsKey(module)) {
-      System.out.println(new Date() + " Module Auto: Already watching: " + module);
-      return;
-    }
-    watchList.put(module, abstractModule);
   }
 }

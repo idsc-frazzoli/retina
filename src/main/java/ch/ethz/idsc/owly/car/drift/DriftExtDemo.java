@@ -15,7 +15,7 @@ import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.gui.ani.OwlyGui;
+import ch.ethz.idsc.owl.gui.win.OwlyGui;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owl.math.region.HyperplaneRegion;
@@ -67,7 +67,7 @@ enum DriftExtDemo {
       for (GlcNode node : trajectory) {
         if (!node.isRoot())
           System.out.println(node.flow().getU());
-        System.out.println(node.stateTime().toCompactString());
+        System.out.println(node.stateTime().toInfoString());
         glcNodeExport.append(node);
       }
       // StateTimeTrajectories.print(trajectory);

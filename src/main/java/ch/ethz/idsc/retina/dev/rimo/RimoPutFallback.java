@@ -15,6 +15,6 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.of(RimoPutEvent.STOP);
+    return Optional.of(RimoPutEvent.PASSIVE);
   }
 }

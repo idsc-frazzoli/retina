@@ -7,9 +7,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.gui.GeometricLayer;
 import ch.ethz.idsc.owl.gui.ani.AbstractEntity;
 import ch.ethz.idsc.owl.gui.ani.PlannerType;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.flow.Integrator;
 import ch.ethz.idsc.owl.math.flow.RungeKutta4Integrator;
 import ch.ethz.idsc.owl.math.map.Se2Utils;

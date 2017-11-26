@@ -5,6 +5,8 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 
+/** system specific customization
+ * for instance safety thresholds, and control parameters */
 public enum AppResources {
   ;
   private static final File DIRECTORY = new File("resources", "properties");

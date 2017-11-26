@@ -4,9 +4,14 @@ package ch.ethz.idsc.retina.dev.steer;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** controller is specific for steering on gokart */
+/** IMPLEMENTATION CONTAINS INITIAL DRAFT FOR STEERING CONTROL ON GOKART
+ * 
+ * THE IMPLEMENTATION IS SUPERSEEDED BY PID CONTROLLER IN
+ * {@link SteerPositionControl}
+ * 
+ * controller is specific for steering on gokart */
 /* package */ class SteerSimplePositionControl {
-  private static final Scalar DT = Quantity.of(SteerSocket.SEND_PERIOD_MS * 1e-3, "s");
+  private static final Scalar DT = Quantity.of(SteerSocket.INSTANCE.getPeriod() * 1e-3, "s");
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);

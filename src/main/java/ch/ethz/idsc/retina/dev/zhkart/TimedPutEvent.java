@@ -1,7 +1,8 @@
 // code by nisaak and jph
 package ch.ethz.idsc.retina.dev.zhkart;
 
-public class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
+/** message in schedule of calibration procedure */
+/* package */ class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
   public final long time_ms;
   public final T putEvent;
 

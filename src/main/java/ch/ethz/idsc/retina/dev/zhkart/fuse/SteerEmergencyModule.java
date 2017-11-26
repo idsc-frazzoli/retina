@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
 import java.util.Optional;
 
@@ -10,8 +10,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** sends stop command if steer angle is not calibrated or tracking is unhealthy */
-public class SteerEmergencyModule extends AbstractModule implements RimoPutProvider {
+/** sends stop command as soon as steer angle is not calibrated or steer angle tracking is unhealthy */
+public final class SteerEmergencyModule extends AbstractModule implements RimoPutProvider {
+  private boolean isBlown = false;
+
   @Override
   protected void first() throws Exception {
     RimoSocket.INSTANCE.addPutProvider(this);
@@ -22,6 +24,7 @@ public class SteerEmergencyModule extends AbstractModule implements RimoPutProvi
     RimoSocket.INSTANCE.removePutProvider(this);
   }
 
+  /***************************************************/
   @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
@@ -29,8 +32,7 @@ public class SteerEmergencyModule extends AbstractModule implements RimoPutProvi
 
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    boolean isCalibratedAndHealthy = //
-        SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
-    return Optional.ofNullable(isCalibratedAndHealthy ? null : RimoPutEvent.STOP);
+    isBlown |= !SteerSocket.INSTANCE.getSteerColumnTracker().isCalibratedAndHealthy();
+    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null); // deactivate throttle
   }
 }

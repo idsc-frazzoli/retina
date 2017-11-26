@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Hdl32eLcmServerModule;
@@ -39,8 +44,6 @@ enum RunTaskGui {
     modules.add(AutoboxLcmServerModule.class);
     modules.add(AutoboxSocketModule.class);
     modules.add(AutoboxTestingModule.class);
-    modules.add(JoystickSimpleDriveModule.class);
-    modules.add(JoystickFullControlModule.class);
     // ---
     modules.add(GokartStatusLcmModule.class);
     // ---

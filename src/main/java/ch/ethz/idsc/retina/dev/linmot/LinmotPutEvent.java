@@ -20,8 +20,8 @@ public class LinmotPutEvent extends DataEvent {
   public short deceleration;
 
   public LinmotPutEvent(Word control, Word motion) {
-    this.control_word = control.getShort();
-    this.motion_cmd_hdr = motion.getShort();
+    control_word = control.getShort();
+    motion_cmd_hdr = motion.getShort();
   }
 
   /** @param byteBuffer
