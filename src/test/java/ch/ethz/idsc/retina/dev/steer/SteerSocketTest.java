@@ -12,8 +12,8 @@ public class SteerSocketTest extends TestCase {
   }
 
   public void testSimple() {
-    SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
-    SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
+    // SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
+    // SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
     SteerPutProvider spp1 = new SteerPutProvider() {
       @Override
       public Optional<SteerPutEvent> putEvent() {

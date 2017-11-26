@@ -67,7 +67,7 @@ enum DriftExtDemo {
       for (GlcNode node : trajectory) {
         if (!node.isRoot())
           System.out.println(node.flow().getU());
-        System.out.println(node.stateTime().toCompactString());
+        System.out.println(node.stateTime().toInfoString());
         glcNodeExport.append(node);
       }
       // StateTimeTrajectories.print(trajectory);
