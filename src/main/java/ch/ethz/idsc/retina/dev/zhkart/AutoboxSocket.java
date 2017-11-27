@@ -87,8 +87,14 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   }
 
   public final String getPutProviderDesc() {
-    if (Objects.nonNull(putProviderActive))
-      return putProviderActive.getClass().getSimpleName();
+    if (Objects.nonNull(putProviderActive)) {
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append("p=" + providers.size() + " ");
+      stringBuilder.append("g=" + getListeners.size() + " ");
+      stringBuilder.append("p=" + putListeners.size() + " ");
+      stringBuilder.append(putProviderActive.getClass().getSimpleName());
+      return stringBuilder.toString();
+    }
     return "<null>";
   }
 
