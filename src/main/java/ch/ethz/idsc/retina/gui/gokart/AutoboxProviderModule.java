@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-public class AutboxProviderModule extends AbstractModule {
+public class AutoboxProviderModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());

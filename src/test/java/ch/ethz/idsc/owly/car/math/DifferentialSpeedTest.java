@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owly.car.math;
 
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -140,6 +141,15 @@ public class DifferentialSpeedTest extends TestCase {
     assertTrue(Chop._10.close(ds.get(v.divide(Cos.FUNCTION.apply(beta)), beta), RealScalar.of(4.515560416016039)));
     assertEquals(ds.get(v, RealScalar.ZERO), v);
     assertTrue(Chop._10.close(ds.get(v.divide(Cos.FUNCTION.apply(beta)), beta.negate()), RealScalar.of(3.4844395839839613)));
+  }
+
+  public void testSome() {
+    Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, RealScalar.of(0.1));
+    // System.out.println(pair_unit);
+    Tensor pair_meas = Tensors.vector(0.9497016064634988, 1.040306724092553);
+    // Scalar speed =
+    pair_meas.dot(pair_unit).Get().multiply(RealScalar.of(0.5));
+    // System.out.println(speed);
   }
 
   public void testFail() {

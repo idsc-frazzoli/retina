@@ -13,14 +13,6 @@ import ch.ethz.idsc.tensor.sca.Sin;
 /** class determines the no-slip velocity for tires at an offset from the center of
  * the rear axis depending on the steering angle of the tires at the front axis */
 public class DifferentialSpeed {
-  public static DifferentialSpeed fromSI(Scalar x_front, Scalar y_offset) {
-    return new DifferentialSpeed( //
-        UnitSystem.SI().apply(x_front), //
-        UnitSystem.SI().apply(y_offset));
-  }
-
-  private final Scalar factor;
-
   /** Diagram:
    * 
    * -- y_offset [positive]
@@ -33,11 +25,18 @@ public class DifferentialSpeed {
    * 
    * @param x_front non-zero distance from rear to front axis
    * @param y_offset distance from center of rear axis to tire */
-  private DifferentialSpeed(Scalar x_front, Scalar y_offset) {
+  public static DifferentialSpeed fromSI(Scalar x_front, Scalar y_offset) {
     if (Scalars.isZero(x_front))
       throw TensorRuntimeException.of(x_front, y_offset);
-    // TODO refactor: take 1 constructor with factor, all other creators public static
-    factor = y_offset.divide(x_front);
+    return new DifferentialSpeed(UnitSystem.SI().apply(y_offset.divide(x_front)));
+  }
+
+  /***************************************************/
+  private final Scalar factor;
+
+  /** @param factor unitless */
+  private DifferentialSpeed(Scalar factor) {
+    this.factor = factor;
   }
 
   /** @param speed of vehicle at center of front axis along the direction of steering
@@ -52,7 +51,7 @@ public class DifferentialSpeed {
   /** computes speed for two tires the second of which is at a location mirrored
    * along the x-axis from the first tire.
    * 
-   * @param speed
+   * @param speed may be a Quantity with unit
    * @param angle
    * @return */
   public Tensor pair(Scalar speed, Scalar angle) {

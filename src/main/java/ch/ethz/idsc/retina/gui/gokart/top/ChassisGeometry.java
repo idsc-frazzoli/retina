@@ -53,6 +53,6 @@ public class ChassisGeometry implements Serializable {
   }
 
   public DifferentialSpeed getDifferentialSpeed() {
-    return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRear);
+    return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRearMeter());
   }
 }
