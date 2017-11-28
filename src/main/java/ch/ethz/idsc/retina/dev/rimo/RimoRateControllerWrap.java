@@ -48,7 +48,7 @@ public class RimoRateControllerWrap implements RimoGetListener {
             new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
         ));
       } catch (Exception exception) {
-        System.err.println(exception.getMessage());
+        System.err.println("" + exception.getMessage()); // message may be null
       }
     return Optional.empty();
   }

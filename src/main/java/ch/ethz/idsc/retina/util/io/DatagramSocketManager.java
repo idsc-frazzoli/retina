@@ -60,6 +60,7 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
   }
 
   // ---
+  private static final String SOCKET_CLOSED = "Socket closed";
   /** bytes for reception of data */
   private final byte[] bytes;
   private final List<ByteArrayConsumer> listeners = new LinkedList<>();
@@ -89,9 +90,9 @@ public abstract class DatagramSocketManager implements StartAndStoppable {
                 listeners.forEach(listener -> listener.accept(bytes, datagramPacket.getLength()));
               }
             } catch (Exception exception) {
-              String message = exception.getMessage();
-              if (!message.equals("Socket closed"))
-                System.err.println(message);
+              String message = exception.getMessage(); // message may be null
+              if (Objects.isNull(message) || !SOCKET_CLOSED.equals(message))
+                exception.printStackTrace();
             }
           }
         };
