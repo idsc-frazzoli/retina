@@ -83,22 +83,22 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         }
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
-    }, 70, getPeriod());
+    }, 70, getPeriod_ms());
   }
 
   public final String getPutProviderDesc() {
-    if (Objects.nonNull(putProviderActive)) {
-      StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append("p=" + providers.size() + " ");
-      stringBuilder.append("g=" + getListeners.size() + " ");
-      stringBuilder.append("p=" + putListeners.size() + " ");
-      stringBuilder.append(putProviderActive.getClass().getSimpleName());
-      return stringBuilder.toString();
-    }
-    return "<null>";
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("p=" + providers.size() + " ");
+    stringBuilder.append("g=" + getListeners.size() + " ");
+    stringBuilder.append("p=" + putListeners.size() + " ");
+    stringBuilder.append(Objects.nonNull(putProviderActive) //
+        ? putProviderActive.getClass().getSimpleName()
+        : "<null>");
+    return stringBuilder.toString();
   }
 
-  protected abstract long getPeriod();
+  /** @return period between two successive commands issued to the microautobox */
+  protected abstract long getPeriod_ms();
 
   protected abstract DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException;
 

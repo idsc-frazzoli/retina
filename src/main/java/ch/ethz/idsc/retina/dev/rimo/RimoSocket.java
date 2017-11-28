@@ -29,7 +29,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   }
 
   @Override
-  protected long getPeriod() {
+  protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 

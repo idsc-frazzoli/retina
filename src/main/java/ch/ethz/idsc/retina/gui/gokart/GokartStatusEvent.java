@@ -48,7 +48,8 @@ public class GokartStatusEvent extends DataEvent implements SteerColumnInterface
   }
 
   /** @return scalar without unit but with interpretation in radians,
-   * NaN if steering is not calibrated */
+   * NaN if steering is not calibrated
+   * @throws Exception if {@link #isSteerColumnCalibrated()} returns false */
   public Scalar getSteeringAngle() {
     return UnitSystem.SI().apply( //
         getSteerColumnEncoderCentered().multiply(SteerConfig.GLOBAL.column2steer));

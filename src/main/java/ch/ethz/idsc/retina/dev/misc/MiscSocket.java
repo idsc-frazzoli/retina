@@ -28,7 +28,7 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   }
 
   @Override
-  protected long getPeriod() {
+  protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 

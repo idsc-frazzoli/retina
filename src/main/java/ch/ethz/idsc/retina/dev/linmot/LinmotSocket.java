@@ -30,7 +30,7 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
   }
 
   @Override
-  protected long getPeriod() {
+  protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 

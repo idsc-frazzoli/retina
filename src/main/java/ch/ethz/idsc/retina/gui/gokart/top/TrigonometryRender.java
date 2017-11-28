@@ -41,7 +41,7 @@ class TrigonometryRender extends LidarRender {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // TODO this could easily be unit
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
-      final Scalar angle = gokartStatusEvent.getSteeringAngle();
+      final Scalar angle = gokartStatusEvent.getSteeringAngle(); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(XAD, angle);
       final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
       double xar = XAR.number().doubleValue();

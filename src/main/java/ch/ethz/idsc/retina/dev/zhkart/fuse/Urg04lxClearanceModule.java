@@ -57,7 +57,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements Lida
       final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
       final int position = floatBuffer.position();
       int size = lidarRayBlockEvent.size();
-      Scalar angle = gokartStatusEvent.getSteeringAngle();
+      Scalar angle = gokartStatusEvent.getSteeringAngle(); // <- calibration checked
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       Clip clip = Clip.function(half.negate(), half);
       Tensor u = Tensors.of(RealScalar.ONE, RealScalar.ZERO, angle); // TODO replace by actual speed
