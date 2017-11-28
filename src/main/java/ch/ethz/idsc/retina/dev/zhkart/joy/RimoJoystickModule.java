@@ -55,7 +55,7 @@ public class RimoJoystickModule extends AbstractModule implements RimoPutProvide
       Scalar axisDelta = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
       Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRearMeter();
       DifferentialSpeed differentialSpeed = new DifferentialSpeed(axisDelta, yTireRear);
-      Scalar theta = SteerConfig.getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
+      Scalar theta = SteerConfig.getAngleFromSCE(steerColumnInterface);
       Tensor pair = differentialSpeed.pair(speed, theta);
       Tensor bias = joystick.getAheadPair_Unit().multiply(RimoConfig.GLOBAL.rateLimit);
       return rimoRateControllerWrap.iterate(pair.add(bias));

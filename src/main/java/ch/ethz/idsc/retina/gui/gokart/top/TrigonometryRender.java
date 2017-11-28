@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owly.car.math.TurningGeometry;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -41,7 +42,7 @@ class TrigonometryRender extends LidarRender {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // TODO this could easily be unit
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
-      final Scalar angle = gokartStatusEvent.getSteeringAngle(); // <- calibration checked
+      final Scalar angle = SteerConfig.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(XAD, angle);
       final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
       double xar = XAR.number().doubleValue();

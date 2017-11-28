@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -67,7 +68,7 @@ public class GokartRender implements RenderInterface {
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = gokartStatusEvent.getSteeringAngle(); // <- calibration checked
+      Scalar angle = SteerConfig.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Tensor pair = new AckermannSteering( //
           ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
           ChassisGeometry.GLOBAL.yTireFrontMeter()).pair(angle);

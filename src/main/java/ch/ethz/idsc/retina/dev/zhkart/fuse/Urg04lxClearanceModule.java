@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
@@ -57,7 +58,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements Lida
       final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
       final int position = floatBuffer.position();
       int size = lidarRayBlockEvent.size();
-      Scalar angle = gokartStatusEvent.getSteeringAngle(); // <- calibration checked
+      Scalar angle = SteerConfig.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       Clip clip = Clip.function(half.negate(), half);
       Tensor u = Tensors.of(RealScalar.ONE, RealScalar.ZERO, angle); // TODO replace by actual speed
