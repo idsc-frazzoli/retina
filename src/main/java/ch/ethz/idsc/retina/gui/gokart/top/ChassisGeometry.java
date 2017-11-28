@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -49,5 +50,9 @@ public class ChassisGeometry implements Serializable {
 
   public Scalar yTireFrontMeter() {
     return TOMETER.apply(yTireFront);
+  }
+
+  public DifferentialSpeed getDifferentialSpeed() {
+    return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRear);
   }
 }

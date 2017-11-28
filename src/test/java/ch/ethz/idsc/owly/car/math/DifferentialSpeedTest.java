@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 public class DifferentialSpeedTest extends TestCase {
   public void testSimple() {
-    DifferentialSpeed ds = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(.5));
+    DifferentialSpeed ds = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(.5));
     Scalar speed = RealScalar.of(+4.0);
     Scalar angle = RealScalar.of(+0.3);
     // confirmed with mathematica
@@ -26,8 +26,8 @@ public class DifferentialSpeedTest extends TestCase {
 
   public void testQuantityForward() {
     Scalar y_offset = Quantity.of(0.5, "m");
-    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
-    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    DifferentialSpeed tireRearL = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset.negate());
     Scalar speed = Quantity.of(+4.0, "m*s^-1");
     {
       Scalar angle = RealScalar.of(+0.3);
@@ -45,8 +45,8 @@ public class DifferentialSpeedTest extends TestCase {
 
   public void testQuantityPair() {
     Scalar y_offset = Quantity.of(0.5, "m");
-    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
-    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    DifferentialSpeed tireRearL = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset.negate());
     Scalar speed = Quantity.of(+4.0, "m*s^-1");
     {
       Scalar angle = RealScalar.of(+0.3);
@@ -68,8 +68,8 @@ public class DifferentialSpeedTest extends TestCase {
 
   public void testQuantityPairRadians() {
     Scalar y_offset = Quantity.of(0.5, "m");
-    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
-    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    DifferentialSpeed tireRearL = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset.negate());
     Scalar speed = Quantity.of(+4.0, "rad*s^-1");
     {
       Scalar angle = RealScalar.of(+0.3);
@@ -94,8 +94,8 @@ public class DifferentialSpeedTest extends TestCase {
 
   public void testQuantityReverse() {
     Scalar y_offset = Quantity.of(0.5, "m");
-    DifferentialSpeed tireRearL = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset);
-    DifferentialSpeed tireRearR = new DifferentialSpeed(Quantity.of(1.2, "m"), y_offset.negate());
+    DifferentialSpeed tireRearL = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset);
+    DifferentialSpeed tireRearR = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset.negate());
     Scalar speed = Quantity.of(-4.0, "m*s^-1");
     {
       Scalar angle = RealScalar.of(+0.3);
@@ -112,8 +112,8 @@ public class DifferentialSpeedTest extends TestCase {
   }
 
   public void testStraight() {
-    DifferentialSpeed dsL = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(+.5));
-    DifferentialSpeed dsR = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-.5));
+    DifferentialSpeed dsL = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(+.5));
+    DifferentialSpeed dsR = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(-.5));
     Scalar v = RealScalar.of(-4);
     Scalar beta = RealScalar.ZERO;
     Scalar rL = dsL.get(v, beta);
@@ -123,8 +123,8 @@ public class DifferentialSpeedTest extends TestCase {
   }
 
   public void testOrthogonal() {
-    DifferentialSpeed dsL = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(+.5));
-    DifferentialSpeed dsR = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-.5));
+    DifferentialSpeed dsL = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(+.5));
+    DifferentialSpeed dsR = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(-.5));
     Scalar v = RealScalar.of(4);
     Scalar beta = RealScalar.of(Math.PI / 2);
     Scalar rL = dsL.get(v, beta);
@@ -133,7 +133,7 @@ public class DifferentialSpeedTest extends TestCase {
   }
 
   public void testInverted() {
-    DifferentialSpeed ds = new DifferentialSpeed(RealScalar.of(1.2), RealScalar.of(-.5));
+    DifferentialSpeed ds = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(-.5));
     Scalar v = RealScalar.of(4);
     Scalar beta = RealScalar.of(+.3);
     // confirmed with mathematica
@@ -144,7 +144,7 @@ public class DifferentialSpeedTest extends TestCase {
 
   public void testFail() {
     try {
-      new DifferentialSpeed(RealScalar.of(0.0), RealScalar.of(.5));
+      DifferentialSpeed.fromSI(RealScalar.of(0.0), RealScalar.of(.5));
       assertTrue(false);
     } catch (Exception exception) {
       // ---
