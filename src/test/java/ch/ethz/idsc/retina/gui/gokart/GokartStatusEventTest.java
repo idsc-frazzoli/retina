@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 public class GokartStatusEventTest extends TestCase {
   public void testSimple() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(Float.NaN);
-    assertFalse(gokartStatusEvent.isSteeringCalibrated());
+    assertFalse(gokartStatusEvent.isSteerColumnCalibrated());
     Scalar s = gokartStatusEvent.getSteeringAngle();
     assertFalse(s instanceof Quantity);
     assertFalse(NumberQ.of(s));
@@ -18,7 +18,7 @@ public class GokartStatusEventTest extends TestCase {
 
   public void testUnitless() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
-    assertTrue(gokartStatusEvent.isSteeringCalibrated());
+    assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
     Scalar s = gokartStatusEvent.getSteeringAngle();
     assertFalse(s instanceof Quantity);
   }

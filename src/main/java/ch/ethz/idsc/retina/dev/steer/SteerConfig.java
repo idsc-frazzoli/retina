@@ -48,9 +48,10 @@ public class SteerConfig implements Serializable {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 
-  public static Scalar getAngleFromSCE(Scalar steerColumnAngle) {
+  // TODO code redundant to GlobalStatusEvent...
+  public static Scalar getAngleFromSCE(Scalar steerColumnEncoder) {
     return UnitSystem.SI().apply( //
-        Quantity.of(steerColumnAngle, SteerPutEvent.UNIT_ENCODER) //
+        Quantity.of(steerColumnEncoder, SteerPutEvent.UNIT_ENCODER) //
             .multiply(SteerConfig.GLOBAL.column2steer));
   }
 }

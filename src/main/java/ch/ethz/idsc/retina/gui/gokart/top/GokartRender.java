@@ -66,7 +66,7 @@ public class GokartRender implements RenderInterface {
           brakePosition, //
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
+    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = gokartStatusEvent.getSteeringAngle();
       Tensor pair = new AckermannSteering( //
           ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //

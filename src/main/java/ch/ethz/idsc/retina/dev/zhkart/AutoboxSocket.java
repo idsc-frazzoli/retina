@@ -158,13 +158,13 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void addPutProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
-      throw new RuntimeException();
+      new RuntimeException("put provider not added").printStackTrace();
   }
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
     if (!removed)
-      new RuntimeException("provider was not listed").printStackTrace();
+      new RuntimeException("put provider not removed").printStackTrace();
   }
 
   /***************************************************/
@@ -175,7 +175,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void removeGetListener(GetListener<GE> getListener) {
     boolean removed = getListeners.remove(getListener);
     if (!removed)
-      new RuntimeException("listener was not listed").printStackTrace();
+      new RuntimeException("get listener not removed").printStackTrace();
   }
 
   /***************************************************/
@@ -186,6 +186,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void removePutListener(PutListener<PE> putListener) {
     boolean removed = putListeners.remove(putListener);
     if (!removed)
-      new RuntimeException("listener was not listed").printStackTrace();
+      new RuntimeException("put listener not removed").printStackTrace();
   }
 }

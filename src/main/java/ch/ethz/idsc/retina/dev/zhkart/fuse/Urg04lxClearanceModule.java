@@ -53,7 +53,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements Lida
 
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
+    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
       final int position = floatBuffer.position();
       int size = lidarRayBlockEvent.size();

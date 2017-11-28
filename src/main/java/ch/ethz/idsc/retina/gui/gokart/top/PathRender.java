@@ -32,7 +32,7 @@ class PathRender implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
+    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
           Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
       // ---
