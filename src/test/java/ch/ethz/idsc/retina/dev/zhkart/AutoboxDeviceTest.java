@@ -10,4 +10,12 @@ public class AutoboxDeviceTest extends TestCase {
     // System.out.println(AutoboxDevice.REMOTE_INET_ADDRESS);
     assertTrue(Objects.nonNull(AutoboxDevice.REMOTE_INET_ADDRESS)); // "/192.168.1.10"
   }
+
+  public void testNullMessage() {
+    try {
+      throw new RuntimeException((String) null);
+    } catch (RuntimeException e) {
+      // ---
+    }
+  }
 }

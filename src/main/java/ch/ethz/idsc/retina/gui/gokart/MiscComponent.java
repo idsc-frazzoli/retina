@@ -48,7 +48,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
   public MiscComponent() {
     {
       JToolBar jToolBar = createRow("Communication");
-      jButtonCommReset.setEnabled(false);
+      // jButtonCommReset.setEnabled(false); // TODO temporary permission
       jButtonCommReset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -99,7 +99,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {
-    jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout());
+    // jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout()); // TODO temporary permission
     // ---
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
