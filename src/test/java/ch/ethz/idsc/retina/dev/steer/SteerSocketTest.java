@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class SteerSocketTest extends TestCase {
   public void testRate() {
-    assertEquals(SteerSocket.INSTANCE.getPeriod(), 20);
+    assertEquals(SteerSocket.INSTANCE.getPeriod_ms(), 20);
   }
 
   public void testSimple() {
@@ -31,11 +31,11 @@ public class SteerSocketTest extends TestCase {
       }
     };
     SteerSocket.INSTANCE.addPutProvider(spp1);
-    try {
-      SteerSocket.INSTANCE.addPutProvider(spp1);
-    } catch (Exception exception) {
-      // ---
-    }
+    // try {
+    // SteerSocket.INSTANCE.addPutProvider(spp1);
+    // } catch (Exception exception) {
+    // // ---
+    // }
     SteerPutProvider spp2 = new SteerPutProvider() {
       @Override
       public Optional<SteerPutEvent> putEvent() {

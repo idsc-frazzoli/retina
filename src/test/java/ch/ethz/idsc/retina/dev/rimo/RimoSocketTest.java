@@ -5,6 +5,6 @@ import junit.framework.TestCase;
 
 public class RimoSocketTest extends TestCase {
   public void testRate() {
-    assertEquals(RimoSocket.INSTANCE.getPeriod(), 20);
+    assertEquals(RimoSocket.INSTANCE.getPeriod_ms(), 20);
   }
 }

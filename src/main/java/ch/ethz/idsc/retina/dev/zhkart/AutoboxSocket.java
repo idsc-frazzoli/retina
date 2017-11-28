@@ -83,16 +83,22 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         }
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
-    }, 70, getPeriod());
+    }, 70, getPeriod_ms());
   }
 
   public final String getPutProviderDesc() {
-    if (Objects.nonNull(putProviderActive))
-      return putProviderActive.getClass().getSimpleName();
-    return "<null>";
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("p=" + providers.size() + " ");
+    stringBuilder.append("g=" + getListeners.size() + " ");
+    stringBuilder.append("p=" + putListeners.size() + " ");
+    stringBuilder.append(Objects.nonNull(putProviderActive) //
+        ? putProviderActive.getClass().getSimpleName()
+        : "<null>");
+    return stringBuilder.toString();
   }
 
-  protected abstract long getPeriod();
+  /** @return period between two successive commands issued to the microautobox */
+  protected abstract long getPeriod_ms();
 
   protected abstract DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException;
 
@@ -152,13 +158,13 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void addPutProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
-      throw new RuntimeException();
+      new RuntimeException("put provider not added").printStackTrace();
   }
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
     if (!removed)
-      new RuntimeException("provider was not listed").printStackTrace();
+      new RuntimeException("put provider not removed").printStackTrace();
   }
 
   /***************************************************/
@@ -169,7 +175,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void removeGetListener(GetListener<GE> getListener) {
     boolean removed = getListeners.remove(getListener);
     if (!removed)
-      new RuntimeException("listener was not listed").printStackTrace();
+      new RuntimeException("get listener not removed").printStackTrace();
   }
 
   /***************************************************/
@@ -180,6 +186,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void removePutListener(PutListener<PE> putListener) {
     boolean removed = putListeners.remove(putListener);
     if (!removed)
-      new RuntimeException("listener was not listed").printStackTrace();
+      new RuntimeException("put listener not removed").printStackTrace();
   }
 }

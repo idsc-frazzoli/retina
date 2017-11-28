@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * controller is specific for steering on gokart */
 public class SteerPositionControl {
-  private static final Scalar DT = Quantity.of(SteerSocket.INSTANCE.getPeriod() * 1e-3, "s");
+  private static final Scalar DT = Quantity.of(SteerSocket.INSTANCE.getPeriod_ms() * 1e-3, "s");
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);

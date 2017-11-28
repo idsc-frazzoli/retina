@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -32,7 +33,7 @@ class PathRender implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteeringCalibrated()) {
+    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
           Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
       // ---
@@ -40,7 +41,7 @@ class PathRender implements RenderInterface {
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
-      final Scalar angle = gokartStatusEvent.getSteeringAngle();
+      final Scalar angle = SteerConfig.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Sign.isPositive(angle)) {
         p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
         p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -20,33 +21,33 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class SteerJoystickModule extends AbstractModule implements SteerPutProvider {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
-  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl positionController = new SteerPositionControl();
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     joystickLcmClient.startSubscriptions();
     SteerSocket.INSTANCE.addPutProvider(this);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     SteerSocket.INSTANCE.removePutProvider(this);
     joystickLcmClient.stopSubscriptions();
   }
 
   /***************************************************/
-  @Override
+  @Override // from SteerPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.MANUAL;
   }
 
-  @Override
+  @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
     Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
-    if (optional.isPresent() && steerColumnTracker.isCalibrated()) {
+    if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
       GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
-      final Scalar currAngle = steerColumnTracker.getEncoderValueCentered();
+      final Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
       Scalar desPos = RealScalar.of(joystick.getSteerLeft()).multiply(SteerColumnTracker.MAX_SCE);
       final Scalar torqueCmd = //
           positionController.iterate(Quantity.of(desPos.subtract(currAngle), SteerPutEvent.UNIT_ENCODER));

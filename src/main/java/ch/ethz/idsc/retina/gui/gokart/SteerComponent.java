@@ -110,13 +110,13 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public void getEvent(SteerGetEvent steerGetEvent) {
-    final boolean isCalibrated = steerColumnTracker.isCalibrated();
+    final boolean isCalibrated = steerColumnTracker.isSteerColumnCalibrated();
     jToggleController.setEnabled(isCalibrated);
     // ---
     {
       rangeWidth.setText("" + steerColumnTracker.getIntervalWidth());
       String angle = isCalibrated //
-          ? steerColumnTracker.getEncoderValueCentered().toString() //
+          ? steerColumnTracker.getSteerColumnEncoderCentered().toString() //
           : "NOT CALIBRATED";
       rangePos.setText(angle);
     }
@@ -141,8 +141,8 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    if (steerColumnTracker.isCalibrated()) {
-      final Scalar currAngle = steerColumnTracker.getEncoderValueCentered(); // SCE
+    if (steerColumnTracker.isSteerColumnCalibrated()) {
+      final Scalar currAngle = steerColumnTracker.getSteerColumnEncoderCentered(); // SCE
       Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION) //
           .multiply(SteerColumnTracker.MAX_SCE);
       // System.out.println("here " + desPos);

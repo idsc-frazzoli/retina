@@ -34,7 +34,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   }
 
   @Override
-  protected long getPeriod() {
+  protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
@@ -43,6 +43,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
     return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }
 
+  /** @return singleton instance that tracks steer column status */
   public SteerColumnTracker getSteerColumnTracker() {
     return steerColumnTracker;
   }

@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
@@ -9,6 +10,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
   public static final String CHANNEL = "gokart.status.get";
   public static final double PERIOD_S = 0.01;
   // ---
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL);
 
   @Override
@@ -17,9 +19,9 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
 
   @Override
   protected void runAlgo() {
-    boolean isCalibrated = SteerSocket.INSTANCE.getSteerColumnTracker().isCalibrated();
+    boolean isCalibrated = steerColumnInterface.isSteerColumnCalibrated();
     float steeringAngle = isCalibrated //
-        ? SteerSocket.INSTANCE.getSteerColumnTracker().getEncoderValueCentered().number().floatValue()
+        ? steerColumnInterface.getSteerColumnEncoderCentered().number().floatValue()
         : Float.NaN;
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(steeringAngle);
     binaryBlobPublisher.accept(gokartStatusEvent.asArray());
