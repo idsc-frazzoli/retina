@@ -20,7 +20,21 @@ The implementation includes
 * demo of data handling, for instance simple visualizations
 * option to transmit and receive via the `lcm` protocol
 
-The byte order of the binary data is `little endian` since the encoding is native on most architectures. 
+The byte order of the binary data is `little endian` since the encoding is native on most architectures.
+
+# GOKART
+
+Emergency Modules:
+
+* [code](Urg04lxEmergencyModule.java) front lidar urg04lx failure => RimoTorque ZERO
+* [code](SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
+* [code](MiscEmergencyModule.java) battery voltage out of range for at least 200[ms] => RimoTorque ZERO
+* [code](LinmotEmergencyModule.java) linmot not operational, or temperature critical => RimoTorque ZERO
+
+Emergency Support Modules:
+
+* [code](LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
+* [code](Urg04lxClearanceModule.java) obstacle detected by front lidar within 1.5[m] range of predicted vehicle path => RimoTorque ZERO
 
 # LIDAR
 

@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owl.bot.se2.Se2AxisYProject;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -18,6 +17,7 @@ import ch.ethz.idsc.owly.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
+import ch.ethz.idsc.retina.util.math.Se2AxisYProject_Retina;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -67,7 +67,7 @@ class TrigonometryRender extends LidarRender {
         for (Tensor point : points) {
           point = point.add(Tensors.vectorDouble(xAxleD.number().doubleValue() + 0.43, 0)).unmodifiable();
           Tensor u = Tensors.of(RealScalar.ONE, RealScalar.ZERO, angle); // TODO replace by actual speed
-          Scalar t = Se2AxisYProject.of(u, point).negate();
+          Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
           Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
           Tensor v = se2ForwardAction.apply(point);
           if (clip.isInside(v.Get(1))) {
