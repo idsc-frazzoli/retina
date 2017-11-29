@@ -57,7 +57,7 @@ enum RunTabbedTaskGui {
         Urg04lxClearanceModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
-        AutboxProviderModule.class, //
+        AutoboxIntrospectionModule.class, //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
         RimoJoystickModule.class //

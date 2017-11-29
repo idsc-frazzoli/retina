@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-public class AutboxProviderModule extends AbstractModule {
+public class AutoboxIntrospectionModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
@@ -26,9 +26,12 @@ public class AutboxProviderModule extends AbstractModule {
   @Override
   protected void first() throws Exception {
     JPanel jPanel = new JPanel(new GridLayout(4, 1));
-    for (int index = 0; index < 4; ++index) {
+    int index = 0;
+    for (AutoboxSocket<?, ?> autoboxSocket : AutoboxSockets.ALL) {
       jTextField[index] = new JTextField();
+      jTextField[index].setToolTipText(autoboxSocket.getClass().getSimpleName());
       jPanel.add(jTextField[index]);
+      ++index;
     }
     jFrame.setContentPane(jPanel);
     TimerTask timerTask = new TimerTask() {
