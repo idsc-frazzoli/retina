@@ -39,11 +39,11 @@ public class AutoboxTestingModule extends AbstractModule {
     SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
     // ---
-    RimoSocket.INSTANCE.addAll(rimoComponent);
-    addTab(rimoComponent);
-    // ---
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
+    // ---
+    RimoSocket.INSTANCE.addAll(rimoComponent);
+    addTab(rimoComponent);
     // ---
     jTabbedPane.setSelectedIndex(0);
     // ---

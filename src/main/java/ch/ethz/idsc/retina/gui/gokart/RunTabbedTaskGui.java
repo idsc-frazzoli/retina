@@ -41,8 +41,8 @@ enum RunTabbedTaskGui {
     taskTabGui.tab("lab", Arrays.asList( //
         SpyModule.class, //
         ParametersModule.class, //
+        AutoboxIntrospectionModule.class, //
         AutoboxTestingModule.class, //
-        RimoMetronomeModule.class, //
         LocalViewLcmModule.class, //
         PanoramaViewModule.class, //
         DavisOverviewModule.class, //
@@ -57,7 +57,6 @@ enum RunTabbedTaskGui {
         Urg04lxClearanceModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
-        AutoboxIntrospectionModule.class, //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
         RimoJoystickModule.class //

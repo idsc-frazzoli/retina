@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -119,6 +120,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
           ? steerColumnTracker.getSteerColumnEncoderCentered().toString() //
           : "NOT CALIBRATED";
       rangePos.setText(angle);
+      rangePos.setBackground(isCalibrated ? Color.GREEN : Color.RED);
     }
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);

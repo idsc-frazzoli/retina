@@ -6,18 +6,18 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
 /** when no entity controls the break, then
- * the break is commanded to be in off-mode */
+ * the break is commanded to be
+ * in normal operation mode
+ * with non-breaking position */
 /* package */ enum LinmotPutFallback implements LinmotPutProvider {
   INSTANCE;
-  private final LinmotPutEvent lpe;
+  // ---
+  private final LinmotPutEvent linmotPutEvent;
 
   private LinmotPutFallback() {
-    lpe = new LinmotPutEvent( //
-        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION);
-    lpe.target_position = -48;
-    lpe.max_velocity = 1000;
-    lpe.acceleration = 500;
-    lpe.deceleration = 500;
+    linmotPutEvent = new LinmotPutEvent( //
+        LinmotPutHelper.CMD_OPERATION, //
+        LinmotPutHelper.MC_POSITION);
   }
 
   // ---
@@ -28,7 +28,11 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    // return Optional.of(LinmotPutHelper.OFF_MODE_EVENT);
-    return Optional.of(lpe);
+    // TODO magic const are tested by redundant
+    linmotPutEvent.target_position = -48;
+    linmotPutEvent.max_velocity = 1000;
+    linmotPutEvent.acceleration = 500;
+    linmotPutEvent.deceleration = 500;
+    return Optional.of(linmotPutEvent);
   }
 }
