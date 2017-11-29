@@ -24,6 +24,6 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
     eventUntil(timestamp += 200, new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
     eventUntil(timestamp += 200, new LinmotPutEvent( //
-        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
+        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION)); // TODO position
   }
 }

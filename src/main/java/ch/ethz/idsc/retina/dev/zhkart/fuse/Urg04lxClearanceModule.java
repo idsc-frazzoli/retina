@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** blocks rimo while anything is within a close distance in path */
 public final class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
-  public static final Scalar CLEARANCE = DoubleScalar.of(3.0); // distance in [m] from rear axle !!!
+  public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
   private static final Scalar HALF = RealScalar.of(0.5);
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -61,29 +61,41 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     if (Objects.nonNull(rimoGetEvent) && steerColumnInterface.isSteerColumnCalibrated()) {
-      final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-      final int position = floatBuffer.position();
-      int size = lidarRayBlockEvent.size();
-      Scalar angle = SteerConfig.getAngleFromSCE(steerColumnInterface); // <- calibration checked
-      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      Clip clip = Clip.function(half.negate(), half);
-      Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
-      Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
-      // TODO formula needs analysis
-      Scalar speed = pair_meas.dot(pair_unit).Get().multiply(HALF);
-      Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
-      Scalar min = DoubleScalar.POSITIVE_INFINITY;
-      for (int index = 0; index < size; ++index) {
-        // TODO magic const rear axle to lidarpos
-        Tensor point = Tensors.vector(floatBuffer.get() + 1.64, floatBuffer.get());
-        Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
-        Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
-        Tensor v = se2ForwardAction.apply(point);
-        if (clip.isInside(v.Get(1)))
-          min = Min.of(min, t.negate());
+      try {
+        final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
+        final int position = floatBuffer.position();
+        // System.out.println("pos=" + position);
+        int size = lidarRayBlockEvent.size();
+        // System.out.println("sze=" + size);
+        Scalar angle = SteerConfig.getAngleFromSCE(steerColumnInterface); // <- calibration checked
+        Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+        Clip clip = Clip.function(half.negate(), half);
+        Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
+        Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
+        // TODO formula needs analysis
+        Scalar speed = RealScalar.ONE;
+        // pair_meas.dot(pair_unit).Get().multiply(HALF);
+        Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
+        Scalar min = DoubleScalar.POSITIVE_INFINITY;
+        for (int index = 0; index < size; ++index) {
+          float px = floatBuffer.get();
+          float py = floatBuffer.get();
+          // TODO magic const rear axle to lidarpos
+          Tensor point = Tensors.vector(px + 1.64, py);
+          Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
+          // System.out.println(t);
+          Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
+          Tensor v = se2ForwardAction.apply(point);
+          if (clip.isInside(v.Get(1)))
+            min = Min.of(min, t.negate());
+        }
+        floatBuffer.position(position);
+        isPathObstructed = Scalars.lessThan(min, CLEARANCE);
+        // System.out.println("min = " + min + " " + isPathObstructed);
+      } catch (Exception exception) {
+        exception.printStackTrace();
+        isPathObstructed = true;
       }
-      floatBuffer.position(position);
-      isPathObstructed = Scalars.lessThan(min, CLEARANCE);
     } else
       isPathObstructed = true;
   }

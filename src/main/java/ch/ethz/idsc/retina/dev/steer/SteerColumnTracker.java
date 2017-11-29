@@ -18,7 +18,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * the HARD threshold is considered an emergency */
 @SafetyCritical
 public final class SteerColumnTracker implements SteerGetListener, SteerColumnInterface {
-  public static final Scalar MAX_SCE = Quantity.of(0.6743167638778687, SteerPutEvent.UNIT_ENCODER);
+  // 0.6743167638778687
+  public static final Scalar MAX_SCE = Quantity.of(0.6043167638778687, SteerPutEvent.UNIT_ENCODER);
   private static final double SOFT = 1.45;
   private static final double HARD = 1.6; // measured 1.538
   // ---

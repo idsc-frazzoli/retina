@@ -14,7 +14,7 @@ public class LinmotPutEvent extends DataEvent {
   // ---
   public final short control_word;
   public final short motion_cmd_hdr;
-  public short target_position;
+  public short target_position; // TODO -48 default value doc
   public short max_velocity;
   public short acceleration;
   public short deceleration;

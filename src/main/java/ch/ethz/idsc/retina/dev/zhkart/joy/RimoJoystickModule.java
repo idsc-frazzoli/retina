@@ -32,11 +32,13 @@ public class RimoJoystickModule extends AbstractModule implements RimoPutProvide
   protected void first() throws Exception {
     joystickLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
+    RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
   @Override
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
+    RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
     joystickLcmClient.stopSubscriptions();
   }
 

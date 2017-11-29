@@ -27,6 +27,7 @@ public class RimoRateControllerWrap implements RimoGetListener {
   public Optional<RimoPutEvent> iterate(Tensor pair) {
     if (Objects.nonNull(rimoGetEvent))
       try {
+        // System.out.println(pair);
         short armsL_raw = 0;
         short armsR_raw = 0;
         {
@@ -43,6 +44,7 @@ public class RimoRateControllerWrap implements RimoGetListener {
           short valueR_Yaxis = ARMS.apply(torque).number().shortValue();
           armsR_raw = (short) +valueR_Yaxis; // positive sign RIGHT
         }
+        // System.out.println(armsL_raw + " " + armsR_raw);
         return Optional.of(new RimoPutEvent( //
             new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
             new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
