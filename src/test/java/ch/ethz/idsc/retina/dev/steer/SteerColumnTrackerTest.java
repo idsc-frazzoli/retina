@@ -18,6 +18,6 @@ public class SteerColumnTrackerTest extends TestCase {
   }
 
   public void testMaxRange() {
-    assertEquals(SteerColumnTracker.MAX_SCE.toString(), "0.6743167638778687[SCE]");
+    assertEquals(SteerColumnTracker.MAX_SCE.toString(), "0.6[SCE]");
   }
 }
