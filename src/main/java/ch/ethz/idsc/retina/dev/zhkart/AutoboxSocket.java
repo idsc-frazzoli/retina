@@ -97,6 +97,12 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     return stringBuilder.toString();
   }
 
+  public final Optional<ProviderRank> getPutProviderRank() {
+    return Optional.ofNullable(Objects.nonNull(putProviderActive) //
+        ? putProviderActive.getProviderRank()
+        : null);
+  }
+
   /** @return period between two successive commands issued to the microautobox */
   protected abstract long getPeriod_ms();
 
