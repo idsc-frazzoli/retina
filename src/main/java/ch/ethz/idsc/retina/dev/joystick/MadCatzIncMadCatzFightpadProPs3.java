@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
@@ -21,8 +23,8 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Gok
   }
 
   @Override
-  public double getAheadAverage() {
-    return 0;
+  public Scalar getAheadAverage() {
+    return RealScalar.ZERO;
   }
 
   @Override

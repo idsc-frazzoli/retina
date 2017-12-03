@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** interface implemented by a {@link JoystickEvent}
@@ -18,8 +19,9 @@ public interface GokartJoystickInterface {
   /** @return double in the interval [0, 1] */
   double getBreakStrength();
 
-  /** @return double in the interval [-1, 1] */
-  double getAheadAverage();
+  /** @return double in the interval [-1, 1]. when joystick is not being manipulated,
+   * the return value equals zero. */
+  Scalar getAheadAverage();
 
   /** @return vector with length 2 */
   Tensor getAheadPair_Unit();

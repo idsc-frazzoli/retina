@@ -19,7 +19,6 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -53,7 +52,7 @@ public class RimoJoystickModule extends AbstractModule implements RimoPutProvide
     Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
     if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
       GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
-      Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(RealScalar.of(joystick.getAheadAverage()));
+      Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
       DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
       Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
       Tensor pair = differentialSpeed.pair(speed, theta);
