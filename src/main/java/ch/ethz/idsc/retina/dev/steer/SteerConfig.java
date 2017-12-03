@@ -22,7 +22,7 @@ public class SteerConfig implements Serializable {
   }
 
   /***************************************************/
-  public Scalar voltageLo = Quantity.of(10.7, "V");
+  public Scalar voltageLo = Quantity.of(11.1, "V");
   public Scalar voltageHi = Quantity.of(13.0, "V");
   // ---
   public Scalar calibration = Quantity.of(1.0, "SCT");
@@ -31,6 +31,10 @@ public class SteerConfig implements Serializable {
   public Scalar Kd = Quantity.of(0.82, "SCE^-1*SCT*s");
   public Scalar torqueLimit = Quantity.of(1.5, "SCT");
   // ---
+  /** maximum steer column value commanded by joystick or autonomous drive
+   * originally, the value was close to the max possible: 0.6743167638778687[SCE]
+   * but this choice put unnecessary stress on the hardware. */
+  public Scalar columnMax = Quantity.of(0.6, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
   /** 0.5 corresponds to 50% of torque limit */
@@ -50,8 +54,8 @@ public class SteerConfig implements Serializable {
 
   /** @return scalar without unit but with interpretation in radians,
    * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  public static Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
+  public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
     return UnitSystem.SI().apply( //
-        steerColumnInterface.getSteerColumnEncoderCentered().multiply(GLOBAL.column2steer));
+        steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
   }
 }

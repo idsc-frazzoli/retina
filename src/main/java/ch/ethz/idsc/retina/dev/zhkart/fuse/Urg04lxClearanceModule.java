@@ -67,7 +67,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
         // System.out.println("pos=" + position);
         int size = lidarRayBlockEvent.size();
         // System.out.println("sze=" + size);
-        Scalar angle = SteerConfig.getAngleFromSCE(steerColumnInterface); // <- calibration checked
+        Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
         Clip clip = Clip.function(half.negate(), half);
         Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);

@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
@@ -47,7 +47,7 @@ public class SteerJoystickModule extends AbstractModule implements SteerPutProvi
     if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
       GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
       final Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = RealScalar.of(joystick.getSteerLeft()).multiply(SteerColumnTracker.MAX_SCE);
+      Scalar desPos = RealScalar.of(joystick.getSteerLeft()).multiply(SteerConfig.GLOBAL.columnMax);
       final Scalar torqueCmd = //
           positionController.iterate(desPos.subtract(currAngle));
       return Optional.of(SteerPutEvent.createOn(torqueCmd));

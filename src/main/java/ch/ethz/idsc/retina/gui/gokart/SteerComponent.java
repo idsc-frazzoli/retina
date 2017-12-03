@@ -146,7 +146,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     if (steerColumnTracker.isSteerColumnCalibrated()) {
       final Scalar currAngle = steerColumnTracker.getSteerColumnEncoderCentered(); // SCE
       Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION) //
-          .multiply(SteerColumnTracker.MAX_SCE);
+          .multiply(SteerConfig.GLOBAL.columnMax);
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
