@@ -7,11 +7,12 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
  * calibration procedure is mandatory to send at the beginning */
 public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEvent> {
   public static final MiscIgnitionProvider INSTANCE = new MiscIgnitionProvider();
+  private static final int DURATION_MS = 250;
 
-  @Override
+  @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
     MiscPutEvent miscPutEvent = new MiscPutEvent();
     miscPutEvent.resetConnection = 1;
-    eventUntil(now_ms() + 250, miscPutEvent);
+    eventUntil(now_ms() + DURATION_MS, miscPutEvent);
   }
 }

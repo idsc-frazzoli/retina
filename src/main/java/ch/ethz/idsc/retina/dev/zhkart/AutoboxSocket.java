@@ -86,15 +86,23 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     }, 70, getPeriod_ms());
   }
 
+  /***************************************************/
+  public final int getPutProviderSize() {
+    return providers.size();
+  }
+
+  public final int getPutListenersSize() {
+    return putListeners.size();
+  }
+
+  public final int getGetListenersSize() {
+    return getListeners.size();
+  }
+
   public final String getPutProviderDesc() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("p=" + providers.size() + " ");
-    stringBuilder.append("g=" + getListeners.size() + " ");
-    stringBuilder.append("p=" + putListeners.size() + " ");
-    stringBuilder.append(Objects.nonNull(putProviderActive) //
+    return Objects.nonNull(putProviderActive) //
         ? putProviderActive.getClass().getSimpleName()
-        : "<null>");
-    return stringBuilder.toString();
+        : "<null>";
   }
 
   public final Optional<ProviderRank> getPutProviderRank() {
@@ -103,6 +111,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         : null);
   }
 
+  /***************************************************/
   /** @return period between two successive commands issued to the microautobox */
   protected abstract long getPeriod_ms();
 
