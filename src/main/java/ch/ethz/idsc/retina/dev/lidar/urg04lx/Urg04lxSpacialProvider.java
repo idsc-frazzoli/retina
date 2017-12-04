@@ -43,19 +43,19 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
     limit_lo = (int) (closest / TO_METER);
   }
 
-  @Override
-  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
-    listeners.add(lidarSpacialEventListener);
+  @Override // from LidarSpacialProvider
+  public void addListener(LidarSpacialListener lidarSpacialListener) {
+    listeners.add(lidarSpacialListener);
   }
 
   private int usec;
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     // for the urg04lxug01 sensor the rotational parameter is irrelevant
     float[] coords = new float[dimensions];

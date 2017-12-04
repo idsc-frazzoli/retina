@@ -51,7 +51,7 @@ public class SteerJoystickModule extends AbstractModule implements SteerPutProvi
   /** @param steerColumnInterface
    * @param joystick
    * @return */
-  public Optional<SteerPutEvent> control( //
+  /* package */ Optional<SteerPutEvent> control( //
       SteerColumnInterface steerColumnInterface, //
       GokartJoystickInterface joystick) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {

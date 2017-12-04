@@ -55,7 +55,10 @@ public class RimoJoystickModule extends AbstractModule implements RimoPutProvide
         : Optional.empty();
   }
 
-  public Optional<RimoPutEvent> control( //
+  /** @param steerColumnInterface
+   * @param joystick
+   * @return */
+  /* package */ Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, //
       GokartJoystickInterface joystick) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {

@@ -17,25 +17,25 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 public class LinmotJoystickModule extends AbstractModule implements LinmotPutProvider {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     joystickLcmClient.startSubscriptions();
     LinmotSocket.INSTANCE.addPutProvider(this);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     LinmotSocket.INSTANCE.removePutProvider(this);
     joystickLcmClient.stopSubscriptions();
   }
 
   /***************************************************/
-  @Override
+  @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.MANUAL;
   }
 
-  @Override
+  @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
     Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
     if (optional.isPresent()) {
