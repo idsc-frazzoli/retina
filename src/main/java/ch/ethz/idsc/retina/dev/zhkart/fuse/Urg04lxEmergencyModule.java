@@ -22,37 +22,38 @@ public final class Urg04lxEmergencyModule extends AbstractModule implements Lida
       new Urg04lxLcmClient(GokartLcmChannel.URG04LX_FRONT);
   private final Watchdog watchdog = new Watchdog(WATCHDOG_MS * 1e-3);
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     urg04lxLcmClient.startSubscriptions();
     urg04lxLcmClient.urg04lxDecoder.addRayListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     urg04lxLcmClient.urg04lxDecoder.removeRayListener(this);
     urg04lxLcmClient.stopSubscriptions();
   }
 
+  /***************************************************/
   @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     watchdog.pacify(); // <- at nominal rate the watchdog is notified every 100[ms]
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     // ---
   }
 
   /***************************************************/
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.PASSIVE : null);
   }

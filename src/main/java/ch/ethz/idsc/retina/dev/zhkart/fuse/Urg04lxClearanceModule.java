@@ -58,6 +58,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
     urg04lxLcmHandler.stopSubscriptions();
   }
 
+  /***************************************************/
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     if (Objects.nonNull(rimoGetEvent) && steerColumnInterface.isSteerColumnCalibrated()) {
@@ -76,7 +77,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
         Scalar speed = RealScalar.ONE;
         // pair_meas.dot(pair_unit).Get().multiply(HALF);
         Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
-        Scalar min = DoubleScalar.POSITIVE_INFINITY;
+        Scalar min = CLEARANCE;
         for (int index = 0; index < size; ++index) {
           float px = floatBuffer.get();
           float py = floatBuffer.get();
