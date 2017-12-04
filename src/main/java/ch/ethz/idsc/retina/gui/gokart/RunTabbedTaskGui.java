@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
+import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
@@ -41,8 +42,8 @@ enum RunTabbedTaskGui {
     taskTabGui.tab("lab", Arrays.asList( //
         SpyModule.class, //
         ParametersModule.class, //
+        AutoboxIntrospectionModule.class, //
         AutoboxTestingModule.class, //
-        RimoMetronomeModule.class, //
         LocalViewLcmModule.class, //
         PanoramaViewModule.class, //
         DavisOverviewModule.class, //
@@ -57,7 +58,6 @@ enum RunTabbedTaskGui {
         Urg04lxClearanceModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
-        AutoboxIntrospectionModule.class, //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
         RimoJoystickModule.class //

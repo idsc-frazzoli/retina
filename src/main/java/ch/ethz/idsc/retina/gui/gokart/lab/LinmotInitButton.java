@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
 
 /** gui element to initiate calibration procedure of linmot break */
-public class LinmotInitButton implements LinmotPutListener, LinmotGetListener {
+/* package */ class LinmotInitButton implements LinmotPutListener, LinmotGetListener {
   private final JButton jButton = new JButton("Init");
   private LinmotGetEvent _getEvent;
 

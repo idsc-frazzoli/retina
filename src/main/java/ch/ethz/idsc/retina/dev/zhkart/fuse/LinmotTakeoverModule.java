@@ -11,12 +11,14 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** module detects when human presses the break while the software
  * is controlling the break
  * 
  * module has to be stopped and restarted once fuse is blown */
+@SafetyCritical
 public final class LinmotTakeoverModule extends AbstractModule implements LinmotGetListener, LinmotPutProvider {
   /** in order for fuse to blow, the position discrepancy
    * has to be maintained for 0.05[s] */
@@ -40,8 +42,8 @@ public final class LinmotTakeoverModule extends AbstractModule implements Linmot
 
   /***************************************************/
   @Override // from LinmotGetListener
-  public void getEvent(LinmotGetEvent getEvent) {
-    if (getEvent.getPositionDiscrepancyRaw() <= THRESHOLD_POS_DELTA) // abs(int) not used
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    if (linmotGetEvent.getPositionDiscrepancyRaw() <= THRESHOLD_POS_DELTA) // abs(int) not used
       watchdog.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
   }
 

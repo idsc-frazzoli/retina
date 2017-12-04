@@ -11,22 +11,50 @@ import ch.ethz.idsc.retina.util.data.Word;
 public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
   private static final int LENGTH = 12;
+
+  /** function generates messages for calibration and linmot de-activation.
+   * the values that determine position control are all set to zero.
+   * 
+   * @param control
+   * @param motion
+   * @return */
+  public static LinmotPutEvent configuration(Word control, Word motion) {
+    return new LinmotPutEvent(control, motion, (short) 0, (short) 0, (short) 0, (short) 0);
+  }
+
   // ---
   public final short control_word;
   public final short motion_cmd_hdr;
-  public short target_position; // TODO -48 default value doc
-  public short max_velocity;
-  public short acceleration;
-  public short deceleration;
+  public final short target_position;
+  public final short max_velocity;
+  public final short acceleration;
+  public final short deceleration;
 
-  public LinmotPutEvent(Word control, Word motion) {
+  /** universal constructor of messages for linmot.
+   * not all parameter combinations make sense.
+   * the flexibility is required for testing.
+   * 
+   * @param control
+   * @param motion
+   * @param target_position
+   * @param max_velocity
+   * @param acceleration
+   * @param deceleration */
+  public LinmotPutEvent( //
+      Word control, Word motion, //
+      short target_position, short max_velocity, //
+      short acceleration, short deceleration) {
     control_word = control.getShort();
     motion_cmd_hdr = motion.getShort();
+    this.target_position = target_position;
+    this.max_velocity = max_velocity;
+    this.acceleration = acceleration;
+    this.deceleration = deceleration;
   }
 
   /** @param byteBuffer
    * with at least 12 bytes remaining */
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);
     byteBuffer.putShort(motion_cmd_hdr);
@@ -36,14 +64,7 @@ public class LinmotPutEvent extends DataEvent {
     byteBuffer.putShort(deceleration);
   }
 
-  public String toInfoString() {
-    return String.format("%d %d %d %d %d %d", //
-        control_word, motion_cmd_hdr, //
-        target_position, max_velocity, //
-        acceleration, deceleration);
-  }
-
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }
@@ -51,5 +72,12 @@ public class LinmotPutEvent extends DataEvent {
   public boolean isOperational() {
     return control_word == LinmotPutHelper.CMD_OPERATION.getShort() //
         && motion_cmd_hdr == LinmotPutHelper.MC_POSITION.getShort();
+  }
+
+  public String toInfoString() {
+    return String.format("%d %d %d %d %d %d", //
+        control_word, motion_cmd_hdr, //
+        target_position, max_velocity, //
+        acceleration, deceleration);
   }
 }

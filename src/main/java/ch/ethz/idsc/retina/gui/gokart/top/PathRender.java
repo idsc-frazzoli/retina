@@ -41,7 +41,7 @@ class PathRender implements RenderInterface {
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
-      final Scalar angle = SteerConfig.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Sign.isPositive(angle)) {
         p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
         p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);

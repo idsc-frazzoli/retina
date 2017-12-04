@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.awt.Dimension;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 
-class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
+/* package */ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
   private final RimoPutFields rimoPutFieldsL = new RimoPutFields();
   private final RimoPutFields rimoPutFieldsR = new RimoPutFields();
   private final RimoGetFields rimoGetFieldsL = new RimoGetFields();

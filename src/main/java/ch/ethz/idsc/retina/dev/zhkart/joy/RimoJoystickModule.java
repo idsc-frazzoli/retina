@@ -5,57 +5,48 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class RimoJoystickModule extends AbstractModule implements RimoPutProvider {
-  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+public class RimoJoystickModule extends JoystickModule<RimoPutEvent> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
+  /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
 
-  @Override
-  protected void first() throws Exception {
-    joystickLcmClient.startSubscriptions();
+  @Override // from AbstractModule
+  void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
-  @Override
-  protected void last() {
+  @Override // from AbstractModule
+  void protected_last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
-    joystickLcmClient.stopSubscriptions();
   }
 
-  /***************************************************/
-  @Override
-  public ProviderRank getProviderRank() {
-    return ProviderRank.MANUAL;
+  @Override // from JoystickModule
+  Optional<RimoPutEvent> translate(GokartJoystickInterface joystick) {
+    return control(steerColumnInterface, joystick);
   }
 
-  @Override
-  public Optional<RimoPutEvent> putEvent() {
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
-    if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
-      GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
-      Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(RealScalar.of(joystick.getAheadAverage()));
+  /** @param steerColumnInterface
+   * @param joystick
+   * @return */
+  /* package */ Optional<RimoPutEvent> control( //
+      SteerColumnInterface steerColumnInterface, //
+      GokartJoystickInterface joystick) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
+      Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
       DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
-      Scalar theta = SteerConfig.getAngleFromSCE(steerColumnInterface);
+      Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
       Tensor pair = differentialSpeed.pair(speed, theta);
       Tensor bias = joystick.getAheadPair_Unit().multiply(RimoConfig.GLOBAL.rateLimit);
       return rimoRateControllerWrap.iterate(pair.add(bias));

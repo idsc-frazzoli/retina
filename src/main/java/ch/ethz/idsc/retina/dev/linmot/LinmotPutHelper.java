@@ -4,8 +4,10 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
 
+@SafetyCritical
 public enum LinmotPutHelper {
   ;
   /* package */ static final Word CMD_HOME = Word.createShort("HOME", (short) 0x083f);
@@ -23,42 +25,41 @@ public enum LinmotPutHelper {
   /** all magic numbers are justified through experimentation */
   public static final int TARGETPOS_MIN = -500;
   public static final int TARGETPOS_MAX = -48;
-  public static final int TARGETPOS_INIT = -50;
+  public static final short TARGETPOS_INIT = -50;
   // ---
   public static final int MAXVELOCITY_MIN = 0;
   public static final int MAXVELOCITY_MAX = 1000;
-  public static final int MAXVELOCITY_INIT = 1000;
+  public static final short MAXVELOCITY_INIT = 1000;
   // ---
   public static final int ACCELERATION_MIN = 0;
   public static final int ACCELERATION_MAX = 5000;
-  public static final int ACCELERATION_INIT = 500;
+  public static final short ACCELERATION_INIT = 500;
   // ---
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
-  public static final int DECELERATION_INIT = 500;
+  public static final short DECELERATION_INIT = 500;
   // ---
   /** off-mode event is used as fallback control and when
    * human driver takes over control of the break by foot */
-  public static final LinmotPutEvent OFF_MODE_EVENT = new LinmotPutEvent( //
-      LinmotPutHelper.CMD_OFF_MODE, //
-      LinmotPutHelper.MC_ZEROS);
+  public static final LinmotPutEvent OFF_MODE_EVENT = //
+      LinmotPutEvent.configuration(LinmotPutHelper.CMD_OFF_MODE, LinmotPutHelper.MC_ZEROS);
+  public static final LinmotPutEvent FALLBACK_OPERATION = operationToPosition(TARGETPOS_INIT);
 
-  /** @param value in the unit interval
+  /** @param value in the unit interval [0, 1]
    * @return */
   public static LinmotPutEvent operationToRelativePosition(double value) {
     return operationToPosition((short) // TODO this formula is slightly off, but that does not affect safety
     Math.min(Math.max(TARGETPOS_MIN, (TARGETPOS_MIN * value + TARGETPOS_INIT)), TARGETPOS_MAX));
   }
 
-  public static LinmotPutEvent operationToPosition(short pos) {
-    final LinmotPutEvent linmotPutEvent = new LinmotPutEvent( //
+  private static LinmotPutEvent operationToPosition(short pos) {
+    return new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, //
-        LinmotPutHelper.MC_POSITION);
-    linmotPutEvent.target_position = pos;
-    linmotPutEvent.max_velocity = MAXVELOCITY_INIT;
-    linmotPutEvent.acceleration = ACCELERATION_INIT;
-    linmotPutEvent.deceleration = DECELERATION_INIT;
-    return linmotPutEvent;
+        LinmotPutHelper.MC_POSITION, //
+        pos, //
+        MAXVELOCITY_INIT, //
+        ACCELERATION_INIT, //
+        DECELERATION_INIT);
   }
 
   public static Word findControlWord(short value) {

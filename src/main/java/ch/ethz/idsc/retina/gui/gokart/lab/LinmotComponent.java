@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Round;
 
-class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
+/* package */ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
   public final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
@@ -107,7 +107,7 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     }
   }
 
-  @Override
+  @Override // from GetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
@@ -139,18 +139,18 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
     }
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    LinmotPutEvent linmotPutEvent = //
-        new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
-    linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-    linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-    linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-    linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
-    return Optional.of(linmotPutEvent);
+    return Optional.of(new LinmotPutEvent( //
+        spinnerLabelCtrl.getValue(), //
+        spinnerLabelHdr.getValue(), //
+        (short) sliderExtTPos.jSlider.getValue(), // position
+        (short) sliderExtMVel.jSlider.getValue(), // max velocity
+        (short) sliderExtAcc.jSlider.getValue(), // acceleration
+        (short) sliderExtDec.jSlider.getValue())); // deceleration
   }
 
-  @Override
+  @Override // from PutListener
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     if (linmotPutEvent.isOperational())
       sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);

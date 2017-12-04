@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -126,13 +128,13 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
   }
 
   @Override // from GokartJoystickInterface
-  public double getAheadAverage() {
-    return getLeftKnobDirectionUp();
+  public Scalar getAheadAverage() {
+    return RealScalar.of(getLeftKnobDirectionUp());
   }
 
   @Override // from GokartJoystickInterface
-  public double getSteerLeft() {
-    return -getRightKnobDirectionRight();
+  public Scalar getSteerLeft() {
+    return RealScalar.of(-getRightKnobDirectionRight());
   }
 
   @Override // from GokartJoystickInterface

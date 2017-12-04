@@ -9,7 +9,8 @@ import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxSpacialProvider;
 
 public class Urg04lxLcmHandler {
   private final Urg04lxLcmClient urg04lxLcmClient;
-  public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
+  public final LidarAngularFiringCollector lidarAngularFiringCollector = //
+      new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
 
   public Urg04lxLcmHandler(String lidarId) {
     urg04lxLcmClient = new Urg04lxLcmClient(lidarId);

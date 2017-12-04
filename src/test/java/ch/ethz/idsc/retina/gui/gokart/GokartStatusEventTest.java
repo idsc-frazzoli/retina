@@ -11,7 +11,7 @@ public class GokartStatusEventTest extends TestCase {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(Float.NaN);
     assertFalse(gokartStatusEvent.isSteerColumnCalibrated());
     try {
-      SteerConfig.getAngleFromSCE(gokartStatusEvent);
+      SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
       assertTrue(false);
     } catch (Exception exception) {
       // ---
@@ -21,7 +21,7 @@ public class GokartStatusEventTest extends TestCase {
   public void testUnitless() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
-    Scalar s = SteerConfig.getAngleFromSCE(gokartStatusEvent);
+    Scalar s = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
     assertFalse(s instanceof Quantity);
   }
 }

@@ -1,10 +1,17 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.retina.util.math.Clipzone;
+import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
+  private static final Clipzone CLIPZONE = new Clipzone(Clip.function(0.1, 1.0));
+
+  // ---
   @Override
   public JoystickType type() {
     return JoystickType.GENERIC_XBOX_PAD;
@@ -122,18 +129,18 @@ import ch.ethz.idsc.tensor.Tensors;
 
   /***************************************************/
   @Override // from GokartJoystickInterface
+  public Scalar getSteerLeft() {
+    return DoubleScalar.of(-getRightKnobDirectionRight());
+  }
+
+  @Override // from GokartJoystickInterface
   public double getBreakStrength() {
     return Math.max(0, getRightKnobDirectionDown());
   }
 
   @Override // from GokartJoystickInterface
-  public double getAheadAverage() {
-    return getLeftKnobDirectionUp();
-  }
-
-  @Override // from GokartJoystickInterface
-  public double getSteerLeft() {
-    return -getRightKnobDirectionRight();
+  public Scalar getAheadAverage() {
+    return CLIPZONE.apply(DoubleScalar.of(getLeftKnobDirectionUp()));
   }
 
   @Override // from GokartJoystickInterface

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
+/* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -97,7 +97,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     }
   }
 
-  @Override
+  @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
     // jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout()); // TODO temporary permission
     // ---
@@ -118,7 +118,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     }
   }
 
-  @Override
+  @Override // from PutListener
   public void putEvent(MiscPutEvent miscPutEvent) {
     spinnerLabelRimoL.setValue(COMMANDS.get(miscPutEvent.resetRimoL));
     spinnerLabelRimoR.setValue(COMMANDS.get(miscPutEvent.resetRimoR));
@@ -127,7 +127,7 @@ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> 
     spinnerLabelLed.setValue(LEDCONTROL.get(miscPutEvent.ledControl));
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
     MiscPutEvent miscPutEvent = new MiscPutEvent();
     miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();

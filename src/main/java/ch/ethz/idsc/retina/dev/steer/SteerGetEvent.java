@@ -29,6 +29,7 @@ public class SteerGetEvent extends DataEvent {
   public final float gearRat; // constant 22.0
   public final float halfRckPos; // constant 72.0
 
+  /** @param byteBuffer from which constructor reads 44 bytes */
   public SteerGetEvent(ByteBuffer byteBuffer) {
     motAsp_CANInput = byteBuffer.getFloat();
     motAsp_Qual = byteBuffer.getFloat();

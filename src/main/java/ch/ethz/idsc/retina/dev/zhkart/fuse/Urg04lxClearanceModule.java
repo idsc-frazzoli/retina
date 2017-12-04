@@ -58,49 +58,59 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
     urg04lxLcmHandler.stopSubscriptions();
   }
 
+  /***************************************************/
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    if (Objects.nonNull(rimoGetEvent) && steerColumnInterface.isSteerColumnCalibrated()) {
+    if (Objects.nonNull(rimoGetEvent))
       try {
-        final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-        final int position = floatBuffer.position();
-        // System.out.println("pos=" + position);
-        int size = lidarRayBlockEvent.size();
-        // System.out.println("sze=" + size);
-        Scalar angle = SteerConfig.getAngleFromSCE(steerColumnInterface); // <- calibration checked
-        Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-        Clip clip = Clip.function(half.negate(), half);
-        Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
-        Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
-        // TODO formula needs analysis
-        Scalar speed = RealScalar.ONE;
-        // pair_meas.dot(pair_unit).Get().multiply(HALF);
-        Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
-        Scalar min = DoubleScalar.POSITIVE_INFINITY;
-        for (int index = 0; index < size; ++index) {
-          float px = floatBuffer.get();
-          float py = floatBuffer.get();
-          // TODO magic const rear axle to lidarpos
-          Tensor point = Tensors.vector(px + 1.64, py);
-          Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
-          // System.out.println(t);
-          Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
-          Tensor v = se2ForwardAction.apply(point);
-          if (clip.isInside(v.Get(1)))
-            min = Min.of(min, t.negate());
-        }
-        floatBuffer.position(position);
-        isPathObstructed = Scalars.lessThan(min, CLEARANCE);
-        // System.out.println("min = " + min + " " + isPathObstructed);
+        isPathObstructed = isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
+        return;
       } catch (Exception exception) {
         exception.printStackTrace();
-        isPathObstructed = true;
       }
-    } else
-      isPathObstructed = true;
+    isPathObstructed = true;
+  }
+
+  /* package */ boolean isPathObstructed( //
+      SteerColumnInterface steerColumnInterface, //
+      FloatBuffer floatBuffer) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
+      int size = floatBuffer.limit() / 2;
+      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
+      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+      Clip clip = Clip.function(half.negate(), half);
+      Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
+      Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
+      // TODO formula needs analysis
+      Scalar speed = RealScalar.ONE;
+      // pair_meas.dot(pair_unit).Get().multiply(HALF);
+      Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
+      Scalar min = CLEARANCE;
+      for (int index = 0; index < size; ++index) {
+        float px = floatBuffer.get();
+        float py = floatBuffer.get();
+        // TODO magic const rear axle to lidarpos
+        Tensor point = Tensors.vector(px + 1.64, py);
+        Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
+        // System.out.println(t);
+        Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
+        Tensor v = se2ForwardAction.apply(point);
+        if (clip.isInside(v.Get(1)))
+          min = Min.of(min, t.negate());
+      }
+      floatBuffer.position(0);
+      // System.out.println("min = " + min + " " + isPathObstructed);
+      return Scalars.lessThan(min, CLEARANCE);
+    }
+    return true;
   }
 
   /***************************************************/
+  @Override // from RimoGetListener
+  public void getEvent(RimoGetEvent rimoGetEvent) {
+    this.rimoGetEvent = rimoGetEvent;
+  }
+
   @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
@@ -109,10 +119,5 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     return Optional.ofNullable(isPathObstructed ? RimoPutEvent.PASSIVE : null);
-  }
-
-  @Override // from RimoGetListener
-  public void getEvent(RimoGetEvent rimoGetEvent) {
-    this.rimoGetEvent = rimoGetEvent;
   }
 }

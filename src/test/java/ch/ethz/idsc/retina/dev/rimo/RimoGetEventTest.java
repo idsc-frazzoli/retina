@@ -5,6 +5,6 @@ import junit.framework.TestCase;
 
 public class RimoGetEventTest extends TestCase {
   public void testSimple() {
-    assertEquals(RimoGetEvent.LENGTH, 24 * 2);
+    assertEquals(RimoGetEvent.LENGTH, 48);
   }
 }

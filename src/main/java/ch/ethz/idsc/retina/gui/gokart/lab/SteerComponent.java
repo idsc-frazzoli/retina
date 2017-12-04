@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,13 +19,14 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.gui.gokart.ControllerInfoPublish;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
+/* package */ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
   // ---
   public final SteerInitButton steerInitButton = new SteerInitButton();
@@ -108,7 +110,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     }
   }
 
-  @Override
+  @Override // from GetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
     final boolean isCalibrated = steerColumnTracker.isSteerColumnCalibrated();
     jToggleController.setEnabled(isCalibrated);
@@ -119,6 +121,7 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
           ? steerColumnTracker.getSteerColumnEncoderCentered().toString() //
           : "NOT CALIBRATED";
       rangePos.setText(angle);
+      rangePos.setBackground(isCalibrated ? Color.GREEN : Color.RED);
     }
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
@@ -134,17 +137,17 @@ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEven
     jTextField[10].setText("" + steerGetEvent.halfRckPos);
   }
 
-  @Override
+  @Override // from PutListener
   public void putEvent(SteerPutEvent putEvent) {
     torquePut.setText("" + putEvent.getTorque());
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnTracker.isSteerColumnCalibrated()) {
       final Scalar currAngle = steerColumnTracker.getSteerColumnEncoderCentered(); // SCE
       Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION) //
-          .multiply(SteerColumnTracker.MAX_SCE);
+          .multiply(SteerConfig.GLOBAL.columnMax);
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);

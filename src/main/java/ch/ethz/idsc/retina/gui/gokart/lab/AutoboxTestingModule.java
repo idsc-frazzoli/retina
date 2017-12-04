@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -21,10 +21,10 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
-  private final RimoComponent rimoComponent = new RimoComponent();
   private final LinmotComponent linmotComponent = new LinmotComponent();
   private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
+  private final RimoComponent rimoComponent = new RimoComponent();
   private final JFrame jFrame = new JFrame("Monitor and Testing");
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
@@ -39,11 +39,11 @@ public class AutoboxTestingModule extends AbstractModule {
     SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
     // ---
-    RimoSocket.INSTANCE.addAll(rimoComponent);
-    addTab(rimoComponent);
-    // ---
     MiscSocket.INSTANCE.addAll(miscComponent);
     addTab(miscComponent);
+    // ---
+    RimoSocket.INSTANCE.addAll(rimoComponent);
+    addTab(rimoComponent);
     // ---
     jTabbedPane.setSelectedIndex(0);
     // ---

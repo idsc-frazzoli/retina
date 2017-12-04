@@ -17,7 +17,7 @@ public class RimoRateControllerWrap implements RimoGetListener {
   private final RimoRateController piR = new RimoRateController();
   private RimoGetEvent rimoGetEvent = null;
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     this.rimoGetEvent = rimoGetEvent;
   }
@@ -27,7 +27,6 @@ public class RimoRateControllerWrap implements RimoGetListener {
   public Optional<RimoPutEvent> iterate(Tensor pair) {
     if (Objects.nonNull(rimoGetEvent))
       try {
-        // System.out.println(pair);
         short armsL_raw = 0;
         short armsR_raw = 0;
         {
@@ -44,13 +43,13 @@ public class RimoRateControllerWrap implements RimoGetListener {
           short valueR_Yaxis = ARMS.apply(torque).number().shortValue();
           armsR_raw = (short) +valueR_Yaxis; // positive sign RIGHT
         }
-        // System.out.println(armsL_raw + " " + armsR_raw);
+        // System.out.println(pair + " -> " + armsL_raw + " " + armsR_raw);
         return Optional.of(new RimoPutEvent( //
             new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
             new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
         ));
       } catch (Exception exception) {
-        System.err.println("" + exception.getMessage()); // message may be null
+        System.err.println("RRCW:" + exception.getMessage()); // message may be null
       }
     return Optional.empty();
   }
