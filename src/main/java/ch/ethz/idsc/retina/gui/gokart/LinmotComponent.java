@@ -141,13 +141,13 @@ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutE
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    LinmotPutEvent linmotPutEvent = //
-        new LinmotPutEvent(spinnerLabelCtrl.getValue(), spinnerLabelHdr.getValue());
-    linmotPutEvent.target_position = (short) sliderExtTPos.jSlider.getValue();
-    linmotPutEvent.max_velocity = (short) sliderExtMVel.jSlider.getValue();
-    linmotPutEvent.acceleration = (short) sliderExtAcc.jSlider.getValue();
-    linmotPutEvent.deceleration = (short) sliderExtDec.jSlider.getValue();
-    return Optional.of(linmotPutEvent);
+    return Optional.of(new LinmotPutEvent( //
+        spinnerLabelCtrl.getValue(), //
+        spinnerLabelHdr.getValue(), //
+        (short) sliderExtTPos.jSlider.getValue(), // position
+        (short) sliderExtMVel.jSlider.getValue(), // max velocity
+        (short) sliderExtAcc.jSlider.getValue(), // acceleration
+        (short) sliderExtDec.jSlider.getValue())); // deceleration
   }
 
   @Override

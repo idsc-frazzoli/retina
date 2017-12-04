@@ -13,17 +13,22 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
   private LinmotCalibrationProvider() {
   }
 
-  @Override
+  @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
     long timestamp = now_ms();
-    eventUntil(timestamp += 200, new LinmotPutEvent( //
-        LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
+    eventUntil(timestamp += 200, //
+        LinmotPutEvent.configuration(LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
+    // ---
     eventUntil(timestamp += 200, LinmotPutHelper.OFF_MODE_EVENT);
-    eventUntil(timestamp += 4000, new LinmotPutEvent( //
-        LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
-    eventUntil(timestamp += 200, new LinmotPutEvent( //
-        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
-    eventUntil(timestamp += 200, new LinmotPutEvent( //
-        LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION)); // TODO position
+    // ---
+    eventUntil(timestamp += 4000, //
+        LinmotPutEvent.configuration(LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
+    // ---
+    eventUntil(timestamp += 200, //
+        LinmotPutEvent.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
+    // ---
+    // TODO test and comment that the last "position" command with all ratings == 0 is required...
+    eventUntil(timestamp += 200, //
+        LinmotPutEvent.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
   }
 }
