@@ -1,5 +1,5 @@
 // code by rvmoos and jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
  * speed (2 bytes)
  * torque (2 bytes)
  * sdo message (9 bytes) */
-public class RimoPutFields {
+/* package */ class RimoPutFields {
   final SpinnerLabel<Word> spinnerLabelCmd = new SpinnerLabel<>();
   final SliderExt sliderExtVel = SliderExt.wrap(new JSlider(RimoPutTire.MIN_SPEED, RimoPutTire.MAX_SPEED, 0));
   final SliderExt sliderExtTrq = SliderExt.wrap(new JSlider(RimoPutTire.MIN_TORQUE, RimoPutTire.MAX_TORQUE, 0));

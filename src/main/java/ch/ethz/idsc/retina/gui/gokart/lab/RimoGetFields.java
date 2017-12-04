@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.awt.Color;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class RimoGetFields {
+/* package */ class RimoGetFields {
   private static final Clip RATE_RANGE = Clip.function( //
       Quantity.of(-3, RimoGetTire.UNIT_RATE), //
       Quantity.of(+3, RimoGetTire.UNIT_RATE));

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart;
+package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutListener;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 
 /** gui element to initiate calibration procedure of steering wheel */
-public class SteerInitButton implements SteerPutListener {
+/* package */ class SteerInitButton implements SteerPutListener {
   private final JButton jButton = new JButton("Calibration");
 
   public SteerInitButton() {
@@ -18,7 +18,7 @@ public class SteerInitButton implements SteerPutListener {
     jButton.addActionListener(event -> SteerCalibrationProvider.INSTANCE.schedule());
   }
 
-  @Override
+  @Override // from SteerPutListener
   public void putEvent(SteerPutEvent putEvent) {
     jButton.setEnabled(isEnabled());
   }

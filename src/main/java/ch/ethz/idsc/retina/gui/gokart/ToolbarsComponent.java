@@ -16,7 +16,7 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.util.gui.RowPanel;
 
-class ToolbarsComponent {
+public class ToolbarsComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
   public static final int HEIGHT_CBOX = 15;
