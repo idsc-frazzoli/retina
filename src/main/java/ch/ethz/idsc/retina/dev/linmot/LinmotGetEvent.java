@@ -38,6 +38,7 @@ public class LinmotGetEvent extends DataEvent {
   private final short winding_temp1;
   private final short winding_temp2;
 
+  /** @param byteBuffer from which constructor reads 16 bytes */
   public LinmotGetEvent(ByteBuffer byteBuffer) {
     status_word = byteBuffer.getShort();
     state_variable = byteBuffer.getShort();

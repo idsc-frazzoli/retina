@@ -9,7 +9,8 @@ import ch.ethz.idsc.retina.gui.gokart.ToolbarsComponent;
 
 /* package */ abstract class AutoboxTestingComponent<GE, PE> extends ToolbarsComponent //
     implements GetListener<GE>, PutListener<PE>, PutProvider<PE> {
-  @Override
+  // ---
+  @Override // from PutProvider
   public final ProviderRank getProviderRank() {
     return ProviderRank.TESTING;
   }

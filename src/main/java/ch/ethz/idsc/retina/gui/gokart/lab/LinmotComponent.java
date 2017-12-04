@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     }
   }
 
-  @Override
+  @Override // from GetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
@@ -139,7 +139,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     }
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
     return Optional.of(new LinmotPutEvent( //
         spinnerLabelCtrl.getValue(), //
@@ -150,7 +150,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         (short) sliderExtDec.jSlider.getValue())); // deceleration
   }
 
-  @Override
+  @Override // from PutListener
   public void putEvent(LinmotPutEvent linmotPutEvent) {
     if (linmotPutEvent.isOperational())
       sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);

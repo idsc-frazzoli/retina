@@ -20,7 +20,7 @@ public class MiscGetEvent extends DataEvent {
    * byte emergency (== 0 if no problem)
    * float battery adc
    * 
-   * @param byteBuffer */
+   * @param byteBuffer from which constructor reads 5 bytes */
   public MiscGetEvent(ByteBuffer byteBuffer) {
     emergency = byteBuffer.get();
     batteryAdc = byteBuffer.getFloat();

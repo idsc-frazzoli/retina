@@ -97,7 +97,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     }
   }
 
-  @Override
+  @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
     // jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout()); // TODO temporary permission
     // ---
@@ -118,7 +118,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     }
   }
 
-  @Override
+  @Override // from PutListener
   public void putEvent(MiscPutEvent miscPutEvent) {
     spinnerLabelRimoL.setValue(COMMANDS.get(miscPutEvent.resetRimoL));
     spinnerLabelRimoR.setValue(COMMANDS.get(miscPutEvent.resetRimoR));
@@ -127,7 +127,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     spinnerLabelLed.setValue(LEDCONTROL.get(miscPutEvent.ledControl));
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
     MiscPutEvent miscPutEvent = new MiscPutEvent();
     miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
