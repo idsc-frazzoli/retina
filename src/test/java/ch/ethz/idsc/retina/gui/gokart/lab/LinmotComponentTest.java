@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.gui.gokart.lab;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
@@ -18,5 +19,6 @@ public class LinmotComponentTest extends TestCase {
     assertTrue(optional.isPresent());
     LinmotPutEvent linmotPutEvent = optional.get();
     linmotComponent.putEvent(linmotPutEvent);
+    assertTrue(Objects.nonNull(linmotComponent.getScrollPane()));
   }
 }

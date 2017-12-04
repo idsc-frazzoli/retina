@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import junit.framework.TestCase;
 
 public class Urg04lxEmergencyModuleTest extends TestCase {
@@ -13,5 +14,6 @@ public class Urg04lxEmergencyModuleTest extends TestCase {
 
   public void testRank() throws Exception {
     Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
+    assertEquals(uem.getProviderRank(), ProviderRank.EMERGENCY);
   }
 }

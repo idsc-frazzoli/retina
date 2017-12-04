@@ -23,6 +23,7 @@ public class RimoJoystickModuleTest extends TestCase {
         new GokartJoystickAdapter( //
             RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2)));
     assertFalse(optional.isPresent());
+    assertFalse(rjm.putEvent().isPresent());
   }
 
   public void testCalibNonGet() {
