@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
-  private static final Clipzone CLIPZONE = new Clipzone(Clip.function(0.1, 1.0));
+  private static final Clipzone CLIPZONE = new Clipzone(Clip.function(9.5 / 127, 1.0));
 
   // ---
   @Override

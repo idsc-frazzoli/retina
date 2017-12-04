@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 
 public class AutoboxIntrospectionModuleTest extends TestCase {
   public void testSimple() {
-    AutoboxIntrospectionModule aim = new AutoboxIntrospectionModule();
-    aim.last();
+    new AutoboxIntrospectionModule();
   }
 }

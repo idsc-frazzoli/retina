@@ -34,7 +34,7 @@ public abstract class JoystickEvent {
     return _hats[index];
   }
 
-  public final void decode(ByteBuffer byteBuffer) {
+  /* package */ final void decode(ByteBuffer byteBuffer) {
     // <- ordinal is read by JoystickDecoder
     for (int axis = 0; axis < _axes.length; ++axis)
       _axes[axis] = byteBuffer.get();
