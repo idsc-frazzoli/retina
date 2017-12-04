@@ -34,8 +34,8 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   private final DatagramSocketManager datagramSocketManager;
   private final List<GetListener<GE>> getListeners = new CopyOnWriteArrayList<>();
   private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
-  private final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
-    @Override
+  /* package */ final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
+    @Override // from ByteArrayConsumer
     public void accept(byte[] data, int length) {
       ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
       byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
