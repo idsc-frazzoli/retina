@@ -10,4 +10,8 @@ public class Urg04lxEmergencyModuleTest extends TestCase {
     Thread.sleep(420);
     assertTrue(uem.putEvent().isPresent());
   }
+
+  public void testRank() throws Exception {
+    Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
+  }
 }

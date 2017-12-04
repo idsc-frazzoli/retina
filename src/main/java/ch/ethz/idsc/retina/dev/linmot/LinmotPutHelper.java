@@ -45,7 +45,7 @@ public enum LinmotPutHelper {
       LinmotPutEvent.configuration(LinmotPutHelper.CMD_OFF_MODE, LinmotPutHelper.MC_ZEROS);
   public static final LinmotPutEvent FALLBACK_OPERATION = operationToPosition(TARGETPOS_INIT);
 
-  /** @param value in the unit interval
+  /** @param value in the unit interval [0, 1]
    * @return */
   public static LinmotPutEvent operationToRelativePosition(double value) {
     return operationToPosition((short) // TODO this formula is slightly off, but that does not affect safety

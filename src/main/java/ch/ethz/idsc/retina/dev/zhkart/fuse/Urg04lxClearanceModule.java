@@ -61,15 +61,14 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
   /***************************************************/
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    if (Objects.nonNull(rimoGetEvent)) {
+    if (Objects.nonNull(rimoGetEvent))
       try {
         isPathObstructed = isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
+        return;
       } catch (Exception exception) {
         exception.printStackTrace();
-        isPathObstructed = true;
       }
-    } else
-      isPathObstructed = true;
+    isPathObstructed = true;
   }
 
   /* package */ boolean isPathObstructed( //

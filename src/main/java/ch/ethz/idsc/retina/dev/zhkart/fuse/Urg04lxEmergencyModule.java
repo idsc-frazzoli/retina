@@ -6,16 +6,13 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
-import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if front lidar is not operational */
-public final class Urg04lxEmergencyModule extends AbstractModule implements LidarRayDataListener, RimoPutProvider {
+public final class Urg04lxEmergencyModule extends EmergencyModule<RimoPutEvent> implements LidarRayDataListener {
   private static final int WATCHDOG_MS = 400; // 400[ms]
   // ---
   private final Urg04lxLcmClient urg04lxLcmClient = //
@@ -48,11 +45,6 @@ public final class Urg04lxEmergencyModule extends AbstractModule implements Lida
   }
 
   /***************************************************/
-  @Override // from RimoPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
-  }
-
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.PASSIVE : null);

@@ -21,6 +21,7 @@ public class SteerJoystickModuleTest extends TestCase {
         new GokartJoystickAdapter( //
             RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2)));
     assertFalse(optional.isPresent());
+    assertFalse(sjm.putEvent().isPresent()); // joystick missing
   }
 
   public void testCalib() {
@@ -31,5 +32,6 @@ public class SteerJoystickModuleTest extends TestCase {
         RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2));
     Optional<SteerPutEvent> optional = sjm.control(sci, gji);
     assertTrue(optional.isPresent());
+    assertFalse(sjm.putEvent().isPresent()); // joystick missing
   }
 }

@@ -42,8 +42,8 @@ public final class LinmotTakeoverModule extends AbstractModule implements Linmot
 
   /***************************************************/
   @Override // from LinmotGetListener
-  public void getEvent(LinmotGetEvent getEvent) {
-    if (getEvent.getPositionDiscrepancyRaw() <= THRESHOLD_POS_DELTA) // abs(int) not used
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    if (linmotGetEvent.getPositionDiscrepancyRaw() <= THRESHOLD_POS_DELTA) // abs(int) not used
       watchdog.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
   }
 
