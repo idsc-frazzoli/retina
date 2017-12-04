@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.dev.zhkart;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
@@ -11,9 +11,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 
 public enum AutoboxSockets {
   ;
-  public static final Collection<AutoboxSocket<?, ?>> ALL = Arrays.asList( //
-      RimoSocket.INSTANCE, //
+  /** unmodifiable list of all AutoboxSocket instances */
+  public static final List<AutoboxSocket<?, ?>> ALL = Arrays.asList( //
       LinmotSocket.INSTANCE, //
       SteerSocket.INSTANCE, //
-      MiscSocket.INSTANCE);
+      MiscSocket.INSTANCE, //
+      RimoSocket.INSTANCE);
 }

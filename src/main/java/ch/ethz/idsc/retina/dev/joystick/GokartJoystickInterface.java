@@ -23,6 +23,6 @@ public interface GokartJoystickInterface {
    * the return value equals zero. */
   Scalar getAheadAverage();
 
-  /** @return vector with length 2 */
+  /** @return vector of length 2 with each entry in unit interval [0, 1] */
   Tensor getAheadPair_Unit();
 }

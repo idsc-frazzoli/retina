@@ -8,13 +8,13 @@ import ch.ethz.idsc.retina.gui.gokart.GokartStatusLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 
 public class GokartStatusLcmClient extends SimpleLcmClient<GokartStatusListener> {
-  @Override
+  @Override // from BinaryLcmClient
   protected void digest(ByteBuffer byteBuffer) {
     GokartStatusEvent event = new GokartStatusEvent(byteBuffer);
     listeners.forEach(listener -> listener.getEvent(event));
   }
 
-  @Override
+  @Override // from BinaryLcmClient
   protected String name() {
     return GokartStatusLcmModule.CHANNEL;
   }

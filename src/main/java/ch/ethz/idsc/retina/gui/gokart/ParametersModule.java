@@ -42,6 +42,7 @@ public class ParametersModule extends AbstractModule {
     jTabbedPane.addTab(object.getClass().getSimpleName(), propertiesComponent.getScrollPane());
   }
 
+  /***************************************************/
   public static void standalone() throws Exception {
     ParametersModule parametersModule = new ParametersModule();
     parametersModule.first();

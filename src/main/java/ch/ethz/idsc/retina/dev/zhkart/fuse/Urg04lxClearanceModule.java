@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public final class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
   public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
-  private static final Scalar HALF = RealScalar.of(0.5);
+  // private static final Scalar HALF = RealScalar.of(0.5);
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private boolean isPathObstructed = true;
@@ -79,8 +79,8 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       Clip clip = Clip.function(half.negate(), half);
-      Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
-      Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
+      // Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
+      // Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
       // TODO formula needs analysis
       Scalar speed = RealScalar.ONE;
       // pair_meas.dot(pair_unit).Get().multiply(HALF);

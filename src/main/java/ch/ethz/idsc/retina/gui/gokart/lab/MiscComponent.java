@@ -18,11 +18,10 @@ import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
   public static final List<Word> COMMANDS = Arrays.asList( //
@@ -33,7 +32,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       Word.createByte("OFF", (byte) 0), //
       Word.createByte("ON", (byte) 1) //
   );
-  private static final Scalar BATTERY_LOW = Quantity.of(11, "V");
   // ---
   private final JButton jButtonCommReset = new JButton("Reset");
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
@@ -48,10 +46,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public MiscComponent() {
     {
       JToolBar jToolBar = createRow("Communication");
-      // jButtonCommReset.setEnabled(false); // TODO temporary permission
+      jButtonCommReset.setEnabled(false);
       jButtonCommReset.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           MiscIgnitionProvider.INSTANCE.schedule();
         }
       });
@@ -99,7 +97,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
-    // jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout()); // TODO temporary permission
+    jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout());
     // ---
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
@@ -113,8 +111,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     {
       Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
       jTextFieldBat.setText(voltage.toString());
-      Color color = Scalars.lessThan(voltage, BATTERY_LOW) ? Color.RED : Color.WHITE;
-      jTextFieldBat.setBackground(color);
+      boolean isInside = SteerConfig.GLOBAL.operatingVoltageClip().isInside(voltage);
+      jTextFieldBat.setBackground(isInside ? Color.RED : Color.WHITE);
     }
   }
 
