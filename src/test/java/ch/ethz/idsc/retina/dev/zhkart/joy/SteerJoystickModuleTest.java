@@ -1,11 +1,13 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.steer;
+package ch.ethz.idsc.retina.dev.zhkart.joy;
 
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;

@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class RimoGetEvent extends DataEvent {
-  /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH;
+  /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH; // == 48
   // ---
   public final RimoGetTire getTireL;
   public final RimoGetTire getTireR;

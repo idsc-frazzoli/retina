@@ -25,16 +25,16 @@ import ch.ethz.idsc.tensor.Tensor;
 public class RimoJoystickModule extends AbstractModule implements RimoPutProvider {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
+  /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     joystickLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
@@ -42,16 +42,23 @@ public class RimoJoystickModule extends AbstractModule implements RimoPutProvide
   }
 
   /***************************************************/
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.MANUAL;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
-    if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
-      GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
+    return optional.isPresent() //
+        ? control(steerColumnInterface, (GokartJoystickInterface) optional.get())
+        : Optional.empty();
+  }
+
+  public Optional<RimoPutEvent> control( //
+      SteerColumnInterface steerColumnInterface, //
+      GokartJoystickInterface joystick) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
       DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
       Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);

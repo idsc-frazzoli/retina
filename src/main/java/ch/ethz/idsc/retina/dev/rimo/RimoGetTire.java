@@ -48,14 +48,14 @@ public class RimoGetTire implements Serializable {
    * the current firmware on the micro-autobox requires
    * -1 for the LEFT wheel, and +1 for the RIGHT wheel */
   RimoGetTire(ByteBuffer byteBuffer, int sign) {
-    status_word = byteBuffer.getShort(); // 2
-    actual_rate = byteBuffer.getShort(); // 4
-    rms_motor_current = byteBuffer.getShort(); // 6
-    dc_bus_voltage = byteBuffer.getShort(); // 8
-    error_code = byteBuffer.getInt(); // 12
-    temperature_motor = byteBuffer.getShort(); // 14
-    temperature_heatsink = byteBuffer.getShort(); // 16
-    sdoMessage = new SdoMessage(byteBuffer); // 24
+    status_word = byteBuffer.getShort(); // 0:2
+    actual_rate = byteBuffer.getShort(); // 2:4
+    rms_motor_current = byteBuffer.getShort(); // 4:6
+    dc_bus_voltage = byteBuffer.getShort(); // 6:8
+    error_code = byteBuffer.getInt(); // 8:12
+    temperature_motor = byteBuffer.getShort(); // 12:14
+    temperature_heatsink = byteBuffer.getShort(); // 14:16
+    sdoMessage = new SdoMessage(byteBuffer); // 16:24
     // ---
     this.sign = sign;
   }
