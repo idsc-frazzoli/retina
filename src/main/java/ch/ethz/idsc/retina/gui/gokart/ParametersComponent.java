@@ -100,8 +100,8 @@ class ParametersComponent extends ToolbarsComponent {
   }
 
   public static void main(String[] args) {
-    JFrame jFrame = new JFrame();
     ParametersComponent pc = new ParametersComponent(SteerConfig.GLOBAL);
+    JFrame jFrame = new JFrame();
     jFrame.setContentPane(pc.getScrollPane());
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 400, 300);

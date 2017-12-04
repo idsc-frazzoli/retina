@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
+import java.util.Objects;
+
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
@@ -17,7 +19,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 /** contains hard-coded channel names and magic constants */
 public class DavisOverviewModule extends AbstractModule {
-  private DavisLcmClient davisLcmClient;
+  private DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private DavisQuickFrame davisViewerFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
@@ -25,10 +27,8 @@ public class DavisOverviewModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    String cameraId = "overview";
     int period_us = 10_000;
     DavisDevice davisDevice = Davis240c.INSTANCE;
-    davisLcmClient = new DavisLcmClient(cameraId);
     DavisLidarComponent davisLidarComponent = new DavisLidarComponent();
     vlp16LcmHandler.lidarAngularFiringCollector.addListener(davisLidarComponent);
     davisViewerFrame = new DavisQuickFrame(davisDevice, davisLidarComponent);
@@ -52,8 +52,10 @@ public class DavisOverviewModule extends AbstractModule {
   protected void last() {
     vlp16LcmHandler.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
-    davisViewerFrame.jFrame.setVisible(false);
-    davisViewerFrame.jFrame.dispose();
+    if (Objects.nonNull(davisViewerFrame)) {
+      davisViewerFrame.jFrame.setVisible(false);
+      davisViewerFrame.jFrame.dispose();
+    }
   }
 
   public static void standalone() throws Exception {

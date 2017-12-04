@@ -9,13 +9,13 @@ import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class DavisDetailModule extends AbstractModule {
-  private DavisDetailViewer davisDetailViewer;
+  private DavisDetailViewer davisDetailViewer = //
+      new DavisDetailViewer(GokartLcmChannel.DAVIS_OVERVIEW, 10_000);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
-    davisDetailViewer = new DavisDetailViewer("overview", 10_000);
     windowConfiguration.attach(getClass(), davisDetailViewer.davisViewerFrame.jFrame);
     davisDetailViewer.davisViewerFrame.jFrame.setVisible(true);
     davisDetailViewer.start();
@@ -26,6 +26,7 @@ public class DavisDetailModule extends AbstractModule {
     davisDetailViewer.stop();
   }
 
+  /***************************************************/
   public static void standalone() throws Exception {
     DavisDetailModule davisDetailModule = new DavisDetailModule();
     davisDetailModule.first();

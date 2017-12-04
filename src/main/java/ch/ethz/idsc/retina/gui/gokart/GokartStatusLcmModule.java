@@ -6,9 +6,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 
+/** server to publish absolute steering column angle */
 public class GokartStatusLcmModule extends AbstractClockedModule {
   public static final String CHANNEL = "gokart.status.get";
-  public static final double PERIOD_S = 0.01;
+  private static final double PERIOD_S = 0.01;
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL);

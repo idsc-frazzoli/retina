@@ -12,8 +12,9 @@ public class ChassisGeometryTest extends TestCase {
     differentialSpeed.pair(RealScalar.ONE, RealScalar.of(.3));
   }
 
-  public void testSome() {
+  public void testSingleton() {
     ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-    // assertTrue(Units.isOne(xaxle));
+    ChassisGeometry.GLOBAL.xAxleRearMeter();
+    ChassisGeometry.GLOBAL.yTireFrontMeter();
   }
 }
