@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.qty.Units;
 import junit.framework.TestCase;
 
 public class SteerConfigTest extends TestCase {
@@ -13,5 +14,9 @@ public class SteerConfigTest extends TestCase {
     Scalar q = Quantity.of(2, "km*NOU");
     Scalar r = QuantityMagnitude.SI().in(Unit.of("m*NOU")).apply(q);
     assertEquals(r, RealScalar.of(2000));
+  }
+
+  public void testSCE() {
+    assertEquals(Units.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
   }
 }

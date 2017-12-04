@@ -129,6 +129,11 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
   /***************************************************/
   @Override // from GokartJoystickInterface
+  public Scalar getSteerLeft() {
+    return DoubleScalar.of(-getRightKnobDirectionRight());
+  }
+
+  @Override // from GokartJoystickInterface
   public double getBreakStrength() {
     return Math.max(0, getRightKnobDirectionDown());
   }
@@ -136,11 +141,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
   @Override // from GokartJoystickInterface
   public Scalar getAheadAverage() {
     return CLIPZONE.apply(DoubleScalar.of(getLeftKnobDirectionUp()));
-  }
-
-  @Override // from GokartJoystickInterface
-  public double getSteerLeft() {
-    return -getRightKnobDirectionRight();
   }
 
   @Override // from GokartJoystickInterface

@@ -14,7 +14,7 @@ public interface GokartJoystickInterface {
   /** positive value is interpreted as ccw rotation
    * 
    * @return value in the interval [-1, 1] */
-  double getSteerLeft();
+  Scalar getSteerLeft();
 
   /** @return double in the interval [0, 1] */
   double getBreakStrength();

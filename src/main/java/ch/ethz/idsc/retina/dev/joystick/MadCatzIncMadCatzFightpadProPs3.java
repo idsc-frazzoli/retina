@@ -13,8 +13,8 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Gok
   }
 
   @Override
-  public double getSteerLeft() {
-    return 0;
+  public Scalar getSteerLeft() {
+    return RealScalar.ZERO;
   }
 
   @Override

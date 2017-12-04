@@ -133,8 +133,8 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
   }
 
   @Override // from GokartJoystickInterface
-  public double getSteerLeft() {
-    return -getRightKnobDirectionRight();
+  public Scalar getSteerLeft() {
+    return RealScalar.of(-getRightKnobDirectionRight());
   }
 
   @Override // from GokartJoystickInterface

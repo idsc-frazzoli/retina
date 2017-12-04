@@ -15,7 +15,6 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class SteerJoystickModule extends AbstractModule implements SteerPutProvider {
@@ -44,12 +43,22 @@ public class SteerJoystickModule extends AbstractModule implements SteerPutProvi
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
     Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
-    if (optional.isPresent() && steerColumnInterface.isSteerColumnCalibrated()) {
-      GokartJoystickInterface joystick = (GokartJoystickInterface) optional.get();
-      final Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = RealScalar.of(joystick.getSteerLeft()).multiply(SteerConfig.GLOBAL.columnMax);
-      final Scalar torqueCmd = //
-          positionController.iterate(desPos.subtract(currAngle));
+    return optional.isPresent() //
+        ? control(steerColumnInterface, (GokartJoystickInterface) optional.get())
+        : Optional.empty();
+  }
+
+  /** @param steerColumnInterface
+   * @param joystick
+   * @return */
+  public Optional<SteerPutEvent> control( //
+      SteerColumnInterface steerColumnInterface, //
+      GokartJoystickInterface joystick) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
+      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+      Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
+      Scalar difference = desPos.subtract(currAngle);
+      Scalar torqueCmd = positionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
     return Optional.empty();
