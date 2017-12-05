@@ -22,7 +22,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.math.Se2AxisYProject_Retina;
+import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -91,7 +91,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
         float py = floatBuffer.get();
         // TODO magic const rear axle to lidarpos
         Tensor point = Tensors.vector(px + 1.64, py);
-        Scalar t = Se2AxisYProject_Retina.of(u, point).negate();
+        Scalar t = Se2AxisYProject.of(u, point).negate();
         // System.out.println(t);
         Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
         Tensor v = se2ForwardAction.apply(point);
