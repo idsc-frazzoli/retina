@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public MiscComponent() {
     {
       JToolBar jToolBar = createRow("Communication");
-      jButtonCommReset.setEnabled(false);
+      // jButtonCommReset.setEnabled(false);
       jButtonCommReset.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -112,7 +112,7 @@ import ch.ethz.idsc.tensor.Scalar;
       Scalar voltage = miscGetEvent.getSteerBatteryVoltage();
       jTextFieldBat.setText(voltage.toString());
       boolean isInside = SteerConfig.GLOBAL.operatingVoltageClip().isInside(voltage);
-      jTextFieldBat.setBackground(isInside ? Color.RED : Color.WHITE);
+      jTextFieldBat.setBackground(isInside ? Color.WHITE : Color.RED);
     }
   }
 

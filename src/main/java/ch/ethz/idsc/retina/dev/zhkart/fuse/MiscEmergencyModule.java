@@ -18,7 +18,7 @@ public final class MiscEmergencyModule extends EmergencyModule<RimoPutEvent> imp
   /** the steering motor is powered through a separate battery.
    * due to abrupt maneuvers that require peak power consumption
    * we tolerate voltage drops below a threshold for a short period of time */
-  private static final long VOLTAGE_TIMEOUT_MS = 200;
+  private static final long VOLTAGE_TIMEOUT_MS = 1000; // 1[s] below threshold
   // ---
   private final Watchdog watchdog_steerVoltage = new Watchdog(VOLTAGE_TIMEOUT_MS * 1e-3);
   private boolean isBlown = false;

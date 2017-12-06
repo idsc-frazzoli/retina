@@ -22,7 +22,7 @@ public class SteerConfig implements Serializable {
   }
 
   /***************************************************/
-  public Scalar voltageLo = Quantity.of(11.1, "V");
+  public Scalar voltageLo = Quantity.of(10.8, "V"); // 10.8[V] for 1[s] confirmed with mac
   public Scalar voltageHi = Quantity.of(13.0, "V");
   // ---
   public Scalar calibration = Quantity.of(1.0, "SCT");
