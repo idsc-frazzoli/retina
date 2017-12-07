@@ -1,8 +1,11 @@
 # Gokart setup procedure
 
 Confirm: location of emergency-off button
+
 Confirm: nothing is in front of gokart
+
 Confirm: steering is not obstructed
+
 Confirm: DAVIS 128 is disconnected
 
 * prepare hardware
@@ -24,6 +27,7 @@ Info: (Ctrl+F11) runs a java file
 ## DAVIS 240C
 
 run
+
     JAERViewer.java
 
 * wait for DAVIS-240c camera image to show
@@ -32,12 +36,14 @@ run
 ## Joystick
 
 run
+
     RunTaskGui.java
 
-enable toggle-button
-    "Generic Xbox Pad Lcm Server"
+enable toggle-button "Generic Xbox Pad Lcm Server"
 
-Confirm: console printed "found joystick GENERIC XBOX PAD"
+Confirm: console printed
+
+    found joystick GENERIC XBOX PAD
 
 ## Gokart
 
@@ -52,8 +58,9 @@ activate all 3 toggle-buttons:
 * Urg04lx Lcm Server
 
 Confirm: when "Urg04lx Lcm Server" is started the console printed
-urg_alive1=true
-urg_alive2=true
+
+    urg_alive1=true
+    urg_alive2=true
 
 ### in the tab "lcm"
 
@@ -69,11 +76,12 @@ Info: the next one will stall for 5-10 seconds. Don't take any action during thi
 * click "Spy" and wait for the window to show up
 
 Confirm: there are
-8 channels starting with autobox.* 
-4 channels starting with davis.*
-1 channel starting with joystick
-1 channel starting with urg04lx
-2 channels starting with vlp16
+
+    8 channels starting with autobox.* 
+    4 channels starting with davis.*
+    1 channel starting with joystick
+    1 channel starting with urg04lx
+    2 channels starting with vlp16
 
 activate 2 more modules by enabling the toggle-buttons
 * Autobox Introspection
@@ -88,17 +96,23 @@ Confirm: the status word field should be green
 ### In the tab Testing::Steer
 
 press button "Calibration"
+
 Confirm: the steering moves left and right
+
 Confirm: the RangePos field is green
 
 enable button "controller"
+
 Confirm: steering goes to center
+
 disable button "controller"
 
 ### In the tab Testing::Misc
 
 If the Emergency field is "red" then press button "Reset".
+
 Confirm: the Emergency field is "white"
+
 Confirm: the steering battery voltage is above 11.7 V
 
 ### In the tab Testing::Rimo
@@ -125,11 +139,13 @@ stop the 2 modules "Local View Lcm" and "Davis Detail" by disabling the toggle-b
 activate all 6 modules from top to bottom
 
 Confirm: the console did not print anything in red
+
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
 ### in the tab "track"
 
 activate all 3 modules from top to bottom
+
 Confirm: all the fields in the Introspection window except for "Misc" are gray and display "...PutFallback"
 
 ---
