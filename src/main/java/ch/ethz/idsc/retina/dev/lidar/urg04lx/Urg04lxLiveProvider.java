@@ -41,7 +41,7 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
  * 
  * typically the distances up to 5[m] can be measured correctly. */
 public enum Urg04lxLiveProvider implements StartAndStoppable {
-  INSTANCE;
+  INSTANCE; // TODO do not make this a singleton instance
   public static final String EXECUTABLE = "urg_binaryprovider";
   // ---
   private OutputStream outputStream;
@@ -54,7 +54,13 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
     listeners.add(byteArrayConsumer);
   }
 
-  @Override
+  public void removeListener(ByteArrayConsumer byteArrayConsumer) {
+    boolean removed = listeners.remove(byteArrayConsumer);
+    if (!removed)
+      System.err.println("urg04lx listener not removed");
+  }
+
+  @Override // from StartAndStoppable
   public void start() { // non-blocking
     final File directory = UserHome.file("Public");
     ProcessBuilder processBuilder = new ProcessBuilder(new File(directory, EXECUTABLE).toString());
@@ -104,7 +110,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
     }
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void stop() {
     isLaunched = false;
     if (Objects.nonNull(outputStream))

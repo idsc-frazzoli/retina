@@ -22,8 +22,8 @@ public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final LinmotComponent linmotComponent = new LinmotComponent();
-  private final SteerComponent steerComponent = new SteerComponent();
   private final MiscComponent miscComponent = new MiscComponent();
+  private final SteerComponent steerComponent = new SteerComponent();
   private final RimoComponent rimoComponent = new RimoComponent();
   private final JFrame jFrame = new JFrame("Monitor and Testing");
   private final WindowConfiguration windowConfiguration = //
@@ -35,12 +35,12 @@ public class AutoboxTestingModule extends AbstractModule {
     LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
+    MiscSocket.INSTANCE.addAll(miscComponent);
+    addTab(miscComponent);
+    // ---
     SteerSocket.INSTANCE.addAll(steerComponent);
     SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
-    // ---
-    MiscSocket.INSTANCE.addAll(miscComponent);
-    addTab(miscComponent);
     // ---
     RimoSocket.INSTANCE.addAll(rimoComponent);
     addTab(rimoComponent);
@@ -51,12 +51,12 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        RimoSocket.INSTANCE.removeAll(rimoComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent);
         LinmotSocket.INSTANCE.removeAll(linmotComponent.linmotInitButton);
+        MiscSocket.INSTANCE.removeAll(miscComponent);
         SteerSocket.INSTANCE.removeAll(steerComponent);
         SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
-        MiscSocket.INSTANCE.removeAll(miscComponent);
+        RimoSocket.INSTANCE.removeAll(rimoComponent);
         System.out.println("removed listeners and providers");
       }
     });

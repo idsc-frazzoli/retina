@@ -47,7 +47,7 @@ public class MiscEmergencyModuleTest extends TestCase {
     MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
     miscEmergencyModule.getEvent(miscGetEvent);
     assertFalse(miscEmergencyModule.putEvent().isPresent());
-    Thread.sleep(220);
+    Thread.sleep(1100); // timeout increased to 1[s]
     assertTrue(miscEmergencyModule.putEvent().isPresent());
     miscEmergencyModule.last();
   }

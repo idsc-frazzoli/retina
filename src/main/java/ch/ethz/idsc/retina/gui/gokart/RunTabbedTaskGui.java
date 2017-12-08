@@ -45,9 +45,9 @@ enum RunTabbedTaskGui {
         AutoboxIntrospectionModule.class, //
         AutoboxTestingModule.class, //
         LocalViewLcmModule.class, //
+        DavisDetailModule.class, //
         PanoramaViewModule.class, //
-        DavisOverviewModule.class, //
-        DavisDetailModule.class //
+        DavisOverviewModule.class //
     ));
     taskTabGui.tab("fuse", Arrays.asList( //
         Urg04lxEmergencyModule.class, //
