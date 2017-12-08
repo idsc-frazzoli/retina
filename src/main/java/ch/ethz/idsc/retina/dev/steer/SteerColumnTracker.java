@@ -19,7 +19,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 @SafetyCritical
 public final class SteerColumnTracker implements SteerGetListener, SteerColumnInterface {
   private static final double SOFT = 1.45;
-  private static final double HARD = 1.6; // measured 1.538
+  /** on test day 2017 12 07:
+   * HARD limit increase from 1.6 to 1.9 */
+  private static final double HARD = 1.9; // max measured in lab 1.538
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
 

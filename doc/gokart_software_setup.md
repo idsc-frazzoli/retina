@@ -1,20 +1,21 @@
 # Gokart setup procedure
 
-Confirm: location of emergency-off button
-
 Confirm: nothing is in front of gokart
 
-Confirm: steering is not obstructed
+Confirm: steering mechanism is not obstructed
 
-Confirm: DAVIS 128 is disconnected
+Confirm: DVS128 is disconnected
 
-* prepare hardware
-* connect of all devices
-* power on
+* press emergency-off button labeled "turn to start engine", i.e. deactivate power to engine
+* flip rubber nob to switch on gokart and check gokart battery level close to 100%
+* press button on side of box for power (button should light up in green)
 
 ## Configuration of LCM in OS
 
-in home directory run
+open a terminal using (Ctrl+Alt+T)
+
+run the command
+
     ./setup_lcm.sh
 
 # start software in Eclipse
@@ -22,6 +23,7 @@ in home directory run
 start Eclipse
 
 Info: (Ctrl+Shift+R) navigates to files
+
 Info: (Ctrl+F11) runs a java file
 
 ## DAVIS 240C
@@ -31,7 +33,7 @@ run
     JAERViewer.java
 
 * wait for DAVIS-240c camera image to show
-* minimize (not close!) AEViewer window
+* minimize but do not close AEViewer window
 
 ## Joystick
 
@@ -48,6 +50,7 @@ Confirm: console printed
 ## Gokart
 
 run
+
     RunTabbedGui.java
 
 ### in the tab "dev"
@@ -71,9 +74,7 @@ activate all 3 toggle-buttons:
 
 ### in the tab "lab"
 
-Info: the next one will stall for 5-10 seconds. Don't take any action during this time.
-
-* click "Spy" and wait for the window to show up
+click "Spy" and wait ~10 seconds for the window to show up
 
 Confirm: there are
 
@@ -83,15 +84,29 @@ Confirm: there are
     1 channel starting with urg04lx
     2 channels starting with vlp16
 
+deactivating the toggle-button "Spy".  
+
 activate 2 more modules by enabling the toggle-buttons
 * Autobox Introspection
 * Autobox Testing
 
+Info: the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
+
 ### In the tab Testing::Linmot
 
 press button "Init" and wait for 3 sec for the brake to calibrate.
+
 Confirm: the brake makes some noise
+
 Confirm: the status word field should be green
+
+### In the tab Testing::Misc
+
+If the Emergency field is "red" then press button "Reset".
+
+Confirm: the Emergency field is "white"
+
+Confirm: the steering battery voltage is above 11.7 V
 
 ### In the tab Testing::Steer
 
@@ -107,23 +122,18 @@ Confirm: steering goes to center
 
 disable button "controller"
 
-### In the tab Testing::Misc
-
-If the Emergency field is "red" then press button "Reset".
-
-Confirm: the Emergency field is "white"
-
-Confirm: the steering battery voltage is above 11.7 V
-
 ### In the tab Testing::Rimo
 
-Important: Do nothing here! The tab is only for testing the rear wheels when suspended in the air.
+turn the emergency-off button to start engine
+
+manually roll the gokart forward and backward a bit and check if the actual speed values change accordingly   
 
 ---
 
 (back in the "lab" tab)
 
 deactivate toggle-button "Autobox Testing"
+
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
 activate 2 modules by enabling the toggle-buttons:
@@ -146,9 +156,8 @@ Confirm: all 4 fields in the Introspection window are gray and display "...PutFa
 
 activate all 3 modules from top to bottom
 
-Confirm: all the fields in the Introspection window except for "Misc" are gray and display "...PutFallback"
+Confirm: all the fields in the Introspection window are green except for "Misc"
 
 ---
 
 The gokart is now controllable by joystick.
-

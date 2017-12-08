@@ -9,19 +9,22 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 /** publishes urg04lx binary packets via lcm
  * see also {@link Urg04lxLcmClient} */
 public class Urg04lxLcmServer implements StartAndStoppable {
+  private final BinaryBlobPublisher publisher;
+
   /** @param lidarId */
   public Urg04lxLcmServer(String lidarId) {
-    BinaryBlobPublisher publisher = new BinaryBlobPublisher(Urg04lxDevice.channel(lidarId));
-    Urg04lxLiveProvider.INSTANCE.addListener(publisher);
+    publisher = new BinaryBlobPublisher(Urg04lxDevice.channel(lidarId));
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void start() {
+    Urg04lxLiveProvider.INSTANCE.addListener(publisher);
     Urg04lxLiveProvider.INSTANCE.start();
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void stop() {
     Urg04lxLiveProvider.INSTANCE.stop();
+    Urg04lxLiveProvider.INSTANCE.removeListener(publisher);
   }
 }
