@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
@@ -58,6 +59,7 @@ enum RunTabbedTaskGui {
         Urg04lxClearanceModule.class //
     ));
     taskTabGui.tab("track", Arrays.asList( //
+        DeadManSwitchModule.class, //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
         RimoTorqueJoystickModule.class //

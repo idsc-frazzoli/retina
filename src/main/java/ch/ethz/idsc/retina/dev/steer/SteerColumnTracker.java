@@ -19,13 +19,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 @SafetyCritical
 public final class SteerColumnTracker implements SteerGetListener, SteerColumnInterface {
   private static final double SOFT = 1.45;
-  /** on test day 2017 12 07:
-   * HARD limit increase from 1.6 to 1.9 */
-  private static final double HARD = 1.9; // max measured in lab 1.538
+  /** upper bound on steer column interval width
+   * on test day 2017 12 07: HARD limit increase from 1.6 to 1.9
+   * on test day 2017 12 08: screw on steer column was tightened, limit now at 1.65 */
+  private static final double HARD = 1.65; // max measured in lab 1.538
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
 
-  @Override
+  @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
     intervalTracker.setValue(steerGetEvent.getGcpRelRckPos());
   }

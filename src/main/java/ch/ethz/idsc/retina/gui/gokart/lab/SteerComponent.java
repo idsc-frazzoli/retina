@@ -113,15 +113,16 @@ import ch.ethz.idsc.tensor.Scalar;
   @Override // from GetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
     final boolean isCalibrated = steerColumnTracker.isSteerColumnCalibrated();
+    final boolean isHealthy = steerColumnTracker.isCalibratedAndHealthy();
     jToggleController.setEnabled(isCalibrated);
     // ---
     {
       rangeWidth.setText("" + steerColumnTracker.getIntervalWidth());
+      rangeWidth.setBackground(isHealthy ? Color.GREEN : Color.RED);
       String angle = isCalibrated //
           ? steerColumnTracker.getSteerColumnEncoderCentered().toString() //
           : "NOT CALIBRATED";
       rangePos.setText(angle);
-      rangePos.setBackground(isCalibrated ? Color.GREEN : Color.RED);
     }
     // ---
     jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
