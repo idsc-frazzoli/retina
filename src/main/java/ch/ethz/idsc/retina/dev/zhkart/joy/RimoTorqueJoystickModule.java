@@ -13,11 +13,9 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class RimoTorqueJoystickModule extends JoystickModule<RimoPutEvent> {
-  private static final ScalarUnaryOperator ARMS = QuantityMagnitude.singleton(RimoPutTire.UNIT_TORQUE);
+  private static final Scalar HALF = RealScalar.of(0.5);
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
 
@@ -43,11 +41,10 @@ public class RimoTorqueJoystickModule extends JoystickModule<RimoPutEvent> {
       SteerColumnInterface steerColumnInterface, //
       GokartJoystickInterface joystick) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
-      Scalar torque = RimoConfig.GLOBAL.torqueLimit; // ARMS
       Scalar factor = joystick.getAheadAverage();
       Tensor pair = joystick.getAheadPair_Unit();
-      pair = pair.map(s -> s.add(factor)).multiply(RealScalar.of(0.5)).multiply(torque);
-      // pair = pair.map(ARMS); // TODO test
+      pair = pair.map(s -> s.add(factor)).multiply(HALF).multiply(RimoConfig.GLOBAL.torqueLimit);
+      pair = pair.map(RimoPutTire.MAGNITUDE_ARMS);
       short armsL_raw = (short) (-pair.Get(0).number().shortValue());
       short armsR_raw = (short) (+pair.Get(1).number().shortValue());
       return Optional.of(new RimoPutEvent( //

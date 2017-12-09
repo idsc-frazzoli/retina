@@ -14,11 +14,11 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
 
   /** see {@link GokartJoystickInterface} for valid range of arguments
    * 
-   * @param steerLeft real scalar
-   * @param breakStrength
-   * @param ahead real scalar
-   * @param pair vector of length 2
-   * @throws Exception if any argument is not in valid range */
+   * @param steerLeft in the interval [-1, 1]
+   * @param breakStrength in the unit interval [0, 1]
+   * @param ahead real scalar in the interval [-1, 1]
+   * @param pair vector of length 2 with entries in the unit interval [0, 1]
+   * @throws Exception if any argument is not in the valid range */
   public GokartJoystickAdapter(Scalar steerLeft, Scalar breakStrength, Scalar ahead, Tensor pair) {
     Clip.absoluteOne().isInsideElseThrow(steerLeft);
     Clip.unit().isInsideElseThrow(breakStrength);

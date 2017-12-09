@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** module to test rimo torque control for a given target speed */
+@Deprecated // class was used for testing in the workshop
 class RimoMetronomeModule extends AbstractModule implements RimoPutProvider {
   public static final Scalar HALF_PERIOD = RealScalar.of(2);
   // ---
