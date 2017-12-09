@@ -46,13 +46,13 @@ public class MiscGetEvent extends DataEvent {
     return Quantity.of(batteryAdc * CONVERSION_V, "V");
   }
 
-  @Override
+  @Override // from DataEvent
   protected void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(emergency);
     byteBuffer.putFloat(batteryAdc);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }
