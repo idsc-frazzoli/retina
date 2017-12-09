@@ -18,8 +18,8 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Gok
   }
 
   @Override
-  public double getBreakStrength() {
-    return 0;
+  public Scalar getBreakStrength() {
+    return RealScalar.ZERO;
   }
 
   @Override

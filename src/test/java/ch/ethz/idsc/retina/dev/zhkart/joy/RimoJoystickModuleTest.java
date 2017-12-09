@@ -21,7 +21,7 @@ public class RimoJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rjm.control( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
-            RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2)));
+            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8)));
     assertFalse(optional.isPresent());
     assertFalse(rjm.putEvent().isPresent());
   }
@@ -31,7 +31,7 @@ public class RimoJoystickModuleTest extends TestCase {
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.6));
     Optional<RimoPutEvent> optional = rjm.control(sci, gji);
     assertFalse(optional.isPresent()); // no get event
   }
@@ -41,7 +41,7 @@ public class RimoJoystickModuleTest extends TestCase {
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5));
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
     byteBuffer.putShort(2, (short) 100);
     byteBuffer.putShort(24 + 2, (short) 200); // rimogetTire.LENGTH == 24

@@ -16,16 +16,16 @@ public class GenericXboxPadJoystickTest extends TestCase {
     for (int index = 0; index < array.length; ++index)
       array[index] = (byte) index;
     joystick.decode(ByteBuffer.wrap(array));
-    assertEquals(joystick.getBreakStrength(), 0.031496062992125984);
+    assertEquals(joystick.getBreakStrength(), RealScalar.of(0.031496062992125984));
     array[4] = 127;
     joystick.decode(ByteBuffer.wrap(array));
-    assertEquals(joystick.getBreakStrength(), 1.0);
+    assertEquals(joystick.getBreakStrength(), RealScalar.of(1.0));
     array[4] = -127;
     joystick.decode(ByteBuffer.wrap(array));
-    assertEquals(joystick.getBreakStrength(), 0.0);
+    assertEquals(joystick.getBreakStrength(), RealScalar.ZERO);
     array[4] = -18;
     joystick.decode(ByteBuffer.wrap(array));
-    assertEquals(joystick.getBreakStrength(), 0.0);
+    assertEquals(joystick.getBreakStrength(), RealScalar.ZERO);
   }
 
   public void testSteer() {

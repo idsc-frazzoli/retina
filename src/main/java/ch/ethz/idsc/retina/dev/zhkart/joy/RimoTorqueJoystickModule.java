@@ -13,8 +13,12 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class RimoTorqueJoystickModule extends JoystickModule<RimoPutEvent> {
+  private static final ScalarUnaryOperator ARMS = QuantityMagnitude.singleton(RimoPutTire.UNIT_TORQUE);
+  // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
 
   @Override // from AbstractModule
@@ -43,6 +47,7 @@ public class RimoTorqueJoystickModule extends JoystickModule<RimoPutEvent> {
       Scalar factor = joystick.getAheadAverage();
       Tensor pair = joystick.getAheadPair_Unit();
       pair = pair.map(s -> s.add(factor)).multiply(RealScalar.of(0.5)).multiply(torque);
+      // pair = pair.map(ARMS); // TODO test
       short armsL_raw = (short) (-pair.Get(0).number().shortValue());
       short armsR_raw = (short) (+pair.Get(1).number().shortValue());
       return Optional.of(new RimoPutEvent( //

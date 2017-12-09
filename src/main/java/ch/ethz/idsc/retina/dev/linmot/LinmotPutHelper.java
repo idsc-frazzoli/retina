@@ -6,6 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.Scalar;
 
 @SafetyCritical
 public enum LinmotPutHelper {
@@ -47,7 +48,8 @@ public enum LinmotPutHelper {
 
   /** @param value in the unit interval [0, 1]
    * @return */
-  public static LinmotPutEvent operationToRelativePosition(double value) {
+  public static LinmotPutEvent operationToRelativePosition(Scalar _value) {
+    double value = _value.number().doubleValue();
     return operationToPosition((short) // TODO this formula is slightly off, but that does not affect safety
     Math.min(Math.max(TARGETPOS_MIN, (TARGETPOS_MIN * value + TARGETPOS_INIT)), TARGETPOS_MAX));
   }

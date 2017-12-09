@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -123,8 +124,8 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
 
   /***************************************************/
   @Override // from GokartJoystickInterface
-  public double getBreakStrength() {
-    return Math.max(0, getRightKnobDirectionDown());
+  public Scalar getBreakStrength() {
+    return DoubleScalar.of(Math.max(0, getRightKnobDirectionDown()));
   }
 
   @Override // from GokartJoystickInterface

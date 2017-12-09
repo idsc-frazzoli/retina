@@ -49,14 +49,14 @@ public class RimoPutTire implements Serializable {
     this.torque = torque;
   }
 
-  /** only for use in display
+  /** for use in display and tests
    * 
    * @return */
   public short getRateRaw() {
     return rate;
   }
 
-  /** only for use in display
+  /** for use in display and tests
    * 
    * @return */
   public short getTorqueRaw() {

@@ -134,8 +134,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
   }
 
   @Override // from GokartJoystickInterface
-  public double getBreakStrength() {
-    return Math.max(0, getRightKnobDirectionDown());
+  public Scalar getBreakStrength() {
+    return DoubleScalar.of(Math.max(0, getRightKnobDirectionDown()));
   }
 
   @Override // from GokartJoystickInterface
