@@ -2,8 +2,10 @@
 package ch.ethz.idsc.retina.dev.joystick;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class GokartJoystickAdapter implements GokartJoystickInterface {
@@ -50,5 +52,13 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
   @Override // from GokartJoystickInterface
   public Tensor getAheadPair_Unit() {
     return pair;
+  }
+
+  @Override // from GokartJoystickInterface
+  public boolean isPassive() {
+    return Scalars.isZero(steerLeft) //
+        && Scalars.isZero(breakStrength) //
+        && Scalars.isZero(ahead) //
+        && Chop.NONE.allZero(pair);
   }
 }

@@ -144,4 +144,9 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
         getLeftSliderUnitValue(), //
         getRightSliderUnitValue());
   }
+
+  @Override // from GokartJoystickInterface
+  public boolean isPassive() {
+    throw new RuntimeException();
+  }
 }

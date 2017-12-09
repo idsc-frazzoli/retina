@@ -27,12 +27,12 @@ public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
     this.pattern = pattern;
   }
 
-  @Override
+  @Override // from LcmClientInterface
   public void startSubscriptions() {
     subscriptionRecord = LCM.getSingleton().subscribe("joystick." + pattern, this);
   }
 
-  @Override
+  @Override // from LcmClientInterface
   public void stopSubscriptions() {
     if (Objects.nonNull(subscriptionRecord))
       LCM.getSingleton().unsubscribe(subscriptionRecord);
@@ -41,20 +41,24 @@ public class JoystickLcmClient implements LcmClientInterface, LCMSubscriber {
   private long timeStamp = 0;
   private JoystickEvent joystickEvent = null;
 
-  @Override
+  @Override // from LCMSubscriber
   public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
     try {
       BinaryBlob binaryBlob = new BinaryBlob(ins); // <- may throw IOException
       ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
       byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
       joystickEvent = JoystickDecoder.decode(byteBuffer);
-      timeStamp = System.currentTimeMillis();
+      timeStamp = now();
     } catch (IOException exception) {
       exception.printStackTrace();
     }
   }
 
   public Optional<JoystickEvent> getJoystick() {
-    return Optional.ofNullable(System.currentTimeMillis() < timeStamp + TIMEOUT_MS ? joystickEvent : null);
+    return Optional.ofNullable(now() < timeStamp + TIMEOUT_MS ? joystickEvent : null);
+  }
+
+  private static long now() {
+    return System.currentTimeMillis();
   }
 }

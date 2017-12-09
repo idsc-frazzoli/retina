@@ -11,7 +11,6 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
-import ch.ethz.idsc.retina.dev.zhkart.joy.RimoJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
@@ -61,7 +60,6 @@ enum RunTabbedTaskGui {
     taskTabGui.tab("track", Arrays.asList( //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
-        RimoJoystickModule.class, //
         RimoTorqueJoystickModule.class //
     ));
     wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);

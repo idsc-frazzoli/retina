@@ -25,4 +25,7 @@ public interface GokartJoystickInterface {
 
   /** @return vector of length 2 with each entry in unit interval [0, 1] */
   Tensor getAheadPair_Unit();
+
+  /** @return true if none of the manipulators on the joystick are pressed by user */
+  boolean isPassive();
 }

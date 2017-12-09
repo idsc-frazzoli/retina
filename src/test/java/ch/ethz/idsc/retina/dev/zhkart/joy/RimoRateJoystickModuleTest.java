@@ -15,9 +15,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class RimoJoystickModuleTest extends TestCase {
+public class RimoRateJoystickModuleTest extends TestCase {
   public void testSimple() {
-    RimoJoystickModule rjm = new RimoJoystickModule();
+    RimoRateJoystickModule rjm = new RimoRateJoystickModule();
     Optional<RimoPutEvent> optional = rjm.control( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
@@ -27,7 +27,7 @@ public class RimoJoystickModuleTest extends TestCase {
   }
 
   public void testCalibNonGet() {
-    RimoJoystickModule rjm = new RimoJoystickModule();
+    RimoRateJoystickModule rjm = new RimoRateJoystickModule();
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
@@ -37,7 +37,7 @@ public class RimoJoystickModuleTest extends TestCase {
   }
 
   public void testCalibGet() {
-    RimoJoystickModule rjm = new RimoJoystickModule();
+    RimoRateJoystickModule rjm = new RimoRateJoystickModule();
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
@@ -49,5 +49,12 @@ public class RimoJoystickModuleTest extends TestCase {
     rjm.rimoRateControllerWrap.getEvent(rimoGetEvent);
     Optional<RimoPutEvent> optional = rjm.control(sci, gji);
     assertTrue(optional.isPresent());
+  }
+
+  public void testTranslate() {
+    RimoRateJoystickModule rjm = new RimoRateJoystickModule();
+    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5));
+    assertFalse(rjm.translate(joystick).isPresent());
   }
 }

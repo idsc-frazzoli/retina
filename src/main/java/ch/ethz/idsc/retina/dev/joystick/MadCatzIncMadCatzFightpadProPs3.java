@@ -12,23 +12,28 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Gok
     return null; // JoystickType.MAD_CATZ_FIGHTPAD_PRO_PS3;
   }
 
-  @Override
+  @Override // from GokartJoystickInterface
   public Scalar getSteerLeft() {
     return RealScalar.ZERO;
   }
 
-  @Override
+  @Override // from GokartJoystickInterface
   public Scalar getBreakStrength() {
     return RealScalar.ZERO;
   }
 
-  @Override
+  @Override // from GokartJoystickInterface
   public Scalar getAheadAverage() {
     return RealScalar.ZERO;
   }
 
-  @Override
+  @Override // from GokartJoystickInterface
   public Tensor getAheadPair_Unit() {
     return Array.zeros(2);
+  }
+
+  @Override // from GokartJoystickInterface
+  public boolean isPassive() {
+    throw new RuntimeException();
   }
 }
