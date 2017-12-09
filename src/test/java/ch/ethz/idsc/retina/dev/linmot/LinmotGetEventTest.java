@@ -9,5 +9,6 @@ public class LinmotGetEventTest extends TestCase {
   public void testLength() {
     LinmotGetEvent linmotGetEvent = new LinmotGetEvent(ByteBuffer.wrap(new byte[16]));
     assertEquals(linmotGetEvent.length(), 16);
+    linmotGetEvent.asArray();
   }
 }

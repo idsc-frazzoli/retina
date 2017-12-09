@@ -4,9 +4,11 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+@SafetyCritical
 public class RimoGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH; // == 48
   // ---

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import junit.framework.TestCase;
 
 public class LinmotComponentTest extends TestCase {
@@ -20,5 +21,10 @@ public class LinmotComponentTest extends TestCase {
     LinmotPutEvent linmotPutEvent = optional.get();
     linmotComponent.putEvent(linmotPutEvent);
     assertTrue(Objects.nonNull(linmotComponent.getScrollPane()));
+  }
+
+  public void testRank() {
+    LinmotComponent linmotComponent = new LinmotComponent();
+    assertEquals(linmotComponent.getProviderRank(), ProviderRank.TESTING);
   }
 }

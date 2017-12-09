@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
@@ -23,15 +24,25 @@ public class SteerPutEvent extends DataEvent {
   public static final Word CMD_OFF = Word.createByte("OFF", (byte) 0);
   public static final Word CMD_ON = Word.createByte("ON", (byte) 1);
   public static final List<Word> COMMANDS = Arrays.asList(CMD_OFF, CMD_ON);
+  public static final SteerPutEvent PASSIVE = new SteerPutEvent(SteerPutEvent.CMD_OFF, 0);
 
-  public static final SteerPutEvent from(ByteBuffer byteBuffer) {
-    return new SteerPutEvent(Word.createByte("", byteBuffer.get()), byteBuffer.getFloat());
+  /** @param command
+   * @param torque with unit "SCT"
+   * @return */
+  public static final SteerPutEvent create(Word command, Scalar torque) {
+    return new SteerPutEvent(command, RTORQUE.apply(torque).number().floatValue());
   }
 
   /** @param torque with unit "SCT"
    * @return */
   public static final SteerPutEvent createOn(Scalar torque) {
-    return new SteerPutEvent(CMD_ON, RTORQUE.apply(torque).number().floatValue());
+    return create(CMD_ON, torque);
+  }
+
+  /** @param byteBuffer for instance from message in log file
+   * @return */
+  public static final SteerPutEvent from(ByteBuffer byteBuffer) {
+    return new SteerPutEvent(Word.createByte("", byteBuffer.get()), byteBuffer.getFloat());
   }
 
   // ---
@@ -44,7 +55,7 @@ public class SteerPutEvent extends DataEvent {
    * 
    * @param command
    * @param torque typically in the interval [-1.5, +1.5] */
-  public SteerPutEvent(Word command, float torque) {
+  private SteerPutEvent(Word command, float torque) {
     this.command = command.getByte();
     this.torque = torque;
   }
@@ -55,12 +66,12 @@ public class SteerPutEvent extends DataEvent {
     byteBuffer.putFloat(torque);
   }
 
-  public float getTorque() {
-    return torque;
-  }
-
   @Override
   protected int length() {
     return LENGTH;
+  }
+
+  public Scalar getTorque() {
+    return Quantity.of(torque, UNIT_RTORQUE);
   }
 }

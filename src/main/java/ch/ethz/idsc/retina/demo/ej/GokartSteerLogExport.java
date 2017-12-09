@@ -54,7 +54,7 @@ enum GokartSteerLogExport {
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           SteerPutEvent steerPutEvent = SteerPutEvent.from(byteBuffer);
-          tablePut.append(Tensors.vector(event.utime - tic, steerPutEvent.getTorque()));
+          tablePut.append(Tensors.vector(event.utime - tic, steerPutEvent.getTorque().number().floatValue()));
           ++countPut;
         } else //
         if (event.channel.equals(ControllerInfoPublish.CHANNEL)) {

@@ -139,7 +139,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from PutListener
   public void putEvent(SteerPutEvent putEvent) {
-    torquePut.setText("" + putEvent.getTorque());
+    torquePut.setText(putEvent.getTorque().toString());
   }
 
   @Override // from PutProvider
@@ -153,8 +153,7 @@ import ch.ethz.idsc.tensor.Scalar;
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
       ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, only for tuning
       if (jToggleController.isSelected())
-        return Optional.of(new SteerPutEvent(spinnerLabelLw.getValue(), // <- command
-            SteerPutEvent.RTORQUE.apply(torqueCmd).number().floatValue())); // <- torque
+        return Optional.of(SteerPutEvent.create(spinnerLabelLw.getValue(), torqueCmd));
     }
     return Optional.empty();
   }

@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -13,6 +14,7 @@ import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+@SafetyCritical
 public class RimoPutTire implements Serializable {
   public static final Unit UNIT_TORQUE = Unit.of("ARMS");
   public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(UNIT_TORQUE);

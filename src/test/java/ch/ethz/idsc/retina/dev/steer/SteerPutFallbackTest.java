@@ -1,16 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import junit.framework.TestCase;
 
 public class SteerPutFallbackTest extends TestCase {
   public void testRegistered() {
-    // travis doesn't like this
-    // try {
-    // SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
-    // assertTrue(false);
-    // } catch (Exception exception) {
-    // // ---
-    // }
+    Optional<SteerPutEvent> optional = SteerPutFallback.INSTANCE.putEvent();
+    assertTrue(optional.isPresent());
+    byte[] array = optional.get().asArray();
+    Arrays.equals(array, new byte[5]);
   }
 }
