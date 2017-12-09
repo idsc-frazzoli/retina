@@ -23,12 +23,12 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
     addPutProvider(RimoPutFallback.INSTANCE);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected RimoGetEvent createGetEvent(ByteBuffer byteBuffer) {
     return new RimoGetEvent(byteBuffer);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }

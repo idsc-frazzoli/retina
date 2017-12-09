@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
@@ -15,6 +16,7 @@ public class RimoGetEvent extends DataEvent {
   public final RimoGetTire getTireL;
   public final RimoGetTire getTireR;
 
+  /** @param byteBuffer with {@link ByteOrder#LITTLE_ENDIAN} */
   public RimoGetEvent(ByteBuffer byteBuffer) {
     getTireL = new RimoGetTire(byteBuffer, -1);
     getTireR = new RimoGetTire(byteBuffer, +1);

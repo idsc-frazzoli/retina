@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
     return ProviderRank.FALLBACK;
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
     return Optional.of(RimoPutEvent.PASSIVE);
   }
