@@ -31,4 +31,8 @@ public class SteerPositionControlTest extends TestCase {
       SteerPutEvent.RTORQUE.apply(value);
     }
   }
+
+  public void testDt() {
+    assertEquals(SteerPositionControl.DT, Quantity.of(0.02, "s"));
+  }
 }

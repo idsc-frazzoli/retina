@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * controller is specific for steering on gokart */
 /* package */ class SteerSimplePositionControl {
-  private static final Scalar DT = Quantity.of(SteerSocket.INSTANCE.getPeriod_ms() * 1e-3, "s");
+  static final Scalar DT = SteerSocket.INSTANCE.getPeriod();
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);

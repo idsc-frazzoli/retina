@@ -14,4 +14,8 @@ public class RimoRateControllerTest extends TestCase {
     Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
   }
+
+  public void testDt() {
+    assertEquals(RimoRateController.DT, Quantity.of(0.02, "s"));
+  }
 }

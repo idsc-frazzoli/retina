@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,6 +19,8 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.N;
 
 public class GokartOdometry implements RimoGetListener {
+  private static final Scalar HALF = DoubleScalar.of(0.5);
+  // ---
   private final Scalar dt = RimoSocket.INSTANCE.getPeriod(); // TODO assumption
   private Tensor state = Array.zeros(3);
 
@@ -41,7 +44,7 @@ public class GokartOdometry implements RimoGetListener {
    * @return */
   Flow singleton(Scalar speedL, Scalar speedR, Scalar halfWidth) {
     Scalar speed = speedL.add(speedR);
-    Scalar rate = speedL.subtract(speedR).divide(RealScalar.of(2)).divide(halfWidth); // TODO check factor
+    Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(halfWidth);
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
         N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate)));
   }
