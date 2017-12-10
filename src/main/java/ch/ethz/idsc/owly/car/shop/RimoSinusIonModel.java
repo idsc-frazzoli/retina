@@ -57,6 +57,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   private RimoSinusIonModel() {
     final Pacejka3 PACEJKA = new Pacejka3(7, 1.4); //
+    // TODO redundant to chassis geometry
     final Scalar RADIUS1 = DoubleScalar.of(0.255 * 0.5); // wheel radius [m]
     final Scalar RADIUS2 = DoubleScalar.of(0.280 * 0.5); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(1); // wheel inertia [kgm2]

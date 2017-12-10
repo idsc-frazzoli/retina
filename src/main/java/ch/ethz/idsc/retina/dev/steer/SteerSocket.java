@@ -28,17 +28,17 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
     addPutProvider(SteerCalibrationProvider.INSTANCE);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected SteerGetEvent createGetEvent(ByteBuffer byteBuffer) {
     return new SteerGetEvent(byteBuffer);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }

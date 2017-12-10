@@ -24,17 +24,17 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
     addPutProvider(LinmotPutFallback.INSTANCE);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected LinmotGetEvent createGetEvent(ByteBuffer byteBuffer) {
     return new LinmotGetEvent(byteBuffer);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected long getPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }

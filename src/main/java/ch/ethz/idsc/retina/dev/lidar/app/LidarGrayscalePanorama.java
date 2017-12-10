@@ -41,6 +41,7 @@ public class LidarGrayscalePanorama implements LidarPanorama {
   public void setReading(int address, float distance, byte ivalue) {
     distances[address] = (byte) (distance * DISTANCE_WRAP); // loss of least significant bits
     intensity[address] = ivalue;
+    // intensity[address] = (byte) (255-ivalue); // TODO check
   }
 
   @Override
