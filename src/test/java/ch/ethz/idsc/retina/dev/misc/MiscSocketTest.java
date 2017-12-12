@@ -20,6 +20,6 @@ public class MiscSocketTest extends TestCase {
   }
 
   public void testPeriod() {
-    assertEquals(MiscSocket.INSTANCE.getPeriod_ms(), 20);
+    assertEquals(MiscSocket.INSTANCE.getPutPeriod_ms(), 20);
   }
 }

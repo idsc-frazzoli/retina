@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.sca.N;
 public class GokartOdometry implements RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);
   // ---
-  private final Scalar dt = RimoSocket.INSTANCE.getPeriod(); // TODO assumption
+  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
   private Tensor state = Array.zeros(3);
 
   @Override // from RimoGetListener
@@ -29,7 +29,7 @@ public class GokartOdometry implements RimoGetListener {
     step(rimoGetEvent.getAngularRate_Y_pair());
   }
 
-  void step(Tensor angularRate_Y_pair) {
+  /* package */ void step(Tensor angularRate_Y_pair) {
     Scalar radius = ChassisGeometry.GLOBAL.tireRadiusRear;
     Tensor speed_pair = angularRate_Y_pair.multiply(radius); // [rad*s^-1] * [m*rad^-1] == [m*s^-1]
     Integrator integrator = Se2CarIntegrator.INSTANCE;
@@ -42,7 +42,7 @@ public class GokartOdometry implements RimoGetListener {
    * @param speedR with unit "m*s^-1"
    * @param halfWidth "m*rad^-1"
    * @return */
-  Flow singleton(Scalar speedL, Scalar speedR, Scalar halfWidth) {
+  /* package */ Flow singleton(Scalar speedL, Scalar speedR, Scalar halfWidth) {
     Scalar speed = speedL.add(speedR);
     Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(halfWidth);
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //

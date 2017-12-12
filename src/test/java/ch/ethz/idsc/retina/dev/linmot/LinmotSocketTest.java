@@ -9,6 +9,6 @@ public class LinmotSocketTest extends TestCase {
   }
 
   public void testPeriod() {
-    assertEquals(LinmotSocket.INSTANCE.getPeriod_ms(), 20);
+    assertEquals(LinmotSocket.INSTANCE.getPutPeriod_ms(), 20);
   }
 }

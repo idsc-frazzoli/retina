@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * TODO interpolate PID constants depending on speed */
 public class SteerPositionControl {
-  static final Scalar DT = SteerSocket.INSTANCE.getPeriod();
+  static final Scalar DT = SteerSocket.INSTANCE.getPutPeriod();
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);

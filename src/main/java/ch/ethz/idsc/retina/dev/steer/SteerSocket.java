@@ -34,7 +34,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   }
 
   @Override // from AutoboxSocket
-  protected long getPeriod_ms() {
+  protected long getPutPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
