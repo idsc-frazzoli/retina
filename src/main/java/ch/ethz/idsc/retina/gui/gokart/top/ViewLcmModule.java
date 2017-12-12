@@ -47,7 +47,7 @@ abstract class ViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {
-      PathRender pathRender = new PathRender();
+      PathRender pathRender = new PathRender(gokartPoseInterface);
       gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(pathRender);
     }
