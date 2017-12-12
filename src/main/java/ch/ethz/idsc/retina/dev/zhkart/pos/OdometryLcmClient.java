@@ -8,10 +8,10 @@ import ch.ethz.idsc.retina.lcm.LcmClientAdapter;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 
 public class OdometryLcmClient extends LcmClientAdapter {
-  public final GokartOdometry gokartOdometry;
+  public final GokartPoseOdometry gokartOdometry;
 
   public OdometryLcmClient() {
-    gokartOdometry = GokartOdometry.create();
+    gokartOdometry = GokartPoseOdometry.create();
   }
 
   @Override // from LcmClientAdapter

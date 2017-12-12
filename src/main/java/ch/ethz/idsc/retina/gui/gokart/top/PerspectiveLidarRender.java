@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
@@ -25,10 +24,6 @@ class PerspectiveLidarRender extends LidarRender {
   private final Viewport viewport = Viewport.create(240, 180);
   private final Tensor projection = //
       ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100)).unmodifiable();
-
-  public PerspectiveLidarRender(Supplier<Tensor> supplier) {
-    super(supplier);
-  }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {

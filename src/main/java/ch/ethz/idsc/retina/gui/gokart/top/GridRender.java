@@ -20,8 +20,8 @@ public enum GridRender implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    graphics.setColor(new Color(224, 224, 224, 128));
     for (Tensor x : Subdivide.of(LO, HI, 10)) {
-      graphics.setColor(Color.LIGHT_GRAY);
       graphics.draw(new Line2D.Double(geometricLayer.toPoint2D(Tensors.of(LO, x)), geometricLayer.toPoint2D(Tensors.of(HI, x))));
       graphics.draw(new Line2D.Double(geometricLayer.toPoint2D(Tensors.of(x, LO)), geometricLayer.toPoint2D(Tensors.of(x, HI))));
     }

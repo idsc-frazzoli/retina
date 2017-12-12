@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -15,32 +14,28 @@ import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartOdometry;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseOdometry;
 import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class GlobalGokartRender implements RenderInterface, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.singleton("m");
-  private final Tensor SHAPE = CirclePoints.of(5).multiply(RealScalar.of(.5));
   // ---
-  private final GokartOdometry gokartOdometry;
+  private final GokartPoseOdometry gokartOdometry;
   Tensor _points = Tensors.empty();
 
-  public GlobalGokartRender(GokartOdometry gokartOdometry) {
+  public GlobalGokartRender(GokartPoseOdometry gokartOdometry) {
     this.gokartOdometry = gokartOdometry;
-    SHAPE.set(Tensors.vector(1.0, 0), 0);
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor state = gokartOdometry.getState(); // units {x[m], y[m], angle[]}
+    Tensor state = gokartOdometry.getPose(); // units {x[m], y[m], angle[]}
     Scalar x = TO_METER.apply(state.Get(0));
     Scalar y = TO_METER.apply(state.Get(1));
     Scalar angle = state.Get(2);
@@ -49,11 +44,6 @@ public class GlobalGokartRender implements RenderInterface, LidarRayBlockListene
     {
       graphics.setColor(new Color(192, 192, 192, 64));
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
-    }
-    {
-      graphics.setColor(Color.GRAY);
-      Path2D path2D = geometricLayer.toPath2D(SHAPE);
-      graphics.fill(path2D);
     }
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2)));
     if (Objects.nonNull(_points)) {

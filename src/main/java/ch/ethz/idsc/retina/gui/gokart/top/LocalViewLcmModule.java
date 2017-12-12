@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;
-import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -25,7 +24,6 @@ public class LocalViewLcmModule extends AbstractModule {
   // ---
   private final TimerFrame timerFrame = new TimerFrame();
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
-  private final Mark8LcmHandler mark8LcmHandler = new Mark8LcmHandler("center");
   private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
@@ -37,7 +35,8 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
-      TrigonometryRender trigonometryRender = new TrigonometryRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      TrigonometryRender trigonometryRender = new TrigonometryRender();
+      trigonometryRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(trigonometryRender);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
@@ -49,13 +48,15 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new PlanarLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      LidarRender lidarRender = new PlanarLidarRender();
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
       lidarRender.setColor(new Color(128, 192, 128, 64));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.urg04lx);
+      LidarRender lidarRender = new ParallelLidarRender();
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
       lidarRender.setColor(new Color(128, 0, 0, 128));
       urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
@@ -72,13 +73,8 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.mark8);
-      lidarRender.setColor(new Color(0, 128, 0, 128));
-      mark8LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-      timerFrame.geometricComponent.addRenderInterface(lidarRender);
-    }
-    {
-      LidarRender lidarRender = new ParallelLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
+      LidarRender lidarRender = new ParallelLidarRender();
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);

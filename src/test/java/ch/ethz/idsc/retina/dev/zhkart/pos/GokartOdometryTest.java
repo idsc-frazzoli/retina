@@ -10,9 +10,9 @@ import junit.framework.TestCase;
 
 public class GokartOdometryTest extends TestCase {
   public void testSimple() {
-    GokartOdometry gokartOdometry = GokartOdometry.create();
+    GokartPoseOdometry gokartOdometry = GokartPoseOdometry.create();
     gokartOdometry.step(Tensors.fromString("{5[rad*s^-1], 10[rad*s^-1]}"));
-    Tensor state = gokartOdometry.getState();
+    Tensor state = gokartOdometry.getPose();
     assertTrue(Sign.isPositive(state.Get(0)));
     assertTrue(Sign.isPositive(state.Get(1)));
     assertTrue(Sign.isPositive(state.Get(2)));
@@ -21,7 +21,7 @@ public class GokartOdometryTest extends TestCase {
   }
 
   public void testEffective() {
-    GokartOdometry gokartOdometry = GokartOdometry.create();
+    GokartPoseOdometry gokartOdometry = GokartPoseOdometry.create();
     Flow flow = gokartOdometry.singleton( //
         Quantity.of(3, "m*s^-1"), Quantity.of(5, "m*s^-1"), Quantity.of(0.3, "m*rad^-1"));
     Tensor u = flow.getU();

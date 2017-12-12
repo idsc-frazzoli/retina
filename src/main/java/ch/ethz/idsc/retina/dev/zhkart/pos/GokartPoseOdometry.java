@@ -16,22 +16,22 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 
-public class GokartOdometry implements RimoGetListener {
+public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);
 
-  public static GokartOdometry create(Tensor state) {
-    return new GokartOdometry(state);
+  public static GokartPoseOdometry create(Tensor state) {
+    return new GokartPoseOdometry(state);
   }
 
-  public static GokartOdometry create() {
-    return create(Tensors.fromString("{0[m], 0[m], 0}"));
+  public static GokartPoseOdometry create() {
+    return create(GokartPoseLocal.INSTANCE.getPose());
   }
 
   // ---
   private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
   private Tensor state;
 
-  private GokartOdometry(Tensor state) {
+  private GokartPoseOdometry(Tensor state) {
     this.state = state.copy();
   }
 
@@ -64,7 +64,8 @@ public class GokartOdometry implements RimoGetListener {
         N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate)));
   }
 
-  public Tensor getState() {
+  @Override // from GokartPoseInterface
+  public Tensor getPose() {
     return state.unmodifiable();
   }
 }

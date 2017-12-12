@@ -11,14 +11,17 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
 
 abstract class LidarRender implements RenderInterface, LidarRayBlockListener {
-  final Supplier<Tensor> supplier;
+  protected Supplier<Tensor> supplier = () -> Array.zeros(3);
+  // ---
   Tensor _points = Tensors.empty();
   Color color = Color.BLACK;
   int pointSize = 1;
 
-  public LidarRender(Supplier<Tensor> supplier) {
+  /** @param supplier of a 3 vector {x, y, alpha} */
+  public void setReference(Supplier<Tensor> supplier) {
     this.supplier = supplier;
   }
 

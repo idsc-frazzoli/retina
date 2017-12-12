@@ -8,7 +8,6 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
@@ -31,10 +30,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 class TrigonometryRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-
-  public TrigonometryRender(Supplier<Tensor> supplier) {
-    super(supplier);
-  }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {

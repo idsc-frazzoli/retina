@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -14,14 +13,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 class ParallelLidarRender extends LidarRender {
-  public ParallelLidarRender(Supplier<Tensor> supplier) {
-    super(supplier);
-  }
-
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor matrix = Se2Utils.toSE2Matrix(supplier.get());
-    geometricLayer.pushMatrix(matrix);
+    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
       Point2D width = geometricLayer.toPoint2D(Tensors.vector(0.1, 0));
@@ -32,13 +26,10 @@ class ParallelLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      // Stopwatch stopwatch = Stopwatch.started();
-      // rendering 0.035 [s]
       for (Tensor x : points) {
         Point2D point2D = geometricLayer.toPoint2D(x);
         graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
       }
-      // System.out.println(stopwatch.display_seconds());
     }
     geometricLayer.popMatrix();
   }
