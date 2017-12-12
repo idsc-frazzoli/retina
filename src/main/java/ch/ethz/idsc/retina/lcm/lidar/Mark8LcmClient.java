@@ -20,12 +20,12 @@ public class Mark8LcmClient extends BinaryLcmClient {
   }
 
   @Override
-  protected void digest(ByteBuffer byteBuffer) {
+  protected void messageReceived(ByteBuffer byteBuffer) {
     mark8Decoder.lasers(byteBuffer);
   }
 
   @Override
-  protected String name() {
+  protected String channel() {
     return Mark8Device.channel(lidarId);
   }
 }

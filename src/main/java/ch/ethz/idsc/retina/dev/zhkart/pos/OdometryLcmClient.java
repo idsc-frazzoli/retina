@@ -4,10 +4,10 @@ package ch.ethz.idsc.retina.dev.zhkart.pos;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.lcm.LcmClientAdapter;
+import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 
-public class OdometryLcmClient extends LcmClientAdapter {
+public class OdometryLcmClient extends BinaryLcmClient {
   public final GokartPoseOdometry gokartOdometry;
 
   public OdometryLcmClient() {

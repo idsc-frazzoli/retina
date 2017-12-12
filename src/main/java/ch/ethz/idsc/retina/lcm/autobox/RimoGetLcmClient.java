@@ -10,7 +10,7 @@ public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   private static boolean notify_flag = true;
 
   @Override
-  protected void digest(ByteBuffer byteBuffer) {
+  protected void messageReceived(ByteBuffer byteBuffer) {
     try {
       // the protocol has changed from speed control to torque control
       // previous log files will produce an error
@@ -25,7 +25,7 @@ public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   }
 
   @Override
-  protected String name() {
+  protected String channel() {
     return RimoLcmServer.CHANNEL_GET;
   }
 }

@@ -8,13 +8,13 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 
 public class LinmotGetLcmClient extends SimpleLcmClient<LinmotGetListener> {
   @Override
-  protected void digest(ByteBuffer byteBuffer) {
+  protected void messageReceived(ByteBuffer byteBuffer) {
     LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
     listeners.forEach(listener -> listener.getEvent(linmotGetEvent));
   }
 
   @Override
-  protected String name() {
+  protected String channel() {
     return LinmotLcmServer.CHANNEL_GET;
   }
 }

@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.lcm.LcmClientAdapter;
+import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 
-public class JoystickLcmClient extends LcmClientAdapter {
+public class JoystickLcmClient extends BinaryLcmClient {
   private static final int TIMEOUT_MS = 200;
   // ---
   private final String pattern;
