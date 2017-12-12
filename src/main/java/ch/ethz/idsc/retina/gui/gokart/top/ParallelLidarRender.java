@@ -9,12 +9,17 @@ import java.util.Objects;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 class ParallelLidarRender extends LidarRender {
+  public ParallelLidarRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
+  }
+
   @Override
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));

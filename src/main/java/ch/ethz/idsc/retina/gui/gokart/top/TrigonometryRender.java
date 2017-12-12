@@ -14,6 +14,7 @@ import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owly.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
@@ -31,8 +32,12 @@ class TrigonometryRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
+  public TrigonometryRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
+  }
+
   @Override
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     // System.out.println(geometricLayer.getMatrix());
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // TODO this could easily be unit

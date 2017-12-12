@@ -16,7 +16,7 @@ public abstract class LcmClientAdapter implements LcmClientInterface, LCMSubscri
   private SubscriptionRecord subscriptionRecord;
 
   @Override // from LcmClientInterface
-  public final void startSubscriptions() {
+  public final void startSubscriptions() { // TODO prevent multiple subscriptions
     subscriptionRecord = LCM.getSingleton().subscribe(channel(), this);
   }
 
