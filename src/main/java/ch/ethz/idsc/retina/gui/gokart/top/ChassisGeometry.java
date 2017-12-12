@@ -18,32 +18,26 @@ public class ChassisGeometry implements Serializable {
   }
 
   /***************************************************/
-  /** front axle distance from COG [m] */
-  public Scalar xAxleFront = Quantity.of(+0.72, "m");
-  /** rear axle distance from COG [m] */
-  public Scalar xAxleRear = Quantity.of(-0.47, "m");
+  /** distance from rear to front axle [m] */
+  public Scalar xAxleRtoF = Quantity.of(+1.19, "m");
   /** from center to outer protection boundary */
   public Scalar yHalfWidth = Quantity.of(0.7, "m");
   /** distance from x-axis to front tire */
   public Scalar yTireFront = Quantity.of(0.48, "m");
   /** distance from x-axis to front tire */
   public Scalar yTireRear = Quantity.of(0.54, "m");
-  // TODO JZ add front/rear tire radius and width
-  public Scalar tireRadiusFront = Quantity.of(0.255 * 0.5, "m*rad^-1");
+  /** approx. radius of tire when on gokart is on ground */
+  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, "m*rad^-1");
   public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, "m*rad^-1");
   /***************************************************/
   private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
-
-  public Scalar xAxleRearMeter() {
-    return TOMETER.apply(xAxleRear);
-  }
 
   public Scalar yHalfWidthMeter() {
     return TOMETER.apply(yHalfWidth);
   }
 
   public Scalar xAxleDistanceMeter() {
-    return TOMETER.apply(xAxleFront).subtract(TOMETER.apply(xAxleRear));
+    return TOMETER.apply(xAxleRtoF);
   }
 
   public Scalar yTireRearMeter() {

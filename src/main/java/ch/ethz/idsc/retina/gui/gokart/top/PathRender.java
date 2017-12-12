@@ -49,9 +49,8 @@ class PathRender implements RenderInterface {
         p1 = Tensors.of(XAD, YHW, RealScalar.ONE);
         p2 = Tensors.of(RealScalar.ZERO, YHW.negate(), RealScalar.ONE);
       }
-      Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
       // center of rear axle
-      StateTime CENTER = new StateTime(Tensors.of(XAR, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
+      StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
         final Flow flow_forward = singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //

@@ -44,10 +44,10 @@ class TrigonometryRender extends LidarRender {
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(XAD, angle);
-      final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
-      double xar = XAR.number().doubleValue();
+      // final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
+      // double xar = XAR.number().doubleValue();
       // System.out.println(xar);
-      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(xar, 0, 0)));
+      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, 0)));
       if (optional.isPresent()) {
         Scalar offset_y = optional.get();
         final Tensor center = Tensors.of(RealScalar.ZERO, offset_y);

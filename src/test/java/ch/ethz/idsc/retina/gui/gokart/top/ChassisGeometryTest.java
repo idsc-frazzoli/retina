@@ -14,7 +14,6 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSingleton() {
     ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-    ChassisGeometry.GLOBAL.xAxleRearMeter();
     ChassisGeometry.GLOBAL.yTireFrontMeter();
   }
 }
