@@ -31,7 +31,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
@@ -99,7 +99,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.jFrame.setVisible(true);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     vlp16LcmHandler.stopSubscriptions();
     urg04lxLcmHandler.stopSubscriptions();
@@ -110,9 +110,9 @@ public class LocalViewLcmModule extends AbstractModule {
   }
 
   public static void standalone() throws Exception {
-    LocalViewLcmModule autoboxTestingModule = new LocalViewLcmModule();
-    autoboxTestingModule.first();
-    autoboxTestingModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    LocalViewLcmModule localViewLcmModule = new LocalViewLcmModule();
+    localViewLcmModule.first();
+    localViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {
