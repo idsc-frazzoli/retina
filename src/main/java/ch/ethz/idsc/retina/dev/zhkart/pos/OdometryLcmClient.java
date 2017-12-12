@@ -8,10 +8,10 @@ import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 
 public class OdometryLcmClient extends BinaryLcmClient {
-  public final GokartPoseOdometry gokartOdometry;
+  public final GokartPoseOdometry gokartPoseOdometry;
 
   public OdometryLcmClient() {
-    gokartOdometry = GokartPoseOdometry.create();
+    gokartPoseOdometry = GokartPoseOdometry.create();
   }
 
   @Override // from LcmClientAdapter
@@ -22,6 +22,6 @@ public class OdometryLcmClient extends BinaryLcmClient {
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
     RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
-    gokartOdometry.getEvent(rimoGetEvent);
+    gokartPoseOdometry.getEvent(rimoGetEvent);
   }
 }

@@ -9,7 +9,7 @@ public class GlobalViewLcmModule extends ViewLcmModule {
   private final OdometryLcmClient odometryLcmClient = new OdometryLcmClient();
 
   public GlobalViewLcmModule() {
-    setGokartPoseInterface(odometryLcmClient.gokartOdometry);
+    setGokartPoseInterface(odometryLcmClient.gokartPoseOdometry);
   }
 
   @Override // from AbstractModule
