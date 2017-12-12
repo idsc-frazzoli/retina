@@ -11,6 +11,8 @@ import java.util.Objects;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.owly.car.core.VehicleModel;
+import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartOdometry;
@@ -24,6 +26,7 @@ import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class GlobalGokartRender implements RenderInterface, LidarRayBlockListener {
+  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.singleton("m");
   private final Tensor SHAPE = CirclePoints.of(5).multiply(RealScalar.of(.5));
   // ---
@@ -44,10 +47,15 @@ public class GlobalGokartRender implements RenderInterface, LidarRayBlockListene
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.of(x, y, angle)));
     // DRAW GOKART
     {
+      graphics.setColor(new Color(192, 192, 192, 64));
+      graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
+    }
+    {
       graphics.setColor(Color.GRAY);
       Path2D path2D = geometricLayer.toPath2D(SHAPE);
       graphics.fill(path2D);
     }
+    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2)));
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(Color.BLUE);
@@ -59,6 +67,7 @@ public class GlobalGokartRender implements RenderInterface, LidarRayBlockListene
       }
       // System.out.println(stopwatch.display_seconds());
     }
+    geometricLayer.popMatrix();
     geometricLayer.popMatrix();
   }
 

@@ -30,7 +30,7 @@ public class ChassisGeometry implements Serializable {
   public Scalar yTireRear = Quantity.of(0.54, "m");
   // TODO JZ add front/rear tire radius and width
   public Scalar tireRadiusFront = Quantity.of(0.255 * 0.5, "m*rad^-1");
-  public Scalar tireRadiusRear = Quantity.of(0.280 * 0.5, "m*rad^-1");
+  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, "m*rad^-1");
   /***************************************************/
   private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
 

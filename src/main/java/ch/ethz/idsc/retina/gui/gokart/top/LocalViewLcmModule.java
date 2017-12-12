@@ -21,6 +21,8 @@ import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class LocalViewLcmModule extends AbstractModule {
+  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  // ---
   private final TimerFrame timerFrame = new TimerFrame();
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Mark8LcmHandler mark8LcmHandler = new Mark8LcmHandler("center");
@@ -59,11 +61,10 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     // ---
-    final VehicleModel vehicleModel = RimoSinusIonModel.standard();
-    timerFrame.geometricComponent.addRenderInterface(new VehicleFootprintRender(vehicleModel));
+    timerFrame.geometricComponent.addRenderInterface(new VehicleFootprintRender(VEHICLE_MODEL));
     // ---
     {
-      GokartRender gokartRender = new GokartRender(vehicleModel);
+      GokartRender gokartRender = new GokartRender(VEHICLE_MODEL);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);

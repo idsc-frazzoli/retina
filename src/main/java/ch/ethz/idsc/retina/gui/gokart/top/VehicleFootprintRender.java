@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -21,11 +20,9 @@ class VehicleFootprintRender implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor hull = vehicleModel.footprint();
     {
       graphics.setColor(new Color(192, 192, 192, 64));
-      Path2D path2D = geometricLayer.toPath2D(hull);
-      graphics.fill(path2D);
+      graphics.fill(geometricLayer.toPath2D(vehicleModel.footprint()));
     }
     {
       graphics.setColor(Color.RED);

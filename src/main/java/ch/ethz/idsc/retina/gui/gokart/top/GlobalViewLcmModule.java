@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.dev.zhkart.pos.OdometryLcmClient;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
@@ -27,7 +26,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       // globalGokartRender.
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(globalGokartRender);
       // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
-      // // lidarRender.setColor(new Color(128, 0, 0, 255));
+      // lidarRender.setColor(new Color(128, 0, 0, 255));
       // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(globalGokartRender);
     }
