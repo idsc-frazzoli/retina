@@ -25,6 +25,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class GokartRender extends AbstractGokartRender {
   private final VehicleModel vehicleModel;
@@ -67,14 +68,20 @@ public class GokartRender extends AbstractGokartRender {
     }
     // rear wheels
     if (Objects.nonNull(rimoGetEvent)) {
+      Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair().unmodifiable();
+      graphics.setColor(Color.BLACK);
+      graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
+      // ---
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
+      // TODO use quantity
+      Tensor rateY_draw = rateY_pair.multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
-          Tensors.vector(rimoGetEvent.getTireL.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(3).lever(), //
-          Tensors.vector(rimoGetEvent.getTireR.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rateY_draw.Get(1).number().doubleValue(), 0)));
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);
