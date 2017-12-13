@@ -82,6 +82,7 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
       new RuntimeException().printStackTrace();
   }
 
+  /** function invokes {@link #eventUntil(long, DataEvent)} */
   protected abstract void protected_schedule();
 
   protected static long now_ms() {

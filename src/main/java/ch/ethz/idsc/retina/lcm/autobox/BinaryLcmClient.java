@@ -15,33 +15,33 @@ import lcm.lcm.SubscriptionRecord;
 public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscriber {
   private SubscriptionRecord subscriptionRecord = null;
 
-  @Override
+  @Override // from LcmClientInterface
   public final void startSubscriptions() {
     if (Objects.isNull(subscriptionRecord))
-      subscriptionRecord = LCM.getSingleton().subscribe(name(), this);
+      subscriptionRecord = LCM.getSingleton().subscribe(channel(), this);
     else
       System.err.println("already started subscription");
   }
 
-  @Override
+  @Override // from LcmClientInterface
   public final void stopSubscriptions() {
     if (Objects.nonNull(subscriptionRecord))
       LCM.getSingleton().unsubscribe(subscriptionRecord);
   }
 
-  @Override
+  @Override // from LCMSubscriber
   public final void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
     try {
       BinaryBlob binaryBlob = new BinaryBlob(ins);
       ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
       byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-      digest(byteBuffer);
+      messageReceived(byteBuffer);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
   }
 
-  protected abstract void digest(ByteBuffer byteBuffer);
+  protected abstract void messageReceived(ByteBuffer byteBuffer);
 
-  protected abstract String name();
+  protected abstract String channel();
 }

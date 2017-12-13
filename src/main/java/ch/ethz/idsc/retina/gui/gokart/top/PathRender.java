@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
-import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -16,6 +15,7 @@ import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -27,12 +27,16 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart */
-class PathRender implements RenderInterface {
+class PathRender extends AbstractGokartRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
+  public PathRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
+  }
+
   @Override
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
           Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
@@ -49,9 +53,8 @@ class PathRender implements RenderInterface {
         p1 = Tensors.of(XAD, YHW, RealScalar.ONE);
         p2 = Tensors.of(RealScalar.ZERO, YHW.negate(), RealScalar.ONE);
       }
-      Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
       // center of rear axle
-      StateTime CENTER = new StateTime(Tensors.of(XAR, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
+      StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
         final Flow flow_forward = singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //

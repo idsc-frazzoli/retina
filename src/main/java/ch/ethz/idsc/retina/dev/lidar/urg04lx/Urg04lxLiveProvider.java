@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -41,13 +41,16 @@ import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
  * 
  * typically the distances up to 5[m] can be measured correctly. */
 public enum Urg04lxLiveProvider implements StartAndStoppable {
-  INSTANCE; // TODO do not make this a singleton instance
-  public static final String EXECUTABLE = "urg_binaryprovider";
+  INSTANCE;
+  // TODO possibly do not make this a singleton instance?
+  // ---
+  /* package */ static final File DIRECTORY = UserHome.file("Public");
+  /* package */ static final File EXECUTABLE = new File(DIRECTORY, "urg_binaryprovider");
   // ---
   private OutputStream outputStream;
   /** 2 bytes header, 8 bytes timestamp, each point as short */
   private final byte[] array = new byte[2 + 8 + Urg04lxDevice.MAX_POINTS * 2];
-  private final List<ByteArrayConsumer> listeners = new LinkedList<>();
+  private final List<ByteArrayConsumer> listeners = new CopyOnWriteArrayList<>();
   private boolean isLaunched = false;
 
   public void addListener(ByteArrayConsumer byteArrayConsumer) {
@@ -57,14 +60,13 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
   public void removeListener(ByteArrayConsumer byteArrayConsumer) {
     boolean removed = listeners.remove(byteArrayConsumer);
     if (!removed)
-      System.err.println("urg04lx listener not removed");
+      new RuntimeException("urg04lx listener not removed").printStackTrace();
   }
 
   @Override // from StartAndStoppable
   public void start() { // non-blocking
-    final File directory = UserHome.file("Public");
-    ProcessBuilder processBuilder = new ProcessBuilder(new File(directory, EXECUTABLE).toString());
-    processBuilder.directory(directory);
+    ProcessBuilder processBuilder = new ProcessBuilder(EXECUTABLE.toString());
+    processBuilder.directory(DIRECTORY);
     try {
       Process process = processBuilder.start();
       System.out.println("urg_alive1=" + process.isAlive());

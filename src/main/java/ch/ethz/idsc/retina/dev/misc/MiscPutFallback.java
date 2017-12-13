@@ -8,13 +8,13 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 /* package */ enum MiscPutFallback implements MiscPutProvider {
   INSTANCE;
   // ---
-  @Override
+  @Override // from PutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.FALLBACK;
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
-    return Optional.of(new MiscPutEvent());
+    return Optional.of(MiscPutEvent.PASSIVE);
   }
 }

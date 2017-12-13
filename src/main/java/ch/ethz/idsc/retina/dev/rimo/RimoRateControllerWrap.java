@@ -6,13 +6,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** the controller has to be subscribed to rimo get events */
 public class RimoRateControllerWrap implements RimoGetListener {
-  private static final ScalarUnaryOperator ARMS = QuantityMagnitude.singleton(RimoPutTire.UNIT_TORQUE);
-  // ---
   private final RimoRateController piL = new RimoRateController();
   private final RimoRateController piR = new RimoRateController();
   private RimoGetEvent rimoGetEvent = null;
@@ -33,14 +29,14 @@ public class RimoRateControllerWrap implements RimoGetListener {
           Scalar vel_targetL = pair.Get(0);
           Scalar vel_error = vel_targetL.subtract(rimoGetEvent.getTireL.getAngularRate_Y());
           Scalar torque = piL.iterate(vel_error);
-          short valueL_Yaxis = ARMS.apply(torque).number().shortValue();
+          short valueL_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
           armsL_raw = (short) -valueL_Yaxis; // negative sign LEFT
         }
         {
           Scalar vel_targetR = pair.Get(1);
           Scalar vel_error = vel_targetR.subtract(rimoGetEvent.getTireR.getAngularRate_Y());
           Scalar torque = piR.iterate(vel_error);
-          short valueR_Yaxis = ARMS.apply(torque).number().shortValue();
+          short valueR_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
           armsR_raw = (short) +valueR_Yaxis; // positive sign RIGHT
         }
         // System.out.println(pair + " -> " + armsL_raw + " " + armsR_raw);

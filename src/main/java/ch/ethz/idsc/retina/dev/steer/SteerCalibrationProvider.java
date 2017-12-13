@@ -17,7 +17,7 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
   private SteerCalibrationProvider() {
   }
 
-  @Override
+  @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
     final long timestamp = now_ms();
     final int oneside_ms = 3000;

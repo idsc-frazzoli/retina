@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -14,6 +15,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
  * 
  * LONGTERM NRJ temperature readings non-zero, check allowed ratings
  * LONGTERM NRJ the meaning of the error_code still has to be determined */
+@SafetyCritical
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");

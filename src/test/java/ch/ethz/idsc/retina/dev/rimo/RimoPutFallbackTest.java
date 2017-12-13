@@ -5,11 +5,6 @@ import junit.framework.TestCase;
 
 public class RimoPutFallbackTest extends TestCase {
   public void testRegistered() {
-    // try {
-    // RimoSocket.INSTANCE.addPutProvider(RimoPutFallback.INSTANCE);
-    // assertTrue(false);
-    // } catch (Exception exception) {
-    // // ---
-    // }
+    assertEquals(RimoPutFallback.INSTANCE.putEvent().get(), RimoPutEvent.PASSIVE);
   }
 }

@@ -19,6 +19,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** template argument T is {@link RimoGetListener}, {@link LinmotGetListener}, ...
  * 
@@ -83,7 +85,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         }
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
-    }, 70, getPeriod_ms());
+    }, 70, getPutPeriod_ms());
   }
 
   /***************************************************/
@@ -113,7 +115,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /***************************************************/
   /** @return period between two successive commands issued to the microautobox */
-  protected abstract long getPeriod_ms();
+  protected abstract long getPutPeriod_ms();
 
   protected abstract DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException;
 
@@ -126,6 +128,11 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
       timer = null;
     }
     datagramSocketManager.stop();
+  }
+
+  /** @return period in unit "s" */
+  public final Scalar getPutPeriod() {
+    return Quantity.of(getPutPeriod_ms() * 1E-3, "s");
   }
 
   /***************************************************/
@@ -178,8 +185,10 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
-    if (!removed)
+    if (!removed) {
       new RuntimeException("put provider not removed").printStackTrace();
+      System.err.println(putProvider.getClass().getName());
+    }
   }
 
   /***************************************************/

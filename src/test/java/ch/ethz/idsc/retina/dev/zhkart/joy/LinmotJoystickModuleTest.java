@@ -23,7 +23,7 @@ public class LinmotJoystickModuleTest extends TestCase {
   public void testValue() {
     LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
     GokartJoystickAdapter joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), 0.0, RealScalar.of(.2), Tensors.vector(1, 2));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8));
     Optional<LinmotPutEvent> optional = linmotJoystickModule.translate(joystick);
     assertTrue(optional.isPresent());
     LinmotPutEvent linmotPutEvent = optional.get();

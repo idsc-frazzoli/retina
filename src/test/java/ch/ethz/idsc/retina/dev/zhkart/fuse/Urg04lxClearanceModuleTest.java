@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -44,5 +45,10 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     array[0] = 1;
     array[1] = 0;
     assertTrue(ucm.isPathObstructed(sci, floatBuffer));
+  }
+
+  public void testRank() {
+    Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
+    assertEquals(ucm.getProviderRank(), ProviderRank.EMERGENCY);
   }
 }

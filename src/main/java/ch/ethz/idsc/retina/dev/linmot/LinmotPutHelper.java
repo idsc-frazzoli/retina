@@ -6,6 +6,10 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.Interpolation;
+import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 
 @SafetyCritical
 public enum LinmotPutHelper {
@@ -39,6 +43,9 @@ public enum LinmotPutHelper {
   public static final int DECELERATION_MAX = 5000;
   public static final short DECELERATION_INIT = 500;
   // ---
+  private static final Interpolation INTERPOLATION_POSITION = //
+      LinearInterpolation.of(Tensors.vector(TARGETPOS_INIT, TARGETPOS_MIN));
+  // ---
   /** off-mode event is used as fallback control and when
    * human driver takes over control of the break by foot */
   public static final LinmotPutEvent OFF_MODE_EVENT = //
@@ -47,11 +54,12 @@ public enum LinmotPutHelper {
 
   /** @param value in the unit interval [0, 1]
    * @return */
-  public static LinmotPutEvent operationToRelativePosition(double value) {
-    return operationToPosition((short) // TODO this formula is slightly off, but that does not affect safety
-    Math.min(Math.max(TARGETPOS_MIN, (TARGETPOS_MIN * value + TARGETPOS_INIT)), TARGETPOS_MAX));
+  public static LinmotPutEvent operationToRelativePosition(Scalar value) {
+    return operationToPosition(INTERPOLATION_POSITION.Get(Tensors.of(value)).number().shortValue());
   }
 
+  /** @param pos
+   * @return */
   private static LinmotPutEvent operationToPosition(short pos) {
     return new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, //

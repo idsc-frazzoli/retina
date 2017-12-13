@@ -8,13 +8,13 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owly.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
@@ -32,22 +32,22 @@ class TrigonometryRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
-  public TrigonometryRender(Supplier<Tensor> supplier) {
-    super(supplier);
+  public TrigonometryRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
   }
 
   @Override
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     // System.out.println(geometricLayer.getMatrix());
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // TODO this could easily be unit
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(XAD, angle);
-      final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
-      double xar = XAR.number().doubleValue();
+      // final Scalar XAR = ChassisGeometry.GLOBAL.xAxleRearMeter();
+      // double xar = XAR.number().doubleValue();
       // System.out.println(xar);
-      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(xar, 0, 0)));
+      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, 0)));
       if (optional.isPresent()) {
         Scalar offset_y = optional.get();
         final Tensor center = Tensors.of(RealScalar.ZERO, offset_y);

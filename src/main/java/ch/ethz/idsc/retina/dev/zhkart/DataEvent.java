@@ -18,6 +18,6 @@ public abstract class DataEvent implements Serializable {
   /** @return number of bytes required to encode this event */
   protected abstract int length();
 
-  /** @param byteBuffer to which the event is appended */
+  /** @param byteBuffer to which the event is appended with {@link ByteOrder#LITTLE_ENDIAN} */
   protected abstract void insert(ByteBuffer byteBuffer);
 }

@@ -6,11 +6,18 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+@SafetyCritical
 public class RimoPutTire implements Serializable {
   public static final Unit UNIT_TORQUE = Unit.of("ARMS");
+  public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(UNIT_TORQUE);
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   /* package */ static final RimoPutTire PASSIVE = new RimoPutTire(OPERATION, (short) 0, (short) 0);
@@ -49,18 +56,23 @@ public class RimoPutTire implements Serializable {
     this.torque = torque;
   }
 
-  /** only for use in display
+  /** for use in display and tests
    * 
    * @return */
   public short getRateRaw() {
     return rate;
   }
 
-  /** only for use in display
+  /** for use in display and tests
    * 
    * @return */
   public short getTorqueRaw() {
     return torque;
+  }
+
+  /** @return torque with unit "ARMS" */
+  public Scalar getTorque() {
+    return Quantity.of(torque, UNIT_TORQUE);
   }
 
   void insert(ByteBuffer byteBuffer) {

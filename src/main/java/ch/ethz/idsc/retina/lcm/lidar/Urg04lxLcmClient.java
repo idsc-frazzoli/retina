@@ -22,12 +22,12 @@ public class Urg04lxLcmClient extends BinaryLcmClient {
   }
 
   @Override
-  protected String name() {
+  protected String channel() {
     return Urg04lxDevice.channel(lidarId);
   }
 
   @Override
-  protected void digest(ByteBuffer byteBuffer) {
+  protected void messageReceived(ByteBuffer byteBuffer) {
     urg04lxDecoder.lasers(byteBuffer);
   }
 }

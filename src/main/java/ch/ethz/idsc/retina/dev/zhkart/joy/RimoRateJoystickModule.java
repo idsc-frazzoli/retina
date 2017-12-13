@@ -16,7 +16,12 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class RimoJoystickModule extends JoystickModule<RimoPutEvent> {
+/** speed control via joystick
+ * way of controlling gokart on first test day
+ * mode is decommissioned
+ * 
+ * superseded by {@link RimoTorqueJoystickModule} */
+/* package */ class RimoRateJoystickModule extends JoystickModule<RimoPutEvent> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
 

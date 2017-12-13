@@ -8,13 +8,13 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 /* package */ enum SteerPutFallback implements SteerPutProvider {
   INSTANCE;
   // ---
-  @Override
+  @Override // from PutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.FALLBACK;
   }
 
-  @Override
+  @Override // from PutProvider
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.of(new SteerPutEvent(SteerPutEvent.CMD_OFF, 0));
+    return Optional.of(SteerPutEvent.PASSIVE);
   }
 }

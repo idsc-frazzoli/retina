@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 /** misc information sent to micro-autobox */
 public class MiscPutEvent extends DataEvent {
   private static final int LENGTH = 6;
+  public static final MiscPutEvent PASSIVE = new MiscPutEvent();
   // ---
   /** table of values for resetConnection:
    * 0 - for normal operation
@@ -19,7 +20,7 @@ public class MiscPutEvent extends DataEvent {
   public byte resetSteer;
   public byte ledControl;
 
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(resetConnection);
     byteBuffer.put(resetRimoL);
@@ -29,7 +30,7 @@ public class MiscPutEvent extends DataEvent {
     byteBuffer.put(ledControl);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }

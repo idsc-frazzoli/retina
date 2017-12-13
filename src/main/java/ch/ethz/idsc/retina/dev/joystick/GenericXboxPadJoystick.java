@@ -1,15 +1,20 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.Clipzone;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
+@SafetyCritical
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
   private static final Clipzone CLIPZONE = new Clipzone(Clip.function(9.5 / 127, 1.0));
+  private static final Clip PASSIVE = Clip.function(-0.05, 0.05);
 
   // ---
   @Override
@@ -134,8 +139,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
   }
 
   @Override // from GokartJoystickInterface
-  public double getBreakStrength() {
-    return Math.max(0, getRightKnobDirectionDown());
+  public Scalar getBreakStrength() {
+    return DoubleScalar.of(Math.max(0, getRightKnobDirectionDown()));
   }
 
   @Override // from GokartJoystickInterface
@@ -148,5 +153,13 @@ import ch.ethz.idsc.tensor.sca.Clip;
     return Tensors.vectorDouble( //
         getLeftSliderUnitValue(), //
         getRightSliderUnitValue());
+  }
+
+  @Override // from GokartJoystickInterface
+  public boolean isPassive() {
+    return PASSIVE.isInside(getSteerLeft()) //
+        && PASSIVE.isInside(DoubleScalar.of(getRightKnobDirectionDown())) //
+        && Scalars.isZero(getAheadAverage()) //
+        && Chop.NONE.allZero(getAheadPair_Unit());
   }
 }

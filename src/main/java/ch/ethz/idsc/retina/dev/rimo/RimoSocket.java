@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private static final int LOCAL_PORT = 5000;
@@ -23,17 +26,21 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
     addPutProvider(RimoPutFallback.INSTANCE);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected RimoGetEvent createGetEvent(ByteBuffer byteBuffer) {
     return new RimoGetEvent(byteBuffer);
   }
 
-  @Override
-  protected long getPeriod_ms() {
+  @Override // from AutoboxSocket
+  protected long getPutPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
-  @Override
+  public Scalar getGetPeriod() {
+    return UnitSystem.SI().apply(Quantity.of(250, "Hz")).reciprocal();
+  }
+
+  @Override // from AutoboxSocket
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }

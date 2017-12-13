@@ -40,11 +40,11 @@ abstract class JoystickModule<PE> extends AbstractModule implements PutProvider<
         : Optional.empty();
   }
 
-  abstract void protected_first();
+  /* package */ abstract void protected_first();
 
-  abstract void protected_last();
+  /* package */ abstract void protected_last();
 
   /** @param joystick
-   * @return */
-  abstract Optional<PE> translate(GokartJoystickInterface joystick);
+   * @return put event for actuator controlled by this joystick module */
+  /* package */ abstract Optional<PE> translate(GokartJoystickInterface joystick);
 }

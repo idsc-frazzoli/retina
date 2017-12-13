@@ -6,9 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -26,12 +26,12 @@ class PerspectiveLidarRender extends LidarRender {
   private final Tensor projection = //
       ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100)).unmodifiable();
 
-  public PerspectiveLidarRender(Supplier<Tensor> supplier) {
-    super(supplier);
+  public PerspectiveLidarRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
   }
 
   @Override
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);

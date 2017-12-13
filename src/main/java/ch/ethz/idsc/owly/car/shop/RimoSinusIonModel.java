@@ -12,13 +12,17 @@ import ch.ethz.idsc.owly.car.model.CarSteering;
 import ch.ethz.idsc.owly.car.model.DefaultCarModel;
 import ch.ethz.idsc.owly.car.model.DefaultWheel;
 import ch.ethz.idsc.owly.car.model.MotorTorques;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** specifications of vehicle taken from:
  * http://www.rimo-germany.com/technische-daten-sinus-ion.html
@@ -45,35 +49,35 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * Außendurchmesser: 280mm
  * Felgengrösse (inch): 8.0 (210mm) */
 public class RimoSinusIonModel extends DefaultCarModel {
-  private static final VehicleModel STANDARD = new RimoSinusIonModel();
+  private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
 
+  // ---
   public static VehicleModel standard() {
-    return STANDARD;
+    return new RimoSinusIonModel(ChassisGeometry.GLOBAL);
   }
 
   // ---
   private final List<WheelInterface> list = new ArrayList<>();
   private final Tensor hull;
 
-  private RimoSinusIonModel() {
+  private RimoSinusIonModel(ChassisGeometry chassisGeometry) {
     final Pacejka3 PACEJKA = new Pacejka3(7, 1.4); //
-    final Scalar RADIUS1 = DoubleScalar.of(0.255 * 0.5); // wheel radius [m]
-    final Scalar RADIUS2 = DoubleScalar.of(0.280 * 0.5); // wheel radius [m]
+    final Scalar RADIUS1 = TOMETER.apply(chassisGeometry.tireRadiusFront); // wheel radius [m]
+    final Scalar RADIUS2 = TOMETER.apply(chassisGeometry.tireRadiusRear); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(1); // wheel inertia [kgm2]
     final Scalar LZ = DoubleScalar.of(-0.25); // height of COG [m]
     // data-sheet:
     // final Scalar LF = DoubleScalar.of(+0.645); // front axle distance from COG [m]
     // final Scalar LR = DoubleScalar.of(-0.4); // rear axle distance from COG [m]
     // measured:
-    // TODO redundant
-    final Scalar LF = DoubleScalar.of(+0.72); // front axle distance from COG [m]
-    final Scalar LR = DoubleScalar.of(-0.47); // rear axle distance from COG [m]
+    final Scalar LF = chassisGeometry.xAxleDistanceMeter();
+    final Scalar LR = DoubleScalar.of(0.0);
     // data-sheet:
     // final Scalar TF = DoubleScalar.of(1.055 / 2); // half front track
     // final Scalar TR = DoubleScalar.of(1.200 / 2); // half rear track
     // measured:
-    final Scalar TF = DoubleScalar.of(0.935 / 2); // half front track
-    final Scalar TR = DoubleScalar.of(1.070 / 2); // half rear track
+    final Scalar TF = chassisGeometry.yTireFrontMeter(); // half front track
+    final Scalar TR = chassisGeometry.yTireRearMeter(); // half rear track
     final Scalar TWF = RealScalar.of(0.09); // tire width front on ground
     // tire width front total: 13 cm (same as tire rear width on ground)
     final Scalar TWR = RealScalar.of(0.13); // tire width read
@@ -82,7 +86,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     list.add(new DefaultWheel(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF.negate(), LZ)));
     list.add(new DefaultWheel(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR, LZ)));
     list.add(new DefaultWheel(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR.negate(), LZ)));
-    // cog + front axle to boundary contact 35 [cm] + to front tip 22.5 [cm]
+    // front axle to boundary contact 35 [cm] + to front tip 22.5 [cm]
     final Scalar HFX = LF.add(DoubleScalar.of(0.350 + 0.225));
     final Scalar HRX = HFX.subtract(DoubleScalar.of(2.060)); // measured
     final Scalar HFY = DoubleScalar.of(1.45 / 2); // measured

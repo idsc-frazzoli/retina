@@ -17,6 +17,6 @@ public class SteerComponentTest extends TestCase {
     steerComponent.getEvent(steerGetEvent);
     Optional<SteerPutEvent> optional = steerComponent.putEvent();
     assertFalse(optional.isPresent()); // not calibrated
-    steerComponent.putEvent(SteerPutEvent.createOn(Quantity.of(2.3f, "SCT")));
+    steerComponent.putEvent(SteerPutEvent.createOn(Quantity.of(1.3f, "SCT")));
   }
 }

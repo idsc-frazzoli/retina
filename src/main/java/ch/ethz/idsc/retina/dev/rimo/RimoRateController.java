@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1" */
 /* package */ class RimoRateController {
-  private static final Scalar DT = Quantity.of(RimoSocket.INSTANCE.getPeriod_ms() * 1e-3, "s");
+  static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastVel_error = Quantity.of(0, RimoGetTire.UNIT_RATE); // unit "rad*s^-1"

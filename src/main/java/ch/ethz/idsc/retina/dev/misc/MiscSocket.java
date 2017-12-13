@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.steer.SteerBatteryCharger;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 
@@ -20,19 +21,20 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
     // ---
     addPutProvider(MiscPutFallback.INSTANCE);
     addPutProvider(MiscIgnitionProvider.INSTANCE);
+    addGetListener(SteerBatteryCharger.INSTANCE);
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected MiscGetEvent createGetEvent(ByteBuffer byteBuffer) {
     return new MiscGetEvent(byteBuffer);
   }
 
-  @Override
-  protected long getPeriod_ms() {
+  @Override // from AutoboxSocket
+  protected long getPutPeriod_ms() {
     return SEND_PERIOD_MS;
   }
 
-  @Override
+  @Override // from AutoboxSocket
   protected DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException {
     return new DatagramPacket(data, data.length, AutoboxDevice.REMOTE_INET_ADDRESS, REMOTE_PORT);
   }
