@@ -24,8 +24,9 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
    * in the lab, the max range measured: 1.538
    * on test day 2017 12 07: HARD limit increase from 1.6 to 1.9
    * on test day 2017 12 08: screw on steer column was tightened
-   * on test day 2017 12 13: calibration led to range = 1.6572 */
-  private static final double HARD = 1.70;
+   * on test day 2017 12 13: calibration led to range = 1.6572
+   * as of now: testing with 1.75 */
+  private static final double HARD = 1.75;
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
 
