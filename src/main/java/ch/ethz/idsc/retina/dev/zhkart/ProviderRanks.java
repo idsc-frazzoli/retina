@@ -13,6 +13,7 @@ public enum ProviderRanks {
       MAP.put(providerRank, Color.WHITE);
     // ---
     MAP.put(ProviderRank.EMERGENCY, new Color(255, 128, 128)); // red
+    MAP.put(ProviderRank.PROTECTION, new Color(222, 195, 174)); // yellow/red
     MAP.put(ProviderRank.CALIBRATION, new Color(0, 255, 255)); // turquoise
     MAP.put(ProviderRank.MANUAL, new Color(128, 255, 128)); // green
     MAP.put(ProviderRank.TESTING, new Color(255, 255, 0)); // yellow

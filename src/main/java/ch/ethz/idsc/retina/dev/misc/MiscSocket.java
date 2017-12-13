@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.dev.steer.SteerBatteryCharger;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 
@@ -20,6 +21,7 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
     // ---
     addPutProvider(MiscPutFallback.INSTANCE);
     addPutProvider(MiscIgnitionProvider.INSTANCE);
+    addGetListener(SteerBatteryCharger.INSTANCE);
   }
 
   @Override // from AutoboxSocket
