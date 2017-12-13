@@ -3,6 +3,10 @@ package ch.ethz.idsc.retina.dev.lidar;
 
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
+/** in order to configure the device
+ * Velodyne HDL32E, and Velodyne VLP16
+ * connect the running device to the local network.
+ * Then, use a browser to visit http://192.168.1.201 */
 public enum VelodyneStatics {
   ;
   // CONSTANTS

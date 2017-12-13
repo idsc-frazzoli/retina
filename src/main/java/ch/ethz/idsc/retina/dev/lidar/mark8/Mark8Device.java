@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.lidar.mark8;
 
+/** in order to configure the device Mark8
+ * connect the running device to the local network.
+ * Then, use a browser to visit http://192.168.1.3:7780 */
 public enum Mark8Device {
   ;
   public static final int TCP_PORT = 4141; // 4141
