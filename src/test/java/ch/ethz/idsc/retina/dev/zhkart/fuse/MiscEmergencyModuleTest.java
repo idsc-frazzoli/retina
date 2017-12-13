@@ -24,16 +24,36 @@ public class MiscEmergencyModuleTest extends TestCase {
     miscEmergencyModule.last();
   }
 
-  public void testDelay() throws Exception {
-    // TODO this test is insufficient
+  public void testTimeout() throws Exception {
     MiscEmergencyModule miscEmergencyModule = new MiscEmergencyModule();
     miscEmergencyModule.first();
-    MiscGetEvent miscGetEvent = MiscGetEventSimulator.create((byte) 0, 0.8f); // 11.200000166893005[V]
-    System.out.println(miscGetEvent.getSteerBatteryVoltage());
-    miscEmergencyModule.getEvent(miscGetEvent);
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(11.2));
     assertFalse(miscEmergencyModule.putEvent().isPresent());
-    Thread.sleep(1100); // timeout increased to 1[s]
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(10.2));
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(11.2));
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    Thread.sleep(1050);
     assertTrue(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.last();
+  }
+
+  public void testPacify() throws Exception {
+    MiscEmergencyModule miscEmergencyModule = new MiscEmergencyModule();
+    miscEmergencyModule.first();
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(11.2));
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(10.2));
+    Thread.sleep(100);
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(11.2));
+    Thread.sleep(100);
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(10.2));
+    Thread.sleep(100);
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
+    miscEmergencyModule.getEvent(MiscGetEventSimulator.createVoltage(11.2));
+    assertFalse(miscEmergencyModule.putEvent().isPresent());
     miscEmergencyModule.last();
   }
 }

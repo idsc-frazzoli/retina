@@ -185,8 +185,10 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = providers.remove(putProvider);
-    if (!removed)
+    if (!removed) {
       new RuntimeException("put provider not removed").printStackTrace();
+      System.err.println(putProvider.getClass().getName());
+    }
   }
 
   /***************************************************/

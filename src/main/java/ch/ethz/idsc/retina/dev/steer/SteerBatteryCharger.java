@@ -8,6 +8,9 @@ import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.Scalars;
 
+/** the steering battery is charged from time to time.
+ * during charing, the steering motor should be passive.
+ * otherwise, the steering battery may overcharge. */
 public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
   INSTANCE;
   // ---

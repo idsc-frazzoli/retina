@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class MiscGetEventTest extends TestCase {
   public void testNoEmergency() {
-    MiscGetEvent miscGetEvent = MiscGetEventSimulator.create((byte) 0, 1.0f);
+    MiscGetEvent miscGetEvent = MiscGetEventSimulator.createVoltage(14f);
     assertEquals(miscGetEvent.getSteerBatteryVoltage(), Quantity.of(14, "V"));
     assertFalse(miscGetEvent.isEmergency());
     assertFalse(miscGetEvent.isCommTimeout());

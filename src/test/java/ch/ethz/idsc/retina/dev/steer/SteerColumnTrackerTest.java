@@ -30,6 +30,7 @@ public class SteerColumnTrackerTest extends TestCase {
     steerColumnTracker.getEvent(SteerGetHelper.create(+0.75f));
     steerColumnTracker.getEvent(SteerGetHelper.create(-0.75f));
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
+    assertTrue(steerColumnTracker.isCalibratedAndHealthy());
     Scalar scalar = steerColumnTracker.getSteerColumnEncoderCentered();
     assertTrue(scalar instanceof Quantity);
     steerColumnTracker.getEvent(SteerGetHelper.create(+0.95f));

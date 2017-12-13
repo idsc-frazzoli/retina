@@ -60,5 +60,6 @@ public enum ModuleAuto {
       System.out.println(new Date() + " Module Auto: Terminating: " + module);
       abstractModule.terminate();
     }
+    // TODO print warning if module is not present
   }
 }
