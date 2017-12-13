@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
@@ -23,7 +24,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 class RimoDeadMan implements PutProvider<RimoPutEvent> {
@@ -41,9 +41,10 @@ class RimoDeadMan implements PutProvider<RimoPutEvent> {
 }
 
 /** action of emergency module is to brake for 2.5[s] */
+// TODO no good: when joystick is missing, immediately brakes regardless of speed
+// TODO no good: when speed > threshold, only brakes once but whenever speed > threshold -> repeatedly
 public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements GetListener<RimoGetEvent> {
-  private static final long DURATION_MS = 2500;
-  private static final Scalar SPEED_THRESHOLD = Quantity.of(8, "rad*s^-1"); // TODO config
+  private static final long DURATION_MS = 2000;
   // ---
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Watchdog watchdog_isPresent = new Watchdog(0.2);
@@ -77,7 +78,8 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   /* package */ void getEvent_process(RimoGetEvent rimoGetEvent, Optional<JoystickEvent> optional) {
     Tensor pair = rimoGetEvent.getAngularRate_Y_pair();
     Scalar rate = Norm.INFINITY.ofVector(pair); // unit "rad*s^-1"
-    boolean isSpeedSafe = Scalars.lessThan(rate, SPEED_THRESHOLD);
+    Scalar rateThreshold = RimoConfig.GLOBAL.deadManLimit;
+    boolean isSpeedSafe = Scalars.lessThan(rate, rateThreshold);
     // ---
     if (optional.isPresent()) {
       watchdog_isPresent.pacify(); // <- joystick is connected
