@@ -28,11 +28,21 @@ import ch.ethz.idsc.tensor.Tensors;
  * for instance when a person is entering or leaving the gokart */
 public final class Vlp16ClearanceModule extends AbstractModule implements //
     LidarSpacialListener, RimoPutProvider, GokartStatusListener {
+  private static final double PENALTY_DURATION_S = 0.5;
+  // ---
   private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = //
       new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER);
+  // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
-  private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(0.5);
+  private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
+  private final float vlp16Lo;
+  private final float vlp16Hi;
+
+  public Vlp16ClearanceModule() {
+    vlp16Lo = SafetyConfig.GLOBAL.vlp16LoMeter().number().floatValue();
+    vlp16Hi = SafetyConfig.GLOBAL.vlp16HiMeter().number().floatValue();
+  }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -54,10 +64,11 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     float z = lidarSpacialEvent.coords[2];
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    if (-0.7f < z && z < .1f && Objects.nonNull(_clearanceTracker)) {
-      Tensor local = Tensors.vector(lidarSpacialEvent.coords[0], lidarSpacialEvent.coords[1]);
-      boolean collision = _clearanceTracker.probe(local);
-      if (collision)
+    if (vlp16Lo < z && z < vlp16Hi && Objects.nonNull(_clearanceTracker)) {
+      Tensor local = Tensors.vectorDouble( //
+          lidarSpacialEvent.coords[0], //
+          lidarSpacialEvent.coords[1]);
+      if (_clearanceTracker.probe(local))
         penaltyTimeout.flagPenalty();
     }
   }
@@ -82,6 +93,6 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
     boolean status = false;
     status |= Objects.isNull(clearanceTracker);
     status |= penaltyTimeout.isPenalty();
-    return Optional.ofNullable(status ? null : null);
+    return Optional.ofNullable(status ? RimoPutEvent.PASSIVE : null);
   }
 }
