@@ -20,6 +20,7 @@
  */
 package ch.ethz.idsc.retina.util.gps;
 
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -46,5 +47,10 @@ public enum WGS84toCH1903LV03Plus {
     /* Important Note: in the Swiss Grid, y describes easting and x describes
      * northing, contrary to the usual naming conventions! */
     return Tensors.vector(CH1903Y, CH1903X);
+  }
+
+  public static Tensor transform(Scalar degX, Scalar degY) {
+    // TODO API is not implemented thoroughly
+    return transform(degX.number().doubleValue(), degY.number().doubleValue());
   }
 }

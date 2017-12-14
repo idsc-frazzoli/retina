@@ -20,10 +20,6 @@ import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.red.Norm;
 
 class RimoDeadMan implements PutProvider<RimoPutEvent> {
   volatile boolean isBlown = false;
@@ -75,10 +71,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   /** @param rimoGetEvent
    * @param optional */
   /* package */ void getEvent_process(RimoGetEvent rimoGetEvent, Optional<JoystickEvent> optional) {
-    Tensor pair = rimoGetEvent.getAngularRate_Y_pair();
-    Scalar rate = Norm.INFINITY.ofVector(pair); // unit "rad*s^-1"
-    Scalar rateThreshold = JoystickConfig.GLOBAL.deadManRate;
-    boolean isSpeedSafe = Scalars.lessThan(rate, rateThreshold);
+    boolean isSpeedSafe = JoystickConfig.GLOBAL.isSpeedSlow(rimoGetEvent.getAngularRate_Y_pair());
     // ---
     if (optional.isPresent()) {
       watchdog_isPresent.pacify(); // <- joystick is connected

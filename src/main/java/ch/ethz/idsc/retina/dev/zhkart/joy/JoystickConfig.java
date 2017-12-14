@@ -5,9 +5,12 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** parameters for PI controller of torque control */
@@ -37,5 +40,10 @@ public class JoystickConfig implements Serializable {
 
   public Scalar brakeDurationSeconds() {
     return TO_SECONDS.apply(brakeDuration);
+  }
+
+  public boolean isSpeedSlow(Tensor getAngularRate_Y_pair) {
+    Scalar rate = Norm.INFINITY.ofVector(getAngularRate_Y_pair); // unit "rad*s^-1"
+    return Scalars.lessThan(rate, JoystickConfig.GLOBAL.deadManRate);
   }
 }
