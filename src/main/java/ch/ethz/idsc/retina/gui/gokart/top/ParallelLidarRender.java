@@ -18,7 +18,7 @@ class ParallelLidarRender extends LidarRender {
     super(gokartPoseInterface);
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
