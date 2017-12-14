@@ -4,10 +4,16 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.util.data.PenaltyCards;
 import ch.ethz.idsc.tensor.Scalar;
 
-/**  */
+/** when the winding temperature of the linmot brake surpasses the critical threshold
+ * (for instance 110[degC]), the linmot brake is commanded to fallback position until
+ * the winding temperature falls below a non-critical threshold, for instance 85[degC].
+ * 
+ * {@link LinmotEmergencyModule} ensures that for temperatures above the non-critical
+ * threshold no acceleration of the motors takes place. */
 public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
   INSTANCE;
   // ---
