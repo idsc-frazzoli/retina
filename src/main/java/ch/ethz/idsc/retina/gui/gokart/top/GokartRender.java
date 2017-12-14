@@ -16,6 +16,9 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
@@ -32,6 +35,9 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private RimoGetEvent rimoGetEvent;
   public final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
+  // ---
+  private RimoPutEvent rimoPutEvent;
+  public final RimoPutListener rimoPutListener = getEvent -> rimoPutEvent = getEvent;
   // ---
   private LinmotGetEvent linmotGetEvent;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
@@ -82,6 +88,18 @@ public class GokartRender extends AbstractGokartRender {
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(3).lever(), //
           Tensors.vector(rateY_draw.Get(1).number().doubleValue(), 0)));
+      graphics.setStroke(new BasicStroke(1));
+    }
+    if (Objects.nonNull(rimoPutEvent)) {
+      double factor = 5E-4;
+      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putL.getTorque()).number().doubleValue() * factor;
+      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putR.getTorque()).number().doubleValue() * factor;
+      graphics.setColor(Color.BLUE);
+      graphics.setStroke(new BasicStroke(2));
+      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));
+      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(3).lever(), Tensors.vector(0.0, trqR)));
+      // graphics.drawString(Tensors.vector(trqL, trqR).toString(), 0, 100);
+      graphics.setStroke(new BasicStroke(1));
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);

@@ -31,8 +31,7 @@ enum RunTabbedTaskGui {
   ;
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class, // sensing
-      Urg04lxLcmServerModule.class // sensing
+      Vlp16LcmServerModule.class // sensing
   );
   static final List<Class<?>> MODULES_LCM = Arrays.asList( //
       AutoboxLcmServerModule.class, //
@@ -40,6 +39,7 @@ enum RunTabbedTaskGui {
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
+      Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //

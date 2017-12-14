@@ -19,13 +19,13 @@ public class RimoPutEvent extends DataEvent {
     this.putR = putR;
   }
 
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     putL.insert(byteBuffer);
     putR.insert(byteBuffer);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }

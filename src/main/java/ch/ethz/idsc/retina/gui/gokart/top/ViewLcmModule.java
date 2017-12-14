@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.retina.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -26,6 +27,7 @@ abstract class ViewLcmModule extends AbstractModule {
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final WindowConfiguration windowConfiguration = //
@@ -70,6 +72,7 @@ abstract class ViewLcmModule extends AbstractModule {
     {
       GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
+      rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
@@ -90,6 +93,7 @@ abstract class ViewLcmModule extends AbstractModule {
     // }
     // ---
     rimoGetLcmClient.startSubscriptions();
+    rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     // ---
@@ -104,6 +108,7 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     rimoGetLcmClient.stopSubscriptions();
+    rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     // ---

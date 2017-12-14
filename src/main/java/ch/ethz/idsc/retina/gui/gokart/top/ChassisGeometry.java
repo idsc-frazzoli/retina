@@ -36,6 +36,7 @@ public class ChassisGeometry implements Serializable {
     return TOMETER.apply(yHalfWidth);
   }
 
+  /** @return approximately 1.19 */
   public Scalar xAxleDistanceMeter() {
     return TOMETER.apply(xAxleRtoF);
   }

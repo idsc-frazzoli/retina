@@ -14,6 +14,8 @@ public class SensorsConfig implements Serializable {
   }
 
   // ---
+  // TODO at some point also introduce units here
+  /** urg04lx is the pose of the front lidar {px, py, angle} */
   public Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
   public Tensor vlp16 = Tensors.vector(0.09, 0.0, -1.61);
   /** shift from center of VLP16 to DAVIS */
