@@ -34,4 +34,8 @@ public class JoystickConfig implements Serializable {
   public Scalar deadManPeriodSeconds() {
     return TO_SECONDS.apply(deadManPeriod);
   }
+
+  public Scalar brakeDurationSeconds() {
+    return TO_SECONDS.apply(brakeDuration);
+  }
 }

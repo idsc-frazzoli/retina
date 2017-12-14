@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.joy;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -18,6 +17,7 @@ import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.EmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -48,7 +48,8 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   private final Watchdog watchdog_inControl = //
       new Watchdog(JoystickConfig.GLOBAL.deadManPeriodSeconds().number().doubleValue());
   private final RimoDeadMan rimoDeadMan = new RimoDeadMan();
-  private Long tic = null; // TODO extract functionality in separate class
+  private final TriggeredTimeInterval triggeredTimeInterval = //
+      new TriggeredTimeInterval(JoystickConfig.GLOBAL.brakeDurationSeconds().number().doubleValue());
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -85,24 +86,16 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
       if (isSpeedSafe || !joystick.isPassive())
         watchdog_inControl.pacify();
     }
-    if (watchdog_isPresent.isBlown() || watchdog_inControl.isBlown())
-      if (Objects.isNull(tic)) {
-        tic = now();
-        rimoDeadMan.isBlown = true;
-      }
+    if (watchdog_isPresent.isBlown() || watchdog_inControl.isBlown()) {
+      triggeredTimeInterval.panic();
+      rimoDeadMan.isBlown = true;
+    }
   }
 
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    if (Objects.nonNull(tic)) {
-      long DURATION_MS = 2000;
-      if (now() - tic < DURATION_MS)
-        return Optional.of(LinmotPutHelper.operationToRelativePosition(RealScalar.ONE));
-    }
+    if (triggeredTimeInterval.isActive())
+      return Optional.of(LinmotPutHelper.operationToRelativePosition(RealScalar.ONE));
     return Optional.empty(); // allow other entity to control brake
-  }
-
-  private static long now() {
-    return System.currentTimeMillis();
   }
 }
