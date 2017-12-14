@@ -22,7 +22,6 @@ public class Hdl32ePosEvent extends VelodynePosEvent {
     this.accy = accy;
   }
 
-  @Override
   public void print() {
     System.out.println(Tensors.vectorDouble(gyro).map(Round._2));
     System.out.println(Tensors.vectorDouble(temp).map(Round._2));

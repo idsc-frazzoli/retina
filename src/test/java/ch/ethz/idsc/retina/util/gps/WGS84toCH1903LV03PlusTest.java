@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.util.gps;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.red.Norm;
 import junit.framework.TestCase;
 
@@ -14,30 +15,42 @@ public class WGS84toCH1903LV03PlusTest extends TestCase {
   // x="2678402.0" y="1254426.0"
   // x="2765986.0" y="1303770.0"
   public void testSimple() {
-    double coord_getX = 8.3786;
-    double coord_getY = 47.2434;
+    Scalar coord_getX = Quantity.of(8.3786, "deg");
+    Scalar coord_getY = Quantity.of(47.2434, "deg");
     Tensor metric = WGS84toCH1903LV03Plus.transform(coord_getX, coord_getY);
-    // System.out.println(metric);
-    Tensor gps = CH1903LV03PlustoWGS84.transform( //
-        metric.Get(0).number().doubleValue(), //
-        metric.Get(1).number().doubleValue());
-    Tensor ori = Tensors.vector(coord_getX, coord_getY);
+    Tensor gps = CH1903LV03PlustoWGS84.transform(metric.Get(0), metric.Get(1));
+    Tensor ori = Tensors.of(coord_getX, coord_getY);
     Scalar diff = Norm._2.between(ori, gps);
-    assertTrue(Scalars.lessThan(diff, RealScalar.ONE));
+    assertTrue(Scalars.lessThan(diff, Quantity.of(1E-5, "deg")));
   }
 
   public void testInversion() {
-    final double coord_getX = 2678402.0;
-    final double coord_getY = 1254426.0;
+    final Scalar coord_getX = Quantity.of(2678402.0, "m");
+    final Scalar coord_getY = Quantity.of(1254426.0, "m");
     Tensor gps = CH1903LV03PlustoWGS84.transform(coord_getX, coord_getY);
     // System.out.println(gps);
-    double coord_getX1 = gps.Get(0).number().doubleValue();
-    double coord_getY1 = gps.Get(1).number().doubleValue();
+    Scalar coord_getX1 = gps.Get(0);
+    Scalar coord_getY1 = gps.Get(1);
     Tensor metric = WGS84toCH1903LV03Plus.transform(coord_getX1, coord_getY1);
     // System.out.println(metric);
-    Tensor ori = Tensors.vector(coord_getX, coord_getY);
+    Tensor ori = Tensors.of(coord_getX, coord_getY);
     Scalar diff = Norm._2.between(ori, metric);
     // System.out.println(diff);
-    assertTrue(Scalars.lessThan(diff, RealScalar.ONE));
+    assertTrue(Scalars.lessThan(diff, Quantity.of(1, "m")));
+  }
+
+  public void testInversionKm() {
+    final Scalar coord_getX = Quantity.of(2678.402, "km");
+    final Scalar coord_getY = Quantity.of(1254.426, "km");
+    Tensor gps = CH1903LV03PlustoWGS84.transform(coord_getX, coord_getY);
+    // System.out.println(gps);
+    Scalar coord_getX1 = gps.Get(0);
+    Scalar coord_getY1 = gps.Get(1);
+    Tensor metric = WGS84toCH1903LV03Plus.transform(coord_getX1, coord_getY1);
+    // System.out.println(metric);
+    Tensor ori = Tensors.of(coord_getX, coord_getY).map(UnitSystem.SI());
+    Scalar diff = Norm._2.between(ori, metric);
+    // System.out.println(diff);
+    assertTrue(Scalars.lessThan(diff, Quantity.of(1, "m")));
   }
 }
