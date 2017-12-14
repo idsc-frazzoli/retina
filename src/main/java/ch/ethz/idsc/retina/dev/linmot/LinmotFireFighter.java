@@ -4,18 +4,21 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.retina.util.data.PenaltyCards;
+import ch.ethz.idsc.tensor.Scalar;
 
-/** the steering battery is charged from time to time.
- * during charing, the steering motor should be passive.
- * otherwise, the steering battery may overcharge. */
+/**  */
 public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
   INSTANCE;
   // ---
-  private boolean isVeryHot = true;
+  private final PenaltyCards penaltyCards = new PenaltyCards();
 
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    isVeryHot = !LinmotConfig.GLOBAL.isTemperatureHardwareSafe(linmotGetEvent);
+    Scalar temperature = linmotGetEvent.getWindingTemperatureMax();
+    penaltyCards.evaluate( //
+        !LinmotConfig.GLOBAL.isTemperatureOperationSafe(temperature), // issue yellow card ?
+        !LinmotConfig.GLOBAL.isTemperatureHardwareSafe(temperature)); // issue red card ?
   }
 
   /***************************************************/
@@ -26,6 +29,6 @@ public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.ofNullable(isVeryHot ? LinmotPutHelper.FALLBACK_OPERATION : null);
+    return Optional.ofNullable(penaltyCards.isPenalty() ? LinmotPutHelper.FALLBACK_OPERATION : null);
   }
 }

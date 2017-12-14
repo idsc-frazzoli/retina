@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.tensor.Scalar;
 
 /** linmot winding module does not allow driving
  * when the linmot winding temperature is not operation safe */
@@ -32,7 +33,8 @@ public final class LinmotCoolingModule extends EmergencyModule<RimoPutEvent> imp
   /***************************************************/
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
-    isCoolingRequired = !LinmotConfig.GLOBAL.isTemperatureOperationSafe(linmotGetEvent);
+    Scalar temperature = linmotGetEvent.getWindingTemperatureMax();
+    isCoolingRequired = !LinmotConfig.GLOBAL.isTemperatureOperationSafe(temperature);
   }
 
   /***************************************************/

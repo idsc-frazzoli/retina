@@ -33,11 +33,11 @@ public class LinmotConfig implements Serializable {
     return Clip.function(windingTempCold, windingTempFire);
   }
 
-  public boolean isTemperatureOperationSafe(LinmotGetEvent linmotGetEvent) {
-    return temperatureOperationClip().isInside(linmotGetEvent.getWindingTemperatureMax());
+  public boolean isTemperatureOperationSafe(Scalar temperature) {
+    return temperatureOperationClip().isInside(temperature);
   }
 
-  public boolean isTemperatureHardwareSafe(LinmotGetEvent linmotGetEvent) {
-    return temperatureHardwareClip().isInside(linmotGetEvent.getWindingTemperatureMax());
+  public boolean isTemperatureHardwareSafe(Scalar temperature) {
+    return temperatureHardwareClip().isInside(temperature);
   }
 }
