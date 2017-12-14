@@ -38,7 +38,7 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
     this.pointSize = pointSize;
   }
 
-  @Override
+  @Override // from LidarRayBlockListener
   public final void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     final int position = floatBuffer.position();

@@ -21,9 +21,6 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 /** blocks rimo while anything is within a close distance in path */
 public final class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
-  // public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
-  // private static final Scalar HALF = RealScalar.of(0.5);
-  // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private boolean isPathObstructed = true;
   // ---

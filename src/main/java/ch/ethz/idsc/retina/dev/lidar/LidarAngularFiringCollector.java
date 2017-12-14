@@ -35,7 +35,7 @@ public class LidarAngularFiringCollector implements LidarSpacialListener, LidarR
     listeners.add(listener);
   }
 
-  @Override
+  @Override // from LidarRotationListener
   public void lidarRotation(LidarRotationEvent lidarRotationEvent) {
     // set limit of buffers to current position
     floatBuffer.flip();
@@ -51,7 +51,7 @@ public class LidarAngularFiringCollector implements LidarSpacialListener, LidarR
     byteBuffer.position(0);
   }
 
-  @Override
+  @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     floatBuffer.put(lidarSpacialEvent.coords); // either 3, or 2 floats
     byteBuffer.put((byte) lidarSpacialEvent.intensity);
