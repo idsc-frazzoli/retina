@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
@@ -53,6 +54,7 @@ enum RunTabbedTaskGui {
       MiscEmergencyModule.class, //
       SteerEmergencyModule.class, //
       LinmotEmergencyModule.class, //
+      LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
       Urg04lxClearanceModule.class //
   );

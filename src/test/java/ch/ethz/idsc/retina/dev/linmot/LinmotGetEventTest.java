@@ -27,8 +27,7 @@ public class LinmotGetEventTest extends TestCase {
     assertEquals(linmotGetEvent.getWindingTemperature1(), Quantity.of(50, "degC"));
     assertEquals(linmotGetEvent.getWindingTemperature2(), Quantity.of(20, "degC"));
     assertTrue(linmotGetEvent.isOperational());
-    assertTrue(linmotGetEvent.isSafeWindingTemperature1());
-    assertTrue(linmotGetEvent.isSafeWindingTemperature2());
+    assertTrue(LinmotConfig.GLOBAL.isTemperatureOperationSafe(linmotGetEvent));
     assertEquals(linmotGetEvent.getWindingTemperatureMax(), Quantity.of(50, "degC"));
   }
 }
