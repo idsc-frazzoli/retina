@@ -29,24 +29,35 @@ public class ChassisGeometry implements Serializable {
   /** approx. radius of tire when on gokart is on ground */
   public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, "m*rad^-1");
   public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, "m*rad^-1");
+  // TODO DUBENDORF measure
+  public Scalar tireHalfWidthFront = Quantity.of(0.07, "m");
+  public Scalar tireHalfWidthRear = Quantity.of(0.09, "m");
   /***************************************************/
-  private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
+  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
 
   public Scalar yHalfWidthMeter() {
-    return TOMETER.apply(yHalfWidth);
+    return TO_METER.apply(yHalfWidth);
   }
 
   /** @return approximately 1.19 */
   public Scalar xAxleDistanceMeter() {
-    return TOMETER.apply(xAxleRtoF);
+    return TO_METER.apply(xAxleRtoF);
   }
 
   public Scalar yTireRearMeter() {
-    return TOMETER.apply(yTireRear);
+    return TO_METER.apply(yTireRear);
   }
 
   public Scalar yTireFrontMeter() {
-    return TOMETER.apply(yTireFront);
+    return TO_METER.apply(yTireFront);
+  }
+
+  public Scalar tireHalfWidthFront() {
+    return TO_METER.apply(tireHalfWidthFront);
+  }
+
+  public Scalar tireHalfWidthRear() {
+    return TO_METER.apply(tireHalfWidthRear);
   }
 
   public DifferentialSpeed getDifferentialSpeed() {

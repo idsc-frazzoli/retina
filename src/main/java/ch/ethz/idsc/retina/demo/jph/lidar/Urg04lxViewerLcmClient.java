@@ -10,12 +10,13 @@ enum Urg04lxViewerLcmClient {
   ;
   public static void main(String[] args) {
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();
-    Urg04lxLcmHandler simpleUrg04lxLcmClient = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
-    simpleUrg04lxLcmClient.lidarAngularFiringCollector.addListener(urg04lxFrame.urg04lxRender);
+    Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
+    urg04lxLcmHandler.lidarAngularFiringCollector.addListener(urg04lxFrame.urg04lxRender);
     {
       Urg04lxRangeProvider urg04lxRangeProvider = new Urg04lxRangeProvider();
       urg04lxRangeProvider.addListener(urg04lxFrame.urg04lxRender);
-      simpleUrg04lxLcmClient.urg04lxDecoder().addRayListener(urg04lxRangeProvider);
+      urg04lxLcmHandler.urg04lxDecoder().addRayListener(urg04lxRangeProvider);
     }
+    urg04lxLcmHandler.startSubscriptions();
   }
 }

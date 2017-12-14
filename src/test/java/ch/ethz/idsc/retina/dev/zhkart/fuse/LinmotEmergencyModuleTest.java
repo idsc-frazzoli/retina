@@ -7,6 +7,12 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import junit.framework.TestCase;
 
 public class LinmotEmergencyModuleTest extends TestCase {
+  public void testFirstLast() throws Exception {
+    LinmotEmergencyModule linmotEmergencyModule = new LinmotEmergencyModule();
+    linmotEmergencyModule.first();
+    linmotEmergencyModule.last();
+  }
+
   public void testTimeout() throws Exception {
     LinmotEmergencyModule linmotEmergencyModule = new LinmotEmergencyModule();
     // linmotEmergencyModule.first();

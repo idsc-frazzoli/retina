@@ -32,6 +32,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     urg04lxLcmHandler.lidarAngularFiringCollector.addListener(this);
+    urg04lxLcmHandler.startSubscriptions();
   }
 
   @Override // from AbstractModule

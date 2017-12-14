@@ -30,7 +30,7 @@ public class ClearanceTracker {
     u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed)).unmodifiable();
     min = clearanceFrontMeter;
     se2ForwardAction = new Se2ForwardAction(xya);
-    clip_X = Clip.function(RealScalar.of(0.3), clearanceFrontMeter);
+    clip_X = Clip.function(RealScalar.of(0.2), clearanceFrontMeter); // TODO magic const 0.2
   }
 
   public boolean probe(Tensor local) {

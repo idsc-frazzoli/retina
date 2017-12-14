@@ -96,6 +96,7 @@ abstract class ViewLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
+    urg04lxLcmHandler.startSubscriptions();
     // ---
     // odometryLcmClient.startSubscriptions();
     // ---

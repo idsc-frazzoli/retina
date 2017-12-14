@@ -5,6 +5,12 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import junit.framework.TestCase;
 
 public class Urg04lxEmergencyModuleTest extends TestCase {
+  public void testFirstLast() throws Exception {
+    Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
+    uem.first();
+    uem.last();
+  }
+
   public void testSimple() throws Exception {
     Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
     assertFalse(uem.putEvent().isPresent());

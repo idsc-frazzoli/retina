@@ -44,17 +44,25 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private final Tensor TIRE_FRONT;
+  private final Tensor TIRE_REAR;
 
   public GokartRender(GokartPoseInterface gokartPoseInterface, VehicleModel vehicleModel) {
     super(gokartPoseInterface);
     this.vehicleModel = vehicleModel;
+    {
+      double TR = ChassisGeometry.GLOBAL.tireRadiusFront.number().doubleValue();
+      double TW = ChassisGeometry.GLOBAL.tireHalfWidthFront().number().doubleValue();
+      TIRE_FRONT = Tensors.matrixDouble( //
+          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
+    }
+    {
+      double TR = ChassisGeometry.GLOBAL.tireRadiusRear.number().doubleValue();
+      double TW = ChassisGeometry.GLOBAL.tireHalfWidthRear().number().doubleValue();
+      TIRE_REAR = Tensors.matrixDouble( //
+          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
+    }
   }
-
-  // TODO magic const
-  private static final double TR = 0.13;
-  private static final double TW = 0.07;
-  public static final Tensor FRONT_TIRE = Tensors.matrixDouble( //
-      new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -122,7 +130,7 @@ public class GokartRender extends AbstractGokartRender {
       for (int index = 0; index < 4; ++index) {
         Tensor matrix = Se2Utils.toSE2Matrix(Join.of(vehicleModel.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
         geometricLayer.pushMatrix(matrix);
-        graphics.fill(geometricLayer.toPath2D(FRONT_TIRE));
+        graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
         geometricLayer.popMatrix();
       }
     }
