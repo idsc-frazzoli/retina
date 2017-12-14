@@ -21,10 +21,10 @@ public class GokartOdometryTest extends TestCase {
   }
 
   public void testEffective() {
-    GokartPoseOdometry gokartOdometry = GokartPoseOdometry.create();
-    Flow flow = gokartOdometry.singleton( //
+    Flow flow = GokartPoseOdometry.singleton( //
         Quantity.of(3, "m*s^-1"), Quantity.of(5, "m*s^-1"), Quantity.of(0.3, "m*rad^-1"));
     Tensor u = flow.getU();
-    assertEquals(u.Get(0), Quantity.of(4, "m*s^-1"));
+    assertEquals(u.Get(0), Quantity.of(4, "m*s^-1")); // speed averaged between left and right wheels
+    System.out.println(u.Get(2));
   }
 }

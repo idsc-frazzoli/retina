@@ -24,7 +24,7 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     ucm.getEvent(rimoGetEvent);
     assertTrue(ucm.putEvent().isPresent());
     SteerColumnInterface sci = new SteerColumnAdapter(false, Quantity.of(.2, "SCE"));
-    assertTrue(ucm.isPathObstructed(sci, null));
+    assertTrue(Urg04lxClearanceModule.isPathObstructed(sci, null));
   }
 
   public void testObstruction() {
@@ -38,13 +38,13 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);
     array[0] = 10;
     array[1] = 10;
-    assertFalse(ucm.isPathObstructed(sci, floatBuffer));
+    assertFalse(Urg04lxClearanceModule.isPathObstructed(sci, floatBuffer));
     array[0] = 10;
     array[1] = 0;
-    assertFalse(ucm.isPathObstructed(sci, floatBuffer));
+    assertFalse(Urg04lxClearanceModule.isPathObstructed(sci, floatBuffer));
     array[0] = 1;
     array[1] = 0;
-    assertTrue(ucm.isPathObstructed(sci, floatBuffer));
+    assertTrue(Urg04lxClearanceModule.isPathObstructed(sci, floatBuffer));
   }
 
   public void testRank() {

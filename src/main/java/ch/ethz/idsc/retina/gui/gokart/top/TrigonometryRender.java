@@ -61,7 +61,7 @@ class TrigonometryRender extends LidarRender {
         Tensor points = _points;
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
         Clip clip = Clip.function(half.negate(), half);
-        Scalar max = DoubleScalar.POSITIVE_INFINITY;
+        Scalar max = DoubleScalar.POSITIVE_INFINITY; // TODO use clearance limit
         Scalar xAxleD = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
         // System.out.println(xAxleD);
         for (Tensor point : points) {

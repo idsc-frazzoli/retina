@@ -55,9 +55,9 @@ public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener 
   /** .
    * @param speedL with unit "m*s^-1"
    * @param speedR with unit "m*s^-1"
-   * @param yHalfWidth "m*rad^-1"
+   * @param yHalfWidth "m*rad^-1", hint: use ChassisGeometry.GLOBAL.yTireRear
    * @return */
-  /* package */ Flow singleton(Scalar speedL, Scalar speedR, Scalar yHalfWidth) {
+  /* package */ static Flow singleton(Scalar speedL, Scalar speedR, Scalar yHalfWidth) {
     Scalar speed = speedL.add(speedR).multiply(HALF);
     Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(yHalfWidth);
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //

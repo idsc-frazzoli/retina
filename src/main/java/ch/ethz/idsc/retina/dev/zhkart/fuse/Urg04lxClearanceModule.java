@@ -23,7 +23,6 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -35,7 +34,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** blocks rimo while anything is within a close distance in path */
 public final class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
-  public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
+  // public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
   // private static final Scalar HALF = RealScalar.of(0.5);
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -71,26 +70,26 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
     isPathObstructed = true;
   }
 
-  /* package */ boolean isPathObstructed( //
-      SteerColumnInterface steerColumnInterface, //
-      FloatBuffer floatBuffer) {
+  /* package */ static boolean isPathObstructed( //
+      SteerColumnInterface steerColumnInterface, FloatBuffer floatBuffer) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
-      int size = floatBuffer.limit() / 2;
+      final int position = floatBuffer.position();
+      final int size = floatBuffer.limit() / 2; // dimensionality of point: planar lidar
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       Clip clip = Clip.function(half.negate(), half);
       // Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
       // Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
       // TODO formula needs analysis
-      Scalar speed = RealScalar.ONE;
+      Scalar speed = RealScalar.ONE; // assume unit speed
       // pair_meas.dot(pair_unit).Get().multiply(HALF);
       Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
-      Scalar min = CLEARANCE;
+      final Scalar clearanceFrontMeter = SafetyConfig.GLOBAL.clearanceFrontMeter();
+      Scalar min = clearanceFrontMeter;
       for (int index = 0; index < size; ++index) {
         float px = floatBuffer.get();
         float py = floatBuffer.get();
-        // TODO magic const rear axle to lidarpos
-        Tensor point = Tensors.vector(px + 1.64, py);
+        Tensor point = Tensors.vector(px + 1.67, py); // TODO redundant to Urg04 Config, and not 100% accurate
         Scalar t = Se2AxisYProject.of(u, point).negate();
         // System.out.println(t);
         Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
@@ -98,9 +97,9 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
         if (clip.isInside(v.Get(1)))
           min = Min.of(min, t.negate());
       }
-      floatBuffer.position(0);
+      floatBuffer.position(position);
       // System.out.println("min = " + min + " " + isPathObstructed);
-      return Scalars.lessThan(min, CLEARANCE);
+      return Scalars.lessThan(min, clearanceFrontMeter);
     }
     return true;
   }
