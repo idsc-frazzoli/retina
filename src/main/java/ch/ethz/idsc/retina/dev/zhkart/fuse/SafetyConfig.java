@@ -22,6 +22,7 @@ public class SafetyConfig implements Serializable {
   public Scalar clearanceRear = Quantity.of(-2.2, "m");
   public Scalar vlp16Lo = Quantity.of(-0.7, "m");
   public Scalar vlp16Hi = Quantity.of(+0.1, "m");
+  /***************************************************/
   private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
 
   public Scalar clearanceFrontMeter() {

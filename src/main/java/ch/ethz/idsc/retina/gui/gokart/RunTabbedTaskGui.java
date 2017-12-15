@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
+import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
@@ -46,6 +47,7 @@ enum RunTabbedTaskGui {
       AutoboxIntrospectionModule.class, //
       AutoboxTestingModule.class, //
       LocalViewLcmModule.class, //
+      GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class, //
       DavisOverviewModule.class //

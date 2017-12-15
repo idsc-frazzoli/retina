@@ -58,7 +58,7 @@ abstract class ViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(pathRender);
     }
     // ---
-    if (false) {
+    if (true) {
       {
         LidarRender lidarRender = new PlanarLidarRender(gokartPoseInterface);
         lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
@@ -83,12 +83,12 @@ abstract class ViewLcmModule extends AbstractModule {
       }
     }
     {
-      LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
+      LidarRender lidarRender = new ResampledLidarRender(gokartPoseInterface);
       lidarRender.setPointSize(2);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 128, 128));
       LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-      LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16();
+      LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
       lidarSpacialProvider.addListener(lidarAngularFiringCollector);
       LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
       lidarRotationProvider.addListener(lidarAngularFiringCollector);

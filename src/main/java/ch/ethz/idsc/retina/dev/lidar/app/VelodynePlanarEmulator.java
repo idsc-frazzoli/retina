@@ -16,8 +16,15 @@ public class VelodynePlanarEmulator implements LidarSpacialProvider {
     return new VelodynePlanarEmulator(15); // index of horizontal beam == 15
   }
 
-  public static VelodynePlanarEmulator vlp16() {
+  public static VelodynePlanarEmulator vlp16_p01deg() {
     return new VelodynePlanarEmulator(1); // index of beam with 1 degree inclination == 1
+  }
+
+  /** observation in Dubendorf: 1[deg] down typically hits the floor in 40[m]
+   * 
+   * @return */
+  /* package */ static VelodynePlanarEmulator vlp16_n01deg() {
+    return new VelodynePlanarEmulator(14); // index of beam with 1 degree inclination == 1
   }
   // ---
 
