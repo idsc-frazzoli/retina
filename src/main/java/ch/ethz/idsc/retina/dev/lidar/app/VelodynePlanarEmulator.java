@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.hdl32e;
+package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;

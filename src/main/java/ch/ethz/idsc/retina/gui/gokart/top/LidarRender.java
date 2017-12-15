@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import java.util.function.Supplier;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvents;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -40,6 +41,8 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
 
   @Override // from LidarRayBlockListener
   public final void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+    String info = LidarRayBlockEvents.toInfoString(lidarRayBlockEvent);
+    System.out.println("here " + info);
     final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     final int position = floatBuffer.position();
     if (lidarRayBlockEvent.dimensions == 2) {

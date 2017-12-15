@@ -33,6 +33,7 @@ class ParallelLidarRender extends LidarRender {
       graphics.setColor(color);
       for (Tensor x : points) {
         Point2D point2D = geometricLayer.toPoint2D(x);
+        // System.out.println(point2D);
         graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
       }
     }

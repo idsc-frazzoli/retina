@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eDecoder;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 import ch.ethz.idsc.tensor.RealScalar;
 

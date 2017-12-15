@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.hdl32e.VelodynePlanarEmulator;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
