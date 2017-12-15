@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,6 +17,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 
+/** odometry is the integration of the wheels speeds to obtain the pose of the gokart
+ * due to the high quality of the wheel/motor encoders the odometry turns out to be
+ * quite smooth and stable.
+ * 
+ * <p>Naturally, any tire slip results in a loss of tracking accuracy. */
+@SafetyCritical
 public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);
 

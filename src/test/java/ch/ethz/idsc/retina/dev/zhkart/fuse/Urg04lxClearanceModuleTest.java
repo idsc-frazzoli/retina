@@ -14,6 +14,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class Urg04lxClearanceModuleTest extends TestCase {
+  public void testFirstLast() throws Exception {
+    Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
+    ucm.first();
+    ucm.last();
+  }
+
   public void testNonCalib() {
     Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
     assertTrue(ucm.putEvent().isPresent());
