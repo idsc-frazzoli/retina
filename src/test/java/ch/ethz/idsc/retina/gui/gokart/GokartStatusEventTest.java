@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class GokartStatusEventTest extends TestCase {
@@ -21,7 +22,8 @@ public class GokartStatusEventTest extends TestCase {
   public void testUnitless() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
-    Scalar s = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
-    assertFalse(s instanceof Quantity);
+    Scalar scalar = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
+    assertFalse(scalar instanceof Quantity);
+    Clip.function(0.05, 0.08).isInsideElseThrow(scalar);
   }
 }

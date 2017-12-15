@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
@@ -22,6 +23,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
@@ -121,10 +123,11 @@ import ch.ethz.idsc.tensor.sca.Round;
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
         ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.NOMINAL_POSITION_DELTA.rescale(scalar))));
+    final Clip clip = LinmotConfig.GLOBAL.temperatureHardwareClip();
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();
       jTextFieldWindingTemp1.setText(temp.map(Round._1).toString());
-      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
+      Scalar value = clip.rescale(temp);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp1.setBackground(color);
@@ -132,7 +135,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     {
       Scalar temp = linmotGetEvent.getWindingTemperature2();
       jTextFieldWindingTemp2.setText(temp.map(Round._1).toString());
-      Scalar value = LinmotGetEvent.TEMPERATURE_RANGE.rescale(temp);
+      Scalar value = clip.rescale(temp);
       Tensor vector = ColorDataGradients.THERMOMETER.apply(value);
       Color color = ColorFormat.toColor(vector);
       jTextFieldWindingTemp2.setBackground(color);

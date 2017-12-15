@@ -16,6 +16,9 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
@@ -25,6 +28,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class GokartRender extends AbstractGokartRender {
   private final VehicleModel vehicleModel;
@@ -32,22 +36,33 @@ public class GokartRender extends AbstractGokartRender {
   private RimoGetEvent rimoGetEvent;
   public final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   // ---
+  private RimoPutEvent rimoPutEvent;
+  public final RimoPutListener rimoPutListener = getEvent -> rimoPutEvent = getEvent;
+  // ---
   private LinmotGetEvent linmotGetEvent;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private final Tensor TIRE_FRONT;
+  private final Tensor TIRE_REAR;
 
   public GokartRender(GokartPoseInterface gokartPoseInterface, VehicleModel vehicleModel) {
     super(gokartPoseInterface);
     this.vehicleModel = vehicleModel;
+    {
+      double TR = ChassisGeometry.GLOBAL.tireRadiusFront.number().doubleValue();
+      double TW = ChassisGeometry.GLOBAL.tireHalfWidthFront().number().doubleValue();
+      TIRE_FRONT = Tensors.matrixDouble( //
+          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
+    }
+    {
+      double TR = ChassisGeometry.GLOBAL.tireRadiusRear.number().doubleValue();
+      double TW = ChassisGeometry.GLOBAL.tireHalfWidthRear().number().doubleValue();
+      TIRE_REAR = Tensors.matrixDouble( //
+          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
+    }
   }
-
-  // TODO magic const
-  private static final double TR = 0.13;
-  private static final double TW = 0.07;
-  public static final Tensor FRONT_TIRE = Tensors.matrixDouble( //
-      new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -67,14 +82,32 @@ public class GokartRender extends AbstractGokartRender {
     }
     // rear wheels
     if (Objects.nonNull(rimoGetEvent)) {
+      Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair().unmodifiable();
+      graphics.setColor(Color.BLACK);
+      graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
+      // ---
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
+      // TODO use quantity
+      Tensor rateY_draw = rateY_pair.multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
-          Tensors.vector(rimoGetEvent.getTireL.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(3).lever(), //
-          Tensors.vector(rimoGetEvent.getTireR.getAngularRate_Y().number().doubleValue() * 1e-2, 0)));
+          Tensors.vector(rateY_draw.Get(1).number().doubleValue(), 0)));
+      graphics.setStroke(new BasicStroke(1));
+    }
+    if (Objects.nonNull(rimoPutEvent)) {
+      double factor = 5E-4;
+      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putL.getTorque()).number().doubleValue() * factor;
+      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putR.getTorque()).number().doubleValue() * factor;
+      graphics.setColor(Color.BLUE);
+      graphics.setStroke(new BasicStroke(2));
+      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));
+      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(3).lever(), Tensors.vector(0.0, trqR)));
+      // graphics.drawString(Tensors.vector(trqL, trqR).toString(), 0, 100);
+      graphics.setStroke(new BasicStroke(1));
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);
@@ -97,7 +130,7 @@ public class GokartRender extends AbstractGokartRender {
       for (int index = 0; index < 4; ++index) {
         Tensor matrix = Se2Utils.toSE2Matrix(Join.of(vehicleModel.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
         geometricLayer.pushMatrix(matrix);
-        graphics.fill(geometricLayer.toPath2D(FRONT_TIRE));
+        graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
         geometricLayer.popMatrix();
       }
     }

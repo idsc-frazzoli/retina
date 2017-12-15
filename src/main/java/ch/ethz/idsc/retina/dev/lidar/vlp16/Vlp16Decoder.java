@@ -135,16 +135,9 @@ public class Vlp16Decoder implements VelodyneDecoder {
 
   /** @param byteBuffer
    * with at least 512 bytes to read */
-  @Override
+  @Override // from VelodyneDecoder
   public void positioning(ByteBuffer byteBuffer) {
-    final int offset = byteBuffer.position(); // 0 or 42 in pcap file
-    byteBuffer.position(offset + 198); // unused
-    int gps_usec = byteBuffer.getInt(); // TODO from the hour?
-    byteBuffer.getInt(); // unused
-    byte[] nmea = new byte[72]; // NMEA positioning sentence
-    byteBuffer.get(nmea);
-    VelodynePosEvent vlp16PosEvent = new VelodynePosEvent(gps_usec, new String(nmea));
-    // System.out.println(vlp16PosEvent.gps_usec + " " + vlp16PosEvent.nmea);
-    posListeners.forEach(listener -> listener.velodynePos(vlp16PosEvent));
+    VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
+    posListeners.forEach(listener -> listener.velodynePos(velodynePosEvent));
   }
 }

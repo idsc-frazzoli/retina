@@ -32,12 +32,14 @@ public final class LinmotTakeoverModule extends AbstractModule implements Linmot
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addAll(this);
+    LinmotSocket.INSTANCE.addGetListener(this);
+    LinmotSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected void last() {
-    LinmotSocket.INSTANCE.removeAll(this);
+    LinmotSocket.INSTANCE.removeGetListener(this);
+    LinmotSocket.INSTANCE.removePutProvider(this);
   }
 
   /***************************************************/

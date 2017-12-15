@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.joy;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -9,7 +8,6 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
@@ -19,12 +17,9 @@ import ch.ethz.idsc.retina.dev.zhkart.PutProvider;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.EmergencyModule;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.red.Norm;
 
 class RimoDeadMan implements PutProvider<RimoPutEvent> {
   volatile boolean isBlown = false;
@@ -44,13 +39,13 @@ class RimoDeadMan implements PutProvider<RimoPutEvent> {
 // TODO no good: when joystick is missing, immediately brakes regardless of speed
 // TODO no good: when speed > threshold, only brakes once but whenever speed > threshold -> repeatedly
 public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements GetListener<RimoGetEvent> {
-  private static final long DURATION_MS = 2000;
-  // ---
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Watchdog watchdog_isPresent = new Watchdog(0.2);
-  private final Watchdog watchdog_inControl = new Watchdog(2.0);
+  private final Watchdog watchdog_inControl = //
+      new Watchdog(JoystickConfig.GLOBAL.deadManPeriodSeconds().number().doubleValue());
   private final RimoDeadMan rimoDeadMan = new RimoDeadMan();
-  private Long tic = null;
+  private final TriggeredTimeInterval triggeredTimeInterval = //
+      new TriggeredTimeInterval(JoystickConfig.GLOBAL.brakeDurationSeconds().number().doubleValue());
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -76,10 +71,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   /** @param rimoGetEvent
    * @param optional */
   /* package */ void getEvent_process(RimoGetEvent rimoGetEvent, Optional<JoystickEvent> optional) {
-    Tensor pair = rimoGetEvent.getAngularRate_Y_pair();
-    Scalar rate = Norm.INFINITY.ofVector(pair); // unit "rad*s^-1"
-    Scalar rateThreshold = RimoConfig.GLOBAL.deadManLimit;
-    boolean isSpeedSafe = Scalars.lessThan(rate, rateThreshold);
+    boolean isSpeedSafe = JoystickConfig.GLOBAL.isSpeedSlow(rimoGetEvent.getAngularRate_Y_pair());
     // ---
     if (optional.isPresent()) {
       watchdog_isPresent.pacify(); // <- joystick is connected
@@ -87,21 +79,16 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
       if (isSpeedSafe || !joystick.isPassive())
         watchdog_inControl.pacify();
     }
-    if (watchdog_isPresent.isBlown() || watchdog_inControl.isBlown())
-      if (Objects.isNull(tic)) {
-        tic = now();
-        rimoDeadMan.isBlown = true;
-      }
+    if (watchdog_isPresent.isBlown() || watchdog_inControl.isBlown()) {
+      triggeredTimeInterval.panic();
+      rimoDeadMan.isBlown = true;
+    }
   }
 
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    if (Objects.nonNull(tic) && now() - tic < DURATION_MS)
+    if (triggeredTimeInterval.isActive())
       return Optional.of(LinmotPutHelper.operationToRelativePosition(RealScalar.ONE));
     return Optional.empty(); // allow other entity to control brake
-  }
-
-  private static long now() {
-    return System.currentTimeMillis();
   }
 }

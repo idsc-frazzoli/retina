@@ -31,18 +31,28 @@ public class AutoboxTestingModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addAll(linmotComponent);
-    LinmotSocket.INSTANCE.addAll(linmotComponent.linmotInitButton);
+    LinmotSocket.INSTANCE.addGetListener(linmotComponent);
+    LinmotSocket.INSTANCE.addPutListener(linmotComponent);
+    LinmotSocket.INSTANCE.addPutProvider(linmotComponent);
+    // ---
+    LinmotSocket.INSTANCE.addGetListener(linmotComponent.linmotInitButton);
+    LinmotSocket.INSTANCE.addPutListener(linmotComponent.linmotInitButton);
     addTab(linmotComponent);
     // ---
-    MiscSocket.INSTANCE.addAll(miscComponent);
+    MiscSocket.INSTANCE.addGetListener(miscComponent);
+    MiscSocket.INSTANCE.addPutListener(miscComponent);
+    MiscSocket.INSTANCE.addPutProvider(miscComponent);
     addTab(miscComponent);
     // ---
-    SteerSocket.INSTANCE.addAll(steerComponent);
+    SteerSocket.INSTANCE.addGetListener(steerComponent);
+    SteerSocket.INSTANCE.addPutListener(steerComponent);
+    SteerSocket.INSTANCE.addPutProvider(steerComponent);
     SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
     addTab(steerComponent);
     // ---
-    RimoSocket.INSTANCE.addAll(rimoComponent);
+    RimoSocket.INSTANCE.addGetListener(rimoComponent);
+    RimoSocket.INSTANCE.addPutListener(rimoComponent);
+    RimoSocket.INSTANCE.addPutProvider(rimoComponent);
     addTab(rimoComponent);
     // ---
     jTabbedPane.setSelectedIndex(0);
@@ -51,12 +61,26 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        LinmotSocket.INSTANCE.removeAll(linmotComponent);
-        LinmotSocket.INSTANCE.removeAll(linmotComponent.linmotInitButton);
-        MiscSocket.INSTANCE.removeAll(miscComponent);
-        SteerSocket.INSTANCE.removeAll(steerComponent);
+        LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
+        LinmotSocket.INSTANCE.removePutListener(linmotComponent);
+        LinmotSocket.INSTANCE.removePutProvider(linmotComponent);
+        // ---
+        LinmotSocket.INSTANCE.removeGetListener(linmotComponent.linmotInitButton);
+        LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
+        // ---
+        MiscSocket.INSTANCE.removeGetListener(miscComponent);
+        MiscSocket.INSTANCE.removePutListener(miscComponent);
+        MiscSocket.INSTANCE.removePutProvider(miscComponent);
+        // ---
+        SteerSocket.INSTANCE.removeGetListener(steerComponent);
+        SteerSocket.INSTANCE.removePutListener(steerComponent);
+        SteerSocket.INSTANCE.removePutProvider(steerComponent);
+        // ---
         SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
-        RimoSocket.INSTANCE.removeAll(rimoComponent);
+        // ---
+        RimoSocket.INSTANCE.removeGetListener(rimoComponent);
+        RimoSocket.INSTANCE.removePutListener(rimoComponent);
+        RimoSocket.INSTANCE.removePutProvider(rimoComponent);
         System.out.println("removed listeners and providers");
       }
     });

@@ -1,12 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
-import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -15,29 +12,15 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
-import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
-import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.red.Min;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 /** blocks rimo while anything is within a close distance in path */
 public final class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
-  public static final Scalar CLEARANCE = DoubleScalar.of(3.2); // distance in [m] from rear axle !!!
-  // private static final Scalar HALF = RealScalar.of(0.5);
-  // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private boolean isPathObstructed = true;
   // ---
@@ -49,6 +32,7 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     urg04lxLcmHandler.lidarAngularFiringCollector.addListener(this);
+    urg04lxLcmHandler.startSubscriptions();
   }
 
   @Override // from AbstractModule
@@ -63,46 +47,12 @@ public final class Urg04lxClearanceModule extends AbstractModule implements //
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     if (Objects.nonNull(rimoGetEvent))
       try {
-        isPathObstructed = isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
+        isPathObstructed = StaticHelper.isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
         return;
       } catch (Exception exception) {
         exception.printStackTrace();
       }
     isPathObstructed = true;
-  }
-
-  /* package */ boolean isPathObstructed( //
-      SteerColumnInterface steerColumnInterface, //
-      FloatBuffer floatBuffer) {
-    if (steerColumnInterface.isSteerColumnCalibrated()) {
-      int size = floatBuffer.limit() / 2;
-      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
-      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      Clip clip = Clip.function(half.negate(), half);
-      // Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, angle);
-      // Tensor pair_meas = rimoGetEvent.getAngularRate_Y_pair();
-      // TODO formula needs analysis
-      Scalar speed = RealScalar.ONE;
-      // pair_meas.dot(pair_unit).Get().multiply(HALF);
-      Tensor u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed));
-      Scalar min = CLEARANCE;
-      for (int index = 0; index < size; ++index) {
-        float px = floatBuffer.get();
-        float py = floatBuffer.get();
-        // TODO magic const rear axle to lidarpos
-        Tensor point = Tensors.vector(px + 1.64, py);
-        Scalar t = Se2AxisYProject.of(u, point).negate();
-        // System.out.println(t);
-        Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t)));
-        Tensor v = se2ForwardAction.apply(point);
-        if (clip.isInside(v.Get(1)))
-          min = Min.of(min, t.negate());
-      }
-      floatBuffer.position(0);
-      // System.out.println("min = " + min + " " + isPathObstructed);
-      return Scalars.lessThan(min, CLEARANCE);
-    }
-    return true;
   }
 
   /***************************************************/

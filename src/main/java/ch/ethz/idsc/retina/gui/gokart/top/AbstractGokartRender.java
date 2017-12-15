@@ -22,16 +22,22 @@ public abstract class AbstractGokartRender implements RenderInterface {
     this.gokartPoseInterface = gokartPoseInterface;
   }
 
-  @Override
+  @Override // from RenderInterface
   public final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
     Scalar x = TO_METER.apply(state.Get(0));
     Scalar y = TO_METER.apply(state.Get(1));
     Scalar angle = state.Get(2);
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.of(x, y, angle)));
+    // ---
     protected_render(geometricLayer, graphics);
+    // ---
     geometricLayer.popMatrix();
   }
 
+  /** function is invoked with geometricLayer set to location of gokart
+   * 
+   * @param geometricLayer
+   * @param graphics */
   public abstract void protected_render(GeometricLayer geometricLayer, Graphics2D graphics);
 }

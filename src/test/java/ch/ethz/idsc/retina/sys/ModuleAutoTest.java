@@ -21,13 +21,15 @@ public class ModuleAutoTest extends TestCase {
     assertTrue(d1.getClass() == Davis240cDecoder.class);
   }
 
-  public void testOne() {
+  public void testOne() throws Exception {
     ModuleAuto.INSTANCE.runOne(LinmotTakeoverModule.class);
+    Thread.sleep(50); // needs time to start thread that invokes first()
     ModuleAuto.INSTANCE.terminateOne(LinmotTakeoverModule.class);
   }
 
-  public void testAll() {
+  public void testAll() throws Exception {
     ModuleAuto.INSTANCE.runAll(Arrays.asList(LinmotTakeoverModule.class));
+    Thread.sleep(100);
     ModuleAuto.INSTANCE.terminateAll();
   }
 }

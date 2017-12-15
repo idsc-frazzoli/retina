@@ -15,6 +15,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * LONGTERM NRJ cite source for temperature range and other magic const */
 public class LinmotGetEvent extends DataEvent {
+  /** degree celsius */
+  public static final Unit CELSIUS = Unit.of("degC");
   /** 16 bytes */
   /* package */ static final int LENGTH = 16;
   /** conversion factor 0.1 taken from data sheet */
@@ -22,11 +24,8 @@ public class LinmotGetEvent extends DataEvent {
   /** actual position of 100000 corresponds to 1 cm
    * demand position uses the same scale */
   private static final double GET_POSITION_TO_METER = 1e-7;
-  private static final Unit CELSIUS = Unit.of("degC");
-  /** degree celsius */
-  public static final Clip TEMPERATURE_RANGE = Clip.function( //
-      Quantity.of(2, CELSIUS), Quantity.of(110, CELSIUS));
   /** bounds established using experimentation */
+  // TODO also extract to linmot config
   public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
   // ---
   public final short status_word;
@@ -53,17 +52,9 @@ public class LinmotGetEvent extends DataEvent {
     return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, CELSIUS);
   }
 
-  public boolean isSafeWindingTemperature1() {
-    return TEMPERATURE_RANGE.isInside(getWindingTemperature1());
-  }
-
   /** @return temperature of winding 2 in degree Celsius */
   public Scalar getWindingTemperature2() {
     return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, CELSIUS);
-  }
-
-  public boolean isSafeWindingTemperature2() {
-    return TEMPERATURE_RANGE.isInside(getWindingTemperature2());
   }
 
   public Scalar getWindingTemperatureMax() {

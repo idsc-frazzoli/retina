@@ -17,8 +17,8 @@ public class Se2MultiresSamples {
   // ---
   private final List<Tensor> list = new ArrayList<>();
 
-  public Se2MultiresSamples(Scalar ang, Scalar shf, int level) {
-    for (int iterate = 0; iterate < level; ++iterate) {
+  public Se2MultiresSamples(Scalar shf, Scalar ang, int levels) {
+    for (int iterate = 0; iterate < levels; ++iterate) {
       Tensor next = Tensors.empty();
       for (int x = -1; x <= 1; ++x)
         for (int y = -1; y <= 1; ++y)
@@ -36,5 +36,9 @@ public class Se2MultiresSamples {
 
   public Tensor level(int level) {
     return list.get(level);
+  }
+
+  public int levels() {
+    return list.size();
   }
 }

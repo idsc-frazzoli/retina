@@ -5,17 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocketModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
+import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
@@ -30,8 +33,7 @@ enum RunTabbedTaskGui {
   ;
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class, // sensing
-      Urg04lxLcmServerModule.class // sensing
+      Vlp16LcmServerModule.class // sensing
   );
   static final List<Class<?>> MODULES_LCM = Arrays.asList( //
       AutoboxLcmServerModule.class, //
@@ -39,11 +41,13 @@ enum RunTabbedTaskGui {
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
+      Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
       AutoboxTestingModule.class, //
       LocalViewLcmModule.class, //
+      GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class, //
       DavisOverviewModule.class //
@@ -53,7 +57,9 @@ enum RunTabbedTaskGui {
       MiscEmergencyModule.class, //
       SteerEmergencyModule.class, //
       LinmotEmergencyModule.class, //
+      LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
+      Vlp16ClearanceModule.class, //
       Urg04lxClearanceModule.class //
   );
   static final List<Class<?>> MODULES_TRACK = Arrays.asList( //

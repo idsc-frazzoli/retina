@@ -10,10 +10,17 @@ import ch.ethz.idsc.retina.sys.SafetyCritical;
 public enum ProviderRank {
   /** not used */
   GODMODE, //
-  /** for instance when the battery is low, bumper has contact, flat tire, ... */
+  /** physical imperative hardware protection, for instance
+   * 1) when the linmot temperature is above critical limit
+   * 2) when steering battery is being charged the steering should be passive
+   * otherwise battery may overcharge. */
+  HARDWARE, //
+  /** emergency is a condition that is not encountered during nominal operation.
+   * an emergency state should be acknowledged by the operator.
+   * emergency is for instance when the steering battery is low,
+   * linmot brake is not calibrated,
+   * bumper has contact, flat tire, ... */
   EMERGENCY, //
-  /** for instance when steering battery is charged the steering should be passive */
-  PROTECTION, //
   /** for instance during calibration of
    * 1) linmot break, or
    * 2) steering */

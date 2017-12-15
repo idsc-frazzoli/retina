@@ -24,7 +24,8 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
   Color color = Color.BLACK;
   int pointSize = 1;
 
-  /** @param supplier of a 3 vector {x, y, alpha} */
+  /** @param supplier of a 3 vector {x, y, alpha} that describes the reference of
+   * the lidar with respect to the (0, 0, 0) center of rear axle of the gokart. */
   public void setReference(Supplier<Tensor> supplier) {
     this.supplier = supplier;
   }
@@ -37,8 +38,10 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
     this.pointSize = pointSize;
   }
 
-  @Override
+  @Override // from LidarRayBlockListener
   public final void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+    // String info = LidarRayBlockEvents.toInfoString(lidarRayBlockEvent);
+    // System.out.println("here " + info);
     final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     final int position = floatBuffer.position();
     if (lidarRayBlockEvent.dimensions == 2) {

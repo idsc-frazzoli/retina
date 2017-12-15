@@ -5,8 +5,12 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.zhkart.fuse.SafetyConfig;
+import ch.ethz.idsc.retina.dev.zhkart.joy.JoystickConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -19,19 +23,23 @@ public class ParametersModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     addTab(ChassisGeometry.GLOBAL);
     addTab(SensorsConfig.GLOBAL);
+    addTab(LinmotConfig.GLOBAL);
     addTab(SteerConfig.GLOBAL);
     addTab(RimoConfig.GLOBAL);
+    addTab(SafetyConfig.GLOBAL);
+    addTab(LocalizationConfig.GLOBAL);
+    addTab(JoystickConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     jFrame.setVisible(false);
     jFrame.dispose();

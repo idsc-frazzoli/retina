@@ -10,6 +10,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
@@ -28,10 +29,8 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 public class OccupancyMap implements LidarRayBlockListener {
   public static final int WIDTH = 1200;
   private static final Scalar FO2 = DoubleScalar.of(WIDTH / 2);
-  /** in the j2b2 project m2p == 50 */
-  public static final float METER_TO_PIXEL = 50;
   public static final int LEVELS = 4;
-  public static final Scalar M2PIX = RealScalar.of(METER_TO_PIXEL);
+  private final Scalar M2PIX;
   private static final Color FREESPACE = new Color(20, 20, 20, 255);
   private static final Color NEXTSPACE = new Color(128, 128, 128, 255);
   private static final Color WALLSPACE = new Color(255, 255, 255, 255);
@@ -43,20 +42,20 @@ public class OccupancyMap implements LidarRayBlockListener {
   private final byte[] bytes;
   private Tensor global;
   private Tensor pose;
-  private boolean optimize = false;
+  private boolean hasPrev = false;
   private final Se2MultiresSamples se2MultiresSamples;
   private final List<SlamListener> listeners = new LinkedList<>();
 
-  public OccupancyMap() {
+  /** in the j2b2 project m2p == 50 */
+  public OccupancyMap(float METER_TO_PIXEL, Se2MultiresSamples se2MultiresSamples) {
+    M2PIX = RealScalar.of(METER_TO_PIXEL);
+    // ---
     WritableRaster writableRaster = bufferedImage.getRaster();
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     bytes = dataBufferByte.getData();
     global = IdentityMatrix.of(3);
     pose = IdentityMatrix.of(3);
-    se2MultiresSamples = new Se2MultiresSamples( //
-        RealScalar.of(2 * Math.PI / 180), // 2 [deg]
-        RealScalar.of(0.03 * METER_TO_PIXEL), // 3 [cm]
-        LEVELS);
+    this.se2MultiresSamples = se2MultiresSamples;
   }
 
   @Override
@@ -80,24 +79,29 @@ public class OccupancyMap implements LidarRayBlockListener {
       points = Tensor.of(mark.stream().flatMap(Tensor::stream));
       // System.out.println(lidarRayBlockEvent.size() + " -> " + Dimensions.of(points));
       Tensor prev = pose.copy();
-      if (optimize) {
+      if (hasPrev) {
         // Stopwatch stp = Stopwatch.started();
-        for (int level = 0; level < 4; ++level) {
+        for (int level = 0; level < LEVELS; ++level) {
           Tensor next = null;
-          int cmp = 0;
+          int cmp = -1;
           for (Tensor tryme : se2MultiresSamples.level(level)) {
+            GlobalAssert.that(Objects.nonNull(pose));
+            GlobalAssert.that(Objects.nonNull(tryme));
             Tensor test = pose.dot(tryme);
             Tensor evl = Tensor.of(points.stream().map(row -> test.dot(row)));
             int ret = evaluate(evl);
+            GlobalAssert.that(0 <= ret);
             if (cmp < ret) {
               next = test;
               cmp = ret;
             }
           }
+          if (cmp == 0)
+            System.err.println("cmp==0");
           pose = next;
         }
       }
-      optimize |= true;
+      hasPrev |= true;
       final List<Tensor> pose_lidar = mark.stream() //
           .map(block -> Tensor.of(block.stream().map(row -> pose.dot(row)))) //
           .collect(Collectors.toList());

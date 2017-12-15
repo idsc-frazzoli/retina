@@ -46,6 +46,7 @@ public class DavisOverviewModule extends AbstractModule {
     davisLcmClient.startSubscriptions();
     windowConfiguration.attach(getClass(), davisViewerFrame.jFrame);
     davisViewerFrame.jFrame.setVisible(true);
+    vlp16LcmHandler.startSubscriptions();
   }
 
   @Override

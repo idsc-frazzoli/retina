@@ -24,7 +24,7 @@ public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
   /***************************************************/
   @Override // from SteerPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.PROTECTION;
+    return ProviderRank.HARDWARE;
   }
 
   @Override // from SteerPutProvider

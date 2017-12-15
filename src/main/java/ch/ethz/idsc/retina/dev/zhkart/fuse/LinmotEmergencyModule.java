@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 /** sends stop command if either of the conditions was true
  * 1) linmot messages have not been received for a timeout period, e.g. 50[ms]
  * 2) linmot status is "not-operational"
- * 3) linmot winding temperature is outside valid range
  * 
  * module needs to be started after linmot calibration procedure otherwise
  * the linmot will not read "operational" */
@@ -39,10 +38,9 @@ public final class LinmotEmergencyModule extends EmergencyModule<RimoPutEvent> i
   /***************************************************/
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
+    // permanent off
     watchdog.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
     isBlown |= !linmotGetEvent.isOperational();
-    isBlown |= !linmotGetEvent.isSafeWindingTemperature1();
-    isBlown |= !linmotGetEvent.isSafeWindingTemperature2();
   }
 
   /***************************************************/

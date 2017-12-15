@@ -6,8 +6,9 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDecoder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxSpacialProvider;
+import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 
-public class Urg04lxLcmHandler {
+public class Urg04lxLcmHandler implements LcmClientInterface {
   private final Urg04lxLcmClient urg04lxLcmClient;
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(Urg04lxDevice.MAX_POINTS, 2);
@@ -25,14 +26,18 @@ public class Urg04lxLcmHandler {
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     urg04lxLcmClient.urg04lxDecoder.addRayListener(lidarRotationProvider);
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
-    // ---
-    urg04lxLcmClient.startSubscriptions();
   }
 
   public Urg04lxDecoder urg04lxDecoder() {
     return urg04lxLcmClient.urg04lxDecoder;
   }
 
+  @Override
+  public void startSubscriptions() {
+    urg04lxLcmClient.startSubscriptions();
+  }
+
+  @Override
   public void stopSubscriptions() {
     urg04lxLcmClient.stopSubscriptions();
   }

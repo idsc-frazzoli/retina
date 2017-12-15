@@ -8,17 +8,19 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 
-public class Vlp16LcmHandler {
+public class Vlp16LcmHandler implements LcmClientInterface {
   public static final int MAX_COORDINATES = 2304 * 32;
   // ---
+  public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
+  // FIXME this is coupled!!
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(MAX_COORDINATES, 3);
   private final VelodyneLcmClient velodyneLcmClient;
 
   public Vlp16LcmHandler(String lidarId) {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
-    VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, lidarId);
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -26,10 +28,14 @@ public class Vlp16LcmHandler {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    // ---
+  }
+
+  @Override // from LcmClientInterface
+  public void startSubscriptions() {
     velodyneLcmClient.startSubscriptions();
   }
 
+  @Override // from LcmClientInterface
   public void stopSubscriptions() {
     velodyneLcmClient.stopSubscriptions();
   }

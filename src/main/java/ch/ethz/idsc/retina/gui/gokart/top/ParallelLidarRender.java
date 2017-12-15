@@ -18,7 +18,7 @@ class ParallelLidarRender extends LidarRender {
     super(gokartPoseInterface);
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
@@ -33,6 +33,7 @@ class ParallelLidarRender extends LidarRender {
       graphics.setColor(color);
       for (Tensor x : points) {
         Point2D point2D = geometricLayer.toPoint2D(x);
+        // System.out.println(point2D);
         graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
       }
     }

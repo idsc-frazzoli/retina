@@ -38,17 +38,17 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
     limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }
 
-  @Override
+  @Override // from LidarSpacialProvider
   public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int azimuth, ByteBuffer byteBuffer) {
     float dx = VelodyneStatics.TRIGONOMETRY.dx(azimuth);
     float dy = VelodyneStatics.TRIGONOMETRY.dy(azimuth);
