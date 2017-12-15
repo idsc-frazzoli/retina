@@ -136,47 +136,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   }
 
   /***************************************************/
-  /** given object must not implement {@link PutProvider}, {@link GetListener},
-   * {@link PutListener}.
-   * 
-   * @param object */
-  public final void addAll(Object object) {
-    if (object instanceof PutProvider) {
-      @SuppressWarnings("unchecked")
-      PutProvider<PE> putProvider = (PutProvider<PE>) object;
-      addPutProvider(putProvider);
-    }
-    if (object instanceof GetListener) {
-      @SuppressWarnings("unchecked")
-      GetListener<GE> getListener = (GetListener<GE>) object;
-      addGetListener(getListener);
-    }
-    if (object instanceof PutListener) {
-      @SuppressWarnings("unchecked")
-      PutListener<PE> putListener = (PutListener<PE>) object;
-      addPutListener(putListener);
-    }
-  }
-
-  public final void removeAll(Object object) {
-    if (object instanceof PutProvider) {
-      @SuppressWarnings("unchecked")
-      PutProvider<PE> putProvider = (PutProvider<PE>) object;
-      removePutProvider(putProvider);
-    }
-    if (object instanceof GetListener) {
-      @SuppressWarnings("unchecked")
-      GetListener<GE> getListener = (GetListener<GE>) object;
-      removeGetListener(getListener);
-    }
-    if (object instanceof PutListener) {
-      @SuppressWarnings("unchecked")
-      PutListener<PE> putListener = (PutListener<PE>) object;
-      removePutListener(putListener);
-    }
-  }
-
-  /***************************************************/
   public final void addPutProvider(PutProvider<PE> putProvider) {
     boolean added = providers.add(putProvider);
     if (!added)
