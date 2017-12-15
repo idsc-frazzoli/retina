@@ -12,8 +12,8 @@ public enum ProviderRanks {
     for (ProviderRank providerRank : ProviderRank.values())
       MAP.put(providerRank, Color.WHITE);
     // ---
-    MAP.put(ProviderRank.EMERGENCY, new Color(255, 128, 128)); // red
-    MAP.put(ProviderRank.HARDWARE, new Color(222, 195, 174)); // yellow/red
+    MAP.put(ProviderRank.HARDWARE, new Color(255, 128, 128)); // red
+    MAP.put(ProviderRank.EMERGENCY, new Color(222, 195, 174)); // yellow/red
     MAP.put(ProviderRank.CALIBRATION, new Color(0, 255, 255)); // turquoise
     MAP.put(ProviderRank.MANUAL, new Color(128, 255, 128)); // green
     MAP.put(ProviderRank.TESTING, new Color(255, 255, 0)); // yellow

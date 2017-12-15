@@ -22,4 +22,21 @@ public class Urg04lxEmergencyModuleTest extends TestCase {
     Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
     assertEquals(uem.getProviderRank(), ProviderRank.EMERGENCY);
   }
+
+  public void testNominal() throws Exception {
+    Urg04lxEmergencyModule uem = new Urg04lxEmergencyModule();
+    assertFalse(uem.putEvent().isPresent());
+    Thread.sleep(100);
+    uem.timestamp(1, 1);
+    uem.scan(1, null);
+    Thread.sleep(100);
+    uem.timestamp(1, 1);
+    Thread.sleep(100);
+    uem.timestamp(1, 1);
+    Thread.sleep(100);
+    uem.timestamp(1, 1);
+    Thread.sleep(100);
+    uem.timestamp(1, 1);
+    assertFalse(uem.putEvent().isPresent());
+  }
 }

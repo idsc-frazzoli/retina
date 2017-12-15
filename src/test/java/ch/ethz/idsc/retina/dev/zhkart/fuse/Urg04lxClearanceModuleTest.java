@@ -79,4 +79,10 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
     assertEquals(ucm.getProviderRank(), ProviderRank.EMERGENCY);
   }
+
+  public void testNull() {
+    Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
+    ucm.lidarRayBlock(null);
+    assertTrue(ucm.putEvent().isPresent());
+  }
 }

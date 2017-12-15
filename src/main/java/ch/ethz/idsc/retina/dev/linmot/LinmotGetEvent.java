@@ -30,9 +30,13 @@ public class LinmotGetEvent extends DataEvent {
   // ---
   public final short status_word;
   public final short state_variable;
-  // negative values correspond to a pushed brake
+  /** -50000 for non-braking
+   * -500000 for maximum braking */
   public final int actual_position;
-  // same unit as actual_position
+  /** -50000 for non-braking
+   * -500000 for maximum braking
+   * 
+   * demand_position is on the same scale as actual_position */
   public final int demand_position;
   private final short winding_temp1;
   private final short winding_temp2;
@@ -70,7 +74,7 @@ public class LinmotGetEvent extends DataEvent {
         winding_temp1, winding_temp2);
   }
 
-  @Override
+  @Override // from DataEvent
   protected void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(status_word);
     byteBuffer.putShort(state_variable);
@@ -80,7 +84,7 @@ public class LinmotGetEvent extends DataEvent {
     byteBuffer.putShort(winding_temp2);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }
@@ -89,6 +93,7 @@ public class LinmotGetEvent extends DataEvent {
     return Quantity.of(actual_position * GET_POSITION_TO_METER, "m");
   }
 
+  /** @return demand position minus actual position */
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
   }

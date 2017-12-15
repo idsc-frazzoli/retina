@@ -18,4 +18,17 @@ public enum LinmotGetEventSimulator {
     byteBuffer.flip();
     return LinmotSocket.INSTANCE.createGetEvent(byteBuffer);
   }
+
+  public static LinmotGetEvent createPos(int actual_position, int demand_position) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putShort((short) 0x4c37);
+    byteBuffer.putShort((short) 0x08c1);
+    byteBuffer.putInt(actual_position);
+    byteBuffer.putInt(demand_position);
+    byteBuffer.putShort((short) 700);
+    byteBuffer.putShort((short) 600);
+    byteBuffer.flip();
+    return LinmotSocket.INSTANCE.createGetEvent(byteBuffer);
+  }
 }
