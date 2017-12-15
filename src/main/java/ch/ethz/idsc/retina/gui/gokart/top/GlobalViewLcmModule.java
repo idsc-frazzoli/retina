@@ -27,7 +27,7 @@ public class GlobalViewLcmModule extends ViewLcmModule {
   public static void standalone() throws Exception {
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
-    globalViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    globalViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {

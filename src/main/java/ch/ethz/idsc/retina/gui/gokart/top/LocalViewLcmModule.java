@@ -13,7 +13,7 @@ public class LocalViewLcmModule extends ViewLcmModule {
   public static void standalone() throws Exception {
     LocalViewLcmModule localViewLcmModule = new LocalViewLcmModule();
     localViewLcmModule.first();
-    localViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    localViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {
