@@ -10,13 +10,28 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
-/** extracts points at horizontal level */
-public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
+/** extracts points at horizontal level for velodyne */
+public class VelodynePlanarEmulator implements LidarSpacialProvider {
+  public static VelodynePlanarEmulator hdl32e() {
+    return new VelodynePlanarEmulator(15); // index of horizontal beam == 15
+  }
+
+  public static VelodynePlanarEmulator vlp16() {
+    return new VelodynePlanarEmulator(1); // index of beam with 1 degree inclination == 1
+  }
+  // ---
+
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
+  private final int index;
 
-  @Override
+  /** @param index of horizontal laser */
+  public VelodynePlanarEmulator(int index) {
+    this.index = index;
+  }
+
+  @Override // from LidarSpacialProvider
   public void addListener(LidarSpacialListener lidarSpacialEventListener) {
     listeners.add(lidarSpacialEventListener);
   }
@@ -32,18 +47,17 @@ public class Hdl32ePlanarEmulator implements LidarSpacialProvider {
     limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     float dx = VelodyneStatics.TRIGONOMETRY.dx(rotational);
     float dy = VelodyneStatics.TRIGONOMETRY.dy(rotational);
     final float[] coords = new float[2];
-    int laser = 15; // magic const refers to horizontal laser
-    byteBuffer.position(byteBuffer.position() + laser * 3);
+    byteBuffer.position(byteBuffer.position() + index * 3);
     int distance = byteBuffer.getShort() & 0xffff;
     int intensity = byteBuffer.get() & 0xff;
     if (limit_lo <= distance) {

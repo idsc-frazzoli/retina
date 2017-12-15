@@ -35,12 +35,12 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
     limit_lo = (int) (closest / VelodyneStatics.TO_METER);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     float dx = VelodyneStatics.TRIGONOMETRY.dx(rotational);
     float dy = VelodyneStatics.TRIGONOMETRY.dy(rotational);

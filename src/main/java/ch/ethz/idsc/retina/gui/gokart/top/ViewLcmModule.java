@@ -8,6 +8,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
@@ -84,6 +85,12 @@ abstract class ViewLcmModule extends AbstractModule {
       lidarRender.setColor(new Color(0, 0, 128, 128));
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      LidarRender lidarRender = new PlanarLidarRender(gokartPoseInterface);
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      lidarRender.setColor(new Color(255, 0, 128, 128));
+      VelodynePlanarEmulator.vlp16();
     }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
