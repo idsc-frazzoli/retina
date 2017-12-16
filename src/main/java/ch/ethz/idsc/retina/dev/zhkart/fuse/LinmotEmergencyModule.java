@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
  * the linmot will not read "operational" */
 public final class LinmotEmergencyModule extends EmergencyModule<RimoPutEvent> implements LinmotGetListener {
   /** the micro-autobox sends messages at 250[Hz], i.e. at intervals of 4[ms] */
-  private static final long LINMOT_TIMEOUT_MS = 50;
+  private static final long LINMOT_TIMEOUT_MS = 40;
   // ---
   private final Watchdog watchdog = new Watchdog(LINMOT_TIMEOUT_MS * 1e-3);
   private boolean isBlown = false;

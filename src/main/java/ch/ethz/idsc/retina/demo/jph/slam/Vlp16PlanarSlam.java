@@ -24,7 +24,7 @@ public enum Vlp16PlanarSlam {
     Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples( //
         RealScalar.of(0.03 * METER_TO_PIXEL), // 3 [cm]
         RealScalar.of(5 * Math.PI / 180), // 2 [deg]
-        4);
+        4, 1);
     OccupancyMap occupancyMap = new OccupancyMap(METER_TO_PIXEL, se2MultiresSamples);
     // ---
     final String lidarId = GokartLcmChannel.VLP16_CENTER;

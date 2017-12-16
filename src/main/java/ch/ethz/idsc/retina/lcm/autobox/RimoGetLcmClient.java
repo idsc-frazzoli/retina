@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   private static boolean notify_flag = true;
 
-  @Override
+  @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     try {
       // the protocol has changed from speed control to torque control
@@ -24,7 +24,7 @@ public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
     }
   }
 
-  @Override
+  @Override // from BinaryLcmClient
   protected String channel() {
     return RimoLcmServer.CHANNEL_GET;
   }
