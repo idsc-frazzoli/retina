@@ -16,13 +16,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class SlamDunk {
-  private final BufferedImage bufferedImage;
+  // private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int WIDTH;
   private Se2MultiresSamples se2MultiresSamples;
 
   public SlamDunk(BufferedImage bufferedImage) {
-    this.bufferedImage = bufferedImage;
+    // this.bufferedImage = bufferedImage;
     WIDTH = bufferedImage.getWidth();
     // HEIGHT = bufferedImage.getHeight();
     WritableRaster writableRaster = bufferedImage.getRaster();
@@ -72,9 +72,11 @@ public class SlamDunk {
 
   private int evaluate(Point2D point2D) {
     int sum = 0;
-    int x = (int) Math.round(point2D.getX()); // TODO not optimal, why not (int)
+    // int x = (int) Math.round(point2D.getX()); // TODO not optimal, why not (int)
+    int x = (int) point2D.getX(); // TODO not optimal, why not (int)
     if (0 <= x && x < WIDTH) {
-      int y = (int) Math.round(point2D.getY());
+      // int y = (int) Math.round(point2D.getY());
+      int y = (int) point2D.getY();
       if (0 <= y && y < WIDTH)
         sum += bytes[x + WIDTH * y] & 0xff;
     }

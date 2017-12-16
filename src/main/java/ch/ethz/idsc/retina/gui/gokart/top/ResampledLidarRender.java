@@ -28,11 +28,14 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Pretty;
+import ch.ethz.idsc.tensor.mat.Inverse;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
 class ResampledLidarRender extends LidarRender {
+  private final GokartPoseInterface gokartPoseInterface;
   private boolean flagStoreMap = false;
   private boolean flagSnap = false;
   private final Se2MultiresSamples se2MultiresSamples = //
@@ -56,6 +59,7 @@ class ResampledLidarRender extends LidarRender {
   public ResampledLidarRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
     // ---
+    this.gokartPoseInterface = gokartPoseInterface;
     try {
       Tensor tensor = Import.of(UserHome.Pictures("master_map.png"));
       map_image = ImageFormat.of(tensor);
@@ -70,7 +74,8 @@ class ResampledLidarRender extends LidarRender {
       return;
     final Tensor points = _points;
     final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
+    final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
+    geometricLayer.pushMatrix(lidar);
     graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
     if (flagSnap) {
       flagSnap = false;
@@ -80,17 +85,17 @@ class ResampledLidarRender extends LidarRender {
       // glmap.toPoint2D(x);
       SlamDunk slamDunk = new SlamDunk(map_image);
       slamDunk.set(se2MultiresSamples);
-      Tensor result = slamDunk.fit(glmap, list);
-      System.out.println(Pretty.of(result.map(Round._4)));
-      // Graphics2D mapGfx = (Graphics2D) map_image.getGraphics();
-      // mapGfx.setColor(new Color(100, 100, 100));
-      // for (Tensor pnts : list) {
-      // for (Tensor x : pnts) {
-      // Point2D point2D = glmap.toPoint2D(x);
-      // mapGfx.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
-      // }
-      // }
-      // System.out.println("inserted into map");
+      Tensor delta = slamDunk.fit(glmap, list);
+      System.out.println(Pretty.of(delta.map(Round._4)));
+      Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
+      poseDelta.set(s -> Quantity.of(s.Get(), "m"), 0, 2);
+      poseDelta.set(s -> Quantity.of(s.Get(), "m"), 1, 2);
+      System.out.println(Pretty.of(poseDelta.map(Round._4)));
+      Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
+      Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
+      Tensor newState = Se2Utils.fromSE2Matrix(newPose);
+      System.out.println(newState);
+      gokartPoseInterface.setPose(newState);
     }
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));

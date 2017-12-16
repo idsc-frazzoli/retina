@@ -47,7 +47,7 @@ public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener 
     step(rimoGetEvent.getAngularRate_Y_pair());
   }
 
-  /* package */ void step(Tensor angularRate_Y_pair) {
+  /* package */ synchronized void step(Tensor angularRate_Y_pair) {
     // rad 0.14, ytir = 0.65 very good rotation tracking! but speed not accurate
     // rad 0.12, ytir = 0.54 good speed tracking, rotation ok
     Scalar radius = ChassisGeometry.GLOBAL.tireRadiusRear;
@@ -74,5 +74,10 @@ public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
     return state.unmodifiable();
+  }
+
+  @Override
+  public synchronized void setPose(Tensor pose) {
+    state = pose;
   }
 }
