@@ -20,12 +20,10 @@ import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Pretty;
-import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -37,7 +35,6 @@ class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private boolean flagSetLocation = false;
   private final Se2MultiresSamples se2MultiresSamples = //
       new Se2MultiresSamples(RealScalar.of(1), Degree.of(1), 9, 2); // TODO during operation, only 3-5 levels should be used
   private BufferedImage map_image = null;
@@ -54,8 +51,8 @@ class ResampledLidarRender extends LidarRender {
     if (Objects.isNull(_points))
       return;
     { // model2pixel 7.5 means 1[m] translates to 7.5 pixel, 13.3[cm] per pixel
-      Tensor mat = geometricLayer.getMatrix();
-      Scalar det = Det.of(mat);
+      // Tensor mat = geometricLayer.getMatrix();
+      // Scalar det = Det.of(mat);
       // System.out.println("factor=" + Sqrt.of(det.negate()));
     }
     final Tensor points = _points;
@@ -130,5 +127,4 @@ class ResampledLidarRender extends LidarRender {
   public final ActionListener action_mapCreate = e -> flagMapCreate = true;
   public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
   public final ActionListener action_snap = e -> flagSnap = true;
-  public final ActionListener action_setLocation = e -> flagSetLocation = true;
 }
