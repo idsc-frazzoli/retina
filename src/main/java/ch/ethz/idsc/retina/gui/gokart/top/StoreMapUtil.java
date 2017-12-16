@@ -11,7 +11,9 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
@@ -30,6 +32,10 @@ public enum StoreMapUtil {
         exception.printStackTrace();
       }
     return null;
+  }
+
+  public static Tensor range() {
+    return Tensors.vector(SIZE, SIZE).divide(RealScalar.of(7.5));
   }
 
   /** creates map and stores image at default location

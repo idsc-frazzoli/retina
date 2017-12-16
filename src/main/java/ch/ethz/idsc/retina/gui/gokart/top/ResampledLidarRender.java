@@ -11,7 +11,9 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
+import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -19,11 +21,12 @@ import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -36,7 +39,7 @@ class ResampledLidarRender extends LidarRender {
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
   private final Se2MultiresSamples se2MultiresSamples = //
-      new Se2MultiresSamples(RealScalar.of(1), Degree.of(1), 9, 2); // TODO during operation, only 3-5 levels should be used
+      new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2); // TODO during operation, only 3-5 levels should be used
   private BufferedImage map_image = null;
 
   public ResampledLidarRender(GokartPoseInterface gokartPoseInterface) {
@@ -61,25 +64,40 @@ class ResampledLidarRender extends LidarRender {
     geometricLayer.pushMatrix(lidar);
     if (Objects.nonNull(map_image)) {
       graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
-      if (flagSnap) {
-        flagSnap = false;
-        // TEST ONLY
-        Tensor model2pixel = geometricLayer.getMatrix();
-        SlamDunk slamDunk = new SlamDunk(map_image);
-        slamDunk.set(se2MultiresSamples);
-        GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
-        Tensor delta = slamDunk.fit(glmap, list);
-        System.out.println(Pretty.of(delta.map(Round._4)));
-        Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
-        poseDelta.set(s -> Quantity.of(s.Get(), "m"), 0, 2);
-        poseDelta.set(s -> Quantity.of(s.Get(), "m"), 1, 2);
-        System.out.println(Pretty.of(poseDelta.map(Round._4)));
-        Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
-        Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
-        Tensor newState = Se2Utils.fromSE2Matrix(newPose);
-        System.out.println(newState);
-        gokartPoseInterface.setPose(newState);
-      }
+      int sum = list.stream().mapToInt(Tensor::length).sum(); // usually around 430
+      // System.out.println("points: " + sum);
+      if (flagSnap || trackSupplier.get())
+        if (350 < sum) {
+          flagSnap = false;
+          // TEST ONLY
+          Tensor model2pixel = geometricLayer.getMatrix();
+          SlamDunk slamDunk = new SlamDunk(map_image);
+          slamDunk.set(se2MultiresSamples);
+          GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
+          Stopwatch stopwatch = Stopwatch.started();
+          Tensor delta = slamDunk.fit(glmap, list);
+          double duration = stopwatch.display_seconds();
+          // System.out.println(duration + "[s]");
+          int quality = slamDunk.getMatchQuality();
+          Scalar ratio = RationalScalar.of(quality, sum);
+          // System.out.println("Quality=" + quality);
+          // System.out.println(Pretty.of(delta.map(Round._4)));
+          Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
+          poseDelta.set(s -> Quantity.of(s.Get(), "m"), 0, 2);
+          poseDelta.set(s -> Quantity.of(s.Get(), "m"), 1, 2);
+          // System.out.println(Pretty.of(poseDelta.map(Round._4)));
+          Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
+          Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
+          Tensor newState = Se2Utils.fromSE2Matrix(newPose);
+          // System.out.println(newState);
+          gokartPoseInterface.setPose(newState);
+          // ---
+          graphics.setColor(Color.GRAY);
+          graphics.drawString("points=" + sum, 0, 30);
+          graphics.drawString("quality=" + ratio.map(Round._2), 0, 50);
+          graphics.drawString("duration=" + Quantity.of(duration, "s").map(Round._4), 0, 70);
+        } else
+          System.err.println("insufficient: " + sum);
     }
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -108,9 +126,6 @@ class ResampledLidarRender extends LidarRender {
         graphics.draw(path2D);
         GraphicsUtil.setQualityDefault(graphics);
       }
-      graphics.setColor(Color.BLACK);
-      int total = list.stream().mapToInt(l -> l.length()).sum();
-      graphics.drawString("resampled " + total, 0, 50);
     }
     if (flagMapCreate) {
       flagMapCreate = false;
@@ -127,4 +142,5 @@ class ResampledLidarRender extends LidarRender {
   public final ActionListener action_mapCreate = e -> flagMapCreate = true;
   public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
   public final ActionListener action_snap = e -> flagSnap = true;
+  public Supplier<Boolean> trackSupplier = () -> false;
 }

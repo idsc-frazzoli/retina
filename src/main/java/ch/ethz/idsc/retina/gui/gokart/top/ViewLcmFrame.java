@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -20,7 +21,8 @@ public class ViewLcmFrame extends TimerFrame {
   public final JButton jButtonMapUpdate = new JButton("map update");
   public final JButton jButtonSnap = new JButton("snap to map");
   public final JButton jButtonSetLocation = new JButton("set location");
-  private static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
+  public final JToggleButton jToggleButton = new JToggleButton("track");
+  public static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 7.5, 0, 0 }, //
       { 0, -7.5, 640 }, //
       { 0, 0, 1 }, //
@@ -47,6 +49,7 @@ public class ViewLcmFrame extends TimerFrame {
       }
     });
     jToolBar.add(jButtonSetLocation);
+    jToolBar.add(jToggleButton);
   }
 
   protected void setGokartPoseInterface(GokartPoseInterface gokartPoseInterface) {

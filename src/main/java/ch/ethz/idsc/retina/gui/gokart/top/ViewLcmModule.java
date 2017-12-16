@@ -86,6 +86,7 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapCreate.addActionListener(lidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapUpdate.addActionListener(lidarRender.action_mapUpdate);
       viewLcmFrame.jButtonSnap.addActionListener(lidarRender.action_snap);
+      lidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       lidarRender.setPointSize(2);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 128, 128));

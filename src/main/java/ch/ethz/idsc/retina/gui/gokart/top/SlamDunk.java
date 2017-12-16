@@ -8,7 +8,6 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -16,13 +15,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class SlamDunk {
-  // private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int WIDTH;
   private Se2MultiresSamples se2MultiresSamples;
 
   public SlamDunk(BufferedImage bufferedImage) {
-    // this.bufferedImage = bufferedImage;
     WIDTH = bufferedImage.getWidth();
     // HEIGHT = bufferedImage.getHeight();
     WritableRaster writableRaster = bufferedImage.getRaster();
@@ -34,12 +31,17 @@ public class SlamDunk {
     this.se2MultiresSamples = se2MultiresSamples;
   }
 
+  int cmp = -1;
+
+  public int getMatchQuality() {
+    return cmp;
+  }
+
   public Tensor fit(GeometricLayer geometricLayer, List<Tensor> list) {
-    Stopwatch stopwatch = Stopwatch.started();
     Tensor result = IdentityMatrix.of(3);
     int pushed = 0;
     for (int level = 0; level < se2MultiresSamples.levels(); ++level) {
-      int cmp = -1;
+      cmp = -1;
       Tensor best = null;
       for (Tensor delta : se2MultiresSamples.level(level)) {
         geometricLayer.pushMatrix(delta);
@@ -65,8 +67,6 @@ public class SlamDunk {
     }
     for (int count = 0; count < pushed; ++count)
       geometricLayer.popMatrix();
-    double duration = stopwatch.display_seconds();
-    System.out.println(duration + "[s]");
     return result;
   }
 
