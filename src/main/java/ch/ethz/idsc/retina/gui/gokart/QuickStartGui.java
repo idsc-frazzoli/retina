@@ -15,8 +15,9 @@ enum QuickStartGui {
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     // ---
     taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
-    taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_FUSE);
-    taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_TRACK);
+    taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
+    taskTabGui.tab("joy", RunTabbedTaskGui.MODULES_JOY);
+    taskTabGui.tab("aut", RunTabbedTaskGui.MODULES_AUT);
     wc.attach(QuickStartGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }

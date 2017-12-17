@@ -35,7 +35,9 @@ class RimoDeadMan implements PutProvider<RimoPutEvent> {
   }
 }
 
-/** action of emergency module is to brake for 2.5[s] */
+/** module requires the presence of a joystick
+ * 
+ * action of emergency module is to brake for 2.5[s] */
 // TODO no good: when joystick is missing, immediately brakes regardless of speed
 // TODO no good: when speed > threshold, only brakes once but whenever speed > threshold -> repeatedly
 public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements GetListener<RimoGetEvent> {

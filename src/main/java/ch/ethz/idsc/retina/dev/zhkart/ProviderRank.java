@@ -33,7 +33,7 @@ public enum ProviderRank {
    * that is too fast to be considered by the path planner
    * safety control may override autonomous logic */
   SAFETY, //
-  /** path planner */
+  /** when following a trajectory for instance provided by a path planner */
   AUTONOMOUS, //
   /** if no prior controls have been issued the fallback option is used
    * all systems idle, hand-brake mode */
