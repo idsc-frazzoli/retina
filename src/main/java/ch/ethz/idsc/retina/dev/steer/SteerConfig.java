@@ -58,4 +58,8 @@ public class SteerConfig implements Serializable {
     return UnitSystem.SI().apply( //
         steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
   }
+
+  public Scalar getSCEfromAngle(Scalar angle) {
+    return angle.divide(column2steer);
+  }
 }

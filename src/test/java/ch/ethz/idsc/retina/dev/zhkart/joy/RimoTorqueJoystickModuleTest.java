@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -17,6 +18,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class RimoTorqueJoystickModuleTest extends TestCase {
+  public void testFirstLast() throws Exception {
+    int size = RimoSocket.INSTANCE.getPutProviderSize();
+    RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
+    rtjm.first();
+    assertEquals(RimoSocket.INSTANCE.getPutProviderSize(), size + 1);
+    rtjm.last();
+    assertEquals(RimoSocket.INSTANCE.getPutProviderSize(), size);
+  }
+
   public void testSimple() {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //

@@ -19,4 +19,10 @@ public class SteerConfigTest extends TestCase {
   public void testSCE() {
     assertEquals(Units.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
   }
+
+  public void testSCEfromAngle() {
+    Scalar q = SteerConfig.GLOBAL.getSCEfromAngle(Quantity.of(1, "rad"));
+    assertEquals(Units.of(q), Unit.of("SCE"));
+    assertTrue(1.1 < q.number().doubleValue());
+  }
 }

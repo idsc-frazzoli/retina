@@ -4,10 +4,11 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.ArcTan;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -48,19 +49,20 @@ public class PurePursuitModuleTest extends TestCase {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
     Optional<Tensor> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
     Tensor lookAhead = optional.get();
-    System.out.println(lookAhead);
-    Scalar angle = ArcTan.of(lookAhead.Get(0), lookAhead.Get(1));
-    assertTrue(Clip.function(-0.1, 0).isInside(angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(lookAhead);
+    assertTrue(Clip.function( //
+        Quantity.of(-0.015, "rad"), //
+        Quantity.of(-0.010, "rad")).isInside(angle));
   }
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
     Optional<Tensor> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
     Tensor lookAhead = optional.get();
-    System.out.println(lookAhead);
-    Scalar angle = ArcTan.of(lookAhead.Get(0), lookAhead.Get(1));
-    // System.out.println(angle);
-    assertTrue(Clip.function(0, 0.1).isInside(angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(lookAhead);
+    assertTrue(Clip.function( //
+        Quantity.of(0.1, "rad"), //
+        Quantity.of(0.2, "rad")).isInside(angle));
   }
 
   public void testPeriod() {

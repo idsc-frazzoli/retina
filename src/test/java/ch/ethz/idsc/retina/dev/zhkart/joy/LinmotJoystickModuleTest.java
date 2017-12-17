@@ -6,12 +6,22 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
 public class LinmotJoystickModuleTest extends TestCase {
+  public void testFirstLast() throws Exception {
+    int size = LinmotSocket.INSTANCE.getPutProviderSize();
+    LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
+    linmotJoystickModule.first();
+    assertEquals(LinmotSocket.INSTANCE.getPutProviderSize(), size + 1);
+    linmotJoystickModule.last();
+    assertEquals(LinmotSocket.INSTANCE.getPutProviderSize(), size);
+  }
+
   public void testSimple() {
     LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
     Optional<LinmotPutEvent> optional = linmotJoystickModule.putEvent();

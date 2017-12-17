@@ -8,12 +8,12 @@ import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseListener;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
-import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
   public static final Tensor CURVE = DubendorfCurve.OVAL;
@@ -46,8 +46,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
       Optional<Tensor> optional = getLookAhead(pose, CURVE);
       boolean status = optional.isPresent();
       if (status) {
-        Tensor lookAhead = optional.get();
-        Scalar angle = ArcTan.of(lookAhead.Get(0), lookAhead.Get(1));
+        Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(optional.get());
         purePursuitSteer.setHeading(angle);
       }
       purePursuitSteer.setOperational(status);

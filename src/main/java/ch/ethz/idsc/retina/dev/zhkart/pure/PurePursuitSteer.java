@@ -3,14 +3,20 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+  private final SteerPositionControl steerPositionController = new SteerPositionControl();
+
   @Override // from StartAndStoppable
   public void start() {
     SteerSocket.INSTANCE.addPutProvider(this);
@@ -21,8 +27,9 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = DoubleScalar.of(0.0);
+  private Scalar angle = Quantity.of(0, "rad");
 
+  /** @param angle with unit "rad" */
   public void setHeading(Scalar angle) {
     this.angle = angle;
   }
@@ -30,9 +37,14 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
   /***************************************************/
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    if (isOperational()) {
+    if (isOperational() && steerColumnInterface.isSteerColumnCalibrated()) {
+      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+      Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle); // FIXME geometry?
+      Scalar difference = desPos.subtract(currAngle);
+      Scalar torqueCmd = steerPositionController.iterate(difference);
+      return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
-    return Optional.empty(); // TODO
+    return Optional.empty();
   }
 
   @Override // from SteerPutProvider

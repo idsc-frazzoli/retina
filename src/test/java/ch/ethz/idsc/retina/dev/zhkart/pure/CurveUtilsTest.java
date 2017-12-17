@@ -14,6 +14,11 @@ public class CurveUtilsTest extends TestCase {
     assertEquals(index, CurveUtils.NO_MATCH);
   }
 
+  public void testEmpty() {
+    int index = CurveUtils.closestCloserThan(Tensors.fromString("{}"), RealScalar.ONE);
+    assertEquals(index, CurveUtils.NO_MATCH);
+  }
+
   public void testMatch1() {
     int index = CurveUtils.closestCloserThan(Tensors.fromString("{{0.6},{-0.4},{3}}"), RealScalar.ONE);
     assertEquals(index, 1);

@@ -6,9 +6,11 @@ import java.io.Serializable;
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class ChassisGeometry implements Serializable {
@@ -58,6 +60,14 @@ public class ChassisGeometry implements Serializable {
 
   public Scalar tireHalfWidthRear() {
     return TO_METER.apply(tireHalfWidthRear);
+  }
+
+  /** @param lookAhead {x, y} without units
+   * @return quantity with unit "rad" */
+  public Scalar steerAngleTowards(Tensor lookAhead) {
+    Scalar frontAxle_x = lookAhead.Get(0).subtract(xAxleDistanceMeter());
+    Scalar frontAxle_y = lookAhead.Get(1);
+    return Quantity.of(ArcTan.of(frontAxle_x, frontAxle_y), "rad");
   }
 
   public DifferentialSpeed getDifferentialSpeed() {
