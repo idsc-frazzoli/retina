@@ -8,7 +8,6 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.tensor.Tensor;
@@ -51,7 +50,6 @@ public class SlamDunk {
             Point2D point2D = geometricLayer.toPoint2D(x);
             eval += evaluate(point2D);
           }
-        GlobalAssert.that(0 <= eval);
         if (cmp < eval) {
           best = delta;
           cmp = eval;

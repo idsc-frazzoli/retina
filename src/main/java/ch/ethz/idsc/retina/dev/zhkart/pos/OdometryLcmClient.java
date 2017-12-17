@@ -7,7 +7,9 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 
-public class OdometryLcmClient extends BinaryLcmClient {
+/** listens to {@link RimoGetEvent}s and passes them to
+ * the {@link GokartPoseOdometry} */
+/* package */ class OdometryLcmClient extends BinaryLcmClient {
   public final GokartPoseOdometry gokartPoseOdometry;
 
   public OdometryLcmClient() {

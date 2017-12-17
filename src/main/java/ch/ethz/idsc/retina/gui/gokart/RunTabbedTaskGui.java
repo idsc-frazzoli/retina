@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
@@ -33,15 +34,14 @@ enum RunTabbedTaskGui {
   ;
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class // sensing
-  );
-  static final List<Class<?>> MODULES_LCM = Arrays.asList( //
+      Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
+      GokartPoseLcmModule.class, // move to DEV list
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
@@ -73,7 +73,6 @@ enum RunTabbedTaskGui {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     taskTabGui.tab("dev", MODULES_DEV);
-    taskTabGui.tab("lcm", MODULES_LCM);
     taskTabGui.tab("lab", MODULES_LAB);
     taskTabGui.tab("fuse", MODULES_FUSE);
     taskTabGui.tab("track", MODULES_TRACK);
