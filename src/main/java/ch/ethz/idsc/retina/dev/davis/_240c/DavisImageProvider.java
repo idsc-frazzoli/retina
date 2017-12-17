@@ -6,11 +6,11 @@ import java.awt.image.DataBufferByte;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.DimensionInterface;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** for davis240c the raw image data arrives in the order (0,0), (0,1), ...,
  * (0,179), (1,0), (1,1), ..., (239,179) */

@@ -4,8 +4,8 @@ package ch.ethz.idsc.owly.car.drift;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;

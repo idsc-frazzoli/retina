@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.retina.util.math.UniformResample;
 import ch.ethz.idsc.tensor.DoubleScalar;

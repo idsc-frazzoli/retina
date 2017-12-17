@@ -8,9 +8,9 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 

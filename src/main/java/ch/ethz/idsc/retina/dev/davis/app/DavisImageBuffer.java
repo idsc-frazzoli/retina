@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 
 /** stores last complete to image */

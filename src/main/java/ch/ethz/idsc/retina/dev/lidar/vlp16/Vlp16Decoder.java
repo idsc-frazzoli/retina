@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** access to a single firing packet containing rotational angle, range,
  * intensity, etc. */

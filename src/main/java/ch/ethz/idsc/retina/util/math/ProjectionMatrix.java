@@ -2,7 +2,7 @@
 // https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

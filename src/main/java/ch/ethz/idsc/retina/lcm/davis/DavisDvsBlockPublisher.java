@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.lcm.davis;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
