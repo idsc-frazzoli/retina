@@ -8,13 +8,12 @@ import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 
 /** server to publish absolute steering column angle */
 public class GokartStatusLcmModule extends AbstractClockedModule {
-  public static final String CHANNEL = "gokart.status.get";
   private static final double PERIOD_S = 0.01;
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL);
+  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.STATUS);
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void first() throws Exception {
   }
 
@@ -28,12 +27,12 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
     binaryBlobPublisher.accept(gokartStatusEvent.asArray());
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected double getPeriod() {
     return PERIOD_S;
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void last() {
   }
 }
