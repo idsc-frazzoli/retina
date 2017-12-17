@@ -7,9 +7,8 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-class CurveFollowerSteer implements StartAndStoppable, SteerPutProvider {
+class CurveFollowerSteer extends CurveFollowerBase implements SteerPutProvider {
   @Override // from StartAndStoppable
   public void start() {
     SteerSocket.INSTANCE.addPutProvider(this);
@@ -23,6 +22,8 @@ class CurveFollowerSteer implements StartAndStoppable, SteerPutProvider {
   /***************************************************/
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
+    if (isOperational()) {
+    }
     return Optional.empty(); // TODO
   }
 

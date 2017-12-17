@@ -100,6 +100,9 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
+    {
+      viewLcmFrame.geometricComponent.addRenderInterface(new CurveRender());
+    }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
     // // lidarRender.setColor(new Color(128, 0, 0, 255));
