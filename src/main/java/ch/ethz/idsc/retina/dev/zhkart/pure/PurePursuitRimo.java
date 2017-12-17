@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.crv;
+package ch.ethz.idsc.retina.dev.zhkart.pure;
 
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-class CurveFollowerRimo extends CurveFollowerBase implements RimoPutProvider {
+class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();
 

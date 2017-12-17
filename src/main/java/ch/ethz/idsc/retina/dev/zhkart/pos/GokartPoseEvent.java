@@ -9,18 +9,22 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** class design is similar to {@link GokartStatusEvent} */
 public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   private static final int LENGTH = 8 * 3;
+  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
   // ---
   private final double x;
   private final double y;
   private final double angle;
 
   public GokartPoseEvent(Tensor pose) {
-    x = pose.Get(0).number().doubleValue(); // TODO use SI extraction
-    y = pose.Get(1).number().doubleValue();
+    x = TO_METER.apply(pose.Get(0)).number().doubleValue();
+    y = TO_METER.apply(pose.Get(1)).number().doubleValue();
     angle = pose.Get(2).number().doubleValue();
   }
 

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.crv;
+package ch.ethz.idsc.retina.dev.zhkart.pure;
 
 import ch.ethz.idsc.retina.util.curve.CurveSubdivision;
 import ch.ethz.idsc.retina.util.curve.FourPointSubdivision;
@@ -11,6 +11,9 @@ public enum DubendorfCurve {
   ;
   public static final Tensor OVAL = oval();
 
+  /** CURVE IS USED IN TESTS
+   * DONT MODIFY COORDINATES
+   * INSTEAD CREATE A NEW CURVE */
   private static Tensor oval() {
     // TODO consider stating coordinates in [m]eters
     Tensor poly = Tensors.of( //

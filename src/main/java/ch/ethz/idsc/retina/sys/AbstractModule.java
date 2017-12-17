@@ -35,11 +35,6 @@ public abstract class AbstractModule {
     thread.start();
   }
 
-  /** @return current thread */
-  protected Thread getThread() {
-    return thread;
-  }
-
   /** Used by task manager to terminate the modules. */
   protected void terminate() {
     // order of launch() reversed

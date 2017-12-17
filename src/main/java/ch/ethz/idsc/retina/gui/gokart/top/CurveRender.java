@@ -8,7 +8,7 @@ import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.gui.gokart.crv.CurveFollowerModule;
+import ch.ethz.idsc.retina.dev.zhkart.pure.PurePursuitModule;
 import ch.ethz.idsc.tensor.Tensor;
 
 // TODO this is not the final API:
@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Tensor;
 class CurveRender implements RenderInterface {
   @Override // from AbstractGokartRender
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    final Tensor curve = CurveFollowerModule.CURVE;
+    final Tensor curve = PurePursuitModule.CURVE;
     Path2D path2D = geometricLayer.toPath2D(curve);
     graphics.setColor(Color.YELLOW);
     graphics.draw(path2D);

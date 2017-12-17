@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmModule;
-import ch.ethz.idsc.retina.gui.gokart.crv.CurveFollowerModule;
+import ch.ethz.idsc.retina.dev.zhkart.pure.PurePursuitModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
@@ -70,7 +70,7 @@ enum RunTabbedTaskGui {
       RimoTorqueJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      CurveFollowerModule.class //
+      PurePursuitModule.class //
   );
 
   public static void main(String[] args) {
