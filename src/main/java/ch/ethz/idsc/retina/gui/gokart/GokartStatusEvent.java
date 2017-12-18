@@ -12,6 +12,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** the capabilities of gokart status event include
  * {@link SteerColumnInterface} */
 public class GokartStatusEvent extends DataEvent implements SteerColumnInterface {
+  private static final int LENGTH = 4;
+  // ---
   /** raw value from encoder centered so that min == -max */
   private final float steerColumnEncoder;
 
@@ -23,14 +25,14 @@ public class GokartStatusEvent extends DataEvent implements SteerColumnInterface
     steerColumnEncoder = byteBuffer.getFloat();
   }
 
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(steerColumnEncoder);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
-    return 4;
+    return LENGTH;
   }
 
   @Override // from SteerColumnInterface

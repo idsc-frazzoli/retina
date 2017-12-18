@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public class SteerJoystickModule extends JoystickModule<SteerPutEvent> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final SteerPositionControl positionController = new SteerPositionControl();
+  private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from AbstractModule
   protected void protected_first() {
@@ -40,7 +40,7 @@ public class SteerJoystickModule extends JoystickModule<SteerPutEvent> {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
       Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
       Scalar difference = desPos.subtract(currAngle);
-      Scalar torqueCmd = positionController.iterate(difference);
+      Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
     return Optional.empty();

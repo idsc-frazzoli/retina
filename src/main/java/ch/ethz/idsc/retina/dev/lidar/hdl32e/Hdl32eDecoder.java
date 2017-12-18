@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.math.ShortUtils;
 
 /** information on p.21 of HDL-32E user's manual */

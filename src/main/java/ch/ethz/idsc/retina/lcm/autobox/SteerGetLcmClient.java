@@ -7,13 +7,13 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
 
 public class SteerGetLcmClient extends SimpleLcmClient<SteerGetListener> {
-  @Override
+  @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     SteerGetEvent event = new SteerGetEvent(byteBuffer);
     listeners.forEach(listener -> listener.getEvent(event));
   }
 
-  @Override
+  @Override // from BinaryLcmClient
   protected String channel() {
     return SteerLcmServer.CHANNEL_GET;
   }

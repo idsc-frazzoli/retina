@@ -58,4 +58,13 @@ public class SteerConfig implements Serializable {
     return UnitSystem.SI().apply( //
         steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
   }
+
+  public Scalar getSCEfromAngle(Scalar angle) {
+    return angle.divide(column2steer);
+  }
+
+  public Clip getAngleLimit() {
+    Scalar angleMax = columnMax.multiply(column2steer);
+    return Clip.function(angleMax.negate(), angleMax);
+  }
 }

@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.util.data;
 
 import java.util.List;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 @SafetyCritical
 public class Word {

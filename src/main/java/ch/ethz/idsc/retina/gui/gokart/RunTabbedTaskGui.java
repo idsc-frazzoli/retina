@@ -17,6 +17,8 @@ import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.retina.dev.zhkart.pure.PurePursuitModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
@@ -33,15 +35,14 @@ enum RunTabbedTaskGui {
   ;
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class // sensing
-  );
-  static final List<Class<?>> MODULES_LCM = Arrays.asList( //
+      Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
+      GokartPoseLcmModule.class, // move to DEV list
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
@@ -62,21 +63,24 @@ enum RunTabbedTaskGui {
       Vlp16ClearanceModule.class, //
       Urg04lxClearanceModule.class //
   );
-  static final List<Class<?>> MODULES_TRACK = Arrays.asList( //
-      DeadManSwitchModule.class, //
+  static final List<Class<?>> MODULES_JOY = Arrays.asList( //
+      DeadManSwitchModule.class, // joystick
       LinmotJoystickModule.class, //
       SteerJoystickModule.class, //
       RimoTorqueJoystickModule.class //
+  );
+  static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      PurePursuitModule.class //
   );
 
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui();
     taskTabGui.tab("dev", MODULES_DEV);
-    taskTabGui.tab("lcm", MODULES_LCM);
     taskTabGui.tab("lab", MODULES_LAB);
     taskTabGui.tab("fuse", MODULES_FUSE);
-    taskTabGui.tab("track", MODULES_TRACK);
+    taskTabGui.tab("joy", MODULES_JOY);
+    taskTabGui.tab("aut", MODULES_AUT);
     wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }

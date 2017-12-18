@@ -39,11 +39,11 @@ abstract class ViewLcmModule extends AbstractModule {
 
   protected void setGokartPoseInterface(GokartPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;
+    viewLcmFrame.setGokartPoseInterface(gokartPoseInterface);
   }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    viewLcmFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
       TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
       trigonometryRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
@@ -83,7 +83,10 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       ResampledLidarRender lidarRender = new ResampledLidarRender(gokartPoseInterface);
-      viewLcmFrame.jButton.addActionListener(lidarRender);
+      viewLcmFrame.jButtonMapCreate.addActionListener(lidarRender.action_mapCreate);
+      viewLcmFrame.jButtonMapUpdate.addActionListener(lidarRender.action_mapUpdate);
+      viewLcmFrame.jButtonSnap.addActionListener(lidarRender.action_snap);
+      lidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       lidarRender.setPointSize(2);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 128, 128));
@@ -96,6 +99,9 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      viewLcmFrame.geometricComponent.addRenderInterface(new CurveRender());
     }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
@@ -111,6 +117,7 @@ abstract class ViewLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
+    viewLcmFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     // ---
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();

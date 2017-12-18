@@ -27,7 +27,7 @@ public final class LinmotTakeoverModule extends AbstractModule implements Linmot
    * anything below threshold is expected during normal operation */
   private static final double THRESHOLD_POS_DELTA = 20000;
   // ---
-  private final Watchdog watchdog = new Watchdog(DURATION_MS * 1e-3);
+  private final Watchdog watchdog = new Watchdog(DURATION_MS * 1E-3);
   private boolean isBlown = false;
 
   @Override // from AbstractModule

@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** encodes an event in 4 bytes (instead of 8 bytes as in aedat) */
 public class DavisDvsBlockCollector implements DavisDvsListener {

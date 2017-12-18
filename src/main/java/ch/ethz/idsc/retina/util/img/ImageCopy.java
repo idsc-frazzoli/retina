@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.util.img;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.owl.data.GlobalAssert;
 
 public class ImageCopy {
   private static final BufferedImage DUMMY = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);

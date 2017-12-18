@@ -3,25 +3,15 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.zhkart.pos.OdometryLcmClient;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmServer;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseOdometry;
 
 public class GlobalViewLcmModule extends ViewLcmModule {
-  private final OdometryLcmClient odometryLcmClient = new OdometryLcmClient();
+  private final GokartPoseOdometry gokartPoseOdometry = //
+      GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
 
   public GlobalViewLcmModule() {
-    setGokartPoseInterface(odometryLcmClient.gokartPoseOdometry);
-  }
-
-  @Override // from AbstractModule
-  protected void first() throws Exception {
-    super.first();
-    odometryLcmClient.startSubscriptions();
-  }
-
-  @Override // from AbstractModule
-  protected void last() {
-    odometryLcmClient.stopSubscriptions();
-    super.last();
+    setGokartPoseInterface(gokartPoseOdometry);
   }
 
   public static void standalone() throws Exception {

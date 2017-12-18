@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.lcm.davis;
 
 import java.io.File;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public abstract class DavisSnippetRunnable implements Runnable {
   private final int milliSeconds;

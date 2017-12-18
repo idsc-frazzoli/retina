@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class ClearanceTracker {
+  // TODO design: make class more generic by passing all clearance config as parameters
   private final Scalar clearanceFrontMeter = SafetyConfig.GLOBAL.clearanceFrontMeter();
   private final Clip clip_Y;
   private final Clip clip_X;

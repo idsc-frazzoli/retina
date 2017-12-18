@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class ChassisGeometry implements Serializable {
@@ -62,5 +63,10 @@ public class ChassisGeometry implements Serializable {
 
   public DifferentialSpeed getDifferentialSpeed() {
     return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRearMeter());
+  }
+
+  /** @param rate without unit */
+  public Scalar steerAngleForTurningRatio(Scalar rate) {
+    return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(rate)), "rad");
   }
 }

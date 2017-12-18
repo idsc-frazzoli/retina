@@ -13,4 +13,9 @@ public enum GokartPoseLocal implements GokartPoseInterface {
   public Tensor getPose() {
     return IDENTITY;
   }
+
+  @Override
+  public void setPose(Tensor pose) {
+    throw new RuntimeException();
+  }
 }

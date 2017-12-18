@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class SteerConfigTest extends TestCase {
@@ -18,5 +19,16 @@ public class SteerConfigTest extends TestCase {
 
   public void testSCE() {
     assertEquals(Units.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
+  }
+
+  public void testSCEfromAngle() {
+    Scalar q = SteerConfig.GLOBAL.getSCEfromAngle(Quantity.of(1, "rad"));
+    assertEquals(Units.of(q), Unit.of("SCE"));
+    assertTrue(1.1 < q.number().doubleValue());
+  }
+
+  public void testAngleLimit() {
+    Clip clip = SteerConfig.GLOBAL.getAngleLimit();
+    assertEquals(clip.min(), clip.max().negate());
   }
 }

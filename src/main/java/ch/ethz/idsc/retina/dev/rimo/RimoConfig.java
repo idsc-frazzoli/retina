@@ -24,7 +24,7 @@ public class RimoConfig implements Serializable {
   public Scalar Ki = Quantity.of(20, "ARMS*rad^-1"); // 15
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */
-  public Scalar torqueLimit = Quantity.of(2000, "ARMS");
+  public Scalar torqueLimit = Quantity.of(1000, "ARMS");
   @Deprecated // constant was used for tuning the PI controller in the workshop
   public Scalar testPulseLo = Quantity.of(0, "rad*s^-1");
   @Deprecated // constant was used for tuning the PI controller in the workshop

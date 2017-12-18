@@ -35,6 +35,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   @Override
   protected final void launch() throws Exception {
     first();
+    // TODO AbstractClockedModule is launched differently from AbstractModule -> not elegant!
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {

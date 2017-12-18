@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import java.io.File;
 import java.util.Arrays;
 
+import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
@@ -13,7 +14,6 @@ import ch.ethz.idsc.retina.dev.davis.io.AedatFileSupplier;
 import ch.ethz.idsc.retina.dev.davis.io.DavisEventsTextWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisPngImageWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisSimpleImageWriter;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** functionality is available as a command-line tool */
 public enum AedatLogConverter {

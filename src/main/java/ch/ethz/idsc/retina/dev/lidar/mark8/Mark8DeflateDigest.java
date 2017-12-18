@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.lidar.mark8;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.util.GlobalAssert;
+import ch.ethz.idsc.owl.data.GlobalAssert;
 
 public class Mark8DeflateDigest implements Mark8Digest {
   private static final int ENCODING_MAX = 65535; // 65535
