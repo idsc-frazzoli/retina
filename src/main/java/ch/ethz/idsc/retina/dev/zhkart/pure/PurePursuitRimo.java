@@ -36,7 +36,7 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     if (isOperational())
-      control(steerColumnInterface);
+      return control(steerColumnInterface);
     return Optional.empty();
   }
 
