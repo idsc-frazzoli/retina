@@ -30,8 +30,12 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
   private Scalar angle = Quantity.of(0.0, "rad");
 
   /** @param angle with unit "rad" */
-  public void setHeading(Scalar angle) {
+  /* package */ void setHeading(Scalar angle) {
     this.angle = angle;
+  }
+
+  /* package */ Scalar getHeading() {
+    return angle;
   }
 
   /***************************************************/

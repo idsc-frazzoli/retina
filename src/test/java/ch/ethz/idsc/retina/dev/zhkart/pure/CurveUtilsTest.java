@@ -6,6 +6,10 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.RotateLeft;
+import ch.ethz.idsc.tensor.pdf.Distribution;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import junit.framework.TestCase;
 
 public class CurveUtilsTest extends TestCase {
@@ -44,5 +48,25 @@ public class CurveUtilsTest extends TestCase {
     assertEquals(index, 1);
     // Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.of(3));
     // assertFalse(optional.isPresent());
+  }
+
+  public void testGetAheadTrail() {
+    for (int c = 0; c < 10; ++c) {
+      Distribution distribution = UniformDistribution.of(-1, 1);
+      Tensor tensor = RandomVariate.of(distribution, 30, 2);
+      int index = CurveUtils.closestCloserThan(tensor, RealScalar.ONE);
+      assertTrue(0 <= index);
+      // System.out.println(index);
+      Tensor trail = CurveUtils.getAheadTrail(tensor, RealScalar.ONE).get();
+      assertEquals(trail.length(), 15);
+      boolean status = false;
+      for (int i = 0; i < 30; ++i) {
+        Tensor sub = RotateLeft.of(tensor, i).extract(0, 15);
+        status |= sub.equals(trail);
+        if (status)
+          break;
+      }
+      assertTrue(status);
+    }
   }
 }
