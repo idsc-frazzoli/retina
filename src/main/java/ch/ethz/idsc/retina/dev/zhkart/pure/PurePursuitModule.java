@@ -67,7 +67,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent())
-      return PurePursuit.turningRate(aheadTrail.get(), distance);
+      return PurePursuit.turningRatePositiveX(aheadTrail.get(), distance);
     return Optional.empty();
   }
 

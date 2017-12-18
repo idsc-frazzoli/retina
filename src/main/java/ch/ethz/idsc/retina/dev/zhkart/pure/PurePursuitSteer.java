@@ -42,7 +42,7 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
     return Optional.empty();
   }
 
-  Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
+  /* package */ Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
       Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);

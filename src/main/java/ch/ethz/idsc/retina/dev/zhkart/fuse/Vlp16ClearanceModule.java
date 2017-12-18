@@ -36,12 +36,12 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  private final float vlp16Lo;
-  private final float vlp16Hi;
+  private final float vlp16_ZLo;
+  private final float vlp16_ZHi;
 
   public Vlp16ClearanceModule() {
-    vlp16Lo = SafetyConfig.GLOBAL.vlp16LoMeter().number().floatValue();
-    vlp16Hi = SafetyConfig.GLOBAL.vlp16HiMeter().number().floatValue();
+    vlp16_ZLo = SafetyConfig.GLOBAL.vlp16_ZLoMeter().number().floatValue();
+    vlp16_ZHi = SafetyConfig.GLOBAL.vlp16_ZHiMeter().number().floatValue();
   }
 
   @Override // from AbstractModule
@@ -64,7 +64,7 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     float z = lidarSpacialEvent.coords[2];
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    if (vlp16Lo < z && z < vlp16Hi && Objects.nonNull(_clearanceTracker)) {
+    if (vlp16_ZLo < z && z < vlp16_ZHi && Objects.nonNull(_clearanceTracker)) {
       Tensor local = Tensors.vectorDouble( //
           lidarSpacialEvent.coords[0], //
           lidarSpacialEvent.coords[1]);

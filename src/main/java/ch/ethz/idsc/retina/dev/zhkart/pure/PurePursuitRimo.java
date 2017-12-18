@@ -40,7 +40,7 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
     return Optional.empty();
   }
 
-  Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
+  /* package */ Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar speed = PursuitConfig.GLOBAL.rateFollower;
       DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();

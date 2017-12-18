@@ -30,7 +30,7 @@ public enum CurveUtils {
     if (index != NO_MATCH) {
       int length = tensor.length();
       return Optional.of(Tensor.of( //
-          IntStream.range(index, index + length / 2) //
+          IntStream.range(index, index + length / 2) // at most half of the curve
               .map(i -> i % length) //
               .mapToObj(tensor::get)));
     }

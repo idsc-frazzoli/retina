@@ -24,7 +24,7 @@ public class PursuitConfig implements Serializable {
   /***************************************************/
   public Scalar updatePeriod = Quantity.of(0.2, "s");
   /** look ahead distance for pure pursuit controller */
-  public Scalar lookAhead = Quantity.of(2.0, "m");
+  public Scalar lookAhead = Quantity.of(2.8, "m");
   /** rate for curve follower module */
   public Scalar rateFollower = Quantity.of(8.0, "rad*s^-1");
   /***************************************************/
