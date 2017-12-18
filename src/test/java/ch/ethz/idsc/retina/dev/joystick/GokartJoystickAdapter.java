@@ -61,4 +61,10 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
         && Scalars.isZero(ahead) //
         && Chop.NONE.allZero(pair);
   }
+
+  @Override
+  public boolean isAutonomousPressed() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

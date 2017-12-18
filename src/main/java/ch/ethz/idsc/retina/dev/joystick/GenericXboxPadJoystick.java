@@ -162,4 +162,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
         && Scalars.isZero(getAheadAverage()) //
         && Chop.NONE.allZero(getAheadPair_Unit());
   }
+
+  @Override
+  public boolean isAutonomousPressed() {
+    return isButtonPressedA();
+  }
 }

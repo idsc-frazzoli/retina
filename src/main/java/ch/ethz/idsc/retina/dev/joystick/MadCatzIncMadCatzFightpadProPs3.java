@@ -36,4 +36,9 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Gok
   public boolean isPassive() {
     throw new RuntimeException();
   }
+
+  @Override
+  public boolean isAutonomousPressed() {
+    throw new RuntimeException();
+  }
 }

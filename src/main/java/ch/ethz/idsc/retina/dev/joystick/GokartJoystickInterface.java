@@ -28,4 +28,6 @@ public interface GokartJoystickInterface {
 
   /** @return true if none of the manipulators on the joystick are pressed by user */
   boolean isPassive();
+
+  boolean isAutonomousPressed();
 }

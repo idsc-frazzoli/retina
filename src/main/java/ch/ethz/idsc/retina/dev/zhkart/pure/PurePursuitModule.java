@@ -6,11 +6,15 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owl.bot.se2.glc.PurePursuit;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseListener;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -25,6 +29,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
+  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
 
@@ -32,6 +37,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
+    joystickLcmClient.startSubscriptions();
     purePursuitRimo.start();
     purePursuitSteer.start();
   }
@@ -41,6 +47,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     purePursuitRimo.stop();
     purePursuitSteer.stop();
     gokartPoseLcmClient.stopSubscriptions();
+    joystickLcmClient.stopSubscriptions();
   }
 
   @Override // from AbstractClockedModule
@@ -55,6 +62,12 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
         if (status)
           purePursuitSteer.setHeading(angle);
       }
+      Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+      if (joystick.isPresent()) {
+        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+        status &= gokartJoystickInterface.isAutonomousPressed();
+      } else
+        status = false;
       purePursuitSteer.setOperational(status);
       purePursuitRimo.setOperational(status);
     }
