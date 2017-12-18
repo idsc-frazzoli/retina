@@ -36,13 +36,18 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     if (isOperational())
-      if (steerColumnInterface.isSteerColumnCalibrated()) {
-        Scalar speed = PursuitConfig.GLOBAL.rateFollower;
-        DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
-        Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
-        Tensor pair = differentialSpeed.pair(speed, theta);
-        return rimoRateControllerWrap.iterate(pair);
-      }
+      control(steerColumnInterface);
+    return Optional.empty();
+  }
+
+  Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
+      Scalar speed = PursuitConfig.GLOBAL.rateFollower;
+      DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
+      Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
+      Tensor pair = differentialSpeed.pair(speed, theta);
+      return rimoRateControllerWrap.iterate(pair);
+    }
     return Optional.empty();
   }
 

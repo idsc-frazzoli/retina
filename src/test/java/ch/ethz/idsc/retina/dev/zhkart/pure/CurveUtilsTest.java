@@ -12,11 +12,15 @@ public class CurveUtilsTest extends TestCase {
   public void testNoMatch() {
     int index = CurveUtils.closestCloserThan(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
     assertEquals(index, CurveUtils.NO_MATCH);
+    Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
+    assertFalse(optional.isPresent());
   }
 
   public void testEmpty() {
-    int index = CurveUtils.closestCloserThan(Tensors.fromString("{}"), RealScalar.ONE);
+    int index = CurveUtils.closestCloserThan(Tensors.empty(), RealScalar.ONE);
     assertEquals(index, CurveUtils.NO_MATCH);
+    Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.empty(), RealScalar.ONE);
+    assertFalse(optional.isPresent());
   }
 
   public void testMatch1() {
@@ -28,17 +32,17 @@ public class CurveUtilsTest extends TestCase {
     Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
     int index = CurveUtils.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
-    Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.ONE);
-    assertTrue(optional.isPresent());
-    Tensor point = optional.get();
-    assertEquals(point, Tensors.vector(1));
+    // Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.ONE);
+    // assertTrue(optional.isPresent());
+    // Tensor point = optional.get();
+    // assertEquals(point, Tensors.vector(1));
   }
 
   public void testDistanceFail() {
     Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
     int index = CurveUtils.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
-    Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.of(3));
-    assertFalse(optional.isPresent());
+    // Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.of(3));
+    // assertFalse(optional.isPresent());
   }
 }

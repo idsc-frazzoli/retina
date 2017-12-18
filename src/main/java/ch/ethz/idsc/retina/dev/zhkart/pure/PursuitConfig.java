@@ -23,7 +23,7 @@ public class PursuitConfig implements Serializable {
 
   /***************************************************/
   public Scalar updatePeriod = Quantity.of(0.2, "s");
-  // public Scalar maxDistance = Quantity.of(1.5, "m");
+  /** look ahead distance for pure pursuit controller */
   public Scalar lookAhead = Quantity.of(2.0, "m");
   /** rate for curve follower module */
   public Scalar rateFollower = Quantity.of(8.0, "rad*s^-1");
@@ -35,9 +35,6 @@ public class PursuitConfig implements Serializable {
     return TO_SECONDS.apply(updatePeriod);
   }
 
-  // public Scalar maxDistanceMeter() {
-  // return TO_METER.apply(maxDistance);
-  // }
   public Scalar lookAheadMeter() {
     return TO_METER.apply(lookAhead);
   }

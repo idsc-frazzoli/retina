@@ -27,7 +27,7 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = Quantity.of(0, "rad");
+  private Scalar angle = Quantity.of(0.0, "rad");
 
   /** @param angle with unit "rad" */
   public void setHeading(Scalar angle) {
@@ -37,9 +37,15 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
   /***************************************************/
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    if (isOperational() && steerColumnInterface.isSteerColumnCalibrated()) {
+    if (isOperational())
+      return control(steerColumnInterface);
+    return Optional.empty();
+  }
+
+  Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle); // FIXME geometry?
+      Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);
       Scalar difference = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
