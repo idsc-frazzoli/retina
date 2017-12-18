@@ -23,6 +23,6 @@ public enum DubendorfCurve {
         Tensors.vector(49.200, 45.067), //
         Tensors.vector(40.800, 37.333));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 5).unmodifiable();
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 }

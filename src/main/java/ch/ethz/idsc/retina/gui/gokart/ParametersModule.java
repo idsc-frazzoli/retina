@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SafetyConfig;
 import ch.ethz.idsc.retina.dev.zhkart.joy.JoystickConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pure.PursuitConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -33,6 +34,7 @@ public class ParametersModule extends AbstractModule {
     addTab(SafetyConfig.GLOBAL);
     addTab(LocalizationConfig.GLOBAL);
     addTab(JoystickConfig.GLOBAL);
+    addTab(PursuitConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

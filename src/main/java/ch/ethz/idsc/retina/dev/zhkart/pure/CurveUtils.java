@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.zhkart.pure;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.util.curve.PeriodicExtract;
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,17 +18,28 @@ public enum CurveUtils {
   ;
   public static final int NO_MATCH = -1;
 
-  public static int closestCloserThan(Tensor beacons, Scalar dist) {
+  public static int closestCloserThan(Tensor tensor, Scalar dist) {
     int best = NO_MATCH;
-    for (int index = 0; index < beacons.length(); ++index) {
-      Tensor local = beacons.get(index);
-      Scalar norm = Norm._2.of(local);
+    for (int index = 0; index < tensor.length(); ++index) {
+      Scalar norm = Norm._2.of(tensor.get(index)); // vector in local coordinates
       if (Scalars.lessThan(norm, dist)) {
         dist = norm;
         best = index;
       }
     }
     return best;
+  }
+
+  public static Optional<Tensor> getAheadTrail(Tensor tensor, Scalar dist) {
+    int index = closestCloserThan(tensor, dist);
+    if (index != NO_MATCH) {
+      int length = tensor.length();
+      return Optional.of(Tensor.of( //
+          IntStream.range(index, index + length / 2) //
+              .map(i -> i % length) //
+              .mapToObj(tensor::get)));
+    }
+    return Optional.empty();
   }
 
   public static Optional<Tensor> interpolate(Tensor beacons, final int index, Scalar distance) {

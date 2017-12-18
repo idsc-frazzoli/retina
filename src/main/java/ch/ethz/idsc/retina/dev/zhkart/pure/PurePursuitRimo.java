@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
@@ -38,7 +37,7 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   public Optional<RimoPutEvent> putEvent() {
     if (isOperational())
       if (steerColumnInterface.isSteerColumnCalibrated()) {
-        Scalar speed = RimoConfig.GLOBAL.rateFollower;
+        Scalar speed = PursuitConfig.GLOBAL.rateFollower;
         DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
         Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
         Tensor pair = differentialSpeed.pair(speed, theta);

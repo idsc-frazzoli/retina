@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -24,17 +23,17 @@ public class ChassisGeometryTest extends TestCase {
   }
 
   public void testSteerAngleTowardsLeft() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(Tensors.vector(1.19, 1));
-    assertTrue(Chop._08.close(Quantity.of(1.5707963267948966, "rad"), angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(0.3));
+    assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, "rad"), angle));
   }
 
   public void testSteerAngleTowardsRight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(Tensors.vector(1.19, -1));
-    assertTrue(Chop._08.close(Quantity.of(-1.5707963267948966, "rad"), angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(-.2));
+    assertTrue(Chop._13.close(Quantity.of(-0.2336530501796457, "rad"), angle));
   }
 
-  public void testSteerAngleTowardsStraight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(Tensors.vector(1.19 + 1, 0));
-    assertTrue(Chop._08.close(Quantity.of(0, "rad"), angle));
+  public void testSteerAngleStraight() {
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.ZERO);
+    assertTrue(Chop._13.close(Quantity.of(0, "rad"), angle));
   }
 }
