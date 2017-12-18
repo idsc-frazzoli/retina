@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
-  public static final Tensor CURVE = DubendorfCurve.OVAL;
+  public static final Tensor CURVE = DubendorfCurve.KIDNEY;
   public static final Clip VALID_RANGE = SteerConfig.GLOBAL.getAngleLimit();
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

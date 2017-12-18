@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 public enum DubendorfCurve {
   ;
   public static final Tensor OVAL = oval();
+  public static final Tensor KIDNEY = kidney();
 
   /** CURVE IS USED IN TESTS
    * DONT MODIFY COORDINATES
@@ -21,6 +22,18 @@ public enum DubendorfCurve {
         Tensors.vector(49.867, 59.200), //
         Tensors.vector(57.200, 54.800), //
         Tensors.vector(49.200, 45.067), //
+        Tensors.vector(40.800, 37.333));
+    CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+  
+  private static Tensor kidney() {
+    // TODO consider stating coordinates in [m]eters
+    Tensor poly = Tensors.of( //
+        Tensors.vector(35.200, 44.933), //
+        Tensors.vector(49.867, 59.200), //
+        Tensors.vector(57.200, 54.800), //
+        Tensors.vector(47.200, 47.733), //
         Tensors.vector(40.800, 37.333));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
