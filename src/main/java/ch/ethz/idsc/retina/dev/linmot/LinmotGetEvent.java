@@ -102,8 +102,11 @@ public class LinmotGetEvent extends DataEvent {
   // bit 0, 1, 2, 4, 5, 11
   private static final int OPERATIONAL_MASK = 1 + 2 + 4 + 16 + 32 + 2048;
 
+  /** the brake is considered operational if sending messages for positioning
+   * cause the brake motor to move and follow the instruction
+   * 
+   * @return operational status of brake */
   public boolean isOperational() {
-    // TODO NRJ this check is too strict
     return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
   }
 }
