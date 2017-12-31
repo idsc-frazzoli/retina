@@ -15,7 +15,9 @@ buildNumber.properties
 testall.sh
 gendocs.sh
 
-# data fiels
+# data files
 *.log
-*.csv
+export/
+
+# csv is used for resource files, for instance gain schedules
 
