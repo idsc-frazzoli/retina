@@ -16,10 +16,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /** parameters for PI controller of torque control */
 public class JoystickConfig implements Serializable {
   public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
-
-  private JoystickConfig() {
-  }
-
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */

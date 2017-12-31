@@ -17,18 +17,14 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * "SCT" steer-column torque */
 public class SteerConfig implements Serializable {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
-
-  private SteerConfig() {
-  }
-
   /***************************************************/
   public Scalar voltageLo = Quantity.of(10.8, "V"); // 10.8[V] for 1[s] confirmed with mac
   public Scalar voltageHi = Quantity.of(13.0, "V");
   // ---
-  public Scalar calibration = Quantity.of(1.0, "SCT");
-  public Scalar Ki = Quantity.of(5.7, "SCE^-1*SCT*s^-1");
-  public Scalar Kp = Quantity.of(7.2, "SCE^-1*SCT");
-  public Scalar Kd = Quantity.of(0.82, "SCE^-1*SCT*s");
+  public Scalar calibration = Quantity.of(1.5, "SCT");
+  public Scalar Ki = Quantity.of(1.95, "SCE^-1*SCT*s^-1");
+  public Scalar Kp = Quantity.of(3.53, "SCE^-1*SCT");
+  public Scalar Kd = Quantity.of(0.57, "SCE^-1*SCT*s");
   public Scalar torqueLimit = Quantity.of(1.5, "SCT");
   // ---
   /** maximum steer column value commanded by joystick or autonomous drive

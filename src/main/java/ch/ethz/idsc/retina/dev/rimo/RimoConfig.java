@@ -12,10 +12,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** parameters for PI controller of torque control */
 public class RimoConfig implements Serializable {
   public static final RimoConfig GLOBAL = AppResources.load(new RimoConfig());
-
-  private RimoConfig() {
-  }
-
   /***************************************************/
   /** parameters for {@link RimoRateController}
    * rateLimit, Kp, Ki */
@@ -25,10 +21,6 @@ public class RimoConfig implements Serializable {
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */
   public Scalar torqueLimit = Quantity.of(1000, "ARMS");
-  @Deprecated // constant was used for tuning the PI controller in the workshop
-  public Scalar testPulseLo = Quantity.of(0, "rad*s^-1");
-  @Deprecated // constant was used for tuning the PI controller in the workshop
-  public Scalar testPulseHi = Quantity.of(20, "rad*s^-1");
 
   /***************************************************/
   /** @return clip interval for permitted torque */

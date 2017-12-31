@@ -14,10 +14,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class ChassisGeometry implements Serializable {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
-
-  private ChassisGeometry() {
-  }
-
   /***************************************************/
   /** distance from rear to front axle [m] */
   public Scalar xAxleRtoF = Quantity.of(+1.19, "m");
