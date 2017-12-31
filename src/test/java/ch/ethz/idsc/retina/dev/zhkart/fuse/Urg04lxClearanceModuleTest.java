@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.fuse;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
@@ -27,8 +27,7 @@ public class Urg04lxClearanceModuleTest extends TestCase {
 
   public void testSimple() {
     Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
-    RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
     ucm.getEvent(rimoGetEvent);
     assertTrue(ucm.putEvent().isPresent());
     SteerColumnInterface sci = new SteerColumnAdapter(false, Quantity.of(.2, "SCE"));
@@ -37,8 +36,7 @@ public class Urg04lxClearanceModuleTest extends TestCase {
 
   public void testObstruction() {
     Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
-    RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
     ucm.getEvent(rimoGetEvent);
     assertTrue(ucm.putEvent().isPresent());
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.02, "SCE"));
@@ -57,8 +55,7 @@ public class Urg04lxClearanceModuleTest extends TestCase {
 
   public void testObstructionAngle() {
     Urg04lxClearanceModule ucm = new Urg04lxClearanceModule();
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
-    RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
     ucm.getEvent(rimoGetEvent);
     assertTrue(ucm.putEvent().isPresent());
     Scalar angle = RealScalar.of(-.02);

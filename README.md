@@ -24,17 +24,22 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 # GOKART
 
+Hardware Protection Modules:
+
+* [code](src/main/java/ch/ethz/idsc/retina/dev/linmot/LinmotFireFighter.java) brake temperature critical => Linmot ZERO
+* [code](src/main/java/ch/ethz/idsc/retina/dev/steer/SteerBatteryCharger.java) steer battery voltage above threshold => Steering passive
+
 Emergency Modules:
 
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/MiscEmergencyModule.java) steering battery voltage out of range for at least 200[ms] => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotEmergencyModule.java) linmot not operational, or temperature critical => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/Urg04lxEmergencyModule.java) front lidar urg04lx failure => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotEmergencyModule.java) linmot not operational => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
 
 Emergency Support Modules:
 
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/Urg04lxClearanceModule.java) obstacle detected by front lidar within 1.5[m] range of predicted vehicle path => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
 
 # LIDAR
 

@@ -27,6 +27,7 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 14);
   private static final Color FAIL = new Color(255, 192, 192);
+  private static final Color SYNC = new Color(255, 255, 192);
   // ---
   private final Object object;
   private Object reference;
@@ -76,7 +77,7 @@ class ParametersComponent extends ToolbarsComponent {
           jTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-              configColor(jTextField, field);
+              updateBackground(jTextField, field);
               checkFields();
             }
           });
@@ -84,7 +85,7 @@ class ParametersComponent extends ToolbarsComponent {
             if (checkFields())
               updateInstance();
           });
-          configColor(jTextField, field);
+          updateBackground(jTextField, field);
           map.put(field, jTextField);
         } catch (Exception exception) {
           // ---
@@ -92,14 +93,15 @@ class ParametersComponent extends ToolbarsComponent {
     }
   }
 
-  private void configColor(JTextField jTextField, Field field) {
+  private void updateBackground(JTextField jTextField, Field field) {
     boolean isOk = isOk(jTextField.getText());
     jTextField.setBackground(isOk ? Color.WHITE : FAIL);
     if (isOk)
       try {
         Object compare = field.get(reference);
-        boolean isEq = compare.equals(getValue(jTextField.getText()));
-        jTextField.setBackground(isEq ? Color.WHITE : new Color(255, 255, 128));
+        boolean equals = compare.equals(getValue(jTextField.getText()));
+        if (!equals)
+          jTextField.setBackground(SYNC);
       } catch (Exception exception) {
         exception.printStackTrace();
       }

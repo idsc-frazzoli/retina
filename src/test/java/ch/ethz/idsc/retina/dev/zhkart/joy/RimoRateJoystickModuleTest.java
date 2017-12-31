@@ -1,12 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.joy;
 
-import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
@@ -42,10 +42,7 @@ public class RimoRateJoystickModuleTest extends TestCase {
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5));
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
-    byteBuffer.putShort(2, (short) 100);
-    byteBuffer.putShort(24 + 2, (short) 200); // rimogetTire.LENGTH == 24
-    RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(-100, 200);
     rjm.rimoRateControllerWrap.getEvent(rimoGetEvent);
     Optional<RimoPutEvent> optional = rjm.control(sci, gji);
     assertTrue(optional.isPresent());

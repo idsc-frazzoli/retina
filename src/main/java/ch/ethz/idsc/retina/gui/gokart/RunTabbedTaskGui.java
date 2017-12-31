@@ -10,8 +10,6 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
-import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxClearanceModule;
-import ch.ethz.idsc.retina.dev.zhkart.fuse.Urg04lxEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
@@ -23,7 +21,6 @@ import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.retina.lcm.mod.Urg04lxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.sys.LoggerModule;
@@ -41,7 +38,7 @@ enum RunTabbedTaskGui {
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
-      Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
+      // Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
       GokartPoseLcmModule.class, // move to DEV list
       SpyModule.class, //
       ParametersModule.class, //
@@ -54,14 +51,14 @@ enum RunTabbedTaskGui {
       DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      Urg04lxEmergencyModule.class, //
+      // Urg04lxEmergencyModule.class, //
       MiscEmergencyModule.class, //
       SteerEmergencyModule.class, //
       LinmotEmergencyModule.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
-      Vlp16ClearanceModule.class, //
-      Urg04lxClearanceModule.class //
+      Vlp16ClearanceModule.class //
+  // Urg04lxClearanceModule.class //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       DeadManSwitchModule.class, // joystick
