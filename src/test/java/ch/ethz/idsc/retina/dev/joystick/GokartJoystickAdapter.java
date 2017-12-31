@@ -13,6 +13,7 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
   private final Scalar breakStrength;
   private final Scalar ahead;
   private final Tensor pair;
+  private final boolean isAutonomousPressed;
 
   /** see {@link GokartJoystickInterface} for valid range of arguments
    * 
@@ -20,8 +21,9 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
    * @param breakStrength in the unit interval [0, 1]
    * @param ahead real scalar in the interval [-1, 1]
    * @param pair vector of length 2 with entries in the unit interval [0, 1]
+   * @param isAutonomousPressed
    * @throws Exception if any argument is not in the valid range */
-  public GokartJoystickAdapter(Scalar steerLeft, Scalar breakStrength, Scalar ahead, Tensor pair) {
+  public GokartJoystickAdapter(Scalar steerLeft, Scalar breakStrength, Scalar ahead, Tensor pair, boolean isAutonomousPressed) {
     Clip.absoluteOne().isInsideElseThrow(steerLeft);
     Clip.unit().isInsideElseThrow(breakStrength);
     Clip.absoluteOne().isInsideElseThrow(ahead);
@@ -32,6 +34,7 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
     this.breakStrength = breakStrength;
     this.ahead = ahead;
     this.pair = pair.copy();
+    this.isAutonomousPressed = isAutonomousPressed;
   }
 
   @Override // from GokartJoystickInterface
@@ -64,7 +67,6 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
 
   @Override
   public boolean isAutonomousPressed() {
-    // TODO Auto-generated method stub
-    return false;
+    return isAutonomousPressed;
   }
 }

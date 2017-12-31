@@ -21,7 +21,7 @@ public class RimoRateJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rjm.control( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
-            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8)));
+            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8), false));
     assertFalse(optional.isPresent());
     assertFalse(rjm.putEvent().isPresent());
   }
@@ -31,7 +31,7 @@ public class RimoRateJoystickModuleTest extends TestCase {
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.6));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.6), false);
     Optional<RimoPutEvent> optional = rjm.control(sci, gji);
     assertFalse(optional.isPresent()); // no get event
   }
@@ -41,7 +41,7 @@ public class RimoRateJoystickModuleTest extends TestCase {
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5), false);
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(-100, 200);
     rjm.rimoRateControllerWrap.getEvent(rimoGetEvent);
     Optional<RimoPutEvent> optional = rjm.control(sci, gji);
@@ -51,7 +51,7 @@ public class RimoRateJoystickModuleTest extends TestCase {
   public void testTranslate() {
     RimoRateJoystickModule rjm = new RimoRateJoystickModule();
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5), false);
     assertFalse(rjm.translate(joystick).isPresent());
   }
 }
