@@ -12,7 +12,6 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
-import idsc.DavisImu;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
@@ -23,7 +22,6 @@ public class DavisLcmClient implements LcmClientInterface {
   public final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   public final DavisApsDatagramDecoder davisSigDatagramDecoder = new DavisApsDatagramDecoder();
   public final DavisApsDatagramDecoder davisRstDatagramDecoder = new DavisApsDatagramDecoder();
-  public final DavisImuLcmDecoder davisImuLcmDecoder = new DavisImuLcmDecoder();
   private final Collection<SubscriptionRecord> subscriptions = new HashSet<>();
 
   public DavisLcmClient(String cameraId) {
@@ -66,17 +64,6 @@ public class DavisLcmClient implements LcmClientInterface {
           }
         }
       }));
-    if (davisImuLcmDecoder.hasListeners())
-      subscriptions.add(lcm.subscribe(DavisImuFramePublisher.channel(cameraId), new LCMSubscriber() {
-        @Override
-        public void messageReceived(LCM lcm, String channel, LCMDataInputStream ins) {
-          try {
-            digestImu(new DavisImu(ins));
-          } catch (IOException exception) {
-            exception.printStackTrace();
-          }
-        }
-      }));
   }
 
   @Override
@@ -101,9 +88,5 @@ public class DavisLcmClient implements LcmClientInterface {
     ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
     byteBuffer.order(DavisStatics.BYTE_ORDER);
     davisRstDatagramDecoder.decode(byteBuffer);
-  }
-
-  public void digestImu(DavisImu davisImu) {
-    davisImuLcmDecoder.decode(davisImu);
   }
 }

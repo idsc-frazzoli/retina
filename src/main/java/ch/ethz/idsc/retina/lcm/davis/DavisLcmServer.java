@@ -19,7 +19,6 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
-import idsc.DavisImu;
 
 /** collection of functionality that filters raw data for aps content the aps
  * content is encoded in timed column blocks and sent via

@@ -32,7 +32,8 @@ public class DavisDetailViewer implements StartAndStoppable {
     davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
     signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
     // handle imu
-    davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame.davisViewerComponent);
+    // FIXME
+    // davisLcmClient.davisImuLcmDecoder.addListener(davisViewerFrame.davisViewerComponent);
   }
 
   @Override

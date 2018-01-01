@@ -6,7 +6,6 @@ import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 /** 7 different values: 3 axes for accel, temperature, and 3 axes */
 public class DavisImuEvent implements DavisEvent {
   public final int time;
-  public final int data;
   /** index ranges from [0, 1, ..., 6] */
   public final int index;
   public final short value;
@@ -14,9 +13,8 @@ public class DavisImuEvent implements DavisEvent {
   // highest bit of data is aps flag == 1
   public DavisImuEvent(int time, int data) {
     this.time = time;
-    this.data = data;
     index = (data >> 28) & 0x7;
-    value = (short) ((data >> 12) & 0xffff);
+    value = (short) ((data >> 12) & 0xffff); // reference data sheet for formula
   }
 
   @Override

@@ -1,58 +1,70 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.data;
 
-import ch.ethz.idsc.tensor.RealScalar;
+import java.nio.ByteBuffer;
+
+import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** units are SI except for time stamp from chip */
-public class DavisImuFrame {
+public class DavisImuFrame extends DataEvent {
+  /* package */ static final int LENGTH = 4 + 2 * 7;
+  // ---
   /** us == micro seconds */
   public final int time;
-  /** acceleration in m/s^2 */
-  public final float accelX;
-  public final float accelY;
-  public final float accelZ;
+  /** acceleration in m/s^2, temperature, gyro */
+  private final short accelX;
+  private final short accelY;
+  private final short accelZ;
   /** temperature in degree Celsius */
-  public final float temperature;
+  private final short temperature;
   /** radians per seconds */
-  public final float gyroX;
-  public final float gyroY;
-  public final float gyroZ;
+  private final short gyroX;
+  private final short gyroY;
+  private final short gyroZ;
 
-  public DavisImuFrame(int clock_usec, float[] accel, float temperature, float[] gyro) {
-    time = clock_usec;
-    this.accelX = accel[0];
-    this.accelY = accel[1];
-    this.accelZ = accel[2];
-    this.temperature = temperature;
-    this.gyroX = gyro[0];
-    this.gyroY = gyro[1];
-    this.gyroZ = gyro[2];
+  public DavisImuFrame(ByteBuffer byteBuffer) {
+    time = byteBuffer.getInt();
+    // ---
+    accelX = byteBuffer.getShort();
+    accelY = byteBuffer.getShort();
+    accelZ = byteBuffer.getShort();
+    temperature = byteBuffer.getShort();
+    gyroX = byteBuffer.getShort();
+    gyroY = byteBuffer.getShort();
+    gyroZ = byteBuffer.getShort();
   }
 
-  public DavisImuFrame(int time, float[] values) {
-    this.time = time;
-    this.accelX = values[0];
-    this.accelY = values[1];
-    this.accelZ = values[2];
-    this.temperature = values[3];
-    this.gyroX = values[4];
-    this.gyroY = values[5];
-    this.gyroZ = values[6];
+  @Override
+  protected int length() {
+    return LENGTH;
+  }
+
+  @Override
+  protected void insert(ByteBuffer byteBuffer) {
+    byteBuffer.putInt(time);
+    byteBuffer.putShort(accelX);
+    byteBuffer.putShort(accelY);
+    byteBuffer.putShort(accelZ);
+    byteBuffer.putShort(temperature);
+    byteBuffer.putShort(gyroX);
+    byteBuffer.putShort(gyroY);
+    byteBuffer.putShort(gyroZ);
   }
 
   // EXPERIMENTAL API not finalized
   public Tensor accel() {
-    return Tensors.vector(accelX, accelY, accelZ);
+    return Tensors.vector(0, 0, 0);
   }
 
   public Tensor gyro() {
-    return Tensors.vector(gyroX, gyroY, gyroZ);
+    return Tensors.vector(0, 0, 0);
   }
 
   public Scalar temperature() {
-    return RealScalar.of(temperature);
+    return Quantity.of(22, "degC");
   }
 }
