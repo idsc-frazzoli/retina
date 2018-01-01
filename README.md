@@ -41,6 +41,11 @@ Emergency support modules:
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
 
+Joystick Dead man switch:
+
+* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
+
+
 # LIDAR
 
 ## HOKUYO URG-04LX-UG01

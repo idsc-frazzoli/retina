@@ -12,9 +12,7 @@ import ch.ethz.idsc.retina.dev.zhkart.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.dev.zhkart.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.retina.dev.zhkart.joy.DeadManSwitchModule;
-import ch.ethz.idsc.retina.dev.zhkart.joy.LinmotJoystickModule;
-import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
-import ch.ethz.idsc.retina.dev.zhkart.joy.SteerJoystickModule;
+import ch.ethz.idsc.retina.dev.zhkart.joy.JoystickGroupModule;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.retina.dev.zhkart.pure.PurePursuitModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
@@ -38,7 +36,7 @@ enum RunTabbedTaskGui {
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
-      // Urg04lxLcmServerModule.class, // sensing TODO move back to DEV list
+      // Urg04lxLcmServerModule.class, // sensing
       GokartPoseLcmModule.class, // move to DEV list
       SpyModule.class, //
       ParametersModule.class, //
@@ -62,9 +60,10 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       DeadManSwitchModule.class, // joystick
-      LinmotJoystickModule.class, //
-      SteerJoystickModule.class, //
-      RimoTorqueJoystickModule.class //
+      JoystickGroupModule.class //
+  // LinmotJoystickModule.class, //
+  // SteerJoystickModule.class, //
+  // RimoTorqueJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       PurePursuitModule.class //
