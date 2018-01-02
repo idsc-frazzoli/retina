@@ -51,26 +51,7 @@ Confirm: console printed
 
 run
 
-    RunTabbedGui.java
-
-### in the tab "dev"
-
-activate all 3 toggle-buttons:
-* Autobox Socket
-* Vlp16Lcm Server
-* Urg04lx Lcm Server
-
-Confirm: when "Urg04lx Lcm Server" is started the console printed
-
-    urg_alive1=true
-    urg_alive2=true
-
-### in the tab "lcm"
-
-activate all 3 toggle-buttons:
-* Autobox Lcm Server
-* Gokart Status Lcm
-* Logger
+    QuickStartGui.java
 
 ### in the tab "lab"
 
@@ -81,10 +62,9 @@ Confirm: there are
     8 channels starting with autobox.* 
     4 channels starting with davis.*
     1 channel starting with joystick
-    1 channel starting with urg04lx
     2 channels starting with vlp16
 
-deactivating the toggle-button "Spy".  
+deactivating the toggle-button "Spy".
 
 activate 2 more modules by enabling the toggle-buttons
 * Autobox Introspection
@@ -146,15 +126,15 @@ stop the 2 modules "Local View Lcm" and "Davis Detail" by disabling the toggle-b
 
 ### in the tab "fuse"
 
-activate all 6 modules from top to bottom
+activate all modules from top to bottom
 
 Confirm: the console did not print anything in red
 
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
-### in the tab "track"
+### in the tab "joy"
 
-activate all 3 modules from top to bottom
+activate all modules from top to bottom
 
 Confirm: all the fields in the Introspection window are green except for "Misc"
 

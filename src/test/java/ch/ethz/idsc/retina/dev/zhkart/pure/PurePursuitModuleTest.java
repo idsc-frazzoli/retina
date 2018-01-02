@@ -1,10 +1,17 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.pure;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
+import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClientTest;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class PurePursuitModuleTest extends TestCase {
@@ -32,13 +39,17 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1}"));
     purePursuitModule.getEvent(gokartPoseEvent);
+    JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    // assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    // assertTrue(purePursuitModule.purePursuitRimo.isOperational());
-    // Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
-    // assertEquals(Quantity.of(-0.003134062491225534, "rad"), heading);
-    // assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
-    // assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
+    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    // System.out.println(heading);
+    // assertEquals(Quantity.of(-0.013455281968592674, "rad"), heading);
+    Clip clip = Clip.function(Quantity.of(-0.02, "rad"), Quantity.of(-0.01, "rad"));
+    clip.isInsideElseThrow(heading);
+    assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
+    assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
   }
 
@@ -57,18 +68,36 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.last();
   }
 
+  public void testCloseInfeasibleInvalid() throws Exception {
+    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    purePursuitModule.first();
+    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"));
+    purePursuitModule.getEvent(gokartPoseEvent);
+    purePursuitModule.runAlgo();
+    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    assertTrue(Scalars.isZero(heading));
+    assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
+    assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
+    purePursuitModule.last();
+  }
+
   public void testCloseOther() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"));
     purePursuitModule.getEvent(gokartPoseEvent);
+    JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    // assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    // assertTrue(purePursuitModule.purePursuitRimo.isOperational());
-    // Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
-    // assertEquals(Quantity.of(-0.17027499781304284, "rad"), heading);
-    // assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
-    // assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
+    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    // System.out.println(heading);
+    Clip clip = Clip.function(Quantity.of(-0.16, "rad"), Quantity.of(-0.12, "rad"));
+    clip.isInsideElseThrow(heading);
+    assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
+    assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
   }
 
@@ -77,35 +106,51 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"));
     purePursuitModule.getEvent(gokartPoseEvent);
+    JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    // assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    // assertTrue(purePursuitModule.purePursuitRimo.isOperational());
-    // Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
-    // assertEquals(Quantity.of(-0.10276854569090377, "rad"), heading);
-    // assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
-    // assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
+    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    // System.out.println(heading);
+    Clip clip = Clip.function(Quantity.of(-0.15, "rad"), Quantity.of(-0.10, "rad"));
+    clip.isInsideElseThrow(heading);
+    assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
+    assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
   }
 
-  // public void testSpecific() throws Exception {
-  // Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-  // Optional<Tensor> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
-  // Tensor lookAhead = optional.get();
-  // Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(lookAhead);
-  // assertTrue(Clip.function( //
-  // Quantity.of(-0.015, "rad"), //
-  // Quantity.of(-0.010, "rad")).isInside(angle));
-  // }
-  //
-  // public void testSpecific2() throws Exception {
-  // Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-  // Optional<Tensor> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
-  // Tensor lookAhead = optional.get();
-  // Scalar angle = ChassisGeometry.GLOBAL.steerAngleTowards(lookAhead);
-  // assertTrue(Clip.function( //
-  // Quantity.of(0.1, "rad"), //
-  // Quantity.of(0.2, "rad")).isInside(angle));
-  // }
+  public void testSpecific() throws Exception {
+    Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
+    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Scalar lookAhead = optional.get();
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
+    assertTrue(Clip.function( //
+        Quantity.of(-0.015, "rad"), //
+        Quantity.of(-0.010, "rad")).isInside(angle));
+  }
+
+  public void testSpecific2() throws Exception {
+    Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
+    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Scalar lookAhead = optional.get();
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
+    assertTrue(Clip.function( //
+        Quantity.of(0.04, "rad"), //
+        Quantity.of(0.07, "rad")).isInside(angle));
+  }
+
+  public void testLookAheadFail() throws Exception {
+    Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
+    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    assertFalse(optional.isPresent());
+  }
+
+  public void testLookAheadDistanceFail() throws Exception {
+    Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
+    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    assertFalse(optional.isPresent());
+  }
+
   public void testPeriod() {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     double v1 = purePursuitModule.getPeriod();

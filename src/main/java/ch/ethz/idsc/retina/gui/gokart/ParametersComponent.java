@@ -27,8 +27,10 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 14);
   private static final Color FAIL = new Color(255, 192, 192);
+  private static final Color SYNC = new Color(255, 255, 192);
   // ---
   private final Object object;
+  private Object reference;
   private final Map<Field, JTextField> map = new HashMap<>();
   private final JButton jButtonUpdate = new JButton("udpate");
   private final JButton jButtonSave = new JButton("save");
@@ -42,6 +44,12 @@ class ParametersComponent extends ToolbarsComponent {
 
   public ParametersComponent(Object object) {
     this.object = object;
+    try {
+      reference = object.getClass().newInstance();
+    } catch (Exception exception) {
+      reference = null;
+      exception.printStackTrace();
+    }
     {
       JToolBar jToolBar = createRow("Actions");
       {
@@ -69,7 +77,7 @@ class ParametersComponent extends ToolbarsComponent {
           jTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-              jTextField.setBackground(isOk(jTextField.getText()) ? Color.WHITE : FAIL);
+              updateBackground(jTextField, field);
               checkFields();
             }
           });
@@ -77,11 +85,26 @@ class ParametersComponent extends ToolbarsComponent {
             if (checkFields())
               updateInstance();
           });
+          updateBackground(jTextField, field);
           map.put(field, jTextField);
         } catch (Exception exception) {
           // ---
         }
     }
+  }
+
+  private void updateBackground(JTextField jTextField, Field field) {
+    boolean isOk = isOk(jTextField.getText());
+    jTextField.setBackground(isOk ? Color.WHITE : FAIL);
+    if (isOk)
+      try {
+        Object compare = field.get(reference);
+        boolean equals = compare.equals(getValue(jTextField.getText()));
+        if (!equals)
+          jTextField.setBackground(SYNC);
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
   }
 
   private boolean checkFields() {
@@ -93,8 +116,12 @@ class ParametersComponent extends ToolbarsComponent {
     return status;
   }
 
+  private static Tensor getValue(String string) {
+    return Tensors.fromString(string);
+  }
+
   private static boolean isOk(String string) {
-    Tensor tensor = Tensors.fromString(string);
+    Tensor tensor = getValue(string);
     return !tensor.flatten(-1) //
         .anyMatch(scalar -> scalar instanceof StringScalar);
   }

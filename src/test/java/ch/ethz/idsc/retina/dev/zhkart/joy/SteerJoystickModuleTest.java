@@ -29,7 +29,7 @@ public class SteerJoystickModuleTest extends TestCase {
     Optional<SteerPutEvent> optional = sjm.control( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
-            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8)));
+            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8), false));
     assertFalse(optional.isPresent());
     assertFalse(sjm.putEvent().isPresent()); // joystick missing
   }
@@ -39,7 +39,7 @@ public class SteerJoystickModuleTest extends TestCase {
     SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(sci.isSteerColumnCalibrated());
     GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0));
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0), false);
     Optional<SteerPutEvent> optional = sjm.control(sci, gji);
     assertTrue(optional.isPresent());
     assertFalse(sjm.putEvent().isPresent()); // joystick missing

@@ -15,10 +15,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * "SCT" steer-column torque */
 public class LinmotConfig implements Serializable {
   public static final LinmotConfig GLOBAL = AppResources.load(new LinmotConfig());
-
-  private LinmotConfig() {
-  }
-
   /***************************************************/
   public Scalar windingTempCold = Quantity.of(5, LinmotGetEvent.CELSIUS);
   public Scalar windingTempGlow = Quantity.of(85, LinmotGetEvent.CELSIUS);

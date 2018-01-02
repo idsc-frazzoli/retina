@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * Ki = {0.71, 1.23, 1.95, 2.900, 5.7};
  * Kp = {1.80, 2.59, 3.53, 4.612, 7.2};
  * Kd = {0.41, 0.49, 0.57, 0.655, 0.82};
- * for all variants: 80[dec] phase margin(?)
+ * for all variants: 80[deg] phase margin(?)
  * 
  * TODO interpolate PID constants depending on speed */
 public class SteerPositionControl {

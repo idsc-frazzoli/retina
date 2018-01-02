@@ -14,7 +14,6 @@ import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.dev.davis.io.DavisEventsTextWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisPngImageWriter;
 import idsc.BinaryBlob;
-import idsc.DavisImu;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
@@ -61,8 +60,6 @@ public enum DavisLcmLogUzhConvert {
           ++count;
           if (set.add(event.channel))
             System.out.println(event.channel);
-          if (event.channel.endsWith(DavisLcmChannel.IMU.extension)) // imu
-            davisLcmClient.digestImu(new DavisImu(event.data));
           if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
             davisLcmClient.digestSig(new BinaryBlob(event.data));
           if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps

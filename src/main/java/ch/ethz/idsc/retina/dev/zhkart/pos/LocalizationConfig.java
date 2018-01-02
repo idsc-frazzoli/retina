@@ -11,13 +11,9 @@ import ch.ethz.idsc.tensor.Scalar;
 /**  */
 public class LocalizationConfig implements Serializable {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
-
-  private LocalizationConfig() {
-  }
-
   /***************************************************/
-  public Scalar threshold = RealScalar.of(20.0);
-  public Scalar resampleDs = RealScalar.of(1 / 3.0);
+  public Scalar threshold = RealScalar.of(33.0);
+  public Scalar resampleDs = RealScalar.of(0.4);
 
   /***************************************************/
   // private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));

@@ -28,7 +28,7 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
   protected AutoboxCalibrationProvider() {
   }
 
-  private synchronized void removeOld() {
+  private synchronized void removeOld() { // TODO NEXT rename function removeExpired
     TimedPutEvent<PE> timedPutEvent = queue.peek(); // <- null if queue is empty
     long now_ms = now_ms();
     while (Objects.nonNull(timedPutEvent)) {

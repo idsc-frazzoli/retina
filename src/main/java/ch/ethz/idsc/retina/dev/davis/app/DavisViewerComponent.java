@@ -92,12 +92,11 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
+        graphics.drawString(imuFrame.temperature().map(Round._2).toString(), 70, 180 + 12 * 1);
         graphics.drawString( //
-            String.format("%4.1f C", imuFrame.temperature), 70, 180 + 12 * 1);
+            imuFrame.accel().map(Round._2).toString(), 0, 180 + 12 * 2);
         graphics.drawString( //
-            imuFrame.accel().map(Round._2) + "[m*s^-2]", 0, 180 + 12 * 2);
-        graphics.drawString( //
-            imuFrame.gyro().map(Round._2) + "[rad*s^-1]", 0, 180 + 12 * 3);
+            imuFrame.gyro().map(Round._2).toString(), 0, 180 + 12 * 3);
       }
       if (Objects.nonNull(difImage)) {
         int[] bins = ImageHistogram.of(difImage);

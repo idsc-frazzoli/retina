@@ -61,7 +61,7 @@ public class SlamDunk {
         result = result.dot(best);
         ++pushed;
       } else
-        throw new RuntimeException("ARG"); // FIXME
+        System.err.println("stack size mismatch");
     }
     for (int count = 0; count < pushed; ++count)
       geometricLayer.popMatrix();
@@ -70,10 +70,8 @@ public class SlamDunk {
 
   private int evaluate(Point2D point2D) {
     int sum = 0;
-    // int x = (int) Math.round(point2D.getX()); // TODO not optimal, why not (int)
-    int x = (int) point2D.getX(); // TODO not optimal, why not (int)
+    int x = (int) point2D.getX();
     if (0 <= x && x < WIDTH) {
-      // int y = (int) Math.round(point2D.getY());
       int y = (int) point2D.getY();
       if (0 <= y && y < WIDTH)
         sum += bytes[x + WIDTH * y] & 0xff;

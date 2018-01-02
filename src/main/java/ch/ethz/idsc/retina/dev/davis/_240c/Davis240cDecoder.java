@@ -57,8 +57,8 @@ public class Davis240cDecoder implements DavisDecoder {
         rstDavisEventListeners.forEach(listener -> listener.davisAps(apsDavisEvent));
       } else //
       if (read == IMU) { // imu
-        DavisImuEvent imuDavisEvent = new DavisImuEvent(time, data);
-        imuDavisEventListeners.forEach(listener -> listener.davisImu(imuDavisEvent));
+        DavisImuEvent davisImuEvent = new DavisImuEvent(time, data);
+        imuDavisEventListeners.forEach(listener -> listener.davisImu(davisImuEvent));
       }
     }
   }

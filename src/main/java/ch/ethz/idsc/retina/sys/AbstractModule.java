@@ -9,6 +9,7 @@ import java.util.Date;
  * automatically terminate. Should there be an exception thrown while starting
  * the modules, this class would try to restart it again. */
 public abstract class AbstractModule {
+  private static final long RETRY_PERIOD = 5000;
   /** this thread is only used to call launch() thread will terminate once launch()
    * is over. */
   private Thread thread; // keep private
@@ -24,7 +25,7 @@ public abstract class AbstractModule {
         } catch (Exception e) {
           System.err.println(new Date() + " Abstract Module: failed launch: " + object.getClass().getSimpleName());
           try {
-            Thread.sleep(5000);
+            Thread.sleep(RETRY_PERIOD);
           } catch (InterruptedException e1) {
             // thread.interrupt();
             return;
