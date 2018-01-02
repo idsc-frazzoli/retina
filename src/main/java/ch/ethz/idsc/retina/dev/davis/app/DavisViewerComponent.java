@@ -92,7 +92,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
-        graphics.drawString(imuFrame.temperature().toString(), 70, 180 + 12 * 1);
+        graphics.drawString(imuFrame.temperature().map(Round._2).toString(), 70, 180 + 12 * 1);
         graphics.drawString( //
             imuFrame.accel().map(Round._2).toString(), 0, 180 + 12 * 2);
         graphics.drawString( //

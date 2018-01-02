@@ -14,9 +14,9 @@ class DavisImuFrameCollectorOld implements DavisImuListener {
   private static final double G_TO_M_S2 = 9.81;
   private static final float accelSensitivityScaleFactorM_S2PerLsb = (float) (G_TO_M_S2 * 2.0 / 8192);
   private static final float temperatureScaleFactorDegCPerLsb = 1f / 340;
+  private static final float temperatureOffsetDegC = 35;
   private static final double DEG_TO_RAD = Math.PI / 180.0;
   private static final float gyroSensitivityScaleFactorRadPerSecPerLsb = (float) (DEG_TO_RAD * 2.0 / 65.5);
-  private static final float temperatureOffsetDegC = 35;
   // ---
   private final float[] value = new float[7];
   private final List<DavisImuFrameListener> listeners = new LinkedList<>();
