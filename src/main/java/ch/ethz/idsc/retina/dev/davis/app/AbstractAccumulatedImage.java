@@ -26,25 +26,31 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
-  protected final int interval; // LONGTERM does not have to be final
+  /** default value 50 ms */
+  private int interval = 50_000;
   private Integer last = null;
 
   /** @param interval [us] */
-  public AbstractAccumulatedImage(DavisDevice davisDevice, int interval) {
+  public AbstractAccumulatedImage(DavisDevice davisDevice) {
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     GlobalAssert.that(bytes.length == width * height);
-    this.interval = interval;
-    GlobalAssert.that(0 < interval);
-    // ---
     clearImage();
   }
 
   public final void addListener(TimedImageListener timedImageListener) {
     listeners.add(timedImageListener);
+  }
+
+  public void setInterval(int interval) {
+    this.interval = interval;
+  }
+
+  public int getInterval() {
+    return interval;
   }
 
   @Override

@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class DavisDetailModule extends AbstractModule {
   private DavisDetailViewer davisDetailViewer = //
-      new DavisDetailViewer(GokartLcmChannel.DAVIS_OVERVIEW, 50_000);
+      new DavisDetailViewer(GokartLcmChannel.DAVIS_OVERVIEW);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 

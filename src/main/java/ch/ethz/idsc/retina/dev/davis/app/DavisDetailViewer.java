@@ -12,15 +12,16 @@ public class DavisDetailViewer implements StartAndStoppable {
   private final DavisImuLcmClient davisImuLcmClient;
   public final DavisViewerFrame davisViewerFrame;
 
-  public DavisDetailViewer(String cameraId, int period_us) {
+  public DavisDetailViewer(String cameraId) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     davisLcmClient = new DavisLcmClient(cameraId);
-    davisViewerFrame = new DavisViewerFrame(davisDevice);
+    AbstractAccumulatedImage abstractAccumulatedImage = new AccumulatedEventsGrayImage(davisDevice);
+    abstractAccumulatedImage.setInterval(25_000);
+    davisViewerFrame = new DavisViewerFrame(davisDevice, abstractAccumulatedImage);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period_us);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
-    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
+    abstractAccumulatedImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);

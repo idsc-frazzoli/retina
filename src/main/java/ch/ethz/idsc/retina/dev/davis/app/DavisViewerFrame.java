@@ -33,8 +33,10 @@ public class DavisViewerFrame {
   public final DavisViewerComponent davisViewerComponent = new DavisViewerComponent();
   public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
       davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
+  // private AbstractAccumulatedImage abstractAccumulatedImage;
 
-  public DavisViewerFrame(DavisDevice davisDevice) {
+  public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
+    // this.abstractAccumulatedImage=abstractAccumulatedImage;
     // jFrame.setBounds(100, 100, 730, 500);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
@@ -55,11 +57,18 @@ public class DavisViewerFrame {
         jToolBar.add(jButton);
       }
       {
-        SpinnerLabel<Integer> sl = new SpinnerLabel<>();
-        sl.addSpinnerListener(shift -> davisTallyProvider.setShift(shift));
-        sl.setList(Arrays.asList(6, 7, 8, 9));
-        sl.setValueSafe(davisTallyProvider.getShift());
-        sl.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");
+        SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
+        spinnerLabel.addSpinnerListener(shift -> davisTallyProvider.setShift(shift));
+        spinnerLabel.setList(Arrays.asList(6, 7, 8, 9));
+        spinnerLabel.setValueSafe(davisTallyProvider.getShift());
+        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");
+      }
+      {
+        SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
+        spinnerLabel.addSpinnerListener(interval -> abstractAccumulatedImage.setInterval(interval));
+        spinnerLabel.setList(Arrays.asList(2_500, 5_000, 10_000, 25_000, 50_000));
+        spinnerLabel.setValueSafe(abstractAccumulatedImage.getInterval());
+        spinnerLabel.addToComponentReduced(jToolBar, new Dimension(80, 28), "interval");
       }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }

@@ -9,8 +9,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * in black color */
 public class AccumulatedEventsGrayImage extends AbstractAccumulatedImage {
   /** @param interval [us] */
-  public AccumulatedEventsGrayImage(DavisDevice davisDevice, int interval) {
-    super(davisDevice, interval);
+  public AccumulatedEventsGrayImage(DavisDevice davisDevice) {
+    super(davisDevice);
   }
 
   @Override

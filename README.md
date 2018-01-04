@@ -4,7 +4,7 @@
 
 Sensor and actuator interfaces, Gokart software in Java 8.
 
-Version `0.0.1` 
+Version `0.0.1`
 
 The code in the `retina` repository operates a heavy and fast robot that may endanger living creatures.
 We follow best practices and coding standards to protect from avoidable errors.
