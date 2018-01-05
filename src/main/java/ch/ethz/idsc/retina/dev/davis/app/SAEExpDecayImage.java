@@ -14,7 +14,8 @@ public class SAEExpDecayImage extends AbstractAccumulatedImage {
 
   /** @param interval [us] */
   public SAEExpDecayImage(DavisDevice davisDevice, int interval) {
-    super(davisDevice, interval);
+    super(davisDevice);
+    setInterval(interval);
     // ---
     expP = new ExpDecayLookup(interval >> DROP, 3.0, +1);
     expN = new ExpDecayLookup(interval >> DROP, 3.0, -1);

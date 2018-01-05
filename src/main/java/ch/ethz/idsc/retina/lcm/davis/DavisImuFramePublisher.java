@@ -9,7 +9,8 @@ public class DavisImuFramePublisher implements DavisImuFrameListener {
   /** @param cameraId
    * @return imu channel name for given serial number of davis camera */
   public static String channel(String cameraId) {
-    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + ".imv";
+    // the extension "atg" represents: acceleration, temperature, gyro
+    return DavisLcmStatics.CHANNEL_PREFIX + "." + cameraId + ".atg";
   }
   // ---
 

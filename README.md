@@ -4,7 +4,7 @@
 
 Sensor and actuator interfaces, Gokart software in Java 8.
 
-Version `0.0.1` 
+Version `0.0.1`
 
 The code in the `retina` repository operates a heavy and fast robot that may endanger living creatures.
 We follow best practices and coding standards to protect from avoidable errors.
@@ -79,6 +79,8 @@ intensity as 360[deg] panorama
 
 ## IniLabs DAVIS240C
 
+Rolling shutter mode
+
 <table>
 <tr>
 <td>
@@ -95,6 +97,26 @@ intensity as 360[deg] panorama
 
 </tr>
 </table>
+
+Global shutter mode
+
+<table>
+<tr>
+<td>
+
+![dvs_2500](https://user-images.githubusercontent.com/4012178/34606522-075a20ec-f210-11e7-966a-49384b048809.gif)
+
+2.5[ms]
+
+<td>
+
+![dvs_5000](https://user-images.githubusercontent.com/4012178/34606520-073c7d08-f210-11e7-8ee2-1a35173bbade.gif)
+
+5[ms]
+
+</tr>
+</table>
+
 
 .aedat files
 

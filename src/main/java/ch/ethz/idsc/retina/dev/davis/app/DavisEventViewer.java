@@ -20,12 +20,14 @@ public enum DavisEventViewer {
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
-    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE);
+    // ---
+    AbstractAccumulatedImage abstractAccumulatedImage = new AccumulatedEventsGrayImage(davisDevice);
+    abstractAccumulatedImage.setInterval(50_000);
+    // ---
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE, abstractAccumulatedImage);
     davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, 50000);
-    davisDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
+    davisDecoder.addDvsListener(abstractAccumulatedImage);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisViewerFrame.davisViewerComponent.sigListener);

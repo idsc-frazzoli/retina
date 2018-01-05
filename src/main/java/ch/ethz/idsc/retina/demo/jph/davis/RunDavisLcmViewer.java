@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 enum RunDavisLcmViewer {
   ;
   public static void main(String[] args) {
-    DavisDetailViewer davisDetailViewer = new DavisDetailViewer(GokartLcmChannel.DAVIS_OVERVIEW, 30_000);
+    DavisDetailViewer davisDetailViewer = new DavisDetailViewer(GokartLcmChannel.DAVIS_OVERVIEW);
     davisDetailViewer.start();
   }
 }

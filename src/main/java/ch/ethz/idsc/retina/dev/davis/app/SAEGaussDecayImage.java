@@ -14,7 +14,8 @@ public class SAEGaussDecayImage extends AbstractAccumulatedImage {
 
   /** @param interval [us] */
   public SAEGaussDecayImage(DavisDevice davisDevice, int interval) {
-    super(davisDevice, interval);
+    super(davisDevice);
+    setInterval(interval);
     // ---
     gaussP = new GaussDecayLookup(interval >> DROP, 2.5, +1);
     gaussN = new GaussDecayLookup(interval >> DROP, 2.5, -1);

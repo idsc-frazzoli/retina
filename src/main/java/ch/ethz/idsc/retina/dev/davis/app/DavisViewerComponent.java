@@ -53,7 +53,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       difImage = columnTimedImage.bufferedImage;
     }
   };
-  public final TimedImageListener dvsImageListener = new TimedImageListener() {
+  public final TimedImageListener timedImageListener = new TimedImageListener() {
     @Override
     public void timedImage(TimedImageEvent timedImageEvent) {
       imageCopy.update(timedImageEvent.bufferedImage);
