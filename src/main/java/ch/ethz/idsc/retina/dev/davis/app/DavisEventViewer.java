@@ -28,7 +28,6 @@ public enum DavisEventViewer {
     davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
     davisDecoder.addDvsListener(abstractAccumulatedImage);
-    abstractAccumulatedImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisViewerFrame.davisViewerComponent.sigListener);
