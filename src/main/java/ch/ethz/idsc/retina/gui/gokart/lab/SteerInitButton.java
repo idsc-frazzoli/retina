@@ -23,7 +23,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
     jButton.setEnabled(isEnabled());
   }
 
-  private boolean isEnabled() {
+  private static boolean isEnabled() {
     boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated();
     return SteerCalibrationProvider.INSTANCE.isIdle() && nonCalibrated;
   }

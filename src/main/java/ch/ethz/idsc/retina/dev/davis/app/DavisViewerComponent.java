@@ -115,7 +115,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
     }
   };
 
-  private void drawBar(Graphics graphics, int y, IntRange intRange, Color color, String label) {
+  private static void drawBar(Graphics graphics, int y, IntRange intRange, Color color, String label) {
     if (Objects.nonNull(intRange)) {
       graphics.setColor(color);
       graphics.fillRect(intRange.min, y + 1, intRange.getWidth(), 2);

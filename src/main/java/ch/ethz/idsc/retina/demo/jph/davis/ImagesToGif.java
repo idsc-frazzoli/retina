@@ -19,12 +19,12 @@ enum ImagesToGif {
     dir.mkdir();
     // ImageIO.write(bufferedImage, "png", new File(dir, String.format("dvs%05d.png", ++count)));
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(10000).collect(Collectors.toList());
-    AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("dvs_xxxx.gif"), 100);
-    // int count = 0;
-    for (File file : list) {
-      BufferedImage bufferedImage = ImageIO.read(file);
-      animationWriter.append(bufferedImage);
+    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("dvs_xxxx.gif"), 100)) {
+      // int count = 0;
+      for (File file : list) {
+        BufferedImage bufferedImage = ImageIO.read(file);
+        animationWriter.append(bufferedImage);
+      }
     }
-    animationWriter.close();
   }
 }

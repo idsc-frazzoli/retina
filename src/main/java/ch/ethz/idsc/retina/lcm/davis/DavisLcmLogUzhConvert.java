@@ -31,49 +31,49 @@ public enum DavisLcmLogUzhConvert {
       davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
       // davisLcmClient.davisSigDatagramDecoder.addListener(davisEventStatistics);
       // davisLcmClient.davisDvsDatagramDecoder.addImuListener(davisEventStatistics);
-      DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(eventsTextWriter);
-      // ---
-      DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
-      davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
-      // ---
-      DavisPngImageWriter davisPngImageWriter = new DavisPngImageWriter(directory, fitec);
-      SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
-      signalResetDifference.addListener(davisPngImageWriter);
-      davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
-      davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
-      // ---
-      // AccumulatedEventsImage accumulateDvsImage = new
-      // AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
-      // {
-      // File debug = new File(directory, "events_debug");
-      // debug.mkdir();
-      // accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
-      // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
-      // }
-      // ---
-      Log log = new Log(file.toString(), "r");
-      Set<String> set = new HashSet<>();
-      try {
-        while (true) {
-          Event event = log.readNext();
-          ++count;
-          if (set.add(event.channel))
-            System.out.println(event.channel);
-          if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
-            davisLcmClient.digestSig(new BinaryBlob(event.data));
-          if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps
-            davisLcmClient.digestRst(new BinaryBlob(event.data));
-          if (event.channel.endsWith(DavisLcmChannel.DVS.extension)) // events
-            davisLcmClient.digestDvs(new BinaryBlob(event.data));
-        }
-      } catch (IOException exception) {
+      try (DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec)) {
+        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(eventsTextWriter);
         // ---
+        DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+        davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
+        // ---
+        try (DavisPngImageWriter davisPngImageWriter = new DavisPngImageWriter(directory, fitec)) {
+          SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
+          signalResetDifference.addListener(davisPngImageWriter);
+          davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
+          davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
+          // ---
+          // AccumulatedEventsImage accumulateDvsImage = new
+          // AccumulatedEventsImage(Davis240c.INSTANCE, 20000);
+          // {
+          // File debug = new File(directory, "events_debug");
+          // debug.mkdir();
+          // accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
+          // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
+          // }
+          // ---
+          Log log = new Log(file.toString(), "r");
+          Set<String> set = new HashSet<>();
+          try {
+            while (true) {
+              Event event = log.readNext();
+              ++count;
+              if (set.add(event.channel))
+                System.out.println(event.channel);
+              if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
+                davisLcmClient.digestSig(new BinaryBlob(event.data));
+              if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps
+                davisLcmClient.digestRst(new BinaryBlob(event.data));
+              if (event.channel.endsWith(DavisLcmChannel.DVS.extension)) // events
+                davisLcmClient.digestDvs(new BinaryBlob(event.data));
+            }
+          } catch (IOException exception) {
+            // ---
+          }
+          System.out.println("total_frames" + davisPngImageWriter.total_frames());
+        }
       }
-      eventsTextWriter.close();
-      davisPngImageWriter.close();
       davisEventStatistics.print();
-      System.out.println("total_frames" + davisPngImageWriter.total_frames());
     } catch (IOException exception) {
       // ---
     }

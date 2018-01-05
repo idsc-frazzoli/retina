@@ -17,16 +17,16 @@ public class AedatFileHeader {
   private final InputStream inputStream;
 
   public AedatFileHeader(File file) throws IOException {
-    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
     int skip = 0;
-    while (true) {
-      String string = bufferedReader.readLine();
-      header.add(string);
-      skip += string.length() + 2; // add 2 characters of line break
-      if (string.equals(HEADER_TERMINATOR))
-        break;
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+      while (true) {
+        String string = bufferedReader.readLine();
+        header.add(string);
+        skip += string.length() + 2; // add 2 characters of line break
+        if (string.equals(HEADER_TERMINATOR))
+          break;
+      }
     }
-    bufferedReader.close();
     inputStream = new FileInputStream(file);
     inputStream.skip(skip);
   }

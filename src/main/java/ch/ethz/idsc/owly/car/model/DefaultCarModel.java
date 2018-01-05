@@ -69,7 +69,7 @@ public abstract class DefaultCarModel implements VehicleModel {
     return ackermannSteering.pair(delta).append(RealScalar.ZERO).append(RealScalar.ZERO);
   }
 
-  private Tensor _angles_frontParallel(Scalar delta) {
+  private static Tensor _angles_frontParallel(Scalar delta) {
     return Tensors.of( //
         delta, // 1L
         delta, // 1R
