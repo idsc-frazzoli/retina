@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.N;
  * 
  * <p>Naturally, any tire slip results in a loss of tracking accuracy. */
 @SafetyCritical
-public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener {
+public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);
 
   public static GokartPoseOdometry create(Tensor state) {
@@ -80,6 +80,7 @@ public class GokartPoseOdometry implements GokartPoseInterface, RimoGetListener 
   public synchronized void setPose(Tensor pose) {
     // TODO this is not good design: odometry should always be consistent integration of wheels!
     // other entities may track different poses
+    // TODO reset timer to 0
     state = pose.copy();
   }
 }

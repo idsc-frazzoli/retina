@@ -32,10 +32,10 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
+      GokartPoseLcmModule.class, // move to DEV list
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
-      GokartPoseLcmModule.class, // move to DEV list
       // Urg04lxLcmServerModule.class, // sensing
       SpyModule.class, //
       ParametersModule.class, //

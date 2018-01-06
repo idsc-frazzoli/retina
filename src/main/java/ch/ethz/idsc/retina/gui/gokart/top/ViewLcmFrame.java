@@ -9,7 +9,7 @@ import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
@@ -31,7 +31,7 @@ public class ViewLcmFrame extends TimerFrame {
       { 0, -7.5, 640 }, //
       { 0, 0, 1 }, //
   }).unmodifiable();
-  private GokartPoseInterface gokartPoseInterface;
+  private MappedPoseInterface gokartPoseInterface;
 
   public ViewLcmFrame() {
     jToolBar.add(jButtonMapCreate);
@@ -64,7 +64,7 @@ public class ViewLcmFrame extends TimerFrame {
     System.out.println("m2p=" + Pretty.of(tensor));
   }
 
-  protected void setGokartPoseInterface(GokartPoseInterface gokartPoseInterface) {
+  protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;
   }
 }

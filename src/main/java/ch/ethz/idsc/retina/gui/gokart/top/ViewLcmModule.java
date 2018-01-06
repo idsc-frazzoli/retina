@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotGetLcmClient;
@@ -35,9 +35,9 @@ abstract class ViewLcmModule extends AbstractModule {
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private GokartPoseInterface gokartPoseInterface;
+  private MappedPoseInterface gokartPoseInterface;
 
-  protected void setGokartPoseInterface(GokartPoseInterface gokartPoseInterface) {
+  protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;
     viewLcmFrame.setGokartPoseInterface(gokartPoseInterface);
   }

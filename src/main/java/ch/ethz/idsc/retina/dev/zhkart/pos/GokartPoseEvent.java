@@ -53,9 +53,4 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   public Tensor getPose() {
     return Tensors.of(Quantity.of(x, "m"), Quantity.of(y, "m"), DoubleScalar.of(angle));
   }
-
-  @Override // from GokartPoseInterface
-  public void setPose(Tensor pose) {
-    throw new RuntimeException();
-  }
 }
