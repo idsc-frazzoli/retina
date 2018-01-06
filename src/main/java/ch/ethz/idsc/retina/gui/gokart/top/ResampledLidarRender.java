@@ -18,8 +18,8 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
-import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -79,7 +79,7 @@ class ResampledLidarRender extends LidarRender {
           double duration = stopwatch.display_seconds();
           // System.out.println(duration + "[s]");
           int quality = slamDunk.getMatchQuality();
-          Scalar ratio = RationalScalar.of(quality, sum);
+          final Scalar ratio = RationalScalar.of(quality, sum * 255); // 255 is the max possible intensity per sample
           // System.out.println("Quality=" + quality);
           // System.out.println(Pretty.of(delta.map(Round._4)));
           Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
@@ -90,7 +90,7 @@ class ResampledLidarRender extends LidarRender {
           Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
           Tensor newState = Se2Utils.fromSE2Matrix(newPose);
           // System.out.println(newState);
-          gokartPoseInterface.setPose(newState);
+          gokartPoseInterface.setPose(newState, ratio);
           // ---
           graphics.setColor(Color.GRAY);
           graphics.drawString("points=" + sum, 0, 30);

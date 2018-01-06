@@ -44,6 +44,7 @@ public class ViewLcmFrame extends TimerFrame {
         Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
         state = state.map(s -> RealScalar.of(s.number()));
         Tensor pose = Se2Utils.toSE2Matrix(state);
+        // TODO simplify
         Tensor newPose = Inverse.of(MODEL2PIXEL_INITIAL).dot(model2pixel).dot(pose);
         Tensor newPose2 = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
         boolean close = Chop._10.close(newPose, newPose2);
@@ -52,7 +53,7 @@ public class ViewLcmFrame extends TimerFrame {
         Tensor newState = Se2Utils.fromSE2Matrix(newPose);
         newState.set(s -> Quantity.of(s.Get(), "m"), 0);
         newState.set(s -> Quantity.of(s.Get(), "m"), 1);
-        gokartPoseInterface.setPose(newState);
+        gokartPoseInterface.setPose(newState, RealScalar.ONE);
         geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
       }
     });

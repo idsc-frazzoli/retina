@@ -77,7 +77,7 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   }
 
   @Override
-  public synchronized void setPose(Tensor pose) {
+  public synchronized void setPose(Tensor pose, Scalar quality) {
     // TODO this is not good design: odometry should always be consistent integration of wheels!
     // other entities may track different poses
     // TODO reset timer to 0

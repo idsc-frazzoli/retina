@@ -32,6 +32,9 @@ public class SlamDunk {
 
   int cmp = -1;
 
+  /** @return sum of all grayscale color values of the pixels in the map
+   * that coincide with a lidar sample. the maximum possible value is the
+   * number of samples multiplied by 255 */
   public int getMatchQuality() {
     return cmp;
   }

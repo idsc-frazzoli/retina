@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.zhkart.pos;
 
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
@@ -16,7 +17,7 @@ public enum GokartPoseLocal implements MappedPoseInterface {
   }
 
   @Override
-  public void setPose(Tensor pose) {
-    throw TensorRuntimeException.of(pose);
+  public void setPose(Tensor pose, Scalar quality) {
+    throw TensorRuntimeException.of(pose, quality);
   }
 }
