@@ -37,6 +37,7 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   // ---
   private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
   private Tensor state;
+  private Scalar quality;
 
   private GokartPoseOdometry(Tensor state) {
     this.state = state.copy();
@@ -80,7 +81,7 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   public synchronized void setPose(Tensor pose, Scalar quality) {
     // TODO this is not good design: odometry should always be consistent integration of wheels!
     // other entities may track different poses
-    // TODO reset timer to 0
     state = pose.copy();
+    this.quality = quality;
   }
 }

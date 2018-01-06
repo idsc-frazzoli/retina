@@ -4,6 +4,11 @@ package ch.ethz.idsc.retina.sys;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
+
 /** AbstractClockedModule implements a timer thread which calls the algorithm
  * based on the period specified by the getPeriod() method.
  *
@@ -11,6 +16,7 @@ import java.util.TimerTask;
  * be replaced by ScheduledThreadPoolExecutor in the future for better control
  * of the task. */
 public abstract class AbstractClockedModule extends AbstractModule {
+  static final ScalarUnaryOperator TO_MILLI_SECONDS = QuantityMagnitude.SI().in("ms");
   // always private
   private Timer timer = new Timer(getClass().getSimpleName()); // <- this is the thread
 
@@ -29,8 +35,8 @@ public abstract class AbstractClockedModule extends AbstractModule {
 
   /** Period between runClockedModule execution.
    * 
-   * @return task period in seconds */
-  protected abstract double getPeriod();
+   * @return task period as {@link Quantity} time unit, i.e. [s] or [ms] etc. */
+  protected abstract Scalar getPeriod();
 
   @Override
   protected final void launch() throws Exception {
@@ -42,7 +48,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
         runAlgo();
       }
     };
-    timer.schedule(timerTask, 0, Math.round(getPeriod() * 1000));
+    timer.schedule(timerTask, 0, TO_MILLI_SECONDS.apply(getPeriod()).number().longValue());
   }
 
   @Override

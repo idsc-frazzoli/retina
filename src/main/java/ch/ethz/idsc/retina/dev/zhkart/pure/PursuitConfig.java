@@ -18,19 +18,14 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 public class PursuitConfig implements Serializable {
   public static final PursuitConfig GLOBAL = AppResources.load(new PursuitConfig());
   /***************************************************/
-  public Scalar updatePeriod = Quantity.of(0.1, "s");
+  public Scalar updatePeriod = Quantity.of(0.1, "s"); // 0.1[s] == 10[Hz]
   /** look ahead distance for pure pursuit controller
    * 20171218: changed from 2.8[m] to 3.5[m] otherwise tracked angle is out of range too frequently */
   public Scalar lookAhead = Quantity.of(3.5, "m");
   /** gokart velocity speed for curve follower module */
   public Scalar rateFollower = Quantity.of(16.0, "rad*s^-1");
   /***************************************************/
-  private static final ScalarUnaryOperator TO_SECONDS = QuantityMagnitude.SI().in(Unit.of("s"));
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
-
-  public Scalar updatePeriodSeconds() {
-    return TO_SECONDS.apply(updatePeriod);
-  }
 
   public Scalar lookAheadMeter() {
     return TO_METER.apply(lookAhead);

@@ -4,11 +4,13 @@ package ch.ethz.idsc.retina.dev.zhkart.pos;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /**  */
 public class GokartPoseLcmModule extends AbstractClockedModule {
-  private static final double PERIOD_S = 0.02; // 1/0.02[s] == 50[Hz]
+  private static final Scalar PERIOD = Quantity.of(50, "Hz").reciprocal();
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
 
@@ -31,7 +33,7 @@ public class GokartPoseLcmModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractClockedModule
-  protected double getPeriod() {
-    return PERIOD_S;
+  protected Scalar getPeriod() {
+    return PERIOD;
   }
 }

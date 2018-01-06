@@ -85,8 +85,8 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   }
 
   @Override // from AbstractClockedModule
-  protected double getPeriod() {
-    return PursuitConfig.GLOBAL.updatePeriodSeconds().number().doubleValue();
+  protected Scalar getPeriod() {
+    return PursuitConfig.GLOBAL.updatePeriod;
   }
 
   @Override // from GokartPoseListener

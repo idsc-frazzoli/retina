@@ -194,4 +194,4 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
 The library is used in the projects:
 * `owly3d`
 
-The repository has over `300` unit tests.
+The repository has over `310` unit tests.

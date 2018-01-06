@@ -150,11 +150,4 @@ public class PurePursuitModuleTest extends TestCase {
     Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
     assertFalse(optional.isPresent());
   }
-
-  public void testPeriod() {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
-    double v1 = purePursuitModule.getPeriod();
-    double v2 = PursuitConfig.GLOBAL.updatePeriodSeconds().number().doubleValue();
-    assertEquals(v1, v2);
-  }
 }
