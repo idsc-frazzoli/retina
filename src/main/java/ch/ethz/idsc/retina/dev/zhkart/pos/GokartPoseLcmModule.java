@@ -14,18 +14,18 @@ public class GokartPoseLcmModule extends AbstractClockedModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    GokartPoseLcmServer.INSTANCE.odometryLcmClient.startSubscriptions();
+    GokartPoseLcmServer.INSTANCE.odometryRimoGetLcmClient.startSubscriptions();
   }
 
   @Override // from AbstractModule
   protected void last() {
-    GokartPoseLcmServer.INSTANCE.odometryLcmClient.stopSubscriptions();
+    GokartPoseLcmServer.INSTANCE.odometryRimoGetLcmClient.stopSubscriptions();
   }
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     // TODO the pose server publishes pose values even when the pose is not initialized...
-    Tensor pose = GokartPoseLcmServer.INSTANCE.odometryLcmClient.gokartPoseOdometry.getPose();
+    Tensor pose = GokartPoseLcmServer.INSTANCE.odometryRimoGetLcmClient.gokartPoseOdometry.getPose();
     GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(pose);
     binaryBlobPublisher.accept(gokartPoseEvent.asArray());
   }

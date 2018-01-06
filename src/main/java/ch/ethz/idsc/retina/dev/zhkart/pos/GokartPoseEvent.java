@@ -18,16 +18,19 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   private static final int LENGTH = 8 * 3;
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
   // ---
+  // TODO isGlobal() info and getQuality() -> 0...1 of tracking
   private final double x;
   private final double y;
   private final double angle;
 
+  /** @param pose vector of length 3 */
   public GokartPoseEvent(Tensor pose) {
     x = TO_METER.apply(pose.Get(0)).number().doubleValue();
     y = TO_METER.apply(pose.Get(1)).number().doubleValue();
     angle = pose.Get(2).number().doubleValue();
   }
 
+  /** @param byteBuffer */
   public GokartPoseEvent(ByteBuffer byteBuffer) {
     x = byteBuffer.getDouble();
     y = byteBuffer.getDouble();
