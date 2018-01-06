@@ -127,6 +127,19 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.last();
   }
 
+  public void testCloseEndNoQuality() throws Exception {
+    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    purePursuitModule.first();
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
+    purePursuitModule.getEvent(gokartPoseEvent);
+    JoystickLcmClientTest.publishAutonomous();
+    purePursuitModule.runAlgo();
+    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    purePursuitModule.last();
+  }
+
   public void testSpecific() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
     Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);

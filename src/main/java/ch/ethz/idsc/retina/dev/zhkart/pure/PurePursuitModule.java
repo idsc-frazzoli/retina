@@ -53,9 +53,14 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (Objects.nonNull(gokartPoseEvent)) {
+      boolean status = true;
+      // ---
+      final float quality = gokartPoseEvent.getQuality();
+      status &= 0.10 < quality; // TODO magic const
+      // ---
       Tensor pose = gokartPoseEvent.getPose(); // latest pose
       Optional<Scalar> optional = getLookAhead(pose, CURVE);
-      boolean status = optional.isPresent();
+      status &= optional.isPresent();
       if (status) {
         Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
         status = VALID_RANGE.isInside(angle);
