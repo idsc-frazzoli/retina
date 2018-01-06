@@ -9,10 +9,15 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** units are SI except for time stamp from chip */
+/** the image frame is defined as
+ * 1st axis i.e. x is as pixel x direction: left to right
+ * 2nd axis i.e. y is as pixel y direction: top to bottom
+ * 3rd axis i.e. z is in direction of ccd array to lens to outside, i.e. forward */
 public class DavisImuFrame extends DataEvent {
   /* package */ static final int LENGTH = 4 + 2 * 7;
   // ---
+  // TODO these constants depend on the camera configuration and are only valid for the specific
+  // choice of settings for the imu chip!
   private static final double TEMPERATURE_SCALE = 1.0 / 340;
   private static final double TEMPERATURE_OFFSET = 35.0;
   private static final double G_TO_M_S2 = 9.81;
@@ -21,7 +26,7 @@ public class DavisImuFrame extends DataEvent {
   private static final Scalar RadPerSecPerLsb = Quantity.of(DEG_TO_RAD * 2.0 / 65.5, "s^-1");
   // ---
   /** us == micro seconds */
-  public final int time;
+  private final int time;
   /** acceleration in m/s^2, temperature, gyro */
   private final short accelX;
   private final short accelY;
@@ -62,13 +67,32 @@ public class DavisImuFrame extends DataEvent {
     byteBuffer.putShort(gyroZ);
   }
 
-  // EXPERIMENTAL API not finalized
-  public Tensor accel() {
+  /** see above definition of image frame
+   * 
+   * Hint: the accelerometers in some cameras exhibit constant bias,
+   * for instance in vertical position the z-component is centered
+   * around 3[m*s^2] instead of 0[m*s^2].
+   * 
+   * @return */
+  public Tensor accelImageFrame() {
+    // DO NOT MODIFY BUT ADD NEW FUNCTION FOR DIFFERENT FRAME
     return Tensors.vector(accelX, -accelY, accelZ).multiply(M_S2PerLsb);
   }
 
-  public Tensor gyro() {
+  /** see above definition of image frame
+   * 
+   * @return */
+  public Tensor gyroImageFrame() {
+    // DO NOT MODIFY BUT ADD NEW FUNCTION FOR DIFFERENT FRAME
     return Tensors.vector(-gyroX, gyroY, -gyroZ).multiply(RadPerSecPerLsb);
+  }
+
+  /** function demos that other frames can be defined
+   * 
+   * @return */
+  public Tensor accelRobotFrameFrontCamera() {
+    // TODO not tested
+    return Tensors.vector(accelZ, -accelX, accelY).multiply(M_S2PerLsb);
   }
 
   /** @return temperature in degC */
