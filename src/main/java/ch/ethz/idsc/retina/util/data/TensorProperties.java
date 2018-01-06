@@ -26,8 +26,7 @@ public enum TensorProperties {
   }
 
   private static Properties extract(Object object, Properties properties) {
-    if (Objects.isNull(properties))
-      throw new NullPointerException();
+    Objects.requireNonNull(properties);
     Field[] fields = object.getClass().getFields();
     for (Field field : fields)
       if (isTracked(field))

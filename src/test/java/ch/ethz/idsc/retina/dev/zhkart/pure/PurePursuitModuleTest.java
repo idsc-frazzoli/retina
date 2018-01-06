@@ -4,8 +4,10 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
+import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvents;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClientTest;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,7 +27,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testSimple() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{0[m],0[m],0}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     assertFalse(purePursuitModule.purePursuitSteer.isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.isOperational());
@@ -37,7 +40,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testClose() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -56,7 +60,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testCloseInfeasible() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.isOperational());
@@ -71,7 +76,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testCloseInfeasibleInvalid() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.isOperational());
@@ -86,7 +92,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testCloseOther() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -104,7 +111,8 @@ public class PurePursuitModuleTest extends TestCase {
   public void testCloseEnd() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"));
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -116,6 +124,19 @@ public class PurePursuitModuleTest extends TestCase {
     clip.isInsideElseThrow(heading);
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
+    purePursuitModule.last();
+  }
+
+  public void testCloseEndNoQuality() throws Exception {
+    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    purePursuitModule.first();
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
+    purePursuitModule.getEvent(gokartPoseEvent);
+    JoystickLcmClientTest.publishAutonomous();
+    purePursuitModule.runAlgo();
+    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
     purePursuitModule.last();
   }
 
@@ -149,12 +170,5 @@ public class PurePursuitModuleTest extends TestCase {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
     Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
     assertFalse(optional.isPresent());
-  }
-
-  public void testPeriod() {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
-    double v1 = purePursuitModule.getPeriod();
-    double v2 = PursuitConfig.GLOBAL.updatePeriodSeconds().number().doubleValue();
-    assertEquals(v1, v2);
   }
 }

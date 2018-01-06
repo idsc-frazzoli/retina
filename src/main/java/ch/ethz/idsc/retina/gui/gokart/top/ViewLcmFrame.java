@@ -9,7 +9,7 @@ import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
@@ -31,7 +31,7 @@ public class ViewLcmFrame extends TimerFrame {
       { 0, -7.5, 640 }, //
       { 0, 0, 1 }, //
   }).unmodifiable();
-  private GokartPoseInterface gokartPoseInterface;
+  private MappedPoseInterface gokartPoseInterface;
 
   public ViewLcmFrame() {
     jToolBar.add(jButtonMapCreate);
@@ -44,6 +44,7 @@ public class ViewLcmFrame extends TimerFrame {
         Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
         state = state.map(s -> RealScalar.of(s.number()));
         Tensor pose = Se2Utils.toSE2Matrix(state);
+        // TODO simplify
         Tensor newPose = Inverse.of(MODEL2PIXEL_INITIAL).dot(model2pixel).dot(pose);
         Tensor newPose2 = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
         boolean close = Chop._10.close(newPose, newPose2);
@@ -52,7 +53,7 @@ public class ViewLcmFrame extends TimerFrame {
         Tensor newState = Se2Utils.fromSE2Matrix(newPose);
         newState.set(s -> Quantity.of(s.Get(), "m"), 0);
         newState.set(s -> Quantity.of(s.Get(), "m"), 1);
-        gokartPoseInterface.setPose(newState);
+        gokartPoseInterface.setPose(newState, RealScalar.ONE);
         geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
       }
     });
@@ -64,7 +65,7 @@ public class ViewLcmFrame extends TimerFrame {
     System.out.println("m2p=" + Pretty.of(tensor));
   }
 
-  protected void setGokartPoseInterface(GokartPoseInterface gokartPoseInterface) {
+  protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;
   }
 }

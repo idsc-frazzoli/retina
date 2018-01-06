@@ -35,7 +35,7 @@ class UdpPythonPublisher implements TimedImageListener {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawImage(imageCopy.get(), 0, 0, null);
-    };
+    }
   };
   private final InetAddress inetAddress;
 

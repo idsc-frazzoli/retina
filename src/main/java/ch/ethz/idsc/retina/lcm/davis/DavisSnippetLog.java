@@ -56,7 +56,7 @@ public class DavisSnippetLog {
       public void callback(File file) {
         DavisLcmLogUzhConvert.of(file, uzhDir); // blocking call
         jButton.setEnabled(true);
-      };
+      }
     };
   }
 }

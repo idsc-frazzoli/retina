@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** parameters for PI controller of torque control */
@@ -19,7 +20,7 @@ public class JoystickConfig implements Serializable {
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */
-  public Scalar torqueLimit = Quantity.of(2000, "ARMS");
+  public Scalar torqueLimit = Quantity.of(2315, "ARMS");
   /** threshold for angular speed beyond which brake will activate
    * by itself if autonomy determines safety issue */
   public Scalar deadManRate = Quantity.of(4.0, "rad*s^-1");
@@ -41,5 +42,10 @@ public class JoystickConfig implements Serializable {
   public boolean isSpeedSlow(Tensor getAngularRate_Y_pair) {
     Scalar rate = Norm.INFINITY.ofVector(getAngularRate_Y_pair); // unit "rad*s^-1"
     return Scalars.lessThan(rate, JoystickConfig.GLOBAL.deadManRate);
+  }
+
+  /** @return clip interval for permitted torque */
+  public Clip torqueLimitClip() {
+    return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 }

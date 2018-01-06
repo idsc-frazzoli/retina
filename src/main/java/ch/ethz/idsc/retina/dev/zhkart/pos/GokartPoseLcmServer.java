@@ -5,9 +5,9 @@ package ch.ethz.idsc.retina.dev.zhkart.pos;
 public enum GokartPoseLcmServer {
   INSTANCE;
   // ---
-  final OdometryRimoGetLcmClient odometryLcmClient = new OdometryRimoGetLcmClient();
+  final OdometryRimoGetLcmClient odometryRimoGetLcmClient = new OdometryRimoGetLcmClient();
 
   public GokartPoseOdometry getGokartPoseOdometry() {
-    return odometryLcmClient.gokartPoseOdometry;
+    return odometryRimoGetLcmClient.gokartPoseOdometry;
   }
 }

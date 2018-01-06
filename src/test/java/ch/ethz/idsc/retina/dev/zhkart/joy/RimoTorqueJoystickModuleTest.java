@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
@@ -38,14 +37,14 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putL;
     RimoPutTire rptR = rimoPutEvent.putR;
-    RimoConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    RimoConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
     assertTrue(rptL_raw < 0);
     assertEquals(rptL_raw, -rptR_raw);
-    int expected = RimoConfig.GLOBAL.torqueLimit.number().intValue() / 4;
+    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue() / 4;
     assertEquals(rptR_raw, expected);
   }
 
@@ -60,15 +59,57 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putL;
     RimoPutTire rptR = rimoPutEvent.putR;
-    RimoConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    RimoConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
     assertTrue(rptL_raw < 0);
     assertEquals(rptL_raw, -rptR_raw);
-    int expected = RimoConfig.GLOBAL.torqueLimit.number().intValue();
+    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue();
     assertEquals(rptR_raw, expected);
+  }
+
+  public void testReverse() {
+    RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
+    SteerColumnInterface steerColumnInterface = //
+        new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
+    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(0, 0), false);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    assertTrue(optional.isPresent());
+    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutTire rptL = rimoPutEvent.putL;
+    RimoPutTire rptR = rimoPutEvent.putR;
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    // ---
+    short rptL_raw = rptL.getTorqueRaw();
+    short rptR_raw = rptR.getTorqueRaw();
+    assertTrue(rptL_raw > 0);
+    assertEquals(rptL_raw, -rptR_raw);
+    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue() / 2;
+    assertEquals(rptR_raw, -expected);
+  }
+
+  public void testReverseForward() {
+    RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
+    SteerColumnInterface steerColumnInterface = //
+        new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
+    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(1, 1), false);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    assertTrue(optional.isPresent());
+    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutTire rptL = rimoPutEvent.putL;
+    RimoPutTire rptR = rimoPutEvent.putR;
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    // ---
+    short rptL_raw = rptL.getTorqueRaw();
+    short rptR_raw = rptR.getTorqueRaw();
+    assertEquals(rptL_raw, 0);
+    assertEquals(rptL_raw, -rptR_raw);
   }
 
   public void testNonPresent() {

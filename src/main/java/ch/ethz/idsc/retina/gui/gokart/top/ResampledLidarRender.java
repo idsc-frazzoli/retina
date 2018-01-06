@@ -18,8 +18,8 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
+import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -34,7 +34,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
 class ResampledLidarRender extends LidarRender {
-  private final GokartPoseInterface gokartPoseInterface;
+  private final MappedPoseInterface gokartPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
@@ -42,7 +42,7 @@ class ResampledLidarRender extends LidarRender {
       new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2); // TODO during operation, only 3-5 levels should be used
   private BufferedImage map_image = null;
 
-  public ResampledLidarRender(GokartPoseInterface gokartPoseInterface) {
+  public ResampledLidarRender(MappedPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
     // ---
     this.gokartPoseInterface = gokartPoseInterface;
@@ -69,7 +69,7 @@ class ResampledLidarRender extends LidarRender {
       if (flagSnap || trackSupplier.get())
         if (350 < sum) {
           flagSnap = false;
-          // TEST ONLY
+          // ---
           Tensor model2pixel = geometricLayer.getMatrix();
           SlamDunk slamDunk = new SlamDunk(map_image);
           slamDunk.set(se2MultiresSamples);
@@ -79,7 +79,7 @@ class ResampledLidarRender extends LidarRender {
           double duration = stopwatch.display_seconds();
           // System.out.println(duration + "[s]");
           int quality = slamDunk.getMatchQuality();
-          Scalar ratio = RationalScalar.of(quality, sum);
+          final Scalar ratio = RationalScalar.of(quality, sum * 255); // 255 is the max possible intensity per sample
           // System.out.println("Quality=" + quality);
           // System.out.println(Pretty.of(delta.map(Round._4)));
           Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
@@ -90,7 +90,7 @@ class ResampledLidarRender extends LidarRender {
           Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
           Tensor newState = Se2Utils.fromSE2Matrix(newPose);
           // System.out.println(newState);
-          gokartPoseInterface.setPose(newState);
+          gokartPoseInterface.setPose(newState, ratio);
           // ---
           graphics.setColor(Color.GRAY);
           graphics.drawString("points=" + sum, 0, 30);
