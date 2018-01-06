@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.retina.dev.zhkart.pure.PurePursuitModule;
 import ch.ethz.idsc.retina.gui.gokart.lab.AutoboxTestingModule;
 import ch.ethz.idsc.retina.gui.gokart.top.GlobalViewLcmModule;
-import ch.ethz.idsc.retina.gui.gokart.top.LocalViewLcmModule;
 import ch.ethz.idsc.retina.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.retina.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -33,20 +32,20 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
+      GokartPoseLcmModule.class, // move to DEV list
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       // Urg04lxLcmServerModule.class, // sensing
-      GokartPoseLcmModule.class, // move to DEV list
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
       AutoboxTestingModule.class, //
-      LocalViewLcmModule.class, //
+      // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
-      PanoramaViewModule.class, //
-      DavisOverviewModule.class //
+      PanoramaViewModule.class // , //
+  // DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       // Urg04lxEmergencyModule.class, //
