@@ -20,4 +20,9 @@ public enum GokartPoseLocal implements MappedPoseInterface {
   public void setPose(Tensor pose, Scalar quality) {
     throw TensorRuntimeException.of(pose, quality);
   }
+
+  @Override
+  public GokartPoseEvent getPoseEvent() {
+    throw new RuntimeException();
+  }
 }
