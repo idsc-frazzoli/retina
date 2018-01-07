@@ -45,7 +45,7 @@ public class DavisDvsDatagramDecoder {
     ++total;
     if (total % 1000 == 0 && missed_print != missed) {
       missed_print = missed;
-      double percent = missed * 100.0 / (double) total;
+      double percent = missed * 100.0 / total;
       System.out.println("dvs loss = " + missed + "/" + total + String.format(" = %4.2f%%", percent));
     }
     pacid_next = ++pacid;

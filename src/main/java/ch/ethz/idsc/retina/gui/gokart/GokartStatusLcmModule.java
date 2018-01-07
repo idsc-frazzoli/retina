@@ -18,6 +18,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void first() throws Exception {
+    // ---
   }
 
   @Override
@@ -37,5 +38,6 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void last() {
+    // ---
   }
 }

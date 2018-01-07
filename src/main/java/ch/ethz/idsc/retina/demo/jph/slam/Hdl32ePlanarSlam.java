@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph.slam;
 
-import java.io.IOException;
-
 import ch.ethz.idsc.retina.alg.slam.OccupancyMap;
 import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.retina.alg.slam.SlamFrame;
@@ -18,7 +16,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 
 public enum Hdl32ePlanarSlam {
   ;
-  public static void main(String[] args) throws InterruptedException, IOException {
+  public static void main(String[] args) {
     float METER_TO_PIXEL = 10f;
     Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples( //
         RealScalar.of(0.03 * METER_TO_PIXEL), // 3 [cm]

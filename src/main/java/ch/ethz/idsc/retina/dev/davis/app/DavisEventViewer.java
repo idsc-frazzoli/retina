@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import java.io.IOException;
-
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
@@ -15,7 +13,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 public enum DavisEventViewer {
   ;
   // TODO code somewhat redundant to DavisDatagramClientDemo
-  public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
+  public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);

@@ -37,6 +37,7 @@ public enum DvsAccumulate {
     for (DvsEvent dvsEvent : dvsEventBuffer.collection()) {
       long impact = window_us - (time_us - dvsEvent.time_us);
       if (impact < 0) {
+        // ---
       } else
         image[dvsEvent.x][dvsEvent.y][dvsEvent.i] -= impact * factor;
     }
