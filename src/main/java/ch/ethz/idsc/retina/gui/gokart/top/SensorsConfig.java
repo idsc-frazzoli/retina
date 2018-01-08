@@ -15,9 +15,11 @@ public class SensorsConfig implements Serializable {
   /** urg04lx is the pose of the front lidar {px, py, angle} */
   public Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
   public Tensor vlp16 = Tensors.vector(0.09, 0.0, -1.61);
-  /** height of vlp scan from ground */
-  // TODO DUBENDORF measure
-  public Tensor vlp16Height = Quantity.of(0.8, "m");
+  /** height of vlp scan from ground
+   * 1.18[m] from ground to platform top
+   * 0.006[m] TODO DUEBENDORF width of heat sink
+   * 0.0378[m] == 37.8[mm] from heat sink to height of optical center */
+  public Tensor vlp16Height = Quantity.of(1.18 + 0.006 + 0.0378, "m");
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);

@@ -26,9 +26,12 @@ public class ChassisGeometry implements Serializable {
   /** approx. radius of tire when on gokart is on ground */
   public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, "m*rad^-1");
   public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, "m*rad^-1");
-  // TODO DUBENDORF measure
-  public Scalar tireHalfWidthFront = Quantity.of(0.07, "m");
-  public Scalar tireHalfWidthRear = Quantity.of(0.09, "m");
+  /** front tire half width */
+  public Scalar tireHalfWidthFront = Quantity.of(0.065, "m");
+  public Scalar tireHalfWidthContactFront = Quantity.of(0.045, "m");
+  /** rear tire half width */
+  public Scalar tireHalfWidthRear = Quantity.of(0.0975, "m");
+  public Scalar tireHalfWidthContactRear = Quantity.of(0.0675, "m");
   /***************************************************/
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
 

@@ -1,8 +1,6 @@
 // code by edo
 package ch.ethz.idsc.owly.car.drift;
 
-import java.io.IOException;
-
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -10,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 enum EulerIntegrationDemo {
   ;
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     DriftStateSpaceModel driftStateSpaceModel = new DriftStateSpaceModel(new DriftParameters());
     int N = 10;
     Scalar dt = RealScalar.of(0.01);
