@@ -77,7 +77,7 @@ public class DavisViewerFrame implements TimedImageListener {
       {
         SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
         spinnerLabel.addSpinnerListener(interval -> abstractAccumulatedImage.setInterval(interval));
-        spinnerLabel.setList(Arrays.asList(2_500, 5_000, 10_000, 25_000, 50_000));
+        spinnerLabel.setList(Arrays.asList(1_000, 2_500, 5_000, 10_000, 25_000, 50_000));
         spinnerLabel.setValueSafe(abstractAccumulatedImage.getInterval());
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(80, 28), "interval");
       }
