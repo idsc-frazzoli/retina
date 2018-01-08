@@ -33,6 +33,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
     byteBuffer.putDouble(x);
     byteBuffer.putDouble(y);
     byteBuffer.putDouble(angle);
+    byteBuffer.putFloat(quality);
   }
 
   @Override // from DataEvent

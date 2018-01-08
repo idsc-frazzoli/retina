@@ -117,12 +117,11 @@ deactivate toggle-button "Autobox Testing"
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
 activate 2 modules by enabling the toggle-buttons:
-* Local View Lcm
 * Davis Detail
 
 Confirm: sensors are running without delay by moving something in front of the sensors
 
-stop the 2 modules "Local View Lcm" and "Davis Detail" by disabling the toggle-buttons
+stop the module "Davis Detail" by disabling the toggle-buttons
 
 ### in the tab "fuse"
 

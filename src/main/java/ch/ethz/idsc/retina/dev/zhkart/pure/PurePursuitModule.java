@@ -56,7 +56,10 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
       boolean status = true;
       // ---
       final float quality = gokartPoseEvent.getQuality();
-      status &= 0.10 < quality; // TODO magic const
+      System.out.println("q=" + quality);
+      status &= 0.10 < quality || quality == 0; // TODO magic const FIXME hack
+      if (!status)
+        System.err.println("quality insufficient");
       // ---
       Tensor pose = gokartPoseEvent.getPose(); // latest pose
       Optional<Scalar> optional = getLookAhead(pose, CURVE);
@@ -66,7 +69,10 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
         status = VALID_RANGE.isInside(angle);
         if (status)
           purePursuitSteer.setHeading(angle);
-      }
+        else
+          System.err.println("invalid range");
+      } else
+        System.err.println("look ahead off");
       Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
       if (joystick.isPresent()) {
         GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();

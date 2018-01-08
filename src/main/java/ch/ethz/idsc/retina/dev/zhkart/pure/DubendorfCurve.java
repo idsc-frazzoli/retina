@@ -5,11 +5,13 @@ import ch.ethz.idsc.retina.util.curve.CurveSubdivision;
 import ch.ethz.idsc.retina.util.curve.FourPointSubdivision;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.red.Nest;
 
 public enum DubendorfCurve {
   ;
-  public static final Tensor OVAL = oval();
+  public static final Tensor OVAL_ORIGINAL = oval();
+  public static final Tensor OVAL = Reverse.of(oval());
   @Deprecated
   public static final Tensor KIDNEY = kidney(); // curvature is not feasible
 
