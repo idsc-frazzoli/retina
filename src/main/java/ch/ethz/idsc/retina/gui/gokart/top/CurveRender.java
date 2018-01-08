@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -13,19 +12,16 @@ import ch.ethz.idsc.tensor.Tensor;
 
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
-class CurveRender implements RenderInterface {
+/* package */ class CurveRender implements RenderInterface {
   @Override // from AbstractGokartRender
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     final Tensor curve = PurePursuitModule.CURVE;
-    Path2D path2D = geometricLayer.toPath2D(curve);
     graphics.setColor(Color.YELLOW);
-    graphics.draw(path2D);
-    {
-      graphics.setColor(new Color(255, 0, 0, 128));
-      for (Tensor pnt : curve) {
-        Point2D point2D = geometricLayer.toPoint2D(pnt);
-        graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
-      }
+    graphics.draw(geometricLayer.toPath2D(curve));
+    graphics.setColor(new Color(255, 0, 0, 128));
+    for (Tensor pnt : curve) {
+      Point2D point2D = geometricLayer.toPoint2D(pnt);
+      graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
     }
   }
 }

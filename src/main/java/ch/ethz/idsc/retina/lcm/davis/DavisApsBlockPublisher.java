@@ -24,7 +24,7 @@ public class DavisApsBlockPublisher implements DavisApsBlockListener {
     channel = channel(cameraId, davisApsType);
   }
 
-  @Override
+  @Override // from DavisApsBlockListener
   public void apsBlock(ByteBuffer byteBuffer) {
     final int length = byteBuffer.remaining();
     BinaryBlob binaryBlob = new BinaryBlob();
