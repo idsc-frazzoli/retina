@@ -6,6 +6,7 @@ import java.io.Serializable;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -31,5 +32,9 @@ public class PursuitConfig implements Serializable {
 
   public Scalar lookAheadMeter() {
     return TO_METER.apply(lookAhead);
+  }
+
+  public boolean isQualitySufficient(Scalar quality) {
+    return Scalars.lessThan(poseQualityMin, quality);
   }
 }

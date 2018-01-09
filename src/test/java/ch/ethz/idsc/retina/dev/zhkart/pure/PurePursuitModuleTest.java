@@ -24,6 +24,13 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.last();
   }
 
+  public void testSome() {
+    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    Scalar period = purePursuitModule.getPeriod();
+    Clip clip = Clip.function(Quantity.of(0.01, "s"), Quantity.of(0.2, "s"));
+    assertTrue(clip.isInside(period));
+  }
+
   public void testSimple() throws Exception {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     purePursuitModule.first();

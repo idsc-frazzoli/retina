@@ -52,38 +52,33 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
+    boolean status = isOperational();
+    purePursuitSteer.setOperational(status);
+    purePursuitRimo.setOperational(status);
+  }
+
+  private boolean isOperational() {
+    // TODO the ordering of the conditions should chang? null, joystick, quality, lookahead?
     if (Objects.nonNull(gokartPoseEvent)) {
-      boolean status = true;
-      // ---
-      final float quality = gokartPoseEvent.getQuality();
-      status &= 0.10 < quality; // TODO magic const
-      if (status) {
-        // if (!status)
-        // System.err.println("quality insufficient");
-        // ---
+      final Scalar quality = gokartPoseEvent.getQuality();
+      // TODO pose quality could be an independent fuse module for autonomous modes
+      if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
         Optional<Scalar> optional = getLookAhead(pose, CURVE);
-        status &= optional.isPresent();
-        if (status) {
+        if (optional.isPresent()) { // is look ahead beacon available?
           Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
-          status = VALID_RANGE.isInside(angle);
-          if (status)
+          if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
             purePursuitSteer.setHeading(angle);
-          // else
-          // System.err.println("invalid range");
+            Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+            if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+              GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+              return gokartJoystickInterface.isAutonomousPressed();
+            }
+          }
         }
-        // else
-        // System.err.println("look ahead off");
-        Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
-        if (joystick.isPresent()) {
-          GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-          status &= gokartJoystickInterface.isAutonomousPressed();
-        } else
-          status = false;
       }
-      purePursuitSteer.setOperational(status);
-      purePursuitRimo.setOperational(status);
     }
+    return false; // autonomous operation denied
   }
 
   /* package */ static Optional<Scalar> getLookAhead(Tensor pose, Tensor curve) {
