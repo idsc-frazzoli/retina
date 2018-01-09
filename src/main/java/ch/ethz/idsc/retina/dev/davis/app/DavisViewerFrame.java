@@ -43,12 +43,11 @@ public class DavisViewerFrame implements TimedImageListener {
   public final DavisViewerComponent davisViewerComponent = new DavisViewerComponent();
   public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
       davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
-  // private AbstractAccumulatedImage abstractAccumulatedImage;
+  public final DvsTallyProvider dvsTallyProvider = new DvsTallyProvider( //
+      davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
   boolean recording = false;
 
   public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
-    // this.abstractAccumulatedImage=abstractAccumulatedImage;
-    // jFrame.setBounds(100, 100, 730, 500);
     Component component = jFrame.getContentPane();
     JPanel jPanel = (JPanel) component;
     {
@@ -69,7 +68,10 @@ public class DavisViewerFrame implements TimedImageListener {
       }
       {
         SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
-        spinnerLabel.addSpinnerListener(shift -> davisTallyProvider.setShift(shift));
+        spinnerLabel.addSpinnerListener(shift -> {
+          davisTallyProvider.setShift(shift);
+          dvsTallyProvider.setShift(shift);
+        });
         spinnerLabel.setList(Arrays.asList(6, 7, 8, 9));
         spinnerLabel.setValueSafe(davisTallyProvider.getShift());
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");

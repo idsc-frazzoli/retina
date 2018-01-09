@@ -7,10 +7,11 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
+/** in the presence of APS images, one period is defined as the frame rate reciprocal */
 public class DavisTallyProvider {
   private final DavisTallyListener davisTallyListener;
   private DavisTallyEvent davisTallyEvent;
-  public int shift = 8;
+  private int shift = 8;
   public final ColumnTimedImageListener sigListener = new ColumnTimedImageListener() {
     @Override
     public void columnTimedImage(ColumnTimedImage columnTimedImage) {
