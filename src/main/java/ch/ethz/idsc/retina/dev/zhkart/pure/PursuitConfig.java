@@ -4,7 +4,9 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -24,10 +26,15 @@ public class PursuitConfig implements Serializable {
   public Scalar lookAhead = Quantity.of(3.5, "m");
   /** gokart velocity speed for curve follower module */
   public Scalar rateFollower = Quantity.of(16.0, "rad*s^-1");
+  public Scalar poseQualityMin = RealScalar.of(0.1);
   /***************************************************/
   private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
 
   public Scalar lookAheadMeter() {
     return TO_METER.apply(lookAhead);
+  }
+
+  public boolean isQualitySufficient(Scalar quality) {
+    return Scalars.lessThan(poseQualityMin, quality);
   }
 }
