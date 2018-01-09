@@ -10,14 +10,15 @@ import ch.ethz.idsc.tensor.red.Nest;
 
 public enum DubendorfCurve {
   ;
-  public static final Tensor OVAL_ORIGINAL = oval();
-  public static final Tensor OVAL = Reverse.of(oval());
+  /** CURVE "OVAL" IS USED IN TESTS
+   * DONT MODIFY COORDINATES INSTEAD CREATE A NEW CURVE */
+  public static final Tensor OVAL = oval();
+  public static final Tensor REVERSE_OVAL = Reverse.of(oval());
   @Deprecated
   public static final Tensor KIDNEY = kidney(); // curvature is not feasible
 
-  /** CURVE IS USED IN TESTS
-   * DONT MODIFY COORDINATES
-   * INSTEAD CREATE A NEW CURVE */
+  /** CURVE "OVAL" IS USED IN TESTS
+   * DONT MODIFY COORDINATES INSTEAD CREATE A NEW CURVE */
   private static Tensor oval() {
     // TODO consider stating coordinates in [m]eters
     Tensor poly = Tensors.of( //

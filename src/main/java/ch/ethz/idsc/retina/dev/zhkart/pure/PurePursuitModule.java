@@ -56,29 +56,31 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
       boolean status = true;
       // ---
       final float quality = gokartPoseEvent.getQuality();
-      System.out.println("q=" + quality);
-      status &= 0.10 < quality || quality == 0; // TODO magic const FIXME hack
-      if (!status)
-        System.err.println("quality insufficient");
-      // ---
-      Tensor pose = gokartPoseEvent.getPose(); // latest pose
-      Optional<Scalar> optional = getLookAhead(pose, CURVE);
-      status &= optional.isPresent();
+      status &= 0.10 < quality; // TODO magic const
       if (status) {
-        Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
-        status = VALID_RANGE.isInside(angle);
-        if (status)
-          purePursuitSteer.setHeading(angle);
-        else
-          System.err.println("invalid range");
-      } else
-        System.err.println("look ahead off");
-      Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
-      if (joystick.isPresent()) {
-        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-        status &= gokartJoystickInterface.isAutonomousPressed();
-      } else
-        status = false;
+        // if (!status)
+        // System.err.println("quality insufficient");
+        // ---
+        Tensor pose = gokartPoseEvent.getPose(); // latest pose
+        Optional<Scalar> optional = getLookAhead(pose, CURVE);
+        status &= optional.isPresent();
+        if (status) {
+          Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
+          status = VALID_RANGE.isInside(angle);
+          if (status)
+            purePursuitSteer.setHeading(angle);
+          // else
+          // System.err.println("invalid range");
+        }
+        // else
+        // System.err.println("look ahead off");
+        Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+        if (joystick.isPresent()) {
+          GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+          status &= gokartJoystickInterface.isAutonomousPressed();
+        } else
+          status = false;
+      }
       purePursuitSteer.setOperational(status);
       purePursuitRimo.setOperational(status);
     }

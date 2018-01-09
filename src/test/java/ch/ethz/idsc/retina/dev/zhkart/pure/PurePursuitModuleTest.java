@@ -146,8 +146,8 @@ public class PurePursuitModuleTest extends TestCase {
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
-        Quantity.of(-0.015, "rad"), //
-        Quantity.of(-0.010, "rad")).isInside(angle));
+        Quantity.of(-0.018, "rad"), //
+        Quantity.of(-0.016, "rad")).isInside(angle));
   }
 
   public void testSpecific2() throws Exception {
