@@ -21,6 +21,7 @@ public class DavisDetailViewer implements StartAndStoppable {
     // handle dvs
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.dvsTallyProvider);
     // handle aps
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
     davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
