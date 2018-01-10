@@ -40,11 +40,18 @@ public class DavisViewerFrame implements TimedImageListener {
   private DavisEventStatistics davisEventStatistics;
   // private Tensor eventCount = Array.zeros(3);
   private final Timer timer = new Timer();
+  boolean tallyAps = false;
   public final DavisViewerComponent davisViewerComponent = new DavisViewerComponent();
   public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
-      davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
+      davisTallyEvent -> {
+        if (tallyAps)
+          davisViewerComponent.davisTallyEvent = davisTallyEvent;
+      });
   public final DvsTallyProvider dvsTallyProvider = new DvsTallyProvider( //
-      davisTallyEvent -> davisViewerComponent.davisTallyEvent = davisTallyEvent);
+      davisTallyEvent -> {
+        if (!tallyAps)
+          davisViewerComponent.davisTallyEvent = davisTallyEvent;
+      });
   boolean recording = false;
 
   public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
@@ -82,6 +89,11 @@ public class DavisViewerFrame implements TimedImageListener {
         spinnerLabel.setList(Arrays.asList(1_000, 2_500, 5_000, 10_000, 25_000, 50_000));
         spinnerLabel.setValueSafe(abstractAccumulatedImage.getInterval());
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(80, 28), "interval");
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("aps");
+        jToggleButton.addActionListener(e -> tallyAps = jToggleButton.isSelected());
+        jToolBar.add(jToggleButton);
       }
       {
         JToggleButton jToggleButton = new JToggleButton("record");

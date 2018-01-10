@@ -1,36 +1,41 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import java.util.Objects;
-
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** 2) in the absence of APS images, one period is */
 public class DvsTallyProvider implements DavisDvsListener {
+  public static final int BINS = 400;
+  // ---
   private final DavisTallyListener davisTallyListener;
-  private DavisTallyEvent davisTallyEvent;
   private int shift = 8;
-
-  @Override
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (Objects.isNull(davisTallyEvent))
-      davisTallyEvent = new DavisTallyEvent(davisDvsEvent.time, shift);
-    davisTallyEvent.register(davisDvsEvent.time);
-    if (400 < davisTallyEvent.binLast) {
-      davisTallyEvent.setMax(davisDvsEvent.time);
-      davisTallyListener.tallyEvent(davisTallyEvent);
-      int next = davisTallyEvent.first + (400 << shift); // TODO this is useless when working from a log file
-      davisTallyEvent = new DavisTallyEvent(next, shift);
-    }
-  }
+  private int window;
+  private DavisTallyEvent davisTallyEvent = new DavisTallyEvent(0, shift);
 
   public DvsTallyProvider(DavisTallyListener davisTallyListener) {
     this.davisTallyListener = davisTallyListener;
+    setShift(shift);
+  }
+
+  @Override // from DavisDvsListener
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    int diff = davisDvsEvent.time - davisTallyEvent.first;
+    if (0 <= diff && diff < window)
+      davisTallyEvent.register(davisDvsEvent.time);
+    else //
+    if (window <= diff && diff < 2 * window) {
+      davisTallyEvent.setMax(davisTallyEvent.first + window);
+      davisTallyListener.tallyEvent(davisTallyEvent);
+      davisTallyEvent = new DavisTallyEvent(davisTallyEvent.first + window, shift);
+      davisTallyEvent.register(davisDvsEvent.time);
+    } else
+      davisTallyEvent = new DavisTallyEvent(davisDvsEvent.time, shift);
   }
 
   public void setShift(int shift) {
     this.shift = shift;
+    window = BINS << shift;
   }
 
   public int getShift() {
