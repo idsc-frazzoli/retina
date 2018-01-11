@@ -20,7 +20,11 @@ Open a terminal (Ctrl+Alt+T) and run the following commands in order to source y
     roslaunch pylon_camera color_camera_node.launch
 
 Remark: When you are finished with the operation, press Ctrl+C in order to terminate the image acquisition.
-    
+
+To inspect the camera image for instance for focus and calibration, you can type:
+
+    rosrun image_view image_view image:=/color_camera_node/image_raw
+
 In order to record the camera images for post processing, in a new terminal issue
     
     rosbag record color_camera_node/image_raw/compressed
@@ -39,12 +43,16 @@ Remark: When you are finished with the operation, press Ctrl+C in order to termi
 The data is logged in the rosbag format by issuing
 
     rosbag record BW_camera_node/image_raw/compressed
-    
-Alternative logging method: If you have no idea what rosbags are, you can just run the script which will log stuff automatically for you (in new terminal).
+
+To inspect the camera image for instance for focus and calibration, you can type:
+
+    rosrun image_view image_view image:=/BW_camera_node/image_raw
+
+> Alternative logging method: If you have no idea what rosbags are, you can just run the script which will log stuff automatically for you (in new terminal).
 
     source ~/catin_ws/src/pylon_camera/scripts/log_camera_topics.bash
     
-This script will log messages from all the cameras that are connected to the USB hub. You can stop it using (Ctrl+C).
+> This script will log messages from all the cameras that are connected to the USB hub. You can stop it using (Ctrl+C).
 
 ## Configuration of LCM in OS
 
