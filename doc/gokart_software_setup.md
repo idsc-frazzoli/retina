@@ -10,6 +10,36 @@ Confirm: DVS128 is disconnected
 * flip rubber nob to switch on gokart and check gokart battery level close to 100%
 * press button on side of box for power (button should light up in green)
 
+## BASLER ACE CAMERAS setup
+Connect cameras that you want to use to the USB hub in the back of the gokart.
+
+
+Open a terminal (Ctrl+Alt+T) and run the following command to source your catkin workspace:
+
+    source ~/catkin_ws/devel/setup.bash
+
+Now, in the same terminal, you can launch a camera node. To launch a camera node run:
+
+    roslaunch pylon_camera color_camera_node.launch
+    
+This will launch a node that publishes images acquired from the basler ace acA2500-60uc camera.
+
+If you want to publish images from the basler ace acA640-750um camera you will have to open another terminal, source your catkin workspace and the last step should be:
+
+    roslaunch pylon_camera BW_camera_node.launch
+    
+All the data is logged in the rosbag format. If you are familiar with that you can log the data using: 
+
+    rosbag record <topic name>
+
+where topic name can be for example "color_camera_node/image_raw"; if you want to log raw images from the acA2500-60uc camera. 
+
+If you have no idea what rosbags are, you can just run the script which will log stuff automatically for you (in new terminal). You can run it using:
+
+    source ~catin_ws/src/pylon_camera/scripts/log_camera_topics.bash
+
+This script will log messages from all the cameras that are connected to the USB hub. You can stop it using (Ctrl+C).
+
 ## Configuration of LCM in OS
 
 open a terminal using (Ctrl+Alt+T)
