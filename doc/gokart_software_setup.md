@@ -13,21 +13,23 @@ Confirm: DVS128 is disconnected
 ## BASLER ACE acA2500-60uc color camera setup
 
 * Verify that the LED on the back of the Basler camera is green.
-* Open a terminal (Ctrl+Alt+T) and run the following commands in order to source your catkin workspace and launch the color camera node that publishes images acquired from the basler ace acA2500-60uc camera:
 
+Open a terminal (Ctrl+Alt+T) and run the following commands in order to source your catkin workspace, and launch the color camera node that publishes images acquired from the basler ace acA2500-60uc camera run:
+    
     source ~/catkin_ws/devel/setup.bash
     roslaunch pylon_camera color_camera_node.launch
-    
+
 Remark: When you are finished with the operation, press Ctrl+C in order to terminate the image acquisition.
     
 In order to record the camera images for post processing, in a new terminal issue
     
     rosbag record color_camera_node/image_raw/compressed
 
-## BASLER ACE acA640-750um color camera setup
+## BASLER ACE acA640-750um grayscale camera setup
 
 * Verify that the LED on the back of the Basler camera is green.
-* To publish images from the basler ace acA640-750um camera you will have to open another terminal, and execute:
+
+To publish images from the basler ace acA640-750um camera you will have to open another terminal, and execute:
 
     source ~/catkin_ws/devel/setup.bash
     roslaunch pylon_camera BW_camera_node.launch
