@@ -6,7 +6,8 @@ import junit.framework.TestCase;
 
 public class TimedPutEventTest extends TestCase {
   public void testComparable() {
-    TimedPutEvent<RimoPutEvent> tpe = new TimedPutEvent<>(12332, RimoPutEvent.PASSIVE);
-    assertTrue(tpe instanceof Comparable);
+    TimedPutEvent<RimoPutEvent> tp1 = new TimedPutEvent<>(12332, RimoPutEvent.PASSIVE);
+    TimedPutEvent<RimoPutEvent> tp2 = new TimedPutEvent<>(12330, RimoPutEvent.PASSIVE);
+    assertEquals(tp1.compareTo(tp2), Integer.compare(32, 30));
   }
 }

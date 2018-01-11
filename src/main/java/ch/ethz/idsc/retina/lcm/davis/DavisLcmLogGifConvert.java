@@ -32,38 +32,37 @@ public class DavisLcmLogGifConvert {
       davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
       // davisLcmClient.davisRstDatagramDecoder.addListener(accumulatedOverlay.rst);
       // ---
-      DavisGifImageWriter davisGifImageWriter = //
-          new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 100, fitec);
-      SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
-      davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
-      davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
-      // ---
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
-      signalResetDifference.addListener(accumulatedOverlay.differenceListener);
-      accumulatedOverlay.addListener(davisGifImageWriter);
-      // ---
-      Log log = new Log(file.toString(), "r");
-      Set<String> set = new HashSet<>();
-      try {
-        while (true) {
-          Event event = log.readNext();
-          ++count;
-          if (set.add(event.channel))
-            System.out.println(event.channel);
-          if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
-            davisLcmClient.digestSig(new BinaryBlob(event.data));
-          if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps
-            davisLcmClient.digestRst(new BinaryBlob(event.data));
-          if (event.channel.endsWith(DavisLcmChannel.DVS.extension)) // events
-            davisLcmClient.digestDvs(new BinaryBlob(event.data));
-        }
-      } catch (IOException exception) {
+      try (DavisGifImageWriter davisGifImageWriter = //
+          new DavisGifImageWriter(new File(target, file.getName() + ".gif"), 100, fitec)) {
+        SignalResetDifference signalResetDifference = SignalResetDifference.normal(davisImageBuffer);
+        davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
+        davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
         // ---
+        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
+        signalResetDifference.addListener(accumulatedOverlay.differenceListener);
+        accumulatedOverlay.addListener(davisGifImageWriter);
+        // ---
+        Log log = new Log(file.toString(), "r");
+        Set<String> set = new HashSet<>();
+        try {
+          while (true) {
+            Event event = log.readNext();
+            ++count;
+            if (set.add(event.channel))
+              System.out.println(event.channel);
+            if (event.channel.endsWith(DavisLcmChannel.SIG.extension)) // signal aps
+              davisLcmClient.digestSig(new BinaryBlob(event.data));
+            if (event.channel.endsWith(DavisLcmChannel.RST.extension)) // reset read aps
+              davisLcmClient.digestRst(new BinaryBlob(event.data));
+            if (event.channel.endsWith(DavisLcmChannel.DVS.extension)) // events
+              davisLcmClient.digestDvs(new BinaryBlob(event.data));
+          }
+        } catch (IOException exception) {
+          // ---
+        }
+        System.out.println("total_frames" + davisGifImageWriter.total_frames());
       }
-      // eventsTextWriter.close();
-      davisGifImageWriter.close();
       davisEventStatistics.print();
-      System.out.println("total_frames" + davisGifImageWriter.total_frames());
     } catch (IOException exception) {
       // ---
     }

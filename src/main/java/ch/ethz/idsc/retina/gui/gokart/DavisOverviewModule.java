@@ -33,7 +33,8 @@ public class DavisOverviewModule extends AbstractModule {
     vlp16LcmHandler.lidarAngularFiringCollector.addListener(davisLidarComponent);
     davisViewerFrame = new DavisQuickFrame(davisDevice, davisLidarComponent);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, period_us);
+    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice);
+    accumulatedEventsImage.setInterval(period_us);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle dif

@@ -63,14 +63,14 @@ public final class BinaryBlob implements lcm.lcm.LCMEncodable {
   @Override
   public void _decodeRecursive(DataInput ins) throws IOException {
     this.data_length = ins.readInt();
-    this.data = new byte[(int) data_length];
+    this.data = new byte[data_length];
     ins.readFully(this.data, 0, data_length);
   }
 
   public idsc.BinaryBlob copy() {
     idsc.BinaryBlob outobj = new idsc.BinaryBlob();
     outobj.data_length = this.data_length;
-    outobj.data = new byte[(int) data_length];
+    outobj.data = new byte[data_length];
     if (this.data_length > 0)
       System.arraycopy(this.data, 0, outobj.data, 0, this.data_length);
     return outobj;

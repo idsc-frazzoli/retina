@@ -16,11 +16,20 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** speed control via joystick
+/** DO NOT USE THIS IMPLEMENTATION.
+ * 
+ * IN THE FUTURE, IT MAY BE DESIRABLE TO SPEED CONTROL
+ * THE GOKART WITH THE JOYSTICK, BUT FOR NOW THE JOYSTICK
+ * HAS PROVEN TO WORK BEST WITH DIRECT TORQUE CONTROL.
+ * 
+ * @see RimoTorqueJoystickModule
+ * 
+ * speed control via joystick
  * way of controlling gokart on first test day
  * mode is decommissioned
  * 
  * superseded by {@link RimoTorqueJoystickModule} */
+// @Deprecated
 /* package */ class RimoRateJoystickModule extends JoystickModule<RimoPutEvent> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerWrap();

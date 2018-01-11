@@ -17,8 +17,7 @@ public abstract class DavisSnippetRunnable implements Runnable {
 
   @Override
   public void run() {
-    try {
-      LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault(directory);
+    try (LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault(directory)) {
       File file = lcmLogProcess.file();
       System.out.println(file);
       Thread.sleep(milliSeconds);

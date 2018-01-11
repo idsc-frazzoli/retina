@@ -1,7 +1,6 @@
 // code by edo
 package ch.ethz.idsc.owly.car.drift;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -28,8 +27,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
 public class DriftExtTest extends TestCase {
-  ;
-  public void testSimple() throws IOException {
+  public void testSimple() {
     // the resolution refers to the last 3 of the state coordinates (x,y,theta,beta,r,Ux)
     Tensor eta = Tensors.vector(30, 30, 5);
     StateIntegrator stateIntegrator = FixedStateIntegrator.create( //

@@ -83,13 +83,13 @@ public class SlamComponent implements SlamListener {
     }
   };
 
-  private Point toPoint(Tensor vector) {
+  private static Point toPoint(Tensor vector) {
     return new Point( //
         W_HALF + vector.Get(0).number().intValue(), //
         W_HALF - vector.Get(1).number().intValue());
   }
 
-  private Point2D toPoint2D(Tensor vector) {
+  private static Point2D toPoint2D(Tensor vector) {
     return new Point2D.Double( //
         W_HALF + vector.Get(0).number().intValue(), //
         W_HALF - vector.Get(1).number().intValue());

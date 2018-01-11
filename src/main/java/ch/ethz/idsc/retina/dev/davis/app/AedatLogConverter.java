@@ -35,27 +35,28 @@ public enum AedatLogConverter {
     davisDecoder.addImuListener(davisEventStatistics);
     // ---
     FirstImageTriggerExportControl fitec = new FirstImageTriggerExportControl();
-    DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec);
-    davisDecoder.addDvsListener(eventsTextWriter);
-    // ---
-    DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
-    DavisPngImageWriter pngImageWriter = new DavisPngImageWriter(directory, fitec);
-    davisImageProvider.addListener(fitec);
-    davisImageProvider.addListener(pngImageWriter);
-    davisDecoder.addSigListener(davisImageProvider);
-    // ---
-    AccumulatedEventsGrayImage accumulateDvsImage = new AccumulatedEventsGrayImage(davisDevice, 20000);
-    {
-      File debug = new File(directory, "events_debug");
-      debug.mkdir();
-      accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
-      davisDecoder.addDvsListener(accumulateDvsImage);
+    try (DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec)) {
+      davisDecoder.addDvsListener(eventsTextWriter);
+      // ---
+      DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
+      try (DavisPngImageWriter pngImageWriter = new DavisPngImageWriter(directory, fitec)) {
+        davisImageProvider.addListener(fitec);
+        davisImageProvider.addListener(pngImageWriter);
+        davisDecoder.addSigListener(davisImageProvider);
+        // ---
+        AccumulatedEventsGrayImage accumulateDvsImage = new AccumulatedEventsGrayImage(davisDevice);
+        accumulateDvsImage.setInterval(20_000);
+        {
+          File debug = new File(directory, "events_debug");
+          debug.mkdir();
+          accumulateDvsImage.addListener(new DavisSimpleImageWriter(debug, 50, fitec));
+          davisDecoder.addDvsListener(accumulateDvsImage);
+        }
+        // ---
+        aedatFileSupplier.start();
+        aedatFileSupplier.stop();
+      }
     }
-    // ---
-    aedatFileSupplier.start();
-    aedatFileSupplier.stop();
-    eventsTextWriter.close();
-    pngImageWriter.close();
     davisEventStatistics.print();
   }
 

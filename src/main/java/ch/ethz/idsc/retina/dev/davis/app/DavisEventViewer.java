@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import java.io.IOException;
-
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
@@ -15,17 +13,19 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 public enum DavisEventViewer {
   ;
   // TODO code somewhat redundant to DavisDatagramClientDemo
-  public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) throws IOException {
+  public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
-    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE);
+    // ---
+    AbstractAccumulatedImage abstractAccumulatedImage = new AccumulatedEventsGrayImage(davisDevice);
+    abstractAccumulatedImage.setInterval(50_000);
+    // ---
+    DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE, abstractAccumulatedImage);
     davisViewerFrame.setStatistics(davisEventStatistics);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice, 50000);
-    davisDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
+    davisDecoder.addDvsListener(abstractAccumulatedImage);
     // handle aps
     DavisImageProvider davisImageProvider = new DavisImageProvider(davisDevice);
     davisImageProvider.addListener(davisViewerFrame.davisViewerComponent.sigListener);

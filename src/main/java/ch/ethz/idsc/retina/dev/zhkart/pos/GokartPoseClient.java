@@ -27,9 +27,4 @@ public class GokartPoseClient extends SimpleLcmClient<GokartPoseListener> implem
   public Tensor getPose() {
     return Objects.isNull(event) ? GokartPoseLocal.INSTANCE.getPose() : event.getPose();
   }
-
-  @Override
-  public void setPose(Tensor pose) {
-    throw new RuntimeException();
-  }
 }

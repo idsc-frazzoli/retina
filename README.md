@@ -4,7 +4,7 @@
 
 Sensor and actuator interfaces, Gokart software in Java 8.
 
-Version `0.0.1` 
+Version `0.0.1`
 
 The code in the `retina` repository operates a heavy and fast robot that may endanger living creatures.
 We follow best practices and coding standards to protect from avoidable errors.
@@ -12,13 +12,6 @@ We follow best practices and coding standards to protect from avoidable errors.
 see
 [video1](https://www.youtube.com/watch?v=t3oAqQlWoyo), and
 [video2](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
-
-The implementation includes
-
-* obtaining data from wired sensor
-* parsing of standard log files
-* demo of data handling, for instance simple visualizations
-* option to transmit and receive via the `lcm` protocol
 
 The byte order of the binary data is `little endian` since the encoding is native on most architectures.
 
@@ -79,6 +72,8 @@ intensity as 360[deg] panorama
 
 ## IniLabs DAVIS240C
 
+Rolling shutter mode
+
 <table>
 <tr>
 <td>
@@ -95,6 +90,52 @@ intensity as 360[deg] panorama
 
 </tr>
 </table>
+
+Global shutter mode
+
+<table>
+<tr>
+<td>
+
+![dvs_2500](https://user-images.githubusercontent.com/4012178/34606522-075a20ec-f210-11e7-966a-49384b048809.gif)
+
+2.5[ms]
+
+<td>
+
+![dvs_5000](https://user-images.githubusercontent.com/4012178/34606520-073c7d08-f210-11e7-8ee2-1a35173bbade.gif)
+
+5[ms]
+
+</tr>
+</table>
+
+Events only
+
+<table>
+<tr>
+<td>
+
+![dvs_noaps_1000](https://user-images.githubusercontent.com/4012178/34684372-2eb4b200-f4a5-11e7-891e-74c2123a3bfe.gif)
+
+1[ms]
+
+<td>
+
+![dvs_noaps_2500](https://user-images.githubusercontent.com/4012178/34684373-2eca8ee0-f4a5-11e7-9f70-f41d4722edf7.gif)
+
+2.5[ms]
+
+<td>
+
+![dvs_noaps_5000](https://user-images.githubusercontent.com/4012178/34684374-2ee3aaba-f4a5-11e7-9ac6-72b7ac502793.gif)
+
+5[ms]
+
+</tr>
+</table>
+
+
 
 .aedat files
 
@@ -172,4 +213,4 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
 The library is used in the projects:
 * `owly3d`
 
-The repository has over `300` unit tests.
+The repository has over `310` unit tests.

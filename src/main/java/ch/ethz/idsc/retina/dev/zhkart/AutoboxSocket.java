@@ -35,23 +35,26 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> implements StartAndStoppable {
   private final DatagramSocketManager datagramSocketManager;
   private final List<GetListener<GE>> getListeners = new CopyOnWriteArrayList<>();
-  private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
   /* package */ final ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
     @Override // from ByteArrayConsumer
     public void accept(byte[] data, int length) {
       ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, length);
       byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
       GE getEvent = createGetEvent(byteBuffer);
-      for (GetListener<GE> listener : getListeners)
-        try {
-          listener.getEvent(getEvent); // notify get listener
-        } catch (Exception exception) {
-          exception.printStackTrace(); // TODO any get listener that causes problems should be removed?
-        }
+      synchronized (getListeners) {
+        for (GetListener<GE> listener : getListeners)
+          try {
+            listener.getEvent(getEvent); // notify get listener
+          } catch (Exception exception) {
+            exception.printStackTrace(); // TODO any get listener that causes problems should be removed?
+          }
+      }
     }
   };
+  // ---
   private final Set<PutProvider<PE>> providers = //
       new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
   private Timer timer;
 
   protected AutoboxSocket(int length, int local_port) {
@@ -69,20 +72,22 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        for (PutProvider<PE> putProvider : providers) {
-          Optional<PE> optional = putProvider.putEvent();
-          if (optional.isPresent())
-            try {
-              putProviderActive = putProvider;
-              PE putEvent = optional.get();
-              byte[] data = putEvent.asArray();
-              datagramSocketManager.send(getDatagramPacket(data));
-              for (PutListener<PE> putListener : putListeners)
-                putListener.putEvent(putEvent); // notify put listener
-              return;
-            } catch (Exception exception) {
-              exception.printStackTrace();
-            }
+        synchronized (providers) {
+          for (PutProvider<PE> putProvider : providers) {
+            Optional<PE> optional = putProvider.putEvent();
+            if (optional.isPresent())
+              try {
+                putProviderActive = putProvider;
+                PE putEvent = optional.get();
+                byte[] data = putEvent.asArray();
+                datagramSocketManager.send(getDatagramPacket(data));
+                for (PutListener<PE> putListener : putListeners)
+                  putListener.putEvent(putEvent); // notify put listener
+                return;
+              } catch (Exception exception) {
+                exception.printStackTrace();
+              }
+          }
         }
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
@@ -138,52 +143,64 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /***************************************************/
   public final void addPutProvider(PutProvider<PE> putProvider) {
-    boolean added = providers.add(putProvider);
-    if (!added) {
-      System.err.println(putProvider.getClass().getSimpleName());
-      new RuntimeException("put provider not added").printStackTrace();
+    synchronized (providers) {
+      boolean added = providers.add(putProvider);
+      if (!added) {
+        System.err.println(putProvider.getClass().getSimpleName());
+        new RuntimeException("put provider not added").printStackTrace();
+      }
     }
   }
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
-    boolean removed = providers.remove(putProvider);
-    if (!removed) {
-      System.err.println(putProvider.getClass().getSimpleName());
-      new RuntimeException("put provider not removed").printStackTrace();
+    synchronized (providers) {
+      boolean removed = providers.remove(putProvider);
+      if (!removed) {
+        System.err.println(putProvider.getClass().getSimpleName());
+        new RuntimeException("put provider not removed").printStackTrace();
+      }
     }
   }
 
   /***************************************************/
   public final void addGetListener(GetListener<GE> getListener) {
-    boolean added = getListeners.add(getListener);
-    if (!added) {
-      System.err.println(getListener.getClass().getSimpleName());
-      new RuntimeException("get listener not added").printStackTrace();
+    synchronized (getListeners) {
+      boolean added = getListeners.add(getListener);
+      if (!added) {
+        System.err.println(getListener.getClass().getSimpleName());
+        new RuntimeException("get listener not added").printStackTrace();
+      }
     }
   }
 
   public final void removeGetListener(GetListener<GE> getListener) {
-    boolean removed = getListeners.remove(getListener);
-    if (!removed) {
-      System.err.println(getListener.getClass().getSimpleName());
-      new RuntimeException("get listener not removed").printStackTrace();
+    synchronized (getListeners) {
+      boolean removed = getListeners.remove(getListener);
+      if (!removed) {
+        System.err.println(getListener.getClass().getSimpleName());
+        new RuntimeException("get listener not removed").printStackTrace();
+      }
     }
   }
 
   /***************************************************/
   public final void addPutListener(PutListener<PE> putListener) {
-    boolean added = putListeners.add(putListener);
-    if (!added) {
-      System.err.println(putListener.getClass().getSimpleName());
-      new RuntimeException("put listener not added").printStackTrace();
+    synchronized (providers) {
+      boolean added = putListeners.add(putListener);
+      if (!added) {
+        System.err.println(putListener.getClass().getSimpleName());
+        new RuntimeException("put listener not added").printStackTrace();
+      }
     }
   }
 
   public final void removePutListener(PutListener<PE> putListener) {
-    boolean removed = putListeners.remove(putListener);
-    if (!removed) {
-      System.err.println(putListener.getClass().getSimpleName());
-      new RuntimeException("put listener not removed").printStackTrace();
+    synchronized (providers) {
+      boolean removed = putListeners.remove(putListener);
+      if (!removed) {
+        System.err.println(putListener.getClass().getSimpleName());
+        new RuntimeException("put listener not removed").printStackTrace();
+      }
     }
   }
 }

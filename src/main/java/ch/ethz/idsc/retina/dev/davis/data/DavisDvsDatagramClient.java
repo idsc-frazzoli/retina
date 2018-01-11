@@ -28,5 +28,6 @@ public class DavisDvsDatagramClient {
   }
 
   public void stop() {
+    // ---
   }
 }

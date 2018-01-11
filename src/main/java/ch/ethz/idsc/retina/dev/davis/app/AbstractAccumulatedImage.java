@@ -19,6 +19,9 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
  * fixed duration positive events appear in white color negative events appear
  * in black color */
 public abstract class AbstractAccumulatedImage implements DavisDvsListener {
+  /** default value 50 ms */
+  public static final int INTERVAL_DEFAULT_US = 50_000;
+  // ---
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   protected final int width;
@@ -26,20 +29,19 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
-  protected final int interval; // LONGTERM does not have to be final
+  private int interval;
+  private int multiple;
   private Integer last = null;
 
   /** @param interval [us] */
-  public AbstractAccumulatedImage(DavisDevice davisDevice, int interval) {
+  public AbstractAccumulatedImage(DavisDevice davisDevice) {
+    setInterval(INTERVAL_DEFAULT_US);
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     GlobalAssert.that(bytes.length == width * height);
-    this.interval = interval;
-    GlobalAssert.that(0 < interval);
-    // ---
     clearImage();
   }
 
@@ -47,26 +49,38 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     listeners.add(timedImageListener);
   }
 
+  public void setInterval(int interval) {
+    this.interval = interval;
+    multiple = interval * 50; // threshold to detect forward jumps in time during log playback
+  }
+
+  public int getInterval() {
+    return interval;
+  }
+
   @Override
   public void davisDvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     final int delta = dvsDavisEvent.time - last;
-    if (delta < 0) { // this case happens during davis log playback when skipping to the front
-      System.err.println("dvs image clear due to reverse timing");
+    if (0 <= delta && delta < interval) // nominal case
+      assign(delta, dvsDavisEvent);
+    else //
+    if (multiple <= delta) {
+      System.err.println("dvs image clear due to forward timing");
       clearImage();
       last = dvsDavisEvent.time;
     } else //
-    // TODO treat case: 20 * interval < delta
-    // TODO change ordering of conditions
     if (interval <= delta) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
-    } else { // delta < interval
-      // GlobalAssert.that(delta < interval);
-      assign(delta, dvsDavisEvent);
+    } else //
+    if (delta < 0) { // this case happens during davis log playback when skipping to the front
+      System.err.println("dvs image clear due to reverse timing");
+      clearImage();
+      last = dvsDavisEvent.time;
     }
   }
 
