@@ -10,34 +10,38 @@ Confirm: DVS128 is disconnected
 * flip rubber nob to switch on gokart and check gokart battery level close to 100%
 * press button on side of box for power (button should light up in green)
 
-## BASLER ACE CAMERAS setup
-Connect cameras that you want to use to the USB hub in the back of the gokart.
+## BASLER ACE acA2500-60uc color camera setup
 
-
-Open a terminal (Ctrl+Alt+T) and run the following command to source your catkin workspace:
+* Verify that the LED on the back of the Basler camera is green.
+* Open a terminal (Ctrl+Alt+T) and run the following commands in order to source your catkin workspace and launch the color camera node that publishes images acquired from the basler ace acA2500-60uc camera:
 
     source ~/catkin_ws/devel/setup.bash
-
-Now, in the same terminal, you can launch a camera node. To launch a camera node run:
-
     roslaunch pylon_camera color_camera_node.launch
     
-This will launch a node that publishes images acquired from the basler ace acA2500-60uc camera.
-
-If you want to publish images from the basler ace acA640-750um camera you will have to open another terminal, source your catkin workspace and the last step should be:
-
-    roslaunch pylon_camera BW_camera_node.launch
+Remark: When you are finished with the operation, press Ctrl+C in order to terminate the image acquisition.
     
-All the data is logged in the rosbag format. If you are familiar with that you can log the data using: 
+In order to record the camera images for post processing, in a new terminal issue
+    
+    rosbag record color_camera_node/image_raw/compressed
 
-    rosbag record <topic name>
+## BASLER ACE acA640-750um color camera setup
 
-where topic name can be for example "color_camera_node/image_raw"; if you want to log raw images from the acA2500-60uc camera. 
+* Verify that the LED on the back of the Basler camera is green.
+* To publish images from the basler ace acA640-750um camera you will have to open another terminal, and execute:
 
-If you have no idea what rosbags are, you can just run the script which will log stuff automatically for you (in new terminal). You can run it using:
+    source ~/catkin_ws/devel/setup.bash
+    roslaunch pylon_camera BW_camera_node.launch
 
-    source ~catin_ws/src/pylon_camera/scripts/log_camera_topics.bash
+Remark: When you are finished with the operation, press Ctrl+C in order to terminate the image acquisition.
 
+The data is logged in the rosbag format by issuing
+
+    rosbag record BW_camera_node/image_raw/compressed
+    
+Alternative logging method: If you have no idea what rosbags are, you can just run the script which will log stuff automatically for you (in new terminal).
+
+    source ~/catin_ws/src/pylon_camera/scripts/log_camera_topics.bash
+    
 This script will log messages from all the cameras that are connected to the USB hub. You can stop it using (Ctrl+C).
 
 ## Configuration of LCM in OS
