@@ -10,10 +10,7 @@ import java.util.Objects;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
-import ch.ethz.idsc.retina.gui.gokart.ControllerInfoPublish;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -24,17 +21,19 @@ import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
-enum GokartSteerLogExport {
+// TODO make this a function
+enum GokartGpsPoseExport {
   ;
   public static void main(String[] args) throws IOException {
     File file = new File("C:\\Users\\maste_000\\Documents\\ETH\\LogFilesKart\\1218", "20171218T121006_9b56b71b.lcm.00.extract");
+    file = new File("/home/datahaki", "20180108T162528_5f742add.lcm.00.extract");
     Log log = new Log(file.toString(), "r");
     long countGet = 0;
     long countPut = 0;
     Tensor tableGet = Tensors.empty();
     Tensor tablePut = Tensors.empty();
     tableGet.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("PosX"), StringScalar.of("PosY")));
-    tablePut.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("GpsX"),StringScalar.of("GpsY")));
+    tablePut.append(Tensors.of(StringScalar.of("time_us"), StringScalar.of("GpsX"), StringScalar.of("GpsY")));
     Long tic = null;
     try {
       while (true) {
@@ -54,8 +53,8 @@ enum GokartSteerLogExport {
           ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
           byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
           VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
-         Tensor coord = WGS84toCH1903LV03Plus.transform(velodynePosEvent.gpsX(), velodynePosEvent.gpsY());
-          tablePut.append(Tensors.vector(event.utime - tic, coord.Get(0).number(),coord.Get(1).number()));
+          Tensor coord = WGS84toCH1903LV03Plus.transform(velodynePosEvent.gpsX(), velodynePosEvent.gpsY());
+          tablePut.append(Tensors.vector(event.utime - tic, coord.Get(0).number(), coord.Get(1).number()));
           ++countPut;
         }
       }
@@ -66,8 +65,9 @@ enum GokartSteerLogExport {
     System.out.println("" + countPut);
     GlobalAssert.that(ArrayQ.of(tableGet));
     GlobalAssert.that(ArrayQ.of(tablePut));
-    File dir = new File("C:\\Users\\maste_000\\Documents\\MATLAB\\GokartPosGps");
-    Export.of(new File(dir,"Pos.csv"), tableGet);
-    Export.of(new File(dir,"Gps.csv"), tablePut);
+    File dir = UserHome.file("GokartPosGps");
+    dir.mkdir();
+    Export.of(new File(dir, "Pos.csv"), tableGet);
+    Export.of(new File(dir, "Gps.csv"), tablePut);
   }
 }
