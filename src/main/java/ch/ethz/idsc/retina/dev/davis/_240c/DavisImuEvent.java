@@ -1,10 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 
 /** 7 different values: 3 axes for accel, temperature, and 3 axes */
-public class DavisImuEvent implements DavisEvent {
+public class DavisImuEvent implements DavisEvent, Serializable {
   public final int time;
   /** index ranges from [0, 1, ..., 6] */
   public final int index;
