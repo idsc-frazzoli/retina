@@ -1,9 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 
-public class DavisDvsEvent implements DavisEvent {
+public class DavisDvsEvent implements DavisEvent, Serializable {
   /** time in [us] */
   public final int time;
   /** left-right pixel location, x=0 corresponds to far left */

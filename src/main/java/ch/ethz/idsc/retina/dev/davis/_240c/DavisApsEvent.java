@@ -1,9 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis._240c;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.dev.davis.DavisEvent;
 
-public class DavisApsEvent implements DavisEvent {
+public class DavisApsEvent implements DavisEvent, Serializable {
   /** time from the chip hardware */
   public final int time;
   /** x ranges from [0, 1, ..., 239] */
