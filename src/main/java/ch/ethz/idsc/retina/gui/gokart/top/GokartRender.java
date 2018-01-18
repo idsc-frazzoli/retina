@@ -28,7 +28,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class GokartRender extends AbstractGokartRender {
   private final VehicleModel vehicleModel;
@@ -83,8 +82,9 @@ public class GokartRender extends AbstractGokartRender {
     // rear wheels
     if (Objects.nonNull(rimoGetEvent)) {
       Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair().unmodifiable();
-      graphics.setColor(Color.BLACK);
-      graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
+      // TODO
+      // graphics.setColor(Color.BLACK);
+      // graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
       // ---
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);

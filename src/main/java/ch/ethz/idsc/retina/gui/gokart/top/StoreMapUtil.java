@@ -9,8 +9,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -75,5 +77,9 @@ public enum StoreMapUtil {
     graphics.setColor(Color.WHITE);
     for (Tensor pnts : list)
       graphics.draw(geometricLayer.toPath2D(pnts));
+  }
+
+  public static ImageRegion getImageRegion() throws Exception {
+    return ImageRegions.loadFromLocalFile(FILE, range(), false);
   }
 }

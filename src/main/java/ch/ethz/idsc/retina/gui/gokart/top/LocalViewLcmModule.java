@@ -5,7 +5,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseLocal;
 
-public class LocalViewLcmModule extends ViewLcmModule {
+@Deprecated
+class LocalViewLcmModule extends ViewLcmModule {
   public LocalViewLcmModule() {
     setGokartPoseInterface(GokartPoseLocal.INSTANCE);
   }

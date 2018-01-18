@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.demo.jph;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
@@ -20,10 +21,11 @@ enum GokartLcmLogPlayer {
     // cfg.logFile = "/home/datahaki/20171207T134930_59f9bc78.lcm.00_part1";
     // cfg.logFile = "/media/datahaki/backup/gokartlogs/20171207/20171207T105632_59f9bc78.lcm.00";
     // cfg.logFile = "/home/datahaki/20171207T105632_59f9bc78.lcm.00_part1";
-    File file = new File("/home/datahaki", "20171213T164051_55710a6b.lcm.00");
-    file = new File("/media/datahaki/backup/gokartlogs/20180108", "20180108T165210_5f742add.lcm.00");
-    file = new File("/media/datahaki/mobile/temp", "20180108T162528_5f742add.lcm.00");
+    File file = new File("/home/datahaki", "20171207T105632_59f9bc78.lcm.00_part1");
+    // file = new File("/media/datahaki/backup/gokartlogs/20180108", "20171207T105632_59f9bc78.lcm.00_part1");
+    // file = new File("/media/datahaki/mobile/temp", "20180108T162528_5f742add.lcm.00");
     // File file = new File("/home/datahaki", "20171218T130515_4794c081.lcm.00");
+    file = UserHome.file("20180108T162528_5f742add.lcm.00.extract");
     cfg.logFile = file.toString();
     cfg.speed = RationalScalar.of(1, 1);
     LogPlayer.create(cfg);
