@@ -50,7 +50,7 @@ our code builds upon the
 
 ## Velodyne VLP-16
 
-* 3D-point cloud visualization
+* point cloud visualization and localization with lidar [video](https://www.youtube.com/watch?v=pykecjwixgg)
 
 ## Velodyne HDL-32E
 
