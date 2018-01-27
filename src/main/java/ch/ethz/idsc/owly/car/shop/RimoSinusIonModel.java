@@ -17,7 +17,6 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -142,10 +141,8 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public CarControl createControl(Tensor u) {
-    if (!Clip.absoluteOne().of(u.Get(0)).equals(u.Get(0)))
-      throw TensorRuntimeException.of(u.Get(0));
-    if (!Clip.unit().of(u.Get(3)).equals(u.Get(3)))
-      throw TensorRuntimeException.of(u.Get(3));
+    Clip.absoluteOne().isInsideElseThrow(u.Get(0));
+    Clip.unit().isInsideElseThrow(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(MAX_DELTA);
     Scalar brake = u.Get(1).multiply(MAX_PRESS);

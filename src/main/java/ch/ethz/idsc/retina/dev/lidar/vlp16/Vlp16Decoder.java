@@ -58,7 +58,10 @@ public class Vlp16Decoder implements VelodyneDecoder {
       // 57 == 0x39 == Dual return
       type = byteBuffer.get();
       byte value = byteBuffer.get(); // 34 == 0x22 == VLP-16
-      GlobalAssert.that(value == 0x22);
+      if (value != 0x22) {
+        System.out.println(value);
+        GlobalAssert.that(value == 0x22);
+      }
       rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     if (type != DUAL) { // SINGLE 24 blocks of firing data

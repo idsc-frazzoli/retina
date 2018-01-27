@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -93,10 +92,8 @@ public class TsiotrasModel extends DefaultCarModel {
   @SuppressWarnings("unused")
   @Override
   public CarControl createControl(Tensor u) {
-    if (!Clip.absoluteOne().of(u.Get(0)).equals(u.Get(0)))
-      throw TensorRuntimeException.of(u.Get(0));
-    if (!Clip.unit().of(u.Get(3)).equals(u.Get(3)))
-      throw TensorRuntimeException.of(u.Get(3));
+    Clip.absoluteOne().isInsideElseThrow(u.Get(0));
+    Clip.unit().isInsideElseThrow(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(maxDelta).multiply(carSteering.factor);
     Scalar brake = u.Get(1).multiply(maxPress);
