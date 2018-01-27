@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.demo.jph;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -13,15 +12,16 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.lcm.OfflineLogListener;
+import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Increment;
-import idsc.BinaryBlob;
-import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
 class RotationalHistogram implements LidarRayDataListener {
@@ -121,10 +121,7 @@ class PlanarHistogram implements LidarRayDataListener {
 enum GokartRayLogExport {
   ;
   public static void main(String[] args) throws IOException {
-    File file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T105400_9e1d3699.lcm.00");
-    Log log = new Log(file.toString(), "r");
     final String channel = VelodyneLcmChannels.ray(VelodyneModel.VLP16, "center");
-    Long tic = null;
     Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
     RotationalHistogram listener = new RotationalHistogram();
     vlp16Decoder.addRayListener(listener);
@@ -132,26 +129,15 @@ enum GokartRayLogExport {
     vlp16Decoder.addRayListener(temporalHistogram);
     PlanarHistogram planarHistogram = new PlanarHistogram();
     vlp16Decoder.addRayListener(planarHistogram);
-    int count = 0;
-    try {
-      // while (true) {
-      while (++count < 10000000) {
-        Event event = log.readNext();
-        // System.out.println("---");
-        if (tic == null)
-          tic = event.utime;
-        if (event.channel.equals(channel)) {
-          // TODO check all post processing for this
-          BinaryBlob binaryBlob = new BinaryBlob(event.data);
-          // System.out.println("length=" + binaryBlob.data.length);
-          ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data); // length == 1218
-          byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    OfflineLogListener offlineLogListener = new OfflineLogListener() {
+      @Override
+      public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
+        if (event.channel.equals(channel))
           vlp16Decoder.lasers(byteBuffer);
-        }
       }
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+    };
+    File file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T105400_9e1d3699.lcm.00");
+    OfflineLogPlayer.process(file, offlineLogListener);
     Put.of(UserHome.file("ray_angles.wmt"), listener.histogram);
     Put.of(UserHome.file("ray_times.wmt"), temporalHistogram.histogram);
     Put.of(UserHome.file("ray_planar.wmt"), planarHistogram.compile());

@@ -16,6 +16,8 @@ import lcm.logging.Log.Event;
 
 public enum OfflineLogPlayer {
   ;
+  private static final String END_OF_FILE = "EOF";
+
   public static void process(File file, OfflineLogListener offlineLogListener) throws IOException {
     Log log = new Log(file.toString(), "r");
     Long tic = null;
@@ -31,7 +33,7 @@ public enum OfflineLogPlayer {
         offlineLogListener.event(UnitSystem.SI().apply(scalar), event, byteBuffer);
       }
     } catch (Exception exception) {
-      if (!"EOF".equals(exception.getMessage()))
+      if (!END_OF_FILE.equals(exception.getMessage()))
         throw exception;
     }
   }

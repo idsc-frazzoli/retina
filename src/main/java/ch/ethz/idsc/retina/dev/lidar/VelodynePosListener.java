@@ -2,5 +2,5 @@
 package ch.ethz.idsc.retina.dev.lidar;
 
 public interface VelodynePosListener {
-  void velodynePos(VelodynePosEvent basicPosEvent);
+  void velodynePos(VelodynePosEvent velodynePosEvent);
 }
