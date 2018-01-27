@@ -24,4 +24,20 @@ public class LinmotStateVariableTest extends TestCase {
     // System.out.println(lsv.substate);
     assertEquals(lsv.linmotStateVarMain, LinmotStateVarMain.ERROR);
   }
+
+  public void testFailure2() {
+    LinmotStateVariable lsv = new LinmotStateVariable((short) 512);
+    // System.out.println(lsv.linmotStateVarMain);
+    // System.out.println(lsv.substate);
+    assertEquals(lsv.linmotStateVarMain, LinmotStateVarMain.READY_TO_SWITCH_ON);
+    assertEquals(lsv.substate, 0);
+  }
+
+  public void testFailure3() {
+    LinmotStateVariable lsv = new LinmotStateVariable((short) 2176);
+    // System.out.println(lsv.linmotStateVarMain);
+    // System.out.println(lsv.substate);
+    assertEquals(lsv.linmotStateVarMain, LinmotStateVarMain.OPERATION_ENABLED);
+    assertEquals(lsv.substate, 128);
+  }
 }

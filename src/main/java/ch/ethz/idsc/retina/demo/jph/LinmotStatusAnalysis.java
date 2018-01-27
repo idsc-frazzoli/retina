@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -55,14 +56,20 @@ class LinmotStatusTracker implements OfflineLogListener {
  * TODO the circumstances still have to be narrowed down */
 enum LinmotStatusAnalysis {
   ;
+  public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+
   public static void main(String[] args) throws IOException {
-    File file;
-    file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T105400_9e1d3699.lcm.00");
-    file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00"); // <- status goes to false!
-    LinmotStatusTracker linmotStatusTracker = new LinmotStatusTracker();
-    OfflineLogPlayer.process(file, linmotStatusTracker);
-    System.out.println(linmotStatusTracker.last.number().doubleValue());
-    System.out.println(linmotStatusTracker.count);
-    Export.of(UserHome.file("linmot_fail.csv"), linmotStatusTracker.getTensor());
+    for (DubendorfHangarLog dhl : DubendorfHangarLog.values()) {
+      File file = dhl.file(LOG_ROOT);
+      if (file.isFile()) {
+        System.out.println(dhl);
+        // new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00"); // <- status goes to false!
+        LinmotStatusTracker linmotStatusTracker = new LinmotStatusTracker();
+        OfflineLogPlayer.process(file, linmotStatusTracker);
+        System.out.println(linmotStatusTracker.last.number().doubleValue());
+        System.out.println(linmotStatusTracker.count);
+        Export.of(UserHome.file(file.getName() + ".csv"), linmotStatusTracker.getTensor());
+      }
+    }
   }
 }
