@@ -5,16 +5,23 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
 import lcm.logging.Log.Event;
 
 class LinmotStatusTracker implements OfflineLogListener {
   boolean status = false;
   Scalar last = RealScalar.ZERO;
+  int count = 0;
+  TensorBuilder tensorBuilder = new TensorBuilder();
 
   @Override
   public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
@@ -25,8 +32,22 @@ class LinmotStatusTracker implements OfflineLogListener {
         status = linmotGetEvent.isOperational();
         System.out.println(time.number().doubleValue() + " " + status);
       }
+      tensorBuilder.append(Tensors.vector( //
+          time.number().doubleValue(), //
+          linmotGetEvent.status_word, //
+          linmotGetEvent.state_variable, //
+          linmotGetEvent.actual_position, //
+          linmotGetEvent.demand_position, //
+          linmotGetEvent.getWindingTemperature1().number().doubleValue(), //
+          linmotGetEvent.getWindingTemperature2().number().doubleValue() //
+      ));
+      ++count;
+      last = time;
     }
-    last = time;
+  }
+
+  public Tensor getTensor() {
+    return tensorBuilder.getTensor();
   }
 }
 
@@ -38,8 +59,10 @@ enum LinmotStatusAnalysis {
     File file;
     file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T105400_9e1d3699.lcm.00");
     file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00"); // <- status goes to false!
-    LinmotStatusTracker offlineLogListener = new LinmotStatusTracker();
-    OfflineLogPlayer.process(file, offlineLogListener);
-    System.out.println(offlineLogListener.last.number().doubleValue());
+    LinmotStatusTracker linmotStatusTracker = new LinmotStatusTracker();
+    OfflineLogPlayer.process(file, linmotStatusTracker);
+    System.out.println(linmotStatusTracker.last.number().doubleValue());
+    System.out.println(linmotStatusTracker.count);
+    Export.of(UserHome.file("linmot_fail.csv"), linmotStatusTracker.getTensor());
   }
 }

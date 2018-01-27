@@ -1,0 +1,29 @@
+// code by jph
+package ch.ethz.idsc.retina.dev.linmot;
+
+import java.util.Set;
+
+import junit.framework.TestCase;
+
+public class LinmotStatusWordBitTest extends TestCase {
+  public void testStage1() {
+    Set<LinmotStatusWordBit> set = LinmotStatusWordBit.from((short) 19511);
+    // System.out.println(set);
+    assertEquals(set.toString(), //
+        "[OPERATION_ENABLED, SWITCH_ON, OPERATION, VOLTAGE, QUICK_STEP, IN_POSITION, HOMED, IN_RANGE1]");
+  }
+
+  public void testStage2() { // warning
+    Set<LinmotStatusWordBit> set = LinmotStatusWordBit.from((short) 19639);
+    // System.out.println(set);
+    assertEquals(set.toString(), //
+        "[OPERATION_ENABLED, SWITCH_ON, OPERATION, VOLTAGE, QUICK_STEP, WARNING, IN_POSITION, HOMED, IN_RANGE1]");
+  }
+
+  public void testStage3() { // warning
+    Set<LinmotStatusWordBit> set = LinmotStatusWordBit.from((short) 18682);
+    // System.out.println(set);
+    assertEquals(set.toString(), //
+        "[SWITCH_ON, ERROR, VOLTAGE, QUICK_STEP, SWITCH_ON_LOCK, WARNING, HOMED, IN_RANGE1]");
+  }
+}
