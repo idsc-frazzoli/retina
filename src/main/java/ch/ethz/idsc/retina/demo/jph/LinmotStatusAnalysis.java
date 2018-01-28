@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -27,7 +28,7 @@ class LinmotStatusTracker implements OfflineLogListener {
   @Override
   public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
     // System.out.println(event.channel);
-    if (event.channel.equals("autobox.linmot.get")) {
+    if (event.channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
       if (status != linmotGetEvent.isOperational()) {
         status = linmotGetEvent.isOperational();

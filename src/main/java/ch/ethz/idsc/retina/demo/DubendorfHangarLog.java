@@ -17,4 +17,12 @@ public enum DubendorfHangarLog {
   public File file(File directory) {
     return new File(directory, name().substring(1) + ".lcm.00");
   }
+
+  /** Example: "20180112T105400"
+   * 
+   * @return file name without commit id and extension */
+  public String title() {
+    int index = name().indexOf('_', 1);
+    return name().substring(1, index);
+  }
 }

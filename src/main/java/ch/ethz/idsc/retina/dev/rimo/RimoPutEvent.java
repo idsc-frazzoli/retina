@@ -4,7 +4,10 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
+/** for post processing @see RimoPutHelper */
 public class RimoPutEvent extends DataEvent {
   /* package */ static final int LENGTH = 2 * RimoPutTire.LENGTH;
   /** instance of command to apply zero torque to the rear wheels */
@@ -28,5 +31,12 @@ public class RimoPutEvent extends DataEvent {
   @Override // from DataEvent
   protected int length() {
     return LENGTH;
+  }
+
+  /** @return torque of left and right motor in unit "ARMS" with sign convention around Y-axis */
+  public Tensor getTorque_Y_pair() {
+    return Tensors.of( //
+        putL.getTorque().negate(), //
+        putR.getTorque());
   }
 }

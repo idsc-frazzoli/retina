@@ -8,7 +8,9 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear wheel
@@ -20,6 +22,7 @@ public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
+  public static final ScalarUnaryOperator MAGNITUDE_RATE = QuantityMagnitude.singleton(UNIT_RATE);
   /** m */
   public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
