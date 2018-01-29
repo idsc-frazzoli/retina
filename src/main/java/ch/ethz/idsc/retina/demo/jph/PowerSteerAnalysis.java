@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -56,6 +57,8 @@ class PowerSteerTracker implements OfflineLogListener {
         time_next = time.add(DELTA);
         tensorBuilder.flatten( //
             time.map(Magnitude.SECOND), //
+            DoubleScalar.of(sge.getGcpRelRckPos()), //
+            spe.getTorque().map(SteerPutEvent.RTORQUE), //
             mge.getSteerBatteryVoltage().map(Magnitude.VOLT) //
         );
       }
@@ -78,7 +81,7 @@ enum PowerSteerAnalysis {
         Export.of(UserHome.file(dhl.title() + ".csv"), table.map(N.DOUBLE));
       } else
         System.err.println(dhl);
-      break;
+      // break;
     }
   }
 }

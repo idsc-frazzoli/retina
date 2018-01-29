@@ -84,8 +84,8 @@ class ResampledLidarRender extends LidarRender {
           // System.out.println("Quality=" + quality);
           // System.out.println(Pretty.of(delta.map(Round._4)));
           Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
-          poseDelta.set(s -> Quantity.of(s.Get(), "m"), 0, 2);
-          poseDelta.set(s -> Quantity.of(s.Get(), "m"), 1, 2);
+          poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 0, 2);
+          poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 1, 2);
           // System.out.println(Pretty.of(poseDelta.map(Round._4)));
           Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
           Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);

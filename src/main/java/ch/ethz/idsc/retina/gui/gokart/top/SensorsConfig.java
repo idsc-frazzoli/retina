@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -19,7 +20,7 @@ public class SensorsConfig implements Serializable {
    * 1.18[m] from ground to platform top
    * 0.006[m] TODO DUEBENDORF width of heat sink
    * 0.0378[m] == 37.8[mm] from heat sink to height of optical center */
-  public Tensor vlp16Height = Quantity.of(1.18 + 0.006 + 0.0378, "m");
+  public Tensor vlp16Height = Quantity.of(1.18 + 0.006 + 0.0378, SI.METER);
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);

@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LinmotGetEvent extends DataEvent {
   /** degree celsius */
   public static final Unit CELSIUS = Unit.of("degC");
-  public static final Unit METER = Unit.of("m");
   /** 16 bytes */
   /* package */ static final int LENGTH = 16;
   /** conversion factor 0.1 taken from data sheet */
@@ -91,7 +91,7 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   public Scalar getActualPosition() {
-    return Quantity.of(actual_position * GET_POSITION_TO_METER, METER);
+    return Quantity.of(actual_position * GET_POSITION_TO_METER, SI.METER);
   }
 
   /** @return demand position minus actual position */
