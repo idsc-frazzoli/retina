@@ -22,7 +22,11 @@ public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
+  public static final Unit VOLT = Unit.of("V");
+  public static final Unit ARMS = Unit.of("ARMS");
   public static final ScalarUnaryOperator MAGNITUDE_RATE = QuantityMagnitude.singleton(UNIT_RATE);
+  public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(ARMS);
+  public static final ScalarUnaryOperator MAGNITUDE_VOLT = QuantityMagnitude.singleton(VOLT);
   /** m */
   public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
@@ -82,8 +86,12 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(actual_rate * sign * MIN_TO_S, UNIT_RATE);
   }
 
+  public Scalar getRmsMotorCurrent() {
+    return Quantity.of(rms_motor_current, ARMS);
+  }
+
   public Scalar getBusVoltage() {
-    return Quantity.of(dc_bus_voltage, "V");
+    return Quantity.of(dc_bus_voltage, VOLT);
   }
 
   /** @return 0[degC] */
