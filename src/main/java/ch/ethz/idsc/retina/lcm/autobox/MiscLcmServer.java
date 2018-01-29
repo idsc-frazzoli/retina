@@ -10,8 +10,11 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 public enum MiscLcmServer implements MiscGetListener, MiscPutListener {
   INSTANCE;
   // ---
-  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher("autobox.misc.get");
-  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher("autobox.misc.put");
+  public static final String CHANNEL_GET = "autobox.misc.get";
+  public static final String CHANNEL_PUT = "autobox.misc.put";
+  // ---
+  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher(CHANNEL_GET);
+  private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher(CHANNEL_PUT);
 
   @Override
   public void getEvent(MiscGetEvent miscGetEvent) {

@@ -10,10 +10,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 
 /** class design is similar to {@link GokartStatusEvent} */
 public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   static final int LENGTH = 8 * 3 + 4;
+  private static final Unit METER = Unit.of("m");
   // ---
   // TODO isGlobal() info and getQuality() -> 0...1 of tracking
   private final double x;
@@ -44,7 +46,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return Tensors.of(Quantity.of(x, "m"), Quantity.of(y, "m"), DoubleScalar.of(angle));
+    return Tensors.of(Quantity.of(x, METER), Quantity.of(y, METER), DoubleScalar.of(angle));
   }
 
   public Scalar getQuality() {

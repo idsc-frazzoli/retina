@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -138,7 +139,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /** @return period in unit "s" */
   public final Scalar getPutPeriod() {
-    return Quantity.of(getPutPeriod_ms() * 1E-3, "s");
+    return Quantity.of(getPutPeriod_ms() * 1E-3, SI.SECOND);
   }
 
   /***************************************************/

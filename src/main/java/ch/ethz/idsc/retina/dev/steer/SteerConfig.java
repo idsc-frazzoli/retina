@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.steer;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -18,8 +19,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class SteerConfig implements Serializable {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
   /***************************************************/
-  public Scalar voltageLo = Quantity.of(10.8, "V"); // 10.8[V] for 1[s] confirmed with mac
-  public Scalar voltageHi = Quantity.of(13.0, "V");
+  public Scalar voltageLo = Quantity.of(10.8, SI.VOLT); // 10.8[V] for 1[s] confirmed with mac
+  public Scalar voltageHi = Quantity.of(13.0, SI.VOLT);
   // ---
   public Scalar calibration = Quantity.of(1.5, "SCT");
   public Scalar Ki = Quantity.of(1.95, "SCE^-1*SCT*s^-1");

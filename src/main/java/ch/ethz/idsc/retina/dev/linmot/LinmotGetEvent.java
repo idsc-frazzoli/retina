@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LinmotGetEvent extends DataEvent {
   /** degree celsius */
   public static final Unit CELSIUS = Unit.of("degC");
+  public static final Unit METER = Unit.of("m");
   /** 16 bytes */
   /* package */ static final int LENGTH = 16;
   /** conversion factor 0.1 taken from data sheet */
@@ -90,7 +91,7 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   public Scalar getActualPosition() {
-    return Quantity.of(actual_position * GET_POSITION_TO_METER, "m");
+    return Quantity.of(actual_position * GET_POSITION_TO_METER, METER);
   }
 
   /** @return demand position minus actual position */

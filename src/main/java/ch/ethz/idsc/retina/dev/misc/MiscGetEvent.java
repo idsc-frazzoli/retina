@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.misc;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -43,7 +44,7 @@ public class MiscGetEvent extends DataEvent {
 
   /** @return the voltage of the front battery in unit volts "V" */
   public Scalar getSteerBatteryVoltage() {
-    return Quantity.of(batteryAdc * CONVERSION_V, "V");
+    return Quantity.of(batteryAdc * CONVERSION_V, SI.VOLT);
   }
 
   @Override // from DataEvent

@@ -21,6 +21,7 @@ import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -95,7 +96,7 @@ class ResampledLidarRender extends LidarRender {
           graphics.setColor(Color.GRAY);
           graphics.drawString("points=" + sum, 0, 30);
           graphics.drawString("quality=" + ratio.map(Round._2), 0, 50);
-          graphics.drawString("duration=" + Quantity.of(duration, "s").map(Round._4), 0, 70);
+          graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
         }
       // else
       // System.err.println("insufficient: " + sum);

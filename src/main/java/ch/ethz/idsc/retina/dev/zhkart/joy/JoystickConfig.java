@@ -4,12 +4,12 @@ package ch.ethz.idsc.retina.dev.zhkart.joy;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
@@ -25,11 +25,11 @@ public class JoystickConfig implements Serializable {
    * by itself if autonomy determines safety issue */
   public Scalar deadManRate = Quantity.of(4.0, "rad*s^-1");
   /** period during which joystick is passive after which an action may be taken */
-  public Scalar deadManPeriod = Quantity.of(2.0, "s");
+  public Scalar deadManPeriod = Quantity.of(2.0, SI.SECOND);
   /** duration of brake */
-  public Scalar brakeDuration = Quantity.of(2.2, "s");
+  public Scalar brakeDuration = Quantity.of(2.2, SI.SECOND);
   /***************************************************/
-  private static final ScalarUnaryOperator TO_SECONDS = QuantityMagnitude.SI().in(Unit.of("s"));
+  private static final ScalarUnaryOperator TO_SECONDS = QuantityMagnitude.SI().in(SI.SECOND);
 
   public Scalar deadManPeriodSeconds() {
     return TO_SECONDS.apply(deadManPeriod);
