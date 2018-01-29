@@ -12,10 +12,21 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if either of the conditions was true
  * 1) linmot messages have not been received for a timeout period, e.g. 50[ms]
- * 2) linmot status is "not-operational"
+ * 2) linmot status is "not-operational", see {@link LinmotGetEvent#isOperational()}
  * 
- * module needs to be started after linmot calibration procedure otherwise
- * the linmot will not read "operational" */
+ * <p>The module needs to be started after linmot calibration procedure otherwise
+ * the linmot will not read "operational"
+ * 
+ * <p>Important: During operation of the gokart, it was observed that the linmot
+ * enters the not-operational state without apparent reason typically 10-20 minutes
+ * into the trial. Subsequent to that event, the {@link LinmotEmergencyModule}
+ * prevents the gokart from further accelerating. In one instance, the linmot
+ * stopped sending status messages altogether (20ms after failure!).
+ * 
+ * Temporary solution: do not activate LinmotEmergencyModule, but beware that
+ * braking by joystick may not be operational. Deceleration can still be accomplished by
+ * 1) applying opposite motor torque, and
+ * 2) pressing the brake by foot */
 public final class LinmotEmergencyModule extends EmergencyModule<RimoPutEvent> implements LinmotGetListener {
   /** the micro-autobox sends messages at 250[Hz], i.e. at intervals of 4[ms] */
   private static final long LINMOT_TIMEOUT_MS = 40;

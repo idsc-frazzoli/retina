@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 class ParamContainer {
-  public static ParamContainer INSTANCE = TensorProperties.insert( //
+  public static final ParamContainer INSTANCE = TensorProperties.insert( //
       ResourceData.properties("/properties/ParamContainer.properties"), //
       new ParamContainer());
   // ---

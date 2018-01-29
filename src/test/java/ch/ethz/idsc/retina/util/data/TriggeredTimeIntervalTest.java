@@ -17,5 +17,7 @@ public class TriggeredTimeIntervalTest extends TestCase {
     assertTrue(triggeredInterval.isActive());
     Thread.sleep(50);
     assertFalse(triggeredInterval.isActive());
+    triggeredInterval.panic();
+    assertFalse(triggeredInterval.isActive());
   }
 }
