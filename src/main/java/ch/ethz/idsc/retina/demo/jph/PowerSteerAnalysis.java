@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.Scalar;
@@ -23,7 +24,6 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.N;
 import lcm.logging.Log.Event;
 
 class PowerSteerTracker implements OfflineLogListener {
@@ -77,7 +77,7 @@ enum PowerSteerAnalysis {
         PowerSteerTracker powerSteerTracker = new PowerSteerTracker(Quantity.of(0.1, SI.SECOND));
         OfflineLogPlayer.process(file, powerSteerTracker);
         Tensor table = powerSteerTracker.tensorBuilder.getTensor();
-        Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(N.DOUBLE));
+        Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(NSingle.FUNCTION));
       } else
         System.err.println(dubendorfHangarLog);
     }

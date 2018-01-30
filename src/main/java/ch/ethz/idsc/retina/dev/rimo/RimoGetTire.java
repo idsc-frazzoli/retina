@@ -8,6 +8,8 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -119,5 +121,16 @@ public class RimoGetTire implements Serializable {
 
   public int getErrorCodeMasked() {
     return error_code & 0x00ffffff;
+  }
+
+  public Tensor vector_raw() {
+    return Tensors.vector( //
+        status_word, //
+        actual_rate * sign, // Attention: sign correction instead of raw value
+        rms_motor_current, //
+        dc_bus_voltage, //
+        error_code, //
+        temperature_motor, //
+        temperature_heatsink);
   }
 }

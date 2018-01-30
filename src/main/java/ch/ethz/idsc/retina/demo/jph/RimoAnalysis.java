@@ -20,6 +20,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.Scalar;
@@ -27,11 +28,10 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.N;
 import lcm.logging.Log.Event;
 
 class RimoTracker implements OfflineLogListener {
-  private final Scalar DELTA;
+  private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
@@ -39,8 +39,8 @@ class RimoTracker implements OfflineLogListener {
   private GokartStatusEvent gse;
   TensorBuilder tensorBuilder = new TensorBuilder();
 
-  public RimoTracker(Scalar DELTA) {
-    this.DELTA = DELTA;
+  public RimoTracker(Scalar delta) {
+    this.delta = delta;
   }
 
   @Override
@@ -58,7 +58,7 @@ class RimoTracker implements OfflineLogListener {
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated()) {
         // System.out.println("export " + time.number().doubleValue());
-        time_next = time.add(DELTA);
+        time_next = time.add(delta);
         tensorBuilder.flatten( //
             time.map(Magnitude.SECOND), //
             rge.getAngularRate_Y_pair().map(RimoGetTire.MAGNITUDE_RATE), // rad/s
@@ -81,7 +81,7 @@ enum RimoAnalysis {
         RimoTracker rimoTracker = new RimoTracker(Quantity.of(0.1, SI.SECOND));
         OfflineLogPlayer.process(file, rimoTracker);
         Tensor table = rimoTracker.tensorBuilder.getTensor();
-        Export.of(UserHome.file(dhl.title() + ".csv"), table.map(N.DOUBLE));
+        Export.of(UserHome.file(dhl.title() + ".csv"), table.map(NSingle.FUNCTION));
       } else
         System.err.println(dhl);
       // break;
