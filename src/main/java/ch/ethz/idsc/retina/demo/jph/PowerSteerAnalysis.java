@@ -18,7 +18,6 @@ import ch.ethz.idsc.retina.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -28,7 +27,7 @@ import ch.ethz.idsc.tensor.sca.N;
 import lcm.logging.Log.Event;
 
 class PowerSteerTracker implements OfflineLogListener {
-  private final Scalar DELTA;
+  private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private SteerGetEvent sge;
@@ -36,8 +35,8 @@ class PowerSteerTracker implements OfflineLogListener {
   private MiscGetEvent mge;
   TensorBuilder tensorBuilder = new TensorBuilder();
 
-  public PowerSteerTracker(Scalar DELTA) {
-    this.DELTA = DELTA;
+  public PowerSteerTracker(Scalar delta) {
+    this.delta = delta;
   }
 
   @Override
@@ -54,11 +53,11 @@ class PowerSteerTracker implements OfflineLogListener {
     }
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(sge) && Objects.nonNull(spe) && Objects.nonNull(mge)) {
-        time_next = time.add(DELTA);
+        time_next = time.add(delta);
         tensorBuilder.flatten( //
             time.map(Magnitude.SECOND), //
-            DoubleScalar.of(sge.getGcpRelRckPos()), //
-            spe.getTorque().map(SteerPutEvent.RTORQUE), //
+            sge.values_raw(), //
+            spe.values_raw(), //
             mge.getSteerBatteryVoltage().map(Magnitude.VOLT) //
         );
       }
@@ -71,17 +70,16 @@ enum PowerSteerAnalysis {
   public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
 
   public static void main(String[] args) throws IOException {
-    for (DubendorfHangarLog dhl : DubendorfHangarLog.values()) {
-      File file = dhl.file(LOG_ROOT);
+    for (DubendorfHangarLog dubendorfHangarLog : DubendorfHangarLog.values()) {
+      File file = dubendorfHangarLog.file(LOG_ROOT);
       if (file.isFile()) {
-        System.out.println(dhl);
+        System.out.println(dubendorfHangarLog);
         PowerSteerTracker powerSteerTracker = new PowerSteerTracker(Quantity.of(0.1, SI.SECOND));
         OfflineLogPlayer.process(file, powerSteerTracker);
         Tensor table = powerSteerTracker.tensorBuilder.getTensor();
-        Export.of(UserHome.file(dhl.title() + ".csv"), table.map(N.DOUBLE));
+        Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(N.DOUBLE));
       } else
-        System.err.println(dhl);
-      // break;
+        System.err.println(dubendorfHangarLog);
     }
   }
 }

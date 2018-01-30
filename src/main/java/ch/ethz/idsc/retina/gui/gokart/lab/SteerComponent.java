@@ -131,7 +131,11 @@ import ch.ethz.idsc.tensor.Scalar;
     jTextField[3].setText("" + steerGetEvent.tsuTrq_Qual);
     jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
-    jTextField[6].setText("" + steerGetEvent.estMotTrq_Qual);
+    {
+      boolean isActive = steerGetEvent.isActive();
+      jTextField[6].setText("" + isActive);
+      jTextField[6].setBackground(isActive ? Color.GREEN : Color.YELLOW);
+    }
     jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos());
     jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
     jTextField[9].setText("" + steerGetEvent.gearRat);
