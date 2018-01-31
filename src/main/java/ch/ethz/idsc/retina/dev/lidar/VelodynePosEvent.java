@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.lidar;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /** NMEA examples from VLP-16
  * $GPRMC,214431,A,3707.7937,N,12139.2432,W,000.0,325.8,230715,013.8,E,D*0F
@@ -52,14 +52,13 @@ public class VelodynePosEvent {
   }
 
   private static final double TO_DEGREE = 1E-2;
-  private static final Unit UNIT_DEGREE = Unit.of("deg");
 
   /** E W
    * 
    * @return */
   public Scalar gpsX() {
     double value = Double.parseDouble(nmea.substring(28, 28 + 10)) * TO_DEGREE;
-    Scalar scalar = Quantity.of(value, UNIT_DEGREE);
+    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(39);
     return id == 'E' ? scalar : scalar.negate();
   }
@@ -69,7 +68,7 @@ public class VelodynePosEvent {
    * @return */
   public Scalar gpsY() {
     double value = Double.parseDouble(nmea.substring(16, 16 + 9)) * TO_DEGREE;
-    Scalar scalar = Quantity.of(value, UNIT_DEGREE);
+    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(25 + 1);
     return id == 'N' ? scalar : scalar.negate();
   }

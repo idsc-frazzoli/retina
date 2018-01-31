@@ -21,11 +21,11 @@
 package ch.ethz.idsc.retina.util.gps;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /** Transforms coordinates from the new Swiss-Grid coordinate system to WGS84.
  *
@@ -33,8 +33,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
  * @author mrieser */
 public enum CH1903LV03PlustoWGS84 {
   ;
-  private static final Unit UNIT_DEGREE = Unit.of("deg");
-
   public static Tensor transform(Scalar coord_getX, Scalar coord_getY) {
     return transform( //
         Magnitude.METER.apply(coord_getX).number().doubleValue(), //
@@ -59,7 +57,7 @@ public enum CH1903LV03PlustoWGS84 {
         - 0.0447 * Math.pow(yNorm, 2) * xNorm //
         - 0.0140 * Math.pow(xNorm, 3);
     return Tensors.of( //
-        Quantity.of(longitude10000Sec * 100.0 / 36.0, UNIT_DEGREE), //
-        Quantity.of(latitude10000Sec * 100.0 / 36.0, UNIT_DEGREE));
+        Quantity.of(longitude10000Sec * 100.0 / 36.0, SI.DEGREE_ANGLE), //
+        Quantity.of(latitude10000Sec * 100.0 / 36.0, SI.DEGREE_ANGLE));
   }
 }

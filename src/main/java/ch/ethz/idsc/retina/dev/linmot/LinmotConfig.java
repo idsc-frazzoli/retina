@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -16,9 +17,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LinmotConfig implements Serializable {
   public static final LinmotConfig GLOBAL = AppResources.load(new LinmotConfig());
   /***************************************************/
-  public Scalar windingTempCold = Quantity.of(5, LinmotGetEvent.CELSIUS);
-  public Scalar windingTempGlow = Quantity.of(85, LinmotGetEvent.CELSIUS);
-  public Scalar windingTempFire = Quantity.of(110, LinmotGetEvent.CELSIUS);
+  public Scalar windingTempCold = Quantity.of(5, SI.DEGREE_CELSIUS);
+  public Scalar windingTempGlow = Quantity.of(85, SI.DEGREE_CELSIUS);
+  public Scalar windingTempFire = Quantity.of(110, SI.DEGREE_CELSIUS);
 
   /***************************************************/
   public Clip temperatureOperationClip() {

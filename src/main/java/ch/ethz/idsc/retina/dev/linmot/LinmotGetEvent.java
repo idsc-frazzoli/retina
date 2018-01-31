@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -16,8 +15,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * LONGTERM NRJ cite source for temperature range and other magic const */
 public class LinmotGetEvent extends DataEvent {
-  /** degree celsius */
-  public static final Unit CELSIUS = Unit.of("degC");
   /** 16 bytes */
   /* package */ static final int LENGTH = 16;
   /** conversion factor 0.1 taken from data sheet */
@@ -54,12 +51,12 @@ public class LinmotGetEvent extends DataEvent {
 
   /** @return temperature of winding 1 in degree Celsius */
   public Scalar getWindingTemperature1() {
-    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, CELSIUS);
+    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
   }
 
   /** @return temperature of winding 2 in degree Celsius */
   public Scalar getWindingTemperature2() {
-    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, CELSIUS);
+    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
   }
 
   public Scalar getWindingTemperatureMax() {

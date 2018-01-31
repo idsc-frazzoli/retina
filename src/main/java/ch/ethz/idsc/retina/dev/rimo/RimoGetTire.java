@@ -23,7 +23,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 @SafetyCritical
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
-  private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
   public static final Unit ARMS = Unit.of("ARMS");
   public static final ScalarUnaryOperator MAGNITUDE_RATE = QuantityMagnitude.singleton(UNIT_RATE);
@@ -97,12 +96,12 @@ public class RimoGetTire implements Serializable {
 
   /** @return 0[degC] */
   public Scalar getTemperatureMotor() {
-    return Quantity.of(temperature_motor, CELSIUS);
+    return Quantity.of(temperature_motor, SI.DEGREE_CELSIUS);
   }
 
   /** @return 0[degC] */
   public Scalar getTemperatureHeatsink() {
-    return Quantity.of(temperature_heatsink, CELSIUS);
+    return Quantity.of(temperature_heatsink, SI.DEGREE_CELSIUS);
   }
 
   public Optional<RimoEmergencyError> getEmergencyError() {
