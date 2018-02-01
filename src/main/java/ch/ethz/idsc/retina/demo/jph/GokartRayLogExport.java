@@ -22,7 +22,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Increment;
-import lcm.logging.Log.Event;
 
 class RotationalHistogram implements LidarRayDataListener {
   public static final int MOD = 36000;
@@ -131,8 +130,8 @@ enum GokartRayLogExport {
     vlp16Decoder.addRayListener(planarHistogram);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
-        if (event.channel.equals(channel))
+      public void event(Scalar time, String _channel, ByteBuffer byteBuffer) {
+        if (_channel.equals(channel))
           vlp16Decoder.lasers(byteBuffer);
       }
     };

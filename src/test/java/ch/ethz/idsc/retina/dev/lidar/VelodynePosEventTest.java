@@ -14,7 +14,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
-import lcm.logging.Log.Event;
 
 public class VelodynePosEventTest extends TestCase {
   public void testSimple() {
@@ -50,9 +49,9 @@ public class VelodynePosEventTest extends TestCase {
     velodyneDecoder.addPosListener(velodynePosListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
+      public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
         // System.out.println(time.number().doubleValue() + " " + event.channel);
-        if (event.channel.equals("vlp16.center.pos")) {
+        if (channel.equals("vlp16.center.pos")) {
           velodyneDecoder.positioning(byteBuffer);
         }
       }

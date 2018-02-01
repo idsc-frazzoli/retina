@@ -10,7 +10,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;
 import junit.framework.TestCase;
-import lcm.logging.Log.Event;
 
 class CountLidarRayBlockListener implements LidarRayBlockListener {
   int block_count = 0;
@@ -54,9 +53,9 @@ public class LidarAngularFiringCollectorTest extends TestCase {
     lidarAngularFiringCollector.addListener(lidarRayBlockListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
+      public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
         // System.out.println(time + " " + event.channel);
-        if (event.channel.equals("vlp16.center.ray")) {
+        if (channel.equals("vlp16.center.ray")) {
           velodyneDecoder.lasers(byteBuffer);
         }
       }

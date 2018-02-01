@@ -1,44 +1,35 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import lcm.logging.Log.Event;
 
-class DavisImuTracker implements OfflineLogListener {
+class DavisImuAnalysis implements OfflineTableSupplier {
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private DavisImuFrame dif;
-  TensorBuilder tensorBuilder = new TensorBuilder();
+  final TensorBuilder tensorBuilder = new TensorBuilder();
 
-  public DavisImuTracker(Scalar delta) {
+  public DavisImuAnalysis(Scalar delta) {
     this.delta = delta;
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, Event event, ByteBuffer byteBuffer) {
-    String channel = event.channel;
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
     } else //
@@ -58,24 +49,13 @@ class DavisImuTracker implements OfflineLogListener {
       }
     }
   }
-}
 
-enum DavisImuAnalysis {
-  ;
-  public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+  @Override
+  public Tensor getTable() {
+    return tensorBuilder.getTensor();
+  }
 
   public static void main(String[] args) throws IOException {
-    for (DubendorfHangarLog dubendorfHangarLog : DubendorfHangarLog.values()) {
-      File file = dubendorfHangarLog.file(LOG_ROOT);
-      if (file.isFile()) {
-        System.out.println(dubendorfHangarLog);
-        DavisImuTracker powerSteerTracker = new DavisImuTracker(Quantity.of(0.01, SI.SECOND));
-        OfflineLogPlayer.process(file, powerSteerTracker);
-        Tensor table = powerSteerTracker.tensorBuilder.getTensor();
-        Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(NSingle.FUNCTION));
-      } else
-        System.err.println(dubendorfHangarLog);
-      // break;
-    }
+    OfflineProcessing.INSTANCE.handle(new DavisImuAnalysis(Quantity.of(0.01, SI.SECOND)));
   }
 }

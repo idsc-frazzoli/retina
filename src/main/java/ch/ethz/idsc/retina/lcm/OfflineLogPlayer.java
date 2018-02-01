@@ -30,7 +30,7 @@ public enum OfflineLogPlayer {
         ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data); // length == 524
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         Scalar scalar = Quantity.of(event.utime - tic, "us");
-        offlineLogListener.event(UnitSystem.SI().apply(scalar), event, byteBuffer);
+        offlineLogListener.event(UnitSystem.SI().apply(scalar), event.channel, byteBuffer);
       }
     } catch (Exception exception) {
       if (!END_OF_FILE.equals(exception.getMessage()))
