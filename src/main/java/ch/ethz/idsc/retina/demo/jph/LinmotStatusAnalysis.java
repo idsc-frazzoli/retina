@@ -41,6 +41,6 @@ class LinmotStatusAnalysis implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(new LinmotStatusAnalysis());
+    OfflineProcessing.INSTANCE.handle(() -> new LinmotStatusAnalysis());
   }
 }

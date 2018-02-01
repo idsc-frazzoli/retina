@@ -61,6 +61,6 @@ class PowerSteerAnalysis implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(new PowerSteerAnalysis(Quantity.of(0.1, SI.SECOND)));
+    OfflineProcessing.INSTANCE.handle(() -> new PowerSteerAnalysis(Quantity.of(0.1, SI.SECOND)));
   }
 }

@@ -50,12 +50,12 @@ class DavisImuAnalysis implements OfflineTableSupplier {
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tensorBuilder.getTensor();
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(new DavisImuAnalysis(Quantity.of(0.01, SI.SECOND)));
+    OfflineProcessing.INSTANCE.handle(() -> new DavisImuAnalysis(Quantity.of(0.01, SI.SECOND)));
   }
 }

@@ -28,4 +28,8 @@ public class TensorBuilder {
   public Tensor getTensor() {
     return Tensor.of(deque.stream());
   }
+
+  public int size() {
+    return deque.size();
+  }
 }
