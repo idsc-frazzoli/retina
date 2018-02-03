@@ -47,6 +47,7 @@ public class ViewLcmFrame extends TimerFrame {
         Tensor newState = Se2Utils.fromSE2Matrix(newPose);
         newState.set(s -> Quantity.of(s.Get(), SI.METER), 0);
         newState.set(s -> Quantity.of(s.Get(), SI.METER), 1);
+        System.out.println("new state=" + newState);
         gokartPoseInterface.setPose(newState, RealScalar.ONE);
         geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
       }

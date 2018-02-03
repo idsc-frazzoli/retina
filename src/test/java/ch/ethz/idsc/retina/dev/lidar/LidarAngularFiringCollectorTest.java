@@ -16,13 +16,16 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
 
   @Override
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    // System.out.println("BLOCK");
+    int limit_f = lidarRayBlockEvent.floatBuffer.limit();
+    int limit_b = lidarRayBlockEvent.byteBuffer.limit();
+    TestCase.assertEquals(limit_f, limit_b * 2);
     ++block_count;
   }
 }
 
 public class LidarAngularFiringCollectorTest extends TestCase {
   public void testSimple() throws Exception {
+    // global pose is approximately {56.137[m], 57.022[m], -1.09428}
     File file = new File("src/test/resources/localization", "vlp16.center.ray_autobox.rimo.get.lcm");
     assertTrue(file.isFile());
     // ---
@@ -39,14 +42,12 @@ public class LidarAngularFiringCollectorTest extends TestCase {
 
       @Override
       public void timestamp(int usec, int type) {
-        // System.out.println(" - ");
-        type = angle; // in order to prevent error
+        type = angle; // in order to avoid warning
       }
 
       @Override
       public void scan(int rotational, ByteBuffer byteBuffer) {
         angle = rotational;
-        // System.out.println(" " + angle);
       }
     });
     CountLidarRayBlockListener lidarRayBlockListener = new CountLidarRayBlockListener();

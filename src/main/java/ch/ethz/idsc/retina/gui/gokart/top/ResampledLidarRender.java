@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -35,7 +36,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
 class ResampledLidarRender extends LidarRender {
-  private final MappedPoseInterface gokartPoseInterface;
+  private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
@@ -43,12 +44,14 @@ class ResampledLidarRender extends LidarRender {
       new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2); // TODO during operation, only 3-5 levels should be used
   private BufferedImage map_image = null;
 
-  public ResampledLidarRender(MappedPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
+  public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
+    super(mappedPoseInterface);
     // ---
-    this.gokartPoseInterface = gokartPoseInterface;
+    this.mappedPoseInterface = mappedPoseInterface;
     map_image = StoreMapUtil.loadOrNull();
   }
+  
+  public static final int MIN_POINTS = 350;
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -63,12 +66,13 @@ class ResampledLidarRender extends LidarRender {
     final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
+    System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
     if (Objects.nonNull(map_image)) {
       graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
       int sum = list.stream().mapToInt(Tensor::length).sum(); // usually around 430
       // System.out.println("points: " + sum);
       if (flagSnap || trackSupplier.get())
-        if (350 < sum) {
+        if (MIN_POINTS < sum) {
           flagSnap = false;
           // ---
           Tensor model2pixel = geometricLayer.getMatrix();
@@ -87,11 +91,11 @@ class ResampledLidarRender extends LidarRender {
           poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 0, 2);
           poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 1, 2);
           // System.out.println(Pretty.of(poseDelta.map(Round._4)));
-          Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
+          Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
           Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
           Tensor newState = Se2Utils.fromSE2Matrix(newPose);
           // System.out.println(newState);
-          gokartPoseInterface.setPose(newState, ratio);
+          mappedPoseInterface.setPose(newState, ratio);
           // ---
           graphics.setColor(Color.GRAY);
           graphics.drawString("points=" + sum, 0, 30);

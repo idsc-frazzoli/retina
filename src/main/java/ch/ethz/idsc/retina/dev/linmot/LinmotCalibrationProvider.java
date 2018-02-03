@@ -27,7 +27,7 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
     eventUntil(timestamp += 200, //
         LinmotPutEvent.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
     // ---
-    // TODO test and comment that the last "position" command with all ratings == 0 is required...
+    /** the last "position" command with all ratings == 0 is required */
     eventUntil(timestamp += 200, //
         LinmotPutEvent.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
   }

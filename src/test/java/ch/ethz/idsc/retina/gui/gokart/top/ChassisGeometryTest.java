@@ -26,6 +26,11 @@ public class ChassisGeometryTest extends TestCase {
     ChassisGeometry.GLOBAL.yTireFrontMeter();
   }
 
+  public void testyHalfWidthMeter() {
+    Scalar scalar = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+    assertTrue(scalar instanceof RealScalar);
+  }
+
   public void testSteerAngleTowardsLeft() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(0.3));
     assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, "rad"), angle));
