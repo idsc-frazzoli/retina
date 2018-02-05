@@ -21,13 +21,14 @@ enum OfflineProcessing {
     for (DubendorfHangarLog dubendorfHangarLog : DubendorfHangarLog.values()) {
       File file = dubendorfHangarLog.file(LOG_ROOT);
       if (file.isFile()) {
-        System.out.println(dubendorfHangarLog);
+        System.out.println(dubendorfHangarLog.title());
         OfflineTableSupplier offlineCsvSupplier = supplier.get();
         OfflineLogPlayer.process(file, offlineCsvSupplier);
         Tensor table = offlineCsvSupplier.getTable();
         Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(NSingle.FUNCTION));
       } else
         System.err.println(dubendorfHangarLog);
+      // break;
     }
   }
 }

@@ -50,7 +50,7 @@ class ResampledLidarRender extends LidarRender {
     this.mappedPoseInterface = mappedPoseInterface;
     map_image = StoreMapUtil.loadOrNull();
   }
-  
+
   public static final int MIN_POINTS = 350;
 
   @Override // from AbstractGokartRender
