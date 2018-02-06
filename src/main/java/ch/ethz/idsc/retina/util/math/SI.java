@@ -9,6 +9,7 @@ public enum SI {
   public static final Unit SECOND = Unit.of("s");
   public static final Unit VOLT = Unit.of("V");
   // ---
+  public static final Unit VELOCITY = Unit.of("m*s^-1");
   public static final Unit ACCELERATION = Unit.of("m*s^-2");
   public static final Unit ANGULAR_RATE = Unit.of("s^-1");
   // ---

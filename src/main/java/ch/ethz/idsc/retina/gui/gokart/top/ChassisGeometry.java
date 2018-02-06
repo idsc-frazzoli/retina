@@ -20,7 +20,7 @@ public class ChassisGeometry implements Serializable {
   public Scalar yHalfWidth = Quantity.of(0.7, SI.METER);
   /** distance from x-axis to front tire */
   public Scalar yTireFront = Quantity.of(0.48, SI.METER);
-  /** distance from x-axis to front tire */
+  /** distance from x-axis to rear tire */
   public Scalar yTireRear = Quantity.of(0.54, SI.METER);
   /** approx. radius of tire when on gokart is on ground */
   public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, "m*rad^-1");

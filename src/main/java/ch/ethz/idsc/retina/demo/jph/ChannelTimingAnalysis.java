@@ -14,19 +14,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.StringScalar;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Variance;
 import ch.ethz.idsc.tensor.sca.N;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 class ChannelTimingAnalysis implements OfflineTableSupplier {
-  static final Unit S2 = Unit.of("s^2");
-  static final ScalarUnaryOperator MAG_S2 = QuantityMagnitude.singleton(S2);
-  // ---
   private final TensorBuilder tensorBuilder = new TensorBuilder();
   private final Map<String, Scalar> timings = new TreeMap<>();
   private final Map<String, Tensor> deltas = new TreeMap<>();
