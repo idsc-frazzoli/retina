@@ -6,7 +6,6 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** the controller has to be subscribed to rimo get events */
 public class RimoRateControllerDuo extends RimoRateControllerWrap {
   private final RimoRateController piL = new RimoRateController();
   private final RimoRateController piR = new RimoRateController();

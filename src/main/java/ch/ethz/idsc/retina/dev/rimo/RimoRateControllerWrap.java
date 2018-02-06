@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 
+/** the controller has to be subscribed to rimo get events */
 public abstract class RimoRateControllerWrap implements RimoGetListener {
   private RimoGetEvent rimoGetEvent = null;
 

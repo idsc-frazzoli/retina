@@ -6,6 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerDuo;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
@@ -15,8 +16,10 @@ import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 
 class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+  /** available implementations of RimoRateControllerWrap are
+   * {@link RimoRateControllerUno}, and {@link RimoRateControllerDuo} */
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = //
-      new RimoRateControllerDuo();
+      new RimoRateControllerUno(); // <- UNO uses a single PI-controller
 
   @Override // from StartAndStoppable
   public void start() {
