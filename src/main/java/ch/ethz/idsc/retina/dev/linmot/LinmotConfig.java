@@ -37,4 +37,8 @@ public class LinmotConfig implements Serializable {
   public boolean isTemperatureHardwareSafe(Scalar temperature) {
     return temperatureHardwareClip().isInside(temperature);
   }
+
+  /** bounds established using experimentation */
+  // TODO make 20000 configurable
+  public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
 }

@@ -23,6 +23,8 @@ public enum LinmotStatusWordBit {
   IN_RANGE2, // 15
   ;
   // ---
+  /** @param status_word of {@link LinmotGetEvent}
+   * @return */
   public static Set<LinmotStatusWordBit> from(short status_word) {
     Set<LinmotStatusWordBit> set = EnumSet.noneOf(LinmotStatusWordBit.class);
     for (LinmotStatusWordBit linmotStatusWordBit : values()) {

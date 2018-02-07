@@ -27,8 +27,6 @@ public class RimoGetTire implements Serializable {
   public static final Unit ARMS = Unit.of("ARMS");
   public static final ScalarUnaryOperator MAGNITUDE_RATE = QuantityMagnitude.singleton(UNIT_RATE);
   public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(ARMS);
-  /** m */
-  public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
   public static final double MIN_TO_S = 1 / 60.0;
   // ---
   public final short status_word;

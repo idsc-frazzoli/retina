@@ -8,7 +8,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 /** information received from micro-autobox about linear motor that controls the
  * break of the gokart
@@ -22,9 +21,6 @@ public class LinmotGetEvent extends DataEvent {
   /** actual position of 100000 corresponds to 1 cm
    * demand position uses the same scale */
   private static final double GET_POSITION_TO_METER = 1e-7;
-  /** bounds established using experimentation */
-  // TODO also extract to linmot config
-  public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
   // ---
   public final short status_word;
   public final short state_variable;
@@ -51,6 +47,7 @@ public class LinmotGetEvent extends DataEvent {
 
   /** @return temperature of winding 1 in degree Celsius */
   public Scalar getWindingTemperature1() {
+    // TODO consider not losing precision
     return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
   }
 
@@ -63,13 +60,6 @@ public class LinmotGetEvent extends DataEvent {
     return Max.of( //
         getWindingTemperature1(), //
         getWindingTemperature2());
-  }
-
-  public String toInfoString() {
-    return String.format("%d %d %d %d %d %d", //
-        status_word, state_variable, //
-        actual_position, demand_position, //
-        winding_temp1, winding_temp2);
   }
 
   @Override // from DataEvent
@@ -106,5 +96,12 @@ public class LinmotGetEvent extends DataEvent {
    * @return operational status of brake */
   public boolean isOperational() {
     return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
+  }
+
+  public String toInfoString() {
+    return String.format("%d %d %d %d %d %d", //
+        status_word, state_variable, //
+        actual_position, demand_position, //
+        winding_temp1, winding_temp2);
   }
 }

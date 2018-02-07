@@ -52,6 +52,15 @@ public class LinmotPutEvent extends DataEvent {
     this.deceleration = deceleration;
   }
 
+  public LinmotPutEvent(ByteBuffer byteBuffer) {
+    control_word = byteBuffer.getShort();
+    motion_cmd_hdr = byteBuffer.getShort();
+    target_position = byteBuffer.getShort();
+    max_velocity = byteBuffer.getShort();
+    acceleration = byteBuffer.getShort();
+    deceleration = byteBuffer.getShort();
+  }
+
   /** @param byteBuffer
    * with at least 12 bytes remaining */
   @Override // from DataEvent
