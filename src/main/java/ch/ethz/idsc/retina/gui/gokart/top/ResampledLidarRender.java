@@ -28,7 +28,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -66,7 +65,7 @@ class ResampledLidarRender extends LidarRender {
     final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
-    System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
+    // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
     if (Objects.nonNull(map_image)) {
       graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
       int sum = list.stream().mapToInt(Tensor::length).sum(); // usually around 430

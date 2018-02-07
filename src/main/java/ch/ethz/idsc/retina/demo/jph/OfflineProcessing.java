@@ -22,13 +22,16 @@ enum OfflineProcessing {
       File file = dubendorfHangarLog.file(LOG_ROOT);
       if (file.isFile()) {
         System.out.println(dubendorfHangarLog.title());
-        OfflineTableSupplier offlineCsvSupplier = supplier.get();
-        OfflineLogPlayer.process(file, offlineCsvSupplier);
-        Tensor table = offlineCsvSupplier.getTable();
-        Export.of(UserHome.file(dubendorfHangarLog.title() + ".csv"), table.map(NSingle.FUNCTION));
+        single(file, supplier.get(), dubendorfHangarLog.title());
       } else
         System.err.println(dubendorfHangarLog);
       // break;
     }
+  }
+
+  public static void single(File file, OfflineTableSupplier offlineTableSupplier, String title) throws IOException {
+    OfflineLogPlayer.process(file, offlineTableSupplier);
+    Tensor table = offlineTableSupplier.getTable();
+    Export.of(UserHome.file(title + ".csv"), table.map(NSingle.FUNCTION));
   }
 }
