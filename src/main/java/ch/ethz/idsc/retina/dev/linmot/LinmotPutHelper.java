@@ -14,10 +14,16 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 @SafetyCritical
 public enum LinmotPutHelper {
   ;
+  /**
+   * 
+   */
   /* package */ static final Word CMD_HOME = Word.createShort("HOME", (short) 0x083f);
   public static final Word CMD_OPERATION = Word.createShort("OPERATION", (short) 0x003f);
   /* package */ static final Word CMD_ERR_ACK = Word.createShort("ERR_ACK", (short) 0x00bf);
   private static final Word CMD_OFF_MODE = Word.createShort("OFF_MODE", (short) 0x003e);
+  /**
+   * 
+   */
   public static final Word MC_POSITION = Word.createShort("POSITION", (short) 0x0900);
   /* package */ static final Word MC_ZEROS = Word.createShort("ZEROS", (short) 0x0000);
   // ---

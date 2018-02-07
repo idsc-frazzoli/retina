@@ -40,6 +40,6 @@ enum OfflineProcessing {
   public static void single(File file, OfflineTableSupplier offlineTableSupplier, String title) throws IOException {
     OfflineLogPlayer.process(file, offlineTableSupplier);
     Tensor table = offlineTableSupplier.getTable();
-    Export.of(UserHome.file(title + ".csv"), table.map(NSingle.FUNCTION));
+    Export.of(UserHome.file(title + ".csv"), table.map(NSingle.INSTANCE));
   }
 }

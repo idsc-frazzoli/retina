@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.linmot;
 
 import java.nio.ByteBuffer;
+import java.util.Set;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -84,6 +85,14 @@ public class LinmotGetEvent extends DataEvent {
   /** @return demand position minus actual position */
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
+  }
+
+  public Set<LinmotStatusWordBit> getStatusWordBits() {
+    return LinmotStatusWordBit.from(status_word);
+  }
+
+  public LinmotStateVariable getStateVariable() {
+    return new LinmotStateVariable(state_variable);
   }
 
   // bits set for guaranteed operation:
