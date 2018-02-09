@@ -15,21 +15,23 @@ public abstract class RimoRateControllerWrap implements RimoGetListener {
     this.rimoGetEvent = rimoGetEvent;
   }
 
-  /** @param pair vector of length == 2 with desired angular rates on the left and right rear wheel
+  /** @param rate_target desired average rate of left and right rear wheel in unit "rad*s^-1"
+   * @param angle of steering without unit but with interpretation in radians
    * @return */
-  public final Optional<RimoPutEvent> iterate(Scalar vel_target, Scalar theta) {
+  public final Optional<RimoPutEvent> iterate(Scalar rate_target, Scalar angle) {
     if (Objects.nonNull(rimoGetEvent))
+      // TODO DUBENDORF remove try below after testing on gokart
       try {
-        return Optional.of(protected_getRimoPutEvent(vel_target, theta, rimoGetEvent));
+        return Optional.of(protected_getRimoPutEvent(rate_target, angle, rimoGetEvent));
       } catch (Exception exception) {
         System.err.println("RRCW:" + exception.getMessage()); // message may be null
       }
     return Optional.empty();
   }
 
-  /** @param vel_target with unit "rad*s^-1"
+  /** @param rate_target desired average rate of left and right rear wheel in unit "rad*s^-1"
    * @param theta steering wheel angle without unit but with interpretation of radians
    * @param rimoGetEvent non-null
    * @return */
-  protected abstract RimoPutEvent protected_getRimoPutEvent(Scalar vel_target, Scalar theta, RimoGetEvent rimoGetEvent);
+  protected abstract RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent);
 }
