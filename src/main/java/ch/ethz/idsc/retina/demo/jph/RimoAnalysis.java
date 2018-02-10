@@ -35,7 +35,7 @@ class RimoAnalysis implements OfflineTableSupplier {
     this.delta = delta;
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
@@ -59,7 +59,7 @@ class RimoAnalysis implements OfflineTableSupplier {
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tensorBuilder.getTensor();
   }

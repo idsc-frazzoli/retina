@@ -3,38 +3,51 @@ package ch.ethz.idsc.retina.demo.jph;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Differences;
+import ch.ethz.idsc.tensor.sca.Mod;
+import ch.ethz.idsc.tensor.sca.Round;
 
-class Vlp16TimingAnalysis implements OfflineTableSupplier, LidarRayDataListener {
-  private static final int LIMIT = 200000;
+class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
+  private static final Scalar GAPSIZES = RealScalar.of(200);
+  private static final Mod MOD = Mod.function(36000);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
+  private final TensorBuilder tensorBuilder = new TensorBuilder();
+  private Tensor row = null;
   private Scalar time;
-  private int usec;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  private Integer rota_last;
 
-  public Vlp16TimingAnalysis() {
+  public Vlp16GapAnalysis() {
     vlp16Decoder.addRayListener(this);
   }
 
   @Override
   public void timestamp(int usec, int type) {
-    this.usec = usec;
+    if (Objects.nonNull(row)) {
+      Tensor diff = MOD.of(Differences.of(row));
+      if (diff.stream().map(Scalar.class::cast) //
+          .anyMatch(da -> Scalars.lessThan(GAPSIZES, da))) {
+        System.out.println(time);
+        tensorBuilder.flatten(time.map(Magnitude.SECOND).map(Round._6), row);
+      }
+    }
+    row = Tensors.empty();
   }
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (tensorBuilder.size() < LIMIT)
-      tensorBuilder.flatten( //
-          time.map(Magnitude.SECOND), //
-          Tensors.vector(usec, rotational));
+    row.append(RealScalar.of(rotational));
   }
 
   @Override // from OfflineLogListener
@@ -51,6 +64,6 @@ class Vlp16TimingAnalysis implements OfflineTableSupplier, LidarRayDataListener 
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new Vlp16TimingAnalysis());
+    OfflineProcessing.INSTANCE.handle(() -> new Vlp16GapAnalysis());
   }
 }

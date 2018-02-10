@@ -49,7 +49,7 @@ class Vlp16BlackoutAnalysis implements OfflineTableSupplier, LidarRayDataListene
     rota_last = rotational;
   }
 
-  @Override //
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals("vlp16.center.ray")) {
       this.time = time;
