@@ -1,6 +1,4 @@
-# ch.ethz.idsc.retina
-
-<a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+# ch.ethz.idsc.retina <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
 Sensor and actuator interfaces, Gokart software in Java 8.
 

@@ -18,7 +18,7 @@ public class SensorsConfig implements Serializable {
   public Tensor vlp16 = Tensors.vector(0.09, 0.0, -1.61);
   /** height of vlp scan from ground
    * 1.18[m] from ground to platform top
-   * 0.006[m] TODO DUEBENDORF width of heat sink
+   * 0.006[m] TODO DUBENDORF width of heat sink
    * 0.0378[m] == 37.8[mm] from heat sink to height of optical center */
   public Tensor vlp16Height = Quantity.of(1.18 + 0.006 + 0.0378, SI.METER);
   /** shift from center of VLP16 to DAVIS */

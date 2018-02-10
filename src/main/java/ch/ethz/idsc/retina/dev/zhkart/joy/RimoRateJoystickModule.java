@@ -56,10 +56,7 @@ import ch.ethz.idsc.tensor.Scalar;
       GokartJoystickInterface joystick) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
-      // DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
       Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
-      // Tensor pair = differentialSpeed.pair(speed, theta);
-      // Tensor bias = joystick.getAheadPair_Unit().multiply(RimoConfig.GLOBAL.rateLimit);
       return rimoRateControllerWrap.iterate(speed, theta);
     }
     return Optional.empty();
