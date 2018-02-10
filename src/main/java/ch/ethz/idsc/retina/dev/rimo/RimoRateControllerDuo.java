@@ -6,14 +6,34 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** the "duo" controller was first used in the pure pursuit module
+ * for trajectory following. however, the analysis of the torque
+ * showed that the load was not balanced between the motors in a
+ * desirable way.
+ * 
+ * We learned that the torques assigned to both motors add up to
+ * an effective torque that determines the longitudinal acceleration
+ * <pre>
+ * torque_L + torque_R == torque_effective
+ * </pre>
+ * 
+ * Thus, a hidden imbalance can be created by adding an offset to one
+ * side, while subtracting that amount from the other engine. We
+ * refer to this as the nullspace of the effective torque.
+ * <pre>
+ * (torque_L + offset) + (torque_R - offset) == torque_effective
+ * </pre>
+ * 
+ * The consequence of that observation is the implementation of
+ * {@link RimoRateControllerUno} */
 public class RimoRateControllerDuo extends RimoRateControllerWrap {
   private final RimoRateController piL = new RimoRateController();
   private final RimoRateController piR = new RimoRateController();
 
-  @Override
-  protected RimoPutEvent protected_getRimoPutEvent(Scalar vel_target, Scalar theta, RimoGetEvent rimoGetEvent) {
+  @Override // from RimoRateControllerWrap
+  protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {
     DifferentialSpeed differentialSpeed = ChassisGeometry.GLOBAL.getDifferentialSpeed();
-    Tensor pair = differentialSpeed.pair(vel_target, theta);
+    Tensor pair = differentialSpeed.pair(rate_target, angle);
     short armsL_raw = 0;
     short armsR_raw = 0;
     {

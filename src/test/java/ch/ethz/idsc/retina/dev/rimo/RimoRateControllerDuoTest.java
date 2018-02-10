@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -38,5 +40,25 @@ public class RimoRateControllerDuoTest extends TestCase {
     assertEquals(rimoPutEvent.putL.getTorqueRaw(), -rimoPutEvent.putR.getTorqueRaw());
     assertTrue(rimoPutEvent.putL.getTorqueRaw() < 0);
     assertTrue(rimoPutEvent.putR.getTorqueRaw() > 0);
+  }
+
+  public void testSlowdown() {
+    RimoRateControllerWrap rrcw = new RimoRateControllerDuo();
+    assertFalse(rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.1)).isPresent());
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putShort(2, (short) -1260);
+    byteBuffer.putShort(2 + 24, (short) 1101);
+    byteBuffer.position(0);
+    RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
+    assertEquals(rimoGetEvent.getAngularRate_Y_pair(), Tensors.fromString("{21.0[rad*s^-1], 18.35[rad*s^-1]}"));
+    rrcw.getEvent(rimoGetEvent);
+    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.1)).get();
+    Scalar tL = rimoPutEvent.putL.getTorque();
+    Scalar tR = rimoPutEvent.putR.getTorque();
+    // because "duo" uses two PI controllers, the torques do not have the same absolute value
+    assertFalse(tL.equals(tR.negate()));
+    assertTrue(rimoPutEvent.putL.getTorqueRaw() > 0); // verify slow down
+    assertTrue(rimoPutEvent.putR.getTorqueRaw() < 0); // verify slow down
   }
 }
