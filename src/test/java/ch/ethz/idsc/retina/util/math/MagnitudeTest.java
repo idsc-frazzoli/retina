@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
@@ -21,5 +22,11 @@ public class MagnitudeTest extends TestCase {
     Scalar scalar = Quantity.of(2500, "mV");
     Scalar result = Magnitude.VOLT.apply(scalar);
     assertEquals(result, RationalScalar.of(5, 2));
+  }
+
+  public void testUnitOne() {
+    Scalar scalar = Quantity.of(2500, "rad*deg");
+    Scalar result = Magnitude.ONE.apply(scalar);
+    assertTrue(result instanceof RealScalar);
   }
 }

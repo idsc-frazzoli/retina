@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
@@ -26,16 +27,17 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-class RimoRateAnalysis implements OfflineTableSupplier {
+class RimoSlipAnalysis implements OfflineTableSupplier {
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
+  private DavisImuFrame dif;
   private GokartStatusEvent gse;
   final TensorBuilder tensorBuilder = new TensorBuilder();
 
-  public RimoRateAnalysis(Scalar delta) {
+  public RimoSlipAnalysis(Scalar delta) {
     this.delta = delta;
   }
 
@@ -49,9 +51,12 @@ class RimoRateAnalysis implements OfflineTableSupplier {
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       gse = new GokartStatusEvent(byteBuffer);
+    } else //
+    if (channel.equals("davis240c.overview.atg")) {
+      dif = new DavisImuFrame(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse)) {
+      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && Objects.nonNull(dif)) {
         time_next = time.add(delta);
         Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
@@ -60,12 +65,15 @@ class RimoRateAnalysis implements OfflineTableSupplier {
             .multiply(RationalScalar.HALF) //
             .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
             .divide(ChassisGeometry.GLOBAL.yTireRear);
+        dif.gyroImageFrame();
         tensorBuilder.flatten( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
+            rates.map(Magnitude.ANGULAR_RATE), //
             SteerConfig.GLOBAL.getAngleFromSCE(gse), //
             speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE) //
+            rate.map(Magnitude.ANGULAR_RATE), //
+            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE) //
         );
       }
     }
@@ -79,7 +87,7 @@ class RimoRateAnalysis implements OfflineTableSupplier {
   public static void main(String[] args) throws IOException {
     OfflineProcessing.single( //
         UserHome.file("temp/20180108T165210_manual.lcm"), //
-        new RimoRateAnalysis(Quantity.of(0.005, "s")), //
+        new RimoSlipAnalysis(Quantity.of(0.002, "s")), //
         "maxtorque");
   }
 }

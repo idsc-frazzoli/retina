@@ -8,6 +8,8 @@ import ch.ethz.idsc.tensor.qty.UnitConvert;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public enum Magnitude implements ScalarUnaryOperator {
+  ONE(SI.ONE), //
+  // ---
   METER(SI.METER), //
   SECOND(SI.SECOND), //
   VOLT(SI.VOLT), //
