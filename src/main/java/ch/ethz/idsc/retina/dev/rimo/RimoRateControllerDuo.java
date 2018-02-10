@@ -12,10 +12,20 @@ import ch.ethz.idsc.tensor.Tensor;
  * desirable way.
  * 
  * We learned that the torques assigned to both motors add up to
- * an accumulated effect. Thus, a hidden imbalance can be created
- * by adding an offset to one side, while subtracting that amount
- * from the other engine. We refer to this as the nullspace of the
- * effective torque. */
+ * an effective torque that determines the longitudinal acceleration
+ * <pre>
+ * torque_L + torque_R == torque_effective
+ * </pre>
+ * 
+ * Thus, a hidden imbalance can be created by adding an offset to one
+ * side, while subtracting that amount from the other engine. We
+ * refer to this as the nullspace of the effective torque.
+ * <pre>
+ * (torque_L + offset) + (torque_R - offset) == torque_effective
+ * </pre>
+ * 
+ * The consequence of that observation is the implementation of
+ * {@link RimoRateControllerUno} */
 public class RimoRateControllerDuo extends RimoRateControllerWrap {
   private final RimoRateController piL = new RimoRateController();
   private final RimoRateController piR = new RimoRateController();

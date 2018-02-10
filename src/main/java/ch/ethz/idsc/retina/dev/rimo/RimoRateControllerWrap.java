@@ -20,12 +20,7 @@ public abstract class RimoRateControllerWrap implements RimoGetListener {
    * @return */
   public final Optional<RimoPutEvent> iterate(Scalar rate_target, Scalar angle) {
     if (Objects.nonNull(rimoGetEvent))
-      // TODO DUBENDORF remove try below after testing on gokart
-      try {
-        return Optional.of(protected_getRimoPutEvent(rate_target, angle, rimoGetEvent));
-      } catch (Exception exception) {
-        System.err.println("RRCW:" + exception.getMessage()); // message may be null
-      }
+      return Optional.of(protected_getRimoPutEvent(rate_target, angle, rimoGetEvent));
     return Optional.empty();
   }
 
