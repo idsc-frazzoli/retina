@@ -26,7 +26,6 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
   private final TensorBuilder tensorBuilder = new TensorBuilder();
   private Tensor row = null;
   private Scalar time;
-  private Integer rota_last;
 
   public Vlp16GapAnalysis() {
     vlp16Decoder.addRayListener(this);

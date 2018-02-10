@@ -12,10 +12,15 @@ import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
 
 /** access to a single firing packet containing rotational angle, range,
- * intensity, etc. */
+ * intensity, etc.
+ * 
+ * implementation based on instructions in:
+ * 63-9243 Rev B User Manual and Programming Guide,VLP-16.pdf */
 public class Vlp16Decoder implements VelodyneDecoder {
   private static final int FIRINGS = 12;
   private static final byte DUAL = 0x39;
+  @SuppressWarnings("unused")
+  private static final int FLAG = 61183;
   // ---
   private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
   private final List<VelodynePosListener> posListeners = new LinkedList<>();
@@ -43,8 +48,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
     return !rayListeners.isEmpty();
   }
 
-  /** @param byteBuffer
-   * with at least 1206 bytes to read */
+  /** @param byteBuffer with at least 1206 bytes to read */
   @Override
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42
@@ -65,21 +69,26 @@ public class Vlp16Decoder implements VelodyneDecoder {
       rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     if (type != DUAL) { // SINGLE 24 blocks of firing data
+      // ---
+      int az00 = byteBuffer.getShort(offset + 2) & 0xffff;
+      int az11 = byteBuffer.getShort(offset + 2 + 1100) & 0xffff;
+      // when the sensor operates at 20 revolutions per second, then typically gap == 39
+      final int gap = ((az11 - az00 + 36000) % 36000) / 22; // division by 22 == 11 * 2
+      // ---
       byteBuffer.position(offset);
       for (int firing = 0; firing < FIRINGS; ++firing) {
+        // Each data block begins with a two-byte start identifier
         // 0xFF 0xEE -> 0xEEFF (as short) == 61183
-        @SuppressWarnings("unused")
-        int flag = byteBuffer.getShort() & 0xffff; // laser block ID, 61183 ?
+        byteBuffer.getShort(); // two-byte start identifier
         final int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
-        ae.now(azimuth);
         // ---
         final int position = byteBuffer.position();
         rayListeners.forEach(listener -> {
           byteBuffer.position(position);
           listener.scan(azimuth, byteBuffer);
         });
-        int azimuth_hi = ae.gap();
-        final int position_hi = position + 48; // 16*3
+        int azimuth_hi = (azimuth + gap) % 36000;
+        final int position_hi = position + 48; // 16 * 3
         rayListeners.forEach(listener -> {
           byteBuffer.position(position_hi);
           listener.scan(azimuth_hi, byteBuffer);
@@ -87,6 +96,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
         byteBuffer.position(position + 96);
       }
     } else { // DUAL 24 blocks of firing data
+      // TODO choose more robust azimuth interpolation method
       for (int firing = 0; firing < FIRINGS; firing += 2) {
         {
           byteBuffer.position(offset + firing * 100);
