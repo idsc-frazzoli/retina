@@ -23,6 +23,7 @@ public class DavisImuFrame extends DataEvent {
   private static final double TEMPERATURE_OFFSET = 35.0;
   private static final double G_TO_M_S2 = 9.81;
   private static final Scalar M_S2PerLsb = Quantity.of(G_TO_M_S2 * 2.0 / 8192, SI.ACCELERATION);
+  /** gyro rate matches angular rate derived from odometry in no-slip condition */
   private static final double DEG_TO_RAD = Math.PI / 180.0;
   private static final Scalar RadPerSecPerLsb = Quantity.of(DEG_TO_RAD * 2.0 / 65.5, SI.ANGULAR_RATE);
   // ---
