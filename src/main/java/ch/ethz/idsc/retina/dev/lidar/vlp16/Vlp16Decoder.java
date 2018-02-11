@@ -22,7 +22,6 @@ public class Vlp16Decoder implements VelodyneDecoder {
   @SuppressWarnings("unused")
   private static final int FLAG = 61183;
   // ---
-  private final AzimuthExtrapolation ae = new AzimuthExtrapolation();
   private final List<VelodynePosListener> posListeners = new LinkedList<>();
 
   @Override
@@ -96,14 +95,16 @@ public class Vlp16Decoder implements VelodyneDecoder {
         byteBuffer.position(position + 96);
       }
     } else { // DUAL 24 blocks of firing data
-      // TODO choose more robust azimuth interpolation method
+      int az00 = byteBuffer.getShort(offset + 2) & 0xffff;
+      int az11 = byteBuffer.getShort(offset + 2 + 1100) & 0xffff;
+      // when the sensor operates at 20 revolutions per second, then typically gap == 39
+      final int gap = ((az11 - az00 + 36000) % 36000) / 10; // division by 10 == 5 * 2
       for (int firing = 0; firing < FIRINGS; firing += 2) {
+        final int azimuth;
         {
           byteBuffer.position(offset + firing * 100);
-          @SuppressWarnings("unused")
-          int flag = byteBuffer.getShort() & 0xffff;
-          final int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
-          ae.now(azimuth);
+          byteBuffer.getShort(); // two-byte start identifier
+          azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
           // ---
           final int position = byteBuffer.position();
           rayListeners.forEach(listener -> {
@@ -112,31 +113,22 @@ public class Vlp16Decoder implements VelodyneDecoder {
           });
         }
         {
-          byteBuffer.position(offset + (firing + 1) * 100);
-          @SuppressWarnings("unused")
-          int flag = byteBuffer.getShort() & 0xffff;
-          final int azimuth = byteBuffer.getShort() & 0xffff; // rotational [0, ..., 35999]
-          ae.now(azimuth); // should be obsolete since azimuth is the same as before
-          // ---
-          final int position = byteBuffer.position();
+          int position = offset + (firing + 1) * 100 + 4;
           rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth, byteBuffer);
           });
         }
+        final int azimuth_hi = azimuth + gap;
         {
-          byteBuffer.position(offset + firing * 100 + 48 + 4);
-          int azimuth_hi = ae.gap();
-          final int position = byteBuffer.position();
+          int position = offset + firing * 100 + 48 + 4;
           rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth_hi, byteBuffer);
           });
         }
         {
-          byteBuffer.position(offset + (firing + 1) * 100 + 48 + 4);
-          int azimuth_hi = ae.gap();
-          final int position = byteBuffer.position();
+          int position = offset + (firing + 1) * 100 + 48 + 4;
           rayListeners.forEach(listener -> {
             byteBuffer.position(position);
             listener.scan(azimuth_hi, byteBuffer);

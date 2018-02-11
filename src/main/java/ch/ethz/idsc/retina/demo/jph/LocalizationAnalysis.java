@@ -54,6 +54,7 @@ class LocalizationAnalysis implements OfflineTableSupplier {
     } else //
     if (channel.equals(pos_channel)) {
       vpe = VelodynePosEvent.vlp16(byteBuffer);
+      System.out.println(vpe.nmea());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);

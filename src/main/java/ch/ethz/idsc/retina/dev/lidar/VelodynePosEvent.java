@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * at Duebendorf
  * $GPRMC,155524,A,4724.3266,N,00837.8624,E,002.0,172.1,131217,001.8,E,A*10
+ * $GPRMC,142802,A,4724.3445,N,00837.8776,E,000.0,111.4,080118,001.8,E,A*1B
  * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */
 public class VelodynePosEvent {
@@ -33,9 +34,6 @@ public class VelodynePosEvent {
   // ---
   /** number of microseconds past the hour per UTC time */
   private final int gps_usec;
-  /** The Validity field in the $GPRMC message (‘A’ or ‘V’) should be checked by
-   * the user to ensure the GPS system and the VLP-16 are receiving valid
-   * Coordinated Universal Time (UTC) updates from the user’s GPS receiver. */
   private final String nmea;
 
   public VelodynePosEvent(int gps_usec, String nmea) {
@@ -49,6 +47,34 @@ public class VelodynePosEvent {
 
   public String nmea() {
     return nmea;
+  }
+
+  /** The validity field in the $GPRMC message (‘A’ or ‘V’) should be checked by
+   * the user to ensure the GPS system and the VLP-16 are receiving valid
+   * Coordinated Universal Time (UTC) updates from the user’s GPS receiver.
+   * validity: A=ok, V=invalid
+   * 
+   * @return */
+  public boolean isValid() {
+    return nmea.charAt(14) == 'A';
+  }
+
+  public String timeStamp() {
+    return nmea.substring(7, 13);
+  }
+
+  public String dateStamp() {
+    return nmea.substring(53, 59);
+  }
+
+  public Scalar speed() {
+    double value = Double.parseDouble(nmea.substring(41, 46));
+    return Quantity.of(value, "knots");
+  }
+
+  public Scalar course() {
+    double value = Double.parseDouble(nmea.substring(47, 52));
+    return Quantity.of(value, "deg");
   }
 
   private static final double TO_DEGREE = 1E-2;
