@@ -93,10 +93,8 @@ public class SlamDunkTest extends TestCase {
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-        // System.out.println(time + " " + event.channel);
-        if (channel.equals("vlp16.center.ray")) {
+        if (channel.equals("vlp16.center.ray"))
           velodyneDecoder.lasers(byteBuffer);
-        }
       }
     };
     OfflineLogPlayer.process(file, offlineLogListener);

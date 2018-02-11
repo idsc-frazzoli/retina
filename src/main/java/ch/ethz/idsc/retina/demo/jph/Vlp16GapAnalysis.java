@@ -6,7 +6,10 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
+import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -21,6 +24,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
   private static final Scalar GAPSIZES = RealScalar.of(200);
   private static final Mod MOD = Mod.function(36000);
+  private static final String LIDAR = //
+      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private final TensorBuilder tensorBuilder = new TensorBuilder();
@@ -51,7 +56,7 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals("vlp16.center.ray")) {
+    if (channel.equals(LIDAR)) {
       this.time = time;
       vlp16Decoder.lasers(byteBuffer);
     }

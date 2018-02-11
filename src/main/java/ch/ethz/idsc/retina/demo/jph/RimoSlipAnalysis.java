@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
@@ -28,6 +29,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
 class RimoSlipAnalysis implements OfflineTableSupplier {
+  private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+  // ---
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
@@ -52,7 +55,7 @@ class RimoSlipAnalysis implements OfflineTableSupplier {
     if (channel.equals(GokartLcmChannel.STATUS)) {
       gse = new GokartStatusEvent(byteBuffer);
     } else //
-    if (channel.equals("davis240c.overview.atg")) {
+    if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {

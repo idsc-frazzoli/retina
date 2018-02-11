@@ -6,5 +6,5 @@ import java.io.File;
 public interface LogFileInterface {
   File file(File directory);
 
-  public String title();
+  String title();
 }

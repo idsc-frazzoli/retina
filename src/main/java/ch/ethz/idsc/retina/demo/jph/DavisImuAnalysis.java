@@ -7,7 +7,9 @@ import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TensorBuilder;
@@ -17,6 +19,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 class DavisImuAnalysis implements OfflineTableSupplier {
+  private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+  // ---
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
@@ -33,7 +37,7 @@ class DavisImuAnalysis implements OfflineTableSupplier {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
     } else //
-    if (channel.equals("davis240c.overview.atg")) {
+    if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {

@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -29,8 +30,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
 class LocalizationAnalysis implements OfflineTableSupplier {
+  private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+  private static final String LIDAR = VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+  // ---
   private final Scalar delta;
-  final String pos_channel = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
@@ -52,14 +55,14 @@ class LocalizationAnalysis implements OfflineTableSupplier {
     if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
       rpe = RimoPutHelper.from(byteBuffer);
     } else //
-    if (channel.equals(pos_channel)) {
+    if (channel.equals(LIDAR)) {
       vpe = VelodynePosEvent.vlp16(byteBuffer);
       System.out.println(vpe.nmea());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
     } else //
-    if (channel.equals("davis240c.overview.atg")) {
+    if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
