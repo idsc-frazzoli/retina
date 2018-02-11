@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.alg.slam.Se2MultiresSamples;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class SlamDunk {
   private final byte[] bytes;
   private final int WIDTH;
+  // ---
   private Se2MultiresSamples se2MultiresSamples;
 
+  /** @param bufferedImage grayscale image in byte array encoding, each pixel corresponds to one byte */
   public SlamDunk(BufferedImage bufferedImage) {
     WIDTH = bufferedImage.getWidth();
     // HEIGHT = bufferedImage.getHeight();

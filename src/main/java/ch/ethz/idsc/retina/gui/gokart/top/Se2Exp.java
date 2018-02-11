@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.alg.slam;
+package ch.ethz.idsc.retina.gui.gokart.top;
 
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;

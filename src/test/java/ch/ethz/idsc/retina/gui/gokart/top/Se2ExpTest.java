@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.alg.slam;
+package ch.ethz.idsc.retina.gui.gokart.top;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.alg.slam;
+package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.util.ArrayList;
 import java.util.List;
