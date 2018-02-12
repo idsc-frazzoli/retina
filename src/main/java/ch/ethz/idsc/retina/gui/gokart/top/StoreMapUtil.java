@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
+// TODO split class into generic and specific functionality
 public enum StoreMapUtil {
   ;
   private static final String REPO = "/map/dubendorf/hangar/20180122.png";

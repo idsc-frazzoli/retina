@@ -15,13 +15,11 @@ import java.util.function.Supplier;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -37,8 +35,6 @@ class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private final Se2MultiresSamples se2MultiresSamples = //
-      new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2); // TODO during operation, only 3-5 levels should be used
   private BufferedImage map_image = null;
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
@@ -74,10 +70,10 @@ class ResampledLidarRender extends LidarRender {
           flagSnap = false;
           // ---
           Tensor model2pixel = geometricLayer.getMatrix();
-          SlamDunk slamDunk = new SlamDunk(map_image);
+          SlamScore slamScore = ImageScore.of(map_image);
           GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
           Stopwatch stopwatch = Stopwatch.started();
-          SlamResult slamResult = slamDunk.fit(se2MultiresSamples, glmap, scattered);
+          SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESSAMPLES, glmap, scattered, slamScore);
           Tensor delta = slamResult.getTransform();
           double duration = stopwatch.display_seconds();
           // System.out.println(duration + "[s]");

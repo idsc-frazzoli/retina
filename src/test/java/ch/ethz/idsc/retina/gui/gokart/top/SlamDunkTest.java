@@ -10,7 +10,6 @@ import java.util.List;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
@@ -36,8 +35,6 @@ import junit.framework.TestCase;
 
 class CountLidarRayBlockListener implements LidarRayBlockListener {
   BufferedImage map_image = StoreMapUtil.loadOrNull();
-  Se2MultiresSamples se2MultiresSamples = // TODO redundant
-      new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2);
   int skipped = 0;
   int count = 0;
 
@@ -57,10 +54,10 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
           { -6.77422, 3.21868, 422.04915 }, //
           { +3.21868, 6.77422, 213.03233 }, //
           { 0, 0, 1 } });
-      SlamDunk slamDunk = new SlamDunk(map_image);
+      SlamScore slamScore = ImageScore.of(map_image);
       GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
       Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = slamDunk.fit(se2MultiresSamples, glmap, scattered);
+      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESSAMPLES, glmap, scattered, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor delta = slamResult.getTransform();
       if (count == 0)
