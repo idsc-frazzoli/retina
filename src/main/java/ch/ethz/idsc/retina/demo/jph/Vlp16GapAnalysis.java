@@ -68,6 +68,6 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new Vlp16GapAnalysis());
+    OfflineProcessing.handle(() -> new Vlp16GapAnalysis());
   }
 }

@@ -13,18 +13,18 @@ import ch.ethz.idsc.retina.demo.LogFileInterface;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.MatrixQ;
 import ch.ethz.idsc.tensor.io.Export;
 
 enum OfflineProcessing {
-  INSTANCE;
-  // ---
-  private final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+  ;
+  private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
 
-  public void handle(Supplier<OfflineTableSupplier> supplier) throws IOException {
+  public static void handle(Supplier<OfflineTableSupplier> supplier) throws IOException {
     handle(Arrays.asList(DubendorfHangarLog.values()), supplier);
   }
 
-  public void handle(Collection<? extends LogFileInterface> collection, Supplier<OfflineTableSupplier> supplier) //
+  public static void handle(Collection<? extends LogFileInterface> collection, Supplier<OfflineTableSupplier> supplier) //
       throws IOException {
     for (LogFileInterface logFileInterface : collection) {
       File file = logFileInterface.file(LOG_ROOT);
@@ -40,6 +40,8 @@ enum OfflineProcessing {
   public static void single(File file, OfflineTableSupplier offlineTableSupplier, String title) throws IOException {
     OfflineLogPlayer.process(file, offlineTableSupplier);
     Tensor table = offlineTableSupplier.getTable();
+    if (!MatrixQ.of(table))
+      System.err.println("export does not have matrix structure");
     Export.of(UserHome.file(title + ".csv"), table.map(NSingle.INSTANCE));
   }
 }

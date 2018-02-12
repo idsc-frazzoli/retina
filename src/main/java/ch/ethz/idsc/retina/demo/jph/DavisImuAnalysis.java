@@ -60,6 +60,6 @@ class DavisImuAnalysis implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new DavisImuAnalysis(Quantity.of(0.01, SI.SECOND)));
+    OfflineProcessing.handle(() -> new DavisImuAnalysis(Quantity.of(0.01, SI.SECOND)));
   }
 }

@@ -45,7 +45,7 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
     TestCase.assertFalse(floatBuffer.hasRemaining());
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
+    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {

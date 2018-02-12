@@ -23,7 +23,7 @@ import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.retina.util.gui.TensorGraphics;
-import ch.ethz.idsc.retina.util.math.UniformResample;
+import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -197,7 +197,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    List<Tensor> result = new UniformResample(threshold, ds_value).apply(points);
+    List<Tensor> result = new ParametricResample(threshold, ds_value).apply(points).getPoints();
     System.out.println(points.length() + " -> blocks = " + result.size());
     _pointcloud = result;
   }

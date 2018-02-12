@@ -57,6 +57,6 @@ class ChannelTimingAnalysis implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new ChannelTimingAnalysis());
+    OfflineProcessing.handle(() -> new ChannelTimingAnalysis());
   }
 }

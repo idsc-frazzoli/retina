@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.math.UniformResample;
+import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
  * the oval trajectory in the dubendorf hangar */
 public enum SlamDunk {
   ;
-  /** the list of points is typically provided by {@link UniformResample}
+  /** the list of points is typically provided by {@link ParametricResample}
    * 
    * @param se2MultiresGrids
    * @param geometricLayer

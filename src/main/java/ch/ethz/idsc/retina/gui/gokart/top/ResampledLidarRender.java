@@ -56,7 +56,7 @@ class ResampledLidarRender extends LidarRender {
       // System.out.println("factor=" + Sqrt.of(det.negate()));
     }
     final Tensor points = _points;
-    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
+    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
     // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));

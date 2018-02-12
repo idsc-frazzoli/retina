@@ -100,6 +100,6 @@ class LocalizationAnalysis implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new LocalizationAnalysis(Quantity.of(0.05, SI.SECOND)));
+    OfflineProcessing.handle(() -> new LocalizationAnalysis(Quantity.of(0.05, SI.SECOND)));
   }
 }

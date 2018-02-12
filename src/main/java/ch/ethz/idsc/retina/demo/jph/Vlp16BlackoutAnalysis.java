@@ -68,6 +68,6 @@ class Vlp16BlackoutAnalysis implements OfflineTableSupplier, LidarRayDataListene
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.INSTANCE.handle(() -> new Vlp16BlackoutAnalysis());
+    OfflineProcessing.handle(() -> new Vlp16BlackoutAnalysis());
   }
 }
