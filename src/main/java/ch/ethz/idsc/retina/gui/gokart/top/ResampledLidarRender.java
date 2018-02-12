@@ -73,7 +73,7 @@ class ResampledLidarRender extends LidarRender {
           SlamScore slamScore = ImageScore.of(map_image);
           GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
           Stopwatch stopwatch = Stopwatch.started();
-          SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESSAMPLES, glmap, scattered, slamScore);
+          SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, scattered, slamScore);
           Tensor delta = slamResult.getTransform();
           double duration = stopwatch.display_seconds();
           // System.out.println(duration + "[s]");

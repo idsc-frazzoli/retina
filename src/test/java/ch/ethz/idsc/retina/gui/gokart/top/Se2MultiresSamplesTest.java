@@ -5,44 +5,37 @@ import java.util.Arrays;
 
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import junit.framework.TestCase;
 
 public class Se2MultiresSamplesTest extends TestCase {
   public void testSimple() {
-    Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples( //
+    Se2MultiresGrids se2MultiresGrids = new Se2MultiresGrids( //
         RealScalar.of(0.03), //
         RealScalar.of(2 * 3.14 / 180), //
-        3, 1);
-    Tensor list = se2MultiresSamples.level(2);
-    assertEquals(Dimensions.of(list), Arrays.asList(27, 3, 3));
-    assertEquals(se2MultiresSamples.levels(), 3);
+        1, 3);
+    Se2Grid se2Grid = se2MultiresGrids.grid(2);
+    assertEquals(se2Grid.gridPoints().size(), 27);
+    assertEquals(Dimensions.of(se2Grid.gridPoints().get(12).matrix()), Arrays.asList(3, 3));
+    assertEquals(se2MultiresGrids.grids(), 3);
   }
 
   public void testFan2() {
-    Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples( //
+    Se2MultiresGrids se2MultiresGrids = new Se2MultiresGrids( //
         RealScalar.of(0.03), //
         RealScalar.of(2 * 3.14 / 180), //
-        3, 2);
-    assertEquals(Dimensions.of(se2MultiresSamples.level(0)), Arrays.asList(125, 3, 3));
-    assertEquals(Dimensions.of(se2MultiresSamples.level(1)), Arrays.asList(125, 3, 3));
-    assertEquals(Dimensions.of(se2MultiresSamples.level(2)), Arrays.asList(125, 3, 3));
-    assertEquals(se2MultiresSamples.levels(), 3);
+        2, 3);
+    Se2Grid se2Grid = se2MultiresGrids.grid(2);
+    assertEquals(se2Grid.gridPoints().size(), 125);
+    assertEquals(Dimensions.of(se2Grid.gridPoints().get(124).matrix()), Arrays.asList(3, 3));
+    assertEquals(se2MultiresGrids.grids(), 3);
   }
 
   public void testPixelSpace() {
-    Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples(RealScalar.of(1), Degree.of(4), 3, 1);
-    Tensor list = se2MultiresSamples.level(2);
-    assertEquals(Dimensions.of(list), Arrays.asList(27, 3, 3));
-    assertEquals(se2MultiresSamples.levels(), 3);
+    Se2MultiresGrids se2MultiresGrids = new Se2MultiresGrids(RealScalar.of(1), Degree.of(4), 1, 4);
+    Se2Grid se2Grid = se2MultiresGrids.grid(3);
+    assertEquals(se2Grid.gridPoints().size(), 27);
+    assertEquals(Dimensions.of(se2Grid.gridPoints().get(26).matrix()), Arrays.asList(3, 3));
+    assertEquals(se2MultiresGrids.grids(), 4);
   }
-  // public static void main(String[] args) {
-  // Se2MultiresSamples se2MultiresSamples = new Se2MultiresSamples( //
-  // RealScalar.of(0.03), //
-  // RealScalar.of(2 * 3.14 / 180), //
-  // 3);
-  // for (Tensor matrix : se2MultiresSamples.level(0))
-  // System.out.println(Pretty.of(matrix));
-  // }
 }

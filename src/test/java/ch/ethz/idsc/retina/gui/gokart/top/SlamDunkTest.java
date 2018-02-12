@@ -57,7 +57,7 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
       SlamScore slamScore = ImageScore.of(map_image);
       GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
       Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESSAMPLES, glmap, scattered, slamScore);
+      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, scattered, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor delta = slamResult.getTransform();
       if (count == 0)

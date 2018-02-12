@@ -21,35 +21,33 @@ public enum SlamDunk {
   ;
   /** the list of points is typically provided by {@link UniformResample}
    * 
-   * @param se2MultiresSamples
+   * @param se2MultiresGrids
    * @param geometricLayer
    * @param points with dimension n x 2 {{px_1, py_1}, ..., {px_n, py_n}}
    * @param slamScore
    * @return */
   public static SlamResult of( //
-      Se2MultiresSamples se2MultiresSamples, //
-      GeometricLayer geometricLayer, //
-      Tensor points, //
-      SlamScore slamScore) {
+      Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, Tensor points, SlamScore slamScore) {
     Tensor result = IdentityMatrix.of(3);
     int score = -1;
-    for (int level = 0; level < se2MultiresSamples.levels(); ++level) {
+    for (int level = 0; level < se2MultiresGrids.grids(); ++level) {
       score = -1;
-      Tensor best = null;
-      for (Tensor delta : se2MultiresSamples.level(level)) { // TODO can do in parallel
-        geometricLayer.pushMatrix(delta);
-        int eval = points.stream().map(geometricLayer::toPoint2D) //
+      Se2GridPoint best = null;
+      Se2Grid se2grid = se2MultiresGrids.grid(level);
+      for (Se2GridPoint se2GridPoint : se2grid.gridPoints()) {
+        geometricLayer.pushMatrix(se2GridPoint.matrix());
+        int eval = points.stream().map(geometricLayer::toPoint2D) // TODO can do in parallel
             .mapToInt(slamScore::evaluate).sum();
         if (score < eval) {
-          best = delta;
+          best = se2GridPoint;
           score = eval;
         }
         geometricLayer.popMatrix();
       }
-      geometricLayer.pushMatrix(best); // manifest for next level
-      result = result.dot(best);
+      geometricLayer.pushMatrix(best.matrix()); // manifest for next level
+      result = result.dot(best.matrix());
     }
-    IntStream.range(0, se2MultiresSamples.levels()) //
+    IntStream.range(0, se2MultiresGrids.grids()) //
         .forEach(index -> geometricLayer.popMatrix());
     return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
   }
