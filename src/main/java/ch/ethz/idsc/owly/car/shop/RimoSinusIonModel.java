@@ -141,8 +141,8 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public CarControl createControl(Tensor u) {
-    Clip.absoluteOne().isInsideElseThrow(u.Get(0));
-    Clip.unit().isInsideElseThrow(u.Get(3));
+    Clip.absoluteOne().requireInside(u.Get(0));
+    Clip.unit().requireInside(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(MAX_DELTA);
     Scalar brake = u.Get(1).multiply(MAX_PRESS);

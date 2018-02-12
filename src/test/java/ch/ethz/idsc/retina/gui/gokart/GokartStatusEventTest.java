@@ -24,6 +24,6 @@ public class GokartStatusEventTest extends TestCase {
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
     Scalar scalar = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
     assertFalse(scalar instanceof Quantity);
-    Clip.function(0.05, 0.08).isInsideElseThrow(scalar);
+    Clip.function(0.05, 0.08).requireInside(scalar);
   }
 }

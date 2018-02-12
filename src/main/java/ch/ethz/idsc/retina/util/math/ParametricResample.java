@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.red.Norm;
 
+/** method of equidistant resampling of a sequence of irregular spaced points */
 public class ParametricResample implements Serializable {
   /** determines whether points are connected */
   private final Scalar threshold;
@@ -45,6 +46,7 @@ public class ParametricResample implements Serializable {
       if (connected) {
         final Scalar length = delta.Get(index);
         while (Scalars.lessThan(sum, length)) {
+          // 0 <= sum < length implies 0 <= sum / length < 1
           ret.append(RealScalar.of(index).add(sum.divide(length)));
           sum = sum.add(ds);
         }

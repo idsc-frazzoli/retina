@@ -21,11 +21,9 @@ import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
-import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.core.RrtsPlanner;
-import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -53,11 +51,12 @@ public class DubendorfPlannerDemo {
 
   void configure(OwlyAnimationFrame owlyAnimationFrame) {
     CarFlows carFlows = new CarStandardFlows(RealScalar.of(3.0), Degree.of(25));
-    CarEntity carEntity = new CarEntity( //
-        new StateTime(Tensors.vector(35.600, 42.933, 0.942), RealScalar.ZERO), //
-        Tensors.vector(2, 2, Degree.of(10).number()), //
-        carFlows, //
-        RimoSinusIonModel.standard().footprint());
+    CarEntity carEntity = null; // FIXME
+    // new CarEntity( //
+    // new StateTime(Tensors.vector(35.600, 42.933, 0.942), RealScalar.ZERO), //
+    // Tensors.vector(2, 2, Degree.of(10).number()), //
+    // carFlows, //
+    // RimoSinusIonModel.standard().footprint());
     BufferedImage bufferedImage = StoreMapUtil.loadOrNull();
     Tensor tensor = ImageFormat.from(bufferedImage);
     Dimensions.of(tensor);

@@ -68,7 +68,7 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
       // System.out.println(duration + "[s]");
       TestCase.assertTrue(duration < 0.3);
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
-      Clip.unit().isInsideElseThrow(ratio);
+      Clip.unit().requireInside(ratio);
       int quality = slamResult.getMatchRatio().multiply(RealScalar.of(sum * 255)).number().intValue();
       // System.out.println(quality);
       TestCase.assertTrue(20000 < quality);
