@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
@@ -27,12 +28,15 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.N;
 import junit.framework.TestCase;
 
 class CountLidarRayBlockListener implements LidarRayBlockListener {
   BufferedImage map_image = StoreMapUtil.loadOrNull();
-  Se2MultiresSamples se2MultiresSamples = //
+  Se2MultiresSamples se2MultiresSamples = // TODO redundant
       new Se2MultiresSamples(RealScalar.of(0.5), Degree.of(0.5), 4, 2);
   int skipped = 0;
   int count = 0;
@@ -45,7 +49,8 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
     TestCase.assertFalse(floatBuffer.hasRemaining());
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
-    int sum = list.stream().mapToInt(Tensor::length).sum(); // usually around 430
+    Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
+    int sum = scattered.length(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
       TestCase.assertTrue(400 < sum);
       Tensor model2pixel = Tensors.matrixDouble(new double[][] { //
@@ -53,18 +58,22 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
           { +3.21868, 6.77422, 213.03233 }, //
           { 0, 0, 1 } });
       SlamDunk slamDunk = new SlamDunk(map_image);
-      slamDunk.set(se2MultiresSamples);
       GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
       Stopwatch stopwatch = Stopwatch.started();
-      Tensor delta = slamDunk.fit(glmap, list);
+      SlamResult slamResult = slamDunk.fit(se2MultiresSamples, glmap, scattered);
+      double duration = stopwatch.display_seconds(); // typical is 0.03
+      Tensor delta = slamResult.getTransform();
       if (count == 0)
         TestCase.assertEquals(delta, IdentityMatrix.of(3));
       else
         TestCase.assertFalse(delta.equals(IdentityMatrix.of(3)));
-      double duration = stopwatch.display_seconds(); // typical is 0.03
+      TestCase.assertEquals(Dimensions.of(delta), Arrays.asList(3, 3));
       // System.out.println(duration + "[s]");
       TestCase.assertTrue(duration < 0.3);
-      int quality = slamDunk.getMatchQuality();
+      Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
+      Clip.unit().isInsideElseThrow(ratio);
+      int quality = slamResult.getMatchRatio().multiply(RealScalar.of(sum * 255)).number().intValue();
+      // System.out.println(quality);
       TestCase.assertTrue(20000 < quality);
       ++count;
     } else

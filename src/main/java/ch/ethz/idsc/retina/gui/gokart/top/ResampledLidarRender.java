@@ -21,7 +21,6 @@ import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -67,7 +66,8 @@ class ResampledLidarRender extends LidarRender {
     // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
     if (Objects.nonNull(map_image)) {
       graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
-      int sum = list.stream().mapToInt(Tensor::length).sum(); // usually around 430
+      Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
+      int sum = scattered.length(); // usually around 430
       // System.out.println("points: " + sum);
       if (flagSnap || trackSupplier.get())
         if (MIN_POINTS < sum) {
@@ -75,15 +75,13 @@ class ResampledLidarRender extends LidarRender {
           // ---
           Tensor model2pixel = geometricLayer.getMatrix();
           SlamDunk slamDunk = new SlamDunk(map_image);
-          slamDunk.set(se2MultiresSamples);
           GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
           Stopwatch stopwatch = Stopwatch.started();
-          Tensor delta = slamDunk.fit(glmap, list);
+          SlamResult slamResult = slamDunk.fit(se2MultiresSamples, glmap, scattered);
+          Tensor delta = slamResult.getTransform();
           double duration = stopwatch.display_seconds();
           // System.out.println(duration + "[s]");
-          int quality = slamDunk.getMatchQuality();
-          final Scalar ratio = RationalScalar.of(quality, sum * 255); // 255 is the max possible intensity per sample
-          // System.out.println("Quality=" + quality);
+          final Scalar ratio = slamResult.getMatchRatio();
           // System.out.println(Pretty.of(delta.map(Round._4)));
           Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
           poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 0, 2);
