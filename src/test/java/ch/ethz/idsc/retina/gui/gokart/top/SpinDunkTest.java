@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -30,6 +29,7 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.util.math.ResampleResult;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -47,8 +47,8 @@ import junit.framework.TestCase;
  * 51255
  * 43605
  * 44115 */
-class SlamLidarRayBlockListener implements LidarRayBlockListener {
-  static final boolean EXPORT = false;
+class SpinLidarRayBlockListener implements LidarRayBlockListener {
+  static final boolean EXPORT = true;
   // ---
   BufferedImage map_image = StoreMapUtil.loadOrNull();
   int skipped = 0;
@@ -58,7 +58,7 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
       { +3.21868, 6.77422, 213.03233 }, //
       { 0, 0, 1 } });
 
-  public SlamLidarRayBlockListener() {
+  public SpinLidarRayBlockListener() {
     TestCase.assertEquals(map_image.getType(), BufferedImage.TYPE_BYTE_GRAY);
   }
 
@@ -69,15 +69,17 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
     TestCase.assertFalse(floatBuffer.hasRemaining());
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
-    Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
-    int sum = scattered.length(); // usually around 430
+    // System.out.println(lidarRayBlockEvent.size());
+    ResampleResult resampleResult = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
+    // resampleResult.getParameters();
+    int sum = resampleResult.count(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
       TestCase.assertTrue(400 < sum);
       SlamScore slamScore = ImageScore.of(map_image);
       GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
       Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, scattered, slamScore);
+      // System.out.println("---");
+      SlamResult slamResult = SpinDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, resampleResult, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor delta = slamResult.getTransform();
       Tensor dstate = Se2Utils.fromSE2Matrix(delta);
@@ -92,12 +94,12 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
       }
       TestCase.assertEquals(Dimensions.of(delta), Arrays.asList(3, 3));
       // System.out.println(duration + "[s]");
-      TestCase.assertTrue(duration < 0.3);
+      TestCase.assertTrue(duration < 15.3); // TODO reduce
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
       Clip.unit().requireInside(ratio);
       int quality = slamResult.getMatchRatio().multiply(RealScalar.of(sum * 255)).number().intValue();
       // System.out.println(quality);
-      TestCase.assertTrue(40000 < quality);
+      TestCase.assertTrue(45000 < quality);
       // ---
       if (EXPORT) {
         BufferedImage image = new BufferedImage(map_image.getWidth(), map_image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -105,10 +107,12 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
         graphics2d.drawImage(map_image, 0, 0, null);
         GeometricLayer geometricLayer = new GeometricLayer(model2pixel, Array.zeros(3));
         graphics2d.setColor(Color.GREEN);
-        for (Tensor x : scattered) {
-          Point2D p = geometricLayer.toPoint2D(x);
-          graphics2d.fillRect((int) p.getX(), (int) p.getY(), 2, 2);
-        }
+        Scalar rate = dstate.Get(2);
+        for (Tensor scattered : resampleResult.getPointsSpin(rate))
+          for (Tensor x : scattered) {
+            Point2D p = geometricLayer.toPoint2D(x);
+            graphics2d.fillRect((int) p.getX(), (int) p.getY(), 2, 2);
+          }
         graphics2d.setColor(Color.GRAY);
         {
           Point2D p0 = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -119,7 +123,7 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
         }
         graphics2d.drawString("q=" + quality, 0, 10);
         try {
-          ImageIO.write(image, "png", UserHome.Pictures("slam" + count + ".png"));
+          ImageIO.write(image, "png", UserHome.Pictures("spin" + count + ".png"));
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -130,7 +134,7 @@ class SlamLidarRayBlockListener implements LidarRayBlockListener {
   }
 }
 
-public class SlamDunkTest extends TestCase {
+public class SpinDunkTest extends TestCase {
   public void testSimple() throws Exception {
     // global pose is approximately {56.137[m], 57.022[m], -1.09428}
     // new state={56.18474711501799[m], 57.042752703987055[m], -1.0956022539443036}
@@ -145,7 +149,7 @@ public class SlamDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    SlamLidarRayBlockListener lidarRayBlockListener = new SlamLidarRayBlockListener();
+    SpinLidarRayBlockListener lidarRayBlockListener = new SpinLidarRayBlockListener();
     lidarAngularFiringCollector.addListener(lidarRayBlockListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override

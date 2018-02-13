@@ -49,7 +49,7 @@ public enum StoreMapUtil {
    * @param image
    * @return matrix with entries from the range {0, 1, ..., 255}
    * @throws Exception if input does not represent an image */
-  // TODO obsolete with owl003
+  // TODO obsolete with owl004
   private static Tensor grayscale(Tensor image) {
     Optional<Integer> optional = TensorRank.ofArray(image);
     switch (optional.get()) {
