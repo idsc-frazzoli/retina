@@ -1,4 +1,3 @@
-// code by jph
 package ch.ethz.idsc.retina.offline.slam;
 
 import java.awt.Color;
@@ -8,7 +7,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -21,33 +19,39 @@ import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.DubendorfSlam;
 import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
 import ch.ethz.idsc.retina.gui.gokart.top.ResampledLidarRender;
-import ch.ethz.idsc.retina.gui.gokart.top.SlamDunk;
 import ch.ethz.idsc.retina.gui.gokart.top.SlamResult;
 import ch.ethz.idsc.retina.gui.gokart.top.SlamScore;
+import ch.ethz.idsc.retina.gui.gokart.top.SpinDunk;
 import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.ResampleResult;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.Inverse;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.N;
-import ch.ethz.idsc.tensor.sca.Round;
+import junit.framework.TestCase;
 
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
- * the matching qualities are 51255, 43605, 44115 */
-public class SlamLidarRayBlockListener extends OfflineLocalize {
-  static final boolean EXPORT = false;
+ * the matching qualities are
+ * 51255
+ * 43605
+ * 44115 */
+public class SpinLidarRayBlockListener extends OfflineLocalize {
+  static final boolean EXPORT = true;
   // ---
   BufferedImage map_image = StoreMapUtil.loadOrNull();
+  int skipped = 0;
   int count = 0;
 
-  public SlamLidarRayBlockListener(Tensor model) {
+  public SpinLidarRayBlockListener(Tensor model) {
     super(model);
-    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
-      throw new RuntimeException();
+    TestCase.assertEquals(map_image.getType(), BufferedImage.TYPE_BYTE_GRAY);
   }
 
   @Override // from LidarRayBlockListener
@@ -56,18 +60,21 @@ public class SlamLidarRayBlockListener extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
-    Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
-    int sum = scattered.length(); // usually around 430
+    TestCase.assertFalse(floatBuffer.hasRemaining());
+    // System.out.println(lidarRayBlockEvent.size());
+    ResampleResult resampleResult = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
+    // resampleResult.getParameters();
+    int sum = resampleResult.count(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
-      System.out.println(time.map(Magnitude.SECOND).map(Round._2));
       {
+        TestCase.assertTrue(400 < sum);
         SlamScore slamScore = ImageScore.of(map_image);
         GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
         geometricLayer.pushMatrix(model);
         geometricLayer.pushMatrix(LIDAR);
         Stopwatch stopwatch = Stopwatch.started();
-        SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+        // System.out.println("---");
+        SlamResult slamResult = SpinDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, resampleResult, slamScore);
         double duration = stopwatch.display_seconds(); // typical is 0.03
         Tensor pre_delta = slamResult.getTransform();
         Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
@@ -79,7 +86,13 @@ public class SlamLidarRayBlockListener extends OfflineLocalize {
             N.DOUBLE.apply(slamResult.getMatchRatio()), //
             RealScalar.of(sum), //
             RealScalar.of(duration));
+        // System.out.println(duration + "[s]");
+        TestCase.assertTrue(duration < 15.3); // TODO reduce
+        Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
+        Clip.unit().requireInside(ratio);
         int quality = slamResult.getMatchRatio().multiply(RealScalar.of(sum * 255)).number().intValue();
+        // System.out.println(quality);
+        // TestCase.assertTrue(40000 < quality);
       }
       // ---
       if (EXPORT) {
@@ -90,10 +103,12 @@ public class SlamLidarRayBlockListener extends OfflineLocalize {
         geometricLayer.pushMatrix(model);
         geometricLayer.pushMatrix(LIDAR);
         graphics2d.setColor(Color.GREEN);
-        for (Tensor x : scattered) {
-          Point2D p = geometricLayer.toPoint2D(x);
-          graphics2d.fillRect((int) p.getX(), (int) p.getY(), 2, 2);
-        }
+        Scalar rate = RealScalar.ZERO; // dstate.Get(2); // FIXME
+        for (Tensor scattered : resampleResult.getPointsSpin(rate))
+          for (Tensor x : scattered) {
+            Point2D p = geometricLayer.toPoint2D(x);
+            graphics2d.fillRect((int) p.getX(), (int) p.getY(), 2, 2);
+          }
         graphics2d.setColor(Color.GRAY);
         {
           Point2D p0 = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -104,13 +119,13 @@ public class SlamLidarRayBlockListener extends OfflineLocalize {
         }
         // graphics2d.drawString("q=" + quality, 0, 10);
         try {
-          ImageIO.write(image, "png", UserHome.Pictures("slam" + count + ".png"));
+          ImageIO.write(image, "png", UserHome.Pictures("spin" + count + ".png"));
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
       ++count;
     } else
-      skipped.append(time.map(Magnitude.SECOND));
+      ++skipped;
   }
 }
