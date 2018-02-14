@@ -3,23 +3,24 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public class SlamResult {
   private final Tensor tensor;
   private final Scalar ratio;
 
+  /** @param tensor
+   * @param ratio in the interval [0, 1] */
   public SlamResult(Tensor tensor, Scalar ratio) {
     this.tensor = tensor;
-    this.ratio = ratio;
+    this.ratio = Clip.unit().requireInside(ratio);
   }
 
   public Tensor getTransform() {
     return tensor;
   }
 
-  /** @return sum of all grayscale color values of the pixels in the map
-   * that coincide with a lidar sample. the maximum possible value is the
-   * number of samples multiplied by 255 */
+  /** @return in the interval [0, 1] */
   public Scalar getMatchRatio() {
     return ratio;
   }

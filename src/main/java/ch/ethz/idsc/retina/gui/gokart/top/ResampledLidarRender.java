@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
-class ResampledLidarRender extends LidarRender {
+public class ResampledLidarRender extends LidarRender {
   private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
