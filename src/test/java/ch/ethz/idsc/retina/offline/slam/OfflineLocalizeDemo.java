@@ -1,8 +1,10 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.top;
+package ch.ethz.idsc.retina.offline.slam;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -11,19 +13,17 @@ import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalize;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalizeResource;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalizeResources;
-import ch.ethz.idsc.retina.offline.slam.SlamLidarRayBlockListener;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.sca.Clip;
-import junit.framework.TestCase;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.io.CsvFormat;
+import ch.ethz.idsc.tensor.io.Export;
 
-public class SlamDunkTest extends TestCase {
-  public void testSimple() throws Exception {
-    OfflineLocalizeResource olr = OfflineLocalizeResources.TEST;
-    assertTrue(olr.file().isFile());
+enum OfflineLocalizeDemo {
+  ;
+  public static void main(String[] args) throws IOException {
+    OfflineLocalizeResource olr = OfflineLocalizeResources.OVAL;
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
@@ -38,15 +38,15 @@ public class SlamDunkTest extends TestCase {
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-        offlineLocalize.setTime(time);
-        if (channel.equals("vlp16.center.ray"))
-          velodyneDecoder.lasers(byteBuffer);
+        if (Scalars.lessThan(Magnitude.SECOND.apply(time), RealScalar.of(20))) {
+          if (channel.equals("vlp16.center.ray")) {
+            offlineLocalize.setTime(time);
+            velodyneDecoder.lasers(byteBuffer);
+          }
+        }
       }
     };
     OfflineLogPlayer.process(olr.file(), offlineLogListener);
-    assertEquals(offlineLocalize.skipped.length(), 1);
-    Clip clip = Clip.function(0.35, 1);
-    // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));
-    assertTrue(offlineLocalize.getTable().get(Tensor.ALL, 7).stream().map(Scalar.class::cast).allMatch(clip::isInside));
+    Export.of(UserHome.file("oval.csv"), offlineLocalize.getTable().map(CsvFormat.strict()));
   }
 }

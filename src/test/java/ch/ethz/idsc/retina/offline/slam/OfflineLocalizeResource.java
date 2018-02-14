@@ -8,5 +8,5 @@ import ch.ethz.idsc.tensor.Tensor;
 public interface OfflineLocalizeResource {
   File file();
 
-  Tensor model2pixel();
+  Tensor model();
 }

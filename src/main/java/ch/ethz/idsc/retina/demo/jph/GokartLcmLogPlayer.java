@@ -23,6 +23,7 @@ enum GokartLcmLogPlayer {
         "/home/datahaki/Projects/retina/src/test/resources/localization", //
         "vlp16.center.ray_autobox.rimo.get.lcm");
     file = DubendorfHangarLog._20180108T165210_5f742add.file(LOG_ROOT);
+    file = new File("/home/datahaki/temp/20180108T162528_5f742add.lcm.00.extract");
     cfg.logFile = file.toString();
     cfg.speed = RationalScalar.of(1, 1);
     LogPlayer.create(cfg);

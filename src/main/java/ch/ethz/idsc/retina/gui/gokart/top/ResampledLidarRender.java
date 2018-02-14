@@ -93,9 +93,8 @@ public class ResampledLidarRender extends LidarRender {
           graphics.drawString("points=" + sum, 0, 30);
           graphics.drawString("quality=" + ratio.map(Round._2), 0, 50);
           graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
-        }
-      // else
-      // System.err.println("insufficient: " + sum);
+        } else
+          System.err.println("insufficient: " + sum);
     }
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));

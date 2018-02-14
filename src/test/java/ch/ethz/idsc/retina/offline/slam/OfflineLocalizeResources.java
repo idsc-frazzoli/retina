@@ -3,22 +3,24 @@ package ch.ethz.idsc.retina.offline.slam;
 
 import java.io.File;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public enum OfflineLocalizeResources implements OfflineLocalizeResource {
   TEST(new File("src/test/resources/localization", "vlp16.center.ray_autobox.rimo.get.lcm"), //
-      Tensors.matrixDouble(new double[][] { //
-          { -6.77422, 3.21868, 422.04915 }, //
-          { +3.21868, 6.77422, 213.03233 }, //
-          { 0, 0, 1 } }));
+      Tensors.vector(56.137, 57.022, -1.09428)), //
+  OVAL(UserHome.file("temp/20180108T162528_5f742add.lcm.00.extract"), //
+      Tensors.vector(40.32, 51.02, 0.818226)), //
+  ;
   // ---
   private final File file;
-  private final Tensor model2pixel;
+  private final Tensor xya;
 
-  private OfflineLocalizeResources(File file, Tensor model2pixel) {
+  private OfflineLocalizeResources(File file, Tensor xya) {
     this.file = file;
-    this.model2pixel = model2pixel.unmodifiable();
+    this.xya = xya;
   }
 
   @Override
@@ -27,7 +29,7 @@ public enum OfflineLocalizeResources implements OfflineLocalizeResource {
   }
 
   @Override
-  public Tensor model2pixel() {
-    return model2pixel;
+  public Tensor model() {
+    return Se2Utils.toSE2Matrix(xya);
   }
 }
