@@ -7,6 +7,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -14,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public abstract class AbstractGokartRender implements RenderInterface {
-  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.singleton("m");
+  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.singleton(SI.METER);
   // ---
   private final GokartPoseInterface gokartPoseInterface;
 

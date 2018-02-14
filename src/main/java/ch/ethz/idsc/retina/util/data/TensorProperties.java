@@ -18,7 +18,10 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-// EXPERIMENTAL
+/** manages configurable parameters by introspection of a given instance
+ * 
+ * values of members of type {@link Tensor} or {@link Scalar} are stored in
+ * and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
   public static Properties extract(Object object) {
@@ -38,21 +41,6 @@ public enum TensorProperties {
           exception.printStackTrace();
         }
     return properties;
-  }
-
-  public static List<String> strings(Object object) {
-    List<String> list = new LinkedList<>();
-    Field[] fields = object.getClass().getFields();
-    for (Field field : fields)
-      if (isTracked(field))
-        try {
-          Object value = field.get(object);
-          if (Objects.nonNull(value))
-            list.add(field.getName() + "=" + value.toString());
-        } catch (Exception exception) {
-          exception.printStackTrace();
-        }
-    return list;
   }
 
   public static <T> T insert(Properties properties, T object) {
@@ -113,5 +101,20 @@ public enum TensorProperties {
 
   public static void manifest(File file, Object object) throws IOException {
     Files.write(file.toPath(), (Iterable<String>) strings(object)::iterator);
+  }
+
+  private static List<String> strings(Object object) {
+    List<String> list = new LinkedList<>();
+    Field[] fields = object.getClass().getFields();
+    for (Field field : fields)
+      if (isTracked(field))
+        try {
+          Object value = field.get(object);
+          if (Objects.nonNull(value))
+            list.add(field.getName() + "=" + value.toString());
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+    return list;
   }
 }

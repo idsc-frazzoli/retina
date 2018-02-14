@@ -39,16 +39,9 @@ Joystick Dead man switch:
 
 # LIDAR
 
-## HOKUYO URG-04LX-UG01
-
-![urg04lx](https://user-images.githubusercontent.com/4012178/29029959-c052da4c-7b89-11e7-8b01-1b4efc3593c0.gif)
-
-our code builds upon the
-[urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
-
 ## Velodyne VLP-16
 
-* 3D-point cloud visualization
+* point cloud visualization and localization with lidar [video](https://www.youtube.com/watch?v=pykecjwixgg)
 
 ## Velodyne HDL-32E
 
@@ -65,6 +58,13 @@ intensity as 360[deg] panorama
 ## Quanergy Mark8
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=DjvEijz14co)
+
+## HOKUYO URG-04LX-UG01
+
+![urg04lx](https://user-images.githubusercontent.com/4012178/29029959-c052da4c-7b89-11e7-8b01-1b4efc3593c0.gif)
+
+our code builds upon the
+[urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
 # DVS
 
@@ -211,4 +211,4 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
 The library is used in the projects:
 * `owly3d`
 
-The repository has over `310` unit tests.
+The repository has over `370` unit tests.

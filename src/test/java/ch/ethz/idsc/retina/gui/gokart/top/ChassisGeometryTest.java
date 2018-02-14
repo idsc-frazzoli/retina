@@ -22,8 +22,13 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSingleton() {
     Scalar xAxleDistance = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-    Clip.function(1.1, 1.25).isInsideElseThrow(xAxleDistance);
+    Clip.function(1.1, 1.25).requireInside(xAxleDistance);
     ChassisGeometry.GLOBAL.yTireFrontMeter();
+  }
+
+  public void testyHalfWidthMeter() {
+    Scalar scalar = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+    assertTrue(scalar instanceof RealScalar);
   }
 
   public void testSteerAngleTowardsLeft() {

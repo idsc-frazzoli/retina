@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import ch.ethz.idsc.owl.math.ScalarTensorFunction;
 import ch.ethz.idsc.retina.util.math.PiecewiseLinearFunction;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 
 /* package */ enum SteerGainsSchedule {
   INSTANCE;

@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 public enum LinmotStatusWordBit {
   OPERATION_ENABLED, // 0
   SWITCH_ON, // 1
@@ -19,4 +22,16 @@ public enum LinmotStatusWordBit {
   IN_RANGE1, // 14
   IN_RANGE2, // 15
   ;
+  // ---
+  /** @param status_word of {@link LinmotGetEvent}
+   * @return */
+  public static Set<LinmotStatusWordBit> from(short status_word) {
+    Set<LinmotStatusWordBit> set = EnumSet.noneOf(LinmotStatusWordBit.class);
+    for (LinmotStatusWordBit linmotStatusWordBit : values()) {
+      boolean selected = (status_word & (1 << linmotStatusWordBit.ordinal())) != 0;
+      if (selected)
+        set.add(linmotStatusWordBit);
+    }
+    return set;
+  }
 }

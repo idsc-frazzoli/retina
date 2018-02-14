@@ -10,6 +10,7 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.zhkart.pos.MappedPoseInterface;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -44,8 +45,9 @@ public class ViewLcmFrame extends TimerFrame {
         // Tensor newPose = Inverse.of(MODEL2PIXEL_INITIAL).dot(model2pixel).dot(pose);
         Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
         Tensor newState = Se2Utils.fromSE2Matrix(newPose);
-        newState.set(s -> Quantity.of(s.Get(), "m"), 0);
-        newState.set(s -> Quantity.of(s.Get(), "m"), 1);
+        newState.set(s -> Quantity.of(s.Get(), SI.METER), 0);
+        newState.set(s -> Quantity.of(s.Get(), SI.METER), 1);
+        System.out.println("new state=" + newState);
         gokartPoseInterface.setPose(newState, RealScalar.ONE);
         geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
       }

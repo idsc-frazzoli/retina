@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -44,7 +45,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return Tensors.of(Quantity.of(x, "m"), Quantity.of(y, "m"), DoubleScalar.of(angle));
+    return Tensors.of(Quantity.of(x, SI.METER), Quantity.of(y, SI.METER), DoubleScalar.of(angle));
   }
 
   public Scalar getQuality() {

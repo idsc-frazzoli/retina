@@ -122,7 +122,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
-        ColorDataGradients.TEMPERATURE.apply(LinmotGetEvent.NOMINAL_POSITION_DELTA.rescale(scalar))));
+        ColorDataGradients.TEMPERATURE.apply(LinmotConfig.NOMINAL_POSITION_DELTA.rescale(scalar))));
     final Clip clip = LinmotConfig.GLOBAL.temperatureHardwareClip();
     {
       Scalar temp = linmotGetEvent.getWindingTemperature1();

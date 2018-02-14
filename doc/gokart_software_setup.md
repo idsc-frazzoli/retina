@@ -22,9 +22,9 @@ run the command
 
 start Eclipse
 
-Info: (Ctrl+Shift+R) navigates to files
+*Info:* (Ctrl+Shift+R) navigates to files
 
-Info: (Ctrl+F11) runs a java file
+*Info:* (Ctrl+F11) runs a java file
 
 ## DAVIS 240C
 
@@ -55,22 +55,11 @@ run
 
 ### in the tab "lab"
 
-click "Spy" and wait ~10 seconds for the window to show up
-
-Confirm: there are
-
-    8 channels starting with autobox.* 
-    4 channels starting with davis.*
-    1 channel starting with joystick
-    2 channels starting with vlp16
-
-deactivating the toggle-button "Spy".
-
-activate 2 more modules by enabling the toggle-buttons
+activate the modules by enabling the toggle-buttons
 * Autobox Introspection
 * Autobox Testing
 
-Info: the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
+*Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
 ### In the tab Testing::Linmot
 
@@ -185,3 +174,17 @@ To inspect the camera image for instance for focus and calibration, you can type
     
 > This script will log messages from all the cameras that are connected to the USB hub. You can stop it using (Ctrl+C).
 
+## Troubleshooting
+
+### in the tab "lab"
+
+click "Spy" and wait ~10 seconds for the window to show up
+
+Confirm: there are
+
+    8 channels starting with autobox.* 
+    4 channels starting with davis.*
+    1 channel starting with joystick
+    2 channels starting with vlp16
+
+deactivate the toggle-button "Spy".

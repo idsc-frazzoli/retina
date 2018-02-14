@@ -13,14 +13,13 @@ import ch.ethz.idsc.owly.car.model.DefaultCarModel;
 import ch.ethz.idsc.owly.car.model.DefaultWheel;
 import ch.ethz.idsc.owly.car.model.MotorTorques;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -49,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * Außendurchmesser: 280mm
  * Felgengrösse (inch): 8.0 (210mm) */
 public class RimoSinusIonModel extends DefaultCarModel {
-  private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
+  private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(SI.METER);
 
   // ---
   public static VehicleModel standard() {
@@ -142,10 +141,8 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public CarControl createControl(Tensor u) {
-    if (!Clip.absoluteOne().of(u.Get(0)).equals(u.Get(0)))
-      throw TensorRuntimeException.of(u.Get(0));
-    if (!Clip.unit().of(u.Get(3)).equals(u.Get(3)))
-      throw TensorRuntimeException.of(u.Get(3));
+    Clip.absoluteOne().requireInside(u.Get(0));
+    Clip.unit().requireInside(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(MAX_DELTA);
     Scalar brake = u.Get(1).multiply(MAX_PRESS);

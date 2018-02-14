@@ -58,7 +58,7 @@ public class PurePursuitModuleTest extends TestCase {
     // System.out.println(heading);
     // assertEquals(Quantity.of(-0.013455281968592674, "rad"), heading);
     Clip clip = Clip.function(Quantity.of(-0.02, "rad"), Quantity.of(-0.01, "rad"));
-    clip.isInsideElseThrow(heading);
+    clip.requireInside(heading);
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
@@ -109,7 +109,7 @@ public class PurePursuitModuleTest extends TestCase {
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     Clip clip = Clip.function(Quantity.of(-0.16, "rad"), Quantity.of(-0.12, "rad"));
-    clip.isInsideElseThrow(heading);
+    clip.requireInside(heading);
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
@@ -128,7 +128,7 @@ public class PurePursuitModuleTest extends TestCase {
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     Clip clip = Clip.function(Quantity.of(-0.15, "rad"), Quantity.of(-0.10, "rad"));
-    clip.isInsideElseThrow(heading);
+    clip.requireInside(heading);
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();

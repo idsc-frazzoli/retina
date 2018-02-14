@@ -9,11 +9,13 @@ import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
 import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private static final int LOCAL_PORT = 5000;
   private static final int REMOTE_PORT = 5000;
+  private static final Unit HERTZ = Unit.of("Hz");
   // ---
   /** the communication rate affects the torque PI control */
   private static final int SEND_PERIOD_MS = 20; // 50[Hz]
@@ -37,7 +39,7 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   }
 
   public Scalar getGetPeriod() {
-    return UnitSystem.SI().apply(Quantity.of(250, "Hz")).reciprocal();
+    return UnitSystem.SI().apply(Quantity.of(250, HERTZ)).reciprocal();
   }
 
   @Override // from AutoboxSocket

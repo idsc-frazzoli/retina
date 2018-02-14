@@ -7,14 +7,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.gui.ani.AbstractEntity;
 import ch.ethz.idsc.owl.gui.ani.PlannerType;
+import ch.ethz.idsc.owl.gui.ani.TrajectoryEntity;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.flow.Integrator;
 import ch.ethz.idsc.owl.math.flow.RungeKutta4Integrator;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.state.BoundedEpisodeIntegrator;
-import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.model.CarState;
@@ -23,18 +21,18 @@ import ch.ethz.idsc.owly.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 
-/* package */ class CarEntity extends AbstractEntity {
+/* package */ class CarEntity extends TrajectoryEntity {
   private static final Integrator INTEGRATOR = RungeKutta4Integrator.INSTANCE;
   private static final Scalar MAX_TIME_STEP = RealScalar.of(.005);
 
   public CarEntity(CarStateSpaceModel carStateSpaceModel, CarState carState) {
-    super(new BoundedEpisodeIntegrator( //
-        carStateSpaceModel, //
-        INTEGRATOR, //
-        new StateTime(carState.asVector(), RealScalar.ZERO), //
-        MAX_TIME_STEP));
+    super(null, null); // FIXME
+    // super(new BoundedEpisodeIntegrator( //
+    // carStateSpaceModel, //
+    // INTEGRATOR, //
+    // new StateTime(carState.asVector(), RealScalar.ZERO), //
+    // MAX_TIME_STEP));
   }
 
   @Override
@@ -42,16 +40,15 @@ import ch.ethz.idsc.tensor.alg.Array;
     return PlannerType.STANDARD;
   }
 
-  @Override
-  protected Scalar distance(Tensor x, Tensor y) {
-    throw new RuntimeException();
-  }
-
-  @Override
-  protected Tensor fallbackControl() {
-    return Array.zeros(5);
-  }
-
+  // @Override
+  // protected Scalar distance(Tensor x, Tensor y) {
+  // throw new RuntimeException();
+  // }
+  //
+  // @Override
+  // protected Tensor fallbackControl() {
+  // return Array.zeros(5);
+  // }
   @Override
   public Scalar delayHint() {
     throw new RuntimeException();

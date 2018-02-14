@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.dev.zhkart.pure;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.bot.se2.glc.PurePursuit;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -87,8 +87,11 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
-    if (aheadTrail.isPresent())
-      return PurePursuit.turningRatePositiveX(aheadTrail.get(), distance);
+    if (aheadTrail.isPresent()) {
+      PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);
+      return purePursuit.ratio();
+      // return PurePursuit.turningRatePositiveX(aheadTrail.get(), distance); // in owl 002
+    }
     return Optional.empty();
   }
 

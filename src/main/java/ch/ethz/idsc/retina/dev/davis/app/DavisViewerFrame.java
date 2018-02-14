@@ -92,7 +92,10 @@ public class DavisViewerFrame implements TimedImageListener {
       }
       {
         JToggleButton jToggleButton = new JToggleButton("aps");
-        jToggleButton.addActionListener(e -> tallyAps = jToggleButton.isSelected());
+        jToggleButton.addActionListener(e -> {
+          davisViewerComponent.aps = jToggleButton.isSelected();
+          tallyAps = jToggleButton.isSelected();
+        });
         jToolBar.add(jToggleButton);
       }
       {

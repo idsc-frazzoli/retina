@@ -16,9 +16,9 @@ public class LinmotPutEvent extends DataEvent {
    * the values that determine position control are all set to zero.
    * 
    * @param control
-   * @param motion
+   * @param motion command header
    * @return */
-  public static LinmotPutEvent configuration(Word control, Word motion) {
+  /* package */ static LinmotPutEvent configuration(Word control, Word motion) {
     return new LinmotPutEvent(control, motion, (short) 0, (short) 0, (short) 0, (short) 0);
   }
 
@@ -35,15 +35,13 @@ public class LinmotPutEvent extends DataEvent {
    * the flexibility is required for testing.
    * 
    * @param control
-   * @param motion
+   * @param motion command header
    * @param target_position
    * @param max_velocity
    * @param acceleration
    * @param deceleration */
-  public LinmotPutEvent( //
-      Word control, Word motion, //
-      short target_position, short max_velocity, //
-      short acceleration, short deceleration) {
+  public LinmotPutEvent(Word control, Word motion, //
+      short target_position, short max_velocity, short acceleration, short deceleration) {
     control_word = control.getShort();
     motion_cmd_hdr = motion.getShort();
     this.target_position = target_position;
@@ -52,8 +50,16 @@ public class LinmotPutEvent extends DataEvent {
     this.deceleration = deceleration;
   }
 
-  /** @param byteBuffer
-   * with at least 12 bytes remaining */
+  public LinmotPutEvent(ByteBuffer byteBuffer) {
+    control_word = byteBuffer.getShort();
+    motion_cmd_hdr = byteBuffer.getShort();
+    target_position = byteBuffer.getShort();
+    max_velocity = byteBuffer.getShort();
+    acceleration = byteBuffer.getShort();
+    deceleration = byteBuffer.getShort();
+  }
+
+  /** @param byteBuffer with at least 12 bytes remaining */
   @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(control_word);

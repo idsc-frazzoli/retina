@@ -7,7 +7,7 @@ import java.util.Map;
 
 public enum ProviderRanks {
   ;
-  private static Map<ProviderRank, Color> MAP = new EnumMap<>(ProviderRank.class);
+  private static final Map<ProviderRank, Color> MAP = new EnumMap<>(ProviderRank.class);
   static {
     for (ProviderRank providerRank : ProviderRank.values())
       MAP.put(providerRank, Color.WHITE);

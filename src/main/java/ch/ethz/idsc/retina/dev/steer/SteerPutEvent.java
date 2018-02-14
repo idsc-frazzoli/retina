@@ -6,8 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.retina.sys.OfflineUse;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -73,5 +76,11 @@ public class SteerPutEvent extends DataEvent {
 
   public Scalar getTorque() {
     return Quantity.of(torque, UNIT_RTORQUE);
+  }
+
+  /** @return vector of length 2 */
+  @OfflineUse
+  public Tensor values_raw() {
+    return Tensors.vector(command & 0xff, torque);
   }
 }

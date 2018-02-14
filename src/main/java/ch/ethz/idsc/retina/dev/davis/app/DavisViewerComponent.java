@@ -27,6 +27,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   BufferedImage rstImage = null;
   BufferedImage difImage = null;
   private ImageCopy imageCopy = new ImageCopy();
+  boolean aps = false;
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
   DavisTallyEvent davisTallyEvent;
@@ -68,8 +69,9 @@ public class DavisViewerComponent implements DavisImuFrameListener {
         graphics.drawImage(sigImage, 1 * 240, 0, null);
       if (Objects.nonNull(difImage))
         graphics.drawImage(difImage, 2 * 240, 0, null);
+      final int offsetY = aps ? 180 : 0;
       if (imageCopy.hasValue())
-        graphics.drawImage(imageCopy.get(), 2 * 240, 180, null);
+        graphics.drawImage(imageCopy.get(), 2 * 240, offsetY, null);
       // ---
       final int baseline_y = getSize().height - 20;
       if (Objects.nonNull(davisTallyEvent)) {
@@ -92,11 +94,11 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
-        graphics.drawString(imuFrame.temperature().map(Round._2).toString(), 70, 180 + 12 * 1);
+        graphics.drawString(imuFrame.temperature().map(Round._2).toString(), 70, offsetY + 12 * 1);
         graphics.drawString( //
-            imuFrame.accelImageFrame().map(Round._2).toString(), 0, 180 + 12 * 2);
+            imuFrame.accelImageFrame().map(Round._2).toString(), 0, offsetY + 12 * 2);
         graphics.drawString( //
-            imuFrame.gyroImageFrame().map(Round._2).toString(), 0, 180 + 12 * 3);
+            imuFrame.gyroImageFrame().map(Round._2).toString(), 0, offsetY + 12 * 3);
       }
       if (Objects.nonNull(difImage)) {
         int[] bins = ImageHistogram.of(difImage);
@@ -111,7 +113,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       }
       // ---
       graphics.setColor(Color.RED);
-      graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, 190);
+      graphics.drawString(String.format("%4.1f Hz", intervalClock.hertz()), 0, offsetY + 10);
     }
   };
 

@@ -20,13 +20,12 @@
  */
 package ch.ethz.idsc.retina.util.gps;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Transforms coordinates from WGS84 to the new Swiss-Grid coordinate system.
  * 
@@ -34,10 +33,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * @author mrieser */
 public enum WGS84toCH1903LV03Plus {
   ;
-  private static final Unit UNIT_METER = Unit.of("m");
-  private static final ScalarUnaryOperator MAGNITUDE_DEGREE = //
-      QuantityMagnitude.SI().in(Unit.of("deg"));
-
   /** a location in Switzerland has the following coordinates
    * coord_getX = 8.3786[deg]
    * coord_getY = 47.2434[deg]
@@ -47,8 +42,8 @@ public enum WGS84toCH1903LV03Plus {
    * @return */
   public static Tensor transform(Scalar degX, Scalar degY) {
     return transform( //
-        MAGNITUDE_DEGREE.apply(degX).number().doubleValue(), //
-        MAGNITUDE_DEGREE.apply(degY).number().doubleValue());
+        Magnitude.DEGREE_ANGLE.apply(degX).number().doubleValue(), //
+        Magnitude.DEGREE_ANGLE.apply(degY).number().doubleValue());
   }
 
   // function is the original from Matsim except the return statement and type
@@ -69,7 +64,7 @@ public enum WGS84toCH1903LV03Plus {
     /* Important Note: in the Swiss Grid, y describes easting and x describes
      * northing, contrary to the usual naming conventions! */
     return Tensors.of( //
-        Quantity.of(CH1903Y, UNIT_METER), //
-        Quantity.of(CH1903X, UNIT_METER));
+        Quantity.of(CH1903Y, SI.METER), //
+        Quantity.of(CH1903X, SI.METER));
   }
 }

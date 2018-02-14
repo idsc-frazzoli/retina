@@ -1,11 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Properties;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -71,5 +75,16 @@ public class TensorPropertiesTest extends TestCase {
   public void testUsername() {
     String name = System.getProperty("user.name");
     assertFalse(name.isEmpty());
+  }
+
+  public void testManifest() throws IOException {
+    File file = UserHome.file("TensorProperties_testfile.properties");
+    assertFalse(file.exists());
+    TensorProperties.manifest(file, SensorsConfig.GLOBAL);
+    assertTrue(file.exists());
+    SensorsConfig sc = TensorProperties.retrieve(file, new SensorsConfig());
+    assertEquals(sc.urg04lx, SensorsConfig.GLOBAL.urg04lx);
+    assertEquals(sc.vlp16Height, SensorsConfig.GLOBAL.vlp16Height);
+    file.delete();
   }
 }

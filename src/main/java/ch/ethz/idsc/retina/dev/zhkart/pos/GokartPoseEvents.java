@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.zhkart.pos;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
@@ -12,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public enum GokartPoseEvents {
   ;
-  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(Unit.of("m"));
+  private static final ScalarUnaryOperator TO_METER = QuantityMagnitude.SI().in(SI.METER);
   private static final ScalarUnaryOperator TO_RADIANS = QuantityMagnitude.SI().in(Unit.ONE);
 
   public static GokartPoseEvent getPoseEvent(Tensor state, Scalar quality) {

@@ -2,8 +2,10 @@
 package ch.ethz.idsc.retina.util.data;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 
 /** represents an interval in time */
+@SafetyCritical
 public class TriggeredTimeInterval {
   private final double duration_seconds;
   private boolean isBlown = false;
@@ -13,10 +15,13 @@ public class TriggeredTimeInterval {
     this.duration_seconds = duration_seconds;
   }
 
+  /** the first invocation of {@link #panic()} triggers the
+   * time interval. Subsequent invocations do nothing. */
   public void panic() {
-    if (!isBlown)
+    if (!isBlown) {
+      isBlown = true;
       stopwatch.start();
-    isBlown = true;
+    }
   }
 
   /** @return true if present time is inside the triggered time interval */

@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.lidar;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /** NMEA examples from VLP-16
  * $GPRMC,214431,A,3707.7937,N,12139.2432,W,000.0,325.8,230715,013.8,E,D*0F
@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
  * 
  * at Duebendorf
  * $GPRMC,155524,A,4724.3266,N,00837.8624,E,002.0,172.1,131217,001.8,E,A*10
+ * $GPRMC,142802,A,4724.3445,N,00837.8776,E,000.0,111.4,080118,001.8,E,A*1B
  * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */
 public class VelodynePosEvent {
@@ -33,9 +34,6 @@ public class VelodynePosEvent {
   // ---
   /** number of microseconds past the hour per UTC time */
   private final int gps_usec;
-  /** The Validity field in the $GPRMC message (‘A’ or ‘V’) should be checked by
-   * the user to ensure the GPS system and the VLP-16 are receiving valid
-   * Coordinated Universal Time (UTC) updates from the user’s GPS receiver. */
   private final String nmea;
 
   public VelodynePosEvent(int gps_usec, String nmea) {
@@ -51,15 +49,42 @@ public class VelodynePosEvent {
     return nmea;
   }
 
+  /** The validity field in the $GPRMC message (‘A’ or ‘V’) should be checked by
+   * the user to ensure the GPS system and the VLP-16 are receiving valid
+   * Coordinated Universal Time (UTC) updates from the user’s GPS receiver.
+   * validity: A=ok, V=invalid
+   * 
+   * @return */
+  public boolean isValid() {
+    return nmea.charAt(14) == 'A';
+  }
+
+  public String timeStamp() {
+    return nmea.substring(7, 13);
+  }
+
+  public String dateStamp() {
+    return nmea.substring(53, 59);
+  }
+
+  public Scalar speed() {
+    double value = Double.parseDouble(nmea.substring(41, 46));
+    return Quantity.of(value, "knots");
+  }
+
+  public Scalar course() {
+    double value = Double.parseDouble(nmea.substring(47, 52));
+    return Quantity.of(value, "deg");
+  }
+
   private static final double TO_DEGREE = 1E-2;
-  private static final Unit UNIT_DEGREE = Unit.of("deg");
 
   /** E W
    * 
    * @return */
   public Scalar gpsX() {
     double value = Double.parseDouble(nmea.substring(28, 28 + 10)) * TO_DEGREE;
-    Scalar scalar = Quantity.of(value, UNIT_DEGREE);
+    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(39);
     return id == 'E' ? scalar : scalar.negate();
   }
@@ -69,7 +94,7 @@ public class VelodynePosEvent {
    * @return */
   public Scalar gpsY() {
     double value = Double.parseDouble(nmea.substring(16, 16 + 9)) * TO_DEGREE;
-    Scalar scalar = Quantity.of(value, UNIT_DEGREE);
+    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(25 + 1);
     return id == 'N' ? scalar : scalar.negate();
   }

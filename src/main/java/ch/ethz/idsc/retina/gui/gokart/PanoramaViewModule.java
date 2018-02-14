@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.gui.gokart;
 
 import javax.swing.WindowConstants;

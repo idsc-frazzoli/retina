@@ -24,9 +24,9 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
    * @param isAutonomousPressed
    * @throws Exception if any argument is not in the valid range */
   public GokartJoystickAdapter(Scalar steerLeft, Scalar breakStrength, Scalar ahead, Tensor pair, boolean isAutonomousPressed) {
-    Clip.absoluteOne().isInsideElseThrow(steerLeft);
-    Clip.unit().isInsideElseThrow(breakStrength);
-    Clip.absoluteOne().isInsideElseThrow(ahead);
+    Clip.absoluteOne().requireInside(steerLeft);
+    Clip.unit().requireInside(breakStrength);
+    Clip.absoluteOne().requireInside(ahead);
     if (!pair.map(Clip.unit()).equals(pair))
       throw TensorRuntimeException.of(pair);
     // ---

@@ -6,9 +6,14 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear wheel
@@ -18,10 +23,10 @@ import ch.ethz.idsc.tensor.qty.Unit;
 @SafetyCritical
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
-  private static final Unit CELSIUS = Unit.of("degC");
   public static final Unit UNIT_RATE = Unit.of("rad*s^-1");
-  /** m */
-  public static final double RADIUS = 0.14; // 14[cm] == 0.14[m]
+  public static final Unit ARMS = Unit.of("ARMS");
+  public static final ScalarUnaryOperator MAGNITUDE_RATE = QuantityMagnitude.singleton(UNIT_RATE);
+  public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(ARMS);
   public static final double MIN_TO_S = 1 / 60.0;
   // ---
   public final short status_word;
@@ -79,18 +84,22 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(actual_rate * sign * MIN_TO_S, UNIT_RATE);
   }
 
+  public Scalar getRmsMotorCurrent() {
+    return Quantity.of(rms_motor_current, ARMS);
+  }
+
   public Scalar getBusVoltage() {
-    return Quantity.of(dc_bus_voltage, "V");
+    return Quantity.of(dc_bus_voltage, SI.VOLT);
   }
 
   /** @return 0[degC] */
   public Scalar getTemperatureMotor() {
-    return Quantity.of(temperature_motor, CELSIUS);
+    return Quantity.of(temperature_motor, SI.DEGREE_CELSIUS);
   }
 
   /** @return 0[degC] */
   public Scalar getTemperatureHeatsink() {
-    return Quantity.of(temperature_heatsink, CELSIUS);
+    return Quantity.of(temperature_heatsink, SI.DEGREE_CELSIUS);
   }
 
   public Optional<RimoEmergencyError> getEmergencyError() {
@@ -109,5 +118,16 @@ public class RimoGetTire implements Serializable {
 
   public int getErrorCodeMasked() {
     return error_code & 0x00ffffff;
+  }
+
+  public Tensor vector_raw() {
+    return Tensors.vector( //
+        status_word, //
+        actual_rate * sign, // Attention: sign correction instead of raw value
+        rms_motor_current, //
+        dc_bus_voltage, //
+        error_code, //
+        temperature_motor, //
+        temperature_heatsink);
   }
 }

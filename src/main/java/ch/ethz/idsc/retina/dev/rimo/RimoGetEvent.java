@@ -9,6 +9,13 @@ import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** Specifications about gokart battery
+ * 
+ * End-of-charging voltage: 57.12[V]
+ * Discharge limit (below which damage may occur): 44.8[V]
+ * Capacity: 100[A*h] == draw 100[A] for 1[h]
+ * Maximum continuous load: 3.5[C] => 350 A
+ * Peak load: 10[C] => 1[kA] for less than 10[s] */
 @SafetyCritical
 public class RimoGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH; // == 48

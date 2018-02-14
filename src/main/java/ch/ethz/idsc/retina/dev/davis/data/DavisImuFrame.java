@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.data;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -21,9 +22,10 @@ public class DavisImuFrame extends DataEvent {
   private static final double TEMPERATURE_SCALE = 1.0 / 340;
   private static final double TEMPERATURE_OFFSET = 35.0;
   private static final double G_TO_M_S2 = 9.81;
-  private static final Scalar M_S2PerLsb = Quantity.of(G_TO_M_S2 * 2.0 / 8192, "m*s^-2");
+  private static final Scalar M_S2PerLsb = Quantity.of(G_TO_M_S2 * 2.0 / 8192, SI.ACCELERATION);
+  /** gyro rate matches angular rate derived from odometry in no-slip condition */
   private static final double DEG_TO_RAD = Math.PI / 180.0;
-  private static final Scalar RadPerSecPerLsb = Quantity.of(DEG_TO_RAD * 2.0 / 65.5, "s^-1");
+  private static final Scalar RadPerSecPerLsb = Quantity.of(DEG_TO_RAD * 2.0 / 65.5, SI.ANGULAR_RATE);
   // ---
   /** us == micro seconds */
   private final int time;
@@ -71,7 +73,7 @@ public class DavisImuFrame extends DataEvent {
    * 
    * Hint: the accelerometers in some cameras exhibit constant bias,
    * for instance in vertical position the z-component is centered
-   * around 3[m*s^2] instead of 0[m*s^2].
+   * around 3[m*s^-2] instead of 0[m*s^-2].
    * 
    * @return */
   public Tensor accelImageFrame() {
@@ -97,6 +99,6 @@ public class DavisImuFrame extends DataEvent {
 
   /** @return temperature in degC */
   public Scalar temperature() {
-    return Quantity.of(temperature * TEMPERATURE_SCALE + TEMPERATURE_OFFSET, "degC");
+    return Quantity.of(temperature * TEMPERATURE_SCALE + TEMPERATURE_OFFSET, SI.DEGREE_CELSIUS);
   }
 }

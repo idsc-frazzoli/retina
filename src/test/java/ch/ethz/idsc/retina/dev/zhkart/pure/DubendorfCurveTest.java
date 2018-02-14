@@ -21,7 +21,7 @@ public class DubendorfCurveTest extends TestCase {
         .map(Scalar::number) //
         .mapToDouble(Number::doubleValue).summaryStatistics();
     Clip clip = Clip.function(0.1, 0.4);
-    clip.isInsideElseThrow(RealScalar.of(dss.getMin()));
-    clip.isInsideElseThrow(RealScalar.of(dss.getMax()));
+    clip.requireInside(RealScalar.of(dss.getMin()));
+    clip.requireInside(RealScalar.of(dss.getMax()));
   }
 }
