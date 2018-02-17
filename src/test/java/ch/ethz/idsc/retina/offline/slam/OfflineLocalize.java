@@ -15,6 +15,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
   protected final TensorBuilder tensorBuilder = new TensorBuilder();
   protected Scalar time;
   public final Tensor skipped = Tensors.empty();
+  /** 3x3 matrix */
   protected Tensor model;
 
   public OfflineLocalize(Tensor model) {
@@ -23,6 +24,10 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
 
   public void setTime(Scalar time) {
     this.time = time;
+  }
+
+  public Tensor getPositionVector() {
+    return Se2Utils.fromSE2Matrix(model); //
   }
 
   public Tensor getTable() {

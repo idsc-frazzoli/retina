@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import ch.ethz.idsc.tensor.ExactScalarQ;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -28,5 +29,12 @@ public class MagnitudeTest extends TestCase {
     Scalar scalar = Quantity.of(2500, "rad*deg");
     Scalar result = Magnitude.ONE.apply(scalar);
     assertTrue(result instanceof RealScalar);
+  }
+
+  public void testKnots() {
+    Scalar scalar = Quantity.of(100, "knots");
+    Scalar fraction = Magnitude.VELOCITY.apply(scalar);
+    assertEquals(fraction, RationalScalar.of(463, 9));
+    assertTrue(ExactScalarQ.of(fraction));
   }
 }

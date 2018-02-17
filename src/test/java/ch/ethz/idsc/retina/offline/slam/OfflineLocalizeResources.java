@@ -13,6 +13,8 @@ public enum OfflineLocalizeResources implements OfflineLocalizeResource {
       Tensors.vector(56.137, 57.022, -1.09428)), //
   OVAL(UserHome.file("temp/20180108T162528_5f742add.lcm.00.extract"), //
       Tensors.vector(40.32, 51.02, 0.818226)), //
+  BRAKE6(UserHome.file("temp/20171213T162832_brake6.lcm"), //
+      Tensors.vector(46.58, 48.54, 1.248986)), //
   ;
   // ---
   private final File file;
