@@ -70,10 +70,10 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineLocalizeResource olr = OfflineLocalizeResources.BRAKE6;
+    OfflineLocalizeResource olr = OfflineLocalizeResources.BRAKE5;
     // ---
     BrakeDistanceAnalysis brakeDistanceAnalysis = new BrakeDistanceAnalysis(olr);
     OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
-    Export.of(UserHome.file("brake6.csv"), brakeDistanceAnalysis.tensorBuilder.getTensor().map(CsvFormat.strict()));
+    Export.of(UserHome.file("brake5.csv"), brakeDistanceAnalysis.tensorBuilder.getTensor().map(CsvFormat.strict()));
   }
 }

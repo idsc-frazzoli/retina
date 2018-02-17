@@ -18,10 +18,10 @@ enum LogEventExtract {
     // new File("/media/datahaki/mobile/temp", "20180108T162528_5f742add.lcm.00");
     File dst = UserHome.file("20180108T165210_maxtorque.lcm");
     // new File("/home/datahaki/Projects/retina/src/test/resources/localization", "Xvlp16.center.pos.lcm");
-    dst = UserHome.file("temp/20171213T162832_brake6.lcm");
+    dst = UserHome.file("temp/20171213T162832_brake5.lcm");
     dst.delete();
-    int lo = 1227366;
-    int hi = 1245435;
+    int lo = 1116659;
+    int hi = 1132803;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);
