@@ -4,11 +4,13 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import java.io.Serializable;
 
 import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public class ChassisGeometry implements Serializable {
@@ -65,5 +67,9 @@ public class ChassisGeometry implements Serializable {
   /** @param rate without unit */
   public Scalar steerAngleForTurningRatio(Scalar rate) {
     return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(rate)), "rad");
+  }
+
+  public Scalar tangentSpeed(RimoGetEvent rimoGetEvent) {
+    return Mean.of(rimoGetEvent.getAngularRate_Y_pair()).multiply(tireRadiusRear).Get();
   }
 }

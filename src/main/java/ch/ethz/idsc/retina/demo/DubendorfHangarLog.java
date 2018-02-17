@@ -4,6 +4,10 @@ package ch.ethz.idsc.retina.demo;
 import java.io.File;
 
 public enum DubendorfHangarLog implements LogFileInterface {
+  /** lot's of braking */
+  _20171213T161500_55710a6b, //
+  /** brake distance testing */
+  _20171213T162832_55710a6b, //
   /** linmot failure at 662.75[s] */
   _20180108T152648_5f742add, //
   _20180108T154035_5f742add, //

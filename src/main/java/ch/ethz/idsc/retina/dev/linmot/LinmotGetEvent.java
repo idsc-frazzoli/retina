@@ -82,9 +82,17 @@ public class LinmotGetEvent extends DataEvent {
     return Quantity.of(actual_position * GET_POSITION_TO_METER, SI.METER);
   }
 
+  public Scalar getDemandPosition() {
+    return Quantity.of(demand_position * GET_POSITION_TO_METER, SI.METER);
+  }
+
   /** @return demand position minus actual position */
   public int getPositionDiscrepancyRaw() {
     return demand_position - actual_position;
+  }
+
+  public Scalar getPositionDiscrepancy() {
+    return Quantity.of(getPositionDiscrepancyRaw() * GET_POSITION_TO_METER, SI.METER);
   }
 
   public Set<LinmotStatusWordBit> getStatusWordBits() {

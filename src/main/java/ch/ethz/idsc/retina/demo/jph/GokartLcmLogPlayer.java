@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
+import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
@@ -23,6 +24,9 @@ enum GokartLcmLogPlayer {
         "/home/datahaki/Projects/retina/src/test/resources/localization", //
         "vlp16.center.ray_autobox.rimo.get.lcm");
     file = DubendorfHangarLog._20180108T165210_5f742add.file(LOG_ROOT);
+    file = new File("/home/datahaki/temp/20180108T162528_5f742add.lcm.00.extract");
+    file = DubendorfHangarLog._20171213T162832_55710a6b.file(LOG_ROOT);
+    file = UserHome.file("temp/20171213T162832_brake5.lcm");
     cfg.logFile = file.toString();
     cfg.speed = RationalScalar.of(1, 1);
     LogPlayer.create(cfg);

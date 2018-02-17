@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -20,6 +22,7 @@ public enum OfflineLogPlayer {
   private static final Unit UNIT_US = Unit.of("us");
 
   public static void process(File file, OfflineLogListener offlineLogListener) throws IOException {
+    Set<String> set = new HashSet<>();
     Log log = new Log(file.toString(), "r");
     Long tic = null;
     try {
@@ -27,11 +30,16 @@ public enum OfflineLogPlayer {
         Event event = log.readNext();
         if (Objects.isNull(tic))
           tic = event.utime;
-        BinaryBlob binaryBlob = new BinaryBlob(event.data);
-        offlineLogListener.event( //
-            UnitSystem.SI().apply(Quantity.of(event.utime - tic, UNIT_US)), //
-            event.channel, //
-            ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
+        try {
+          BinaryBlob binaryBlob = new BinaryBlob(event.data);
+          offlineLogListener.event( //
+              UnitSystem.SI().apply(Quantity.of(event.utime - tic, UNIT_US)), //
+              event.channel, //
+              ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
+        } catch (Exception exception) {
+          if (set.add(event.channel))
+            System.err.println("not a binary blob: " + event.channel);
+        }
       }
     } catch (Exception exception) {
       if (!END_OF_FILE.equals(exception.getMessage()))
