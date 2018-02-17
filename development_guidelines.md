@@ -17,16 +17,18 @@ The staff supports you to make your project a success.
 Your Thesis-/Semester project builds on the work of others.
 We encourage and expect you to make some contributions outside the scope of your project.
 The `github:issues` lists desirable features that the group would benefit from.
-Besides these ideas there are actions that advance the gokart project without the risk of breaking existing functionality: inserting comments and writing tests.
+
+Besides these ideas, there are actions that advance the gokart software without the risk of breaking existing functionality: inserting comments and writing tests.
+
 In conclusion: please spend some time on code items that may not be the highlights of your report, but are appreciated by the group nevertheless.
 
 ## Design
 
-* many small source files (as opposed to large files)
+* many short source files (as opposed to few large files)
 * functions with few lines of code
 * modularity
 * minimal redundancy
-* use of immutable objects
+* use of [immutable objects](https://en.wikipedia.org/wiki/Immutable_object)
 * tests and test coverage
 * uniform code format (automatic)
 
