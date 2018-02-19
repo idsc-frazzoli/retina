@@ -21,7 +21,7 @@ class OfflineLocalizeDemo implements OfflineLogListener {
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;
 
-  public OfflineLocalizeDemo(OfflineLocalizeResource olr) {
+  public OfflineLocalizeDemo(OfflineLocalizeInterface olr) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -42,7 +42,7 @@ class OfflineLocalizeDemo implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineLocalizeResource olr = OfflineLocalizeResources.BRAKE6;
+    OfflineLocalizeInterface olr = OfflineLocalizeResources.BRAKE6;
     // ---
     OfflineLocalizeDemo offlineLogListener = new OfflineLocalizeDemo(olr);
     OfflineLogPlayer.process(olr.file(), offlineLogListener);

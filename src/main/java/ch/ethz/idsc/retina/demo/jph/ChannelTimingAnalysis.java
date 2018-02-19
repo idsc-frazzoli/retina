@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import ch.ethz.idsc.gokart.offline.OfflineTableSupplier;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RealScalar;

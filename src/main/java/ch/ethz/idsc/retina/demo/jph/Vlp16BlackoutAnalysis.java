@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.offline.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;

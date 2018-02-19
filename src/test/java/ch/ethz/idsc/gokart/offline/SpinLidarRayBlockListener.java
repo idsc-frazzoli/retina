@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.offline.OfflineLocalize;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;

@@ -1,9 +1,9 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.jph;
+package ch.ethz.idsc.gokart.offline;
 
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Tensor;
 
-interface OfflineTableSupplier extends OfflineLogListener {
+public interface OfflineTableSupplier extends OfflineLogListener {
   Tensor getTable();
 }

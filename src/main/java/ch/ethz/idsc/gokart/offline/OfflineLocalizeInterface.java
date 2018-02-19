@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-public interface OfflineLocalizeResource {
+public interface OfflineLocalizeInterface {
   File file();
 
   Tensor model();

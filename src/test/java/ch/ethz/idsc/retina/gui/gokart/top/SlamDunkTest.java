@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.offline.OfflineLocalize;
-import ch.ethz.idsc.gokart.offline.OfflineLocalizeResource;
+import ch.ethz.idsc.gokart.offline.OfflineLocalizeInterface;
 import ch.ethz.idsc.gokart.offline.OfflineLocalizeResources;
 import ch.ethz.idsc.gokart.offline.SlamLidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class SlamDunkTest extends TestCase {
   public void testSimple() throws Exception {
-    OfflineLocalizeResource olr = OfflineLocalizeResources.TEST;
+    OfflineLocalizeInterface olr = OfflineLocalizeResources.TEST;
     assertTrue(olr.file().isFile());
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();

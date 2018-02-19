@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.offline.OfflineTableSupplier;
 import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;

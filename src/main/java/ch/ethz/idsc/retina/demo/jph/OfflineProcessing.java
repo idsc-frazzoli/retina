@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import ch.ethz.idsc.gokart.offline.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.demo.LogFileInterface;

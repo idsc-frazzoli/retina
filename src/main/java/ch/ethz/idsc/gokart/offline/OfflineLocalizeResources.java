@@ -8,7 +8,7 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum OfflineLocalizeResources implements OfflineLocalizeResource {
+public enum OfflineLocalizeResources implements OfflineLocalizeInterface {
   TEST(new File("src/test/resources/localization", "vlp16.center.ray_autobox.rimo.get.lcm"), //
       Tensors.vector(56.137, 57.022, -1.09428)), //
   OVAL(UserHome.file("temp/20180108T162528_5f742add.lcm.00.extract"), //

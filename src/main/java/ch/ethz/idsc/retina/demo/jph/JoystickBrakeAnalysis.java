@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.offline.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;

@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -10,32 +8,32 @@ import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TableBuilder;
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.CsvFormat;
-import ch.ethz.idsc.tensor.io.Export;
 
-class BrakeDistanceAnalysis implements OfflineLogListener {
+public class BrakeDistanceListener implements OfflineTableSupplier {
+  private static final String LIDAR = //
+      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+  // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;
   private final TableBuilder tableBuilder = new TableBuilder();
   private RimoGetEvent rge;
   private LinmotGetEvent lge;
 
-  public BrakeDistanceAnalysis(OfflineLocalizeResource olr) {
+  public BrakeDistanceListener(OfflineLocalizeInterface olr) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -66,36 +64,14 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
         );
       }
     } else //
-    if (channel.equals("vlp16.center.ray")) { // TODO redundant
+    if (channel.equals(LIDAR)) {
       offlineLocalize.setTime(time);
       velodyneDecoder.lasers(byteBuffer);
     }
   }
 
-  public static void main(String[] args) throws IOException {
-    File dir = new File("/home/datahaki/gokart/localquick");
-    for (File folder : dir.listFiles())
-      if (folder.isDirectory()) {
-        System.out.println(folder);
-        OfflineLocalizeResource olr = new OfflineLocalizeResource() {
-          @Override
-          public Tensor model() {
-            InitialPose initialPose = //
-                TensorProperties.retrieve(new File(folder, "InitialPose.properties"), new InitialPose());
-            // System.out.println(initialPose.pose);
-            return initialPose.model();
-          }
-
-          @Override
-          public File file() {
-            return new File(folder, "log.lcm");
-          }
-        };
-        System.out.println(folder);
-        // ---
-        BrakeDistanceAnalysis brakeDistanceAnalysis = new BrakeDistanceAnalysis(olr);
-        OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
-        Export.of(UserHome.file(folder.getName() + ".csv"), brakeDistanceAnalysis.tableBuilder.toTable().map(CsvFormat.strict()));
-      }
+  @Override
+  public Tensor getTable() {
+    return tableBuilder.toTable();
   }
 }
