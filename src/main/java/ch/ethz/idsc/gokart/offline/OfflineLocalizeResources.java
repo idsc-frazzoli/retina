@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.offline.slam;
+package ch.ethz.idsc.gokart.offline;
 
 import java.io.File;
 

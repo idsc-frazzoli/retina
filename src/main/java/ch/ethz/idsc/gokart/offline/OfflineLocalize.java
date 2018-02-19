@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.offline.slam;
+package ch.ethz.idsc.gokart.offline;
 
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
@@ -27,7 +27,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
   }
 
   public Tensor getPositionVector() {
-    return Se2Utils.fromSE2Matrix(model); //
+    return Se2Utils.fromSE2Matrix(model);
   }
 
   public Tensor getTable() {

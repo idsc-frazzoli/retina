@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.offline.slam;
+package ch.ethz.idsc.gokart.offline;
 
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Magnitude;

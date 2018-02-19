@@ -69,8 +69,10 @@ class LocalizationAnalysis implements OfflineTableSupplier {
       dif = new DavisImuFrame(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
+      if (Objects.nonNull(vpe))
+        System.out.println(vpe.nmea());
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(vpe) && //
-          Objects.nonNull(gpe) && Objects.nonNull(dif)) {
+          Objects.nonNull(gpe) && Objects.nonNull(dif) && vpe.isValid()) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
         Tensor rates = rge.getAngularRate_Y_pair();
@@ -117,12 +119,13 @@ class LocalizationAnalysis implements OfflineTableSupplier {
     for (File folder : dir.listFiles()) {
       System.out.println(folder);
       File file = new File(folder, "log.lcm");
-      if (file.isFile()) {
-        LocalizationAnalysis localizationAnalysis = new LocalizationAnalysis(Quantity.of(0.5, SI.SECOND));
-        OfflineProcessing.single(file, localizationAnalysis, folder.getName());
-      } else {
-        System.err.println("missing");
-      }
+      if (count == 2)
+        if (file.isFile()) {
+          LocalizationAnalysis localizationAnalysis = new LocalizationAnalysis(Quantity.of(0.5, SI.SECOND));
+          OfflineProcessing.single(file, localizationAnalysis, folder.getName());
+        } else {
+          System.err.println("missing");
+        }
       ++count;
     }
   }

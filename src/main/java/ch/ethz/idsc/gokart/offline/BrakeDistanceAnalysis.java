@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.offline.slam;
+package ch.ethz.idsc.gokart.offline;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,8 +80,10 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
         OfflineLocalizeResource olr = new OfflineLocalizeResource() {
           @Override
           public Tensor model() {
-            InitialPose initialPose = TensorProperties.retrieve(new File(folder, ""), new InitialPose());
-            return initialPose.pose;
+            InitialPose initialPose = //
+                TensorProperties.retrieve(new File(folder, "InitialPose.properties"), new InitialPose());
+            // System.out.println(initialPose.pose);
+            return initialPose.model();
           }
 
           @Override

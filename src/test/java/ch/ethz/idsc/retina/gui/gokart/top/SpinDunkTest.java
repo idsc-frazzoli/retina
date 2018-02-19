@@ -3,6 +3,10 @@ package ch.ethz.idsc.retina.gui.gokart.top;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.offline.OfflineLocalize;
+import ch.ethz.idsc.gokart.offline.OfflineLocalizeResource;
+import ch.ethz.idsc.gokart.offline.OfflineLocalizeResources;
+import ch.ethz.idsc.gokart.offline.SpinLidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -11,10 +15,6 @@ import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalize;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalizeResource;
-import ch.ethz.idsc.retina.offline.slam.OfflineLocalizeResources;
-import ch.ethz.idsc.retina.offline.slam.SpinLidarRayBlockListener;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Clip;

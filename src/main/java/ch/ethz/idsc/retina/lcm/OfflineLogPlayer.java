@@ -31,18 +31,20 @@ public enum OfflineLogPlayer {
         Event event = log.readNext();
         if (Objects.isNull(tic))
           tic = event.utime;
+        BinaryBlob binaryBlob = null;
         try {
-          BinaryBlob binaryBlob = new BinaryBlob(event.data);
+          binaryBlob = new BinaryBlob(event.data);
+        } catch (Exception exception) {
+          if (set.add(event.channel)) {
+            // exception.printStackTrace();
+            System.err.println("not a binary blob: " + event.channel);
+          }
+        }
+        if (binaryBlob != null)
           offlineLogListener.event( //
               UnitSystem.SI().apply(Quantity.of(event.utime - tic, UNIT_US)).map(Round._6).Get(), //
               event.channel, //
               ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
-        } catch (Exception exception) {
-          if (set.add(event.channel)) {
-            exception.printStackTrace();
-            System.err.println("not a binary blob: " + event.channel);
-          }
-        }
       }
     } catch (Exception exception) {
       if (!END_OF_FILE.equals(exception.getMessage()))
