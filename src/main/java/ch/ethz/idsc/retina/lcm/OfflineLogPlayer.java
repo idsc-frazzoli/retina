@@ -12,6 +12,7 @@ import java.util.Set;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
+import ch.ethz.idsc.tensor.sca.Round;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
@@ -33,7 +34,7 @@ public enum OfflineLogPlayer {
         try {
           BinaryBlob binaryBlob = new BinaryBlob(event.data);
           offlineLogListener.event( //
-              UnitSystem.SI().apply(Quantity.of(event.utime - tic, UNIT_US)), //
+              UnitSystem.SI().apply(Quantity.of(event.utime - tic, UNIT_US)).map(Round._6).Get(), //
               event.channel, //
               ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
         } catch (Exception exception) {

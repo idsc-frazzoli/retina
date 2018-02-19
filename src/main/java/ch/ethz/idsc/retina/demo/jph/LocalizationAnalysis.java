@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.demo.jph;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.TableBuilder;
+import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -28,6 +30,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
+import ch.ethz.idsc.tensor.sca.Round;
 
 class LocalizationAnalysis implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -57,7 +60,7 @@ class LocalizationAnalysis implements OfflineTableSupplier {
     } else //
     if (channel.equals(LIDAR)) {
       vpe = VelodynePosEvent.vlp16(byteBuffer);
-      System.out.println(vpe.nmea());
+      // System.out.println(vpe.nmea());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
@@ -81,14 +84,18 @@ class LocalizationAnalysis implements OfflineTableSupplier {
         Scalar degY = vpe.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
         tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND), //
-            speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE), //
-            gpe.getQuality(), //
-            pose, //
-            gpe.getPose().Get(2).map(Magnitude.ONE), //
-            metric.map(Magnitude.METER), //
-            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE) //
+            time.map(Magnitude.SECOND).map(Round._6), //
+            speed.map(Magnitude.VELOCITY).map(Round._3), //
+            rate.map(Magnitude.ANGULAR_RATE).map(Round._3), //
+            gpe.getQuality().map(Round._3), //
+            pose.map(Round._3), //
+            gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5), //
+            degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
+            degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
+            metric.map(Magnitude.METER).map(Round._2), //
+            vpe.speed().map(Magnitude.VELOCITY).map(Round._3), //
+            vpe.course().map(Magnitude.ONE).map(Round._6), //
+            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._5) //
         );
       }
     }
@@ -99,7 +106,24 @@ class LocalizationAnalysis implements OfflineTableSupplier {
     return tableBuilder.toTable();
   }
 
+  public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+
   public static void main(String[] args) throws IOException {
-    OfflineProcessing.handle(() -> new LocalizationAnalysis(Quantity.of(0.05, SI.SECOND)));
+    // DubendorfHangarLog dhl = DubendorfHangarLog._20180112T154355_9e1d3699;
+    // File file = dhl.file(LOG_ROOT);
+    // OfflineProcessing.single(file, new LocalizationAnalysis(Quantity.of(0.05, SI.SECOND)), dhl.title());
+    File dir = UserHome.file("gokart/pursuit");
+    int count = 0;
+    for (File folder : dir.listFiles()) {
+      System.out.println(folder);
+      File file = new File(folder, "log.lcm");
+      if (file.isFile()) {
+        LocalizationAnalysis localizationAnalysis = new LocalizationAnalysis(Quantity.of(0.5, SI.SECOND));
+        OfflineProcessing.single(file, localizationAnalysis, folder.getName());
+      } else {
+        System.err.println("missing");
+      }
+      ++count;
+    }
   }
 }
