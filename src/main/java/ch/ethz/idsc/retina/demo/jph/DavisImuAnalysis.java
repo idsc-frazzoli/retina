@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -26,7 +26,7 @@ class DavisImuAnalysis implements OfflineTableSupplier {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private DavisImuFrame dif;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public DavisImuAnalysis(Scalar delta) {
     this.delta = delta;
@@ -43,7 +43,7 @@ class DavisImuAnalysis implements OfflineTableSupplier {
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && Objects.nonNull(dif)) {
         time_next = time.add(delta);
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             dif.accelImageFrame().map(Magnitude.ACCELERATION), //
             dif.temperature().map(Magnitude.DEGREE_CELSIUS), //
@@ -56,7 +56,7 @@ class DavisImuAnalysis implements OfflineTableSupplier {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

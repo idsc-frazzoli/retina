@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStateVariable;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 class LinmotStatusAnalysis implements OfflineTableSupplier {
   private final Clip range;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
   boolean isFused = false;
   Integer failure_index = null;
 
@@ -59,9 +59,9 @@ class LinmotStatusAnalysis implements OfflineTableSupplier {
       if (isFused) {
         if (!status && Objects.isNull(failure_index)) {
           // System.out.println("failure at " + time);
-          failure_index = tensorBuilder.size();
+          failure_index = tableBuilder.getRowCount();
         }
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._6), //
             StringScalar.of("GET"), //
             RealScalar.of(linmotGetEvent.status_word), //
@@ -86,7 +86,7 @@ class LinmotStatusAnalysis implements OfflineTableSupplier {
         stringBuilder.append(String.format(" deceleration = %d\n", linmotPutEvent.deceleration));
         System.out.println(stringBuilder);
       }
-      tensorBuilder.flatten( //
+      tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           StringScalar.of("PUT"), //
           RealScalar.of(linmotPutEvent.control_word), //
@@ -103,7 +103,7 @@ class LinmotStatusAnalysis implements OfflineTableSupplier {
   public Tensor getTable() {
     if (!isFused)
       throw new RuntimeException("not fused");
-    return tensorBuilder.getTensor().extract(failure_index - 60, failure_index + 20);
+    return tableBuilder.toTable().extract(failure_index - 60, failure_index + 20);
   }
 
   private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");

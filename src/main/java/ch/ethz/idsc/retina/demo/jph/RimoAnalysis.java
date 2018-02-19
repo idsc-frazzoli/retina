@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,7 +29,7 @@ class RimoAnalysis implements OfflineTableSupplier {
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
   private GokartStatusEvent gse;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public RimoAnalysis(Scalar delta) {
     this.delta = delta;
@@ -50,7 +50,7 @@ class RimoAnalysis implements OfflineTableSupplier {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated()) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rge.getAngularRate_Y_pair().map(RimoGetTire.MAGNITUDE_RATE), // rad/s
             rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
@@ -61,7 +61,7 @@ class RimoAnalysis implements OfflineTableSupplier {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

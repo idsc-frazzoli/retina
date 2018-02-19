@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -38,7 +38,7 @@ class RimoSlipAnalysis implements OfflineTableSupplier {
   private RimoPutEvent rpe;
   private DavisImuFrame dif;
   private GokartStatusEvent gse;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public RimoSlipAnalysis(Scalar delta) {
     this.delta = delta;
@@ -69,7 +69,7 @@ class RimoSlipAnalysis implements OfflineTableSupplier {
             .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
             .divide(ChassisGeometry.GLOBAL.yTireRear);
         dif.gyroImageFrame();
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
             rates.map(Magnitude.ANGULAR_RATE), //
@@ -84,7 +84,7 @@ class RimoSlipAnalysis implements OfflineTableSupplier {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

@@ -13,13 +13,13 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Round;
 
 class LinmotHeatAnalysis implements OfflineTableSupplier {
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
   private RimoGetEvent rge;
 
   @Override
@@ -30,7 +30,7 @@ class LinmotHeatAnalysis implements OfflineTableSupplier {
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
       if (Objects.nonNull(rge)) {
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._6), //
             linmotGetEvent.getActualPosition().map(Magnitude.METER), //
             linmotGetEvent.getDemandPosition().map(Magnitude.METER), //
@@ -46,7 +46,7 @@ class LinmotHeatAnalysis implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");

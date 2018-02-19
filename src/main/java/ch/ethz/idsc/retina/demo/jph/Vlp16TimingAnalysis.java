@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -23,7 +23,7 @@ class Vlp16TimingAnalysis implements OfflineTableSupplier, LidarRayDataListener 
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private Scalar time;
   private int usec;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public Vlp16TimingAnalysis() {
     vlp16Decoder.addRayListener(this);
@@ -36,8 +36,8 @@ class Vlp16TimingAnalysis implements OfflineTableSupplier, LidarRayDataListener 
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (tensorBuilder.size() < LIMIT)
-      tensorBuilder.flatten( //
+    if (tableBuilder.getRowCount() < LIMIT)
+      tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
           Tensors.vector(usec, rotational));
   }
@@ -52,7 +52,7 @@ class Vlp16TimingAnalysis implements OfflineTableSupplier, LidarRayDataListener 
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

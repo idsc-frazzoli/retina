@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -40,8 +40,8 @@ class LocalizationAnalysis implements OfflineTableSupplier {
   private RimoPutEvent rpe;
   private VelodynePosEvent vpe;
   private DavisImuFrame dif;
-  GokartPoseEvent gpe;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  private GokartPoseEvent gpe;
+  private final TableBuilder tableBuilder = new TableBuilder();
 
   public LocalizationAnalysis(Scalar delta) {
     this.delta = delta;
@@ -80,7 +80,7 @@ class LocalizationAnalysis implements OfflineTableSupplier {
         Scalar degX = vpe.gpsX();
         Scalar degY = vpe.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             speed.map(Magnitude.VELOCITY), //
             rate.map(Magnitude.ANGULAR_RATE), //
@@ -96,7 +96,7 @@ class LocalizationAnalysis implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

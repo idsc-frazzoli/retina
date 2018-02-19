@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -27,7 +27,7 @@ class Vlp16BlackoutAnalysis implements OfflineTableSupplier, LidarRayDataListene
   private Integer rota_last;
   private int delta_time;
   boolean flag = false;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public Vlp16BlackoutAnalysis() {
     vlp16Decoder.addRayListener(this);
@@ -46,7 +46,7 @@ class Vlp16BlackoutAnalysis implements OfflineTableSupplier, LidarRayDataListene
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (flag) {
       int delta_angle = (rotational - rota_last + 36000) % 36000;
-      tensorBuilder.flatten( //
+      tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
           Tensors.vector(delta_time * 1e-3, delta_angle / 100.));
       flag = false;
@@ -64,7 +64,7 @@ class Vlp16BlackoutAnalysis implements OfflineTableSupplier, LidarRayDataListene
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

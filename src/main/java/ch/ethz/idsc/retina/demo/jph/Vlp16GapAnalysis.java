@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -28,7 +28,7 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
-  private final TensorBuilder tensorBuilder = new TensorBuilder();
+  private final TableBuilder tableBuilder = new TableBuilder();
   private Tensor row = null;
   private Scalar time;
 
@@ -43,7 +43,7 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
       if (diff.stream().map(Scalar.class::cast) //
           .anyMatch(da -> Scalars.lessThan(GAPSIZES, da))) {
         System.out.println(time);
-        tensorBuilder.flatten(time.map(Magnitude.SECOND).map(Round._6), row);
+        tableBuilder.appendRow(time.map(Magnitude.SECOND).map(Round._6), row);
       }
     }
     row = Tensors.empty();
@@ -64,7 +64,7 @@ class Vlp16GapAnalysis implements OfflineTableSupplier, LidarRayDataListener {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

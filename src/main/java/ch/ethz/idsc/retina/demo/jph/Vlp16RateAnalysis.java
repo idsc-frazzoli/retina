@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,7 +29,7 @@ class Vlp16RateAnalysis implements OfflineTableSupplier, LidarRayDataListener {
   private static final Mod MOD = Mod.function(36000);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
-  private final TensorBuilder tensorBuilder = new TensorBuilder();
+  private final TableBuilder tableBuilder = new TableBuilder();
   private Integer usec_last = null;
   private Tensor row = null;
   private Scalar time;
@@ -43,7 +43,7 @@ class Vlp16RateAnalysis implements OfflineTableSupplier, LidarRayDataListener {
   public void timestamp(int usec, int type) {
     if (Objects.nonNull(row) && Objects.nonNull(dif)) {
       Scalar gap = MOD.apply(row.Get(23).subtract(row.Get(0)));
-      tensorBuilder.flatten( //
+      tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           RealScalar.of(usec_last), //
           dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE), //
@@ -71,7 +71,7 @@ class Vlp16RateAnalysis implements OfflineTableSupplier, LidarRayDataListener {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

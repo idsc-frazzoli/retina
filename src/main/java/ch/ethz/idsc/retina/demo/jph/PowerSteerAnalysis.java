@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,7 +25,7 @@ class PowerSteerAnalysis implements OfflineTableSupplier {
   private SteerGetEvent sge;
   private SteerPutEvent spe;
   private MiscGetEvent mge;
-  TensorBuilder tensorBuilder = new TensorBuilder();
+  private TableBuilder tableBuilder = new TableBuilder();
 
   public PowerSteerAnalysis(Scalar delta) {
     this.delta = delta;
@@ -45,7 +45,7 @@ class PowerSteerAnalysis implements OfflineTableSupplier {
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(sge) && Objects.nonNull(spe) && Objects.nonNull(mge)) {
         time_next = time.add(delta);
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             sge.values_raw(), //
             spe.values_raw(), //
@@ -57,7 +57,7 @@ class PowerSteerAnalysis implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

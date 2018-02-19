@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -24,7 +24,7 @@ class PowerRimoAnalysis implements OfflineTableSupplier {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
-  final TensorBuilder tensorBuilder = new TensorBuilder();
+  final TableBuilder tableBuilder = new TableBuilder();
 
   public PowerRimoAnalysis(Scalar delta) {
     this.delta = delta;
@@ -42,7 +42,7 @@ class PowerRimoAnalysis implements OfflineTableSupplier {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe)) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rge.getTireL.vector_raw(), //
             rge.getTireR.vector_raw(), //
@@ -54,7 +54,7 @@ class PowerRimoAnalysis implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tensorBuilder.getTensor();
+    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {

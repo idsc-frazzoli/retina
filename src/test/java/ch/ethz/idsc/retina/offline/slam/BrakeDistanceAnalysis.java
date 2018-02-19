@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TensorBuilder;
+import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.Export;
 class BrakeDistanceAnalysis implements OfflineLogListener {
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;
-  private final TensorBuilder tensorBuilder = new TensorBuilder();
+  private final TableBuilder tableBuilder = new TableBuilder();
   private RimoGetEvent rge;
   private LinmotGetEvent lge;
 
@@ -53,7 +53,7 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
       lge = new LinmotGetEvent(byteBuffer);
       // System.out.println(offlineLocalize.getPositionVector());
       if (Objects.nonNull(rge)) {
-        tensorBuilder.flatten( //
+        tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             offlineLocalize.getPositionVector(), //
             lge.getActualPosition().map(Magnitude.METER), //
@@ -74,6 +74,6 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
     // ---
     BrakeDistanceAnalysis brakeDistanceAnalysis = new BrakeDistanceAnalysis(olr);
     OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
-    Export.of(UserHome.file("brake5.csv"), brakeDistanceAnalysis.tensorBuilder.getTensor().map(CsvFormat.strict()));
+    Export.of(UserHome.file("brake5.csv"), brakeDistanceAnalysis.tableBuilder.toTable().map(CsvFormat.strict()));
   }
 }

@@ -80,7 +80,7 @@ public class SpinLidarRayBlockListener extends OfflineLocalize {
         Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
         Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
         model = model.dot(poseDelta); // advance gokart
-        tensorBuilder.flatten(time.map(Magnitude.SECOND), //
+        tableBuilder.appendRow(time.map(Magnitude.SECOND), //
             Se2Utils.fromSE2Matrix(model), //
             dstate, //
             N.DOUBLE.apply(slamResult.getMatchRatio()), //
