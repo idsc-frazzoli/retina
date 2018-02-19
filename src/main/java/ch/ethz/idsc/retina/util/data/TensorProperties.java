@@ -2,9 +2,7 @@
 package ch.ethz.idsc.retina.util.data;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -24,14 +22,14 @@ import ch.ethz.idsc.tensor.Tensors;
  * and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
+  /** @param object
+   * @return properties with fields of given object as keys mapping to values as string expression */
   public static Properties extract(Object object) {
     return extract(object, new Properties());
   }
 
   private static Properties extract(Object object, Properties properties) {
-    Objects.requireNonNull(properties);
-    Field[] fields = object.getClass().getFields();
-    for (Field field : fields)
+    for (Field field : object.getClass().getFields())
       if (isTracked(field))
         try {
           Object value = field.get(object);
@@ -46,8 +44,7 @@ public enum TensorProperties {
   public static <T> T insert(Properties properties, T object) {
     if (Objects.isNull(properties))
       return object;
-    Field[] fields = object.getClass().getFields();
-    for (Field field : fields)
+    for (Field field : object.getClass().getFields())
       if (isTracked(field))
         try {
           Class<?> type = field.getType();
@@ -82,21 +79,13 @@ public enum TensorProperties {
     return false;
   }
 
-  /** @param string
-   * @return imported properties, or null if resource could not be loaded */
-  public static Properties load(File file) {
-    try (InputStream inputStream = new FileInputStream(file)) {
-      Properties properties = new Properties();
-      properties.load(inputStream);
-      return properties;
-    } catch (Exception exception) {
-      // ---
-    }
-    return null;
-  }
-
+  /** values defined in properties file are assigned to fields of given object
+   * 
+   * @param file properties
+   * @param object
+   * @return object */
   public static <T> T retrieve(File file, T object) {
-    return insert(load(file), object);
+    return insert(StaticHelper.load(file), object);
   }
 
   public static void manifest(File file, Object object) throws IOException {

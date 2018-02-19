@@ -38,8 +38,10 @@ public enum OfflineLogPlayer {
               event.channel, //
               ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
         } catch (Exception exception) {
-          if (set.add(event.channel))
+          if (set.add(event.channel)) {
+            exception.printStackTrace();
             System.err.println("not a binary blob: " + event.channel);
+          }
         }
       }
     } catch (Exception exception) {

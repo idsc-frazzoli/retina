@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.offline.slam;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -19,9 +19,12 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TableBuilder;
+import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
@@ -70,10 +73,27 @@ class BrakeDistanceAnalysis implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineLocalizeResource olr = OfflineLocalizeResources.BRAKE5;
-    // ---
-    BrakeDistanceAnalysis brakeDistanceAnalysis = new BrakeDistanceAnalysis(olr);
-    OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
-    Export.of(UserHome.file("brake5.csv"), brakeDistanceAnalysis.tableBuilder.toTable().map(CsvFormat.strict()));
+    File dir = new File("/home/datahaki/gokart/localquick");
+    for (File folder : dir.listFiles())
+      if (folder.isDirectory()) {
+        System.out.println(folder);
+        OfflineLocalizeResource olr = new OfflineLocalizeResource() {
+          @Override
+          public Tensor model() {
+            InitialPose initialPose = TensorProperties.retrieve(new File(folder, ""), new InitialPose());
+            return initialPose.pose;
+          }
+
+          @Override
+          public File file() {
+            return new File(folder, "log.lcm");
+          }
+        };
+        System.out.println(folder);
+        // ---
+        BrakeDistanceAnalysis brakeDistanceAnalysis = new BrakeDistanceAnalysis(olr);
+        OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
+        Export.of(UserHome.file(folder.getName() + ".csv"), brakeDistanceAnalysis.tableBuilder.toTable().map(CsvFormat.strict()));
+      }
   }
 }
