@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
-import ch.ethz.idsc.gokart.offline.slam.SlamLidarRayBlockListener;
+import ch.ethz.idsc.gokart.offline.slam.SlamOfflineLocalize;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -35,7 +35,7 @@ public class SlamDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    OfflineLocalize offlineLocalize = new SlamLidarRayBlockListener(olr.model());
+    OfflineLocalize offlineLocalize = new SlamOfflineLocalize(olr.model());
     lidarAngularFiringCollector.addListener(offlineLocalize);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
