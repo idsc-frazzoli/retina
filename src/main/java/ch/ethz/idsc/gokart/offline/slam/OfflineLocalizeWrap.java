@@ -15,10 +15,8 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class OfflineLocalizeWrap implements OfflineTableSupplier {
   private static final String CHANNEL_LIDAR = //
@@ -46,11 +44,8 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier {
       offlineLocalize.setTime(time);
       velodyneDecoder.lasers(byteBuffer);
     } else //
-    if (channel.equals(CHANNEL_IMU)) {
-      DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
-      Tensor gyro = davisImuFrame.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._3);
-      System.out.println(time + " " + davisImuFrame.getTime() + " " + gyro);
-    }
+    if (channel.equals(CHANNEL_IMU))
+      offlineLocalize.imuFrame(new DavisImuFrame(byteBuffer));
   }
 
   @Override

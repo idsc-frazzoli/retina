@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.slam;
 
-import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
@@ -18,21 +17,23 @@ import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
 import ch.ethz.idsc.retina.gui.gokart.top.ResampledLidarRender;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.Inverse;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class GyroOfflineLocalize extends OfflineLocalize {
+  private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+
   /** @param model */
   public GyroOfflineLocalize(Tensor model) {
     super(model);
-    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
-      throw new RuntimeException();
   }
 
   @Override // from LidarRayBlockListener
@@ -41,12 +42,17 @@ public class GyroOfflineLocalize extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
+    Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
+    System.out.println("rate=" + rate);
+    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
+        .apply(points).getPointsSpin(rate);
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
       SlamScore slamScore = ImageScore.of(map_image);
       GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+      Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
+      model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(LIDAR);
       Stopwatch stopwatch = Stopwatch.started();

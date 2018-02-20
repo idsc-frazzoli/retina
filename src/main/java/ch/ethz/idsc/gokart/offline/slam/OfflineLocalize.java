@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
@@ -25,20 +27,22 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;
+import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public abstract class OfflineLocalize implements LidarRayBlockListener {
+public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   // ---
-  protected final BufferedImage map_image = StoreMapUtil.loadOrNull();
+  protected final BufferedImage map_image = StoreMapUtil.load(UserHome.Pictures("hangar03.png"));
   private final TableBuilder tableBuilder = new TableBuilder();
   private Scalar time;
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
   protected Tensor model;
   private int image_count = 0;
+  private Tensor gyro_y = Tensors.empty();
 
   public OfflineLocalize(Tensor model) {
     if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
@@ -54,6 +58,20 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
 
   public final Tensor getPositionVector() {
     return Se2Utils.fromSE2Matrix(model);
+  }
+
+  @Override
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    // Tensor gyro = davisImuFrame.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._3);
+    // System.out.println(time + " " + davisImuFrame.getTime() + " " + gyro);
+    Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
+    gyro_y.append(rate);
+  }
+
+  protected final Scalar getGyroAndReset() {
+    Scalar mean = Mean.of(gyro_y).Get();
+    gyro_y = Tensors.empty();
+    return mean;
   }
 
   protected final void appendRow(Tensor dstate, Scalar ratio, int sum, double duration) {

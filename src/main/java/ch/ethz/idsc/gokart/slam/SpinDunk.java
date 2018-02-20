@@ -8,6 +8,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.retina.util.math.ResampleResult;
 import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
@@ -46,7 +47,7 @@ public enum SpinDunk {
       for (Se2GridPoint se2GridPoint : se2grid.gridPoints()) {
         geometricLayer.pushMatrix(se2GridPoint.matrix());
         Scalar rate = offset.Get(2).add(se2GridPoint.tangent().Get(2));
-        List<Tensor> list = resampleResult.getPointsSpin(rate);
+        List<Tensor> list = resampleResult.getPointsSpin(rate.divide(RealScalar.of(20))); // TODO
         Tensor points = Tensor.of(list.stream().flatMap(Tensor::stream));
         int eval = points.stream().map(geometricLayer::toPoint2D) // TODO can do in parallel
             .mapToInt(slamScore::evaluate).sum();
