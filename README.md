@@ -1,19 +1,46 @@
-# ch.ethz.idsc.retina <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+<a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Sensor and actuator interfaces, Gokart software in Java 8.
+# ch.ethz.idsc.retina
+# ch.ethz.idsc.gokart
 
-Version `0.0.1`
+Sensor and actuator interfaces, Gokart software, version `0.0.1`
 
-The code in the `retina` repository operates a heavy and fast robot that may endanger living creatures.
+The repository was developed with the following objectives in mind
+* interface sensors without loss of precision or temporal resolution
+* interface actuators of gokart using a protocol that is specific to the MicroAutoBox implementation
+
+The code in the repository operates a heavy and fast robot that may endanger living creatures.
 We follow best practices and coding standards to protect from avoidable errors.
+See [development_guidelines](doc/development_guidelines.md)
 
-see
-[video1](https://www.youtube.com/watch?v=t3oAqQlWoyo), and
-[video2](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
+<table>
+<tr>
+<td>
 
+![usecase_gokart](https://user-images.githubusercontent.com/4012178/35968269-a92a3b46-0cc3-11e8-8d5e-1276762cdc36.png)
+
+Trajectory pursuit
+
+</tr>
+</table>
+
+## Features
+
+* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
+* interfaces to event based camera Davis240C with lossless compression by 4x
+* lidar based localization
+* offline processing of log data
+
+## Architecture
+
+We use `LCM` for message interchange.
+All messages are encoded using a single type `BinaryBlob`.
 The byte order of the binary data is `little endian` since the encoding is native on most architectures.
 
-# GOKART
+* [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
+* [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
+
+## GOKART
 
 Hardware protection modules:
 
@@ -37,13 +64,13 @@ Joystick Dead man switch:
 * [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
 
 
-# LIDAR
+## LIDAR
 
-## Velodyne VLP-16
+### Velodyne VLP-16
 
 * point cloud visualization and localization with lidar [video](https://www.youtube.com/watch?v=pykecjwixgg)
 
-## Velodyne HDL-32E
+### Velodyne HDL-32E
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=abOYEIdBgRs)
 
@@ -55,20 +82,20 @@ intensity as 360[deg] panorama
 
 ![intensity](https://user-images.githubusercontent.com/4012178/29026760-c29ebbce-7b7d-11e7-9854-9280594cb462.gif)
 
-## Quanergy Mark8
+### Quanergy Mark8
 
 * 3D-point cloud visualization: see [video](https://www.youtube.com/watch?v=DjvEijz14co)
 
-## HOKUYO URG-04LX-UG01
+### HOKUYO URG-04LX-UG01
 
 ![urg04lx](https://user-images.githubusercontent.com/4012178/29029959-c052da4c-7b89-11e7-8b01-1b4efc3593c0.gif)
 
 our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
-# DVS
+## DVS
 
-## IniLabs DAVIS240C
+### IniLabs DAVIS240C
 
 Rolling shutter mode
 
@@ -197,18 +224,3 @@ Modify the `pom` file of your project to specify `repository` and `dependency` o
         <version>0.0.1</version>
       </dependency>
     </dependencies>
-
-## Dependencies
-
-`retina` requires the libraries
-
-* `ch.ethz.idsc.tensor`
-* `ch.ethz.idsc.lcm-java`
-* `ch.ethz.idsc.owl`
-
-## References
-
-The library is used in the projects:
-* `owly3d`
-
-The repository has over `370` unit tests.
