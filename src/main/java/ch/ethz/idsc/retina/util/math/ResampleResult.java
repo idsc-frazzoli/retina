@@ -41,7 +41,8 @@ public class ResampleResult {
   }
 
   public List<Tensor> getPointsSpin(Scalar rate) {
-    Scalar factor = rate.divide(DoubleScalar.of(20.0)); // TODO magic const 20 Hz
+    // TODO magic const 20 Hz, instead of rate pass in factor directly
+    Scalar factor = rate.divide(DoubleScalar.of(20.0));
     Clip clip = Clip.function(0, numel);
     List<Tensor> result = new ArrayList<>();
     for (Tensor vector : list) {

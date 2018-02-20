@@ -15,6 +15,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * $GPRMC,155524,A,4724.3266,N,00837.8624,E,002.0,172.1,131217,001.8,E,A*10
  * $GPRMC,142802,A,4724.3445,N,00837.8776,E,000.0,111.4,080118,001.8,E,A*1B
  * 
+ * Example of invalid
+ * FIXME parse with string tokenizer or string#split if necessary
+ * $GPRMC,145817,V,4724.3230,N,00837.8329,E,,,120118,001.8,E,N*04
+ * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */
 public class VelodynePosEvent {
   /** when reading from lcm log file the byteBuffer should be at position 12 TODO where do these 12 bytes come from ?
@@ -77,13 +81,13 @@ public class VelodynePosEvent {
     return Quantity.of(value, "deg");
   }
 
-  private static final double TO_DEGREE = 1E-2;
+  private static final double TO_DEGREE_ANGLE = 1E-2;
 
   /** E W
    * 
    * @return */
   public Scalar gpsX() {
-    double value = Double.parseDouble(nmea.substring(28, 28 + 10)) * TO_DEGREE;
+    double value = Double.parseDouble(nmea.substring(28, 28 + 10)) * TO_DEGREE_ANGLE;
     Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(39);
     return id == 'E' ? scalar : scalar.negate();
@@ -93,7 +97,7 @@ public class VelodynePosEvent {
    * 
    * @return */
   public Scalar gpsY() {
-    double value = Double.parseDouble(nmea.substring(16, 16 + 9)) * TO_DEGREE;
+    double value = Double.parseDouble(nmea.substring(16, 16 + 9)) * TO_DEGREE_ANGLE;
     Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
     char id = nmea.charAt(25 + 1);
     return id == 'N' ? scalar : scalar.negate();

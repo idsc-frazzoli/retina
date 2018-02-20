@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Properties;
 
+import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -86,5 +87,10 @@ public class TensorPropertiesTest extends TestCase {
     assertEquals(sc.urg04lx, SensorsConfig.GLOBAL.urg04lx);
     assertEquals(sc.vlp16Height, SensorsConfig.GLOBAL.vlp16Height);
     file.delete();
+  }
+
+  public void testRetrieveFail() {
+    GokartLogConfig sc = TensorProperties.retrieve(new File("asd"), new GokartLogConfig());
+    assertTrue(sc != null);
   }
 }
