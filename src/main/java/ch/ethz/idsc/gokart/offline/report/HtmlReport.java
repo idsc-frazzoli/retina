@@ -1,4 +1,4 @@
-package ch.ethz.idsc.gokart.report;
+package ch.ethz.idsc.gokart.offline.report;
 
 import java.io.File;
 import java.util.Optional;

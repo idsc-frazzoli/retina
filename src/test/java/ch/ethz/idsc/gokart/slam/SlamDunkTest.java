@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.top;
+package ch.ethz.idsc.gokart.slam;
 
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeResources;
-import ch.ethz.idsc.gokart.offline.slam.SpinLidarRayBlockListener;
+import ch.ethz.idsc.gokart.offline.slam.SlamLidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -20,9 +20,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
-public class SpinDunkTest extends TestCase {
+public class SlamDunkTest extends TestCase {
   public void testSimple() throws Exception {
     GokartLogInterface olr = OfflineLocalizeResources.TEST;
+    assertTrue(olr.file().isFile());
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
@@ -32,20 +33,19 @@ public class SpinDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    OfflineLocalize offlineLocalize = new SpinLidarRayBlockListener(olr.model());
+    OfflineLocalize offlineLocalize = new SlamLidarRayBlockListener(olr.model());
     lidarAngularFiringCollector.addListener(offlineLocalize);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-        if (channel.equals("vlp16.center.ray")) {
-          offlineLocalize.setTime(time);
+        offlineLocalize.setTime(time);
+        if (channel.equals("vlp16.center.ray"))
           velodyneDecoder.lasers(byteBuffer);
-        }
       }
     };
     OfflineLogPlayer.process(olr.file(), offlineLogListener);
-    // assertEquals(offlineLocalize.skipped.length(), 1);
-    Clip clip = Clip.function(0.38, 1);
+    assertEquals(offlineLocalize.skipped.length(), 1);
+    Clip clip = Clip.function(0.35, 1);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));
     assertTrue(offlineLocalize.getTable().get(Tensor.ALL, 7).stream().map(Scalar.class::cast).allMatch(clip::isInside));
   }

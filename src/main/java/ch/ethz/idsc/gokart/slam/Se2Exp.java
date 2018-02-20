@@ -1,10 +1,9 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.top;
+package ch.ethz.idsc.gokart.slam;
 
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO move somewhere else
 public enum Se2Exp {
   ;
   /** maps an element x = (vx, vy, be) of the Lie-algebra se2 in standard coordinates:

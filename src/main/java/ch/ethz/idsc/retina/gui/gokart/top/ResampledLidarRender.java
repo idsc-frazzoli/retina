@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import ch.ethz.idsc.gokart.slam.DubendorfSlam;
+import ch.ethz.idsc.gokart.slam.SlamDunk;
+import ch.ethz.idsc.gokart.slam.SlamResult;
+import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;

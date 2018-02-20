@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.gui.gokart.top;
+package ch.ethz.idsc.gokart.slam;
 
+import ch.ethz.idsc.gokart.slam.Se2GridPoint;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;

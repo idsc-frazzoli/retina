@@ -12,18 +12,18 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.slam.DubendorfSlam;
+import ch.ethz.idsc.gokart.slam.SlamDunk;
+import ch.ethz.idsc.gokart.slam.SlamResult;
+import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
-import ch.ethz.idsc.retina.gui.gokart.top.DubendorfSlam;
 import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
 import ch.ethz.idsc.retina.gui.gokart.top.ResampledLidarRender;
-import ch.ethz.idsc.retina.gui.gokart.top.SlamDunk;
-import ch.ethz.idsc.retina.gui.gokart.top.SlamResult;
-import ch.ethz.idsc.retina.gui.gokart.top.SlamScore;
 import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
