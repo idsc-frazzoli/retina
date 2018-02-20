@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LinmotHeatTable implements OfflineTableSupplier {
-  final TableBuilder tableBuilder = new TableBuilder();
+  private final TableBuilder tableBuilder = new TableBuilder();
+  // ---
   private RimoGetEvent rge;
 
   @Override

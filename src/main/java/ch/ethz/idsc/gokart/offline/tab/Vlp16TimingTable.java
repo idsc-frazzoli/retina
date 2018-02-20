@@ -20,10 +20,10 @@ public class Vlp16TimingTable implements OfflineTableSupplier, LidarRayDataListe
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private Scalar time;
   private int usec;
-  final TableBuilder tableBuilder = new TableBuilder();
 
   public Vlp16TimingTable() {
     vlp16Decoder.addRayListener(this);

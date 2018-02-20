@@ -19,13 +19,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class PowerSteerTable implements OfflineTableSupplier {
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private SteerGetEvent sge;
   private SteerPutEvent spe;
   private MiscGetEvent mge;
-  private TableBuilder tableBuilder = new TableBuilder();
 
   public PowerSteerTable(Scalar delta) {
     this.delta = delta;

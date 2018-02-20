@@ -26,13 +26,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class RimoRateTable implements OfflineTableSupplier {
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
   private GokartStatusEvent gse;
-  final TableBuilder tableBuilder = new TableBuilder();
 
   public RimoRateTable(Scalar delta) {
     this.delta = delta;

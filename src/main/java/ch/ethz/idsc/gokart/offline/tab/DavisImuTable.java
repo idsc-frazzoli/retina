@@ -21,12 +21,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisImuTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private DavisImuFrame dif;
-  final TableBuilder tableBuilder = new TableBuilder();
 
   public DavisImuTable(Scalar delta) {
     this.delta = delta;

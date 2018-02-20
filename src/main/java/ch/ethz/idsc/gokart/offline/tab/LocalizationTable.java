@@ -34,6 +34,7 @@ public class LocalizationTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final String LIDAR = VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
@@ -42,7 +43,6 @@ public class LocalizationTable implements OfflineTableSupplier {
   private VelodynePosEvent vpe;
   private DavisImuFrame dif;
   private GokartPoseEvent gpe;
-  private final TableBuilder tableBuilder = new TableBuilder();
 
   public LocalizationTable(Scalar delta) {
     this.delta = delta;

@@ -1,7 +1,4 @@
-<a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
-
-# ch.ethz.idsc.retina
-# ch.ethz.idsc.gokart
+# ch.ethz.idsc.retina+gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
 Sensor and actuator interfaces, Gokart software, version `0.0.1`
 

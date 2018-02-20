@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.gokart.offline.tab;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -19,13 +18,13 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PowerRimoAnalysis implements OfflineTableSupplier {
+public class PowerRimoAnalysis implements OfflineTableSupplier {
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
-  final TableBuilder tableBuilder = new TableBuilder();
 
   public PowerRimoAnalysis(Scalar delta) {
     this.delta = delta;
@@ -56,9 +55,5 @@ class PowerRimoAnalysis implements OfflineTableSupplier {
   @Override
   public Tensor getTable() {
     return tableBuilder.toTable();
-  }
-
-  public static void main(String[] args) throws IOException {
-    OfflineProcessing.handle(() -> new PowerRimoAnalysis(Quantity.of(0.1, SI.SECOND)));
   }
 }

@@ -31,9 +31,10 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;
-  private final TableBuilder tableBuilder = new TableBuilder();
+  // ---
   private RimoGetEvent rge;
   private LinmotGetEvent lge;
 

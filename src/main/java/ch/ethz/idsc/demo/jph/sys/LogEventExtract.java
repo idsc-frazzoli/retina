@@ -1,8 +1,9 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.sys;
 
 import java.io.File;
 
+import ch.ethz.idsc.demo.jph.MessageConsistency;
 import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import idsc.BinaryBlob;

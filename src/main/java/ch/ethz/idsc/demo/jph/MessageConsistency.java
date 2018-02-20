@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;
 
-enum MessageConsistency implements OfflineLogListener {
+public enum MessageConsistency implements OfflineLogListener {
   INSTANCE;
   // ---
   public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");

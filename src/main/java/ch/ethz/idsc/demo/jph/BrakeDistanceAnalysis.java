@@ -2,20 +2,23 @@
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
 import ch.ethz.idsc.gokart.offline.tab.BrakeDistanceTable;
+import ch.ethz.idsc.gokart.offline.tab.RimoTable;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum BrakeDistanceAnalysis {
   ;
-  public static void main(String[] args) throws IOException {
+  static void brakeAnalysis() throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/BrakeDistanceAnalysis"))) {
       System.out.println(folder);
       GokartLogInterface olr = new GokartLogAdapter(folder);
@@ -24,5 +27,19 @@ enum BrakeDistanceAnalysis {
       OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), brakeDistanceAnalysis.getTable().map(CsvFormat.strict()));
     }
+  }
+
+  private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+
+  static void rimo() throws IOException {
+    RimoTable rimoTable = new RimoTable(Quantity.of(0.05, "s"));
+    File file = UserHome.file("temp/20180108T165210_manual.lcm");
+    OfflineLogPlayer.process(file, rimoTable);
+    Export.of(UserHome.file("maxtorque.csv"), rimoTable.getTable().map(CsvFormat.strict()));
+  }
+
+  public static void main(String[] args) throws IOException {
+    // brakeAnalysis();
+    rimo();
   }
 }

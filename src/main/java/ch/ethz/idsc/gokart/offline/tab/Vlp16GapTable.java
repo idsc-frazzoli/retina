@@ -29,6 +29,7 @@ public class Vlp16GapTable implements OfflineTableSupplier, LidarRayDataListener
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private final TableBuilder tableBuilder = new TableBuilder();
+  // ---
   private Tensor row = null;
   private Scalar time;
 
