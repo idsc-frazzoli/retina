@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.slam;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
-import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeResources;
 import ch.ethz.idsc.gokart.offline.slam.SpinLidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
@@ -22,7 +23,7 @@ import junit.framework.TestCase;
 
 public class SpinDunkTest extends TestCase {
   public void testSimple() throws Exception {
-    GokartLogInterface olr = OfflineLocalizeResources.TEST;
+    GokartLogInterface olr = new GokartLogAdapter(new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get"));
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);

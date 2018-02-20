@@ -29,8 +29,6 @@ enum BrakeDistanceAnalysis {
     }
   }
 
-  private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
-
   static void rimo() throws IOException {
     RimoTable rimoTable = new RimoTable(Quantity.of(0.05, "s"));
     File file = UserHome.file("temp/20180108T165210_manual.lcm");
@@ -39,7 +37,7 @@ enum BrakeDistanceAnalysis {
   }
 
   public static void main(String[] args) throws IOException {
-    // brakeAnalysis();
-    rimo();
+    brakeAnalysis();
+    // rimo();
   }
 }

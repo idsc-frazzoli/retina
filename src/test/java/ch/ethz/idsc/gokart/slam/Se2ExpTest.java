@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.slam;
 
-import ch.ethz.idsc.gokart.slam.Se2Exp;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

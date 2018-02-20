@@ -25,8 +25,7 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
 
 public class LidarAngularFiringCollectorTest extends TestCase {
   public void testSimple() throws Exception {
-    // global pose is approximately {56.137[m], 57.022[m], -1.09428}
-    File file = new File("src/test/resources/localization", "vlp16.center.ray_autobox.rimo.get.lcm");
+    File file = new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get", "log.lcm");
     assertTrue(file.isFile());
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
