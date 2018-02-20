@@ -10,7 +10,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** the image frame is defined as
+/** experiments show that the timing of the Davis240C imu packets are
+ * regular and correlate well with the transmission via lcm.
+ * 
+ * the image frame is defined as
  * 1st axis i.e. x is as pixel x direction: left to right
  * 2nd axis i.e. y is as pixel y direction: top to bottom
  * 3rd axis i.e. z is in direction of ccd array to lens to outside, i.e. forward */
@@ -67,6 +70,18 @@ public class DavisImuFrame extends DataEvent {
     byteBuffer.putShort(gyroX);
     byteBuffer.putShort(gyroY);
     byteBuffer.putShort(gyroZ);
+  }
+
+  public int time_us_raw() {
+    return time;
+  }
+
+  public Scalar getTime() {
+    return Quantity.of(time, "us");
+  }
+
+  public Scalar getTimeRelativeTo(int time_us_zero) {
+    return Quantity.of(time - time_us_zero, "us");
   }
 
   /** see above definition of image frame

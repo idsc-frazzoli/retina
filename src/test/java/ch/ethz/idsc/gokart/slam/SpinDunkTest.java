@@ -1,11 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.slam;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
+import ch.ethz.idsc.gokart.offline.api.GokartLogAdapterTest;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.SpinOfflineLocalize;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
@@ -23,8 +21,6 @@ import junit.framework.TestCase;
 
 public class SpinDunkTest extends TestCase {
   public void testSimple() throws Exception {
-    GokartLogInterface olr = new GokartLogAdapter(new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get"));
-    // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
@@ -33,7 +29,7 @@ public class SpinDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    OfflineLocalize offlineLocalize = new SpinOfflineLocalize(olr.model());
+    OfflineLocalize offlineLocalize = new SpinOfflineLocalize(GokartLogAdapterTest.SIMPLE.model());
     lidarAngularFiringCollector.addListener(offlineLocalize);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
@@ -44,8 +40,8 @@ public class SpinDunkTest extends TestCase {
         }
       }
     };
-    OfflineLogPlayer.process(olr.file(), offlineLogListener);
-    // assertEquals(offlineLocalize.skipped.length(), 1);
+    OfflineLogPlayer.process(GokartLogAdapterTest.SIMPLE.file(), offlineLogListener);
+    assertEquals(offlineLocalize.skipped.length(), 1);
     Clip clip = Clip.function(0.38, 1);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));
     assertTrue(offlineLocalize.getTable().get(Tensor.ALL, 7).stream().map(Scalar.class::cast).allMatch(clip::isInside));

@@ -40,9 +40,7 @@ public class SpinOfflineLocalize extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    // System.out.println(lidarRayBlockEvent.size());
     ResampleResult resampleResult = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
-    // resampleResult.getParameters();
     int sum = resampleResult.count(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
       SlamScore slamScore = ImageScore.of(map_image);
@@ -50,7 +48,6 @@ public class SpinOfflineLocalize extends OfflineLocalize {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(LIDAR);
       Stopwatch stopwatch = Stopwatch.started();
-      // System.out.println("---");
       SlamResult slamResult = SpinDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, resampleResult, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();

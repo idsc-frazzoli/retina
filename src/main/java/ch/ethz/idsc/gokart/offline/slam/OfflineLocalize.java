@@ -41,6 +41,8 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
   private int image_count = 0;
 
   public OfflineLocalize(Tensor model) {
+    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+      throw new RuntimeException();
     if (!SquareMatrixQ.of(model))
       throw new RuntimeException();
     this.model = model;
@@ -63,6 +65,14 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
         RealScalar.of(sum), //
         RealScalar.of(duration));
     System.out.println(time.map(Magnitude.SECOND).map(Round._2) + " " + ratio);
+  }
+
+  protected final void skip() {
+    skipped.append(time);
+  }
+
+  public final Tensor getTable() {
+    return tableBuilder.toTable();
   }
 
   protected final void render(Tensor points) {
@@ -95,13 +105,5 @@ public abstract class OfflineLocalize implements LidarRayBlockListener {
         exception.printStackTrace();
       }
     ++image_count;
-  }
-
-  protected final void skip() {
-    skipped.append(time);
-  }
-
-  public final Tensor getTable() {
-    return tableBuilder.toTable();
   }
 }

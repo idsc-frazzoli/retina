@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.slam;
 
+import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
@@ -26,10 +27,12 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
-public class SlamOfflineLocalize extends OfflineLocalize {
+public class GyroOfflineLocalize extends OfflineLocalize {
   /** @param model */
-  public SlamOfflineLocalize(Tensor model) {
+  public GyroOfflineLocalize(Tensor model) {
     super(model);
+    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+      throw new RuntimeException();
   }
 
   @Override // from LidarRayBlockListener

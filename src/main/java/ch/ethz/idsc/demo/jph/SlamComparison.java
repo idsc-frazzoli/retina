@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
@@ -8,10 +9,10 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
-import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeDemo;
+import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.SlamOfflineLocalize;
-import ch.ethz.idsc.gokart.offline.slam.SpinOfflineLocalize;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -26,15 +27,15 @@ enum SlamComparison {
       // ---
       {
         OfflineLocalize offlineLocalize = new SlamOfflineLocalize(olr.model());
-        OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeDemo(offlineLocalize);
+        OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
         OfflineLogPlayer.process(olr.file(), offlineTableSupplier);
         Export.of(UserHome.file(folder.getName() + "_slam.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
       }
       {
-        OfflineLocalize offlineLocalize = new SpinOfflineLocalize(olr.model());
-        OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeDemo(offlineLocalize);
+        OfflineLocalize offlineLocalize = new GyroOfflineLocalize(olr.model());
+        OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
         OfflineLogPlayer.process(olr.file(), offlineTableSupplier);
-        Export.of(UserHome.file(folder.getName() + "_spin.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+        Export.of(UserHome.file(folder.getName() + "_gyro.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
       }
     }
   }

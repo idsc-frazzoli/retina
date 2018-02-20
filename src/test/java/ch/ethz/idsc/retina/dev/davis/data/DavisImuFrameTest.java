@@ -29,5 +29,7 @@ public class DavisImuFrameTest extends TestCase {
     assertEquals(dif.temperature(), Quantity.of(47, "degC"));
     Tensor gyroImage = Tensors.fromString("{-0.063950995492922[s^-1], 1.1724349173702366[s^-1], 2.2558713660128236[s^-1]}");
     assertEquals(dif.gyroImageFrame(), gyroImage);
+    assertEquals(dif.getTime(), Quantity.of(0x12345678, "us"));
+    assertEquals(dif.getTimeRelativeTo(0x12345670), Quantity.of(8, "us"));
   }
 }
