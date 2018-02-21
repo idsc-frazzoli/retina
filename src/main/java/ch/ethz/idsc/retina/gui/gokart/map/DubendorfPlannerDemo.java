@@ -70,7 +70,8 @@ public class DubendorfPlannerDemo {
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(ViewLcmFrame.MODEL2PIXEL_INITIAL);
     Tensor total = Tensors.empty();
-    owlyAnimationFrame.trajectoryPlannerCallbackExtra = new TrajectoryPlannerCallback() {
+    // owlyAnimationFrame.trajectoryPlannerCallbackExtra =
+    new TrajectoryPlannerCallback() {
       @Override
       public void expandResult(List<TrajectorySample> head, RrtsPlanner rrtsPlanner, List<TrajectorySample> tail) {
         throw new RuntimeException();

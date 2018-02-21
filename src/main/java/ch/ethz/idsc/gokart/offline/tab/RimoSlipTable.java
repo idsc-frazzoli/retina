@@ -18,12 +18,12 @@ import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
+import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 

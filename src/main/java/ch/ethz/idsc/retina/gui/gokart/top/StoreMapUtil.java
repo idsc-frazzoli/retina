@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -16,9 +15,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.TensorRank;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
@@ -33,7 +30,7 @@ public enum StoreMapUtil {
 
   public static BufferedImage loadOrNull() {
     try {
-      Tensor tensor = grayscale(ResourceData.of(REPO));
+      Tensor tensor = ImageRegions.grayscale(ResourceData.of(REPO));
       return ImageFormat.of(tensor);
     } catch (Exception exception) {
       exception.printStackTrace();
@@ -43,32 +40,11 @@ public enum StoreMapUtil {
 
   public static BufferedImage load(File file) {
     try {
-      return ImageFormat.of(grayscale(Import.of(file)));
+      return ImageFormat.of(ImageRegions.grayscale(Import.of(file)));
     } catch (Exception exception) {
       exception.printStackTrace();
     }
     return null;
-  }
-
-  /** grayscale images that encode free space (as black pixels) and the location of obstacles
-   * (as non-black pixels) may be stored as grayscale, or indexed color images. Images with
-   * colors palette may be of smaller size than the equivalent grayscale image. Indexed color
-   * images have RGBA channels. The function converts the given image to a grayscale image if
-   * necessary.
-   * 
-   * @param image
-   * @return matrix with entries from the range {0, 1, ..., 255}
-   * @throws Exception if input does not represent an image */
-  // TODO obsolete with owl004
-  private static Tensor grayscale(Tensor image) {
-    Optional<Integer> optional = TensorRank.ofArray(image);
-    switch (optional.get()) {
-    case 2:
-      return image.copy();
-    case 3:
-      return image.get(Tensor.ALL, Tensor.ALL, 0); // take RED channel for region member test
-    }
-    throw TensorRuntimeException.of(image);
   }
 
   public static Tensor range() {

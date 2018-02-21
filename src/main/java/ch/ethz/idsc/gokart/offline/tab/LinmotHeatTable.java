@@ -11,9 +11,9 @@ import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LinmotHeatTable implements OfflineTableSupplier {

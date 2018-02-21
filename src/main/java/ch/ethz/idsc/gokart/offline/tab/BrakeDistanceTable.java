@@ -23,9 +23,9 @@ import ch.ethz.idsc.retina.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.retina.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.TableBuilder;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.TableBuilder;
 
 public class BrakeDistanceTable implements OfflineTableSupplier {
   private static final String LIDAR = //
