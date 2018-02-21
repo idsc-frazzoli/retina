@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 
-import ch.ethz.idsc.gokart.slam.SlamScore;
+import ch.ethz.idsc.gokart.core.slam.SlamScore;
 
 public class ImageScore implements SlamScore {
   /** @param bufferedImage grayscale image in byte array encoding, each pixel corresponds to one byte */

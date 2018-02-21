@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.jph;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.demo.DubendorfHangarLog;
 import ch.ethz.idsc.gokart.offline.report.HtmlReport;
 import ch.ethz.idsc.gokart.offline.report.LogFileSummary;
-import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
 
 enum ProduceReports {
   ;

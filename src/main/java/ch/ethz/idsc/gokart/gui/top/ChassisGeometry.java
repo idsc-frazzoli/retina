@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.owly.car.math.DifferentialSpeed;
+import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;

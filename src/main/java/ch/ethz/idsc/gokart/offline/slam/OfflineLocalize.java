@@ -10,11 +10,11 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
-import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;

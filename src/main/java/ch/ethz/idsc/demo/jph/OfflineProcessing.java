@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import ch.ethz.idsc.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.LogFileInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
-import ch.ethz.idsc.retina.demo.LogFileInterface;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.tensor.Tensor;
