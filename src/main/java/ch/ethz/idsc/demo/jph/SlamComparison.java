@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.Export;
 enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    BufferedImage map_image = StoreMapUtil.load(UserHome.Pictures("hangar03.png"));
+    BufferedImage map_image = StoreMapUtil.loadExtrude(3);
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalQuick"))) {
       System.out.println(folder);
       GokartLogInterface olr = new GokartLogAdapter(folder);

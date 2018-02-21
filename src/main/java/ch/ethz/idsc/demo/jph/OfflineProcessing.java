@@ -12,10 +12,10 @@ import ch.ethz.idsc.demo.LogFileInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.util.math.NSingle;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.MatrixQ;
+import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
 // TODO not public
@@ -49,6 +49,6 @@ public enum OfflineProcessing {
     }
     if (!MatrixQ.of(table))
       System.err.println("export does not have matrix structure");
-    Export.of(UserHome.file(title + ".csv"), table.map(NSingle.INSTANCE));
+    Export.of(UserHome.file(title + ".csv"), table.map(CsvFormat.strict()));
   }
 }

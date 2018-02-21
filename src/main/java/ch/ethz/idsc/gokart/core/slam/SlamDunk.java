@@ -9,14 +9,16 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-/** first localization algorithm deployed on the gokart.
+/** localization algorithm deployed on the gokart.
  * the iterative method is used since December 2017.
  * 
  * the localization algorithm relies on a map that encodes
  * free space and obstacles.
  * 
  * confirmed to work well at speeds of up to 2[m/s] following
- * the oval trajectory in the dubendorf hangar */
+ * the oval trajectory in the dubendorf hangar
+ * confirmed to work well at speeds of up to 10[m/s] and
+ * rotational rates of up to 180[deg/s]. */
 public enum SlamDunk {
   ;
   /** the list of points is typically provided by {@link ParametricResample}
@@ -51,9 +53,4 @@ public enum SlamDunk {
         .forEach(index -> geometricLayer.popMatrix());
     return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
   }
-  // public static SlamResult of( //
-  // Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, ResampleResult resampleResult, SlamScore slamScore) {
-  // Tensor points = Tensor.of(resampleResult.getPoints().stream().flatMap(Tensor::stream));
-  // return of(se2MultiresGrids, geometricLayer, points, slamScore);
-  // }
 }

@@ -9,24 +9,27 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 // TODO split class into generic and specific functionality
 public enum StoreMapUtil {
   ;
   private static final String REPO = "/map/dubendorf/hangar/20180122.png";
-  private static final File FILE = UserHome.Pictures("duebendorf.png");
   private static final int SIZE = 640;
+  private static final Scalar SCALE = RealScalar.of(7.5);
+  // ---
+  private static final File FILE = UserHome.Pictures("duebendorf.png");
 
   public static BufferedImage loadOrNull() {
     try {
@@ -38,9 +41,10 @@ public enum StoreMapUtil {
     return null;
   }
 
-  public static BufferedImage load(File file) {
+  public static BufferedImage loadExtrude(int ttl) {
     try {
-      return ImageFormat.of(ImageRegions.grayscale(Import.of(file)));
+      Tensor tensor = ImageRegions.grayscale(ResourceData.of(REPO));
+      return ImageFormat.of(ImageEdges.extrusion(tensor, ttl));
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -48,7 +52,7 @@ public enum StoreMapUtil {
   }
 
   public static Tensor range() {
-    return Tensors.vector(SIZE, SIZE).divide(RealScalar.of(7.5));
+    return Tensors.vector(SIZE, SIZE).divide(SCALE);
   }
 
   /** creates map and stores image at default location
