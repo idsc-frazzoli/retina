@@ -5,14 +5,12 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.slam.DubendorfSlam;
 import ch.ethz.idsc.gokart.slam.SlamResult;
-import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.gokart.slam.SpinDunk;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.zhkart.pos.LocalizationConfig;
-import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
 import ch.ethz.idsc.retina.gui.gokart.top.ResampledLidarRender;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.retina.util.math.ResampleResult;
@@ -43,7 +41,6 @@ public class SpinOfflineLocalize extends OfflineLocalize {
     ResampleResult resampleResult = LocalizationConfig.GLOBAL.getUniformResample().apply(points);
     int sum = resampleResult.count(); // usually around 430
     if (ResampledLidarRender.MIN_POINTS < sum) {
-      SlamScore slamScore = ImageScore.of(map_image);
       GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(LIDAR);

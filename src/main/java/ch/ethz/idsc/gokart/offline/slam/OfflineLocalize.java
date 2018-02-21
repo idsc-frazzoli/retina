@@ -10,12 +10,14 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
 import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
 import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
@@ -35,21 +37,33 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   // ---
-  protected final BufferedImage map_image = StoreMapUtil.load(UserHome.Pictures("hangar03.png"));
+  protected SlamScore slamScore;
+  protected final BufferedImage vis_image = StoreMapUtil.loadOrNull();
   private final TableBuilder tableBuilder = new TableBuilder();
   private Scalar time;
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
   protected Tensor model;
-  private int image_count = 0;
   private Tensor gyro_y = Tensors.empty();
+  // ---
+  private final BufferedImage sum_image;
+  private final Graphics2D graphics2d;
 
   public OfflineLocalize(Tensor model) {
-    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
-      throw new RuntimeException();
     if (!SquareMatrixQ.of(model))
       throw new RuntimeException();
+    setScoreImage(vis_image);
     this.model = model;
+    // ---
+    sum_image = new BufferedImage(vis_image.getWidth(), vis_image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    graphics2d = sum_image.createGraphics();
+    graphics2d.drawImage(vis_image, 0, 0, null);
+  }
+
+  public void setScoreImage(BufferedImage map_image) {
+    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+      throw new RuntimeException();
+    slamScore = ImageScore.of(map_image);
   }
 
   public final void setTime(Scalar time) {
@@ -87,6 +101,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   protected final void skip() {
     skipped.append(time);
+    System.err.println("skip " + time);
   }
 
   public final Tensor getTable() {
@@ -94,16 +109,13 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   protected final void render(Tensor points) {
-    BufferedImage image = new BufferedImage(map_image.getWidth(), map_image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    Graphics2D graphics2d = image.createGraphics();
-    graphics2d.drawImage(map_image, 0, 0, null);
     GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
     geometricLayer.pushMatrix(model);
     geometricLayer.pushMatrix(LIDAR);
     graphics2d.setColor(Color.GREEN);
     for (Tensor x : points) {
       Point2D p = geometricLayer.toPoint2D(x);
-      graphics2d.fillRect((int) p.getX(), (int) p.getY(), 2, 2);
+      graphics2d.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
     }
     graphics2d.setColor(Color.GRAY);
     {
@@ -113,15 +125,18 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
       graphics2d.draw(new Line2D.Double(p0, pX));
       graphics2d.draw(new Line2D.Double(p0, pY));
     }
-    // graphics2d.drawString("q=" + quality, 0, 10);
-    File dir = UserHome.Pictures(getClass().getSimpleName());
-    dir.mkdir();
-    if (dir.isDirectory())
-      try {
-        ImageIO.write(image, "png", new File(dir, String.format("%02d.png", image_count)));
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-    ++image_count;
+  }
+
+  public final void end() {
+    // File dir = UserHome.Pictures(getClass().getSimpleName());
+    File file = UserHome.Pictures(getClass().getSimpleName() + ".png");
+    // dir.mkdir();
+    // if (dir.isDirectory())
+    try {
+      // new File(dir, String.format("%02d.png", image_count))
+      ImageIO.write(sum_image, "png", file);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 }
