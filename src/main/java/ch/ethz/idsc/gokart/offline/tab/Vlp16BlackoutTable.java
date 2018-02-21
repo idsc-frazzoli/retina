@@ -21,13 +21,14 @@ public class Vlp16BlackoutTable implements OfflineTableSupplier, LidarRayDataLis
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
+  // ---
   private Scalar time;
   private Integer usec_last;
   private Integer rota_last;
   private int delta_time;
-  boolean flag = false;
-  final TableBuilder tableBuilder = new TableBuilder();
+  private boolean flag = false;
 
   public Vlp16BlackoutTable() {
     vlp16Decoder.addRayListener(this);

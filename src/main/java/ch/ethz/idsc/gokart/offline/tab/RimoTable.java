@@ -6,10 +6,11 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
 import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
@@ -25,7 +26,7 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-public class RimoRateTable implements OfflineTableSupplier {
+public class RimoTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
@@ -34,7 +35,7 @@ public class RimoRateTable implements OfflineTableSupplier {
   private RimoPutEvent rpe;
   private GokartStatusEvent gse;
 
-  public RimoRateTable(Scalar delta) {
+  public RimoTable(Scalar delta) {
     this.delta = delta;
   }
 
@@ -50,22 +51,23 @@ public class RimoRateTable implements OfflineTableSupplier {
       gse = new GokartStatusEvent(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse)) {
+      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated()) {
+        // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
+        // ---
         Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-        // rad/s * m == (m / s) / m
         Scalar rate = Differences.of(rates).Get(0) //
             .multiply(RationalScalar.HALF) //
             .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
             .divide(ChassisGeometry.GLOBAL.yTireRear);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
-            SteerConfig.GLOBAL.getAngleFromSCE(gse), //
-            speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE) //
-        );
+            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
+            rates.map(RimoGetTire.MAGNITUDE_RATE), // rad/s
+            speed.map(Magnitude.VELOCITY), // m/s
+            rate.map(Magnitude.ANGULAR_RATE), //
+            gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER));
       }
     }
   }

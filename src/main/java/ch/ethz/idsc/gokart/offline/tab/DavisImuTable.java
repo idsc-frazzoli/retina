@@ -21,13 +21,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisImuTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private DavisImuFrame dif;
-  final TableBuilder tableBuilder = new TableBuilder();
+  private Integer time_zero = null;
 
+  /** @param delta use 0[s] to export every davis240c gyro record */
   public DavisImuTable(Scalar delta) {
     this.delta = delta;
   }
@@ -39,16 +41,18 @@ public class DavisImuTable implements OfflineTableSupplier {
     } else //
     if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);
-    }
-    if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(dif)) {
+      if (Scalars.lessThan(time_next, time) && Objects.nonNull(rge)) {
         time_next = time.add(delta);
+        // ---
+        if (Objects.isNull(time_zero))
+          time_zero = dif.time_us_raw();
         tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND), //
-            dif.accelImageFrame().map(Magnitude.ACCELERATION), //
-            dif.temperature().map(Magnitude.DEGREE_CELSIUS), //
-            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE), //
-            rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE) //
+            time.map(Magnitude.SECOND), // m1
+            dif.getTimeRelativeTo(time_zero).map(Magnitude.SECOND), // m2
+            dif.accelImageFrame().map(Magnitude.ACCELERATION), // m3
+            dif.temperature().map(Magnitude.DEGREE_CELSIUS), // m4
+            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE), // m5
+            rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE) // m6,7
         );
       }
     }

@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 public class RimoSlipTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
@@ -37,7 +38,6 @@ public class RimoSlipTable implements OfflineTableSupplier {
   private RimoPutEvent rpe;
   private DavisImuFrame dif;
   private GokartStatusEvent gse;
-  final TableBuilder tableBuilder = new TableBuilder();
 
   public RimoSlipTable(Scalar delta) {
     this.delta = delta;

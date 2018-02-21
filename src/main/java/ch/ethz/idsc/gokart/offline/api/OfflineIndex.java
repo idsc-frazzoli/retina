@@ -15,7 +15,9 @@ public enum OfflineIndex {
     File dir = file.getParentFile();
     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
       return bufferedReader.lines() //
+          .map(String::trim) //
           .filter(string -> !string.isEmpty()) //
+          .filter(string -> !string.startsWith("#")) //
           .map(string -> new File(dir, string)) //
           .filter(File::isDirectory) //
           .collect(Collectors.toList());

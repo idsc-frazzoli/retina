@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.TensorRank;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
+import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 // TODO split class into generic and specific functionality
@@ -34,6 +35,15 @@ public enum StoreMapUtil {
     try {
       Tensor tensor = grayscale(ResourceData.of(REPO));
       return ImageFormat.of(tensor);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
+  public static BufferedImage load(File file) {
+    try {
+      return ImageFormat.of(grayscale(Import.of(file)));
     } catch (Exception exception) {
       exception.printStackTrace();
     }

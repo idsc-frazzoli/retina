@@ -36,10 +36,8 @@ public enum OfflineLogPlayer {
         try {
           binaryBlob = new BinaryBlob(event.data);
         } catch (Exception exception) {
-          if (set.add(event.channel)) {
-            // exception.printStackTrace();
+          if (set.add(event.channel))
             System.err.println("not a binary blob: " + event.channel);
-          }
         }
         if (binaryBlob != null)
           for (OfflineLogListener offlineLogListener : offlineLogListeners) {

@@ -20,10 +20,11 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LinmotStatusTable implements OfflineTableSupplier {
+  private final TableBuilder tableBuilder = new TableBuilder();
   private final Clip range;
-  final TableBuilder tableBuilder = new TableBuilder();
-  boolean isFused = false;
-  Integer failure_index = null;
+  // ---
+  private boolean isFused = false;
+  private Integer failure_index = null;
 
   public LinmotStatusTable(Scalar offset) {
     range = Clip.function(offset, offset.add(Quantity.of(0.2, "s")));

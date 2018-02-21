@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -41,8 +40,6 @@ public class ResampleResult {
   }
 
   public List<Tensor> getPointsSpin(Scalar rate) {
-    // TODO magic const 20 Hz, instead of rate pass in factor directly
-    Scalar factor = rate.divide(DoubleScalar.of(20.0));
     Clip clip = Clip.function(0, numel);
     List<Tensor> result = new ArrayList<>();
     for (Tensor vector : list) {
@@ -51,7 +48,7 @@ public class ResampleResult {
         final Scalar param = (Scalar) _param;
         clip.requireInside(param);
         Tensor point = interpolation.get(Tensors.of(param));
-        Scalar angle = clip.rescale(param).multiply(factor);
+        Scalar angle = clip.rescale(param).multiply(rate);
         Tensor matrix = RotationMatrix.of(angle);
         entry.append(matrix.dot(point));
       }

@@ -29,6 +29,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private final TableBuilder tableBuilder = new TableBuilder();
+  // ---
   private Integer usec_last = null;
   private Tensor row = null;
   private Scalar time;
