@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.lcm.mod;
 
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmServer;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 

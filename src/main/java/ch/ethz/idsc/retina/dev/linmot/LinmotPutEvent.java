@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 
 /** information sent to micro-autobox to forward to the linear motor that

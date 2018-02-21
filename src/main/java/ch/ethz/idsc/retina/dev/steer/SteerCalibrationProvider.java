@@ -1,7 +1,7 @@
 // code by ej and jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
+import ch.ethz.idsc.gokart.core.AutoboxCalibrationProvider;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.sca.Sin;

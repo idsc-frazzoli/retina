@@ -7,10 +7,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

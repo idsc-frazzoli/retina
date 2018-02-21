@@ -4,6 +4,7 @@ package ch.ethz.idsc.owly.car.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owly.car.core.VehicleModel;
 import ch.ethz.idsc.owly.car.core.WheelInterface;
 import ch.ethz.idsc.owly.car.math.Pacejka3;
@@ -12,7 +13,6 @@ import ch.ethz.idsc.owly.car.model.CarSteering;
 import ch.ethz.idsc.owly.car.model.DefaultCarModel;
 import ch.ethz.idsc.owly.car.model.DefaultWheel;
 import ch.ethz.idsc.owly.car.model.MotorTorques;
-import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;

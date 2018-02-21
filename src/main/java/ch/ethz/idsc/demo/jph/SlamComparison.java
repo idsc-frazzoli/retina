@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
@@ -13,7 +14,6 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
-import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.io.CsvFormat;

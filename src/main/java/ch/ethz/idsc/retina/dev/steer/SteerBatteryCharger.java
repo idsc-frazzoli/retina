@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.ProviderRank;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
 import ch.ethz.idsc.tensor.Scalars;
 
 /** the steering battery is charged from time to time.

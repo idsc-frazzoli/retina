@@ -1,0 +1,21 @@
+// code by jph
+package ch.ethz.idsc.gokart.gui.lab;
+
+import java.util.Optional;
+
+import ch.ethz.idsc.gokart.gui.lab.RimoComponent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import junit.framework.TestCase;
+
+public class RimoComponentTest extends TestCase {
+  public void testSimple() {
+    RimoComponent rimoComponent = new RimoComponent();
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
+    rimoComponent.getEvent(rimoGetEvent);
+    Optional<RimoPutEvent> optional = rimoComponent.putEvent();
+    assertTrue(optional.isPresent());
+    rimoComponent.putEvent(optional.get());
+  }
+}

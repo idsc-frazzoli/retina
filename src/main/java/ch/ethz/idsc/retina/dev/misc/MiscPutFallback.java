@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.gokart.core.ProviderRank;
 
 /* package */ enum MiscPutFallback implements MiscPutProvider {
   INSTANCE;

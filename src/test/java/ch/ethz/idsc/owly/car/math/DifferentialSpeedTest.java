@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owly.car.math;
 
-import ch.ethz.idsc.retina.gui.gokart.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

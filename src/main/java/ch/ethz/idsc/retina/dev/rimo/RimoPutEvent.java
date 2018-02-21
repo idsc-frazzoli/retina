@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

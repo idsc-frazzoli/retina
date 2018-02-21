@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 import java.util.Set;
 
-import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

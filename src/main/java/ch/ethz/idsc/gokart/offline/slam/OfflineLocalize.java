@@ -10,6 +10,10 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.gui.top.ImageScore;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
+import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.gokart.slam.SlamScore;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -17,10 +21,6 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.gui.gokart.top.ImageScore;
-import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
-import ch.ethz.idsc.retina.gui.gokart.top.StoreMapUtil;
-import ch.ethz.idsc.retina.gui.gokart.top.ViewLcmFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

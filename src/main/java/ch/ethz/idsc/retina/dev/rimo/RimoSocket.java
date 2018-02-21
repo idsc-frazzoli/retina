@@ -5,8 +5,8 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
+import ch.ethz.idsc.gokart.core.AutoboxDevice;
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;

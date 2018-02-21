@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.lcm.autobox;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
-import ch.ethz.idsc.retina.gui.gokart.GokartStatusEvent;
-import ch.ethz.idsc.retina.gui.gokart.GokartStatusListener;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 
 public class GokartStatusLcmClient extends SimpleLcmClient<GokartStatusListener> {
   @Override // from BinaryLcmClient
