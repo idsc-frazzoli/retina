@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.lcm.mod;
+package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 

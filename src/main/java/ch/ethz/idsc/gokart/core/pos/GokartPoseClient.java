@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.autobox.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SimpleLcmClient;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** needs to start listening! */

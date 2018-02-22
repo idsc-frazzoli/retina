@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.lcm.autobox;
+package ch.ethz.idsc.gokart.lcm.autobox;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;

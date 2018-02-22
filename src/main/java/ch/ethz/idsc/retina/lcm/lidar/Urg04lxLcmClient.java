@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.lcm.lidar;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDecoder;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
-import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 
 /** listen to specific urg04lx channel and decode urg messages
  * 
