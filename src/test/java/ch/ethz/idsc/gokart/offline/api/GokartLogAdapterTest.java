@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 public class GokartLogAdapterTest extends TestCase {
   public static final GokartLogInterface SIMPLE = //
-      new GokartLogAdapter(new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get"));
+      GokartLogAdapter.of(new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get"));
 
   public void testSimple() {
     assertTrue(SIMPLE.file().exists());

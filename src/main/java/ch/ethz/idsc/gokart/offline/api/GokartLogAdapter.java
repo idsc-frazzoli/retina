@@ -7,10 +7,15 @@ import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class GokartLogAdapter implements GokartLogInterface {
+  public static GokartLogInterface of(File folder) {
+    return new GokartLogAdapter(folder);
+  }
+
+  // ---
   private final File folder;
   private final GokartLogConfig gokartLogConfig;
 
-  public GokartLogAdapter(File folder) {
+  private GokartLogAdapter(File folder) {
     this.folder = folder;
     gokartLogConfig = TensorProperties.retrieve( //
         new File(folder, "GokartLogConfig.properties"), new GokartLogConfig());

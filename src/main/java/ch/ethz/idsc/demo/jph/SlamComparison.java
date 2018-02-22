@@ -25,7 +25,7 @@ enum SlamComparison {
     BufferedImage map_image = StoreMapUtil.loadExtrude(3);
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalQuick"))) {
       System.out.println(folder);
-      GokartLogInterface olr = new GokartLogAdapter(folder);
+      GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
       OfflineLocalize offlineLocalize = new GyroOfflineLocalize(olr.model());
       offlineLocalize.setScoreImage(map_image);

@@ -21,7 +21,8 @@ import ch.ethz.idsc.tensor.Tensor;
 public class OfflineLocalizeWrap implements OfflineTableSupplier {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private static final String CHANNEL_IMU = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+  private static final String CHANNEL_IMU = //
+      DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;

@@ -20,7 +20,7 @@ enum GpsAnalysis {
   public static void main(String[] args) throws IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/GpsAnalysis"))) {
       System.out.println(folder);
-      GokartLogInterface olr = new GokartLogAdapter(folder);
+      GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
       LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND));
       OfflineLogPlayer.process(olr.file(), localizationAnalysis);

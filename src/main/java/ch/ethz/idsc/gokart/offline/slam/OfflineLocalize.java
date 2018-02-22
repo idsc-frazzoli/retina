@@ -22,6 +22,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,6 +30,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -36,6 +38,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
+  private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
   protected SlamScore slamScore;
   protected final BufferedImage vis_image = StoreMapUtil.loadOrNull();
@@ -83,7 +86,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   protected final Scalar getGyroAndReset() {
-    Scalar mean = Mean.of(gyro_y).Get();
+    Scalar mean = Tensors.isEmpty(gyro_y) ? ZERO_RATE : Mean.of(gyro_y).Get();
     gyro_y = Tensors.empty();
     return mean;
   }
