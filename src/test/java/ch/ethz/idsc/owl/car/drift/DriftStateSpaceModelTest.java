@@ -1,8 +1,6 @@
 // code by edo
 package ch.ethz.idsc.owl.car.drift;
 
-import ch.ethz.idsc.owl.car.drift.DriftParameters;
-import ch.ethz.idsc.owl.car.drift.DriftStateSpaceModel;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;

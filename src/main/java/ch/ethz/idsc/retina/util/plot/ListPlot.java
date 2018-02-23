@@ -18,8 +18,6 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.plot.SeriesCollection;
-import ch.ethz.idsc.retina.util.plot.SeriesContainer;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

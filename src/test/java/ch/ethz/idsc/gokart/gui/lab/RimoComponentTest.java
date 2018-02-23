@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.lab.RimoComponent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;

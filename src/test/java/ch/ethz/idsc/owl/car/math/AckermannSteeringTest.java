@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.owl.car.math;
 
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

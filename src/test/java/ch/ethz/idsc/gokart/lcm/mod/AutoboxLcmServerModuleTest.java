@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.lcm.mod;
 
-import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import junit.framework.TestCase;
 
 public class AutoboxLcmServerModuleTest extends TestCase {

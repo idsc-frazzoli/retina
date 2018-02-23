@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;

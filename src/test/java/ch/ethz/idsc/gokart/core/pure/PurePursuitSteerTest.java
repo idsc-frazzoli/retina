@@ -4,8 +4,6 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.core.pure.PurePursuitRimo;
-import ch.ethz.idsc.gokart.core.pure.PurePursuitSteer;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.qty.Quantity;

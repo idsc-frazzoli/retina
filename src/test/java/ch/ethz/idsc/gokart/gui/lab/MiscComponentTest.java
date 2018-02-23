@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui.lab;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.lab.MiscComponent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import junit.framework.TestCase;

@@ -2,11 +2,6 @@
 package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.model.CarControl;
-import ch.ethz.idsc.owl.car.model.CarState;
-import ch.ethz.idsc.owl.car.model.CarStatic;
-import ch.ethz.idsc.owl.car.model.CarSteering;
-import ch.ethz.idsc.owl.car.model.TireForces;
 import ch.ethz.idsc.owl.car.shop.CHatchbackModel;
 import ch.ethz.idsc.owl.math.FrictionCoefficients;
 import ch.ethz.idsc.tensor.RealScalar;

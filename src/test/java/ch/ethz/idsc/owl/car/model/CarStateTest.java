@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.owl.car.model;
 
-import ch.ethz.idsc.owl.car.model.CarState;
-import ch.ethz.idsc.owl.car.model.CarStatic;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Range;
 import junit.framework.TestCase;

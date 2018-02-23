@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;

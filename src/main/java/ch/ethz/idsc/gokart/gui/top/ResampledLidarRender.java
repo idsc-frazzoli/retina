@@ -48,7 +48,7 @@ public class ResampledLidarRender extends LidarRender {
     map_image = StoreMapUtil.loadOrNull();
   }
 
-  public static final int MIN_POINTS = 350;
+  public static final int MIN_POINTS = 250;
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {

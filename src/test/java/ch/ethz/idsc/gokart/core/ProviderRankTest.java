@@ -8,7 +8,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
 import junit.framework.TestCase;
 
 public class ProviderRankTest extends TestCase {

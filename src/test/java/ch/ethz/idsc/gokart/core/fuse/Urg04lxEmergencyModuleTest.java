@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.core.fuse.Urg04lxEmergencyModule;
 import junit.framework.TestCase;
 
 public class Urg04lxEmergencyModuleTest extends TestCase {

@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import junit.framework.TestCase;
 

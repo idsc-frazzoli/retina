@@ -3,8 +3,6 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.util.Arrays;
 
-import ch.ethz.idsc.gokart.core.slam.Se2Grid;
-import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.alg.Dimensions;

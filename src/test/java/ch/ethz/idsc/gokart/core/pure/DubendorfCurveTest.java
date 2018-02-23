@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;

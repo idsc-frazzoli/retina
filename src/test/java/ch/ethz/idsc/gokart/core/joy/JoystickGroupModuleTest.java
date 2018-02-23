@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.retina.sys.ModuleAuto;
 import junit.framework.TestCase;
 

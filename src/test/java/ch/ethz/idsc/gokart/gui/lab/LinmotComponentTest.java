@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.gui.lab.LinmotComponent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import junit.framework.TestCase;
