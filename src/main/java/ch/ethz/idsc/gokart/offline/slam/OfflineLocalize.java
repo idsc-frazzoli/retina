@@ -7,6 +7,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -21,19 +23,15 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
@@ -42,7 +40,6 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   // ---
   protected SlamScore slamScore;
   protected final BufferedImage vis_image = StoreMapUtil.loadOrNull();
-  private final TableBuilder tableBuilder = new TableBuilder();
   private Scalar time;
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
@@ -51,6 +48,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   // ---
   private final BufferedImage sum_image;
   private final Graphics2D graphics2d;
+  private final List<LocalizationResultListener> listeners = new LinkedList<>();
 
   public OfflineLocalize(Tensor model) {
     if (!SquareMatrixQ.of(model))
@@ -63,7 +61,11 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
     graphics2d.drawImage(vis_image, 0, 0, null);
   }
 
-  public void setScoreImage(BufferedImage map_image) {
+  public final void addListener(LocalizationResultListener localizationResultListener) {
+    listeners.add(localizationResultListener);
+  }
+
+  public final void setScoreImage(BufferedImage map_image) {
     if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
       throw new RuntimeException();
     slamScore = ImageScore.of(map_image);
@@ -77,10 +79,8 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
     return Se2Utils.fromSE2Matrix(model);
   }
 
-  @Override
+  @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    // Tensor gyro = davisImuFrame.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._3);
-    // System.out.println(time + " " + davisImuFrame.getTime() + " " + gyro);
     Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
     gyro_y.append(rate);
   }
@@ -91,24 +91,15 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
     return mean;
   }
 
-  protected final void appendRow(Tensor dstate, Scalar ratio, int sum, double duration) {
-    tableBuilder.appendRow( //
-        time.map(Magnitude.SECOND), //
-        Se2Utils.fromSE2Matrix(model), //
-        dstate, //
-        Clip.unit().requireInside(ratio), // mathematica 8
-        RealScalar.of(sum), //
-        RealScalar.of(duration));
-    System.out.println(time.map(Magnitude.SECOND).map(Round._2) + " " + ratio);
+  protected final void appendRow(Scalar ratio, int sum, double duration) {
+    LocalizationResult localizationResult = new LocalizationResult( //
+        time, Se2Utils.fromSE2Matrix(model), Clip.unit().requireInside(ratio));
+    listeners.forEach(listener -> listener.localizationCallback(localizationResult));
   }
 
   protected final void skip() {
     skipped.append(time);
     System.err.println("skip " + time);
-  }
-
-  public final Tensor getTable() {
-    return tableBuilder.toTable();
   }
 
   protected final void render(Tensor points) {
@@ -131,12 +122,8 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   public final void end() {
-    // File dir = UserHome.Pictures(getClass().getSimpleName());
     File file = UserHome.Pictures(getClass().getSimpleName() + ".png");
-    // dir.mkdir();
-    // if (dir.isDirectory())
     try {
-      // new File(dir, String.format("%02d.png", image_count))
       ImageIO.write(sum_image, "png", file);
     } catch (Exception exception) {
       exception.printStackTrace();

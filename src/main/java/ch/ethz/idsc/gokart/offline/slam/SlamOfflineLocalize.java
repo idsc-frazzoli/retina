@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.gui.top.ResampledLidarRender;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -48,10 +47,10 @@ public class SlamOfflineLocalize extends OfflineLocalize {
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
-      Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
+      // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
-      appendRow(dstate, ratio, sum, duration);
+      appendRow(ratio, sum, duration);
       render(scattered);
     } else
       skip();

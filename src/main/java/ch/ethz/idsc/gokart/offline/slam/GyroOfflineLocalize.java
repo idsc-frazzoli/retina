@@ -57,10 +57,10 @@ public class GyroOfflineLocalize extends OfflineLocalize {
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
-      Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
+      // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
-      appendRow(dstate, ratio, sum, duration);
+      appendRow(ratio, sum, duration);
       render(scattered);
     } else
       skip();
