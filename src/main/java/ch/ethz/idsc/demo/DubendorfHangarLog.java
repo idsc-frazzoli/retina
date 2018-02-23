@@ -12,7 +12,8 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /* 2017-12-18 */
   // gokart.pose.lidar does not contain quality field
   /* 2018-01-08 */
-  /** linmot failure at 662.75[s]; */
+  /** no movement at all
+   * linmot failure at 662.75[s]; */
   _20180108T152648_5f742add, //
   /**  */
   _20180108T154035_5f742add, //
@@ -24,7 +25,8 @@ public enum DubendorfHangarLog implements LogFileInterface {
    * 332[s] oval pursuit in reverse */
   _20180108T165210_5f742add, //
   /* 2018-01-12 */
-  /** 708.50[s] linmot failure */
+  /** no movement at all
+   * 708.50[s] linmot failure */
   _20180112T103859_9e1d3699, //
   /**  */
   _20180112T105400_9e1d3699, //

@@ -62,7 +62,9 @@ public class GyroOfflineLocalize extends OfflineLocalize {
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
       appendRow(ratio, sum, duration);
       render(scattered);
-    } else
+    } else {
+      System.err.println("few points " + sum);
       skip();
+    }
   }
 }

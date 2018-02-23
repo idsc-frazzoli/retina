@@ -7,6 +7,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
@@ -17,6 +18,7 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
@@ -44,6 +46,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
   private DavisImuFrame davisImuFrame;
   private RimoGetEvent rimoGetEvent;
   private RimoPutEvent rimoPutEvent;
+  private LinmotGetEvent linmotGetEvent;
   private GokartStatusEvent gokartStatusEvent;
   private final TableBuilder tableBuilder = new TableBuilder();
 
@@ -70,6 +73,9 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
       davisImuFrame = new DavisImuFrame(byteBuffer);
       offlineLocalize.imuFrame(davisImuFrame);
     } else //
+    if (channel.equals(LinmotLcmServer.CHANNEL_GET))
+      linmotGetEvent = new LinmotGetEvent(byteBuffer);
+    else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
       rimoGetEvent = new RimoGetEvent(byteBuffer);
     else //
@@ -83,11 +89,12 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
   @Override // from LocalizationResultListener
   public void localizationCallback(LocalizationResult localizationResult) {
     if (Objects.isNull(davisImuFrame) || //
+        Objects.isNull(linmotGetEvent) || //
         Objects.isNull(rimoGetEvent) || //
         Objects.isNull(rimoPutEvent) || //
         Objects.isNull(gokartStatusEvent))
       return;
-    System.out.println(localizationResult.time);
+    System.out.println(localizationResult.time + " " + localizationResult.ratio);
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
     Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
     Scalar rate = Differences.of(rates).Get(0) //
@@ -102,6 +109,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
         rate.map(Magnitude.ANGULAR_RATE), //
         davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.ANGULAR_RATE), //
         SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent), //
+        linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
         localizationResult.pose_xyt.extract(0, 2).map(Round._3), //
         localizationResult.pose_xyt.Get(2).map(Round._6), //
         localizationResult.ratio //

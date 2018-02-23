@@ -23,7 +23,7 @@ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     BufferedImage map_image = StoreMapUtil.loadExtrude(3);
-    for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalQuick"))) {
+    for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalFull"))) {
       System.out.println(folder);
       GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
