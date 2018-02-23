@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -24,6 +26,10 @@ public enum OfflineLogPlayer {
   private static final Unit UNIT_US = Unit.of("us");
 
   public static void process(File file, OfflineLogListener... offlineLogListeners) throws IOException {
+    process(file, Arrays.asList(offlineLogListeners));
+  }
+
+  public static void process(File file, Collection<? extends OfflineLogListener> offlineLogListeners) throws IOException {
     Set<String> set = new HashSet<>();
     Log log = new Log(file.toString(), "r");
     Long tic = null;

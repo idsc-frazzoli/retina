@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** information sent to micro-autobox to forward to the linear motor that
  * controls the break of the gokart */
@@ -33,6 +35,8 @@ public class LinmotPutEvent extends DataEvent {
   /** universal constructor of messages for linmot.
    * not all parameter combinations make sense.
    * the flexibility is required for testing.
+   * 
+   * TODO remark on interpretation
    * 
    * @param control
    * @param motion command header
@@ -78,6 +82,13 @@ public class LinmotPutEvent extends DataEvent {
   public boolean isOperational() {
     return control_word == LinmotPutHelper.CMD_OPERATION.getShort() //
         && motion_cmd_hdr == LinmotPutHelper.MC_POSITION.getShort();
+  }
+
+  /** function only used in post-processing
+   * 
+   * @return */
+  public Tensor vector_raw() {
+    return Tensors.vector(control_word, motion_cmd_hdr, target_position, max_velocity, acceleration, deceleration);
   }
 
   public String toInfoString() {

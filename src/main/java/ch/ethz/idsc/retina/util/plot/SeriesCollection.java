@@ -54,11 +54,4 @@ public class SeriesCollection implements Iterable<SeriesContainer> {
   public Iterator<SeriesContainer> iterator() {
     return list.iterator();
   }
-
-  public static void main(String[] args) {
-    SeriesCollection pd = new SeriesCollection();
-    pd.add(Tensors.vector(1, 2, 3, 4), Tensors.vector(10, -2, 9, -5));
-    Tensor pr = pd.getPlotRange();
-    System.out.println(pr);
-  }
 }

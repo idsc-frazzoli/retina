@@ -62,6 +62,11 @@ The use of `Python` *may* be advantageous for modules that involve
 * image processing
 * machine learning
 
+### C
+
+Implementing an algorithm in the `C` language can optimize the performance of that module.
+For instance, if an algorithm prototype runs at a rate of 20[Hz] in a single thread in Java, the careful `C` port may permit operation at 100[Hz].
+
 ### C++
 
 There are at least 6 ways to initialize a pointer to be *null* in `c++`
