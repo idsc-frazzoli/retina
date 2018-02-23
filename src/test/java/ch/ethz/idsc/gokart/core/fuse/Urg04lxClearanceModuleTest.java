@@ -4,8 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.core.fuse.StaticHelper;
-import ch.ethz.idsc.gokart.core.fuse.Urg04lxClearanceModule;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;

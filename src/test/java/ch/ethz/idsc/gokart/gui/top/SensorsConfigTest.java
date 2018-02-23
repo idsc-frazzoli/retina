@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import junit.framework.TestCase;
 

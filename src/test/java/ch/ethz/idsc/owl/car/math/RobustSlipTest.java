@@ -1,9 +1,6 @@
 // code by jph
 package ch.ethz.idsc.owl.car.math;
 
-import ch.ethz.idsc.owl.car.math.Pacejka3;
-import ch.ethz.idsc.owl.car.math.RobustSlip;
-import ch.ethz.idsc.owl.car.math.SlipInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

@@ -2,7 +2,6 @@
 package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import junit.framework.TestCase;

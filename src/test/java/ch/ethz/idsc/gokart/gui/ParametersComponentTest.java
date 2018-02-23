@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
-import ch.ethz.idsc.gokart.gui.ParametersComponent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import junit.framework.TestCase;
 

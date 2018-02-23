@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import junit.framework.TestCase;
 
 public class DeadManSwitchModuleTest extends TestCase {

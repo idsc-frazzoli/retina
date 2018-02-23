@@ -3,7 +3,6 @@ package ch.ethz.idsc.owl.car.drift;
 
 import java.util.Collection;
 
-import ch.ethz.idsc.owl.car.drift.DriftControls;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import junit.framework.TestCase;
 

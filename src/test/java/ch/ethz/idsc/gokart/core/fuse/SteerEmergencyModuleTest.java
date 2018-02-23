@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
 import junit.framework.TestCase;
 
 public class SteerEmergencyModuleTest extends TestCase {

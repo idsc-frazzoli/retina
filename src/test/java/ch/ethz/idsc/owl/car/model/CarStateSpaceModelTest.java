@@ -2,10 +2,6 @@
 package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.model.CarState;
-import ch.ethz.idsc.owl.car.model.CarStateSpaceModel;
-import ch.ethz.idsc.owl.car.model.CarStatic;
-import ch.ethz.idsc.owl.car.model.HomogenousTrack;
 import ch.ethz.idsc.owl.car.shop.CHatchbackModel;
 import ch.ethz.idsc.owl.math.StateSpaceModel;
 import ch.ethz.idsc.tensor.Tensor;

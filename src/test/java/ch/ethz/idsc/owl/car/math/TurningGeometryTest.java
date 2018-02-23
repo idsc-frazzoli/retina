@@ -3,7 +3,6 @@ package ch.ethz.idsc.owl.car.math;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Chop;

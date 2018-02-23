@@ -2,7 +2,6 @@
 package ch.ethz.idsc.owl.car.math;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.shop.CHatchbackModel;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;

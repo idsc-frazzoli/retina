@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.car.drift.DriftControls;
-import ch.ethz.idsc.owl.car.drift.DriftGoalManager;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
 import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.core.GlcNode;

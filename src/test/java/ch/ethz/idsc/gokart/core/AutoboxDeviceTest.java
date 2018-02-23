@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.AutoboxDevice;
 import junit.framework.TestCase;
 
 public class AutoboxDeviceTest extends TestCase {

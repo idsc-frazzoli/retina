@@ -5,8 +5,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
-import ch.ethz.idsc.gokart.gui.top.ImageScore;
-import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
 import junit.framework.TestCase;
 
 public class ImageScoreTest extends TestCase {

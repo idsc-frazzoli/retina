@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
