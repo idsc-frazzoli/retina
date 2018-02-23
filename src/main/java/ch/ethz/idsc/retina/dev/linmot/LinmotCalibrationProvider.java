@@ -1,7 +1,7 @@
 // code by nisaak, rvmoos, and jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
+import ch.ethz.idsc.gokart.core.AutoboxCalibrationProvider;
 
 /** the procedure re-initializes linmot brake from any initial condition.
  * the procedure leaves the linmot in positioning mode so that

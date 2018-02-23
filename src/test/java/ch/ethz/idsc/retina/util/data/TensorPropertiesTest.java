@@ -8,9 +8,9 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Properties;
 
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.gui.gokart.top.SensorsConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

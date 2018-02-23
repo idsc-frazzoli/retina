@@ -5,9 +5,9 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.core.AutoboxDevice;
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerBatteryCharger;
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
 
 public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   private static final int LOCAL_PORT = 5003;

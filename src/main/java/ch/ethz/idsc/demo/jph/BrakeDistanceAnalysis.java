@@ -21,7 +21,7 @@ enum BrakeDistanceAnalysis {
   static void brakeAnalysis() throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/BrakeDistanceAnalysis"))) {
       System.out.println(folder);
-      GokartLogInterface olr = new GokartLogAdapter(folder);
+      GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
       BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(olr);
       OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);

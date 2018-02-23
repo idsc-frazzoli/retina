@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.gokart.offline.report;
 
 import java.io.File;
@@ -6,8 +7,8 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.zhkart.pos.GokartPoseEvent;
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;

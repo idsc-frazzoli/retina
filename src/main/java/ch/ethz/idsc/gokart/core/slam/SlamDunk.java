@@ -1,0 +1,56 @@
+// code by jph
+package ch.ethz.idsc.gokart.core.slam;
+
+import java.util.stream.IntStream;
+
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.ParametricResample;
+import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.mat.IdentityMatrix;
+
+/** localization algorithm deployed on the gokart.
+ * the iterative method is used since December 2017.
+ * 
+ * the localization algorithm relies on a map that encodes
+ * free space and obstacles.
+ * 
+ * confirmed to work well at speeds of up to 2[m/s] following
+ * the oval trajectory in the dubendorf hangar
+ * confirmed to work well at speeds of up to 10[m/s] and
+ * rotational rates of up to 180[deg/s]. */
+public enum SlamDunk {
+  ;
+  /** the list of points is typically provided by {@link ParametricResample}
+   * 
+   * @param se2MultiresGrids
+   * @param geometricLayer
+   * @param points with dimension n x 2 {{px_1, py_1}, ..., {px_n, py_n}}
+   * @param slamScore
+   * @return */
+  public static SlamResult of( //
+      Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, Tensor points, SlamScore slamScore) {
+    Tensor result = IdentityMatrix.of(3);
+    int score = -1;
+    for (int level = 0; level < se2MultiresGrids.grids(); ++level) {
+      score = -1;
+      Se2GridPoint best = null;
+      Se2Grid se2grid = se2MultiresGrids.grid(level);
+      for (Se2GridPoint se2GridPoint : se2grid.gridPoints()) {
+        geometricLayer.pushMatrix(se2GridPoint.matrix());
+        int eval = points.stream().map(geometricLayer::toPoint2D) // TODO can do in parallel
+            .mapToInt(slamScore::evaluate).sum();
+        if (score < eval) {
+          best = se2GridPoint;
+          score = eval;
+        }
+        geometricLayer.popMatrix();
+      }
+      geometricLayer.pushMatrix(best.matrix()); // manifest for next level
+      result = result.dot(best.matrix());
+    }
+    IntStream.range(0, se2MultiresGrids.grids()) //
+        .forEach(index -> geometricLayer.popMatrix());
+    return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
+  }
+}

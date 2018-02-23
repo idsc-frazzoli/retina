@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.lcm.lidar;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Decoder;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Device;
-import ch.ethz.idsc.retina.lcm.autobox.BinaryLcmClient;
 
 /** reference implementation of an lcm client that listens and decodes mark8
  * publications and allows listeners to receive the data

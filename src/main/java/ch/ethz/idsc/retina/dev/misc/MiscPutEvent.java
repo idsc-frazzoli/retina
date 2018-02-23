@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.zhkart.DataEvent;
+import ch.ethz.idsc.gokart.core.DataEvent;
 
 /** misc information sent to micro-autobox */
 public class MiscPutEvent extends DataEvent {

@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.retina.dev.zhkart.joy.RimoTorqueJoystickModule;
+import ch.ethz.idsc.gokart.core.joy.RimoTorqueJoystickModule;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

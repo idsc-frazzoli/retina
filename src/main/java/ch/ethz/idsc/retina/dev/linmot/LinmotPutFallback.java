@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.zhkart.ProviderRank;
+import ch.ethz.idsc.gokart.core.ProviderRank;
 
 /** when no other {@link LinmotPutProvider} controls the break, then
  * the break is commanded to be in operation mode with non-breaking position */

@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import ch.ethz.idsc.retina.dev.zhkart.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 import ch.ethz.idsc.tensor.Scalar;

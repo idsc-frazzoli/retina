@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.misc;
 
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxCalibrationProvider;
+import ch.ethz.idsc.gokart.core.AutoboxCalibrationProvider;
 
 /** command sent to micro-autobox to acknowledge communication timeout
  * calibration procedure is mandatory to send at the beginning */

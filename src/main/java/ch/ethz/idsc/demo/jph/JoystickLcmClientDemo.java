@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.jph;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 
 public enum JoystickLcmClientDemo {

@@ -5,8 +5,8 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxDevice;
-import ch.ethz.idsc.retina.dev.zhkart.AutoboxSocket;
+import ch.ethz.idsc.gokart.core.AutoboxDevice;
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 
 /** socket for communication with the micro-autobox to
  * send commands and receive readings regarding steering */

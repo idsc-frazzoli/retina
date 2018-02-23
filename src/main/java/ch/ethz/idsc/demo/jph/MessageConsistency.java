@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.DubendorfHangarLog;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;

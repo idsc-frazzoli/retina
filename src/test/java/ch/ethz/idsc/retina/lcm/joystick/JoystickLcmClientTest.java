@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 

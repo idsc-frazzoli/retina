@@ -19,17 +19,17 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.5.0</version>
+			<version>0.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>lcm-java</artifactId>
-			<version>0.0.7</version>
+			<version>0.0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

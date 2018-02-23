@@ -2,8 +2,8 @@ package ch.ethz.idsc.retina.sys;
 
 import java.util.Arrays;
 
+import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240cDecoder;
-import ch.ethz.idsc.retina.dev.zhkart.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
