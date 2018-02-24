@@ -134,7 +134,7 @@ public class DavisViewerFrame implements TimedImageListener {
 
   private int count = -1;
 
-  @Override
+  @Override // from TimedImageListener
   public void timedImage(TimedImageEvent timedImageEvent) {
     if (recording) {
       ImageCopy imageCopy = new ImageCopy();

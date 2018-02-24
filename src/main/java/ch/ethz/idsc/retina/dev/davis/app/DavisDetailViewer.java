@@ -15,7 +15,7 @@ public class DavisDetailViewer implements StartAndStoppable {
   public DavisDetailViewer(String cameraId) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     davisLcmClient = new DavisLcmClient(cameraId);
-    AbstractAccumulatedImage abstractAccumulatedImage = new AccumulatedEventsGrayImage(davisDevice);
+    AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
     abstractAccumulatedImage.setInterval(25_000);
     davisViewerFrame = new DavisViewerFrame(davisDevice, abstractAccumulatedImage);
     // handle dvs

@@ -19,7 +19,7 @@ public enum DavisEventViewer {
     davisDecoder.addSigListener(davisEventStatistics);
     davisDecoder.addImuListener(davisEventStatistics);
     // ---
-    AbstractAccumulatedImage abstractAccumulatedImage = new AccumulatedEventsGrayImage(davisDevice);
+    AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
     abstractAccumulatedImage.setInterval(50_000);
     // ---
     DavisViewerFrame davisViewerFrame = new DavisViewerFrame(Davis240c.INSTANCE, abstractAccumulatedImage);

@@ -12,7 +12,6 @@ public class SAEExpDecayImage extends AbstractAccumulatedImage {
   private final ExpDecayLookup expP;
   private final ExpDecayLookup expN;
 
-  /** @param interval [us] */
   public SAEExpDecayImage(DavisDevice davisDevice, int interval) {
     super(davisDevice);
     setInterval(interval);
@@ -21,7 +20,7 @@ public class SAEExpDecayImage extends AbstractAccumulatedImage {
     expN = new ExpDecayLookup(interval >> DROP, 3.0, -1);
   }
 
-  @Override
+  @Override // from AbstractAccumulatedImage
   protected void assign(int delta, DavisDvsEvent dvsDavisEvent) {
     int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
     bytes[index] = dvsDavisEvent.brightToDark() ? expN.get(delta >> DROP) : expP.get(delta >> DROP);

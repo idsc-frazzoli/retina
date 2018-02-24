@@ -33,8 +33,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private int multiple;
   private Integer last = null;
 
-  /** @param interval [us] */
-  public AbstractAccumulatedImage(DavisDevice davisDevice) {
+  protected AbstractAccumulatedImage(DavisDevice davisDevice) {
     setInterval(INTERVAL_DEFAULT_US);
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
@@ -49,17 +48,17 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     listeners.add(timedImageListener);
   }
 
-  public void setInterval(int interval) {
+  public final void setInterval(int interval) {
     this.interval = interval;
     multiple = interval * 50; // threshold to detect forward jumps in time during log playback
   }
 
-  public int getInterval() {
+  public final int getInterval() {
     return interval;
   }
 
-  @Override
-  public void davisDvs(DavisDvsEvent dvsDavisEvent) {
+  @Override // from DavisDvsListener
+  public final void davisDvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
     final int delta = dvsDavisEvent.time - last;

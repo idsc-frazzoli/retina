@@ -7,6 +7,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
 import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
@@ -33,7 +34,7 @@ public class DavisOverviewModule extends AbstractModule {
     vlp16LcmHandler.lidarAngularFiringCollector.addListener(davisLidarComponent);
     davisViewerFrame = new DavisQuickFrame(davisDevice, davisLidarComponent);
     // handle dvs
-    AccumulatedEventsGrayImage accumulatedEventsImage = new AccumulatedEventsGrayImage(davisDevice);
+    AbstractAccumulatedImage accumulatedEventsImage = AccumulatedEventsGrayImage.of(davisDevice);
     accumulatedEventsImage.setInterval(period_us);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);

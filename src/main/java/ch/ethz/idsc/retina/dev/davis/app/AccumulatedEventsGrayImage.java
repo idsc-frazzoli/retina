@@ -8,12 +8,16 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * fixed duration positive events appear in white color negative events appear
  * in black color */
 public class AccumulatedEventsGrayImage extends AbstractAccumulatedImage {
-  /** @param interval [us] */
-  public AccumulatedEventsGrayImage(DavisDevice davisDevice) {
+  public static AbstractAccumulatedImage of(DavisDevice davisDevice) {
+    return new AccumulatedEventsGrayImage(davisDevice);
+  }
+
+  // ---
+  private AccumulatedEventsGrayImage(DavisDevice davisDevice) {
     super(davisDevice);
   }
 
-  @Override
+  @Override // from AbstractAccumulatedImage
   protected void assign(int delta, DavisDvsEvent dvsDavisEvent) {
     int value = dvsDavisEvent.brightToDark() ? 0 : 255;
     int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
