@@ -21,6 +21,10 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
   public static final int INTERVAL_DEFAULT_US = 50_000;
+  /** periods without events of length longer than max gap means the timer
+   * will skip to the next event position. this is the case when the log file
+   * skips to the future. */
+  private static final int MAX_GAP_US = 10_000;
   // ---
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
@@ -30,7 +34,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
   private int interval;
-  private int multiple;
+  private int max_gap;
   private Integer last = null;
 
   protected AbstractAccumulatedImage(DavisDevice davisDevice) {
@@ -50,7 +54,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
 
   public final void setInterval(int interval) {
     this.interval = interval;
-    multiple = interval * 50; // threshold to detect forward jumps in time during log playback
+    max_gap = Math.max(2 * interval, MAX_GAP_US);
   }
 
   public final int getInterval() {
@@ -65,7 +69,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     if (0 <= delta && delta < interval) // nominal case
       assign(delta, dvsDavisEvent);
     else //
-    if (multiple <= delta) {
+    if (max_gap <= delta) {
       System.err.println("dvs image clear due to forward timing");
       clearImage();
       last = dvsDavisEvent.time;

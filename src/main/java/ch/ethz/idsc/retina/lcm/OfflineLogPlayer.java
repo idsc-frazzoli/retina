@@ -51,6 +51,8 @@ public enum OfflineLogPlayer {
             ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN);
             offlineLogListener.event(time, event.channel, byteBuffer);
           }
+        // if (10000 < event.utime - tic)
+        // break;
       }
     } catch (Exception exception) {
       if (!END_OF_FILE.equals(exception.getMessage()))

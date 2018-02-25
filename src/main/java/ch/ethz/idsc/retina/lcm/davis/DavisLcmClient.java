@@ -24,6 +24,7 @@ public class DavisLcmClient implements LcmClientInterface {
   public final DavisApsDatagramDecoder davisRstDatagramDecoder = new DavisApsDatagramDecoder();
   private final Collection<SubscriptionRecord> subscriptions = new HashSet<>();
 
+  /** @param cameraId for instance "overview" */
   public DavisLcmClient(String cameraId) {
     this.cameraId = cameraId;
   }

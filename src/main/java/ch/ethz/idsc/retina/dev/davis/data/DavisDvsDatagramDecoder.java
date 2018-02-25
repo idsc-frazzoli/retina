@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
+// TODO JAN comment
 public class DavisDvsDatagramDecoder {
   private final List<DavisDvsListener> listeners = new LinkedList<>();
 
@@ -20,18 +21,19 @@ public class DavisDvsDatagramDecoder {
   }
 
   private short pacid_next = -1;
-  private int missed;
-  private int missed_print;
+  private int missed = -1;
+  private int missed_print = 0;
   private long total;
 
   public void decode(ByteBuffer byteBuffer) {
     byteBuffer.position(0);
-    // TODO check consistency
     int numel = byteBuffer.getShort(); // number of events in packet
     short pacid = byteBuffer.getShort(); // running id of packet
-    if (pacid_next != pacid)
+    if (pacid_next != pacid) {
       ++missed;
-    // System.err.println("dvs packet missing");
+      if (missed != 0)
+        System.err.println("dvs packet missing");
+    }
     int offset = byteBuffer.getInt();
     for (int count = 0; count < numel; ++count) {
       final int misc = byteBuffer.getShort() & 0xffff;

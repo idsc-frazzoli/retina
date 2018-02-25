@@ -6,8 +6,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** surface of active events */
 public class SAEGaussDecayImage extends AbstractAccumulatedImage {
-  public static AbstractAccumulatedImage of(DavisDevice davisDevice, int interval) {
-    return new SAEGaussDecayImage(davisDevice, interval);
+  public static AbstractAccumulatedImage of(DavisDevice davisDevice, int interval_us) {
+    return new SAEGaussDecayImage(davisDevice, interval_us);
   }
   // ---
 
