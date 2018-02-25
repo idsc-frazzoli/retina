@@ -37,6 +37,8 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
 
+![retina-repo](https://user-images.githubusercontent.com/4012178/36646636-5d8d2cec-1a7a-11e8-8164-95f256912c4e.png)
+
 ## GOKART
 
 Hardware protection modules:
@@ -46,19 +48,19 @@ Hardware protection modules:
 
 Emergency modules:
 
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/MiscEmergencyModule.java) steering battery voltage out of range for at least 200[ms], or communication timeout detected => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotEmergencyModule.java) linmot not operational => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/MiscEmergencyModule.java) steering battery voltage out of range for at least 200[ms], or communication timeout detected => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotEmergencyModule.java) linmot not operational => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
 
 Emergency support modules:
 
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
+* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
 
 Joystick Dead man switch:
 
-* [code](src/main/java/ch/ethz/idsc/retina/dev/zhkart/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
+* [code](src/main/java/ch/ethz/idsc/gokart/core/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
 
 
 ## LIDAR
@@ -93,6 +95,9 @@ our code builds upon the
 ## DVS
 
 ### IniLabs DAVIS240C
+
+* [SAE with different temporal windows](https://www.youtube.com/watch?v=NKw27ekIosI)
+* [SAE with different bucket size](https://www.youtube.com/watch?v=vuXMG3TnZlM)
 
 Rolling shutter mode
 
@@ -199,25 +204,14 @@ We observed that in *global shutter mode*, during signal image capture the strea
 
 </tr></table>
 
-## Include in your project
+## Integration
 
-Modify the `pom` file of your project to specify `repository` and `dependency` of the tensor library:
+Due to the rapid development of the code base, `retina` is not yet available as a maven artifact.
+Instead, download the project and run `mvn install` on your machine.
+Subsequently, you can use the project on your machine as
 
-    <repositories>
-      <repository>
-        <id>retina-mvn-repo</id>
-        <url>https://raw.github.com/idsc-frazzoli/retina/mvn-repo/</url>
-        <snapshots>
-          <enabled>true</enabled>
-          <updatePolicy>always</updatePolicy>
-        </snapshots>
-      </repository>
-    </repositories>
-    
-    <dependencies>
-      <dependency>
-        <groupId>ch.ethz.idsc</groupId>
-        <artifactId>retina</artifactId>
-        <version>0.0.1</version>
-      </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>ch.ethz.idsc</groupId>
+      <artifactId>retina</artifactId>
+      <version>0.0.1</version>
+    </dependency>

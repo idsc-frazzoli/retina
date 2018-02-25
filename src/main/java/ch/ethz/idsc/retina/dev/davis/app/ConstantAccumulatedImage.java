@@ -18,13 +18,13 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-public abstract class AbstractAccumulatedImage implements DavisDvsListener {
+// TODO JAN contains a lot of redundancy
+public final class ConstantAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
-  public static final int INTERVAL_DEFAULT_US = 50_000;
+  public static final int INTERVAL_DEFAULT_US = 1_000;
   /** periods without events of length longer than max gap means the timer
    * will skip to the next event position. this is the case when the log file
    * skips to the future. */
-  private static final int MAX_GAP_US = 10_000;
   // ---
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
@@ -33,11 +33,11 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private final List<TimedImageListener> listeners = new LinkedList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
+  private int count = 0;
   private int interval;
-  private int max_gap;
   private Integer last = null;
 
-  protected AbstractAccumulatedImage(DavisDevice davisDevice) {
+  public ConstantAccumulatedImage(DavisDevice davisDevice) {
     setInterval(INTERVAL_DEFAULT_US);
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
@@ -54,7 +54,6 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
 
   public final void setInterval(int interval) {
     this.interval = interval;
-    max_gap = Math.max(2 * interval, MAX_GAP_US);
   }
 
   public final int getInterval() {
@@ -65,29 +64,22 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   public final void davisDvs(DavisDvsEvent dvsDavisEvent) {
     if (Objects.isNull(last))
       last = dvsDavisEvent.time;
-    final int delta = dvsDavisEvent.time - last;
-    if (0 <= delta && delta < interval) // nominal case
-      assign(delta, dvsDavisEvent);
-    else //
-    if (max_gap <= delta) {
-      System.err.println("dvs image clear due to forward timing");
-      clearImage();
-      last = dvsDavisEvent.time;
-    } else //
-    if (interval <= delta) {
+    assign(dvsDavisEvent);
+    ++count;
+    if (count == interval) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
-      last += interval;
-    } else //
-    if (delta < 0) { // this case happens during davis log playback when skipping to the front
-      System.err.println("dvs image clear due to reverse timing");
-      clearImage();
-      last = dvsDavisEvent.time;
+      count = 0;
+      last = null;
     }
   }
 
-  protected abstract void assign(int delta, DavisDvsEvent dvsDavisEvent);
+  protected void assign(DavisDvsEvent dvsDavisEvent) {
+    int value = dvsDavisEvent.brightToDark() ? 0 : 255;
+    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
+    bytes[index] = (byte) value;
+  }
 
   private void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
