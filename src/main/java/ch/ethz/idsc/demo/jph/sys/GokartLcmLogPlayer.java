@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.DubendorfHangarLog;
 import ch.ethz.idsc.subare.util.UserHome;
-import ch.ethz.idsc.tensor.RationalScalar;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -31,7 +30,8 @@ enum GokartLcmLogPlayer {
     file = UserHome.file("gokart/manual/20180108T154035/log.lcm");
     file = UserHome.file("gokart/twist/20180108T165210_1/log.lcm");
     cfg.logFile = file.toString();
-    cfg.speed = RationalScalar.of(1, 1);
+    cfg.speed_numerator = 1;
+    cfg.speed_denominator = 2;
     LogPlayer.create(cfg);
   }
 }

@@ -8,7 +8,6 @@ import java.io.IOException;
 import ch.ethz.idsc.demo.DavisSerial;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Put;
@@ -20,7 +19,7 @@ enum DavisDvsIntervalDistribution {
   public static void main(String[] args) throws Exception {
     LogPlayerConfig cfg = new LogPlayerConfig();
     cfg.logFile = DavisRecordings.OFFICE;
-    cfg.speed = RationalScalar.of(1, 4);
+    cfg.speed_denominator = 4;
     LogPlayer lp = LogPlayer.create(cfg);
     DavisLcmClient davisLcmClient = new DavisLcmClient(DavisSerial.FX2_02460045.name());
     DavisDvsIntervalTracker davisDvsIntervalTracker = new DavisDvsIntervalTracker();
