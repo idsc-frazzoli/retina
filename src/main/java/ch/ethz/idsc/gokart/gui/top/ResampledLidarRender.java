@@ -10,25 +10,21 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
 import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
-import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
-import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -41,6 +37,7 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
   private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+  public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -50,53 +47,36 @@ public class ResampledLidarRender extends LidarRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
     if (Objects.isNull(_points))
       return;
-    { // model2pixel 7.5 means 1[m] translates to 7.5 pixel, 13.3[cm] per pixel
-      // Tensor mat = geometricLayer.getMatrix();
-      // Scalar det = Det.of(mat);
-      // System.out.println("factor=" + Sqrt.of(det.negate()));
-    }
     final Tensor points = _points;
-    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
+    // System.out.println("IN=" + supplier.get());
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
     // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
-    {
-      graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
-      Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
-      int sum = scattered.length(); // usually around 430
-      // System.out.println("points: " + sum);
-      if (flagSnap || trackSupplier.get())
-        if (LidarGyroLocalization.MIN_POINTS < sum) {
-          flagSnap = false;
-          // ---
-          Tensor model2pixel = geometricLayer.getMatrix();
-          SlamScore slamScore = ImageScore.of(predefinedMap.getImageExtruded());
-          GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
-          Stopwatch stopwatch = Stopwatch.started();
-          SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, scattered, slamScore);
-          Tensor delta = slamResult.getTransform();
-          double duration = stopwatch.display_seconds();
-          // System.out.println(duration + "[s]");
-          final Scalar ratio = slamResult.getMatchRatio();
-          // System.out.println(Pretty.of(delta.map(Round._4)));
-          Tensor poseDelta = lidar.dot(delta).dot(Inverse.of(lidar));
-          poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 0, 2);
-          poseDelta.set(s -> Quantity.of(s.Get(), SI.METER), 1, 2);
-          // System.out.println(Pretty.of(poseDelta.map(Round._4)));
-          Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
-          Tensor newPose = Se2Utils.toSE2Matrix(state).dot(poseDelta);
-          Tensor newState = Se2Utils.fromSE2Matrix(newPose);
-          // System.out.println(newState);
-          mappedPoseInterface.setPose(newState, ratio);
-          // ---
-          graphics.setColor(Color.GRAY);
-          graphics.drawString("points=" + sum, 0, 30);
-          graphics.drawString("quality=" + ratio.map(Round._2), 0, 50);
-          graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
-        } else
-          System.err.println("insufficient: " + sum);
+    if (flagSnap || trackSupplier.get()) {
+      flagSnap = false;
+      // ---
+      Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
+      // System.out.println("IN = " + state);
+      lidarGyroLocalization.setState(state);
+      Stopwatch stopwatch = Stopwatch.started();
+      Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
+      double duration = stopwatch.display_seconds();
+      if (optional.isPresent()) {
+        SlamResult slamResult = optional.get();
+        // OUT={37.85[m], 38.89[m], -0.5658221}
+        mappedPoseInterface.setPose(slamResult.getTransform(), slamResult.getMatchRatio());
+        // ---
+        graphics.setColor(Color.GRAY);
+        // graphics.drawString("points=" + sum, 0, 30);
+        graphics.drawString("quality=" + slamResult.getMatchRatio().map(Round._2), 0, 50);
+        graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
+      } else {
+        // System.err.println("insufficient: " + sum);
+        mappedPoseInterface.setPose(state, RealScalar.ZERO);
+      }
     }
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -106,6 +86,7 @@ public class ResampledLidarRender extends LidarRender {
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
     {
+      final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
       graphics.setColor(color);
       for (Tensor pnts : list) {
         for (Tensor x : pnts) {

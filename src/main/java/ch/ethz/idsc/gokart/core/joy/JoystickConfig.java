@@ -4,15 +4,14 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** parameters for PI controller of torque control */
 public class JoystickConfig implements Serializable {
@@ -28,15 +27,14 @@ public class JoystickConfig implements Serializable {
   public Scalar deadManPeriod = Quantity.of(2.0, SI.SECOND);
   /** duration of brake */
   public Scalar brakeDuration = Quantity.of(2.2, SI.SECOND);
-  /***************************************************/
-  private static final ScalarUnaryOperator TO_SECONDS = QuantityMagnitude.SI().in(SI.SECOND);
 
+  /***************************************************/
   public Scalar deadManPeriodSeconds() {
-    return TO_SECONDS.apply(deadManPeriod);
+    return Magnitude.SECOND.apply(deadManPeriod);
   }
 
   public Scalar brakeDurationSeconds() {
-    return TO_SECONDS.apply(brakeDuration);
+    return Magnitude.SECOND.apply(brakeDuration);
   }
 
   public boolean isSpeedSlow(Tensor getAngularRate_Y_pair) {
