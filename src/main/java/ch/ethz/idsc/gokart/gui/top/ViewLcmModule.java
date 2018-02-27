@@ -84,7 +84,9 @@ abstract class ViewLcmModule extends AbstractModule {
     {
       ResampledLidarRender lidarRender = new ResampledLidarRender(gokartPoseInterface);
       viewLcmFrame.jButtonMapCreate.addActionListener(lidarRender.action_mapCreate);
+      viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(lidarRender.action_mapUpdate);
+      viewLcmFrame.jButtonMapUpdate.setEnabled(false);
       viewLcmFrame.jButtonSnap.addActionListener(lidarRender.action_snap);
       lidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       lidarRender.setPointSize(2);

@@ -14,8 +14,8 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
+import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -39,7 +39,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
   protected SlamScore slamScore;
-  protected final BufferedImage vis_image = StoreMapUtil.loadOrNull();
+  protected final BufferedImage vis_image = PredefinedMap.DUBENDORF_HANGAR_20180122.getImage();
   private Scalar time;
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
