@@ -9,51 +9,16 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.owl.bot.r2.ImageEdges;
-import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.io.ResourceData;
 
-// TODO split class into generic and specific functionality
 public enum StoreMapUtil {
   ;
-  private static final String REPO = "/map/dubendorf/hangar/20180122.png";
   private static final int SIZE = 640;
-  private static final Scalar SCALE = RealScalar.of(7.5);
-  // ---
   private static final File FILE = UserHome.Pictures("duebendorf.png");
-
-  public static BufferedImage loadOrNull() {
-    try {
-      Tensor tensor = ImageRegions.grayscale(ResourceData.of(REPO));
-      return ImageFormat.of(tensor);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
-  }
-
-  public static BufferedImage loadExtrude(int ttl) {
-    try {
-      Tensor tensor = ImageRegions.grayscale(ResourceData.of(REPO));
-      return ImageFormat.of(ImageEdges.extrusion(tensor, ttl));
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
-  }
-
-  public static Tensor range() {
-    return Tensors.vector(SIZE, SIZE).divide(SCALE);
-  }
 
   /** creates map and stores image at default location
    * 
@@ -70,7 +35,7 @@ public enum StoreMapUtil {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
-    return StoreMapUtil.loadOrNull();
+    return bufferedImage;
   }
 
   /** @param geometricLayer
@@ -92,9 +57,5 @@ public enum StoreMapUtil {
     graphics.setColor(Color.WHITE);
     for (Tensor pnts : list)
       graphics.draw(geometricLayer.toPath2D(pnts));
-  }
-
-  public static ImageRegion getImageRegion() throws Exception {
-    return ImageRegions.loadFromRepository(REPO, range(), false);
   }
 }

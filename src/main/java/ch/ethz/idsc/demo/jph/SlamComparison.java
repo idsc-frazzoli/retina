@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
+import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.Export;
 enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    BufferedImage map_image = StoreMapUtil.loadExtrude(3);
+    BufferedImage map_image = PredefinedMap.DUBENDORF_HANGAR_20180122.getImageExtruded();
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalFull"))) {
       System.out.println(folder);
       GokartLogInterface olr = GokartLogAdapter.of(folder);

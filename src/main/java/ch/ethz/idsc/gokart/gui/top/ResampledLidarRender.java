@@ -45,7 +45,7 @@ public class ResampledLidarRender extends LidarRender {
     super(mappedPoseInterface);
     // ---
     this.mappedPoseInterface = mappedPoseInterface;
-    map_image = StoreMapUtil.loadOrNull();
+    map_image = PredefinedMap.DUBENDORF_HANGAR_20180122.getImage();
   }
 
   public static final int MIN_POINTS = 250;

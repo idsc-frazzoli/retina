@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.top.StoreMapUtil;
+import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegion;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
@@ -57,11 +57,12 @@ public class DubendorfPlannerDemo {
     // Tensors.vector(2, 2, Degree.of(10).number()), //
     // carFlows, //
     // RimoSinusIonModel.standard().footprint());
-    BufferedImage bufferedImage = StoreMapUtil.loadOrNull();
+    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+    BufferedImage bufferedImage = predefinedMap.getImage();
     Tensor tensor = ImageFormat.from(bufferedImage);
     Dimensions.of(tensor);
     tensor = MeanFilter.of(tensor, 7); // document 7 pixels == approx. half width of gokart
-    Tensor range = StoreMapUtil.range();
+    Tensor range = predefinedMap.range();
     ImageRegion imageRegion = new ImageRegion(tensor, range, true);
     TrajectoryRegionQuery trq = createCarQuery(imageRegion);
     carEntity.obstacleQuery = trq;
