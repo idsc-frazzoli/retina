@@ -24,6 +24,8 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -36,6 +38,7 @@ public class LocalizationTable implements OfflineTableSupplier {
   // ---
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
+  private final boolean usePose;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
@@ -44,8 +47,9 @@ public class LocalizationTable implements OfflineTableSupplier {
   private DavisImuFrame dif;
   private GokartPoseEvent gpe;
 
-  public LocalizationTable(Scalar delta) {
+  public LocalizationTable(Scalar delta, boolean usePose) {
     this.delta = delta;
+    this.usePose = usePose;
   }
 
   @Override
@@ -70,7 +74,8 @@ public class LocalizationTable implements OfflineTableSupplier {
       // if (Objects.nonNull(vpe))
       // System.out.println(vpe.nmea());
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(vpe) && //
-          Objects.nonNull(gpe) && Objects.nonNull(dif) && vpe.isValid()) {
+          (Objects.nonNull(gpe) || !usePose) && //
+          Objects.nonNull(dif) && vpe.isValid()) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
         Tensor rates = rge.getAngularRate_Y_pair();
@@ -79,7 +84,6 @@ public class LocalizationTable implements OfflineTableSupplier {
             .multiply(RationalScalar.HALF) //
             .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
             .divide(ChassisGeometry.GLOBAL.yTireRear);
-        Tensor pose = gpe.getPose().extract(0, 2).map(Magnitude.METER);
         Scalar degX = vpe.gpsX();
         Scalar degY = vpe.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
@@ -87,9 +91,7 @@ public class LocalizationTable implements OfflineTableSupplier {
             time.map(Magnitude.SECOND).map(Round._6), //
             speed.map(Magnitude.VELOCITY).map(Round._3), //
             rate.map(Magnitude.ANGULAR_RATE).map(Round._3), //
-            gpe.getQuality().map(Round._3), //
-            pose.map(Round._3), //
-            gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5), //
+            getPose(), //
             degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             metric.map(Magnitude.METER).map(Round._2), //
@@ -97,8 +99,20 @@ public class LocalizationTable implements OfflineTableSupplier {
             vpe.course().map(Magnitude.ONE).map(Round._6), //
             dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._5) //
         );
+        System.out.println(tableBuilder.getRowCount());
       }
     }
+  }
+
+  private Tensor getPose() {
+    if (usePose) {
+      Tensor pose = gpe.getPose().extract(0, 2).map(Magnitude.METER);
+      return Tensors.of( //
+          gpe.getQuality().map(Round._3), // 1
+          pose.map(Round._3), // 2
+          gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5)); // 1
+    }
+    return Array.zeros(4);
   }
 
   @Override
