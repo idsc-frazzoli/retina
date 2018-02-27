@@ -8,5 +8,5 @@ public enum DubendorfSlam {
   ;
   /** during operation, only 3-5 levels should be used */
   public static final Se2MultiresGrids SE2MULTIRESGRIDS = //
-      new Se2MultiresGrids(RealScalar.of(0.5), Degree.of(0.5), 2, 4);
+      new Se2MultiresGrids(RealScalar.of(0.5), Degree.of(1.0), 1, 4);
 }

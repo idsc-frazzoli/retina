@@ -8,7 +8,8 @@ public class DubendorfSlamTest extends TestCase {
     assertEquals(DubendorfSlam.SE2MULTIRESGRIDS.grids(), 4);
     for (int index = 0; index < 4; ++index) {
       int length = DubendorfSlam.SE2MULTIRESGRIDS.grid(index).gridPoints().size();
-      assertEquals(length, 125);
+      // System.out.println(length);
+      assertEquals(length, 27);
     }
   }
 }

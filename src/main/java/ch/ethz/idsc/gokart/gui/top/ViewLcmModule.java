@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -29,6 +30,7 @@ abstract class ViewLcmModule extends AbstractModule {
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
+  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
@@ -101,6 +103,7 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
+      davisImuLcmClient.addListener(lidarRender.lidarGyroLocalization);
     }
     {
       viewLcmFrame.geometricComponent.addRenderInterface(new CurveRender());
@@ -127,6 +130,7 @@ abstract class ViewLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     urg04lxLcmHandler.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
+    davisImuLcmClient.startSubscriptions();
     // ---
     // odometryLcmClient.startSubscriptions();
     // ---
@@ -147,6 +151,7 @@ abstract class ViewLcmModule extends AbstractModule {
     // ---
     vlp16LcmHandler.stopSubscriptions();
     urg04lxLcmHandler.stopSubscriptions();
+    davisImuLcmClient.stopSubscriptions();
     viewLcmFrame.close();
   }
 }

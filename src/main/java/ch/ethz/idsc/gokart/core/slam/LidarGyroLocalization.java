@@ -3,7 +3,9 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.nio.FloatBuffer;
 import java.util.List;
+import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
@@ -32,13 +34,19 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
-  private Tensor model; // FIXME
-  private Tensor gyro_y = Tensors.empty();
+  private Tensor _model = null;
+  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, 50); // TODO document magic const
+  private int gyro_index = 0;
   private final SlamScore slamScore;
   public static final int MIN_POINTS = 250;
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
+  }
+
+  /** @param state {x[m], y[m], angle} */
+  public void setState(Tensor state) {
+    _model = GokartPoseHelper.toSE2Matrix(state);
   }
 
   @Override // from LidarRayBlockListener
@@ -50,7 +58,8 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
     handle(points);
   }
 
-  public void handle(Tensor points) {
+  public Optional<SlamResult> handle(Tensor points) {
+    Tensor model = _model;
     Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
     // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
@@ -68,22 +77,28 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
       // double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
-      // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
-    } else {
-      System.err.println("few points " + sum);
+      Tensor result = Se2Utils.fromSE2Matrix(model);
+      Tensor vector = Tensors.of( //
+          Quantity.of(result.Get(0), SI.METER), //
+          Quantity.of(result.Get(1), SI.METER), //
+          result.Get(2));
+      // TODO bad style to repurpose SlamResult
+      return Optional.of(new SlamResult(vector, slamResult.getMatchRatio()));
     }
+    System.err.println("few points " + sum);
+    return Optional.empty();
   }
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
     Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
-    gyro_y.append(rate);
+    gyro_y.set(rate, gyro_index);
+    ++gyro_index;
+    gyro_index %= gyro_y.length();
   }
 
   protected final Scalar getGyroAndReset() {
-    Scalar mean = Tensors.isEmpty(gyro_y) ? ZERO_RATE : Mean.of(gyro_y).Get();
-    gyro_y = Tensors.empty();
-    return mean;
+    return Mean.of(gyro_y).Get();
   }
 }
