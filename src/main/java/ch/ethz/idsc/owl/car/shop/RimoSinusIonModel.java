@@ -13,15 +13,13 @@ import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.owl.car.model.DefaultCarModel;
 import ch.ethz.idsc.owl.car.model.DefaultWheel;
 import ch.ethz.idsc.owl.car.model.MotorTorques;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** specifications of vehicle taken from:
  * http://www.rimo-germany.com/technische-daten-sinus-ion.html
@@ -48,9 +46,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * Außendurchmesser: 280mm
  * Felgengrösse (inch): 8.0 (210mm) */
 public class RimoSinusIonModel extends DefaultCarModel {
-  private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(SI.METER);
-
-  // ---
   public static VehicleModel standard() {
     return new RimoSinusIonModel(ChassisGeometry.GLOBAL);
   }
@@ -60,9 +55,9 @@ public class RimoSinusIonModel extends DefaultCarModel {
   private final Tensor hull;
 
   private RimoSinusIonModel(ChassisGeometry chassisGeometry) {
-    final Pacejka3 PACEJKA = new Pacejka3(7, 1.4); //
-    final Scalar RADIUS1 = TOMETER.apply(chassisGeometry.tireRadiusFront); // wheel radius [m]
-    final Scalar RADIUS2 = TOMETER.apply(chassisGeometry.tireRadiusRear); // wheel radius [m]
+    final Pacejka3 PACEJKA = new Pacejka3(7, 1.4);
+    final Scalar RADIUS1 = Magnitude.METER.apply(chassisGeometry.tireRadiusFront); // wheel radius [m]
+    final Scalar RADIUS2 = Magnitude.METER.apply(chassisGeometry.tireRadiusRear); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(1); // wheel inertia [kgm2]
     final Scalar LZ = DoubleScalar.of(-0.25); // height of COG [m]
     // data-sheet:
