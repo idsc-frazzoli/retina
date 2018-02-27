@@ -6,9 +6,9 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
+import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
-import ch.ethz.idsc.gokart.gui.top.ResampledLidarRender;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -38,7 +38,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
-    if (ResampledLidarRender.MIN_POINTS < sum) {
+    if (LidarGyroLocalization.MIN_POINTS < sum) {
       GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(LIDAR);

@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -16,6 +15,7 @@ import java.util.function.Supplier;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
+import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
@@ -34,21 +34,19 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
+// the localization should happen in a separate thread that does not require the window to be open
 public class ResampledLidarRender extends LidarRender {
   private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private BufferedImage map_image = null;
+  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
     // ---
     this.mappedPoseInterface = mappedPoseInterface;
-    map_image = PredefinedMap.DUBENDORF_HANGAR_20180122.getImage();
   }
-
-  public static final int MIN_POINTS = 250;
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -64,17 +62,17 @@ public class ResampledLidarRender extends LidarRender {
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
     // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
-    if (Objects.nonNull(map_image)) {
-      graphics.drawImage(map_image, 0, 0, map_image.getWidth(), map_image.getHeight(), null);
+    {
+      graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
       Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
       int sum = scattered.length(); // usually around 430
       // System.out.println("points: " + sum);
       if (flagSnap || trackSupplier.get())
-        if (MIN_POINTS < sum) {
+        if (LidarGyroLocalization.MIN_POINTS < sum) {
           flagSnap = false;
           // ---
           Tensor model2pixel = geometricLayer.getMatrix();
-          SlamScore slamScore = ImageScore.of(map_image);
+          SlamScore slamScore = ImageScore.of(predefinedMap.getImageExtruded());
           GeometricLayer glmap = new GeometricLayer(model2pixel, Array.zeros(3));
           Stopwatch stopwatch = Stopwatch.started();
           SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, glmap, scattered, slamScore);
@@ -130,12 +128,13 @@ public class ResampledLidarRender extends LidarRender {
     }
     if (flagMapCreate) {
       flagMapCreate = false;
-      map_image = StoreMapUtil.createNew(geometricLayer, list);
+      System.err.println("action not supported");
+      // map_image = StoreMapUtil.createNew(geometricLayer, list);
     }
     if (flagMapUpdate) {
       flagMapUpdate = false;
-      // StoreMapUtil.createNew(geometricLayer, list);
-      StoreMapUtil.updateMap(geometricLayer, list, map_image);
+      System.err.println("action not supported");
+      // StoreMapUtil.updateMap(geometricLayer, list, map_image);
     }
     geometricLayer.popMatrix();
   }
