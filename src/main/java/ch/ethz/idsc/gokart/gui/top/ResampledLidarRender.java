@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
+import ch.ethz.idsc.gokart.core.slam.DubendorfLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -36,8 +36,7 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
-  public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
+  public final DubendorfLocalization dubendorfLocalization = DubendorfLocalization.INSTANCE;
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -47,7 +46,7 @@ public class ResampledLidarRender extends LidarRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
+    graphics.drawImage(dubendorfLocalization.predefinedMap.getImage(), 0, 0, null);
     if (Objects.isNull(_points))
       return;
     final Tensor points = _points;
@@ -60,9 +59,9 @@ public class ResampledLidarRender extends LidarRender {
       // ---
       Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
       // System.out.println("IN = " + state);
-      lidarGyroLocalization.setState(state);
+      dubendorfLocalization.lidarGyroLocalization.setState(state);
       Stopwatch stopwatch = Stopwatch.started();
-      Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
+      Optional<SlamResult> optional = dubendorfLocalization.lidarGyroLocalization.handle(points);
       double duration = stopwatch.display_seconds();
       if (optional.isPresent()) {
         SlamResult slamResult = optional.get();

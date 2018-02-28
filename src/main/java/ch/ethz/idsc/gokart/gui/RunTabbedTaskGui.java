@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
+import ch.ethz.idsc.gokart.core.slam.LocalizationModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
@@ -41,6 +42,7 @@ enum RunTabbedTaskGui {
       AutoboxIntrospectionModule.class, //
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
+      LocalizationModule.class, //
       GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class // , //

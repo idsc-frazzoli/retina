@@ -31,14 +31,18 @@ import ch.ethz.idsc.tensor.red.Mean;
 public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
+  public static final int MIN_POINTS = 250;
+  /** anticipated rate of lidar */
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+  /** number of gyro samples collected in between two matchings */
+  public static final int GYRO_MEAN = 50;
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
   private Tensor _model = null;
-  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, 50); // TODO document magic const
+  private final Tensor gyro_y = Array.of(list -> ZERO_RATE, GYRO_MEAN);
   private int gyro_index = 0;
   private final SlamScore slamScore;
-  public static final int MIN_POINTS = 250;
+  private boolean isTracking;
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
@@ -47,6 +51,14 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
   /** @param state {x[m], y[m], angle} */
   public void setState(Tensor state) {
     _model = GokartPoseHelper.toSE2Matrix(state);
+  }
+
+  public void setTracking(boolean isTracking) {
+    this.isTracking = isTracking;
+  }
+
+  public boolean isTracking() {
+    return isTracking;
   }
 
   @Override // from LidarRayBlockListener
