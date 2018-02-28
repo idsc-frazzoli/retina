@@ -2,8 +2,8 @@
 package ch.ethz.idsc.gokart.core.slam;
 
 import java.nio.FloatBuffer;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -42,10 +42,22 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
   private final Tensor gyro_y = Array.of(list -> ZERO_RATE, GYRO_MEAN);
   private int gyro_index = 0;
   private final SlamScore slamScore;
-  private boolean isTracking;
+  private boolean isTracking = false;
+  private final List<LocalizationListener> listeners = new LinkedList<>();
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
+  }
+
+  public void addListener(LocalizationListener localizationListener) {
+    System.out.println("add localization subscriber");
+    listeners.add(localizationListener);
+  }
+
+  public void removeListener(LocalizationListener localizationModule) {
+    boolean removed = listeners.remove(localizationModule);
+    if (!removed)
+      System.err.println("localization listener not removed!");
   }
 
   /** @param state {x[m], y[m], angle} */
@@ -61,45 +73,51 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
     return isTracking;
   }
 
+  public void toggleTracking() {
+    isTracking ^= true;
+  }
+
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    handle(points);
-  }
-
-  public Optional<SlamResult> handle(Tensor points) {
-    Tensor model = _model;
-    Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
-    // System.out.println("rate=" + rate);
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
-        .apply(points).getPointsSpin(rate); // TODO optimize
-    Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
-    int sum = scattered.length(); // usually around 430
-    if (LidarGyroLocalization.MIN_POINTS < sum) {
-      GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
-      Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
-      model = model.dot(rotate);
-      geometricLayer.pushMatrix(model);
-      geometricLayer.pushMatrix(LIDAR);
-      // Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
-      // double duration = stopwatch.display_seconds(); // typical is 0.03
-      Tensor pre_delta = slamResult.getTransform();
-      Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
-      model = model.dot(poseDelta); // advance gokart
+    if (isTracking) {
+      Tensor model = _model;
+      Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
+      // System.out.println("rate=" + rate);
+      List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
+          .apply(points).getPointsSpin(rate); // TODO optimize
+      Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
+      int sum = scattered.length(); // usually around 430
+      final Scalar ratio;
+      if (LidarGyroLocalization.MIN_POINTS < sum) {
+        GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+        Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
+        model = model.dot(rotate);
+        geometricLayer.pushMatrix(model);
+        geometricLayer.pushMatrix(LIDAR);
+        // Stopwatch stopwatch = Stopwatch.started();
+        SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+        // double duration = stopwatch.display_seconds(); // typical is 0.03
+        Tensor pre_delta = slamResult.getTransform();
+        Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
+        model = model.dot(poseDelta); // advance gokart
+        ratio = slamResult.getMatchRatio();
+      } else {
+        System.err.println("few points " + sum);
+        ratio = RealScalar.ZERO;
+      }
+      // ---
       Tensor result = Se2Utils.fromSE2Matrix(model);
       Tensor vector = Tensors.of( //
           Quantity.of(result.Get(0), SI.METER), //
           Quantity.of(result.Get(1), SI.METER), //
           result.Get(2));
-      // TODO bad style to repurpose SlamResult
-      return Optional.of(new SlamResult(vector, slamResult.getMatchRatio()));
+      LocalizationEvent localizationEvent = new LocalizationEvent(vector, ratio);
+      listeners.forEach(listener -> listener.localization(localizationEvent));
     }
-    System.err.println("few points " + sum);
-    return Optional.empty();
   }
 
   @Override // from DavisImuFrameListener

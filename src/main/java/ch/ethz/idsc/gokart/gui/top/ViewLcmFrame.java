@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
@@ -24,7 +23,7 @@ public class ViewLcmFrame extends TimerFrame {
   public final JButton jButtonSetLocation1 = new JButton("1 set");
   public final JButton jButtonSnap = new JButton("2 snap");
   public final JButton jButtonSetLocation2 = new JButton("3 set (again)");
-  public final JToggleButton jToggleButton = new JToggleButton("4 track");
+  public final JButton jButtonTracking = new JButton("4 toggle tracking");
   public static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 7.5, 0, 0 }, //
       { 0, -7.5, 640 }, //
@@ -57,7 +56,9 @@ public class ViewLcmFrame extends TimerFrame {
     jToolBar.add(jButtonSnap);
     jButtonSetLocation2.addActionListener(al);
     jToolBar.add(jButtonSetLocation2);
-    jToolBar.add(jToggleButton);
+    jButtonTracking.addActionListener(event -> //
+    ResampledLidarRender.DUBENDORF_LOCALIZATION.lidarGyroLocalization.toggleTracking());
+    jToolBar.add(jButtonTracking);
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
     // Tensors.fromString("{{7.5,0,300},{0,-7.5,300},{0,0,1}}"));
     Tensor tensor = geometricComponent.getModel2Pixel();

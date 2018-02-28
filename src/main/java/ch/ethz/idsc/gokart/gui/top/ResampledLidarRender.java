@@ -10,33 +10,26 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.DubendorfLocalization;
-import ch.ethz.idsc.gokart.core.slam.SlamResult;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO this is not the final API:
 // the points should be resampled after each scan and not before each draw!
 // the localization should happen in a separate thread that does not require the window to be open
 public class ResampledLidarRender extends LidarRender {
+  public static final DubendorfLocalization DUBENDORF_LOCALIZATION = DubendorfLocalization.INSTANCE;
+  // ---
   private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  public final DubendorfLocalization dubendorfLocalization = DubendorfLocalization.INSTANCE;
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -46,7 +39,7 @@ public class ResampledLidarRender extends LidarRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.drawImage(dubendorfLocalization.predefinedMap.getImage(), 0, 0, null);
+    graphics.drawImage(DUBENDORF_LOCALIZATION.predefinedMap.getImage(), 0, 0, null);
     if (Objects.isNull(_points))
       return;
     final Tensor points = _points;
@@ -54,28 +47,32 @@ public class ResampledLidarRender extends LidarRender {
     final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
     geometricLayer.pushMatrix(lidar);
     // System.out.println(Pretty.of(geometricLayer.getMatrix().map(Round._5)));
-    if (flagSnap || trackSupplier.get()) {
+    final boolean flagSnapCopy = flagSnap;
+    if (flagSnapCopy) {
       flagSnap = false;
       // ---
       Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
-      // System.out.println("IN = " + state);
-      dubendorfLocalization.lidarGyroLocalization.setState(state);
-      Stopwatch stopwatch = Stopwatch.started();
-      Optional<SlamResult> optional = dubendorfLocalization.lidarGyroLocalization.handle(points);
-      double duration = stopwatch.display_seconds();
-      if (optional.isPresent()) {
-        SlamResult slamResult = optional.get();
-        // OUT={37.85[m], 38.89[m], -0.5658221}
-        mappedPoseInterface.setPose(slamResult.getTransform(), slamResult.getMatchRatio());
-        // ---
-        graphics.setColor(Color.GRAY);
-        // graphics.drawString("points=" + sum, 0, 30);
-        graphics.drawString("quality=" + slamResult.getMatchRatio().map(Round._2), 0, 50);
-        graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
-      } else {
-        // System.err.println("insufficient: " + sum);
-        mappedPoseInterface.setPose(state, RealScalar.ZERO);
-      }
+      DUBENDORF_LOCALIZATION.lidarGyroLocalization.setState(state);
+    }
+    {
+      // // System.out.println("IN = " + state);
+      // Stopwatch stopwatch = Stopwatch.started();
+      // Optional<SlamResult> optional = DUBENDORF_LOCALIZATION.lidarGyroLocalization.handle(points, flagSnapCopy);
+      // double duration = stopwatch.display_seconds();
+      // if (optional.isPresent()) {
+      // SlamResult slamResult = optional.get();
+      // // OUT={37.85[m], 38.89[m], -0.5658221}
+      // mappedPoseInterface.setPose(slamResult.getTransform(), slamResult.getMatchRatio());
+      // // ---
+      // graphics.setColor(Color.GRAY);
+      // // graphics.drawString("points=" + sum, 0, 30);
+      // graphics.drawString("quality=" + slamResult.getMatchRatio().map(Round._2), 0, 50);
+      // graphics.drawString("duration=" + Quantity.of(duration, SI.SECOND).map(Round._4), 0, 70);
+      // } else {
+      // // System.err.println("insufficient: " + sum);
+      // Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
+      // mappedPoseInterface.setPose(state, RealScalar.ZERO);
+      // }
     }
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -122,5 +119,4 @@ public class ResampledLidarRender extends LidarRender {
   public final ActionListener action_mapCreate = e -> flagMapCreate = true;
   public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
   public final ActionListener action_snap = e -> flagSnap = true;
-  public Supplier<Boolean> trackSupplier = () -> false;
 }

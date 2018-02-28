@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
@@ -10,13 +12,13 @@ import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-public class LocalizationModule extends AbstractModule {
+public class LocalizationModule extends AbstractModule implements LocalizationListener {
   private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final LidarGyroLocalization lidarGyroLocalization = DubendorfLocalization.INSTANCE.lidarGyroLocalization;
 
   @Override
-  protected void first() throws Exception {
+  public void first() throws Exception {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -30,11 +32,22 @@ public class LocalizationModule extends AbstractModule {
     // ---
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
+    // ---
+    lidarGyroLocalization.addListener(this);
   }
 
   @Override
   protected void last() {
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
+    // ---
+    lidarGyroLocalization.removeListener(this);
+  }
+
+  @Override
+  public void localization(LocalizationEvent localizationEvent) {
+    GokartPoseOdometry gokartPoseOdometry = //
+        GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+    gokartPoseOdometry.setPose(localizationEvent.getTransform(), localizationEvent.getMatchRatio());
   }
 }
