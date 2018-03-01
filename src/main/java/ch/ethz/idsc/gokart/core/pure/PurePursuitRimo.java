@@ -13,6 +13,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Real;
 
 class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -33,6 +38,17 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
   }
 
+  private Scalar speed = PursuitConfig.GLOBAL.rateFollower.multiply(RealScalar.ZERO);
+
+  /** @param angle with unit "rad" */
+  /* package */ void setSpeed(Scalar speed) {
+    this.speed = speed;
+  }
+
+  /* package */ Scalar getSpeed() {
+    return speed;
+  }
+
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
@@ -44,7 +60,7 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   /* package */ Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
     if (steerColumnInterface.isSteerColumnCalibrated())
       return rimoRateControllerWrap.iterate( //
-          PursuitConfig.GLOBAL.rateFollower, // average target velocity
+          speed, // average target velocity
           SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface)); // steering angle
     return Optional.empty();
   }

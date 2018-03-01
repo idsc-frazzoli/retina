@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
   public static final Tensor CURVE = DubendorfCurve.OVAL;
@@ -54,6 +55,12 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   protected void runAlgo() {
     boolean status = isOperational();
     purePursuitSteer.setOperational(status);
+    Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+    if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      Scalar ratio = Ramp.FUNCTION.apply(gokartJoystickInterface.getAheadAverage());
+      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(ratio));
+    }
     purePursuitRimo.setOperational(status);
   }
 
