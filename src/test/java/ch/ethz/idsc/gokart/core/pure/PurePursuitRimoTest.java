@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -26,6 +27,30 @@ public class PurePursuitRimoTest extends TestCase {
 
   public void testSimple() {
     PurePursuitRimo ppr = new PurePursuitRimo();
+    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
+    assertFalse(ppr.putEvent().isPresent());
+    {
+      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertFalse(optional.isPresent()); // because speed reading is missing
+    }
+    RimoGetEvent rge = RimoGetEvents.create(340, 320);
+    ppr.setSpeed(PursuitConfig.GLOBAL.rateFollower);
+    assertEquals(ppr.getSpeed(), PursuitConfig.GLOBAL.rateFollower);
+    ppr.rimoRateControllerWrap.getEvent(rge);
+    {
+      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertTrue(optional.isPresent());
+      RimoPutEvent rpe = optional.get();
+      short trqL = rpe.putL.getTorqueRaw();
+      short trqR = rpe.putR.getTorqueRaw();
+      assertTrue(trqL < 0);
+      assertTrue(0 < trqR);
+    }
+  }
+
+  public void testSlowdown() {
+    PurePursuitRimo ppr = new PurePursuitRimo();
+    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
     assertFalse(ppr.putEvent().isPresent());
     {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
@@ -39,8 +64,8 @@ public class PurePursuitRimoTest extends TestCase {
       RimoPutEvent rpe = optional.get();
       short trqL = rpe.putL.getTorqueRaw();
       short trqR = rpe.putR.getTorqueRaw();
-      assertTrue(trqL < 0);
-      assertTrue(0 < trqR);
+      assertTrue(trqL > 0);
+      assertTrue(0 > trqR);
     }
   }
 }

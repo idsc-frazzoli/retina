@@ -13,11 +13,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Real;
 
 class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -38,13 +35,14 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
   }
 
-  private Scalar speed = PursuitConfig.GLOBAL.rateFollower.multiply(RealScalar.ZERO);
+  private Scalar speed = Quantity.of(0, "rad*s^-1");
 
-  /** @param angle with unit "rad" */
+  /** @param speed with unit "rad*s^-1" */
   /* package */ void setSpeed(Scalar speed) {
     this.speed = speed;
   }
 
+  /** @return speed with unit "rad*s^-1" */
   /* package */ Scalar getSpeed() {
     return speed;
   }
