@@ -20,8 +20,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.gokart.core.AutoboxSockets;
-import ch.ethz.idsc.gokart.core.ProviderRank;
 import ch.ethz.idsc.gokart.core.ProviderRanks;
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;

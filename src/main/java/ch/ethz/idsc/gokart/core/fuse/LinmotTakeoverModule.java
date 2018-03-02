@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;

@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import junit.framework.TestCase;
 
 public class MiscIgnitionProviderTest extends TestCase {
