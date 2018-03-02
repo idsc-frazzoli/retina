@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.util.EnumMap;
 import java.util.Map;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
+
 public enum ProviderRanks {
   ;
   private static final Map<ProviderRank, Color> MAP = new EnumMap<>(ProviderRank.class);

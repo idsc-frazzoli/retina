@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;

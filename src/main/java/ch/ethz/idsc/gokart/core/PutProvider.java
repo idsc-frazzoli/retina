@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
+
 public interface PutProvider<T> {
   /** @return rank of this provider */
   ProviderRank getProviderRank();
