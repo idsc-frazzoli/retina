@@ -19,8 +19,10 @@ public class SensorsConfig implements Serializable {
   /** height of vlp scan from ground
    * 1.10[m] from ground to platform top (until 2018-02-25, the value was 1.18[m])
    * 0.006[m] TODO DUBENDORF width of heat sink
-   * 0.0378[m] == 37.8[mm] from heat sink to height of optical center */
-  public Tensor vlp16Height = Quantity.of(1.10 + 0.006 + 0.0378, SI.METER);
+   * 0.0378[m] == 37.8[mm] from heat sink to height of optical center
+   * total = 1.10 + 0.006 + 0.0378 == 1.1438 */
+  // TODO vlp16Height is not yet used, instead see SafetyConfig
+  public Tensor vlp16Height = Quantity.of(1.1438, SI.METER);
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);

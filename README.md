@@ -51,12 +51,12 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Emergency<td>MiscEmergencyModule<td>no acceleration with steering battery low<th>X<th><th><th></tr>
   <tr><td>Emergency<td>SteerEmergencyModule<td>no acceleration with uncalibrated steering<th>X<th><th><th></tr>
   <tr><td>Emergency<td>Vlp16ClearanceModule<td>no acceleration towards a close obstacle<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>LinmotEmergencyModule<td>driving with brake operational<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>LinmotTakeoverModule<td>switch linmot to passive when driver pushes brake<th><th><th>X<th></tr>
-  <tr><td>Emergency<td>DeadManSwitchModule<td>brake if driver is supected to sleep<th><th><th>X<th></tr>
-  <tr><td>Calibration<td>SteerCalibrationProvider<td>steering calibration routine<th><th>X<th><th></tr>
-  <tr><td>Calibration<td>LinmotCalibrationProvider<td>brake calibration routine<th><th><th>X<th></tr>
-  <tr><td>Calibration<td>MiscIgnitionProvider<td>ACK to microautobox<th><th><th><th>X</tr>
+  <tr><td>Emergency<td>LinmotEmergencyModule<td>no acceleration with brake disabled<th>X<th><th><th></tr>
+  <tr><td>Emergency<td>LinmotTakeoverModule<td>switch linmot to passive when driver pushes brake pedal<th><th><th>X<th></tr>
+  <tr><td>Emergency<td>DeadManSwitchModule<td>brake if driver doesn't use joystick and gokart is above certain speed<th><th><th>X<th></tr>
+  <tr><td>Calibration<td>SteerCalibrationProvider<td>execute steering calibration procedure, duration ~5[s]<th><th>X<th><th></tr>
+  <tr><td>Calibration<td>LinmotCalibrationProvider<td>execute calibration of brake, duration ~4[s]<th><th><th>X<th></tr>
+  <tr><td>Calibration<td>MiscIgnitionProvider<td>ACK of communication problem to microautobox by human operator, duration 0.3[s]<th><th><th><th>X</tr>
   <tr><td>Manual<td>RimoTorqueJoystickModule<td>torque control by joystick<th>X<th><th><th></tr>
   <tr><td>Manual<td>SteerJoystickModule<td>steering control by joystick<th><th>X<th><th></tr>
   <tr><td>Manual<td>LinmotJoystickModule<td>braking by joystick<th><th><th>X<th></tr>
@@ -64,31 +64,13 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Testing<td>SteerComponent<td>interaction with steering in GUI<th><th>X<th><th></tr>
   <tr><td>Testing<td>LinmotComponent<td>interaction with brake in GUI<th><th><th>X<th></tr>
   <tr><td>Testing<td>MiscComponent<td>interaction with misc in GUI<th><th><th><th>X</tr>
-  <tr><td>Autonomous<td>PurePursuitRimo<td>control of speed during pure pursuit<th>X<th><th><th></tr>
+  <tr><td>Autonomous<td>PurePursuitRimo<td>control of speed during pure pursuit trajectory following<th>X<th><th><th></tr>
   <tr><td>Autonomous<td>PurePursuitSteer<td>steering during pure pursuit<th><th>X<th><th></tr>
+  <tr><td>Fallback<td>RimoPutFallback<td>zero torque on motors<th>X<th><th><th></tr>
+  <tr><td>Fallback<td>SteerPutFallback<td>zero torque on steering column<th><th>X<th><th></tr>
+  <tr><td>Fallback<td>LinmotPutFallback<td>maintain operation in home position<th><th><th>X<th></tr>
+  <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
 </table>
-
-Hardware protection modules:
-
-* [code](src/main/java/ch/ethz/idsc/retina/dev/linmot/LinmotFireFighter.java) brake temperature critical => Linmot ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/steer/SteerBatteryCharger.java) steer battery voltage above threshold => Steering passive
-
-Emergency modules:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/MiscEmergencyModule.java) steering battery voltage out of range for at least 200[ms], or communication timeout detected => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotEmergencyModule.java) linmot not operational => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
-
-Emergency support modules:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
-
-Joystick Dead man switch:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
-
 
 ## LIDAR
 
