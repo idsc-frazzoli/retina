@@ -53,6 +53,15 @@ class PresenterLcmModule extends AbstractModule {
       LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
+      lidarRender.pointSize = 1;
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      LidarRender lidarRender = new ObstacleLidarRender(gokartPoseInterface);
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      lidarRender.setColor(new Color(255, 0, 0, 128));
+      lidarRender.pointSize = 4;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
