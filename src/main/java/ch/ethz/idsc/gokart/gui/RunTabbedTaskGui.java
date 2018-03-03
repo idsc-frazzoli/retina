@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyModule;
@@ -53,7 +54,8 @@ enum RunTabbedTaskGui {
       // LinmotEmergencyModule.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
-      Vlp16ClearanceModule.class //
+      Vlp16ClearanceModule.class, //
+      DavisImuWatchdog.class
   // Urg04lxClearanceModule.class //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
