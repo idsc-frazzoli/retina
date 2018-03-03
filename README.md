@@ -72,28 +72,6 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
 </table>
 
-Hardware protection modules:
-
-* [code](src/main/java/ch/ethz/idsc/retina/dev/linmot/LinmotFireFighter.java) brake temperature critical => Linmot ZERO
-* [code](src/main/java/ch/ethz/idsc/retina/dev/steer/SteerBatteryCharger.java) steer battery voltage above threshold => Steering passive
-
-Emergency modules:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/SteerEmergencyModule.java) steering calibration out of range => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/MiscEmergencyModule.java) steering battery voltage out of range for at least 200[ms], or communication timeout detected => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotEmergencyModule.java) linmot not operational => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotTakeoverModule.java) external force detected on linmot/brake => Linmot OFF
-
-Emergency support modules:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/LinmotCoolingModule.java) brake temperature close to critical => RimoTorque ZERO
-* [code](src/main/java/ch/ethz/idsc/gokart/core/fuse/Vlp16ClearanceModule.java) obstacle detected by vlp16 lidar within certain range of predicted vehicle path => RimoTorque ZERO
-
-Joystick Dead man switch:
-
-* [code](src/main/java/ch/ethz/idsc/gokart/core/joy/DeadManSwitchModule.java) joystick signal missing, or gokart moving but joystick passive for timout period => trigger Linmot brake for ~2[s]
-
-
 ## LIDAR
 
 ### Velodyne VLP-16
