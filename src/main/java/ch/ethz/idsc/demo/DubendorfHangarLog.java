@@ -35,6 +35,10 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180112T113153_9e1d3699, //
   /** oval pursuit 758.18[s] */
   _20180112T154355_9e1d3699, //
+  /** joystick driving */
+  _20180226T150533_ed1c7f0a, //
+  /** */
+  _20180226T164802_ed1c7f0a, //
   ;
   @Override
   public File file(File directory) {
