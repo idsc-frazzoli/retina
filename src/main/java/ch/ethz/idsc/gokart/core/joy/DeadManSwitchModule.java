@@ -65,6 +65,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
     LinmotSocket.INSTANCE.removePutProvider(this);
   }
 
+  /***************************************************/
   @Override // from GetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     getEvent_process(rimoGetEvent, joystickLcmClient.getJoystick());

@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -53,5 +54,15 @@ public class RimoRateJoystickModuleTest extends TestCase {
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.5), false);
     assertFalse(rjm.translate(joystick).isPresent());
+  }
+
+  public void testNonPresent() {
+    RimoRateJoystickModule rtjm = new RimoRateJoystickModule();
+    SteerColumnInterface steerColumnInterface = //
+        new SteerColumnAdapter(false, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
+    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.3), false);
+    Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
+    assertFalse(optional.isPresent());
   }
 }

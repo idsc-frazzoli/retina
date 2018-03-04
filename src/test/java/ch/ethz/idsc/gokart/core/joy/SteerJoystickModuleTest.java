@@ -26,7 +26,7 @@ public class SteerJoystickModuleTest extends TestCase {
 
   public void testNonCalib() {
     SteerJoystickModule sjm = new SteerJoystickModule();
-    Optional<SteerPutEvent> optional = sjm.control( //
+    Optional<SteerPutEvent> optional = sjm.private_translate( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
             RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8), false));
