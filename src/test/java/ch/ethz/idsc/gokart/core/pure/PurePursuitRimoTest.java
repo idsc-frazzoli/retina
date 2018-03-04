@@ -13,9 +13,19 @@ import junit.framework.TestCase;
 
 public class PurePursuitRimoTest extends TestCase {
   public void testNotCalibrated() {
-    PurePursuitRimo ppr = new PurePursuitRimo();
-    assertFalse(ppr.putEvent().isPresent());
-    Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    PurePursuitRimo pps = new PurePursuitRimo();
+    assertFalse(pps.putEvent().isPresent());
+    Optional<RimoPutEvent> optional;
+    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    assertFalse(optional.isPresent());
+  }
+
+  public void testNotCalibrated2() {
+    PurePursuitRimo pps = new PurePursuitRimo();
+    pps.setOperational(true);
+    assertFalse(pps.putEvent().isPresent());
+    Optional<RimoPutEvent> optional;
+    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     assertFalse(optional.isPresent());
   }
 

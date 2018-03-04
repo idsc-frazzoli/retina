@@ -14,5 +14,6 @@ public abstract class GroupModule extends AbstractModule {
     modules().forEach(ModuleAuto.INSTANCE::terminateOne);
   }
 
+  /** @return list of classes that constitute group */
   protected abstract List<Class<?>> modules();
 }

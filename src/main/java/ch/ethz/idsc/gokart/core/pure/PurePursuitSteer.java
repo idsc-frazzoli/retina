@@ -3,18 +3,15 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
-  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from StartAndStoppable
@@ -39,26 +36,12 @@ class PurePursuitSteer extends PurePursuitBase implements SteerPutProvider {
   }
 
   /***************************************************/
-  @Override // from SteerPutProvider
-  public Optional<SteerPutEvent> putEvent() {
-    if (isOperational())
-      return control(steerColumnInterface);
-    return Optional.empty();
-  }
-
-  /* package */ Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
-    if (steerColumnInterface.isSteerColumnCalibrated()) {
-      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);
-      Scalar difference = desPos.subtract(currAngle);
-      Scalar torqueCmd = steerPositionController.iterate(difference);
-      return Optional.of(SteerPutEvent.createOn(torqueCmd));
-    }
-    return Optional.empty();
-  }
-
-  @Override // from SteerPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.AUTONOMOUS;
+  @Override
+  Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);
+    Scalar difference = desPos.subtract(currAngle);
+    Scalar torqueCmd = steerPositionController.iterate(difference);
+    return Optional.of(SteerPutEvent.createOn(torqueCmd));
   }
 }

@@ -8,6 +8,7 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerDuo;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -22,7 +23,7 @@ class RimoMetronomeModule extends AbstractModule implements RimoPutProvider {
   public static final Scalar HALF_PERIOD = RealScalar.of(2);
   // ---
   private final Stopwatch stopwatch = Stopwatch.started();
-  private final RimoRateControllerDuo rimoRateControllerWrap = new RimoRateControllerDuo();
+  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerDuo();
   private final Scalar testPulseLo = Quantity.of(0, "rad*s^-1");
   private final Scalar testPulseHi = Quantity.of(20, "rad*s^-1");
 

@@ -3,25 +3,21 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerDuo;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
-  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
   /** available implementations of RimoRateControllerWrap are
-   * {@link RimoRateControllerUno}, and {@link RimoRateControllerDuo} */
-  /* package */ final RimoRateControllerWrap rimoRateControllerWrap = //
-      new RimoRateControllerUno(); // <- UNO uses a single PI-controller
+   * {@link RimoRateControllerUno}, and {@link RimoRateControllerDuo}
+   * UNO uses a single PI-controller */
+  /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   @Override // from StartAndStoppable
   public void start() {
@@ -48,23 +44,10 @@ class PurePursuitRimo extends PurePursuitBase implements RimoPutProvider {
   }
 
   /***************************************************/
-  @Override // from RimoPutProvider
-  public Optional<RimoPutEvent> putEvent() {
-    if (isOperational())
-      return control(steerColumnInterface);
-    return Optional.empty();
-  }
-
-  /* package */ Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
-    if (steerColumnInterface.isSteerColumnCalibrated())
-      return rimoRateControllerWrap.iterate( //
-          speed, // average target velocity
-          SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface)); // steering angle
-    return Optional.empty();
-  }
-
-  @Override // from RimoPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.AUTONOMOUS;
+  @Override
+  Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
+    return rimoRateControllerWrap.iterate( //
+        speed, // average target velocity
+        SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface)); // steering angle
   }
 }

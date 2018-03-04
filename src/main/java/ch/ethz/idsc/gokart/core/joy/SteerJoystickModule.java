@@ -11,8 +11,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.Scalar;
 
-public class SteerJoystickModule extends JoystickModule<SteerPutEvent> {
-  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+public class SteerJoystickModule extends GuideJoystickModule<SteerPutEvent> {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from AbstractModule
@@ -25,24 +24,14 @@ public class SteerJoystickModule extends JoystickModule<SteerPutEvent> {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  @Override // from JoystickModule
-  Optional<SteerPutEvent> translate(GokartJoystickInterface joystick) {
-    return control(steerColumnInterface, joystick);
-  }
-
-  /** @param steerColumnInterface
-   * @param joystick
-   * @return */
-  /* package */ Optional<SteerPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, //
-      GokartJoystickInterface joystick) {
-    if (steerColumnInterface.isSteerColumnCalibrated()) {
-      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
-      Scalar difference = desPos.subtract(currAngle);
-      Scalar torqueCmd = steerPositionController.iterate(difference);
-      return Optional.of(SteerPutEvent.createOn(torqueCmd));
-    }
-    return Optional.empty();
+  /***************************************************/
+  @Override
+  Optional<SteerPutEvent> control( //
+      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
+    Scalar difference = desPos.subtract(currAngle);
+    Scalar torqueCmd = steerPositionController.iterate(difference);
+    return Optional.of(SteerPutEvent.createOn(torqueCmd));
   }
 }

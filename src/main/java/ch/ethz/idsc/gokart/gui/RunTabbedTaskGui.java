@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
+import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
@@ -35,7 +37,6 @@ enum RunTabbedTaskGui {
       LoggerModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
-      // Urg04lxLcmServerModule.class, // sensing
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
@@ -47,21 +48,18 @@ enum RunTabbedTaskGui {
   // DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      // Urg04lxEmergencyModule.class, //
       MiscEmergencyModule.class, //
       SteerEmergencyModule.class, //
-      // LinmotEmergencyModule.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
-      Vlp16ClearanceModule.class //
-  // Urg04lxClearanceModule.class //
+      Vlp16ClearanceModule.class, //
+      DavisImuWatchdog.class //
+  //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
+      LinmotEmergencyModule.class, //
       DeadManSwitchModule.class, // joystick
       JoystickGroupModule.class //
-  // LinmotJoystickModule.class, //
-  // SteerJoystickModule.class, //
-  // RimoTorqueJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       PurePursuitModule.class //

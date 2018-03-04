@@ -18,8 +18,11 @@ import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-/** blocks rimo while anything is within a close distance in path */
-public final class Urg04lxClearanceModule extends AbstractModule implements //
+/** blocks rimo while anything is within a close distance in path
+ * 
+ * Important: The urg04lx lidar is not in use on the gokart.
+ * The module has package visibility and may be removed in the future. */
+/* package */ class Urg04lxClearanceModule extends AbstractModule implements //
     LidarRayBlockListener, RimoPutProvider, RimoGetListener {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private boolean isPathObstructed = true;

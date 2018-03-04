@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 
+/** sends messages via one of the four UDP connections to the micro-autobox.
+ * The four channels are: rimo, steer, linmot, misc */
 public interface PutProvider<T> {
   /** @return rank of this provider */
   ProviderRank getProviderRank();
