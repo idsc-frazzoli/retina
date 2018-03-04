@@ -24,15 +24,32 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
-  public static final Tensor CURVE = DubendorfCurve.OVAL;
+  /** until 20180226 the curve for trajectory pursuit was
+   * DubendorfCurve.OVAL
+   * 
+   * due to new safety structure, the curve made a bit smaller and shifted slightly
+   * in the direction away from the container. the new curve is
+   * DubendorfCurve.OVAL_SHIFTED
+   * 
+   * both trajectories are in clockwise direction */
+  public static final Tensor CURVE = DubendorfCurve.OVAL_SHIFTED;
   public static final Clip VALID_RANGE = SteerConfig.GLOBAL.getAngleLimit();
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private Tensor curve = CURVE;
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
+
+  /** function setCurve is for testing only.
+   * for normal operation, set the curve via the static field CURVE
+   * 
+   * @param curve */
+  void setCurve(Tensor curve) {
+    this.curve = curve;
+  }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -71,7 +88,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
       // TODO pose quality could be an independent fuse module for autonomous modes
       if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
-        Optional<Scalar> optional = getLookAhead(pose, CURVE);
+        Optional<Scalar> optional = getLookAhead(pose, curve);
         if (optional.isPresent()) { // is look ahead beacon available?
           Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
           if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
