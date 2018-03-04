@@ -6,6 +6,10 @@ package ch.ethz.idsc.gokart.core;
   private final long time_ms;
   private final T putEvent;
 
+  /** time_ms is typically obtained by {@link System#currentTimeMillis()}
+   * 
+   * @param time_ms absolute time stamp until when to execute given putEvent.
+   * @param putEvent */
   public TimedPutEvent(long time_ms, T putEvent) {
     this.time_ms = time_ms;
     this.putEvent = putEvent;

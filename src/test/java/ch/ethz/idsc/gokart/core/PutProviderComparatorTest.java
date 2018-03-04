@@ -5,13 +5,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.gokart.core.fuse.EmergencyModule;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class PutProviderComparatorTest extends TestCase {
   public void testSimple() {
-    RimoPutProvider rpp1 = new DavisImuWatchdog();
-    Set<RimoPutProvider> providers = //
+    EmergencyModule<RimoPutEvent> rpp1 = new DavisImuWatchdog();
+    Set<EmergencyModule<RimoPutEvent>> providers = //
         new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
     providers.add(rpp1);
     providers.add(rpp1);
