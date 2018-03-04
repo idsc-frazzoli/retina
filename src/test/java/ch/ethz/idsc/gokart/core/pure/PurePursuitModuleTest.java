@@ -37,8 +37,8 @@ public class PurePursuitModuleTest extends TestCase {
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
-    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
-    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
     purePursuitModule.last();
@@ -52,8 +52,8 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     // assertEquals(Quantity.of(-0.013455281968592674, "rad"), heading);
@@ -71,8 +71,8 @@ public class PurePursuitModuleTest extends TestCase {
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
-    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
-    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     assertTrue(Scalars.isZero(heading));
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
@@ -87,8 +87,8 @@ public class PurePursuitModuleTest extends TestCase {
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
-    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
-    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     assertTrue(Scalars.isZero(heading));
     assertFalse(purePursuitModule.purePursuitSteer.putEvent().isPresent());
@@ -104,8 +104,8 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     Clip clip = Clip.function(Quantity.of(-0.16, "rad"), Quantity.of(-0.12, "rad"));
@@ -123,8 +123,8 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    assertTrue(purePursuitModule.purePursuitSteer.isOperational());
-    assertTrue(purePursuitModule.purePursuitRimo.isOperational());
+    assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     Clip clip = Clip.function(Quantity.of(-0.15, "rad"), Quantity.of(-0.10, "rad"));
@@ -142,8 +142,8 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.getEvent(gokartPoseEvent);
     JoystickLcmClientTest.publishAutonomous();
     purePursuitModule.runAlgo();
-    assertFalse(purePursuitModule.purePursuitSteer.isOperational());
-    assertFalse(purePursuitModule.purePursuitRimo.isOperational());
+    assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
+    assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
     purePursuitModule.last();
   }
 
