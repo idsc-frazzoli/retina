@@ -14,7 +14,8 @@ import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
-/** TODO purpose */
+/** the davis imu watchdog detects the absence of {@link DavisImuFrame}
+ * for instance when the connection to the Davis240C camera fails. */
 public class DavisImuWatchdog extends AbstractModule implements RimoPutProvider, DavisImuFrameListener {
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private Watchdog watchdog; // 150[ms]
@@ -23,30 +24,33 @@ public class DavisImuWatchdog extends AbstractModule implements RimoPutProvider,
     davisImuLcmClient.addListener(this);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     watchdog = new Watchdog(0.15); // 150[ms]
     davisImuLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     davisImuLcmClient.stopSubscriptions();
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
   }
 
-  @Override
+  @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     boolean isBlown = Objects.nonNull(watchdog) && watchdog.isBlown(); // true == stop gokart
     return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null);
   }
 
-  @Override
+  @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
+    // TODO check whether davis240c is upside down using acceleration ...
+    // ... the orientation of the camera is critical for the correct estimation
+    // ... of gyro rate.
     watchdog.pacify();
   }
 }

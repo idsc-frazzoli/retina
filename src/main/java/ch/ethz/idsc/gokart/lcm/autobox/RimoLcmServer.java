@@ -16,12 +16,12 @@ public enum RimoLcmServer implements RimoGetListener, RimoPutListener {
   private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher(CHANNEL_GET);
   private final BinaryBlobPublisher putPublisher = new BinaryBlobPublisher(CHANNEL_PUT);
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     getPublisher.accept(rimoGetEvent.asArray());
   }
 
-  @Override
+  @Override // from RimoPutListener
   public void putEvent(RimoPutEvent rimoPutEvent) {
     putPublisher.accept(rimoPutEvent.asArray());
   }

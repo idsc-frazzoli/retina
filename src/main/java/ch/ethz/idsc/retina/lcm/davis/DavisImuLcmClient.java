@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 
 public class DavisImuLcmClient extends SimpleLcmClient<DavisImuFrameListener> {
-  final String cameraId;
+  private final String cameraId;
 
   public DavisImuLcmClient(String cameraId) {
     this.cameraId = cameraId;
