@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.sys;
 
 import java.util.Date;
+import java.util.Objects;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.LcmLogProcess;
@@ -18,15 +19,12 @@ public final class LoggerModule extends AbstractModule {
 
   @Override
   protected void last() {
-    System.out.println(new Date() + " lcm-logger: graceful destruction");
-    try {
-      lcmLogProcess.close();
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-  }
-
-  public static void main(String[] args) throws Exception {
-    new LoggerModule().first();
+    if (Objects.nonNull(lcmLogProcess))
+      try {
+        System.out.println(new Date() + " lcm-logger: destruction");
+        lcmLogProcess.close();
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
   }
 }

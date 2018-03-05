@@ -82,8 +82,4 @@ public class Davis240cDecoder implements DavisDecoder {
   public void addImuListener(DavisImuListener listener) {
     imuDavisEventListeners.add(listener);
   }
-
-  public static void main(String[] args) {
-    System.out.println(String.format("%08x", ADC_MAX));
-  }
 }
