@@ -4,6 +4,8 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.util.EnumSet;
 import java.util.Set;
 
+/** NTI AG / LinMot, User Manual Motion Control SW / 07.04.2017
+ * Page 20/132, Section 3.24 Status Word */
 public enum LinmotStatusWordBit {
   OPERATION_ENABLED, // 0
   SWITCH_ON, // 1

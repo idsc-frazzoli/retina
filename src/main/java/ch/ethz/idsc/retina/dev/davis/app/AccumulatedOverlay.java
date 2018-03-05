@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.red.Min;
 public class AccumulatedOverlay implements DavisDvsListener {
   private static final Scalar ALPHA = RealScalar.of(255);
   // ---
-  private final List<TimedImageListener> listeners = new LinkedList<>();
+  private final List<TimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private Tensor background;
   private Tensor collect_P = Array.zeros(180, 240);
   private Tensor collect_N = Array.zeros(180, 240);

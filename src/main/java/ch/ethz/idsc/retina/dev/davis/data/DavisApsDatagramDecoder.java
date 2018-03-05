@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
@@ -16,7 +16,7 @@ public class DavisApsDatagramDecoder {
   private final BufferedImage bufferedImage;
   private final int[] time = new int[240];
   private final byte[] imageData;
-  private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
+  private final List<ColumnTimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private boolean isComplete = true;
   private int x_next = 0;
 

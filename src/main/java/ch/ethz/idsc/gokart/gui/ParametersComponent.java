@@ -12,18 +12,19 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.StringScalar;
 
+/** component that generically inspects a given object for fields of type
+ * {@link Tensor} and {@link Scalar}. For each such field, a text field
+ * is provided that allows the modification of the value. */
 class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 14);
   private static final Color FAIL = new Color(255, 192, 192);
@@ -124,14 +125,5 @@ class ParametersComponent extends ToolbarsComponent {
     Tensor tensor = getValue(string);
     return !tensor.flatten(-1) //
         .anyMatch(scalar -> scalar instanceof StringScalar);
-  }
-
-  public static void main(String[] args) {
-    ParametersComponent pc = new ParametersComponent(SteerConfig.GLOBAL);
-    JFrame jFrame = new JFrame();
-    jFrame.setContentPane(pc.getScrollPane());
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 400, 300);
-    jFrame.setVisible(true);
   }
 }

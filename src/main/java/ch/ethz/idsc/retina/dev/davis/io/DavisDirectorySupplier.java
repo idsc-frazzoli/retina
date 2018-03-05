@@ -11,6 +11,7 @@ import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
+/** utility for working with files from Robotics and Perception Group, UZH */
 /* package */ class DavisDirectorySupplier implements StartAndStoppable {
   private final BufferedReader br_events;
   private final BufferedReader br_images;

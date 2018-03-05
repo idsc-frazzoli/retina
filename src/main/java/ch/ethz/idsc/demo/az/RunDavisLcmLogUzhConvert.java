@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.demo.az;
+package ch.ethz.idsc.demo.az;
 
 import java.io.File;
 

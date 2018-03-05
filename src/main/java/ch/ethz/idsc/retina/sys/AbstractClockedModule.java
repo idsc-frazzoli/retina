@@ -35,7 +35,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
 
   /** Period between runClockedModule execution.
    * 
-   * @return task period as {@link Quantity} time unit, i.e. [s] or [ms] etc. */
+   * @return task period as {@link Quantity} time unit, i.e. [s], [ms], or [Hz^-1] etc. */
   protected abstract Scalar getPeriod();
 
   @Override
