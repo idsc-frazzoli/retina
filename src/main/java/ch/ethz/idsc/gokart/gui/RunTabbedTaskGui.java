@@ -26,6 +26,8 @@ import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** RunTabbedTaskGui is a program that is typically for offline processing.
+ * The window in a convenient way to launch files. */
 enum RunTabbedTaskGui {
   ;
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //

@@ -21,7 +21,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
     // ---
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     boolean isCalibrated = steerColumnInterface.isSteerColumnCalibrated();
     float steeringAngle = isCalibrated //

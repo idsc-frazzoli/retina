@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
+// TODO pose quality check could be an independent fuse module preventing autonomous modes
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
   /** until 20180226 the curve for trajectory pursuit was
    * DubendorfCurve.OVAL
@@ -82,10 +83,8 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   }
 
   private boolean isOperational() {
-    // TODO the ordering of the conditions should chang? null, joystick, quality, lookahead?
-    if (Objects.nonNull(gokartPoseEvent)) {
+    if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
       final Scalar quality = gokartPoseEvent.getQuality();
-      // TODO pose quality could be an independent fuse module for autonomous modes
       if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
         Optional<Scalar> optional = getLookAhead(pose, curve);
@@ -114,7 +113,6 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     if (aheadTrail.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);
       return purePursuit.ratio();
-      // return PurePursuit.turningRatePositiveX(aheadTrail.get(), distance); // in owl 002
     }
     return Optional.empty();
   }
