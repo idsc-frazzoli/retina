@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
@@ -30,7 +30,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   // ---
   protected final int width;
   private final int height;
-  private final List<TimedImageListener> listeners = new LinkedList<>();
+  private final List<TimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
   private int interval;

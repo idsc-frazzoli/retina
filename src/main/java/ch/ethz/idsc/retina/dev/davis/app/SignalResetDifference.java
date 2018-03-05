@@ -2,8 +2,8 @@
 package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BinaryOperator;
 
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
@@ -24,7 +24,7 @@ public class SignalResetDifference implements ColumnTimedImageListener {
   /** buffer for the last reset image */
   private final DavisImageBuffer davisImageBuffer;
   private final BinaryOperator<BufferedImage> binaryOperator;
-  private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
+  private final List<ColumnTimedImageListener> listeners = new CopyOnWriteArrayList<>();
 
   private SignalResetDifference( //
       DavisImageBuffer davisImageBuffer, BinaryOperator<BufferedImage> binaryOperator) {

@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.dev.davis._240c;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
@@ -20,7 +20,7 @@ public class DavisImageProvider implements DavisApsListener {
   private final int lastX;
   private final int lastY;
   // ---
-  private final List<ColumnTimedImageListener> listeners = new LinkedList<>();
+  private final List<ColumnTimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private final BufferedImage bufferedImage;
   private final byte[] bytes;
   private final int[] time;
