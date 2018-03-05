@@ -31,8 +31,12 @@ class ObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
+      // obtain lo and hi from SafetyConfig and use instead of "-0.5" and "0.2" below
+      // double lo = Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue();
+      // double hi ...
       for (Tensor x : points) {
         double z = x.Get(2).number().doubleValue();
+        // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
         if (z > -0.5 && z < 0.2) {
           Point2D point2D = geometricLayer.toPoint2D(x);
           // System.out.println(point2D);
