@@ -17,7 +17,6 @@ public class DvsTallyProvider implements DavisDvsListener {
     this.davisTallyListener = davisTallyListener;
     setShift(shift);
   }
-
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     int diff = davisDvsEvent.time - davisTallyEvent.first;
