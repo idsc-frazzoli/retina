@@ -13,8 +13,8 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-class ObstacleLidarRender extends LidarRender {
-  public ObstacleLidarRender(GokartPoseInterface gokartPoseInterface) {
+class SideLidarRender extends LidarRender {
+  public SideLidarRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
   }
 
@@ -31,17 +31,14 @@ class ObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      // obtain lo and hi from SafetyConfig and use instead of "-0.5" and "0.2" below
-      // double lo = Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue();
-      // double hi ...
       for (Tensor x : points) {
-        double z = x.Get(2).number().doubleValue();
-        // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
-        if (z > -0.5 && z < 0.2) {
-          Point2D point2D = geometricLayer.toPoint2D(x);
-          // System.out.println(point2D);
-          graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
-        }
+        // x is a vector of length 3
+        // x= px,py,pz which corresponds to front,left,up
+        // for top view we draw the px and py and for side view we draw px and pz
+        Tensor v = Tensors.of(x.Get(0), x.Get(2));
+        Point2D point2D = geometricLayer.toPoint2D(v);
+        // System.out.println(point2D);
+        graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
       }
     }
     geometricLayer.popMatrix();

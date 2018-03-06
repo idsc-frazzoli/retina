@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 
+/** Provides information about the absolute position of the steering column */
 public class GokartStatusLcmClient extends SimpleLcmClient<GokartStatusListener> {
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
