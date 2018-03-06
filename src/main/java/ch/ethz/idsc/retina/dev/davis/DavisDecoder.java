@@ -8,8 +8,7 @@ import java.nio.ByteBuffer;
 public interface DavisDecoder {
   /** in raw data format, a davis event consist of 8 bytes
    * 
-   * @param byteBuffer
-   * from which 8 bytes of raw data can be read */
+   * @param byteBuffer from which 8 bytes of raw data can be read */
   void read(ByteBuffer byteBuffer);
 
   /** in raw data format, a davis event is encoded as two 32-bit integers
@@ -18,13 +17,15 @@ public interface DavisDecoder {
    * @param time */
   void read(int data, int time);
 
-  /** @param davisEventListener
-   * to subscribe to dvs, aps, or imu events */
+  /** @param listener to subscribe to imu events */
   void addImuListener(DavisImuListener listener);
 
+  /** @param listener to subscribe to dvs events */
   void addDvsListener(DavisDvsListener listener);
 
+  /** @param listener to subscribe to reset events */
   void addRstListener(DavisApsListener listener);
 
+  /** @param listener to subscribe to signal events */
   void addSigListener(DavisApsListener listener);
 }
