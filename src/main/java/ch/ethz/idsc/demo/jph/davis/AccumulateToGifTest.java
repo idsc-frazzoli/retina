@@ -5,7 +5,6 @@ import java.io.File;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
-import ch.ethz.idsc.retina.dev.dvs.AccumulateToGif;
 import ch.ethz.idsc.retina.dev.dvs.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.ImagesDvsEventSupplier;

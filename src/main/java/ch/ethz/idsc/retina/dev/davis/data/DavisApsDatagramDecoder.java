@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.retina.dev.davis.io.DavisDatagram;
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.util.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 
@@ -41,7 +41,7 @@ public class DavisApsDatagramDecoder {
     int x = byteBuffer.getShort();
     // TODO check that value in valid range
     isComplete &= x == x_next;
-    for (int column = 0; column < DavisDatagram.BLOCK_COLUMNS; ++column) {
+    for (int column = 0; column < DavisStatics.APS_COLUMNS; ++column) {
       time[x] = byteBuffer.getInt();
       for (int y = 0; y < 180; ++y)
         imageData[x + y * 240] = byteBuffer.get(); // TODO increment offset (instead of multiplication)

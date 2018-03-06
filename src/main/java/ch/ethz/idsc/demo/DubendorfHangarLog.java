@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo;
 
 import java.io.File;
 
+// TODO remove empty on 20180305T151234
 public enum DubendorfHangarLog implements LogFileInterface {
   /* 2017-12-13 */
   /** lot's of braking */
@@ -39,6 +40,12 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180226T150533_ed1c7f0a, //
   /** */
   _20180226T164802_ed1c7f0a, //
+  /** */
+  _20180305T151234_9e1dc13c, //
+  /** */
+  _20180305T164035_9e1dc13c, //
+  /** */
+  _20180305T170018_9e1dc13c, //
   ;
   @Override
   public File file(File directory) {
