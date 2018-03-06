@@ -10,10 +10,6 @@ import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
-import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -41,6 +37,14 @@ class SideLcmModule extends AbstractModule {
       LidarRender lidarRender = new SideLidarRender(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
+    }
+    {
+      LidarRender lidarRender = new SideObstacleLidarRender(gokartPoseInterface);
+      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      lidarRender.setColor(new Color(255, 0, 0, 128));
+      lidarRender.pointSize = 4;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
