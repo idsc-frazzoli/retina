@@ -32,6 +32,13 @@ class SideObstacleLidarRender extends LidarRender {
     }
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
+      Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
+          0, // translation right (in pixel space)
+          0, // translation up (in pixel space) TODO VC use SensorsConfig.GLOBAL.vlp16Height to
+          0 // rotation is pixel space
+      ));
+      geometricLayer.pushMatrix(translate);
+      // ---
       graphics.setColor(color);
       // TODO VC create an instance of SimpleSpacialObstaclePredicate
       for (Tensor x : points) {
@@ -46,6 +53,8 @@ class SideObstacleLidarRender extends LidarRender {
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
       }
+      // ---
+      geometricLayer.popMatrix();
     }
     geometricLayer.popMatrix();
   }
