@@ -1,4 +1,4 @@
-// code by jph
+// code by vc, jph
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-class SideLcmModule extends AbstractModule {
+public class SideLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();

@@ -1,4 +1,4 @@
-// code by jph
+// code by vc
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
@@ -33,10 +33,9 @@ class SideObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      // obtain lo and hi from SafetyConfig and use instead of "-0.5" and "0.2" below
-      // double lo = Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue();
-      // double hi ...
+      // TODO VC create an instance of SimpleSpacialObstaclePredicate
       for (Tensor x : points) {
+        // TODO VC use instance of SimpleSpacialObstaclePredicate to get status about x
         double z = x.Get(2).number().doubleValue() + x.Get(0).number().doubleValue() * SensorsConfig.GLOBAL.vlp16_incline.number().doubleValue();
         // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
         if (z > Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue()
