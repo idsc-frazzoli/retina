@@ -2,11 +2,11 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
+import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImuEvent;
 
 /** the conversion formulas are trimmed to match the values in the jAER demo
@@ -16,7 +16,7 @@ public class DavisImuFrameCollector implements DavisImuListener {
   private final List<DavisImuFrameListener> listeners = new LinkedList<>();
 
   public DavisImuFrameCollector() {
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.order(DavisStatics.BYTE_ORDER);
   }
 
   public void addListener(DavisImuFrameListener davisImuFrameListener) {

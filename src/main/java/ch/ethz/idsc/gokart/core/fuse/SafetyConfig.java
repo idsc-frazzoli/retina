@@ -21,7 +21,8 @@ public class SafetyConfig implements Serializable {
   public Scalar clearanceFront = Quantity.of(4.3, SI.METER);
   /** TODO clearance rear is not yet used */
   public Scalar clearanceRear = Quantity.of(-2.2, SI.METER);
-  public Scalar vlp16_ZLo = Quantity.of(-1.0, SI.METER);
+  /** 20180226: changed from -1.0[m] to -0.9[m] because the sensor rack was lowered by ~8[cm] */
+  public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
 
   /***************************************************/

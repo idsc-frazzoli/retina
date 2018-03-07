@@ -3,14 +3,11 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
@@ -19,7 +16,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
  * 
  * module has to be stopped and restarted once fuse is blown */
 @SafetyCritical
-public final class LinmotTakeoverModule extends AbstractModule implements LinmotGetListener, LinmotPutProvider {
+public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> implements LinmotGetListener {
   /** in order for fuse to blow, the position discrepancy
    * has to be maintained for 0.05[s] */
   private static final long DURATION_MS = 50;
@@ -50,11 +47,6 @@ public final class LinmotTakeoverModule extends AbstractModule implements Linmot
   }
 
   /***************************************************/
-  @Override // from LinmotPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
-  }
-
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
     isBlown |= watchdog.isBlown();

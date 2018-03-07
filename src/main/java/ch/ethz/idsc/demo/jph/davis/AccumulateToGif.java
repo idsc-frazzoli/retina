@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.dvs;
+package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-public enum AccumulateToGif {
+enum AccumulateToGif {
   ;
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us) throws Exception {
     of(dvsEventSupplier, gifFile, window_us, window_us);

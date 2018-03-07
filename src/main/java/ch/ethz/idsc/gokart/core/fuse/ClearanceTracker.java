@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
@@ -22,9 +25,12 @@ public class ClearanceTracker {
   private final Clip clip_X;
   private final Se2ForwardAction se2ForwardAction;
   private final Tensor u;
-  private final Tensor collection = Tensors.empty();
+  private final Collection<Tensor> collection = new LinkedList<>();
   private Scalar min;
 
+  /** @param half width along y-axis
+   * @param angle steering
+   * @param xya reference frame of sensor as 3-vector {px, py, angle} */
   public ClearanceTracker(Scalar half, Scalar angle, Tensor xya) {
     clip_Y = Clip.function(half.negate(), half); // TODO there is a small error as gokart turns
     Scalar speed = RealScalar.of(1.0); // assume unit speed // TODO use actual speed in logic
@@ -34,6 +40,9 @@ public class ClearanceTracker {
     clip_X = Clip.function(RealScalar.of(0.2), clearanceFrontMeter); // TODO magic const 0.2
   }
 
+  // TODO refactor necessary due to redundancy
+  /** @param local coordinates of obstacle in sensor reference frame
+   * @return whether given point is an obstruction */
   public boolean probe(Tensor local) {
     Tensor point = se2ForwardAction.apply(local);
     Scalar t = Se2AxisYProject.of(u, point);
@@ -48,6 +57,7 @@ public class ClearanceTracker {
     return false;
   }
 
+  /** @param local coordinates of obstacle in sensor reference frame */
   public void feed(Tensor local) {
     Tensor point = se2ForwardAction.apply(local);
     Scalar t = Se2AxisYProject.of(u, point);
@@ -58,17 +68,19 @@ public class ClearanceTracker {
       System.err.println("did not map to rear axle");
     if (clip_Y.isInside(v.Get(1))) { // check y-coordinate of back projected point
       min = Min.of(min, t); // negate t again
-      collection.append(point);
+      collection.add(point);
     }
   }
 
+  /** @return closest of all obstructing points, or empty */
   public Optional<Tensor> violation() {
     if (Scalars.lessThan(min, clearanceFrontMeter))
       return Optional.of(Se2Utils.integrate_g0(u.multiply(min)));
     return Optional.empty();
   }
 
-  public Tensor getPointsInViolation() {
-    return collection.unmodifiable();
+  /** @return unmodifiable collection with points that were determined to be in path */
+  public Collection<Tensor> getPointsInViolation() {
+    return Collections.unmodifiableCollection(collection);
   }
 }

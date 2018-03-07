@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
+/** NTI AG / LinMot, User Manual Motion Control SW / 07.04.2017
+ * Page 14/132 */
 public enum LinmotStateVarMain {
   NOT_READY, //
   SWITCH_ON_DISABLED, //

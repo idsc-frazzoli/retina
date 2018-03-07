@@ -13,8 +13,4 @@ public enum DavisStatics {
    * @param columns
    * has to divide image width */
   public static final int APS_COLUMNS = 8;
-
-  public static void main(String[] args) {
-    System.out.println("ByteOrder.nativeOrder() == " + ByteOrder.nativeOrder());
-  }
 }

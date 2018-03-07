@@ -18,6 +18,12 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** ParametersModule is a graphical user interface to configure all constant
+ * quantities that are critical for the safety and performance of the gokart
+ * platform: sensor positioning, limits on actuators, ...
+ * 
+ * In most cases, the modification of a parameter value in the gui takes effect
+ * immediately, i.e. does not require the restart of the software. */
 public class ParametersModule extends AbstractModule {
   private final JTabbedPane jTabbedPane = new JTabbedPane();
   private final JFrame jFrame = new JFrame("Parameters");

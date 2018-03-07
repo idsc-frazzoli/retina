@@ -2,15 +2,15 @@
 package ch.ethz.idsc.retina.dev.davis.data;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // TODO JAN comment
 public class DavisDvsDatagramDecoder {
-  private final List<DavisDvsListener> listeners = new LinkedList<>();
+  private final List<DavisDvsListener> listeners = new CopyOnWriteArrayList<>();
 
   public void addDvsListener(DavisDvsListener listener) {
     listeners.add(listener);

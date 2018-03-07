@@ -20,6 +20,7 @@ public class LinmotJoystickModule extends JoystickModule<LinmotPutEvent> {
     LinmotSocket.INSTANCE.removePutProvider(this);
   }
 
+  /***************************************************/
   @Override // from JoystickModule
   Optional<LinmotPutEvent> translate(GokartJoystickInterface joystick) {
     return Optional.of(LinmotPutHelper.operationToRelativePosition(joystick.getBreakStrength()));

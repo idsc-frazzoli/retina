@@ -21,7 +21,7 @@ public class PanoramaViewModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -35,7 +35,7 @@ public class PanoramaViewModule extends AbstractModule {
     velodyneLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     velodyneLcmClient.stopSubscriptions();
     panoramaFrame.close();

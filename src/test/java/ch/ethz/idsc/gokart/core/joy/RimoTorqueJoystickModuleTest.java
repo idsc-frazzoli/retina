@@ -118,7 +118,7 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
         new SteerColumnAdapter(false, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.3), false);
-    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
     assertFalse(optional.isPresent());
   }
 }

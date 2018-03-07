@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import junit.framework.TestCase;

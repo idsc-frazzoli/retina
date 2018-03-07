@@ -3,25 +3,25 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.GetListener;
-import ch.ethz.idsc.gokart.core.ProviderRank;
-import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.EmergencyModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
 
-class RimoDeadMan implements PutProvider<RimoPutEvent> {
+class RimoDeadMan implements RimoPutProvider {
   volatile boolean isBlown = false;
 
   @Override // from PutProvider
@@ -40,7 +40,7 @@ class RimoDeadMan implements PutProvider<RimoPutEvent> {
  * action of emergency module is to brake for 2.5[s] */
 // TODO no good: when joystick is missing, immediately brakes regardless of speed
 // TODO no good: when speed > threshold, only brakes once but whenever speed > threshold -> repeatedly
-public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements GetListener<RimoGetEvent> {
+public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements RimoGetListener {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Watchdog watchdog_isPresent = new Watchdog(0.2);
   private final Watchdog watchdog_inControl = //
@@ -65,6 +65,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
     LinmotSocket.INSTANCE.removePutProvider(this);
   }
 
+  /***************************************************/
   @Override // from GetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     getEvent_process(rimoGetEvent, joystickLcmClient.getJoystick());

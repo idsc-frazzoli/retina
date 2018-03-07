@@ -11,7 +11,7 @@ public class RimoSocketTest extends TestCase {
   }
 
   public void testSize() {
-    assertEquals(RimoSocket.INSTANCE.getPutProviderSize(), 1);
+    assertTrue(1 <= RimoSocket.INSTANCE.getPutProviderSize());
     assertEquals(RimoSocket.INSTANCE.getGetListenersSize(), 0);
     assertEquals(RimoSocket.INSTANCE.getPutListenersSize(), 0);
   }

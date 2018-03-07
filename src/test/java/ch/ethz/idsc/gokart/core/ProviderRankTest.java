@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import junit.framework.TestCase;
 
 public class ProviderRankTest extends TestCase {

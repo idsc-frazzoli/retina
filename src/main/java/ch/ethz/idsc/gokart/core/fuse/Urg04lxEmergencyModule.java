@@ -11,8 +11,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
-/** sends stop command if front lidar is not operational */
-public final class Urg04lxEmergencyModule extends EmergencyModule<RimoPutEvent> implements LidarRayDataListener {
+/** sends stop command if front lidar is not operational
+ * 
+ * Important: The urg04lx lidar is not in use on the gokart.
+ * The module has package visibility and may be removed in the future. */
+/* package */ class Urg04lxEmergencyModule extends EmergencyModule<RimoPutEvent> implements LidarRayDataListener {
   private static final int WATCHDOG_MS = 400; // 400[ms]
   // ---
   private final Urg04lxLcmClient urg04lxLcmClient = //

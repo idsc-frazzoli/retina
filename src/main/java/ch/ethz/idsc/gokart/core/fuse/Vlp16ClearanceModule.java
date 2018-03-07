@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ProviderRank;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
@@ -14,11 +13,9 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
-import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -26,8 +23,8 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-public final class Vlp16ClearanceModule extends AbstractModule implements //
-    LidarSpacialListener, RimoPutProvider, GokartStatusListener {
+public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
+    LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = //
@@ -60,6 +57,7 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
     gokartStatusLcmClient.stopSubscriptions();
   }
 
+  /***************************************************/
   @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     float z = lidarSpacialEvent.coords[2];
@@ -81,11 +79,6 @@ public final class Vlp16ClearanceModule extends AbstractModule implements //
       clearanceTracker = new ClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
     } else
       clearanceTracker = null;
-  }
-
-  @Override // from RimoPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
   }
 
   @Override // from RimoPutProvider

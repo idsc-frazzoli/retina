@@ -8,8 +8,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.red.Nest;
 
+// TODO consider stating coordinates in [m]eters
 public enum DubendorfCurve {
   ;
+  /** the shifted oval was created for the test on 2018-03-05
+   * due to the safety barriers put into place on 2018-02-26 */
+  public static final Tensor OVAL_SHIFTED = oval_shifted();
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
   public static final Tensor OVAL = oval();
@@ -20,7 +24,6 @@ public enum DubendorfCurve {
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
   private static Tensor oval() {
-    // TODO consider stating coordinates in [m]eters
     Tensor poly = Tensors.of( //
         Tensors.vector(35.200, 44.933), //
         Tensors.vector(49.867, 59.200), //
@@ -32,13 +35,23 @@ public enum DubendorfCurve {
   }
 
   private static Tensor kidney() {
-    // TODO consider stating coordinates in [m]eters
     Tensor poly = Tensors.of( //
         Tensors.vector(35.200, 44.933), //
         Tensors.vector(49.867, 59.200), //
         Tensors.vector(57.200, 54.800), //
         Tensors.vector(47.200, 47.733), //
         Tensors.vector(40.800, 37.333));
+    CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  private static Tensor oval_shifted() {
+    Tensor poly = Tensors.of( //
+        Tensors.vector(37.200, 46.933), //
+        Tensors.vector(50.867, 60.200), //
+        Tensors.vector(58.200, 55.800), //
+        Tensors.vector(51.200, 47.067), //
+        Tensors.vector(42.800, 40.333));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }

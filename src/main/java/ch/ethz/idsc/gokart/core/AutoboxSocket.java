@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -53,6 +55,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     }
   };
   // ---
+  // TODO JAN due to the special remove logic, the providers data structure should be in a separate class
   private final Set<PutProvider<PE>> providers = //
       new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
@@ -157,6 +160,16 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     synchronized (providers) {
       boolean removed = providers.remove(putProvider);
       if (!removed) {
+        Iterator<PutProvider<PE>> iterator = providers.iterator();
+        while (iterator.hasNext()) {
+          PutProvider<PE> next = iterator.next();
+          if (next == putProvider) {
+            iterator.remove();
+            System.out.println("special remove applied.");
+            return;
+          }
+        }
+        // ---
         System.err.println(putProvider.getClass().getSimpleName());
         new RuntimeException("put provider not removed").printStackTrace();
       }

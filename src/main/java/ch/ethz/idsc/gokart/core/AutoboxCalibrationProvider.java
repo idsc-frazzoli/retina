@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
@@ -21,18 +22,21 @@ import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
  * {@link SteerCalibrationProvider}
  * {@link MiscIgnitionProvider} */
 public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implements PutProvider<PE> {
+  /** schedule calibration commands at most 10[s] into the future */
   private static final long MAX_FUTURE_MS = 10_000;
   // ---
+  /** queue of calibration commands */
   private final Queue<TimedPutEvent<PE>> queue = new PriorityQueue<>();
 
   protected AutoboxCalibrationProvider() {
   }
 
-  private synchronized void removeOld() { // TODO NEXT rename function removeExpired
+  /** removes expired commands from queue */
+  private synchronized void removeExpired() {
+    final long now_ms = now_ms();
     TimedPutEvent<PE> timedPutEvent = queue.peek(); // <- null if queue is empty
-    long now_ms = now_ms();
     while (Objects.nonNull(timedPutEvent)) {
-      if (timedPutEvent.time_ms < now_ms) {
+      if (timedPutEvent.isExpired(now_ms)) {
         queue.poll();
         timedPutEvent = queue.peek();
       } else
@@ -40,9 +44,9 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
     }
   }
 
+  /** @return true if queue of calibration commands is empty */
   public final boolean isIdle() {
-    removeOld();
-    // ---
+    removeExpired();
     return queue.isEmpty();
   }
 
@@ -57,18 +61,18 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
       System.err.println("event is outside permitted time window");
   }
 
-  @Override
+  @Override // from PutProvider
   public final ProviderRank getProviderRank() {
     return ProviderRank.CALIBRATION;
   }
 
-  @Override
+  @Override // from PutProvider
   public final Optional<PE> putEvent() {
-    removeOld(); // <- mandatory
+    removeExpired(); // <- mandatory
     // ---
     TimedPutEvent<PE> timedPutEvent = queue.peek(); // <- null if queue is empty
     return Objects.nonNull(timedPutEvent) //
-        ? Optional.of(timedPutEvent.putEvent)
+        ? Optional.of(timedPutEvent.putEvent())
         : Optional.empty();
   }
 
@@ -85,6 +89,7 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
   /** function invokes {@link #eventUntil(long, DataEvent)} */
   protected abstract void protected_schedule();
 
+  /** @return absolute timestamp now in milli seconds */
   protected static long now_ms() {
     return System.currentTimeMillis();
   }
