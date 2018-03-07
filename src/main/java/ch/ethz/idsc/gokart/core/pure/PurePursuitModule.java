@@ -33,7 +33,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
    * DubendorfCurve.OVAL_SHIFTED
    * 
    * both trajectories are in clockwise direction */
-  public static final Tensor CURVE = DubendorfCurve.OVAL_SHIFTED;
+  public static final Tensor CURVE = DubendorfCurve.OVAL_DEMODAY;
   public static final Clip VALID_RANGE = SteerConfig.GLOBAL.getAngleLimit();
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

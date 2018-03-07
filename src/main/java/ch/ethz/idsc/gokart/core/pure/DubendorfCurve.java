@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 // TODO consider stating coordinates in [m]eters
 public enum DubendorfCurve {
   ;
+  public static final Tensor OVAL_DEMODAY = oval_demoday();
   /** the shifted oval was created for the test on 2018-03-05
    * due to the safety barriers put into place on 2018-02-26 */
   public static final Tensor OVAL_SHIFTED = oval_shifted();
@@ -52,6 +53,16 @@ public enum DubendorfCurve {
         Tensors.vector(58.200, 55.800), //
         Tensors.vector(51.200, 47.067), //
         Tensors.vector(42.800, 40.333));
+    CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  private static Tensor oval_demoday() {
+    Tensor poly = Tensors.of( //
+        Tensors.vector(42.000, 38.533), //
+        Tensors.vector(36.133, 45.200), //
+        Tensors.vector(51.633, 59.400), //
+        Tensors.vector(57.067, 54.133));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
