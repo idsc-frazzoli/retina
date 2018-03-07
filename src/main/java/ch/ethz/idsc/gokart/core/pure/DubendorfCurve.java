@@ -69,7 +69,7 @@ public enum DubendorfCurve {
   }
 
   private static Tensor eight_demoday() {
-    Tensor poly = Tensors.of( //
+    Tensor poly_pre = Tensors.of( //
         Tensors.vector(42.000, 38.533), //
         Tensors.vector(37.733, 40.533), // mid
         Tensors.vector(36.133, 45.200), //
@@ -79,8 +79,10 @@ public enum DubendorfCurve {
         Tensors.vector(55.867, 58.267), // mid
         Tensors.vector(51.633, 59.400), //
         Tensors.vector(48.400, 56.533), // ins
-        Tensors.vector(46.667, 43.467) // ins
+        Tensors.vector(46.667, 43.467) // ins 48.133, 44.800
     );
+    Tensor shift = Tensors.vector(0.71, 0.71); // 1[m] away from balloon
+    Tensor poly = Tensor.of(poly_pre.stream().map(point -> point.subtract(shift)));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
