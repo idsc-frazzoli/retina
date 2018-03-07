@@ -59,6 +59,16 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /***************************************************/
   /** joystick slow, with safety barriers for demo */
   _20180307T095540_1cd7a2e2, //
+  // TODO comment content
+  _20180307T150715_28f09b86, //
+  _20180307T151633_28f09b86, //
+  _20180307T154859_0cd18c6b, //
+  _20180307T164051_6e45300d, //
+  /** autonomous driving shape 8
+   * velocity peak ~3.6[m*s^-1] */
+  _20180307T165102_6e45300d, //
+  /** autonomous driving shape 8 */
+  _20180307T171311_fc084dc9, //
   ;
   @Override
   public File file(File directory) {
