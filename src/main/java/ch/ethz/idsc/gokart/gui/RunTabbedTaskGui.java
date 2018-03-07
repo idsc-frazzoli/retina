@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.gokart.core.fuse.Vlp16ActiveSlowingModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
@@ -55,6 +56,7 @@ enum RunTabbedTaskGui {
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
       Vlp16ClearanceModule.class, //
+      Vlp16ActiveSlowingModule.class, //
       DavisImuWatchdog.class //
   //
   );

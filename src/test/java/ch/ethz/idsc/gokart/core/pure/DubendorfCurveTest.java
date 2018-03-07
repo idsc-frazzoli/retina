@@ -20,7 +20,8 @@ public class DubendorfCurveTest extends TestCase {
         .map(Norm._2::ofVector) //
         .map(Scalar::number) //
         .mapToDouble(Number::doubleValue).summaryStatistics();
-    Clip clip = Clip.function(0.1, 0.4);
+    // changed from 0.1 to 0.05 for eight demoday curve
+    Clip clip = Clip.function(0.05, 0.4);
     clip.requireInside(RealScalar.of(dss.getMin()));
     clip.requireInside(RealScalar.of(dss.getMax()));
   }
