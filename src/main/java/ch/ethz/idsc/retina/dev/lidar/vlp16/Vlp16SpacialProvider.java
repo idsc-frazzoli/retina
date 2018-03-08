@@ -9,11 +9,14 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity */
 public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private static final int LASERS = 16;
+  // ---
+  private final AngleVectorLookupFloat avlf;
   private final float[] IR = new float[LASERS];
   private final float[] IZ = new float[LASERS];
   // ---
@@ -21,7 +24,8 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   /* package for testing */ int limit_lo = 10; // TODO document magic const for closest threshold
   private int usec;
 
-  public Vlp16SpacialProvider() {
+  public Vlp16SpacialProvider(double angle_offset) {
+    avlf = new AngleVectorLookupFloat(36000, true, angle_offset);
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = degree(laser) * Math.PI / 180;
       IR[laser] = (float) Math.cos(theta);
@@ -50,8 +54,8 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
 
   @Override // from LidarRayDataListener
   public void scan(int azimuth, ByteBuffer byteBuffer) {
-    float dx = VelodyneStatics.TRIGONOMETRY.dx(azimuth);
-    float dy = VelodyneStatics.TRIGONOMETRY.dy(azimuth);
+    float dx = avlf.dx(azimuth);
+    float dy = avlf.dy(azimuth);
     float[] coords = new float[3];
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;

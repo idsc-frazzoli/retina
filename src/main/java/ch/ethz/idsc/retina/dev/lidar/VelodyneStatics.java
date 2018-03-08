@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.lidar;
 
-import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
-
 /** in order to configure the device
  * Velodyne HDL32E, and Velodyne VLP16
  * connect the running device to the local network.
@@ -27,6 +25,4 @@ public enum VelodyneStatics {
    */
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
-  // ---
-  public static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true);
 }

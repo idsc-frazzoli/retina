@@ -17,7 +17,10 @@ public class SensorsConfig implements Serializable {
   // TODO at some point also introduce units here
   /** urg04lx is the pose of the front lidar {px, py, angle} */
   public Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
-  public Tensor vlp16 = Tensors.vector(0.09, 0.0, -1.61);
+  /** angular offset that moves the sensor North to the gokart North (=positive x axis) */
+  public Scalar vlp16_twist = RealScalar.of(-1.61);
+  /** transformation from center of rear-axle to vlp16 in (x,y)-plane */
+  public Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
   /** vlp16_incline is a factor to add an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
    * z_gokart = z_lidar + vlp16_incline * x_lidar */

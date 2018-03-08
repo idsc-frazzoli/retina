@@ -12,13 +12,15 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
 public class AngleVectorLookupFloat {
   private final float[] array;
 
-  /** @param length of complete revolution
-   * @param flip true for clockwise, false for ccw */
-  public AngleVectorLookupFloat(int length, boolean flip) {
+  /** @param length of complete revolution, resolution
+   * @param flip true for clockwise, false for ccw
+   * @param angle_offset */
+  public AngleVectorLookupFloat(int length, boolean flip, double angle_offset) {
     array = new float[2 * length];
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);
+    angle_offset = flip ? -angle_offset : angle_offset;
     for (int index = 0; index < length; ++index) {
-      double angle = index * Math.PI / length * 2;
+      double angle = index * Math.PI / length * 2 + angle_offset;
       floatBuffer.put((float) Math.cos(angle));
       float sini = (float) Math.sin(angle);
       floatBuffer.put(flip ? -sini : sini);

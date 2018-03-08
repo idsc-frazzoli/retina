@@ -9,32 +9,35 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** extracts points at horizontal level for velodyne */
 public class VelodynePlanarEmulator implements LidarSpacialProvider {
   public static VelodynePlanarEmulator hdl32e() {
-    return new VelodynePlanarEmulator(15); // index of horizontal beam == 15
+    return new VelodynePlanarEmulator(-1.61, 15); // index of horizontal beam == 15
   }
 
   public static VelodynePlanarEmulator vlp16_p01deg() {
-    return new VelodynePlanarEmulator(1); // index of beam with 1 degree inclination == +1
+    return new VelodynePlanarEmulator(-1.61, 1); // index of beam with 1 degree inclination == +1
   }
 
   /** observation in Dubendorf: 1[deg] down typically hits the floor in 40[m]
    * 
    * @return */
   /* package */ static VelodynePlanarEmulator vlp16_n01deg() {
-    return new VelodynePlanarEmulator(14); // index of beam with 1 degree inclination == -1
+    return new VelodynePlanarEmulator(-1.61, 14); // index of beam with 1 degree inclination == -1
   }
   // ---
 
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
+  private final AngleVectorLookupFloat TRIGONOMETRY;
   private final int index;
 
   /** @param index of horizontal laser */
-  public VelodynePlanarEmulator(int index) {
+  public VelodynePlanarEmulator(double angle_offset, int index) {
+    TRIGONOMETRY = new AngleVectorLookupFloat(36000, true, angle_offset);
     this.index = index;
   }
 
@@ -61,8 +64,8 @@ public class VelodynePlanarEmulator implements LidarSpacialProvider {
 
   @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    float dx = VelodyneStatics.TRIGONOMETRY.dx(rotational);
-    float dy = VelodyneStatics.TRIGONOMETRY.dy(rotational);
+    float dx = TRIGONOMETRY.dx(rotational);
+    float dy = TRIGONOMETRY.dy(rotational);
     final float[] coords = new float[2];
     byteBuffer.position(byteBuffer.position() + index * 3);
     int distance = byteBuffer.getShort() & 0xffff;
