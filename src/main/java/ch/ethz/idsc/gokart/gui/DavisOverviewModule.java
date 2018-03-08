@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
@@ -24,7 +25,7 @@ public class DavisOverviewModule extends AbstractModule {
   private DavisQuickFrame davisViewerFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
+  private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
 
   @Override
   protected void first() throws Exception {

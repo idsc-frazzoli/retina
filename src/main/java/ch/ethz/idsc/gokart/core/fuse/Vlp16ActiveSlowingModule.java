@@ -12,17 +12,23 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
+import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
+// TODO this
+public final class Vlp16ActiveSlowingModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
@@ -33,8 +39,10 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
   private final float vlp16_ZLo;
   private final float vlp16_ZHi;
+  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
 
-  public Vlp16ClearanceModule() {
+  public Vlp16ActiveSlowingModule() {
     vlp16_ZLo = SafetyConfig.GLOBAL.vlp16_ZLoMeter().number().floatValue();
     vlp16_ZHi = SafetyConfig.GLOBAL.vlp16_ZHiMeter().number().floatValue();
   }
@@ -46,10 +54,12 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
     gokartStatusLcmClient.addListener(this);
     gokartStatusLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
+    RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
   @Override // from AbstractModule
   protected void last() {
+    RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
     RimoSocket.INSTANCE.removePutProvider(this);
     vlp16SpacialLcmHandler.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
@@ -79,11 +89,17 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
       clearanceTracker = null;
   }
 
+  private static final Scalar SPEED_ZERO = Quantity.of(0, "rad*s^-1");
+
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     boolean status = false;
     status |= Objects.isNull(clearanceTracker);
     status |= penaltyTimeout.isPenalty();
-    return Optional.ofNullable(status ? RimoPutEvent.PASSIVE : null);
+    if (status)
+      return rimoRateControllerWrap.iterate( //
+          SPEED_ZERO, // average target velocity
+          SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface)); // steering angle
+    return Optional.empty();
   }
 }

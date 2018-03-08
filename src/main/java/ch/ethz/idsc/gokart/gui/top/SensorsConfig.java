@@ -3,6 +3,11 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
+import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -17,7 +22,11 @@ public class SensorsConfig implements Serializable {
   // TODO at some point also introduce units here
   /** urg04lx is the pose of the front lidar {px, py, angle} */
   public Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
-  public Tensor vlp16 = Tensors.vector(0.09, 0.0, -1.61);
+  /** angular offset that rotates the sensor azimuth 0 onto the gokart positive x axis */
+  public Scalar vlp16_twist = RealScalar.of(-1.61);
+  /** transformation from center of rear-axle to vlp16 in (x,y)-plane
+   * the third, i.e. angle coordinate has to be zero. */
+  public Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
   /** vlp16_incline is a factor to add an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
    * z_gokart = z_lidar + vlp16_incline * x_lidar */
@@ -33,4 +42,20 @@ public class SensorsConfig implements Serializable {
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);
   public Tensor vlp16_davis_w1 = Tensors.vectorDouble(0.0, 3.0, 0.0);
+
+  /***************************************************/
+  public Vlp16LcmHandler vlp16LcmHandler() {
+    double angle_offset = vlp16_twist.number().doubleValue();
+    return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
+  }
+
+  public LidarSpacialProvider planarEmulatorVlp16_p01deg() {
+    double angle_offset = vlp16_twist.number().doubleValue();
+    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+  }
+
+  public Vlp16SpacialLcmHandler vlp16SpacialLcmHandler() {
+    double angle_offset = vlp16_twist.number().doubleValue();
+    return new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
+  }
 }
