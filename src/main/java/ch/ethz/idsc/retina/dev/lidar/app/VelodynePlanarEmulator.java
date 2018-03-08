@@ -32,12 +32,12 @@ public class VelodynePlanarEmulator implements LidarSpacialProvider {
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
-  private final AngleVectorLookupFloat TRIGONOMETRY;
+  private final AngleVectorLookupFloat lookup;
   private final int index;
 
   /** @param index of horizontal laser */
   public VelodynePlanarEmulator(double angle_offset, int index) {
-    TRIGONOMETRY = new AngleVectorLookupFloat(36000, true, angle_offset);
+    lookup = new AngleVectorLookupFloat(36000, true, angle_offset);
     this.index = index;
   }
 
@@ -64,8 +64,8 @@ public class VelodynePlanarEmulator implements LidarSpacialProvider {
 
   @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    float dx = TRIGONOMETRY.dx(rotational);
-    float dy = TRIGONOMETRY.dy(rotational);
+    float dx = lookup.dx(rotational);
+    float dy = lookup.dy(rotational);
     final float[] coords = new float[2];
     byteBuffer.position(byteBuffer.position() + index * 3);
     int distance = byteBuffer.getShort() & 0xffff;

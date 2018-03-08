@@ -15,5 +15,6 @@ public class SensorsConfigTest extends TestCase {
   public void testVlp16FrontFacing() {
     assertEquals(SensorsConfig.GLOBAL.vlp16_twist, RealScalar.of(-1.61));
     assertTrue(Scalars.isZero(SensorsConfig.GLOBAL.vlp16.Get(2)));
+    assertTrue(Scalars.isZero(new SensorsConfig().vlp16.Get(2)));
   }
 }
