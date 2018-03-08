@@ -18,6 +18,7 @@ public class AngleVectorLookupFloat {
   public AngleVectorLookupFloat(int length, boolean flip, double angle_offset) {
     array = new float[2 * length];
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);
+    // TODO JAN this is not elegant to have to use flip twice
     angle_offset = flip ? -angle_offset : angle_offset;
     for (int index = 0; index < length; ++index) {
       double angle = index * Math.PI / length * 2 + angle_offset;

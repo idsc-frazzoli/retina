@@ -26,7 +26,7 @@ class PresenterLcmModule extends AbstractModule {
   private static final boolean SHOW_OBSTACLES = true;
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
-  private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
+  private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();

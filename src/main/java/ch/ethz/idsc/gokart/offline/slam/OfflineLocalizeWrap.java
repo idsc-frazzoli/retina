@@ -7,6 +7,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -16,7 +17,6 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -52,7 +52,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
 
   public OfflineLocalizeWrap(OfflineLocalize offlineLocalize) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
+    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);

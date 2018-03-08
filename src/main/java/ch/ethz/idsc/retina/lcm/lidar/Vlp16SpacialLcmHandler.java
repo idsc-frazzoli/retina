@@ -10,12 +10,13 @@ import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 
 public class Vlp16SpacialLcmHandler implements LcmClientInterface {
   private final VelodyneLcmClient velodyneLcmClient;
-  public final LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider(-1.61); // FIXME
+  public final LidarSpacialProvider lidarSpacialProvider;
 
-  public Vlp16SpacialLcmHandler(String lidarId) {
+  public Vlp16SpacialLcmHandler(String lidarId, double angle_offset) {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, lidarId);
+    lidarSpacialProvider = new Vlp16SpacialProvider(angle_offset);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
   }
 

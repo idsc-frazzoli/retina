@@ -13,19 +13,19 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** extracts points at horizontal level for velodyne */
 public class VelodynePlanarEmulator implements LidarSpacialProvider {
-  public static VelodynePlanarEmulator hdl32e() {
-    return new VelodynePlanarEmulator(-1.61, 15); // index of horizontal beam == 15
+  public static VelodynePlanarEmulator hdl32e(double angle_offset) {
+    return new VelodynePlanarEmulator(angle_offset, 15); // index of horizontal beam == 15
   }
 
-  public static VelodynePlanarEmulator vlp16_p01deg() {
-    return new VelodynePlanarEmulator(-1.61, 1); // index of beam with 1 degree inclination == +1
+  public static VelodynePlanarEmulator vlp16_p01deg(double angle_offset) {
+    return new VelodynePlanarEmulator(angle_offset, 1); // index of beam with 1 degree inclination == +1
   }
 
   /** observation in Dubendorf: 1[deg] down typically hits the floor in 40[m]
    * 
    * @return */
-  /* package */ static VelodynePlanarEmulator vlp16_n01deg() {
-    return new VelodynePlanarEmulator(-1.61, 14); // index of beam with 1 degree inclination == -1
+  /* package */ static VelodynePlanarEmulator vlp16_n01deg(double angle_offset) {
+    return new VelodynePlanarEmulator(angle_offset, 14); // index of beam with 1 degree inclination == -1
   }
   // ---
 
