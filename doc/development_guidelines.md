@@ -77,3 +77,10 @@ There are at least 6 ways to initialize a pointer to be *null* in `c++`
     myclass() : ptr ({}) { ...
     myclass() : ptr ({0}) { ...
     myclass() : ptr (nullptr) { ...
+
+## Video tutorials
+
+* [Project setup in eclipse](https://www.youtube.com/watch?v=iHj2akXxlac)
+* [Implementation of issue#152 in retina](https://www.youtube.com/watch?v=V4B_6P0z7os)
+* [On log file playback and extraction](https://www.youtube.com/watch?v=mKk6MBDqF7o)
+* [Inspecting messages of log file](https://www.youtube.com/watch?v=EjDyieCVAlo)
