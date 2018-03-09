@@ -72,17 +72,17 @@ public class ChassisGeometry implements Serializable {
   }
 
   /** @param rimoGetEvent
-   * @return velocity of the gokart projected to the x-axis computed from
-   * the angular rates of the rear wheels. The odometry value has an error
-   * due to slip. */
+   * @return velocity of the gokart projected to the x-axis in unit "m*s^-1"
+   * computed from the angular rates of the rear wheels. The odometry value
+   * has error due to slip. */
   public Scalar odometryTangentSpeed(RimoGetEvent rimoGetEvent) {
     return Mean.of(rimoGetEvent.getAngularRate_Y_pair()).multiply(tireRadiusRear).Get();
   }
 
   /** @param rimoGetEvent
-   * @return rotational rate of the gokart (around z-axis) computed from
-   * the angular rates of the rear wheels. The odometry value has an error
-   * due to slip. */
+   * @return rotational rate of the gokart (around z-axis) in unit "s^-1"
+   * computed from the angular rates of the rear wheels. The odometry value
+   * has error due to slip. */
   public Scalar odometryTurningRate(RimoGetEvent rimoGetEvent) {
     // rad/s * m == (m / s) / m
     return Differences.of(rimoGetEvent.getAngularRate_Y_pair()).Get(0) //

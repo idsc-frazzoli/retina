@@ -10,10 +10,11 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -47,17 +48,20 @@ public class RimoRateTable implements OfflineTableSupplier {
       gse = new GokartStatusEvent(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse)) {
+      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated()) {
+        // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
+        // ---
+        Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
-            SteerConfig.GLOBAL.getAngleFromSCE(gse), //
-            speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE) //
-        );
+            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
+            rates.map(RimoGetTire.MAGNITUDE_RATE), // rad/s
+            speed.map(Magnitude.VELOCITY), // m/s
+            rate.map(Magnitude.ANGULAR_RATE), //
+            gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER));
       }
     }
   }
