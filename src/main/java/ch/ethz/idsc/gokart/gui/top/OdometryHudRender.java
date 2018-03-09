@@ -10,11 +10,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Differences;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** head up display for velocity and angular rate */
@@ -26,12 +22,8 @@ class OdometryHudRender implements RenderInterface, RimoGetListener {
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(rimoGetEvent)) {
-      Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
-      Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-      Scalar rate = Differences.of(rates).Get(0) //
-          .multiply(RationalScalar.HALF) //
-          .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-          .divide(ChassisGeometry.GLOBAL.yTireRear);
+      Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+      Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
       graphics.setFont(FONT);
       graphics.setColor(Color.BLUE);
       graphics.drawString("Velocity", 0, 40);
