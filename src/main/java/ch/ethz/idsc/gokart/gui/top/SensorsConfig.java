@@ -30,7 +30,7 @@ public class SensorsConfig implements Serializable {
   /** vlp16_incline is a factor to add an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
    * z_gokart = z_lidar + vlp16_incline * x_lidar */
-  public Scalar vlp16_incline = RealScalar.of(0.02);
+  public Scalar vlp16_incline = RealScalar.of(-0.02);
   /** height of vlp scan from ground
    * 1.10[m] from ground to platform top (until 2018-02-25, the value was 1.18[m])
    * 0.006[m] TODO DUBENDORF width of heat sink
