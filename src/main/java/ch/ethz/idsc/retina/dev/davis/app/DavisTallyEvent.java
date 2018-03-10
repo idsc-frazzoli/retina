@@ -7,10 +7,9 @@ public class DavisTallyEvent {
   public final int first;
   private int last;
   public final int shift; // 2^shift
-  public final int[] binPlus = new int[1600]; // TODO magic const
-  public final int[] binMinus = new int[1600]; // TODO magic const
-  public int binPlusLast = -1;
-  public int binMinusLast = -1;
+  public final int[][] bin = new int[1600][2]; // TODO magic const
+  // public final int[] binMinus = new int[1600]; // TODO magic const
+  public int binLast = -1;
   public IntRange resetRange = new IntRange(0, 0);
   public IntRange imageRange = null;
 
@@ -24,16 +23,15 @@ public class DavisTallyEvent {
     return time >> shift;
   }
 
-  public void register(int time) {
+  /** @param time
+   * @param i either 0 or 1
+   * @throws Exception if input is out of valid range */
+  public void register(int time, int i) {
     int index = binIndex(time);
-    if (0 <= index && index < binPlus.length) {
-      ++binPlus[index];
-      binPlusLast = Math.max(binPlusLast, index);
+    if (0 <= index && index < bin.length) {
+      ++bin[index][i]; // TODO
+      binLast = Math.max(binLast, index);
     }
-    if (0 <= index && index < binMinus.length) {
-        ++binMinus[index];
-        binMinusLast = Math.max(binMinusLast, index);
-      }
   }
 
   public void setResetBlock(int beg, int end) {
@@ -55,12 +53,9 @@ public class DavisTallyEvent {
   public void setMax(int time) {
     last = time;
     int index = binIndex(time);
-    if (0 <= index && index < binPlus.length) {
-      binPlusLast = index;
+    if (0 <= index && index < bin.length) {
+      binLast = index;
     }
-    if (0 <= index && index < binMinus.length) {
-        binMinusLast = index;
-      }
   }
 
   public int getDurationUs() {

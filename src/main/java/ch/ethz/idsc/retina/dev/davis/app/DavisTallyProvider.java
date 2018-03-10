@@ -32,7 +32,7 @@ public class DavisTallyProvider {
   };
   public final DavisDvsListener dvsListener = davisDvsEvent -> {
     if (isTriggered())
-      davisTallyEvent.register(davisDvsEvent.time);
+      davisTallyEvent.register(davisDvsEvent.time, davisDvsEvent.i);
   };
 
   public DavisTallyProvider(DavisTallyListener davisTallyListener) {

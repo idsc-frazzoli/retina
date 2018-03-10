@@ -23,6 +23,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  private static final boolean SHOW_OBSTACLES = true;
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER);
@@ -57,7 +58,7 @@ class PresenterLcmModule extends AbstractModule {
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
-    {
+    if (SHOW_OBSTACLES) { // set to true in order to visualize obstacles
       LidarRender lidarRender = new ObstacleLidarRender(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 0, 128));
@@ -83,6 +84,11 @@ class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    {
+      OdometryHudRender hudOdometryRender = new OdometryHudRender();
+      timerFrame.geometricComponent.addRenderInterface(hudOdometryRender);
+      rimoGetLcmClient.addListener(hudOdometryRender);
+    }
     // ---
     gokartPoseInterface.gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
