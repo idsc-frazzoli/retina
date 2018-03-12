@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 //import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.dev.davis.app.DavisTallyEvent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 
 //import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -39,7 +40,9 @@ public class DavisEventTable implements OfflineTableSupplier {
   //private RimoPutEvent rpe;
   
   // keeping the same style 
-  private DavisTallyEvent dte;  
+  //private DavisTallyEvent dte;  
+  DavisTallyEvent dte;
+  
   private GokartStatusEvent gse;
 
   public DavisEventTable(Scalar delta) {
@@ -48,12 +51,13 @@ public class DavisEventTable implements OfflineTableSupplier {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(DavisLcmServer.CHANNEL_GET)) {
-      dte = new DavisTallyEvent(byteBuffer);
-    } else //
-    if (channel.equals(DavisLcmServer.CHANNEL_PUT)) {
-      rpe = RimoPutHelper.from(byteBuffer);
-    } else //
+   // if (channel.equals(DavisLcmServer.CHANNEL_GET)) {
+   //   dte = new DavisTallyEvent(byteBuffer);
+	  
+   // } else //
+   // if (channel.equals(DavisLcmServer.CHANNEL_PUT)) {
+   //   rpe = RimoPutHelper.from(byteBuffer);
+  //  } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       gse = new GokartStatusEvent(byteBuffer);
     }
@@ -61,22 +65,25 @@ public class DavisEventTable implements OfflineTableSupplier {
       if (Objects.nonNull(dte)) {
         time_next = time.add(delta);
         for (int index = 0; index < dte.binLast; ++index) {
-        	Tensor posevents = dte.bin[index][0];
-        	Tensor negevents = dte.bin[index][1];
-        	Tensor totevents = posevents + negevents;
+        	int posevents = dte.bin[index][0];
+        	int negevents = dte.bin[index][1];
+        	int totevents = posevents + negevents;// Is this the correct way of doing this?
         }
-        //Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-        // rad/s * m == (m / s) / m
-        Scalar rate = Differences.of(rates).Get(0) //
-            .multiply(RationalScalar.HALF) //
-            .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-            .divide(ChassisGeometry.GLOBAL.yTireRear);
+      //Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
+      // rad/s * m == (m / s) / m
+      // Scalar rate = Differences.of(rates).Get(0) //
+      //     .multiply(RationalScalar.HALF) //
+      //     .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
+      //     .divide(ChassisGeometry.GLOBAL.yTireRear);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
-            SteerConfig.GLOBAL.getAngleFromSCE(gse), //
-            speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE) //
+            posevents.map(Magnitude.ONE),//
+            negevents.map(Magnitude.ONE),//
+            totevents.map(Magnitude.ONE)
+            //rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
+            //SteerConfig.GLOBAL.getAngleFromSCE(gse), //
+            //speed.map(Magnitude.VELOCITY), //
+            //rate.map(Magnitude.ANGULAR_RATE) //
         );
       }
     }
