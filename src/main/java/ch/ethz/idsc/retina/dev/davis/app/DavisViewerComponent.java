@@ -88,7 +88,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
             int height = (int) Math.round(Math.log(dte.bin[index][0] + 1) * 10);
             graphics.fillRect(index, baseline_y - height, 1, height);
           }
-          graphics.setColor(Color.BLACK);
+          graphics.setColor(Color.RED);
           for (int index = 0; index < dte.binLast; ++index) {
             int height = (int) Math.round(Math.log(dte.bin[index][1] + 1) * 10);
             graphics.fillRect(index, baseline_y - height, 1, height);
