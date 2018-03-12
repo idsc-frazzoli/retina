@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 //import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.gokart.lcm.davis.DavisLcmServer;
+import ch.ethz.idsc.retina.lcm.davis.DavisLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 //import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent; // not useful now
 //import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;// dev.davis.data?
@@ -60,9 +60,9 @@ public class DavisEventTable implements OfflineTableSupplier {
       gse = new GokartStatusEvent(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse)) {
+      if (Objects.nonNull(dge) && Objects.nonNull(dpe) && Objects.nonNull(gse)) {
         time_next = time.add(delta);
-        Tensor rates = rge.getAngularRate_Y_pair();
+        Tensor rates = dge.getAngularRate_Y_pair();
         Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
         // rad/s * m == (m / s) / m
         Scalar rate = Differences.of(rates).Get(0) //
