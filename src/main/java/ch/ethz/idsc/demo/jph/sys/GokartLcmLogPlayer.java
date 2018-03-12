@@ -23,7 +23,7 @@ enum GokartLcmLogPlayer {
     file = UserHome.file("gokart/pursuit/20180108T165210/log.lcm");
     file = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
     file = UserHome.file("gokart/manual/20180226T150533/log.lcm");
-    file = DubendorfHangarLog._20180307T165102_6e45300d.file(LOG_ROOT);
+    file = DubendorfHangarLog._20180307T154859_0cd18c6b.file(LOG_ROOT);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;
