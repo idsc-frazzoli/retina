@@ -7,12 +7,17 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+//import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent; // not useful now
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;// dev.davis.data?
-import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+//import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent; // not useful now
+//import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;// dev.davis.data?
+//import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
+//import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
+
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -30,8 +35,13 @@ public class DavisEventTable implements OfflineTableSupplier {
   private final Scalar delta;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private RimoGetEvent rge;
-  private RimoPutEvent rpe;
+  //private RimoGetEvent rge;
+  //private RimoPutEvent rpe;
+  
+  // keeping the same style 
+  private DavisGetEvent dge;
+  private DavisPutEvent dpe;
+  
   private GokartStatusEvent gse;
 
   public DavisEventTable(Scalar delta) {
@@ -40,10 +50,10 @@ public class DavisEventTable implements OfflineTableSupplier {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
-      rge = new RimoGetEvent(byteBuffer);
+    if (channel.equals(DavisLcmServer.CHANNEL_GET)) {
+      dge = new DavisGetEvent(byteBuffer);
     } else //
-    if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
+    if (channel.equals(DavisLcmServer.CHANNEL_PUT)) {
       rpe = RimoPutHelper.from(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
