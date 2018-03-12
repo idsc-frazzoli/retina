@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+//import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -39,9 +39,7 @@ public class DavisEventTable implements OfflineTableSupplier {
   //private RimoPutEvent rpe;
   
   // keeping the same style 
-  private DavisGetEvent dge;
-  private DavisPutEvent dpe;
-  
+  private DavisTallyEvent dte;  
   private GokartStatusEvent gse;
 
   public DavisEventTable(Scalar delta) {
@@ -51,7 +49,7 @@ public class DavisEventTable implements OfflineTableSupplier {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(DavisLcmServer.CHANNEL_GET)) {
-      dge = new DavisGetEvent(byteBuffer);
+      dte = new DavisTallyEvent(byteBuffer);
     } else //
     if (channel.equals(DavisLcmServer.CHANNEL_PUT)) {
       rpe = RimoPutHelper.from(byteBuffer);
@@ -60,10 +58,14 @@ public class DavisEventTable implements OfflineTableSupplier {
       gse = new GokartStatusEvent(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(dge) && Objects.nonNull(dpe) && Objects.nonNull(gse)) {
+      if (Objects.nonNull(dte)) {
         time_next = time.add(delta);
-        Tensor rates = dge.getAngularRate_Y_pair();
-        Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
+        for (int index = 0; index < dte.binLast; ++index) {
+        	Tensor posevents = dte.bin[index][0];
+        	Tensor negevents = dte.bin[index][1];
+        	Tensor totevents = posevents + negevents;
+        }
+        //Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
         // rad/s * m == (m / s) / m
         Scalar rate = Differences.of(rates).Get(0) //
             .multiply(RationalScalar.HALF) //
