@@ -20,16 +20,13 @@ import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LocalizationTable implements OfflineTableSupplier {
@@ -78,12 +75,8 @@ public class LocalizationTable implements OfflineTableSupplier {
           Objects.nonNull(dif) && vpe.isValid()) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
-        Tensor rates = rge.getAngularRate_Y_pair();
-        Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-        Scalar rate = Differences.of(rates).Get(0) //
-            .multiply(RationalScalar.HALF) //
-            .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-            .divide(ChassisGeometry.GLOBAL.yTireRear);
+        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
+        Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
         Scalar degX = vpe.gpsX();
         Scalar degY = vpe.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);

@@ -8,7 +8,6 @@ public class DavisTallyEvent {
   private int last;
   public final int shift; // 2^shift
   public final int[][] bin = new int[1600][2]; // TODO magic const
-  // public final int[] binMinus = new int[1600]; // TODO magic const
   public int binLast = -1;
   public IntRange resetRange = new IntRange(0, 0);
   public IntRange imageRange = null;
