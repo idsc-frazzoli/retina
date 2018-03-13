@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
 import ch.ethz.idsc.gokart.offline.tab.BrakeDistanceTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoTable;
+import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -30,7 +30,7 @@ enum BrakeDistanceAnalysis {
   }
 
   static void rimo() throws IOException {
-    RimoTable rimoTable = new RimoTable(Quantity.of(0.05, "s"));
+    RimoRateTable rimoTable = new RimoRateTable(Quantity.of(0.05, "s"));
     File file = UserHome.file("temp/20180108T165210_manual.lcm");
     OfflineLogPlayer.process(file, rimoTable);
     Export.of(UserHome.file("maxtorque.csv"), rimoTable.getTable().map(CsvFormat.strict()));

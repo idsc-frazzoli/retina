@@ -8,7 +8,9 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.ArcTan;
@@ -69,7 +71,21 @@ public class ChassisGeometry implements Serializable {
     return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(rate)), "rad");
   }
 
-  public Scalar tangentSpeed(RimoGetEvent rimoGetEvent) {
+  /** @param rimoGetEvent
+   * @return velocity of the gokart projected to the x-axis in unit "m*s^-1"
+   * computed from the angular rates of the rear wheels. The odometry value
+   * has error due to slip. */
+  public Scalar odometryTangentSpeed(RimoGetEvent rimoGetEvent) {
     return Mean.of(rimoGetEvent.getAngularRate_Y_pair()).multiply(tireRadiusRear).Get();
+  }
+
+  /** @param rimoGetEvent
+   * @return rotational rate of the gokart (around z-axis) in unit "s^-1"
+   * computed from the angular rates of the rear wheels. The odometry value
+   * has error due to slip. */
+  public Scalar odometryTurningRate(RimoGetEvent rimoGetEvent) {
+    // rad/s * m == (m / s) / m
+    return Differences.of(rimoGetEvent.getAngularRate_Y_pair()).Get(0) //
+        .multiply(RationalScalar.HALF).multiply(tireRadiusRear).divide(yTireRear);
   }
 }
