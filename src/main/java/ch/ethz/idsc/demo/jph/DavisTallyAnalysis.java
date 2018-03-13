@@ -17,6 +17,6 @@ enum DavisTallyAnalysis {
     File file = UserHome.file("gokart/twist/20180108T165210_4/log.lcm");
     DavisEventTable rimoTable = new DavisEventTable(Quantity.of(0.05, "s"));
     OfflineLogPlayer.process(file, rimoTable);
-    Export.of(UserHome.file("tally.csv"), rimoTable.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file("davis_tally.csv"), rimoTable.getTable().map(CsvFormat.strict()));
   }
 }
