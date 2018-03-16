@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.perc;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -26,10 +25,10 @@ public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate 
 
 	// ---
 	// members:
-	 private final double lo;
-	 private final double hi;
-	 private final double inc;
-	 
+	private final double lo;
+	private final double hi;
+	private final double inc;
+
 	public SimpleSpacialObstaclePredicate(Scalar vlp16_ZLo, Scalar vlp16_ZHi, Scalar incline) {
 		this.lo = vlp16_ZLo.number().doubleValue();
 		this.hi = vlp16_ZHi.number().doubleValue();
@@ -40,13 +39,11 @@ public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate 
 
 	@Override
 	public boolean isObstacle(Tensor x) {
-		
+
 		double z = x.Get(2).number().doubleValue() + x.Get(0).number().doubleValue() * inc;
-		if (z > lo ) {
+		if (z > lo && z < hi) {
 			return true;
-			// TODO check x,y,z according to lo,hi,inc
-		} 
-		else
+		} else
 			return false;
 	}
 }
