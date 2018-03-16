@@ -35,21 +35,15 @@ public class CurveUtilsTest extends TestCase {
     Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
     int index = CurveUtils.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
-    // Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.ONE);
-    // assertTrue(optional.isPresent());
-    // Tensor point = optional.get();
-    // assertEquals(point, Tensors.vector(1));
   }
 
   public void testDistanceFail() {
     Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
     int index = CurveUtils.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
-    // Optional<Tensor> optional = CurveUtils.interpolate(curve, index, RealScalar.of(3));
-    // assertFalse(optional.isPresent());
   }
 
-  public void testAngle1() {
+  public void testAnglePass() {
     Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(55).number().doubleValue());
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
     Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
@@ -57,8 +51,8 @@ public class CurveUtilsTest extends TestCase {
     assertTrue(optional.isPresent());
   }
 
-  public void testAngle2() {
-    Tensor degrees = Tensors.vector(90 + 55, 180, 0, -20);
+  public void testAngleFail() {
+    Tensor degrees = Tensors.vector(90 + 55, 180, 0, -20, 180 + 55);
     for (Tensor deg : degrees) {
       Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(deg.Get().number().doubleValue()).number().doubleValue());
       TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
@@ -67,40 +61,4 @@ public class CurveUtilsTest extends TestCase {
       assertFalse(optional.isPresent());
     }
   }
-
-  public void testAngle4() {
-    Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(180 + 55).number().doubleValue());
-    TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-    Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
-    Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, RealScalar.of(3));
-    assertFalse(optional.isPresent());
-  }
-
-  public void testAngle3() {
-    Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(0).number().doubleValue());
-    TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-    Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
-    Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, RealScalar.of(3));
-    assertFalse(optional.isPresent());
-  }
-  // TODO JAN check what's going on
-  // public void testGetAheadTrail() {
-  // for (int c = 0; c < 10; ++c) {
-  // Distribution distribution = UniformDistribution.of(-1, 1);
-  // Tensor tensor = RandomVariate.of(distribution, 30, 2);
-  // int index = CurveUtils.closestCloserThan(tensor, RealScalar.ONE);
-  // assertTrue(0 <= index);
-  // // System.out.println(index);
-  // Tensor trail = CurveUtils.getAheadTrail(tensor, RealScalar.ONE).get();
-  // assertEquals(trail.length(), 15);
-  // boolean status = false;
-  // for (int i = 0; i < 30; ++i) {
-  // Tensor sub = RotateLeft.of(tensor, i).extract(0, 15);
-  // status |= sub.equals(trail);
-  // if (status)
-  // break;
-  // }
-  // assertTrue(status);
-  // }
-  // }
 }

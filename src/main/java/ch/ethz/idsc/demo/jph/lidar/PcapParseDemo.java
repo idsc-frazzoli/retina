@@ -17,7 +17,7 @@ enum PcapParseDemo {
       }
     };
     VelodynePcapPacketListener velodynePcapPacketListener = VelodynePcapPacketListener.vlp16();
-    Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider();
+    Vlp16SpacialProvider vlp16SpacialProvider = new Vlp16SpacialProvider(0.0);
     velodynePcapPacketListener.velodyneDecoder.addRayListener(vlp16SpacialProvider);
     PcapParse.of(Vlp16Pcap.DOWNTOWN_SINGLE.file, velodynePcapPacketListener);
   }

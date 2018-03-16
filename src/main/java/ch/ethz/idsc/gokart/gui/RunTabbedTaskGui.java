@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
+import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -53,7 +54,8 @@ enum RunTabbedTaskGui {
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
-      PanoramaViewModule.class // , //
+      PanoramaViewModule.class, // , //
+      SideLcmModule.class //
   // DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
