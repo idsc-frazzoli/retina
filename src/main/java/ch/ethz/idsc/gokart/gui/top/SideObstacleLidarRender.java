@@ -8,6 +8,8 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -40,18 +42,27 @@ class SideObstacleLidarRender extends LidarRender {
       geometricLayer.pushMatrix(translate);
       // ---
       graphics.setColor(color);
+      SimpleSpacialObstaclePredicate simpleSpacialObstaclePredicate= new SimpleSpacialObstaclePredicate(SafetyConfig.GLOBAL.vlp16_ZLo, // take from SafetyConfig.GLOBAL.
+				SafetyConfig.GLOBAL.vlp16_ZHi, // take from SafetyConfig.GLOBAL.
+				SensorsConfig.GLOBAL.vlp16_incline);
       // TODO VC create an instance of SimpleSpacialObstaclePredicate
       for (Tensor x : points) {
+    	  if (simpleSpacialObstaclePredicate.isObstacle(x)) {
+    		  Tensor v = Tensors.of(x.Get(0), x.Get(2));
+    		  Point2D point2D = geometricLayer.toPoint2D(v);
+    	      graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
+    	  }
+     
         // TODO VC use instance of SimpleSpacialObstaclePredicate to get status about x
-        double z = x.Get(2).number().doubleValue() + x.Get(0).number().doubleValue() * SensorsConfig.GLOBAL.vlp16_incline.number().doubleValue();
-        // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
-        if (z > Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue()
-            && z < Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZHi).number().doubleValue()) {
-          Tensor v = Tensors.of(x.Get(0), x.Get(2));
-          Point2D point2D = geometricLayer.toPoint2D(v);
-          // System.out.println(point2D);
-          graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
-        }
+//        double z = x.Get(2).number().doubleValue() + x.Get(0).number().doubleValue() * SensorsConfig.GLOBAL.vlp16_incline.number().doubleValue();
+//        // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
+//        if (z > Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue()
+//            && z < Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZHi).number().doubleValue()) {
+//          Tensor v = Tensors.of(x.Get(0), x.Get(2));
+//          Point2D point2D = geometricLayer.toPoint2D(v);
+//          // System.out.println(point2D);
+//          graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
+//        }
       }
       // ---
       geometricLayer.popMatrix();
