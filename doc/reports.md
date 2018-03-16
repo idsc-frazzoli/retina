@@ -15,6 +15,7 @@
 * [20180221_2nd_gen_localization.pdf](https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf)
 * [20180223_datasets_manual_driving.pdf](https://github.com/idsc-frazzoli/retina/files/1801719/20180223_datasets_manual_driving.pdf)
 * [20180223_gokart_software_structure.pdf](https://github.com/idsc-frazzoli/retina/files/1801720/20180223_gokart_software_structure.pdf)
+* [20180225_davis240c_event_distribution.pdf](https://github.com/idsc-frazzoli/retina/files/1819644/20180225_davis240c_event_distribution.pdf)
 * [20180226_davis240c_imu_timings.pdf](https://github.com/idsc-frazzoli/retina/files/1801722/20180226_davis240c_imu_timings.pdf)
 
 ## Bug Reports
