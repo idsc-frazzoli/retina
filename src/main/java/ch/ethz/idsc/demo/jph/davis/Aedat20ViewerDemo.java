@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** playback of aedat log file and visualization of content. data processing is
  * restricted to dvs event accumulation */
-enum AedatViewerDemo {
+enum Aedat20ViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();

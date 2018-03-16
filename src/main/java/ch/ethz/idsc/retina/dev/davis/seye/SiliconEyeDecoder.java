@@ -28,10 +28,10 @@ public class SiliconEyeDecoder implements DavisDecoder {
   private final List<DavisImuListener> imuDavisEventListeners = new LinkedList<>();
 
   @Override
-  public void read(ByteBuffer byteBuffer) { // BIG_ENDIAN
-    int data = byteBuffer.getInt(); // also referred to "address"
-    int time = byteBuffer.getInt(); // microseconds
-    read(data, time);
+  public void read(ByteBuffer byteBuffer) { // LITTLE_ENDIAN
+    // int data = byteBuffer.getInt(); // also referred to "address"
+    // int time = byteBuffer.getInt(); // microseconds
+    // read(data, time);
   }
 
   @Override

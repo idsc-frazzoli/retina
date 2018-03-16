@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.davis;
 import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat20FileSupplier;
+import ch.ethz.idsc.retina.dev.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.dev.davis.seye.SiliconEyeDecoder;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
@@ -15,7 +15,7 @@ enum Aedat31ViewerDemo {
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = new SiliconEyeDecoder();
     StartAndStoppable davisEventProvider = //
-        new Aedat20FileSupplier(Aedat.LOG_04.file, davisDecoder);
+        new Aedat31FileSupplier(Aedat.LOG_04.file, davisDecoder);
     davisDecoder.addDvsListener(new DavisDvsListener() {
       @Override
       public void davisDvs(DavisDvsEvent davisDvsEvent) {
