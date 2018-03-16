@@ -46,9 +46,19 @@ public class SideGokartRender extends AbstractGokartRender {
       graphics.fill(path2D);
       geometricLayer.popMatrix();
     }
-    {
-      // TODO VC draw front tire (adapt from draw rear tire)
-      // in that case you additionally translate to the right (in pixel space) using ChassisGeometry.GLOBAL.xAxleRtoF
+    { // draw front tire
+      Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusFront);
+      Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
+          Magnitude.METER.apply(ChassisGeometry.GLOBAL.xAxleRtoF).number().doubleValue(), // translation right (in pixel space)
+          radius.number().doubleValue(), // translation up (in pixel space)
+          0 // rotation is pixel space
+      ));
+      geometricLayer.pushMatrix(translate);
+      Tensor polygon = CIRCLE.multiply(radius);
+      Path2D path2D = geometricLayer.toPath2D(polygon);
+      graphics.setColor(new Color(128, 128, 128, 128));
+      graphics.fill(path2D);
+      geometricLayer.popMatrix();
     }
   }
 }
