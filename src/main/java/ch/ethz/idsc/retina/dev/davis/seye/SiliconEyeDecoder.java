@@ -5,80 +5,21 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisApsEvent;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisImuEvent;
+import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
+import ch.ethz.idsc.retina.dev.davis.io.Aedat31Decoder;
 
 /** maps the chip raw dvs/aps data to the standard coordinate system (x,y) where
  * (0,0) corresponds to left-upper corner, and (x,0) parameterizes the first/top
  * row (0,y) parameterizes the first/left column */
-public class SiliconEyeDecoder implements DavisDecoder {
-  private static final int ADC_MAX = 0x03ff;
-  private static final int SIGNAL_READ = 0x0400;
-  private static final int RESET_READ = 0;
-  private static final int IMU = 0x0c00;
-  // ---
-  private final List<DavisDvsListener> dvsDavisEventListeners = new LinkedList<>();
-  private final List<DavisApsListener> sigDavisEventListeners = new LinkedList<>();
-  private final List<DavisApsListener> rstDavisEventListeners = new LinkedList<>();
-  private final List<DavisImuListener> imuDavisEventListeners = new LinkedList<>();
+public class SiliconEyeDecoder implements Aedat31Decoder {
+  private final List<Aedat31PolarityListener> dvsDavisEventListeners = new LinkedList<>();
 
   @Override
   public void read(ByteBuffer byteBuffer) { // LITTLE_ENDIAN
-    // int data = byteBuffer.getInt(); // also referred to "address"
-    // int time = byteBuffer.getInt(); // microseconds
-    // read(data, time);
   }
 
   @Override
-  public void read(int data, int time) {
-    final int x = (data >> 12) & 0x3ff; // length 10 bit
-    final int y = (data >> 22) & 0x1ff; // length 09 bit
-    final boolean isDvs = (data & 0x80000000) == 0;
-    if (isDvs) {
-      final int i = (data >> 11) & 1; // length 1 bit
-      DavisDvsEvent dvsDavisEvent = new DavisDvsEvent(time, x, y, i);
-      dvsDavisEventListeners.forEach(listener -> listener.davisDvs(dvsDavisEvent));
-    } else {
-      final int read = data & 0x0c00;
-      if (read == SIGNAL_READ) { // signal read
-        final int adc = data & ADC_MAX;
-        DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, y, ADC_MAX - adc);
-        sigDavisEventListeners.forEach(listener -> listener.davisAps(apsDavisEvent));
-      } else //
-      if (read == RESET_READ) { // reset read
-        final int adc = data & ADC_MAX;
-        DavisApsEvent apsDavisEvent = new DavisApsEvent(time, x, y, ADC_MAX - adc);
-        rstDavisEventListeners.forEach(listener -> listener.davisAps(apsDavisEvent));
-      } else //
-      if (read == IMU) { // imu
-        DavisImuEvent davisImuEvent = new DavisImuEvent(time, data);
-        imuDavisEventListeners.forEach(listener -> listener.davisImu(davisImuEvent));
-      }
-    }
-  }
-
-  @Override
-  public void addDvsListener(DavisDvsListener listener) {
+  public void addPolarityListener(Aedat31PolarityListener listener) {
     dvsDavisEventListeners.add(listener);
-  }
-
-  @Override
-  public void addSigListener(DavisApsListener listener) {
-    sigDavisEventListeners.add(listener);
-  }
-
-  @Override
-  public void addRstListener(DavisApsListener listener) {
-    rstDavisEventListeners.add(listener);
-  }
-
-  @Override
-  public void addImuListener(DavisImuListener listener) {
-    imuDavisEventListeners.add(listener);
   }
 }

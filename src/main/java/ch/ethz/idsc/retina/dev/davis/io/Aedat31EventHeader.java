@@ -33,6 +33,10 @@ public class Aedat31EventHeader {
     return eventSize * eventNumber;
   }
 
+  public int getNumber() {
+    return eventNumber;
+  }
+
   public void printInfoLine() {
     System.out.println("eventType      : " + eventType);
     System.out.println("eventSource    : " + eventSource);
