@@ -15,7 +15,7 @@ enum QuickStartGui {
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(QuickStartGui.class, new WindowConfiguration());
     ModuleAuto.INSTANCE.runAll(RunTabbedTaskGui.MODULES_DEV);
-    TabbedTaskGui taskTabGui = new TabbedTaskGui();
+    TabbedTaskGui taskTabGui = new TabbedTaskGui(RunTabbedTaskGui.PROPERTIES);
     // ---
     taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
     taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
