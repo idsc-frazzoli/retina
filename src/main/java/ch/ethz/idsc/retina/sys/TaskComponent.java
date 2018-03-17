@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,9 +21,10 @@ class TaskComponent {
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, //
       JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-  public TaskComponent(List<Class<?>> modules) {
+  public TaskComponent(List<Class<?>> modules, Properties properties) {
     jpanel.setLayout(new GridLayout(modules.size(), 1));
     for (Class<?> module : modules) {
+      final String key = module.getSimpleName();
       JToggleButton jToggleButton = new JToggleButton(getName(module));
       jToggleButton.addActionListener(e -> {
         if (jToggleButton.isSelected())
@@ -30,6 +32,11 @@ class TaskComponent {
         else
           ModuleAuto.INSTANCE.terminateOne(module);
       });
+      if (properties.containsKey(key)) {
+        String value = properties.getProperty(key);
+        if (!value.isEmpty())
+          jToggleButton.setToolTipText(value);
+      }
       jpanel.add(jToggleButton);
       map.put(module, jToggleButton);
     }

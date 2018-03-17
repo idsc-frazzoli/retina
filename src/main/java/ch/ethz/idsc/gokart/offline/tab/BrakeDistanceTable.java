@@ -65,7 +65,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
             lge.getActualPosition().map(Magnitude.METER), //
             lge.getDemandPosition().map(Magnitude.METER), //
             rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE), //
-            ChassisGeometry.GLOBAL.tangentSpeed(rge).map(Magnitude.VELOCITY) //
+            ChassisGeometry.GLOBAL.odometryTangentSpeed(rge).map(Magnitude.VELOCITY) //
         );
       }
     } else //

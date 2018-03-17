@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ import javax.swing.WindowConstants;
 
 /** is invoked from {@link RunGuiMain} */
 public class TaskGui {
+  private static final Properties EMPTY = new Properties();
   public final JFrame jFrame = new JFrame();
 
   public TaskGui(List<Class<?>> modules) {
@@ -26,7 +28,7 @@ public class TaskGui {
       }
     });
     // ---
-    TaskComponent taskComponent = new TaskComponent(modules);
+    TaskComponent taskComponent = new TaskComponent(modules, EMPTY);
     JPanel jPanel = new JPanel(new BorderLayout());
     JToolBar jToolBar = new JToolBar();
     jToolBar.setFloatable(false);

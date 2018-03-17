@@ -4,8 +4,14 @@ package ch.ethz.idsc.demo.jph.davis;
 import java.io.File;
 
 enum Aedat {
-  LOG_04(new File("/media/datahaki/media/ethz/davis240c/aedat", //
-      "DAVIS240C-2017-08-17T14-01-14+0200-02460045-0.aedat")), //
+  LOG_01(new File("/media/datahaki/media/ethz/insightness/aedat", //
+      "sees_control_recording_2018_03_16-15_36_46.aedat")), //
+  LOG_02(new File("/media/datahaki/media/ethz/insightness/aedat", //
+      "sees_control_recording_2018_03_16-15_40_07.aedat")), //
+  LOG_03(new File("/media/datahaki/media/ethz/insightness/aedat", //
+      "sees_control_recording_2018_03_16-15_42_12.aedat")), //
+  LOG_04(new File("/media/datahaki/media/ethz/insightness/aedat", //
+      "sees_control_recording_2018_03_16-15_44_43.aedat")), //
   ;
   public final File file;
 

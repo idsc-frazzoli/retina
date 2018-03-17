@@ -27,12 +27,9 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.io.TableBuilder;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationResultListener {
@@ -96,11 +93,8 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
       return;
     System.out.println(localizationResult.time + " " + localizationResult.ratio);
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
-    Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-    Scalar rate = Differences.of(rates).Get(0) //
-        .multiply(RationalScalar.HALF) //
-        .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-        .divide(ChassisGeometry.GLOBAL.yTireRear);
+    Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+    Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
         rimoPutEvent.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //

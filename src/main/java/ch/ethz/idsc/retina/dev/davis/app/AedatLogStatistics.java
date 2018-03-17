@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
-import ch.ethz.idsc.retina.dev.davis.io.AedatFileSupplier;
+import ch.ethz.idsc.retina.dev.davis.io.Aedat20FileSupplier;
 
 /** functionality is available as a command-line tool */
 public enum AedatLogStatistics {
@@ -18,7 +18,7 @@ public enum AedatLogStatistics {
    * @throws Exception */
   public static void of(File aedat) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
+    Aedat20FileSupplier aedatFileSupplier = new Aedat20FileSupplier(aedat, davisDecoder);
     // ---
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
