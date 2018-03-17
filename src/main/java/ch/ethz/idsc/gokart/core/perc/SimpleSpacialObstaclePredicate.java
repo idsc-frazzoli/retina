@@ -34,8 +34,13 @@ public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate 
 
   @Override // from SpacialObstaclePredicate
   public boolean isObstacle(Tensor point) {
-    double x = point.Get(0).number().doubleValue();
-    double z = point.Get(2).number().doubleValue();
+    return isObstacle( //
+        point.Get(0).number().doubleValue(), //
+        point.Get(2).number().doubleValue());
+  }
+
+  @Override // from SpacialObstaclePredicate
+  public boolean isObstacle(double x, double z) {
     double z_corrected = z - x * inc; // negative sign
     return lo < z_corrected && z_corrected < hi;
   }
