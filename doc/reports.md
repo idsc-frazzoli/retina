@@ -17,6 +17,7 @@
 * [20180223_gokart_software_structure.pdf](https://github.com/idsc-frazzoli/retina/files/1801720/20180223_gokart_software_structure.pdf)
 * [20180225_davis240c_event_distribution.pdf](https://github.com/idsc-frazzoli/retina/files/1819644/20180225_davis240c_event_distribution.pdf)
 * [20180226_davis240c_imu_timings.pdf](https://github.com/idsc-frazzoli/retina/files/1801722/20180226_davis240c_imu_timings.pdf)
+* [20180317_silicon_eye_evaluation.pdf](https://github.com/idsc-frazzoli/retina/files/1821357/20180317_silicon_eye_evaluation.pdf)
 
 ## Bug Reports
 

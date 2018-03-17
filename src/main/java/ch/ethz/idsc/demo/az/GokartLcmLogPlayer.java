@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.az;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
 import ch.ethz.idsc.subare.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;

@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisImageProvider;
-import ch.ethz.idsc.retina.dev.davis.io.AedatFileSupplier;
+import ch.ethz.idsc.retina.dev.davis.io.Aedat20FileSupplier;
 import ch.ethz.idsc.retina.dev.davis.io.DavisEventsTextWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisPngImageWriter;
 import ch.ethz.idsc.retina.dev.davis.io.DavisSimpleImageWriter;
@@ -28,7 +28,7 @@ public enum AedatLogConverter {
     // ---
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
-    AedatFileSupplier aedatFileSupplier = new AedatFileSupplier(aedat, davisDecoder);
+    Aedat20FileSupplier aedatFileSupplier = new Aedat20FileSupplier(aedat, davisDecoder);
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);
     davisDecoder.addSigListener(davisEventStatistics);

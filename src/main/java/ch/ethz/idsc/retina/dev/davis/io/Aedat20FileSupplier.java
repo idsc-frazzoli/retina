@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
  * "An IMU sample is a subclass of an APS type event. 7 words are sent in
  * series, these being 3 axes for accel, temperature, and 3 axes for gyro
  * look at jAER’s IMUSample class for more info." */
-public class AedatFileSupplier implements StartAndStoppable {
+public class Aedat20FileSupplier implements StartAndStoppable {
   private static final int BUFFER_SIZE = 8 * 512;
   // ---
   private final byte[] bytes = new byte[BUFFER_SIZE];
@@ -28,7 +28,7 @@ public class AedatFileSupplier implements StartAndStoppable {
   private final DavisDecoder davisDecoder;
   private final InputStream inputStream;
 
-  public AedatFileSupplier(File file, DavisDecoder davisDecoder) throws Exception {
+  public Aedat20FileSupplier(File file, DavisDecoder davisDecoder) throws Exception {
     this.davisDecoder = davisDecoder;
     AedatFileHeader aedatFileHeader = new AedatFileHeader(file);
     inputStream = aedatFileHeader.getInputStream();
