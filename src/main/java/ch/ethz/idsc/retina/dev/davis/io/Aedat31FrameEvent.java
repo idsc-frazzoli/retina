@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.awt.image.BufferedImage;
@@ -5,10 +6,20 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 
-/** image from camera */
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+
+/** image from camera
+ * Documentation taken from
+ * https://inilabs.com/support/software/fileformat/#h.w7vjqzw55d5b */
 public class Aedat31FrameEvent {
   private final int info;
   private final int frame_start;
+  /** "Event-level microsecond End of Frame Capture timestamp.
+   * NOTE: This timestamp is considered the primary timestamp
+   * for the purpose of ordering packets." */
   private final int frame_end;
   private final int exposure_start;
   private final int exposure_end;
@@ -41,6 +52,14 @@ public class Aedat31FrameEvent {
         imageBuffer.put(b_hi);
       }
     }
+  }
+
+  public int getTime_us() {
+    return frame_end;
+  }
+
+  public Scalar getTime() {
+    return Quantity.of(RationalScalar.of(frame_end, 1000000), SI.SECOND);
   }
 
   public BufferedImage getBufferedImage() {

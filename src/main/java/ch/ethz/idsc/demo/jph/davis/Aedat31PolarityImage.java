@@ -31,7 +31,7 @@ public class Aedat31PolarityImage implements Aedat31PolarityListener {
 
   @Override
   public void polarityEvent(Aedat31PolarityEvent aedat31PolarityEvent) {
-    if (aedat31PolarityEvent.getTime() != time) {
+    if (aedat31PolarityEvent.getTime_us() != time) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(time, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       // ---
@@ -39,7 +39,7 @@ public class Aedat31PolarityImage implements Aedat31PolarityListener {
       // graphics.fillRect(0, 0, 320, 264);
       // System.out.println("image copy = " + imageCopy.get());
       graphics.drawImage(imageCopy.get(), 0, 0, null);
-      time = aedat31PolarityEvent.getTime();
+      time = aedat31PolarityEvent.getTime_us();
     }
     // TODO write to byte
     graphics.setColor(COLORS[aedat31PolarityEvent.i]);

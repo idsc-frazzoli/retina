@@ -3,7 +3,8 @@ package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.nio.ByteBuffer;
 
-/** https://inilabs.com/support/software/fileformat/#h.w7vjqzw55d5b */
+/** online specification of AEDAT 3.1
+ * https://inilabs.com/support/software/fileformat/#h.w7vjqzw55d5b */
 public class Aedat31EventHeader {
   private final short eventType;
   private final short eventSource;
@@ -29,10 +30,16 @@ public class Aedat31EventHeader {
     return Aedat31EventType.values()[eventType];
   }
 
+  /** By multiplying eventCapacity[sic!] with eventSize, and adding the
+   * 28 bytes of header size, you can quickly and precisely calculate
+   * the total size of an event packet. */
   public int getSize() {
     return eventSize * eventNumber;
   }
 
+  /** for instance polarity packets contain a number of events
+   * 
+   * @return */
   public int getNumber() {
     return eventNumber;
   }

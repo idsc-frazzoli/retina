@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.nio.ByteBuffer;
@@ -28,7 +29,7 @@ public class Aedat31PolarityEvent {
     return String.format("v=%d p=%d (%4d,%4d) t=%d", valid, i, x, y, time);
   }
 
-  public int getTime() {
+  public int getTime_us() {
     return time;
   }
 
