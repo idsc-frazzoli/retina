@@ -9,12 +9,15 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Hdl32eSpacialProvider implements LidarSpacialProvider {
+  public static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true, 0);
+  // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
   private int usec;
@@ -42,8 +45,8 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
 
   @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    float dx = VelodyneStatics.TRIGONOMETRY.dx(rotational);
-    float dy = VelodyneStatics.TRIGONOMETRY.dy(rotational);
+    float dx = TRIGONOMETRY.dx(rotational);
+    float dy = TRIGONOMETRY.dy(rotational);
     float[] coords = new float[3];
     for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;

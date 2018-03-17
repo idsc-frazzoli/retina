@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -27,8 +26,7 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
     LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
-  private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = //
-      new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER);
+  private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = SensorsConfig.GLOBAL.vlp16SpacialLcmHandler();
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
