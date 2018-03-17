@@ -34,6 +34,13 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final float vlp16_ZLo;
   private final float vlp16_ZHi;
 
+  /** TODO Valentina
+   * instead of using the simple formula lo < z && z < hi
+   * create an instance of SimpleSpacialObstaclePredicate
+   * in the constructor of Vlp16ClearanceModule and store it as a member in Vlp16ClearanceModule
+   * 
+   * then, in the function lidarSpacial call the function isObstacle instead of
+   * "vlp16_ZLo < z && z < vlp16_ZHi" */
   public Vlp16ClearanceModule() {
     vlp16_ZLo = SafetyConfig.GLOBAL.vlp16_ZLoMeter().number().floatValue();
     vlp16_ZHi = SafetyConfig.GLOBAL.vlp16_ZHiMeter().number().floatValue();

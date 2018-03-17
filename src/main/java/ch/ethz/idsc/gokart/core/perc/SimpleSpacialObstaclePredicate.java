@@ -10,34 +10,38 @@ import ch.ethz.idsc.tensor.Tensor;
  * check method. */
 // the class name is preliminary
 public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate {
-  // TODO VC the createVlp16() is a convenient way for the application layer to
-  // obtain
-  // an instance without having to specify parameters repeatedly:
+  /** convenient way for the application layer to obtain an instance
+   * without having to specify the geometric configuration
+   * 
+   * @return */
   public static SpacialObstaclePredicate createVlp16() {
-    return new SimpleSpacialObstaclePredicate(SafetyConfig.GLOBAL.vlp16_ZLo, // take from SafetyConfig.GLOBAL.
-        SafetyConfig.GLOBAL.vlp16_ZHi, // take from SafetyConfig.GLOBAL.
-        SensorsConfig.GLOBAL.vlp16_incline); // take from SensorsConfig.GLOBAL
+    return new SimpleSpacialObstaclePredicate( //
+        SafetyConfig.GLOBAL.vlp16_ZLo, //
+        SafetyConfig.GLOBAL.vlp16_ZHi, //
+        SensorsConfig.GLOBAL.vlp16_incline);
   }
 
   // ---
-  // members:
   private final double lo;
   private final double hi;
   private final double inc;
 
   public SimpleSpacialObstaclePredicate(Scalar vlp16_ZLo, Scalar vlp16_ZHi, Scalar incline) {
-    this.lo = vlp16_ZLo.number().doubleValue();
-    this.hi = vlp16_ZHi.number().doubleValue();
-    this.inc = incline.number().doubleValue();
-    // TODO assign lo hi inc
+    lo = vlp16_ZLo.number().doubleValue();
+    hi = vlp16_ZHi.number().doubleValue();
+    inc = incline.number().doubleValue();
   }
 
-  @Override
-  public boolean isObstacle(Tensor x) {
-    double z = x.Get(2).number().doubleValue() + x.Get(0).number().doubleValue() * inc;
-    if (z > lo && z < hi) {
-      return true;
-    } else
-      return false;
+  @Override // from SpacialObstaclePredicate
+  public boolean isObstacle(Tensor point) {
+    return isObstacle( //
+        point.Get(0).number().doubleValue(), //
+        point.Get(2).number().doubleValue());
+  }
+
+  @Override // from SpacialObstaclePredicate
+  public boolean isObstacle(double x, double z) {
+    double z_corrected = z - x * inc; // negative sign
+    return lo < z_corrected && z_corrected < hi;
   }
 }

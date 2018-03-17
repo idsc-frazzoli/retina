@@ -1,3 +1,4 @@
+// code by vc, jph
 package ch.ethz.idsc.gokart.core.fuse.perc;
 
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
@@ -8,14 +9,10 @@ import junit.framework.TestCase;
 
 public class SimpleSpacialObstaclePredicateTest extends TestCase {
   public void testSimple() {
-    // TODO VC
-    // create instance of SimpleSpacialObstaclePredicate
     SpacialObstaclePredicate sop = SimpleSpacialObstaclePredicate.createVlp16();
     Tensor lidar_p1 = Tensors.vector(3.0, -1.2, -0.2); // coordinates in lidar frame
-    // lidar_p1 should classify as obstacle, etc.
-    assertTrue(sop.isObstacle(lidar_p1));
+    assertTrue(sop.isObstacle(lidar_p1)); // lidar_p1 should classify as obstacle, etc.
     Tensor lidar_p2 = Tensors.vector(3.0, -1.2, 0.3); // coordinates in lidar frame
-    // lidar_p2 should classify not as obstacle (?)
-    assertFalse(sop.isObstacle(lidar_p2));
+    assertFalse(sop.isObstacle(lidar_p2)); // lidar_p2 should classify not as obstacle (?)
   }
 }

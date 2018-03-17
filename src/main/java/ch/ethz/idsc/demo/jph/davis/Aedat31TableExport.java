@@ -19,8 +19,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-/** playback of aedat log file and visualization of content. data processing is
- * restricted to dvs event accumulation */
 class Aedat31TableExport implements Aedat31PolarityListener, Aedat31FrameListener, Aedat31Imu6Listener {
   TableBuilder table_frame = new TableBuilder();
   TableBuilder table_imu6 = new TableBuilder();

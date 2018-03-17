@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -26,7 +25,8 @@ class SideLidarRender extends LidarRender {
     Tensor translate = Se2Utils.toSE2Matrix(Tensors.of( //
         SensorsConfig.GLOBAL.vlp16.Get(0), // translation right (in pixel space)
         Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height), // translation up (in pixel space) to
-        RealScalar.ZERO // rotation is pixel space
+        /** negate incline for rotation in pixel space */
+        SensorsConfig.GLOBAL.vlp16_incline.negate() // rotation is pixel space
     ));
     geometricLayer.pushMatrix(translate);
     {
@@ -40,14 +40,16 @@ class SideLidarRender extends LidarRender {
       Tensor points = _points;
       // ---
       graphics.setColor(color);
-      for (Tensor x : points) {
-        // x is a vector of length 3
-        // x= px,py,pz which corresponds to front,left,up
+      for (Tensor point : points) {
+        // point is a vector of length 3
+        // point = px,py,pz which corresponds to front,left,up
         // for top view we draw the px and py and for side view we draw px and pz
-        Tensor v = Tensors.of(x.Get(0), x.Get(2));
+        Tensor v = Tensors.of(point.Get(0), point.Get(2));
         Point2D point2D = geometricLayer.toPoint2D(v);
-        // System.out.println(point2D);
-        graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
+        graphics.fillRect( //
+            (int) point2D.getX(), //
+            (int) point2D.getY(), //
+            pointSize, pointSize);
       }
       // ---
     }
