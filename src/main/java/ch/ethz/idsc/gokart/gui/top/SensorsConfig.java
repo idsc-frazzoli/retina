@@ -27,10 +27,16 @@ public class SensorsConfig implements Serializable {
   /** transformation from center of rear-axle to vlp16 in (x,y)-plane
    * the third, i.e. angle coordinate has to be zero. */
   public Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
-  /** vlp16_incline is a factor to add an offset that is proportional to
+  /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
+   * 
+   * due to the small magnitude of vlp16_incline, the approximations hold
+   * Cos[vlp16_incline] == 1
+   * Sin[vlp16_incline] == 0
+   * then, vlp16_inclinea can correct a height of a lidar point
+   * by adding an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
-   * z_gokart = z_lidar + vlp16_incline * x_lidar */
-  public Scalar vlp16_incline = RealScalar.of(-0.02);
+   * z_gokart = z_lidar - vlp16_incline * x_lidar */
+  public Scalar vlp16_incline = RealScalar.of(0.04);
   /** height of vlp scan from ground
    * 1.10[m] from ground to platform top (until 2018-02-25, the value was 1.18[m])
    * 0.006[m] TODO DUBENDORF width of heat sink
