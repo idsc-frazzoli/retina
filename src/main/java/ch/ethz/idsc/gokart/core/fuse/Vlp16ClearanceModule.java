@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -31,9 +33,8 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  private final float vlp16_ZLo;
-  private final float vlp16_ZHi;
-
+  // private final float vlp16_ZLo;
+  // private final float vlp16_ZHi;
   /** TODO Valentina
    * instead of using the simple formula lo < z && z < hi
    * create an instance of SimpleSpacialObstaclePredicate
@@ -41,9 +42,10 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
    * 
    * then, in the function lidarSpacial call the function isObstacle instead of
    * "vlp16_ZLo < z && z < vlp16_ZHi" */
+  private final SpacialObstaclePredicate spacialObstaclePredicate;
+
   public Vlp16ClearanceModule() {
-    vlp16_ZLo = SafetyConfig.GLOBAL.vlp16_ZLoMeter().number().floatValue();
-    vlp16_ZHi = SafetyConfig.GLOBAL.vlp16_ZHiMeter().number().floatValue();
+    spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
   }
 
   @Override // from AbstractModule
@@ -65,9 +67,10 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   /***************************************************/
   @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+    float x = lidarSpacialEvent.coords[0];
     float z = lidarSpacialEvent.coords[2];
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    if (vlp16_ZLo < z && z < vlp16_ZHi && Objects.nonNull(_clearanceTracker)) {
+    if (spacialObstaclePredicate.isObstacle(x, z) && Objects.nonNull(_clearanceTracker)) {
       Tensor local = Tensors.vectorDouble( //
           lidarSpacialEvent.coords[0], //
           lidarSpacialEvent.coords[1]);
