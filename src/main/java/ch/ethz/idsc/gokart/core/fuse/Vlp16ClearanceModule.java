@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -27,8 +26,7 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
     LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
-  private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = //
-      new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER);
+  private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = SensorsConfig.GLOBAL.vlp16SpacialLcmHandler();
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
@@ -36,6 +34,13 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final float vlp16_ZLo;
   private final float vlp16_ZHi;
 
+  /** TODO Valentina
+   * instead of using the simple formula lo < z && z < hi
+   * create an instance of SimpleSpacialObstaclePredicate
+   * in the constructor of Vlp16ClearanceModule and store it as a member in Vlp16ClearanceModule
+   * 
+   * then, in the function lidarSpacial call the function isObstacle instead of
+   * "vlp16_ZLo < z && z < vlp16_ZHi" */
   public Vlp16ClearanceModule() {
     vlp16_ZLo = SafetyConfig.GLOBAL.vlp16_ZLoMeter().number().floatValue();
     vlp16_ZHi = SafetyConfig.GLOBAL.vlp16_ZHiMeter().number().floatValue();

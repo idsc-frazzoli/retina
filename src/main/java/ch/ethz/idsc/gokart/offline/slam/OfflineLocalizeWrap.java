@@ -7,6 +7,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -16,7 +17,6 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -27,12 +27,9 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.io.TableBuilder;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationResultListener {
@@ -52,7 +49,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
 
   public OfflineLocalizeWrap(OfflineLocalize offlineLocalize) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = VelodynePlanarEmulator.vlp16_p01deg();
+    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
@@ -96,11 +93,8 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
       return;
     System.out.println(localizationResult.time + " " + localizationResult.ratio);
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
-    Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-    Scalar rate = Differences.of(rates).Get(0) //
-        .multiply(RationalScalar.HALF) //
-        .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-        .divide(ChassisGeometry.GLOBAL.yTireRear);
+    Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+    Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
         rimoPutEvent.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //

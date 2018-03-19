@@ -19,6 +19,9 @@ bin/
 testall.sh
 gendocs.sh
 
+# apple
+.DS_Store
+
 # intelliJ
 .idea/
 tensor.iml

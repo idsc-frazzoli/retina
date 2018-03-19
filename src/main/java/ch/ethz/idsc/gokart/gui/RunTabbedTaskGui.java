@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
@@ -19,6 +20,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
+import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -26,11 +28,16 @@ import ch.ethz.idsc.retina.sys.LoggerModule;
 import ch.ethz.idsc.retina.sys.SpyModule;
 import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** RunTabbedTaskGui is a program that is typically for offline processing.
  * The window in a convenient way to launch files. */
 enum RunTabbedTaskGui {
   ;
+  /** file contains plain text brief description of modules */
+  static final Properties PROPERTIES = //
+      ResourceData.properties("/gui/properties/modules_description.properties");
+  // ---
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
       Vlp16LcmServerModule.class, // sensing
@@ -47,7 +54,8 @@ enum RunTabbedTaskGui {
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
-      PanoramaViewModule.class // , //
+      PanoramaViewModule.class, // , //
+      SideLcmModule.class //
   // DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
@@ -71,7 +79,7 @@ enum RunTabbedTaskGui {
 
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
-    TabbedTaskGui taskTabGui = new TabbedTaskGui();
+    TabbedTaskGui taskTabGui = new TabbedTaskGui(PROPERTIES);
     taskTabGui.tab("dev", MODULES_DEV);
     taskTabGui.tab("lab", MODULES_LAB);
     taskTabGui.tab("fuse", MODULES_FUSE);

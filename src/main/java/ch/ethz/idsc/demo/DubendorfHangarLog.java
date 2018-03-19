@@ -63,7 +63,6 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180307T150715_28f09b86, //
   _20180307T151633_28f09b86, //
   _20180307T154859_0cd18c6b, //
-  _20180307T164051_6e45300d, //
   /** autonomous driving shape 8
    * velocity peak ~3.6[m*s^-1] */
   _20180307T165102_6e45300d, //

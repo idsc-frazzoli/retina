@@ -18,14 +18,11 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Mean;
 
 public class RimoSlipTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -61,12 +58,8 @@ public class RimoSlipTable implements OfflineTableSupplier {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && Objects.nonNull(dif)) {
         time_next = time.add(delta);
         Tensor rates = rge.getAngularRate_Y_pair();
-        Scalar speed = Mean.of(rates).multiply(ChassisGeometry.GLOBAL.tireRadiusRear).Get();
-        // rad/s * m == (m / s) / m
-        Scalar rate = Differences.of(rates).Get(0) //
-            .multiply(RationalScalar.HALF) //
-            .multiply(ChassisGeometry.GLOBAL.tireRadiusRear) //
-            .divide(ChassisGeometry.GLOBAL.yTireRear);
+        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
+        Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
         dif.gyroImageFrame();
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
