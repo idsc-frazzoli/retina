@@ -13,9 +13,9 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
+    File src = new File(LogfileLocations.DUBI1);
     File dst = null;
-    dst = new File("/home/datahaki/interesting.lcm");
+    dst = new File("/home/mario/logs/interesting.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
