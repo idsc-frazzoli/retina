@@ -20,7 +20,12 @@ public class AccumulatedEventsGrayImage extends AbstractAccumulatedImage {
   @Override // from AbstractAccumulatedImage
   protected void assign(int delta, DavisDvsEvent dvsDavisEvent) {
     int value = dvsDavisEvent.brightToDark() ? 0 : 255;
-    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
+    int index = correctCameraPosition(dvsDavisEvent.x, dvsDavisEvent.y);
     bytes[index] = (byte) value;
+  }
+
+  protected int correctCameraPosition(int x, int y) {
+    int index = x + (height - 1 - y) * width; // camera mounted upside down
+    return index;
   }
 }

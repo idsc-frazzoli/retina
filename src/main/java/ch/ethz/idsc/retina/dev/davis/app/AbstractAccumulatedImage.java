@@ -29,7 +29,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private static final byte CLEAR_BYTE = (byte) 128;
   // ---
   protected final int width;
-  private final int height;
+  protected final int height;
   private final List<TimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
