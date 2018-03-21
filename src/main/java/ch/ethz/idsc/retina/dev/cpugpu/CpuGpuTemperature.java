@@ -1,4 +1,4 @@
-package ch.ethz.idsc.retina.dev.cpu;
+package ch.ethz.idsc.retina.dev.cpugpu;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ enum CpuGpuTemperature {
     Components components = JSensors.get.components();
     List<Cpu> cpus = components.cpus;
     List<Gpu> gpus = components.gpus;
+    System.out.println("Cannot detect gpu:" + gpus.isEmpty());
     if (cpus != null) {
       for (final Cpu cpu : cpus) {
         System.out.println("Found CPU component: " + cpu.name);
