@@ -20,4 +20,8 @@ public class DavisSingleBlob {
   void updateSingleBlob(DavisDvsEvent davisDvsEvent) {
     // bla bla bla
   }
+
+  // calculate distance from event to single blob
+  void calculateDistance(DavisDvsEvent davisDvsEvent) {
+  }
 }
