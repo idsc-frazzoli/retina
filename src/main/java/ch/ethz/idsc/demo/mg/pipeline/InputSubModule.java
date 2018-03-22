@@ -12,15 +12,19 @@ import ch.ethz.idsc.tensor.Scalar;
 /* For now, we process Offlinelogs. It should be very easy to switch to
  * live DVS events.
  */
-public class InputSubModule implements OfflineLogListener, DavisDvsListener {
+public class InputSubModule implements OfflineLogListener, DavisDvsListener{
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private DavisSurfaceOfActiveEvents surface1 = new DavisSurfaceOfActiveEvents();
+  private DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
   private DavisDvsEvent davisDvsEvent;
+  private boolean useFilter;
+  
+
   private int backgroundActivityFilterTime = 500000; // the shorter the more is filtered[us]
   static double i, j; // for testing
 
-  public InputSubModule() {
+  public InputSubModule(boolean useFilter) {
     davisDvsDatagramDecoder.addDvsListener(this);
+    this.useFilter = useFilter;
   }
 
   @Override
@@ -33,14 +37,18 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     ++j;
-    if (surface1.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime)) {
+    if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       // Here we can grab the filtered event stream
-      this.davisDvsEvent = davisDvsEvent; // assign it to field, use getter methodd for other submodules to grab it.
+      this.davisDvsEvent = davisDvsEvent;
+      
       ++i;
+    }
+    else {
+      this.davisDvsEvent = davisDvsEvent;
     }
   }
 
-  DavisDvsEvent getFilteredEvent() {
+  DavisDvsEvent getEvent() {
     return this.davisDvsEvent;
   }
 
