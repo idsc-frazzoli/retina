@@ -12,19 +12,20 @@ import ch.ethz.idsc.tensor.Scalar;
 /* For now, we process Offlinelogs. It should be very easy to switch to
  * live DVS events.
  */
-public class InputSubModule implements OfflineLogListener, DavisDvsListener{
+public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
   private DavisDvsEvent davisDvsEvent;
+  // below for testing
   private boolean useFilter;
-  
-
-  private int backgroundActivityFilterTime = 500000; // the shorter the more is filtered[us]
-  static double i, j; // for testing
+  private int backgroundActivityFilterTime = 500000; // [us] the shorter the more is filtered
+  static double I, J;
+  DavisBlobTracker track; // only to send the events there. this is not a clean implementation
 
   public InputSubModule(boolean useFilter) {
     davisDvsDatagramDecoder.addDvsListener(this);
     this.useFilter = useFilter;
+    track = new DavisBlobTracker();
   }
 
   @Override
@@ -36,14 +37,13 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener{
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    ++j;
+    ++J;
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       // Here we can grab the filtered event stream
       this.davisDvsEvent = davisDvsEvent;
-      
-      ++i;
-    }
-    else {
+      ++I;
+    } else {
+      track.receiveNewEvent(davisDvsEvent); // send events to next module
       this.davisDvsEvent = davisDvsEvent;
     }
   }
@@ -54,6 +54,6 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener{
 
   // simple functions for testing below.
   double getFilteredPercentage() {
-    return 100 * (1 - i / j);
+    return 100 * (1 - I / J);
   }
 }
