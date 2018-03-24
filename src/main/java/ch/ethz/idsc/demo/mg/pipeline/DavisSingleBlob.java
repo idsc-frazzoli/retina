@@ -23,8 +23,8 @@ public class DavisSingleBlob {
     pos = initPos;
     covariance = new float[][] { { initVariance, 0 }, { 0, initVariance } };
     layerID = false;
-    activity = 0;
-    currentScore = 0;
+    activity = 0.0f;
+    currentScore = 0.0f;
   }
 
   // stores the timestamp of last event
@@ -33,14 +33,23 @@ public class DavisSingleBlob {
   }
 
   // updates the activity of a blob
-  public void updateBlobActivity(DavisDvsEvent davisDvsEvent, float tau, boolean hasHighestScore) {
-    float deltaT = davisDvsEvent.time - lastTimestamp;
+  public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, float tau, boolean hasHighestScore, float aUp) {
+    boolean isPromoted;
+    float deltaT = (float) (davisDvsEvent.time - lastTimestamp);
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     if (hasHighestScore) {
+      if (this.activity < aUp && this.activity + currentScore > aUp) {
+        isPromoted = true;
+      } else {
+        isPromoted = false;
+      }
       this.activity = this.activity * exponential + currentScore;
+      return isPromoted;
     } else {
       this.activity = this.activity * exponential;
+      isPromoted = false;
+      return isPromoted;
     }
   }
 
@@ -55,11 +64,11 @@ public class DavisSingleBlob {
     float deltaYY = (eventPosY - pos[1]) * (eventPosY - pos[1]);
     float[][] deltaCovariance = { { deltaXX, deltaXY }, { deltaXY, deltaYY } };
     // this is awful but no matrix library available?
+    // covariance update
     covariance[0][0] = (1 - alphaTwo) * covariance[0][0] + alphaTwo * deltaCovariance[0][0];
     covariance[0][1] = (1 - alphaTwo) * covariance[0][1] + alphaTwo * deltaCovariance[0][1];
     covariance[1][0] = (1 - alphaTwo) * covariance[1][0] + alphaTwo * deltaCovariance[1][0];
     covariance[1][1] = (1 - alphaTwo) * covariance[1][1] + alphaTwo * deltaCovariance[1][1];
-    // TODO check here covariance is not too small since we only track blobs above a certain size
     // position update
     pos[0] = (1 - alphaOne) * pos[0] + alphaOne * eventPosX;
     pos[1] = (1 - alphaOne) * pos[1] + alphaOne * eventPosY;
@@ -88,9 +97,9 @@ public class DavisSingleBlob {
     return currentScore;
   }
 
-  public void updateAttractionEquation(float alphaAttr, int dMax) {
+  public void updateAttractionEquation(float alphaAttr, float dRep) {
     float positionDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
-    if (positionDiff > dMax) {
+    if (positionDiff > dRep) {
       pos = initPos;
     } else {
       pos[0] = pos[0] + alphaAttr * (initPos[0] - pos[0]);
@@ -98,7 +107,16 @@ public class DavisSingleBlob {
     }
   }
 
-  // perform the layer logic. Return true if blob is promoted to active layer.
+  public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
+    float[] otherPos = otherBlob.getPos();
+    float positionDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
+    float exponential = (float) (Math.exp(positionDiff / dRep));
+    pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
+    pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
+  }
+
   public boolean blobPromotion(float aUp) {
     if (activity > aUp) {
       layerID = true;
@@ -109,12 +127,12 @@ public class DavisSingleBlob {
   }
 
   // checks if the blob is too close to a boarder and if so returns true.
-  // we assume that the axes of the distribution are x/y axis aligned.
-  public boolean isOutOfBounds() {
-    float boundPointLeft = (float) (pos[0] - 0.5*Math.sqrt(covariance[0][0]));
-    float boundPointRight = (float) (pos[0] + 0.5*Math.sqrt(covariance[0][0]));
-    float boundPointUp = (float) (pos[1] - 0.5*Math.sqrt(covariance[1][1]));
-    float boundPointDown = (float) (pos[1] + 0.5*Math.sqrt(covariance[1][1]));
+  // TODO we assume that the axes of the distribution are x/y axis aligned.
+  public boolean isOutOfBounds(float numberSigmas) {
+    float boundPointLeft = (float) (pos[0] - numberSigmas * Math.sqrt(covariance[0][0]));
+    float boundPointRight = (float) (pos[0] + numberSigmas * Math.sqrt(covariance[0][0]));
+    float boundPointUp = (float) (pos[1] - numberSigmas * Math.sqrt(covariance[1][1]));
+    float boundPointDown = (float) (pos[1] + numberSigmas * Math.sqrt(covariance[1][1]));
     if (boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT) {
       return true;
     } else {
@@ -122,26 +140,23 @@ public class DavisSingleBlob {
     }
   }
 
-  // update position with repulsion equation
-  void updateRepulsionEquation(DavisDvsEvent davisDvsEvent) {
-  }
-
-  // sets layerID
   public void setLayerID(boolean layerID) {
     this.layerID = layerID;
   }
 
-  // returns layerID
   public boolean getLayerID() {
+    // is this displayed?
     return this.layerID;
   }
 
-  // returns activity
   public float getActivity() {
     return this.activity;
   }
 
-  // returns initial position
+  public float[] getPos() {
+    return this.pos;
+  }
+
   public float[] getInitPos() {
     return this.initPos;
   }
