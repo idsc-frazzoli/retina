@@ -19,8 +19,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // below for testing
   private boolean useFilter;
   private int backgroundActivityFilterTime = 500000; // [us] the shorter the more is filtered
-  static double I, J;
-  DavisBlobTracker track; // only to send the events there. this is not a clean implementation
+  static double I, J; // to test the filter
+  DavisBlobTracker track; // to send events to next module
 
   public InputSubModule(boolean useFilter) {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -41,15 +41,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       // Here we can grab the filtered event stream
       this.davisDvsEvent = davisDvsEvent;
+      track.receiveNewEvent(davisDvsEvent); // send events to next module
       ++I;
     } else {
-      track.receiveNewEvent(davisDvsEvent); // send events to next module
-      this.davisDvsEvent = davisDvsEvent;
+      // this.davisDvsEvent = davisDvsEvent;
     }
-  }
-
-  DavisDvsEvent getEvent() {
-    return this.davisDvsEvent;
   }
 
   // simple functions for testing below.

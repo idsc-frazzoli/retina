@@ -39,7 +39,8 @@ public class DavisSingleBlob {
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     if (hasHighestScore) {
-      if (this.activity < aUp && this.activity + currentScore > aUp) {
+      // if hidden layer blob hits threshold it should be promoted
+      if (!layerID && (this.activity*exponential + currentScore) > aUp) {
         isPromoted = true;
       } else {
         isPromoted = false;
@@ -93,7 +94,8 @@ public class DavisSingleBlob {
     float[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
         covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
     float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
-    currentScore = (float) Math.exp(exponent); // no normalization
+//    currentScore = (float) (1/(2*Math.PI)*1/Math.sqrt(covarianceDeterminant)*Math.exp(exponent));
+    currentScore = (float) (Math.exp(exponent));
     return currentScore;
   }
 
@@ -159,5 +161,9 @@ public class DavisSingleBlob {
 
   public float[] getInitPos() {
     return this.initPos;
+  }
+  
+  public float getScore() {
+    return this.currentScore;
   }
 }

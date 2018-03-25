@@ -38,7 +38,7 @@ public class DavisBlobTracker {
     int rowSpacing = WIDTH / (numberRows + 1);
     int columnSpacing = HEIGHT / (initNumberOfBlobs / numberRows + 1);
     for (int i = 0; i < initNumberOfBlobs; i++) {
-      int column = (i % numberRows) + 1; //
+      int column = (i % numberRows) + 1;
       int row = i / numberRows + 1; // use integer division
       DavisSingleBlob davisSingleBlob = new DavisSingleBlob(column * columnSpacing, row * rowSpacing, initVariance);
       blobs.add(davisSingleBlob);
@@ -46,25 +46,26 @@ public class DavisBlobTracker {
   }
 
   public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
-    // update matching blob with event data
-    int activeBlob = calcScoreAndParams(davisDvsEvent);
-    // update activity of blobs
-    boolean isPromoted = updateActivity(davisDvsEvent, activeBlob);
+    // associate the event with matching blob
+    int matchingBlob = calcScoreAndParams(davisDvsEvent);
+    // update activity of all blobs and check if matching blob gets promoted
+    boolean isPromoted = updateActivity(davisDvsEvent, matchingBlob);
     // promote blob and put new hidden blob into hidden layer
     if (isPromoted) {
-      promoteBlob(activeBlob);
+      upgradeBlob(matchingBlob);
     }
+    // degrade active blobs when activity is too low for active layer
+    degradeBlobs();
+    // delete blobs if activity too low for hidden layer or out of bounds
+    deleteBlobs();
+    // TODO check if blobs are too small/ wrong shape and delete not fitting blobs
     // repulse blobs from each other
     calcRepulsion();
     // for all blobs of hidden layer use attraction equation
     hiddenBlobAttraction();
     // print some status news
-    printStatusUpdate(activeBlob);
-    // delete blobs if activity too low or out of bounds
-    deleteBlobs();
-    // TODO check if blobs are too small/ wrong shape and delete not fitting blobs
-    // TODO put processed tracked blobs in appropriate data structure and send it to
-    // next module
+    printStatusUpdate(matchingBlob);
+    // TODO put processed tracked blobs in appropriate data structure and send it to next module
     // update the timestamp. do it at the end so always last timestamp is stored.
     DavisSingleBlob.updateTimestamp(davisDvsEvent);
   }
@@ -107,11 +108,17 @@ public class DavisBlobTracker {
     }
   }
 
-  // update activity of blobs. blob that is associated with event is updated differently.
-  private boolean updateActivity(DavisDvsEvent davisDvsEvent, int activeBlob) {
-    boolean isPromoted = blobs.get(activeBlob).updateBlobActivity(davisDvsEvent, tau, true, aUp);
+  // update blob activity. If matching blob is in hidden layer and activity hits aUp, return true
+  private boolean updateActivity(DavisDvsEvent davisDvsEvent, int matchingBlob) {
+    boolean isPromoted;
+    isPromoted = blobs.get(matchingBlob).updateBlobActivity(davisDvsEvent, tau, true, aUp);
+    // sanity check: no active blob should be promoted
+    if (blobs.get(matchingBlob).getLayerID() && isPromoted) {
+      System.out.println("Active blob is being promoted. This should not happen!");
+      System.exit(0);
+    }
     for (int i = 0; i < blobs.size(); i++) {
-      if (i != activeBlob) {
+      if (i != matchingBlob) {
         blobs.get(i).updateBlobActivity(davisDvsEvent, tau, false, aUp);
       }
     }
@@ -119,17 +126,42 @@ public class DavisBlobTracker {
   }
 
   // if blob is promoted, we add a new hidden blob at its initial position.
-  private void promoteBlob(int activeBlob) {
+  private void upgradeBlob(int matchingBlob) {
     // put element at the end of the list and promote it to active layer
-    blobs.add(blobs.get(activeBlob));
+    blobs.add(blobs.get(matchingBlob));
     blobs.get(blobs.size() - 1).setLayerID(true);
     // replace the promoted blob with a new initial blob
-    float[] oldInitPos = blobs.get(activeBlob).getInitPos();
+    float[] oldInitPos = blobs.get(matchingBlob).getInitPos();
     DavisSingleBlob newInitBlob = new DavisSingleBlob(oldInitPos[0], oldInitPos[1], initVariance);
-    blobs.set(activeBlob, newInitBlob);
-    // TODO blobs with activity between aUp and aDown are downgraded to hidden layer
+    blobs.set(matchingBlob, newInitBlob);
   }
 
+  // degrade active blobs with activity lower than aUp to hidden layer
+  private void degradeBlobs() {
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getLayerID()) {
+        if (blobs.get(i).getActivity() < aUp) {
+          blobs.get(i).setLayerID(false);
+        }
+      }
+    }
+  }
+
+  // delete blobs with low activity or out of bounds
+  private void deleteBlobs() {
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getActivity() < aDown || blobs.get(i).isOutOfBounds(numberSigmas)) {
+        // if not enough hidden blobs, we put it back at initial position
+        if (getNumberOfBlobs(false) <= initNumberOfBlobs) {
+          float[] oldInitPos = blobs.get(i).getInitPos();
+          DavisSingleBlob newInitBlob = new DavisSingleBlob(oldInitPos[0], oldInitPos[1], initVariance);
+          blobs.set(i, newInitBlob);
+        } else {
+          blobs.remove(i);
+        }
+      }
+    }
+  }
 
   // apply attraction equation
   private void hiddenBlobAttraction() {
@@ -150,35 +182,23 @@ public class DavisBlobTracker {
     }
   }
 
-  private void printStatusUpdate(int activeBlob) {
-    // number and activities of active blobs
-    System.out.println(blobs.size() + " blobs, with " + getActiveBlobs() + " being in active layer.");
-    System.out.println(blobs.get(activeBlob).getActivity() + " activity of event-associated blob # " + activeBlob);
-
-    // parameters of active blobs
-  }
-
-  // delete all blobs with low activity or out of bounds
-  private void deleteBlobs() {
-    for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getActivity() < aDown || blobs.get(i).isOutOfBounds(numberSigmas)) {
-        // if not enough blobs, just put it at initial position
-        if (blobs.size() <= initNumberOfBlobs) {
-          float[] oldInitPos = blobs.get(i).getInitPos();
-          DavisSingleBlob newInitBlob = new DavisSingleBlob(oldInitPos[0], oldInitPos[1], initVariance);
-          blobs.set(i, newInitBlob);
-        } else {
-          blobs.remove(i);
-        }
-      }
+  private void printStatusUpdate(int matchingBlob) {
+    if(matchingBlob >= blobs.size()) {
+      System.out.println("Matching blob was deleted");
+    }
+    else {
+      // number and activities of active blobs
+      System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(true) + " being in active layer.");
+      System.out.println(blobs.get(matchingBlob).getActivity() + " activity of matching blob # " + matchingBlob);
+      System.out.print(blobs.get(matchingBlob).getScore()+ " score of matching blob\n");
     }
   }
 
-  // return number of active blobs
-  private int getActiveBlobs() {
+  // return number of active/hidden blobs
+  private int getNumberOfBlobs(boolean whichLayer) {
     int quantity = 0;
     for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getLayerID()) {
+      if (blobs.get(i).getLayerID() == whichLayer) {
         quantity++;
       }
     }
