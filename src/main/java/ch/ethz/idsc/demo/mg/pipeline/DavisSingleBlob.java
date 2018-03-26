@@ -21,7 +21,7 @@ public class DavisSingleBlob {
   // initialize with position and covariance
   DavisSingleBlob(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
-    pos = initPos;
+    pos = new float[] { initialX, initialY };
     covariance = new float[][] { { initVariance, 0 }, { 0, initVariance } };
     layerID = false;
     activity = 0.0f;
@@ -33,12 +33,13 @@ public class DavisSingleBlob {
     lastTimestamp = davisDvsEvent.time;
   }
 
+  public static int getTimestamp() {
+    return lastTimestamp;
+  }
+
   // updates the activity of a blob
-  public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, float tau, boolean hasHighestScore, float aUp) {
+  public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, int tau, boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
-    float deltaT = davisDvsEvent.time - lastTimestamp;
-    float exponent = deltaT / tau;
-    float exponential = (float) Math.exp(-exponent);
     if (hasHighestScore) {
       // if hidden layer blob hits threshold it should be promoted
       isPromoted = !layerID && (this.activity * exponential + currentScore) > aUp;
@@ -54,7 +55,7 @@ public class DavisSingleBlob {
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     // cast into float
     float eventPosX = davisDvsEvent.x;
-    float eventPosY = davisDvsEvent.x;
+    float eventPosY = davisDvsEvent.y;
     // covariance update
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
@@ -75,7 +76,7 @@ public class DavisSingleBlob {
   public float calculateBlobScore(DavisDvsEvent davisDvsEvent) {
     // cast into float
     float eventPosX = davisDvsEvent.x;
-    float eventPosY = davisDvsEvent.x;
+    float eventPosY = davisDvsEvent.y;
     // determinant
     float covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
     // compute inverse
@@ -90,29 +91,36 @@ public class DavisSingleBlob {
     float[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
         covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
     float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
-    // currentScore = (float) (1/(2*Math.PI)*1/Math.sqrt(covarianceDeterminant)*Math.exp(exponent));
-    currentScore = (float) (Math.exp(exponent));
+    currentScore = (float) (1 / (2 * Math.PI) * 1 / Math.sqrt(covarianceDeterminant) * Math.exp(exponent));
+    // currentScore = (float) (Math.exp(exponent));
     return currentScore;
   }
 
-  public void updateAttractionEquation(float alphaAttr, float dRep) {
-    float positionDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
-    if (positionDiff > dRep) {
+  public boolean updateAttractionEquation(float alphaAttr, float dRep) {
+    boolean reset;
+    float posDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
+    if (posDiff > dRep) {
       pos = initPos;
+      reset = true;
     } else {
       pos[0] = pos[0] + alphaAttr * (initPos[0] - pos[0]);
       pos[1] = pos[1] + alphaAttr * (initPos[1] - pos[1]);
+      reset = false;
     }
+    return reset;
   }
 
   public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
     float[] otherPos = otherBlob.getPos();
-    float positionDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
-    float exponential = (float) (Math.exp(positionDiff / dRep));
-    pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
-    pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
+    float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
+    System.out.println(otherPos[0]);
+    float exponential = (float) (Math.exp(posDiff / dRep));
+    float denominator = otherBlob.getActivity() * otherBlob.getActivity() + activity * activity;
+    //TODO: make sure denominator is not zero!! this fucks up quite a lot of things
+//    pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+//        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
+//    pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+//        / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
   }
 
   public boolean blobPromotion(float aUp) {
@@ -135,7 +143,6 @@ public class DavisSingleBlob {
   }
 
   public boolean getLayerID() {
-    // is this displayed?
     return layerID;
   }
 

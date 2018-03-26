@@ -11,7 +11,7 @@ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = UserHome.file(LogfileLocations.DUBI1).toString();
+    cfg.logFile = UserHome.file(LogfileLocations.DUBI4a).toString();
     LogPlayer.create(cfg);
   }
 }

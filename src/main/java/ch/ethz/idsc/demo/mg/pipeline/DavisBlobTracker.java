@@ -16,21 +16,23 @@ public class DavisBlobTracker {
   // tracker initialization parameters
   private static final int initNumberOfBlobs = 24;
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
-  private static final int initVariance = 900;
+  private static final int initVariance = 1900;
   // algorithm parameters
   private final float aUp = 2f; // if activity is higher, blob is in active layer
-  private final float aDown = 0.01f; // if activity is lower, blob gets deleted
+  private final float aDown = 0.0001f; // if activity is lower, blob gets deleted
   private final float scoreThreshold = 0.1f; // score threshold for active blobs
   private final float alphaOne = 0.1f; // for blob position update
   private final float alphaTwo = 0.01f; // for blob covariance update
-  private final float tau = 50000; // [us] tunes activity update
+  private final int   tau = 500000; // [us] tunes activity update
   private final float numberSigmas = 0.5f; // for out of bounds calculation
   private final float alphaAttr = 0.01f; // hidden blobs attraction
-  private final float dAttr = 10; // [pixel] hidden blobs attraction
+  private final float dAttr = 40; // [pixel] hidden blobs attraction
   private final float alphaRep = 0; // repulsion equation
-  private final float dRep = 10; // repulstion equation
+  private final float dRep = 10; // repulsion equation
   // tracker operates on an ArrayList of DavisSingleBlobs
   List<DavisSingleBlob> blobs;
+  // just for the status update
+  //private int lastStatusUpdate = 0; // [us]
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker() {
@@ -57,14 +59,20 @@ public class DavisBlobTracker {
     // degrade active blobs when activity is too low for active layer
     degradeBlobs();
     // delete blobs if activity too low for hidden layer or out of bounds
-    deleteBlobs();
+    //deleteBlobs();
     // TODO check if blobs are too small/ wrong shape and delete not fitting blobs
     // repulse blobs from each other
+    System.out.printf("Position before: %.5f/%.5f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
     calcRepulsion();
+    System.out.printf("Position after: %.5f/%.5f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
     // for all blobs of hidden layer use attraction equation
-    hiddenBlobAttraction();
+    //hiddenBlobAttraction();
     // print some status news
-    printStatusUpdate(matchingBlob);
+    // if(DavisSingleBlob.getTimestamp() - lastStatusUpdate > 1000)
+    // {
+    // lastStatusUpdate = davisDvsEvent.time;
+    // }
+    printStatusUpdate(davisDvsEvent, matchingBlob);
     // TODO put processed tracked blobs in appropriate data structure and send it to next module
     // update the timestamp. do it at the end so always last timestamp is stored.
     DavisSingleBlob.updateTimestamp(davisDvsEvent);
@@ -108,15 +116,18 @@ public class DavisBlobTracker {
   // update blob activity. If matching blob is in hidden layer and activity hits aUp, return true
   private boolean updateActivity(DavisDvsEvent davisDvsEvent, int matchingBlob) {
     boolean isPromoted;
-    isPromoted = blobs.get(matchingBlob).updateBlobActivity(davisDvsEvent, tau, true, aUp);
+    float deltaT = (float) (davisDvsEvent.time - DavisSingleBlob.getTimestamp());
+    float exponent = deltaT / tau;
+    float exponential = (float) Math.exp(-exponent);
+    isPromoted = blobs.get(matchingBlob).updateBlobActivity(davisDvsEvent, tau, true, aUp, exponential);
     // sanity check: no active blob should be promoted
     if (blobs.get(matchingBlob).getLayerID() && isPromoted) {
       System.out.println("Active blob is being promoted. This should not happen!");
-      System.exit(0);
+      // System.exit(0);
     }
     for (int i = 0; i < blobs.size(); i++) {
       if (i != matchingBlob) {
-        blobs.get(i).updateBlobActivity(davisDvsEvent, tau, false, aUp);
+        blobs.get(i).updateBlobActivity(davisDvsEvent, tau, false, aUp, exponential);
       }
     }
     return isPromoted;
@@ -162,9 +173,13 @@ public class DavisBlobTracker {
 
   // apply attraction equation
   private void hiddenBlobAttraction() {
+    boolean isReset;
     for (int i = 0; i < blobs.size(); i++) {
       if (!blobs.get(i).getLayerID()) {
-        blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
+        isReset = blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
+        if(isReset) {
+          System.out.println("Blob # "+i+" is reset to initial position.");
+        }
       }
     }
   }
@@ -175,18 +190,24 @@ public class DavisBlobTracker {
     for (int i = 0; i < (blobs.size() - 1); i++) {
       for (int j = i; j < blobs.size(); j++) {
         blobs.get(i).updateRepulsionEquation(alphaRep, dRep, blobs.get(j));
+//        System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(i).getPos()[0], blobs.get(i).getPos()[1]);
       }
+      
     }
   }
 
-  private void printStatusUpdate(int matchingBlob) {
+  private void printStatusUpdate(DavisDvsEvent davisDvsEvent, int matchingBlob) {
     if (matchingBlob >= blobs.size()) {
       System.out.println("Matching blob was deleted");
     } else {
       // number and activities of active blobs
       System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(true) + " being in active layer.");
       System.out.println(blobs.get(matchingBlob).getActivity() + " activity of matching blob # " + matchingBlob);
-      System.out.print(blobs.get(matchingBlob).getScore() + " score of matching blob\n");
+      System.out.println(blobs.get(matchingBlob).getScore() + " score of matching blob");
+      System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
+      System.out.println("Event params (x/y/p): "+davisDvsEvent.x+"/"+davisDvsEvent.y+"/"+davisDvsEvent.i);
+      System.out.println("Current timestamp: "+davisDvsEvent.time);
+      System.out.println("*********************************************************************");
     }
   }
 

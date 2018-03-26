@@ -15,13 +15,12 @@ import ch.ethz.idsc.tensor.Scalar;
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
-  private DavisDvsEvent davisDvsEvent;
   // below for testing
   private boolean useFilter;
-  private int backgroundActivityFilterTime = 500000; // [us] the shorter the more is filtered
-  // TODO longterm: static fields...
-  static double I, J; // to test the filter
-  DavisBlobTracker track; // to send events to next module
+  private int backgroundActivityFilterTime = 1000; // [us] the shorter the more is filtered
+  private double I, J;
+  private DavisBlobTracker track; // to send events to next module
+
 
   public InputSubModule(boolean useFilter) {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -39,18 +38,22 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     ++J;
+    // TODO: somehow every event seems to arrive twice here! WHYYYY
+    if(J%2==0) {      
+      track.receiveNewEvent(davisDvsEvent); // send events to next module
+    }
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       // Here we can grab the filtered event stream
-      this.davisDvsEvent = davisDvsEvent;
-      track.receiveNewEvent(davisDvsEvent); // send events to next module
       ++I;
-    } else {
-      // this.davisDvsEvent = davisDvsEvent;
+    }
+    // only run algorithm for a few events and see what is happening
+    if(J>30) {
+      System.exit(0);
     }
   }
 
   // simple functions for testing below.
-  double getFilteredPercentage() {
+  public double getFilteredPercentage() {
     return 100 * (1 - I / J);
   }
 }
