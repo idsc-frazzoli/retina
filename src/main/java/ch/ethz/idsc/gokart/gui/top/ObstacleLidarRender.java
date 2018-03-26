@@ -7,6 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -31,15 +33,10 @@ class ObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      // obtain lo and hi from SafetyConfig and use instead of "-0.5" and "0.2" below
-      // double lo = Magnitude.METER.apply(SafetyConfig.GLOBAL.vlp16_ZLo).number().doubleValue();
-      // double hi ...
-      for (Tensor x : points) {
-        double z = x.Get(2).number().doubleValue();
-        // add offset correction based on SensorsConfig.GLOBAL.vlp16_incline
-        if (z > -0.5 && z < 0.2) {
-          Point2D point2D = geometricLayer.toPoint2D(x);
-          // System.out.println(point2D);
+      SpacialObstaclePredicate spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
+      for (Tensor point : points) {
+        if (spacialObstaclePredicate.isObstacle(point)) {
+          Point2D point2D = geometricLayer.toPoint2D(point);
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
       }
