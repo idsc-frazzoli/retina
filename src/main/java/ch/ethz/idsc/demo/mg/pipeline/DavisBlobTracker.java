@@ -18,21 +18,25 @@ public class DavisBlobTracker {
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
   private static final int initVariance = 1900;
   // algorithm parameters
-  private final float aUp = 2f; // if activity is higher, blob is in active layer
-  private final float aDown = 0.0001f; // if activity is lower, blob gets deleted
-  private final float scoreThreshold = 0.1f; // score threshold for active blobs
+  private final float aUp = 1e-3f; // if activity is higher, blob is in active layer
+  private final float aDown = 1e-4f; // if activity is lower, blob gets deleted
+  private final float scoreThreshold = 5e-4f; // score threshold for active blobs
   private final float alphaOne = 0.1f; // for blob position update
   private final float alphaTwo = 0.01f; // for blob covariance update
-  private final int   tau = 500000; // [us] tunes activity update
   private final float numberSigmas = 0.5f; // for out of bounds calculation
   private final float alphaAttr = 0.01f; // hidden blobs attraction
   private final float dAttr = 40; // [pixel] hidden blobs attraction
   private final float alphaRep = 0; // repulsion equation
   private final float dRep = 10; // repulsion equation
-  // tracker operates on an ArrayList of DavisSingleBlobs
+  private final int tau = 500; // [us] tunes activity update
+  private final int updateInterval = 100; // [us] update interval for deletion, attraction, repulsion functions
+  // fields
   List<DavisSingleBlob> blobs;
+  private int matchingBlob;
+  private int lastEventTimestamp;
+  private int lastUpdateTimestamp;
   // just for the status update
-  //private int lastStatusUpdate = 0; // [us]
+  // private int lastStatusUpdate = 0; // [us]
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker() {
@@ -49,36 +53,32 @@ public class DavisBlobTracker {
 
   public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
-    int matchingBlob = calcScoreAndParams(davisDvsEvent);
+    calcScoreAndParams(davisDvsEvent);
     // update activity of all blobs and check if matching blob gets promoted
-    boolean isPromoted = updateActivity(davisDvsEvent, matchingBlob);
+    boolean isPromoted = updateActivity(davisDvsEvent);
     // promote blob and put new hidden blob into hidden layer
     if (isPromoted) {
-      upgradeBlob(matchingBlob);
+      upgradeBlob();
     }
     // degrade active blobs when activity is too low for active layer
     degradeBlobs();
-    // delete blobs if activity too low for hidden layer or out of bounds
-    //deleteBlobs();
+    // this part is not required for every single event
+    if ((getUpdateTimestamp() - davisDvsEvent.time) > updateInterval) {
+      // delete blobs if activity too low for hidden layer or out of bounds
+      deleteBlobs();
+      // repulse blobs from each other
+      calcRepulsion();
+      // for all blobs of hidden layer use attraction equation
+      hiddenBlobAttraction();
+      setUpdateTimestamp(davisDvsEvent.time);
+    }
+    printStatusUpdate(davisDvsEvent);
     // TODO check if blobs are too small/ wrong shape and delete not fitting blobs
-    // repulse blobs from each other
-    System.out.printf("Position before: %.5f/%.5f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
-    calcRepulsion();
-    System.out.printf("Position after: %.5f/%.5f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
-    // for all blobs of hidden layer use attraction equation
-    //hiddenBlobAttraction();
-    // print some status news
-    // if(DavisSingleBlob.getTimestamp() - lastStatusUpdate > 1000)
-    // {
-    // lastStatusUpdate = davisDvsEvent.time;
-    // }
-    printStatusUpdate(davisDvsEvent, matchingBlob);
     // TODO put processed tracked blobs in appropriate data structure and send it to next module
-    // update the timestamp. do it at the end so always last timestamp is stored.
-    DavisSingleBlob.updateTimestamp(davisDvsEvent);
+    setEventTimestamp(davisDvsEvent.time);
   }
 
-  private int calcScoreAndParams(DavisDvsEvent davisDvsEvent) {
+  private void calcScoreAndParams(DavisDvsEvent davisDvsEvent) {
     float highScore = 0;
     float hiddenHighScore = 0;
     int highScoreBlob = 0;
@@ -97,44 +97,44 @@ public class DavisBlobTracker {
     // if one active blob hits threshold, update it
     if (highScore > scoreThreshold) {
       blobs.get(highScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
-      return highScoreBlob;
-    }
-    for (int i = 0; i < blobs.size(); i++) {
-      if (!blobs.get(i).getLayerID()) {
-        float hiddenScore = blobs.get(i).calculateBlobScore(davisDvsEvent);
-        // store highest score and which blob it belongs to
-        if (hiddenScore > hiddenHighScore) {
-          hiddenHighScore = hiddenScore;
-          hiddenHighScoreBlob = i;
+      matchingBlob = highScoreBlob;
+    } else {
+      for (int i = 0; i < blobs.size(); i++) {
+        if (!blobs.get(i).getLayerID()) {
+          float hiddenScore = blobs.get(i).calculateBlobScore(davisDvsEvent);
+          // store highest score and which blob it belongs to
+          if (hiddenScore > hiddenHighScore) {
+            hiddenHighScore = hiddenScore;
+            hiddenHighScoreBlob = i;
+          }
         }
       }
+      blobs.get(hiddenHighScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
+      matchingBlob = hiddenHighScoreBlob;
     }
-    blobs.get(hiddenHighScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
-    return hiddenHighScoreBlob;
   }
 
   // update blob activity. If matching blob is in hidden layer and activity hits aUp, return true
-  private boolean updateActivity(DavisDvsEvent davisDvsEvent, int matchingBlob) {
+  private boolean updateActivity(DavisDvsEvent davisDvsEvent) {
     boolean isPromoted;
-    float deltaT = (float) (davisDvsEvent.time - DavisSingleBlob.getTimestamp());
+    float deltaT = (float) (davisDvsEvent.time - getEventTimestamp());
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
-    isPromoted = blobs.get(matchingBlob).updateBlobActivity(davisDvsEvent, tau, true, aUp, exponential);
+    isPromoted = blobs.get(matchingBlob).updateBlobActivity(davisDvsEvent, true, aUp, exponential);
     // sanity check: no active blob should be promoted
     if (blobs.get(matchingBlob).getLayerID() && isPromoted) {
       System.out.println("Active blob is being promoted. This should not happen!");
-      // System.exit(0);
     }
     for (int i = 0; i < blobs.size(); i++) {
       if (i != matchingBlob) {
-        blobs.get(i).updateBlobActivity(davisDvsEvent, tau, false, aUp, exponential);
+        blobs.get(i).updateBlobActivity(davisDvsEvent, false, aUp, exponential);
       }
     }
     return isPromoted;
   }
 
   // if blob is promoted, we add a new hidden blob at its initial position.
-  private void upgradeBlob(int matchingBlob) {
+  private void upgradeBlob() {
     // put element at the end of the list and promote it to active layer
     blobs.add(blobs.get(matchingBlob));
     blobs.get(blobs.size() - 1).setLayerID(true);
@@ -142,6 +142,8 @@ public class DavisBlobTracker {
     float[] oldInitPos = blobs.get(matchingBlob).getInitPos();
     DavisSingleBlob newInitBlob = new DavisSingleBlob(oldInitPos[0], oldInitPos[1], initVariance);
     blobs.set(matchingBlob, newInitBlob);
+    // set new reference since we moved matchingBlob to end of list
+    matchingBlob = blobs.size() - 1;
   }
 
   // degrade active blobs with activity lower than aUp to hidden layer
@@ -177,8 +179,8 @@ public class DavisBlobTracker {
     for (int i = 0; i < blobs.size(); i++) {
       if (!blobs.get(i).getLayerID()) {
         isReset = blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
-        if(isReset) {
-          System.out.println("Blob # "+i+" is reset to initial position.");
+        if (isReset) {
+          System.out.println("Blob # " + i + " is reset to initial position.");
         }
       }
     }
@@ -190,13 +192,12 @@ public class DavisBlobTracker {
     for (int i = 0; i < (blobs.size() - 1); i++) {
       for (int j = i; j < blobs.size(); j++) {
         blobs.get(i).updateRepulsionEquation(alphaRep, dRep, blobs.get(j));
-//        System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(i).getPos()[0], blobs.get(i).getPos()[1]);
+        // System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(i).getPos()[0], blobs.get(i).getPos()[1]);
       }
-      
     }
   }
 
-  private void printStatusUpdate(DavisDvsEvent davisDvsEvent, int matchingBlob) {
+  private void printStatusUpdate(DavisDvsEvent davisDvsEvent) {
     if (matchingBlob >= blobs.size()) {
       System.out.println("Matching blob was deleted");
     } else {
@@ -204,9 +205,9 @@ public class DavisBlobTracker {
       System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(true) + " being in active layer.");
       System.out.println(blobs.get(matchingBlob).getActivity() + " activity of matching blob # " + matchingBlob);
       System.out.println(blobs.get(matchingBlob).getScore() + " score of matching blob");
-      System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
-      System.out.println("Event params (x/y/p): "+davisDvsEvent.x+"/"+davisDvsEvent.y+"/"+davisDvsEvent.i);
-      System.out.println("Current timestamp: "+davisDvsEvent.time);
+      System.out.printf("Updated blob position: %.2f/%.2f\n", blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
+      System.out.println("Event params (x/y/p): " + davisDvsEvent.x + "/" + davisDvsEvent.y + "/" + davisDvsEvent.i);
+      System.out.println("Current timestamp: " + davisDvsEvent.time);
       System.out.println("*********************************************************************");
     }
   }
@@ -220,5 +221,21 @@ public class DavisBlobTracker {
       }
     }
     return quantity;
+  }
+
+  private void setEventTimestamp(int timestamp) {
+    lastEventTimestamp = timestamp;
+  }
+
+  private int getEventTimestamp() {
+    return lastEventTimestamp;
+  }
+
+  private void setUpdateTimestamp(int timestamp) {
+    lastUpdateTimestamp = timestamp;
+  }
+
+  private int getUpdateTimestamp() {
+    return lastUpdateTimestamp;
   }
 }

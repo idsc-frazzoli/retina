@@ -47,7 +47,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       ++I;
     }
     // only run algorithm for a few events and see what is happening
-    if(J>30) {
+    if(J>400) {
       System.exit(0);
     }
   }
