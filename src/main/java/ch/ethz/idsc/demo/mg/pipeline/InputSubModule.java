@@ -19,6 +19,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // below for testing
   private boolean useFilter;
   private int backgroundActivityFilterTime = 500000; // [us] the shorter the more is filtered
+  // TODO longterm: static fields...
   static double I, J; // to test the filter
   DavisBlobTracker track; // to send events to next module
 

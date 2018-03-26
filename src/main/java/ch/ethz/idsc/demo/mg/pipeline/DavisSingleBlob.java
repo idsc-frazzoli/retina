@@ -8,6 +8,7 @@ public class DavisSingleBlob {
   private static final int WIDTH = 240; // maybe import those values from other file?
   private static final int HEIGHT = 180;
   // static fields
+  // TODO longterm: static field
   private static int lastTimestamp = 0; // [us]
   // blob parameters
   private final float[] initPos; // float to avoid type cast all the time
@@ -35,30 +36,25 @@ public class DavisSingleBlob {
   // updates the activity of a blob
   public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, float tau, boolean hasHighestScore, float aUp) {
     boolean isPromoted;
-    float deltaT = (float) (davisDvsEvent.time - lastTimestamp);
+    float deltaT = davisDvsEvent.time - lastTimestamp;
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     if (hasHighestScore) {
       // if hidden layer blob hits threshold it should be promoted
-      if (!layerID && (this.activity*exponential + currentScore) > aUp) {
-        isPromoted = true;
-      } else {
-        isPromoted = false;
-      }
-      this.activity = this.activity * exponential + currentScore;
-      return isPromoted;
-    } else {
-      this.activity = this.activity * exponential;
-      isPromoted = false;
+      isPromoted = !layerID && (this.activity * exponential + currentScore) > aUp;
+      activity = activity * exponential + currentScore;
       return isPromoted;
     }
+    activity = activity * exponential;
+    isPromoted = false;
+    return isPromoted;
   }
 
   // updates the blob with a new event that is associated with it
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     // cast into float
-    float eventPosX = (float) davisDvsEvent.x;
-    float eventPosY = (float) davisDvsEvent.x;
+    float eventPosX = davisDvsEvent.x;
+    float eventPosY = davisDvsEvent.x;
     // covariance update
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
@@ -78,8 +74,8 @@ public class DavisSingleBlob {
   // calculate score that is based on distance between event and center of distribution
   public float calculateBlobScore(DavisDvsEvent davisDvsEvent) {
     // cast into float
-    float eventPosX = (float) davisDvsEvent.x;
-    float eventPosY = (float) davisDvsEvent.x;
+    float eventPosX = davisDvsEvent.x;
+    float eventPosY = davisDvsEvent.x;
     // determinant
     float covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
     // compute inverse
@@ -94,7 +90,7 @@ public class DavisSingleBlob {
     float[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
         covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
     float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
-//    currentScore = (float) (1/(2*Math.PI)*1/Math.sqrt(covarianceDeterminant)*Math.exp(exponent));
+    // currentScore = (float) (1/(2*Math.PI)*1/Math.sqrt(covarianceDeterminant)*Math.exp(exponent));
     currentScore = (float) (Math.exp(exponent));
     return currentScore;
   }
@@ -120,11 +116,7 @@ public class DavisSingleBlob {
   }
 
   public boolean blobPromotion(float aUp) {
-    if (activity > aUp) {
-      layerID = true;
-    } else {
-      layerID = false;
-    }
+    layerID = activity > aUp;
     return layerID;
   }
 
@@ -135,11 +127,7 @@ public class DavisSingleBlob {
     float boundPointRight = (float) (pos[0] + numberSigmas * Math.sqrt(covariance[0][0]));
     float boundPointUp = (float) (pos[1] - numberSigmas * Math.sqrt(covariance[1][1]));
     float boundPointDown = (float) (pos[1] + numberSigmas * Math.sqrt(covariance[1][1]));
-    if (boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT) {
-      return true;
-    } else {
-      return false;
-    }
+    return boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT;
   }
 
   public void setLayerID(boolean layerID) {
@@ -148,22 +136,22 @@ public class DavisSingleBlob {
 
   public boolean getLayerID() {
     // is this displayed?
-    return this.layerID;
+    return layerID;
   }
 
   public float getActivity() {
-    return this.activity;
+    return activity;
   }
 
   public float[] getPos() {
-    return this.pos;
+    return pos;
   }
 
   public float[] getInitPos() {
-    return this.initPos;
+    return initPos;
   }
-  
+
   public float getScore() {
-    return this.currentScore;
+    return currentScore;
   }
 }

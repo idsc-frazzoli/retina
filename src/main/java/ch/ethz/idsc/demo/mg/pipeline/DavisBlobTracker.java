@@ -34,7 +34,7 @@ public class DavisBlobTracker {
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker() {
-    blobs = new ArrayList<DavisSingleBlob>();
+    blobs = new ArrayList<>();
     int rowSpacing = WIDTH / (numberRows + 1);
     int columnSpacing = HEIGHT / (initNumberOfBlobs / numberRows + 1);
     for (int i = 0; i < initNumberOfBlobs; i++) {
@@ -91,21 +91,18 @@ public class DavisBlobTracker {
       blobs.get(highScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
       return highScoreBlob;
     }
-    // if not, update best matching hidden blob
-    else {
-      for (int i = 0; i < blobs.size(); i++) {
-        if (!blobs.get(i).getLayerID()) {
-          float hiddenScore = blobs.get(i).calculateBlobScore(davisDvsEvent);
-          // store highest score and which blob it belongs to
-          if (hiddenScore > hiddenHighScore) {
-            hiddenHighScore = hiddenScore;
-            hiddenHighScoreBlob = i;
-          }
+    for (int i = 0; i < blobs.size(); i++) {
+      if (!blobs.get(i).getLayerID()) {
+        float hiddenScore = blobs.get(i).calculateBlobScore(davisDvsEvent);
+        // store highest score and which blob it belongs to
+        if (hiddenScore > hiddenHighScore) {
+          hiddenHighScore = hiddenScore;
+          hiddenHighScoreBlob = i;
         }
       }
-      blobs.get(hiddenHighScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
-      return hiddenHighScoreBlob;
     }
+    blobs.get(hiddenHighScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
+    return hiddenHighScoreBlob;
   }
 
   // update blob activity. If matching blob is in hidden layer and activity hits aUp, return true
@@ -183,14 +180,13 @@ public class DavisBlobTracker {
   }
 
   private void printStatusUpdate(int matchingBlob) {
-    if(matchingBlob >= blobs.size()) {
+    if (matchingBlob >= blobs.size()) {
       System.out.println("Matching blob was deleted");
-    }
-    else {
+    } else {
       // number and activities of active blobs
       System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(true) + " being in active layer.");
       System.out.println(blobs.get(matchingBlob).getActivity() + " activity of matching blob # " + matchingBlob);
-      System.out.print(blobs.get(matchingBlob).getScore()+ " score of matching blob\n");
+      System.out.print(blobs.get(matchingBlob).getScore() + " score of matching blob\n");
     }
   }
 
