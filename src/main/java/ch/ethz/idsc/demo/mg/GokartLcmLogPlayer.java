@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.IOException;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -10,7 +11,7 @@ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = LogfileLocations.DUBI1;
+    cfg.logFile = UserHome.file(LogfileLocations.DUBI1).toString();
     LogPlayer.create(cfg);
   }
 }
