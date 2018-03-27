@@ -16,7 +16,8 @@ public enum RunPipeline {
     boolean useFilter = true;
     File file = UserHome.file(LogfileLocations.DUBI4a);
     InputSubModule input = new InputSubModule(useFilter);
-    input.davisDvsDatagramDecoder.addDvsListener(input);
+    // commented out by Jan!
+    // input.davisDvsDatagramDecoder.addDvsListener(input);
     OfflineLogPlayer.process(file, input);
     // only for testing
     // test the backgroundActivityFilter

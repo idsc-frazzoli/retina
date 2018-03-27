@@ -33,13 +33,13 @@ public class DavisSurfaceOfActiveEvents {
   }
 
   // this function implements a very simple noise filter
-  Boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
+  boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
     updateNeighboursTimestamps(davisDvsEvent);
     int surfaceEntry = timestamps[davisDvsEvent.x][davisDvsEvent.y];
     int newEventTime = davisDvsEvent.time;
-    // TODO problematic time calculation: only integer differences between two time stamps "make sense"
-    // in this case the computation should be: newEventTime - surfaceEntry <= filterConstant
-    return newEventTime <= surfaceEntry + filterConstant; // FIXME
+    // only integer differences between two time stamps "make sense"
+    // in this case the computation should be:
+    return newEventTime - surfaceEntry <= filterConstant;
     // if (surfaceEntry + filterConstant < newEventTime) {
     // return false;
     // } else {
