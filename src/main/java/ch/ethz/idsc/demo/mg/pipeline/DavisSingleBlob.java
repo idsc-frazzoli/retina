@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
+// provides blob object in image space
 public class DavisSingleBlob {
   // camera parameters
   private static final int WIDTH = 240; // maybe import those values from other file?
@@ -39,7 +40,7 @@ public class DavisSingleBlob {
     return isPromoted;
   }
 
-  // updates the blob with a new event that is associated with it
+  // updates the matching blob
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     // cast into float
     float eventPosX = davisDvsEvent.x;
@@ -100,6 +101,8 @@ public class DavisSingleBlob {
     float[] otherPos = otherBlob.getPos();
     float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
     float exponential = (float) (Math.exp(posDiff / dRep));
+    // blob is not repulsed if other blob has zero activity
+    // TODO what should happen if both blobs have zero activity?
     if (otherBlob.getActivity() != 0) {
       pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
           / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);

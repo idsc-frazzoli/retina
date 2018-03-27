@@ -64,6 +64,7 @@ public class DavisBlobTracker {
     degradeBlobs();
     // this part is not required for every single event
     if ((getUpdateTimestamp() - davisDvsEvent.time) > updateInterval) {
+      System.out.println("*****************Update is happening******************");
       // delete blobs if activity too low for hidden layer or out of bounds
       deleteBlobs();
       // repulse blobs from each other
