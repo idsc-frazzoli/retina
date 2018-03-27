@@ -18,25 +18,23 @@ public class DavisBlobTracker {
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
   private static final int initVariance = 1900;
   // algorithm parameters
-  private final float aUp = 1e-3f; // if activity is higher, blob is in active layer
+  private final float aUp = 2e-3f; // if activity is higher, blob is in active layer
   private final float aDown = 1e-4f; // if activity is lower, blob gets deleted
-  private final float scoreThreshold = 5e-4f; // score threshold for active blobs
+  private final float scoreThreshold = 5e-5f; // score threshold for active blobs
   private final float alphaOne = 0.1f; // for blob position update
   private final float alphaTwo = 0.01f; // for blob covariance update
-  private final float numberSigmas = 0.5f; // for out of bounds calculation
+  private final float numberSigmas = 1f; // for out of bounds calculation TODO probably unnecessary
   private final float alphaAttr = 0.01f; // hidden blobs attraction
   private final float dAttr = 40; // [pixel] hidden blobs attraction
   private final float alphaRep = 0; // repulsion equation
   private final float dRep = 10; // repulsion equation
-  private final int tau = 500; // [us] tunes activity update
-  private final int updateInterval = 100; // [us] update interval for deletion, attraction, repulsion functions
+  private final int tau = 5000; // [us] tunes activity update
+  private final int updateInterval = 1000; // [us] update interval for deletion, attraction, repulsion functions
   // fields
   List<DavisSingleBlob> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
   private int lastUpdateTimestamp;
-  // just for the status update
-  // private int lastStatusUpdate = 0; // [us]
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker() {
@@ -63,9 +61,11 @@ public class DavisBlobTracker {
     // degrade active blobs when activity is too low for active layer
     degradeBlobs();
     // this part is not required for every single event
+    
+   // TODO include some out of bound check here
     if ((getUpdateTimestamp() - davisDvsEvent.time) > updateInterval) {
       System.out.println("*****************Update is happening******************");
-      // delete blobs if activity too low for hidden layer or out of bounds
+      // TODO only delete blobs due to low activity here
       deleteBlobs();
       // repulse blobs from each other
       calcRepulsion();
@@ -73,7 +73,7 @@ public class DavisBlobTracker {
       hiddenBlobAttraction();
       setUpdateTimestamp(davisDvsEvent.time);
     }
-    printStatusUpdate(davisDvsEvent);
+    // printStatusUpdate(davisDvsEvent);
     // TODO check if blobs are too small/ wrong shape and delete not fitting blobs
     // TODO put processed tracked blobs in appropriate data structure and send it to next module
     setEventTimestamp(davisDvsEvent.time);
@@ -193,7 +193,6 @@ public class DavisBlobTracker {
     for (int i = 0; i < (blobs.size() - 1); i++) {
       for (int j = i; j < blobs.size(); j++) {
         blobs.get(i).updateRepulsionEquation(alphaRep, dRep, blobs.get(j));
-        // System.out.printf("Updated blob position: %.2f/%.2f\n",blobs.get(i).getPos()[0], blobs.get(i).getPos()[1]);
       }
     }
   }
@@ -213,7 +212,16 @@ public class DavisBlobTracker {
     }
   }
 
-  // return number of active/hidden blobs
+  public List<DavisSingleBlob> getActiveBlobs() {
+    List<DavisSingleBlob> activeBlobs = new ArrayList<>();
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getLayerID()) {
+        activeBlobs.add(blobs.get(i));
+      }
+    }
+    return activeBlobs;
+  }
+
   private int getNumberOfBlobs(boolean whichLayer) {
     int quantity = 0;
     for (int i = 0; i < blobs.size(); i++) {

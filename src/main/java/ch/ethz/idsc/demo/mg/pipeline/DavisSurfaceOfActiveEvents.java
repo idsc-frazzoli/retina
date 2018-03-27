@@ -3,10 +3,11 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** Provides a Surface of Active Events data structure. */
+// provides a Surface of Active Events data structure.
 public class DavisSurfaceOfActiveEvents {
-  private static final int WIDTH = 240; // maybe import these two values from some other file?
+  private static final int WIDTH = 240; // TODO import these two values from some other file?
   private static final int HEIGHT = 180;
+  // fields
   private int[][] timestamps = new int[WIDTH][HEIGHT];
 
   void updateSurface(DavisDvsEvent davisDvsEvent) {
@@ -35,15 +36,6 @@ public class DavisSurfaceOfActiveEvents {
   // this function implements a very simple noise filter
   boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
     updateNeighboursTimestamps(davisDvsEvent);
-    int surfaceEntry = timestamps[davisDvsEvent.x][davisDvsEvent.y];
-    int newEventTime = davisDvsEvent.time;
-    // only integer differences between two time stamps "make sense"
-    // in this case the computation should be:
-    return newEventTime - surfaceEntry <= filterConstant;
-    // if (surfaceEntry + filterConstant < newEventTime) {
-    // return false;
-    // } else {
-    // return true;
-    // }
+    return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;
   }
 }

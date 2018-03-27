@@ -42,10 +42,9 @@ public class DavisSingleBlob {
 
   // updates the matching blob
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
-    // cast into float
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
-    // covariance update
+    // delta covariance
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
     float deltaYY = (eventPosY - pos[1]) * (eventPosY - pos[1]);
@@ -62,12 +61,10 @@ public class DavisSingleBlob {
 
   // calculate score that is based on distance between event and center of probability distribution function
   public float calculateBlobScore(DavisDvsEvent davisDvsEvent) {
-    // cast into float
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
-    // determinant
+    // determinant and inverse
     float covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
-    // compute inverse
     float[][] covarianceInverse = { { covariance[1][1], -covariance[0][1] }, { -covariance[1][0], covariance[0][0] } };
     covarianceInverse[0][0] /= covarianceDeterminant;
     covarianceInverse[0][1] /= covarianceDeterminant;
@@ -116,14 +113,25 @@ public class DavisSingleBlob {
     return layerID;
   }
 
-  // checks if the blob is too close to a boarder and if so returns true.
-  // TODO we assume that the axes of the distribution are x/y axis aligned.
+  // if blob closer than small semiaxis to the boarder, return true
   public boolean isOutOfBounds(float numberSigmas) {
-    float boundPointLeft = (float) (pos[0] - numberSigmas * Math.sqrt(covariance[0][0]));
-    float boundPointRight = (float) (pos[0] + numberSigmas * Math.sqrt(covariance[0][0]));
-    float boundPointUp = (float) (pos[1] - numberSigmas * Math.sqrt(covariance[1][1]));
-    float boundPointDown = (float) (pos[1] + numberSigmas * Math.sqrt(covariance[1][1]));
+    float boundPointLeft = pos[0] - numberSigmas * this.getSemiAxes()[1];
+    float boundPointRight = pos[0] + numberSigmas * this.getSemiAxes()[1];
+    float boundPointUp = pos[1] - numberSigmas * this.getSemiAxes()[1];
+    float boundPointDown = pos[1] + numberSigmas * this.getSemiAxes()[1];
     return boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT;
+  }
+
+  // angle at which the ellipse is rotated
+  public float getRotAngle() {
+    return (float) (0.5 * Math.atan(2 * covariance[0][1] / (covariance[1][1] - covariance[0][0])));
+  }
+
+  public float[] getSemiAxes() {
+    double root = Math.sqrt((covariance[0][0] - covariance[1][1]) * (covariance[0][0] - covariance[1][1]) + 4 * covariance[0][1] * covariance[0][1]);
+    float largeAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] + root)));
+    float smallAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] - root)));
+    return new float[] { largeAxis, smallAxis };
   }
 
   public void setLayerID(boolean layerID) {
@@ -144,6 +152,10 @@ public class DavisSingleBlob {
 
   public float[] getInitPos() {
     return initPos;
+  }
+
+  public float[][] getCovariance() {
+    return covariance;
   }
 
   public float getScore() {
