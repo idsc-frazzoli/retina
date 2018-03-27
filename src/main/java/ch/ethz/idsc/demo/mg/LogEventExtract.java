@@ -14,7 +14,7 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-//    File src = new File("home/mario/"+LogfileLocations.DUBI1);
+    // File src = new File("home/mario/"+LogfileLocations.DUBI1);
     File src = UserHome.file(LogfileLocations.DUBI4);
     System.out.println(src.toString());
     File dst = null;

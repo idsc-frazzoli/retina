@@ -9,18 +9,16 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* For now, we process Offlinelogs. It should be very easy to switch to
- * live DVS events.
- */
+/** For now, we process Offlinelogs. It should be very easy to switch to
+ * live DVS events. */
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
-  final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
   // below for testing
   private boolean useFilter;
   private int backgroundActivityFilterTime = 1000; // [us] the shorter the more is filtered
   private double I, J;
   private DavisBlobTracker track; // to send events to next module
-
 
   public InputSubModule(boolean useFilter) {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -38,8 +36,10 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     ++J;
-    // TODO: somehow every event seems to arrive twice here! WHYYYY
-    if(J%2==0) {      
+    // because 1) "davisDvsDatagramDecoder.addDvsListener(this);"
+    // and 2) "input.davisDvsDatagramDecoder.addDvsListener(input);"
+    // if (J % 2 == 0)
+    {
       track.receiveNewEvent(davisDvsEvent); // send events to next module
     }
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
@@ -47,7 +47,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       ++I;
     }
     // only run algorithm for a few events and see what is happening
-    if(J>400) {
+    if (J > 400) {
       System.exit(0);
     }
   }

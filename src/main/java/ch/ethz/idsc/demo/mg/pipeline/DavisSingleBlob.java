@@ -30,7 +30,7 @@ public class DavisSingleBlob {
     boolean isPromoted;
     if (hasHighestScore) {
       // if hidden layer blob hits threshold it should be promoted
-      isPromoted = !layerID && (this.activity * exponential + currentScore) > aUp;
+      isPromoted = !layerID && (activity * exponential + currentScore) > aUp;
       activity = activity * exponential + currentScore;
       return isPromoted;
     }
