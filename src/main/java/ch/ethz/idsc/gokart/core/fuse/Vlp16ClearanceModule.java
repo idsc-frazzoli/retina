@@ -33,15 +33,6 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  // private final float vlp16_ZLo;
-  // private final float vlp16_ZHi;
-  /** TODO Valentina
-   * instead of using the simple formula lo < z && z < hi
-   * create an instance of SimpleSpacialObstaclePredicate
-   * in the constructor of Vlp16ClearanceModule and store it as a member in Vlp16ClearanceModule
-   * 
-   * then, in the function lidarSpacial call the function isObstacle instead of
-   * "vlp16_ZLo < z && z < vlp16_ZHi" */
   private final SpacialObstaclePredicate spacialObstaclePredicate;
 
   public Vlp16ClearanceModule() {
@@ -67,15 +58,17 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   /***************************************************/
   @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
-    float x = lidarSpacialEvent.coords[0];
-    float z = lidarSpacialEvent.coords[2];
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    if (spacialObstaclePredicate.isObstacle(x, z) && Objects.nonNull(_clearanceTracker)) {
-      Tensor local = Tensors.vectorDouble( //
-          lidarSpacialEvent.coords[0], //
-          lidarSpacialEvent.coords[1]);
-      if (_clearanceTracker.probe(local))
-        penaltyTimeout.flagPenalty();
+    if (Objects.nonNull(_clearanceTracker)) {
+      float x = lidarSpacialEvent.coords[0];
+      float z = lidarSpacialEvent.coords[2];
+      if (spacialObstaclePredicate.isObstacle(x, z)) {
+        Tensor local = Tensors.vectorDouble( //
+            lidarSpacialEvent.coords[0], //
+            lidarSpacialEvent.coords[1]);
+        if (_clearanceTracker.probe(local))
+          penaltyTimeout.flagPenalty();
+      }
     }
   }
 
