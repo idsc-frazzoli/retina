@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.gui.DavisDetailModule;
+import ch.ethz.idsc.demo.mg.gui.PipeDetailModule;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -13,7 +13,7 @@ enum GokartLcmLogPlayer {
     LogPlayerConfig cfg = new LogPlayerConfig();
     cfg.logFile = LogfileLocations.DUBI4a;
     try {
-      DavisDetailModule.standalone();
+      PipeDetailModule.standalone();
     } catch (Exception e) {
       e.printStackTrace();
     }
