@@ -77,6 +77,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
       Scalar ratio = Ramp.FUNCTION.apply(gokartJoystickInterface.getAheadAverage());
+      ratio = RealScalar.of(1.0); // TODO only demo day
       purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(ratio));
     }
     purePursuitRimo.setOperational(status);
