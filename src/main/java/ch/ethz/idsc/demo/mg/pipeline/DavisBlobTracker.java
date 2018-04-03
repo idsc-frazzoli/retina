@@ -16,7 +16,7 @@ public class DavisBlobTracker {
   // tracker initialization parameters
   private static final int initNumberOfBlobs = 24;
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
-  private static final int initVariance = 1900;
+  private static final int initVariance = 1600;
   // algorithm parameters
   private final float aUp = 2e-3f; // if activity is higher, blob is in active layer
   private final float aDown = 1e-4f; // if activity is lower, blob gets deleted
