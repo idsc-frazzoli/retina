@@ -18,6 +18,5 @@ enum GokartLcmLogPlayer {
       e.printStackTrace();
     }
     LogPlayer.create(cfg);
-
   }
 }

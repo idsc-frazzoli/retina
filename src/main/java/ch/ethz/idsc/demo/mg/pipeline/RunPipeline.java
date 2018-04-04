@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.mg.LogfileLocations;
-import ch.ethz.idsc.demo.mg.gui.PipeDetailModule;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 
 // choose log file to run pipeline
