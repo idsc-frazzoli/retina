@@ -42,16 +42,16 @@ public class PipeViewerFrame implements TimedImageListener {
   private final Timer timer = new Timer();
   boolean tallyAps = false;
   public final PipeViewerComponent pipeViewerComponent = new PipeViewerComponent();
-//  public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
-//      davisTallyEvent -> {
-//        if (tallyAps)
-//          davisViewerComponent.davisTallyEvent = davisTallyEvent;
-//      });
-//  public final DvsTallyProvider dvsTallyProvider = new DvsTallyProvider( //
-//      davisTallyEvent -> {
-//        if (!tallyAps)
-//          davisViewerComponent.davisTallyEvent = davisTallyEvent;
-//      });
+  // public final DavisTallyProvider davisTallyProvider = new DavisTallyProvider( //
+  // davisTallyEvent -> {
+  // if (tallyAps)
+  // davisViewerComponent.davisTallyEvent = davisTallyEvent;
+  // });
+  // public final DvsTallyProvider dvsTallyProvider = new DvsTallyProvider( //
+  // davisTallyEvent -> {
+  // if (!tallyAps)
+  // davisViewerComponent.davisTallyEvent = davisTallyEvent;
+  // });
   boolean recording = false;
 
   public PipeViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
@@ -76,11 +76,11 @@ public class PipeViewerFrame implements TimedImageListener {
       {
         SpinnerLabel<Integer> spinnerLabel = new SpinnerLabel<>();
         spinnerLabel.addSpinnerListener(shift -> {
-//          davisTallyProvider.setShift(shift);
-//          dvsTallyProvider.setShift(shift);
+          // davisTallyProvider.setShift(shift);
+          // dvsTallyProvider.setShift(shift);
         });
         spinnerLabel.setList(Arrays.asList(6, 7, 8, 9));
-//        spinnerLabel.setValueSafe(davisTallyProvider.getShift());
+        // spinnerLabel.setValueSafe(davisTallyProvider.getShift());
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(70, 28), "shift");
       }
       {
@@ -90,14 +90,14 @@ public class PipeViewerFrame implements TimedImageListener {
         spinnerLabel.setValueSafe(abstractAccumulatedImage.getInterval());
         spinnerLabel.addToComponentReduced(jToolBar, new Dimension(80, 28), "interval");
       }
-//      {
-//        JToggleButton jToggleButton = new JToggleButton("aps");
-//        jToggleButton.addActionListener(e -> {
-//          pipeViewerComponent.aps = jToggleButton.isSelected();
-//          tallyAps = jToggleButton.isSelected();
-//        });
-//        jToolBar.add(jToggleButton);
-//      }
+      // {
+      // JToggleButton jToggleButton = new JToggleButton("aps");
+      // jToggleButton.addActionListener(e -> {
+      // pipeViewerComponent.aps = jToggleButton.isSelected();
+      // tallyAps = jToggleButton.isSelected();
+      // });
+      // jToolBar.add(jToggleButton);
+      // }
       {
         JToggleButton jToggleButton = new JToggleButton("record");
         jToggleButton.setToolTipText("record to SAE images to " + EXPORT_DIRECTORY.toString());
@@ -153,5 +153,4 @@ public class PipeViewerFrame implements TimedImageListener {
       }
     }
   }
-
 }

@@ -24,20 +24,16 @@ public class PipelineVisualization {
   private JPanel jPanel = new JPanel();
   // fields
   private int imageCount = 0;
-  
-  public PipelineVisualization(){
-    
-    
+
+  public PipelineVisualization() {
   }
-  
+
   public void showImage() throws IOException {
     jFrame.setSize(600, 600);
     jFrame.setVisible(true);
     jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     jFrame.setTitle("Testing");
-    
     jPanel = (JPanel) jFrame.getContentPane();
-    
   }
 
   public void generateImage(List<DavisSingleBlob> activeBlobs) throws IOException {
@@ -60,11 +56,9 @@ public class PipelineVisualization {
       graphics.draw(e);
       graphics.setTransform(old);
     }
-//    showImage();
+    // showImage();
     ++imageCount;
-    
-    //TODO show a jFrame here
-
+    // TODO show a jFrame here
     ImageIO.write(bufferedImage, "png", UserHome.Pictures(String.format("example%03d.png", imageCount)));
     System.out.printf("Image saved as example%03d.png\n", imageCount);
   }

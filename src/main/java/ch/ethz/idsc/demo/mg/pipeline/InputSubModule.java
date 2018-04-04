@@ -1,24 +1,19 @@
 //code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
-import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
-import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-// submodule filters event stream and allows visualization
+// submodule filters event stream
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // parameters
-  private final int maxEventCount = 100000000;
+  private final int maxEventCount = 500;
   private final int backgroundActivityFilterTime = 1000; // [us] the shorter the more is filtered
   private final int imageInterval = 1000; // [us]
   private final boolean useFilter = true;
@@ -31,13 +26,10 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int eventCount;
   private int filteredEventCount;
   private int lastTimestamp;
+  private int begin, end;
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
-    // we probably need more listeners here
-    DavisDevice davisDevice = Davis240c.INSTANCE;
-    AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
-    davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
   }
 
   @Override
@@ -49,21 +41,30 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    if (eventCount == 0) {
+      begin = davisDvsEvent.time;
+    }
     ++eventCount;
+    // long startTime = System.nanoTime();
     track.receiveNewEvent(davisDvsEvent);
+    // long endTime = System.nanoTime();
+    // long elapsedTime = endTime-startTime;
+    // System.out.println("Elapsed Time: "+elapsedTime);
     if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
-//      try {
-//        //viz.generateImage(track.getActiveBlobs());
-//        // generateImage();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
+      // try {
+      // //viz.generateImage(track.getActiveBlobs());
+      // } catch (IOException e) {
+      // e.printStackTrace();
+      // }
       lastTimestamp = davisDvsEvent.time;
     }
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       ++filteredEventCount;
     }
     if (eventCount > maxEventCount) {
+      end = davisDvsEvent.time;
+      int diff = end - begin;
+      System.out.println("Elapsed time [us]: " + diff + " with " + eventCount + " events");
       System.exit(0);
     }
   }

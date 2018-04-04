@@ -27,12 +27,13 @@ public class DavisSingleBlob {
   }
 
   // updates the activity of a blob
-  public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, boolean hasHighestScore, float aUp, float exponential) {
+  public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
     if (hasHighestScore) {
       // if hidden layer blob hits threshold it should be promoted
-      isPromoted = !layerID && (activity * exponential + currentScore) > aUp;
-      activity = activity * exponential + currentScore;
+      float potentialActivity = activity * exponential + currentScore;
+      isPromoted = !layerID && potentialActivity > aUp;
+      activity = potentialActivity;
       return isPromoted;
     }
     activity = activity * exponential;
@@ -113,12 +114,12 @@ public class DavisSingleBlob {
     return layerID;
   }
 
-  // if blob closer than small semiaxis to the boarder, return true
-  public boolean isOutOfBounds(float numberSigmas) {
-    float boundPointLeft = pos[0] - numberSigmas * this.getSemiAxes()[1];
-    float boundPointRight = pos[0] + numberSigmas * this.getSemiAxes()[1];
-    float boundPointUp = pos[1] - numberSigmas * this.getSemiAxes()[1];
-    float boundPointDown = pos[1] + numberSigmas * this.getSemiAxes()[1];
+  // if blob is too close to boundary, return true
+  public boolean isOutOfBounds(int boundaryDistance) {
+    float boundPointLeft = pos[0] - boundaryDistance;
+    float boundPointRight = pos[0] + boundaryDistance;
+    float boundPointUp = pos[1] - boundaryDistance;
+    float boundPointDown = pos[1] + boundaryDistance;
     return boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT;
   }
 

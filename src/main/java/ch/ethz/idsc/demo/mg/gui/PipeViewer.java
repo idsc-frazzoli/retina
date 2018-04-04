@@ -11,49 +11,49 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 // draft for pipeline
 public class PipeViewer implements StartAndStoppable {
- private final DavisLcmClient davisLcmClient;
- private final DavisImuLcmClient davisImuLcmClient;
- public final PipeViewerFrame pipeViewerFrame;
+  private final DavisLcmClient davisLcmClient;
+  private final DavisImuLcmClient davisImuLcmClient;
+  public final PipeViewerFrame pipeViewerFrame;
 
- public PipeViewer(String cameraId) {
-   DavisDevice davisDevice = Davis240c.INSTANCE;
-   davisLcmClient = new DavisLcmClient(cameraId);
-   AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
-   abstractAccumulatedImage.setInterval(25_000);
-   pipeViewerFrame = new PipeViewerFrame(davisDevice, abstractAccumulatedImage);
-   // handle dvs
-   davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
-//   davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
-//   davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.dvsTallyProvider);
-//   // handle aps
-//   davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
-//   davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
-//   // handle aps
-//   davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.rstListener);
-//   davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.rstListener);
-//   // handle dif
-//   DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
-//   davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
-//   SignalResetDifference signalResetDifference = SignalResetDifference.amplified(davisImageBuffer);
-//   davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
-//   signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
-   // handle imu
-   davisImuLcmClient = new DavisImuLcmClient(cameraId);
-   davisImuLcmClient.addListener(pipeViewerFrame.pipeViewerComponent);
- }
+  public PipeViewer(String cameraId) {
+    DavisDevice davisDevice = Davis240c.INSTANCE;
+    davisLcmClient = new DavisLcmClient(cameraId);
+    AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
+    abstractAccumulatedImage.setInterval(25_000);
+    pipeViewerFrame = new PipeViewerFrame(davisDevice, abstractAccumulatedImage);
+    // handle dvs
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
+    // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.davisTallyProvider.dvsListener);
+    // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisViewerFrame.dvsTallyProvider);
+    // // handle aps
+    // davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.sigListener);
+    // davisLcmClient.davisSigDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.sigListener);
+    // // handle aps
+    // davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisViewerComponent.rstListener);
+    // davisLcmClient.davisRstDatagramDecoder.addListener(davisViewerFrame.davisTallyProvider.rstListener);
+    // // handle dif
+    // DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
+    // davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);
+    // SignalResetDifference signalResetDifference = SignalResetDifference.amplified(davisImageBuffer);
+    // davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
+    // signalResetDifference.addListener(davisViewerFrame.davisViewerComponent.difListener);
+    // handle imu
+    davisImuLcmClient = new DavisImuLcmClient(cameraId);
+    davisImuLcmClient.addListener(pipeViewerFrame.pipeViewerComponent);
+  }
 
- @Override
- public void start() {
-   // start to listen
-   davisLcmClient.startSubscriptions();
-   davisImuLcmClient.startSubscriptions();
- }
+  @Override
+  public void start() {
+    // start to listen
+    davisLcmClient.startSubscriptions();
+    davisImuLcmClient.startSubscriptions();
+  }
 
- @Override
- public void stop() {
-   davisImuLcmClient.stopSubscriptions();
-   davisLcmClient.stopSubscriptions();
-   pipeViewerFrame.jFrame.setVisible(false);
-   pipeViewerFrame.jFrame.dispose();
- }
+  @Override
+  public void stop() {
+    davisImuLcmClient.stopSubscriptions();
+    davisLcmClient.stopSubscriptions();
+    pipeViewerFrame.jFrame.setVisible(false);
+    pipeViewerFrame.jFrame.dispose();
+  }
 }

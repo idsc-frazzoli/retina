@@ -11,11 +11,10 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 public enum RunPipeline {
   ;
   public static void main(String[] args) throws IOException {
-    File file = new File(LogfileLocations.DUBI4);
-    
+    File file = new File(LogfileLocations.DUBI4a);
     InputSubModule inputModule = new InputSubModule();
     try {
-      PipeDetailModule.standalone();
+      // PipeDetailModule.standalone();
     } catch (Exception e) {
       e.printStackTrace();
     }
