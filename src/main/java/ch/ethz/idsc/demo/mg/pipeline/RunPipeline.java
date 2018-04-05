@@ -12,11 +12,6 @@ public enum RunPipeline {
   public static void main(String[] args) throws IOException {
     File file = new File(LogfileLocations.DUBI4a);
     InputSubModule inputModule = new InputSubModule();
-    try {
-      // PipeDetailModule.standalone();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     OfflineLogPlayer.process(file, inputModule);
   }
 }

@@ -18,26 +18,26 @@ public class DavisBlobTracker {
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
   private static final int initVariance = 1600;
   // algorithm parameters
-  private final float aUp = 5e-3f; // if activity is higher, blob is in active layer
-  private final float aDown = 1e-4f; // if activity is lower, blob gets deleted
-  private final float scoreThreshold = 1e-4f; // score threshold for active blobs
+  private final float aUp = 15e-3f; // if activity is higher, blob is in active layer
+  private final float aDown = 5e-4f; // if activity is lower, blob gets deleted
+  private final float scoreThreshold = 2e-4f; // score threshold for active blobs
   private final float alphaOne = 0.1f; // for blob position update
   private final float alphaTwo = 0.01f; // for blob covariance update
   private final float alphaAttr = 0.01f; // hidden blobs attraction
-  private final float dAttr; // [pixel] hidden blobs attraction. Value assigned in constructor.
+  private final float dAttr; // [pixel] hidden blobs attraction
   private final float alphaRep = 0; // repulsion equation
   private final float dRep = 10; // repulsion equation
   private final int boundaryDistance = 10; // [pixel] for out of bounds calculation
   private final int tau = 5000; // [us] tunes activity update
-  private final int acquiringInterval = 1000; // [us] acquiring interval to rise activity over aDown
+  private final int acquiringInterval = 2500; // [us] acquiring interval to rise activity over aDown
   private final int repulseAttractInterval = 1000; // [us] update interval attraction and repulsion functions
   // fields
   List<DavisSingleBlob> blobs;
   private int matchingBlob;
-  private boolean isPromoted;
   private int lastEventTimestamp;
   private int lastUpdateTimestamp;
   private int lastAcquireTimestamp;
+  private boolean isPromoted;
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker() {
@@ -50,7 +50,8 @@ public class DavisBlobTracker {
       DavisSingleBlob davisSingleBlob = new DavisSingleBlob(column * columnSpacing, row * rowSpacing, initVariance);
       blobs.add(davisSingleBlob);
     }
-    dAttr = 30; // should be min of columnspacing or so
+    // attraction parameter such that blobs do not move to other blobs 'territory'
+    dAttr = 0.5f * Math.min(rowSpacing, columnSpacing);
   }
 
   // general todo list
@@ -58,13 +59,8 @@ public class DavisBlobTracker {
   // TODO instead of exponential, use a lookup table or an approximation
   // TODO should the algorithm parameters be static fields?
   // TODO limit the number of active/hidden blobs
-  // TODO calculate dAttr depending on column/row spacing (in constructor)
   public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
-    // long startTime = System.currentTimeMillis();
-    // long endTime = System.currentTimeMillis();
-    // long elapsedTime = endTime-startTime;
-    // System.out.println("CalculateScore: "+elapsedTime);
     calcScoreAndParams(davisDvsEvent);
     // update activity of all blobs and check if matching blob gets promoted
     isPromoted = updateActivity(davisDvsEvent);
@@ -77,20 +73,19 @@ public class DavisBlobTracker {
     // out of bound check
     outOfBoundsCheck();
     // restore/delete blobs if activity not high enough after acquiringInterval
-    if ((getAcquireTimestamp() - davisDvsEvent.time) > acquiringInterval) {
+    if ((davisDvsEvent.time - getAcquireTimestamp()) > acquiringInterval) {
       deletelowActivityBlobs();
       setAcquireTimestamp(davisDvsEvent.time);
     }
-    if ((getUpdateTimestamp() - davisDvsEvent.time) > repulseAttractInterval) {
-      System.out.println("*****************Update is happening******************");
+    if ((davisDvsEvent.time - getUpdateTimestamp()) > repulseAttractInterval) {
       // repulse blobs from each other
       calcRepulsion();
       // for all blobs of hidden layer use attraction equation
       hiddenBlobAttraction();
       setUpdateTimestamp(davisDvsEvent.time);
+      printStatusUpdate(davisDvsEvent);
     }
     // for testing
-    printStatusUpdate(davisDvsEvent);
     // update time
     setEventTimestamp(davisDvsEvent.time);
   }
@@ -191,7 +186,7 @@ public class DavisBlobTracker {
     // delete all additional blobs with low activity
     for (int i = initNumberOfBlobs; i < blobs.size(); i++) {
       if (blobs.get(i).isOutOfBounds(boundaryDistance)) {
-        System.out.println("Blob has been removed due to out of bounds!");
+        // System.out.println("Blob #" + i + " has been removed due to out of bounds!");
         blobs.remove(i);
       }
     }
@@ -213,7 +208,7 @@ public class DavisBlobTracker {
     // delete all additional blobs with low activity
     for (int i = initNumberOfBlobs; i < blobs.size(); i++) {
       if (blobs.get(i).getActivity() < aDown) {
-        System.out.println("Blob has been removed due to low activity!");
+        // System.out.println("Blob #" + i + " of " + blobs.size() + " has been removed due to low activity!");
         blobs.remove(i);
       }
     }
@@ -226,7 +221,7 @@ public class DavisBlobTracker {
       if (!blobs.get(i).getLayerID()) {
         isReset = blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
         if (isReset) {
-          System.out.println("Blob # " + i + " is reset to initial position.");
+          // System.out.println("Blob # " + i + " is reset due to attraction equation");
         }
       }
     }
@@ -242,7 +237,7 @@ public class DavisBlobTracker {
     }
   }
 
-  private void printStatusUpdate(DavisDvsEvent davisDvsEvent) {
+  public void printStatusUpdate(DavisDvsEvent davisDvsEvent) {
     if (matchingBlob >= blobs.size()) {
       System.out.println("Matching blob was deleted");
     } else {
@@ -257,10 +252,17 @@ public class DavisBlobTracker {
     }
   }
 
-  public List<DavisSingleBlob> getActiveBlobs() {
+  // return list of blobs. layerId=2: all blobs, layerId==1: active blobs, layerId=0: hiddenblobs
+  public List<DavisSingleBlob> getBlobList(int layerId) {
     List<DavisSingleBlob> activeBlobs = new ArrayList<>();
+    if (layerId == 2) {
+      return blobs;
+    }
     for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getLayerID()) {
+      if (layerId == 1 && blobs.get(i).getLayerID()) {
+        activeBlobs.add(blobs.get(i));
+      }
+      if (layerId == 0 && !blobs.get(i).getLayerID()) {
         activeBlobs.add(blobs.get(i));
       }
     }
