@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
@@ -31,7 +33,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -61,13 +62,16 @@ public class ResampledLidarRender extends LidarRender {
       Graphics2D gfx = bi.createGraphics();
       // gfx.setColor(Color.black);
       // gfx.fillRect(0, 0, 640, 640);
-      gfx.setColor(Color.white);
+      gfx.setColor(Color.red);
       gl.pushMatrix(pose);
       gl.pushMatrix(LIDAR);
+      SpacialObstaclePredicate spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
       for (int count = 0; count < length; count += 3) {
         Tensor x = Tensors.vectorDouble(fb.get(), fb.get(), fb.get());
+        if (spacialObstaclePredicate.isObstacle(x)) {
         Point2D p = gl.toPoint2D(x);
         gfx.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
+        }
       }
       gl.popMatrix();
       gl.popMatrix();
