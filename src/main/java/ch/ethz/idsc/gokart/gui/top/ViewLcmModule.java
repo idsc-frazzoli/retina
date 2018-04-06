@@ -99,6 +99,7 @@ abstract class ViewLcmModule extends AbstractModule {
       LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
       lidarAngularFiringCollector.addListener(lidarRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);

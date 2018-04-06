@@ -8,11 +8,14 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
@@ -20,11 +23,15 @@ import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -32,12 +39,41 @@ import ch.ethz.idsc.tensor.sca.Round;
 // the points should be resampled after each scan and not before each draw!
 // the localization should happen in a separate thread that does not require the window to be open
 public class ResampledLidarRender extends LidarRender {
+  protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
   private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+  BufferedImage biglobal = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
   public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
+  LidarRayBlockListener lrbl = new LidarRayBlockListener() {
+    @Override
+    public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+      int dim = lidarRayBlockEvent.dimensions;
+      System.out.println("lidar dim=" + dim);
+      FloatBuffer fb = lidarRayBlockEvent.floatBuffer;
+      int length = fb.remaining();
+      GeometricLayer gl = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+      Tensor state = mappedPoseInterface.getPose(); // {x[m],y[m],angle[]}
+      Tensor pose = GokartPoseHelper.toSE2Matrix(state);
+      BufferedImage bi = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D gfx = bi.createGraphics();
+      // gfx.setColor(Color.black);
+      // gfx.fillRect(0, 0, 640, 640);
+      gfx.setColor(Color.white);
+      gl.pushMatrix(pose);
+      gl.pushMatrix(LIDAR);
+      for (int count = 0; count < length; count += 3) {
+        Tensor x = Tensors.vectorDouble(fb.get(), fb.get(), fb.get());
+        Point2D p = gl.toPoint2D(x);
+        gfx.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
+      }
+      gl.popMatrix();
+      gl.popMatrix();
+      biglobal = bi;
+    }
+  };
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -48,6 +84,7 @@ public class ResampledLidarRender extends LidarRender {
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
+    graphics.drawImage(biglobal, 0, 0, null);
     if (Objects.isNull(_points))
       return;
     final Tensor points = _points;
@@ -58,7 +95,7 @@ public class ResampledLidarRender extends LidarRender {
     if (flagSnap || trackSupplier.get()) {
       flagSnap = false;
       // ---
-      Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
+      Tensor state = mappedPoseInterface.getPose(); // {x[m],y[m],angle[]}
       // System.out.println("IN = " + state);
       lidarGyroLocalization.setState(state);
       Stopwatch stopwatch = Stopwatch.started();
