@@ -89,7 +89,6 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapUpdate.addActionListener(lidarRender.action_mapUpdate);
       viewLcmFrame.jButtonMapUpdate.setEnabled(false);
       viewLcmFrame.jButtonSnap.addActionListener(lidarRender.action_snap);
-      lidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       lidarRender.setPointSize(2);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 128, 128));
@@ -102,7 +101,6 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
-      davisImuLcmClient.addListener(lidarRender.lidarGyroLocalization);
     }
     {
       viewLcmFrame.geometricComponent.addRenderInterface(new CurveRender());

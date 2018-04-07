@@ -30,6 +30,7 @@ In conclusion: please spend some time on code items that may not be the highligh
 * minimal redundancy
 * use of [immutable objects](https://en.wikipedia.org/wiki/Immutable_object)
 * tests and test coverage
+* comments (express the purpose of a class, and the intention of a function)
 * uniform code format (automatic)
 
 Typically, these objectives are not achieved in the first version of the implementation.

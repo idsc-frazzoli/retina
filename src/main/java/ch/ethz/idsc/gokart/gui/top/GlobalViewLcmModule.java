@@ -5,6 +5,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
+import ch.ethz.idsc.gokart.core.slam.LocalizationModule;
 
 public class GlobalViewLcmModule extends ViewLcmModule {
   private final GokartPoseOdometry gokartPoseOdometry = //
@@ -15,8 +16,10 @@ public class GlobalViewLcmModule extends ViewLcmModule {
   }
 
   public static void standalone() throws Exception {
+    LocalizationModule localizationModule = new LocalizationModule();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
+    localizationModule.first();
     globalViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
