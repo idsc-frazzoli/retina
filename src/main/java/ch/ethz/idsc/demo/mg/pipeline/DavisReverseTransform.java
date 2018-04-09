@@ -1,4 +1,4 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class DavisReverseTransform {
     transformMatrix = new float[][] { { 1, 0 }, { 0, 1 } };
   }
 
-  private List<PhysicalBlob> transformBlobs(List<DavisSingleBlob> blobs) {
+  private List<PhysicalBlob> transformBlobs(List<TrackedBlob> blobs) {
     physicalBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       PhysicalBlob singlePhysicalBlob = transformSingleBlob(blobs.get(i));
@@ -26,7 +26,7 @@ public class DavisReverseTransform {
     return physicalBlobs;
   }
 
-  private PhysicalBlob transformSingleBlob(DavisSingleBlob singleBlob) {
+  private PhysicalBlob transformSingleBlob(TrackedBlob trackedBlob) {
     PhysicalBlob physicalBlob = new PhysicalBlob();
     return physicalBlob;
   }
