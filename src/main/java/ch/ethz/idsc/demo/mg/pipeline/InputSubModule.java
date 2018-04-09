@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.Scalar;
 // submodule filters event stream
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // parameters
-  private final int maxEventCount = 600000;
+  private final int maxEventCount = 3000000;
   private final int backgroundActivityFilterTime = 3500; // [us] the shorter the more is filtered
   private final int imageInterval = 15000; // [us]
   private final boolean useFilter = true;
@@ -32,6 +32,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int lastTimestamp;
   private int begin, end;
   private long startTime, endTime;
+  private boolean saveImages = true;
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -71,13 +72,15 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       viz.setImage(frames[0].getAccumulatedEvents(), 0);
       viz.setImage(frames[1].trackOverlay(track.getBlobList(1)), 1);
       viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
-      // try {
-      // viz.saveImages();
-      //// track.printStatusUpdate(davisDvsEvent);
-      // } catch (IOException e) {
-      // // TODO Auto-generated catch block
-      // e.printStackTrace();
-      // }
+      if(saveImages) {
+       try {
+       viz.saveImages();
+      // track.printStatusUpdate(davisDvsEvent);
+       } catch (IOException e) {
+       // TODO Auto-generated catch block
+       e.printStackTrace();
+       }
+      }
       frames[0].clearImage();
       frames[1].clearImage();
       frames[2].clearImage();

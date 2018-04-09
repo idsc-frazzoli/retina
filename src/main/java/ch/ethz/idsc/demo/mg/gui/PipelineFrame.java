@@ -31,8 +31,8 @@ public class PipelineFrame {
   }
   // general todo list
   // TODO: white and black events look nice in frame, however the polarity is neglected by the tracking algorithm
+  // TODO: check if ellipse drawing is actually correct
 
-  // image gets flippe due to camera orientation
   public BufferedImage getAccumulatedEvents() {
     return flipHorizontally(bufferedImage);
   }
@@ -59,7 +59,7 @@ public class PipelineFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  // flips image along horizontal axis
+  // flips image along horizontal axis - because camera is mounted upside down
   private BufferedImage flipHorizontally(BufferedImage bufferedImage) {
     AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
     tx.translate(0, -bufferedImage.getHeight());

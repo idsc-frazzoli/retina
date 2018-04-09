@@ -25,7 +25,6 @@ public class PipelineVisualization {
       graphics.drawImage(bufferedImage[1], 50, 220, null);
       graphics.drawString("Filtered event stream with hidden blobs", 50, 413);
       graphics.drawImage(bufferedImage[2], 50, 420, null);
-      
     }
   };
   private int imageCount = 0;
@@ -47,7 +46,7 @@ public class PipelineVisualization {
 
   public void saveImages() throws IOException {
     imageCount++;
-//    ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("example%03d.png", imageCount)));
+    // ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("example%03d.png", imageCount)));
     ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%03d.png", imageCount)));
     ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%03d.png", imageCount)));
     System.out.printf("Images saved as example%03d.png\n", imageCount);
