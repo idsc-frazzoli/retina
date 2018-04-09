@@ -109,6 +109,7 @@ public class DavisSingleBlob {
   // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
   // }
   // }
+  //
   public boolean blobPromotion(float aUp) {
     layerID = activity > aUp;
     return layerID;
