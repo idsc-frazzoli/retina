@@ -1,4 +1,4 @@
-// code by jph
+// code by jph and mg
 package ch.ethz.idsc.demo.mg;
 
 import java.awt.Color;

@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.demo.mg;
 
 import java.awt.Graphics;

@@ -1,7 +1,6 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.gui.PipelineFrame;
@@ -57,7 +56,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       startTime = System.currentTimeMillis();
     }
     ++eventCount;
-//    if(eventCount<1000000) return;
+    // if(eventCount<1000000) return;
     // send event to tracker and image frame
     track.receiveNewEvent(davisDvsEvent);
     frames[0].receiveEvent(davisDvsEvent);
@@ -90,7 +89,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       end = davisDvsEvent.time;
       endTime = System.currentTimeMillis();
       int diff = end - begin;
-      System.out.println("Percentage hit by active blobs: "+track.hitthreshold/maxEventCount*100);
+      System.out.println("Percentage hit by active blobs: " + track.hitthreshold / maxEventCount * 100);
       System.out.println("Elapsed time in the eventstream [ms]: " + diff / 1000 + " with " + eventCount + " events");
       long elapsedTime = endTime - startTime;
       System.out.println("Computation time: " + elapsedTime + "[ms]");

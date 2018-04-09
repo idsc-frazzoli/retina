@@ -14,9 +14,9 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 
 // sets up the window for all the pipelineFrames
 public class PipelineVisualization {
-  private JFrame jFrame = new JFrame();
-  private BufferedImage[] bufferedImage = new BufferedImage[3];
-  private JComponent jComponent = new JComponent() {
+  private final JFrame jFrame = new JFrame();
+  private final BufferedImage[] bufferedImage = new BufferedImage[3];
+  private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Raw event stream", 50, 13);
@@ -30,13 +30,14 @@ public class PipelineVisualization {
   private int imageCount = 0;
 
   public PipelineVisualization() {
+    bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+    bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+    // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
     jFrame.setBounds(100, 100, 350, 650);
     jFrame.setVisible(true);
-    bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
   }
 
   public void setImage(BufferedImage bufferedImage, int imgNumber) {

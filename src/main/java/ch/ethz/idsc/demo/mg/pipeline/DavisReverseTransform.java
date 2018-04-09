@@ -1,4 +1,4 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.util.ArrayList;
