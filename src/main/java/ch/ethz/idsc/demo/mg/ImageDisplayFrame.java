@@ -41,7 +41,6 @@ class ImageDisplayFrame {
       graphics.drawString("" + count, 10, 10);
       imageDisplayFrame.setImage(bufferedImage);
       Thread.sleep(500);
-      // System.out.println();
       ++count;
     }
   }

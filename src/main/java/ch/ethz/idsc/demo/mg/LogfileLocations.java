@@ -13,9 +13,9 @@ public enum LogfileLocations {
   public static final String DUBI4 = "/home/mario/logs/20180307T154859_0cd18c6b.lcm.00";
   // extracted part of DUBI4 log file
   public static final String DUBI4a = "/home/mario/logs/20180307T154859_0cd18c6bExtracted.lcm";
-  // log file not yet analyzed
+  // driving 8 shape, smae cones as in DUBI4
   public static final String DUBI5 = "/home/mario/logs/20180307T165102_6e45300d.lcm.00";
-  // log file not yet analyzed
+  // 10sec, only noise
   public static final String DUBI6 = "/home/mario/logs/20180308T162608_45b9eed8.lcm.00";
   // 22sec, only noise
   public static final String DUBI7 = "/home/mario/logs/20180308T162751_45b9eed8.lcm.00";

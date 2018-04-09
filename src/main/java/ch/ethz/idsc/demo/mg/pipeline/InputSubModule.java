@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.awt.Color;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.gui.PipelineFrame;
@@ -11,10 +13,10 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-// submodule filters event stream
+// this module distributes the event stream to the visualization and control pipeline
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // parameters
-  private final int maxEventCount = 3000000;
+  private final int maxEventCount = 5000000;
   private final int backgroundActivityFilterTime = 3500; // [us] the shorter the more is filtered
   private final int imageInterval = 15000; // [us]
   private final boolean useFilter = true;
@@ -31,7 +33,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int lastTimestamp;
   private int begin, end;
   private long startTime, endTime;
-  private boolean saveImages = true;
+  private boolean saveImages = false;
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -69,8 +71,10 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     // the events are accumulated for the interval time and then displayed in a single frame
     if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
       viz.setImage(frames[0].getAccumulatedEvents(), 0);
-      viz.setImage(frames[1].trackOverlay(track.getBlobList(1)), 1);
-      viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
+      // active blobs get red color
+      viz.setImage(frames[1].trackOverlay(track.getBlobList(1),Color.RED), 1);
+      // hidden blobs get gray
+      viz.setImage(frames[2].trackOverlay(track.getBlobList(0),Color.GRAY), 2);
       if(saveImages) {
        try {
        viz.saveImages();

@@ -3,14 +3,17 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.gui.DavisDetailModule;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
 enum GokartLcmLogPlayer {
   ;
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = LogfileLocations.DUBI4a;
+    DavisDetailModule davis = new DavisDetailModule();
+    cfg.logFile = LogfileLocations.DUBI4;
     LogPlayer.create(cfg);
+    DavisDetailModule.standalone();
   }
 }

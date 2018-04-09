@@ -41,27 +41,27 @@ public class DavisSingleBlob {
     return isPromoted;
   }
 
-  // updates the matching blob
+  // updates parameters of matching blob
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
     // position update
-    pos[0] = (1 - alphaOne) * pos[0] + alphaOne * eventPosX;
-    pos[1] = (1 - alphaOne) * pos[1] + alphaOne * eventPosY;
+    pos[0] = alphaOne * pos[0] + (1 - alphaOne) * eventPosX;
+    pos[1] = alphaOne * pos[1] + (1 - alphaOne) * eventPosY;
     // delta covariance
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
     float deltaYY = (eventPosY - pos[1]) * (eventPosY - pos[1]);
     float[][] deltaCovariance = { { deltaXX, deltaXY }, { deltaXY, deltaYY } };
     // covariance update
-    covariance[0][0] = (1 - alphaTwo) * covariance[0][0] + alphaTwo * deltaCovariance[0][0];
-    covariance[0][1] = (1 - alphaTwo) * covariance[0][1] + alphaTwo * deltaCovariance[0][1];
-    covariance[1][0] = (1 - alphaTwo) * covariance[1][0] + alphaTwo * deltaCovariance[1][0];
-    covariance[1][1] = (1 - alphaTwo) * covariance[1][1] + alphaTwo * deltaCovariance[1][1];
+    covariance[0][0] = alphaTwo * covariance[0][0] + (1 - alphaTwo) * deltaCovariance[0][0];
+    covariance[0][1] = alphaTwo * covariance[0][1] + (1 - alphaTwo) * deltaCovariance[0][1];
+    covariance[1][0] = alphaTwo * covariance[1][0] + (1 - alphaTwo) * deltaCovariance[1][0];
+    covariance[1][1] = alphaTwo * covariance[1][1] + (1 - alphaTwo) * deltaCovariance[1][1];
   }
 
-  // calculate score that is based on distance between event and center of probability distribution function
-  public float calculateBlobScore(DavisDvsEvent davisDvsEvent) {
+  // scoring function based on Gaussian distribution
+  public float gaussianBlobScore(DavisDvsEvent davisDvsEvent) {
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
     // determinant and inverse
@@ -81,6 +81,19 @@ public class DavisSingleBlob {
     return currentScore;
   }
 
+  // EXPERIMENTAL STATUS function
+  // scoring function based on Gabor filters - implementation based on same paper as tracking algorithm
+  public float gaborBlobScore(DavisDvsEvent davisDvsEvent) {
+    double sigma = 3;
+    double gamma = sigma / 15;
+    double lambda = 4 * sigma;
+    double theta = Math.PI / 2;
+    double xU = (davisDvsEvent.x - pos[0]) * Math.cos(theta) + (davisDvsEvent.y - pos[1]) * Math.sin(theta);
+    double yU = -(davisDvsEvent.x - pos[0]) * Math.sin(theta) + (davisDvsEvent.y - pos[1]) * Math.cos(theta);
+    currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
+    return currentScore;
+  }
+
   public boolean updateAttractionEquation(float alphaAttr, float dRep) {
     boolean reset;
     float posDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
@@ -96,6 +109,7 @@ public class DavisSingleBlob {
     return reset;
   }
 
+  // function is not tested!
   // public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
   // float[] otherPos = otherBlob.getPos();
   // float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
