@@ -1,4 +1,4 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -10,8 +10,8 @@ public class DavisSingleBlob {
   private static final int HEIGHT = 180;
   // blob parameters
   private final float[] initPos;
-  private float[] pos;
-  private double[][] covariance;
+  private final float[] pos;
+  private final double[][] covariance;
   private float activity;
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;

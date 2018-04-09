@@ -1,14 +1,14 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// provides a Surface of Active Events data structure.
+/** provides a Surface of Active Events data structure. */
 public class DavisSurfaceOfActiveEvents {
   private static final int WIDTH = 240; // TODO import these two values from some other file?
   private static final int HEIGHT = 180;
   // fields
-  private int[][] timestamps = new int[WIDTH][HEIGHT];
+  private final int[][] timestamps = new int[WIDTH][HEIGHT];
 
   // general todos
   // TODO: update neighbors for the four corner lines (or maybe just ignore?)

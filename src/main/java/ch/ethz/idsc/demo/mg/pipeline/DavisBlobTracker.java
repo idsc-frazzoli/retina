@@ -1,14 +1,14 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** This class implements an algorithm for Gaussian blob tracking which is inspired by
- * the paper "asynchronous event-based multikernel
- * algorithm for high-speed visual features tracking. */
+/** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
+ * "asynchronous event-based multikernel algorithm for high-speed visual features tracking". */
 public class DavisBlobTracker {
   // camera parameters
   private static final int WIDTH = 240; // maybe import width/height from other file?
@@ -18,28 +18,28 @@ public class DavisBlobTracker {
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
   private static final int initVariance = 250;
   // algorithm parameters
-  private final float aUp = 0.18f; // if activity is higher, blob is in active layer
-  private final float aDown = 0.05f; // if activity is lower, blob gets deleted
-  private final float scoreThreshold = 7e-4f; // score threshold for active blobs
-  private final float alphaOne = 0.1f; // for blob position update
-  private final float alphaTwo = 0.005f; // for blob covariance update
-  private final float alphaAttr = 0.005f; // attraction parameter - large value pulls blobs more towards initPos
-  private final float dAttr = 50; // [pixel] hidden blobs attraction
-  private final float enlargementFactor = 1.2f; // increase covariance matrix by this if too small
-  private final float minSize = 250; // trace of matrix should not be smaller than this
+  private static final float aUp = 0.18f; // if activity is higher, blob is in active layer
+  private static final float aDown = 0.05f; // if activity is lower, blob gets deleted
+  private static final float scoreThreshold = 7e-4f; // score threshold for active blobs
+  private static final float alphaOne = 0.1f; // for blob position update
+  private static final float alphaTwo = 0.005f; // for blob covariance update
+  private static final float alphaAttr = 0.005f; // attraction parameter - large value pulls blobs more towards initPos
+  private static final float dAttr = 50; // [pixel] hidden blobs attraction
+  private static final float enlargementFactor = 1.2f; // increase covariance matrix by this if too small
+  private static final float minSize = 250; // trace of matrix should not be smaller than this
   // private final float alphaRep = 0; // repulsion equation
   // private final float dRep = 10; // repulsion equation
-  private final int boundaryDistance = 1; // [pixel] for out of bounds calculation
-  private final int tau = 5000; // [us] tunes activity update
+  private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
+  private static final int tau = 5000; // [us] tunes activity update
   // private final int acquiringInterval = 2500; // [us] acquiring interval to rise activity over aDown
-  private final int attractInterval = 3; // [us] update interval attraction
+  private static final int attractInterval = 3; // [us] update interval attraction
   // fields
-  List<DavisSingleBlob> blobs;
+  private final List<DavisSingleBlob> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
   private int lastUpdateTimestamp;
   private int lastAcquireTimestamp;
-  private boolean isPromoted;
+  // private boolean isPromoted;
   // testing
   public float hitthreshold = 0;
 
@@ -61,11 +61,12 @@ public class DavisBlobTracker {
   // TODO instead of exponential, use a lookup table or an approximation
   // TODO should the algorithm parameters be static fields?
   // TODO attraction equation: calculate on an evenbasis or time interval basis?
+  // TODO at the moment, for a single event, all blobs are checked for deletion... this is more than what is needed
   public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
     calcScoreAndParams(davisDvsEvent);
     // update activity of all blobs and check if matching blob gets promoted
-    isPromoted = updateActivity(davisDvsEvent);
+    boolean isPromoted = updateActivity(davisDvsEvent);
     // promote blob and put new hidden blob into hidden layer
     if (isPromoted) {
       upgradeBlob();
@@ -81,8 +82,8 @@ public class DavisBlobTracker {
     // }
     hiddenBlobAttraction();
     // control the blob size
-//    controlBlobSize();
-    if ((davisDvsEvent.time - getUpdateTimestamp()) > attractInterval) {
+    // controlBlobSize();
+    if (davisDvsEvent.time - getUpdateTimestamp() > attractInterval) {
       setUpdateTimestamp(davisDvsEvent.time);
     }
     // // printStatusUpdate(davisDvsEvent);
@@ -133,7 +134,7 @@ public class DavisBlobTracker {
   // update blob activity. If matching blob is in hidden layer and activity hits aUp, return true
   private boolean updateActivity(DavisDvsEvent davisDvsEvent) {
     boolean isPromoted;
-    float deltaT = (float) (davisDvsEvent.time - getEventTimestamp());
+    float deltaT = davisDvsEvent.time - getEventTimestamp(); // in [us]
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     isPromoted = blobs.get(matchingBlob).updateBlobActivity(true, aUp, exponential);
@@ -164,10 +165,20 @@ public class DavisBlobTracker {
 
   // degrade active blobs with activity lower than aUp to hidden layer
   private void deleteBlobs() {
-    for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getLayerID()) {
-        if (blobs.get(i).getActivity() < aDown) {
-          blobs.remove(i);
+    // FIXME this is probably not functioning
+    // for (int i = 0; i < blobs.size(); i++) {
+    // if (blobs.get(i).getLayerID()) {
+    // if (blobs.get(i).getActivity() < aDown) {
+    // blobs.remove(i);
+    // }
+    // }
+    // }
+    Iterator<DavisSingleBlob> iterator = blobs.iterator();
+    while (iterator.hasNext()) {
+      DavisSingleBlob davisSingleBlob = iterator.next();
+      if (davisSingleBlob.getLayerID()) {
+        if (davisSingleBlob.getActivity() < aDown) {
+          iterator.remove();
         }
       }
     }
@@ -191,7 +202,7 @@ public class DavisBlobTracker {
     for (int i = initNumberOfBlobs; i < blobs.size(); i++) {
       if (blobs.get(i).isOutOfBounds(boundaryDistance)) {
         // System.out.println("Active blob #" + i + " has been removed due to out of bounds!");
-        blobs.remove(i);
+        blobs.remove(i); // FIXME mario, use iterator as in deleteBlobs
       }
     }
   }
@@ -235,7 +246,7 @@ public class DavisBlobTracker {
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getSizeMetric() < minSize) {
         blobs.get(i).increaseBlobSize(enlargementFactor);
-//        System.out.println("blob size was increased");
+        // System.out.println("blob size was increased");
       }
     }
   }
