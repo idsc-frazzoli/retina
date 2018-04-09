@@ -1,4 +1,4 @@
-// code by jph
+// code by jph and mg
 package ch.ethz.idsc.demo.mg;
 
 import java.awt.Color;
@@ -17,13 +17,13 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 // demo code for image generation
 enum ImageSynthAndExportDemo {
   ;
-  public static void main(String[] args) throws IOException {
+  static BufferedImage createImage(int pix) {
     BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
     Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);
     graphics.fillRect(0, 0, 240, 180);
     graphics.setColor(Color.BLACK);
-    graphics.drawRect(10, 20, 40, 50);
+    graphics.drawRect(pix, 20, 40, 50);
     for (int i = 0; i < 10; i++) {
       AffineTransform old = graphics.getTransform();
       graphics.rotate(Math.toRadians(45), 110, 90);
@@ -35,6 +35,11 @@ enum ImageSynthAndExportDemo {
     byte[] bytes = dataBufferByte.getData();
     for (int index = 0; index < 6000; ++index)
       bytes[index] = (byte) index;
+    return bufferedImage;
+  }
+
+  public static void main(String[] args) throws IOException {
+    BufferedImage bufferedImage = createImage(10);
     int count = 0;
     ImageIO.write(bufferedImage, "png", UserHome.Pictures(String.format("example%03d.png", count)));
   }

@@ -1,4 +1,4 @@
-//code by mg
+// code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -10,8 +10,8 @@ public class DavisSingleBlob {
   private static final int HEIGHT = 180;
   // blob parameters
   private final float[] initPos;
-  private float[] pos;
-  private float[][] covariance;
+  private final float[] pos;
+  private final double[][] covariance;
   private float activity;
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;
@@ -20,19 +20,20 @@ public class DavisSingleBlob {
   DavisSingleBlob(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
     pos = new float[] { initialX, initialY };
-    covariance = new float[][] { { initVariance, 0 }, { 0, initVariance } };
+    covariance = new double[][] { { initVariance, 0 }, { 0, initVariance } };
     layerID = false;
     activity = 0.0f;
     currentScore = 0.0f;
   }
 
   // updates the activity of a blob
-  public boolean updateBlobActivity(DavisDvsEvent davisDvsEvent, boolean hasHighestScore, float aUp, float exponential) {
+  public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
     if (hasHighestScore) {
       // if hidden layer blob hits threshold it should be promoted
-      isPromoted = !layerID && (activity * exponential + currentScore) > aUp;
-      activity = activity * exponential + currentScore;
+      float potentialActivity = activity * exponential + currentScore;
+      isPromoted = !layerID && potentialActivity > aUp;
+      activity = potentialActivity;
       return isPromoted;
     }
     activity = activity * exponential;
@@ -44,6 +45,9 @@ public class DavisSingleBlob {
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
+    // position update
+    pos[0] = (1 - alphaOne) * pos[0] + alphaOne * eventPosX;
+    pos[1] = (1 - alphaOne) * pos[1] + alphaOne * eventPosY;
     // delta covariance
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
@@ -54,9 +58,6 @@ public class DavisSingleBlob {
     covariance[0][1] = (1 - alphaTwo) * covariance[0][1] + alphaTwo * deltaCovariance[0][1];
     covariance[1][0] = (1 - alphaTwo) * covariance[1][0] + alphaTwo * deltaCovariance[1][0];
     covariance[1][1] = (1 - alphaTwo) * covariance[1][1] + alphaTwo * deltaCovariance[1][1];
-    // position update
-    pos[0] = (1 - alphaOne) * pos[0] + alphaOne * eventPosX;
-    pos[1] = (1 - alphaOne) * pos[1] + alphaOne * eventPosY;
   }
 
   // calculate score that is based on distance between event and center of probability distribution function
@@ -64,8 +65,8 @@ public class DavisSingleBlob {
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
     // determinant and inverse
-    float covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
-    float[][] covarianceInverse = { { covariance[1][1], -covariance[0][1] }, { -covariance[1][0], covariance[0][0] } };
+    double covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
+    double[][] covarianceInverse = { { covariance[1][1], -covariance[0][1] }, { -covariance[1][0], covariance[0][0] } };
     covarianceInverse[0][0] /= covarianceDeterminant;
     covarianceInverse[0][1] /= covarianceDeterminant;
     covarianceInverse[1][0] /= covarianceDeterminant;
@@ -73,7 +74,7 @@ public class DavisSingleBlob {
     // compute exponent of Gaussian distribution
     float offsetX = eventPosX - pos[0];
     float offsetY = eventPosY - pos[1];
-    float[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
+    double[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
         covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
     float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
     currentScore = (float) (1 / (2 * Math.PI) * 1 / Math.sqrt(covarianceDeterminant) * Math.exp(exponent));
@@ -84,7 +85,8 @@ public class DavisSingleBlob {
     boolean reset;
     float posDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
     if (posDiff > dRep) {
-      pos = initPos;
+      pos[0] = initPos[0];
+      pos[1] = initPos[1];
       reset = true;
     } else {
       pos[0] = pos[0] + alphaAttr * (initPos[0] - pos[0]);
@@ -94,39 +96,46 @@ public class DavisSingleBlob {
     return reset;
   }
 
-  public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
-    float[] otherPos = otherBlob.getPos();
-    float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
-    float exponential = (float) (Math.exp(posDiff / dRep));
-    // blob is not repulsed if other blob has zero activity
-    // TODO what should happen if both blobs have zero activity?
-    if (otherBlob.getActivity() != 0) {
-      pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-          / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
-      pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-          / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
-    }
-  }
-
+  // public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
+  // float[] otherPos = otherBlob.getPos();
+  // float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
+  // float exponential = (float) (Math.exp(posDiff / dRep));
+  // // blob is not repulsed if other blob has zero activity
+  // // TODO what should happen if both blobs have zero activity?
+  // if (otherBlob.getActivity() != 0) {
+  // pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
+  // pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
+  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
+  // }
+  // }
   public boolean blobPromotion(float aUp) {
     layerID = activity > aUp;
     return layerID;
   }
 
-  // if blob closer than small semiaxis to the boarder, return true
-  public boolean isOutOfBounds(float numberSigmas) {
-    float boundPointLeft = pos[0] - numberSigmas * this.getSemiAxes()[1];
-    float boundPointRight = pos[0] + numberSigmas * this.getSemiAxes()[1];
-    float boundPointUp = pos[1] - numberSigmas * this.getSemiAxes()[1];
-    float boundPointDown = pos[1] + numberSigmas * this.getSemiAxes()[1];
+  // if blob is too close to boundary, return true
+  public boolean isOutOfBounds(int boundaryDistance) {
+    float boundPointLeft = pos[0] - boundaryDistance;
+    float boundPointRight = pos[0] + boundaryDistance;
+    float boundPointUp = pos[1] - boundaryDistance;
+    float boundPointDown = pos[1] + boundaryDistance;
     return boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT;
   }
 
-  // angle at which the ellipse is rotated
-  public float getRotAngle() {
-    return (float) (0.5 * Math.atan(2 * covariance[0][1] / (covariance[1][1] - covariance[0][0])));
+  public void increaseBlobSize(float enlargement) {
+    covariance[0][0] *= enlargement;
+    covariance[0][1] *= enlargement;
+    covariance[1][0] *= enlargement;
+    covariance[1][1] *= enlargement;
   }
 
+  // return a size metric, currently trace of matrix
+  public double getSizeMetric() {
+    return covariance[0][0] + covariance[1][1];
+  }
+
+  // length of semiaxes equal to eigenvalues CONFIRMED to be same as tensor.eigenvalues method
   public float[] getSemiAxes() {
     double root = Math.sqrt((covariance[0][0] - covariance[1][1]) * (covariance[0][0] - covariance[1][1]) + 4 * covariance[0][1] * covariance[0][1]);
     float largeAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] + root)));
@@ -154,7 +163,7 @@ public class DavisSingleBlob {
     return initPos;
   }
 
-  public float[][] getCovariance() {
+  public double[][] getCovariance() {
     return covariance;
   }
 

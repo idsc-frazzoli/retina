@@ -62,17 +62,17 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   }
 
   @Override // from DavisDvsListener
-  public final void davisDvs(DavisDvsEvent dvsDavisEvent) {
+  public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (Objects.isNull(last))
-      last = dvsDavisEvent.time;
-    final int delta = dvsDavisEvent.time - last;
+      last = davisDvsEvent.time;
+    final int delta = davisDvsEvent.time - last;
     if (0 <= delta && delta < interval) // nominal case
-      assign(delta, dvsDavisEvent);
+      assign(delta, davisDvsEvent);
     else //
     if (max_gap <= delta) {
       System.err.println("dvs image clear due to forward timing");
       clearImage();
-      last = dvsDavisEvent.time;
+      last = davisDvsEvent.time;
     } else //
     if (interval <= delta) {
       TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
@@ -83,11 +83,11 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     if (delta < 0) { // this case happens during davis log playback when skipping to the front
       System.err.println("dvs image clear due to reverse timing");
       clearImage();
-      last = dvsDavisEvent.time;
+      last = davisDvsEvent.time;
     }
   }
 
-  protected abstract void assign(int delta, DavisDvsEvent dvsDavisEvent);
+  protected abstract void assign(int delta, DavisDvsEvent davisDvsEvent);
 
   private void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
