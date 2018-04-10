@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.gui.PipelineFrame;
@@ -71,14 +72,14 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       viz.setImage(frames[0].getAccumulatedEvents(), 0);
       viz.setImage(frames[1].trackOverlay(track.getBlobList(1)), 1);
       viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
-      if(saveImages) {
-       try {
-       viz.saveImages();
-      // track.printStatusUpdate(davisDvsEvent);
-       } catch (IOException e) {
-       // TODO Auto-generated catch block
-       e.printStackTrace();
-       }
+      if (saveImages) {
+        try {
+          viz.saveImages();
+          // track.printStatusUpdate(davisDvsEvent);
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
       frames[0].clearImage();
       frames[1].clearImage();
