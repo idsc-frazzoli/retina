@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
+import ch.ethz.idsc.retina.dev.lidar.app.TiltedVelodynePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.AppResources;
@@ -57,7 +57,8 @@ public class SensorsConfig implements Serializable {
 
   public LidarSpacialProvider planarEmulatorVlp16_p01deg() {
     double angle_offset = vlp16_twist.number().doubleValue();
-    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+    return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+    // return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
   }
 
   public Vlp16SpacialLcmHandler vlp16SpacialLcmHandler() {

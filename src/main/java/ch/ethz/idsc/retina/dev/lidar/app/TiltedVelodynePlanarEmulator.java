@@ -58,7 +58,7 @@ public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
     float dx = lookup.dx(rotational);
     float dy = lookup.dy(rotational);
     double angle = ArcTan.of(dx, dy).number().doubleValue();
-    double tilt = Math.toDegrees(0.04) * Math.cos(angle);
+    double tilt = Math.toDegrees(0.04) * Math.cos(angle); // TODO pass as parameter
     final float[] coords = new float[2];
     int index = degreeToLidarID(closestRay(tilt));
     byteBuffer.position(byteBuffer.position() + index * 3);
