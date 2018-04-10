@@ -61,7 +61,6 @@ public class PipelineFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-
   // flips image along horizontal axis
   private static BufferedImage flipHorizontally(BufferedImage bufferedImage) {
     AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
