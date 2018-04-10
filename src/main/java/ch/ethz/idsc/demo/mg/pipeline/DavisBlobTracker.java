@@ -81,7 +81,7 @@ public class DavisBlobTracker {
     // }
     hiddenBlobAttraction();
     // control the blob size
-     controlBlobSize();
+    controlBlobSize();
     if (davisDvsEvent.time - getUpdateTimestamp() > attractInterval) {
       setUpdateTimestamp(davisDvsEvent.time);
     }
@@ -111,7 +111,7 @@ public class DavisBlobTracker {
     // if (highScore > scoreThreshold) {
     blobs.get(highScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
     matchingBlob = highScoreBlob;
-    if(blobs.get(matchingBlob).getLayerID()) {
+    if (blobs.get(matchingBlob).getLayerID()) {
       hitthreshold++;
     }
     //// } else {
@@ -189,8 +189,7 @@ public class DavisBlobTracker {
       if (blobs.get(matchingBlob).getLayerID()) {
         // active blobs get deleted
         blobs.remove(matchingBlob);
-      } 
-      else {
+      } else {
         // hidden blobs get re-initialized
         DavisSingleBlob newInitBlob = new DavisSingleBlob(blobs.get(matchingBlob).getInitPos()[0], blobs.get(matchingBlob).getInitPos()[1], initVariance);
         blobs.set(matchingBlob, newInitBlob);

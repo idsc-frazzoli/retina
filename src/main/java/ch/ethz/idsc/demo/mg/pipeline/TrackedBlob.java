@@ -6,12 +6,10 @@ public class TrackedBlob {
   private final float[] pos;
   private final double[][] covariance;
   private final boolean isCone;
-  
-  TrackedBlob(DavisSingleBlob davisSingleBlob){
-    
-   pos = davisSingleBlob.getInitPos();
-   covariance = davisSingleBlob.getCovariance();
-   isCone = false;
-    
+
+  TrackedBlob(DavisSingleBlob davisSingleBlob) {
+    pos = davisSingleBlob.getInitPos();
+    covariance = davisSingleBlob.getCovariance();
+    isCone = false;
   }
 }

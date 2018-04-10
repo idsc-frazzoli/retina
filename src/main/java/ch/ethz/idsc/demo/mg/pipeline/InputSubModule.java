@@ -72,17 +72,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
       viz.setImage(frames[0].getAccumulatedEvents(), 0);
       // active blobs get red color
-      viz.setImage(frames[1].trackOverlay(track.getBlobList(1),Color.RED), 1);
+      viz.setImage(frames[1].trackOverlay(track.getBlobList(1), Color.RED), 1);
       // hidden blobs get gray
-      viz.setImage(frames[2].trackOverlay(track.getBlobList(0),Color.GRAY), 2);
-      if(saveImages) {
-       try {
-       viz.saveImages();
-      // track.printStatusUpdate(davisDvsEvent);
-       } catch (IOException e) {
-       // TODO Auto-generated catch block
-       e.printStackTrace();
-       }
+      viz.setImage(frames[2].trackOverlay(track.getBlobList(0), Color.GRAY), 2);
+      if (saveImages) {
+        try {
+          viz.saveImages();
+          // track.printStatusUpdate(davisDvsEvent);
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
       frames[0].clearImage();
       frames[1].clearImage();

@@ -69,8 +69,8 @@ public class ResampledLidarRender extends LidarRender {
       for (int count = 0; count < length; count += 3) {
         Tensor x = Tensors.vectorDouble(fb.get(), fb.get(), fb.get());
         if (spacialObstaclePredicate.isObstacle(x)) {
-        Point2D p = gl.toPoint2D(x);
-        gfx.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
+          Point2D p = gl.toPoint2D(x);
+          gfx.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
         }
       }
       gl.popMatrix();

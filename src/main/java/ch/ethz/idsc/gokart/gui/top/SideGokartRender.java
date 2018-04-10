@@ -52,7 +52,7 @@ public class SideGokartRender extends AbstractGokartRender {
       }
       geometricLayer.popMatrix();
     }
-    {// draw lateral shape of the go-kart 
+    {// draw lateral shape of the go-kart
       Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusRear);
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
           0, // translation right (in pixel space)
