@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -16,17 +15,16 @@ import ch.ethz.idsc.tensor.Scalar;
 // this module distributes the event stream to the visualization and control pipeline
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // parameters
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // for event processing
+  private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents(); // for filtering of event stream
+  private final BlobFeatureFilter featureFilter = new BlobFeatureFilter(); // receive tracked cones from that module
+  private final DavisBlobTracker track = new DavisBlobTracker(featureFilter); // next module in pipeline
+  private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
+  private final PipelineFrame[] frames = new PipelineFrame[3]; // for visualization
   private final int maxEventCount = 5000000;
   private final int backgroundActivityFilterTime = 3500; // [us] the shorter the more is filtered
-  private final int imageInterval = 15000; // [us]
+  private final int imageInterval = 15000; // [us] visualization interval
   private final boolean useFilter = true;
-  // objects required for the module
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
-  private final DavisBlobTracker track = new DavisBlobTracker();
-  // below for visualization
-  private final PipelineVisualization viz = new PipelineVisualization();
-  private final PipelineFrame[] frames = new PipelineFrame[3];
   // fields for testing
   private float eventCount;
   private float filteredEventCount;
@@ -71,18 +69,18 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     // the events are accumulated for the interval time and then displayed in a single frame
     if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
       viz.setImage(frames[0].getAccumulatedEvents(), 0);
-      // active blobs get red color
-      viz.setImage(frames[1].trackOverlay(track.getBlobList(1),Color.RED), 1);
-      // hidden blobs get gray
-      viz.setImage(frames[2].trackOverlay(track.getBlobList(0),Color.GRAY), 2);
-      if(saveImages) {
-       try {
-       viz.saveImages();
-      // track.printStatusUpdate(davisDvsEvent);
-       } catch (IOException e) {
-       // TODO Auto-generated catch block
-       e.printStackTrace();
-       }
+      // active blobs color coded by featurefilter
+      viz.setImage(frames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
+      // hidden blobs
+      viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
+      if (saveImages) {
+        try {
+          viz.saveImages();
+          // track.printStatusUpdate(davisDvsEvent);
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
       frames[0].clearImage();
       frames[1].clearImage();

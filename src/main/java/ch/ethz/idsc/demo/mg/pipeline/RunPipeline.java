@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 public enum RunPipeline {
   ;
   public static void main(String[] args) throws IOException {
-    File file = new File(LogfileLocations.DUBI6);
+    File file = new File(LogfileLocations.DUBI4a);
     InputSubModule inputModule = new InputSubModule();
     OfflineLogPlayer.process(file, inputModule);
   }

@@ -58,9 +58,10 @@ enum ImageSynthAndExportDemo {
     graphics.rotate(rotAngle, 150, 150);
     graphics.drawRect(148, 148, 4, 4);
     graphics.draw(ellipse);
-    WritableRaster writableRaster = bufferedImage.getRaster();
-    DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
-    byte[] bytes = dataBufferByte.getData();
+    // HERE we will test the ellipse merging
+    // WritableRaster writableRaster = bufferedImage.getRaster();
+    // DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
+    // byte[] bytes = dataBufferByte.getData();
     // for (int index = 0; index < 6000; ++index)
     // bytes[index] = (byte) index;
     return bufferedImage;

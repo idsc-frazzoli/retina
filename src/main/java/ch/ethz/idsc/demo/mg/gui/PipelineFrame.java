@@ -11,7 +11,7 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.demo.mg.pipeline.DavisSingleBlob;
+import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -39,10 +39,18 @@ public class PipelineFrame {
   }
 
   // overlays the active blobs on the image
-  public BufferedImage trackOverlay(List<DavisSingleBlob> blobs, Color color) {
+  public BufferedImage trackOverlay(List<TrackedBlob> blobs) {
     AffineTransform old = graphics.getTransform();
     for (int i = 0; i < blobs.size(); i++) {
-      rotatedEllipse(graphics, blobs.get(i), color);
+      if (blobs.get(i).getIsCone()) {
+        rotatedEllipse(graphics, blobs.get(i), Color.GREEN);
+      }
+      if (!blobs.get(i).getIsCone() && !blobs.get(i).getIsHidden()) {
+        rotatedEllipse(graphics, blobs.get(i), Color.RED);
+      }
+      if (blobs.get(i).getIsHidden()) {
+        rotatedEllipse(graphics, blobs.get(i), Color.GRAY);
+      }
       graphics.setTransform(old);
     }
     return flipHorizontally(bufferedImage);
@@ -70,7 +78,7 @@ public class PipelineFrame {
   }
 
   // use to Tensor library to correctly draw the ellipses
-  private static void rotatedEllipse(Graphics2D graphics, DavisSingleBlob blob, Color color) {
+  private static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
     Tensor matrix = Tensors.matrixDouble(blob.getCovariance());
     // find eigenvector belonging to first eigenvalue
     Eigensystem eigensystem = Eigensystem.ofSymmetric(matrix);
