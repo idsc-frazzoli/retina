@@ -45,11 +45,14 @@ public class PipelineVisualization {
     jComponent.repaint();
   }
 
-  public void saveImages() throws IOException {
+  public void saveImage() throws IOException {
     imageCount++;
+    BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
+    jFrame.paint(wholeGUI.getGraphics());
+    ImageIO.write(wholeGUI, "png", UserHome.Pictures(String.format("/dvs/example%04d.png", imageCount)));
     // ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("example%03d.png", imageCount)));
-    ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%03d.png", imageCount)));
-    ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%03d.png", imageCount)));
+    // ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%03d.png", imageCount)));
+    // ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%03d.png", imageCount)));
     System.out.printf("Images saved as example%03d.png\n", imageCount);
   }
 }

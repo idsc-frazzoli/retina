@@ -129,11 +129,11 @@ public class DavisSingleBlob {
     // position merge
     pos[0] = (1 / totActivity) * (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]);
     pos[1] = (1 / totActivity) * (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]);
-    // covariance merge TODO find out which is the correct way to to that
-    covariance[0][0] += 0.5 * otherBlob.getCovariance()[0][0];
-    covariance[0][1] += 0.5 * otherBlob.getCovariance()[0][1];
-    covariance[1][0] += 0.5 * otherBlob.getCovariance()[1][0];
-    covariance[1][1] += 0.5 * otherBlob.getCovariance()[1][1];
+    // covariance merge TODO find out which is the correct way to do that
+    covariance[0][0] = 0.5 * (covariance[0][0]+ otherBlob.getCovariance()[0][0]);
+    covariance[0][1] = 0.5 * (covariance[0][1]+ otherBlob.getCovariance()[0][1]);
+    covariance[1][0] = 0.5 * (covariance[1][0]+ otherBlob.getCovariance()[1][0]);
+    covariance[1][1] = 0.5 * (covariance[1][1]+ otherBlob.getCovariance()[1][1]);
     // acitivty merge... TODO is it reasonable?
     activity = totActivity;
   }
@@ -177,14 +177,6 @@ public class DavisSingleBlob {
   // return a size metric, currently trace of matrix
   public double getSizeMetric() {
     return covariance[0][0] + covariance[1][1];
-  }
-
-  // length of semiaxes equal to eigenvalues CONFIRMED to be same as tensor.eigenvalues method
-  public float[] getSemiAxes() {
-    double root = Math.sqrt((covariance[0][0] - covariance[1][1]) * (covariance[0][0] - covariance[1][1]) + 4 * covariance[0][1] * covariance[0][1]);
-    float largeAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] + root)));
-    float smallAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] - root)));
-    return new float[] { largeAxis, smallAxis };
   }
 
   public void setLayerID(boolean layerID) {

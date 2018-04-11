@@ -18,8 +18,8 @@ public class DavisBlobTracker {
   private static final int numberRows = 6; // on how many rows are the blobs initially distributed
   private static final int initVariance = 250;
   // algorithm parameters
-  private static final float aUp = 0.3f; // if activity is higher, blob is in active layer
-  private static final float aDown = 0.15f; // if activity is lower, active blob gets deleted
+  private static final float aUp = 0.2f; // if activity is higher, blob is in active layer
+  private static final float aDown = 0.1f; // if activity is lower, active blob gets deleted
   private static final float scoreThreshold = 4e-4f; // score threshold for active blobs
   private static final float alphaOne = 0.9f; // for blob position update
   private static final float alphaTwo = 0.998f; // for blob covariance update

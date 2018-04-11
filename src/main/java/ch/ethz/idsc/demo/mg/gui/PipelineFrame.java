@@ -13,14 +13,10 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.mat.Eigensystem;
-import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // provides a bufferedImage with the accumulated events and overlaid tracked objects
 public class PipelineFrame {
-  private static final byte CLEAR_BYTE = (byte) 240; // grey
+  private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
   // ---
   private final BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_INDEXED);
@@ -79,21 +75,13 @@ public class PipelineFrame {
 
   // use to Tensor library to correctly draw the ellipses
   private static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
-    Tensor matrix = Tensors.matrixDouble(blob.getCovariance());
-    // find eigenvector belonging to first eigenvalue
-    Eigensystem eigensystem = Eigensystem.ofSymmetric(matrix);
-    Tensor firstEigVec = eigensystem.vectors().get(0);
-    // find rotation angle of that eigenvector
-    // TODO mario, Math.atan2(y, x) vs. ArcTan.of(x, y)
-    double rotAngle = Math.atan2(firstEigVec.Get(1).number().doubleValue(), firstEigVec.Get(0).number().doubleValue());
-    Tensor semiAxes = Sqrt.of(eigensystem.values());
-    float leftCornerX = blob.getPos()[0] - semiAxes.Get(0).number().floatValue();
-    float leftCornerY = blob.getPos()[1] - semiAxes.Get(1).number().floatValue();
+    double rotAngle = blob.getRotAngle();
+    float[] semiAxes = blob.getStandardDeviation();
+    float leftCornerX = blob.getPos()[0] - semiAxes[0];
+    float leftCornerY = blob.getPos()[1] - semiAxes[1];
     // draw ellipse with first eigenvalue aligned with x axis
-    Ellipse2D ellipse = new Ellipse2D.Float(leftCornerX, leftCornerY, //
-        2 * semiAxes.Get(0).number().floatValue(), //
-        2 * semiAxes.Get(1).number().floatValue());
-    // rotate around blob mean by rotAngle which is the angle between first eigenvector and x axis
+    Ellipse2D ellipse = new Ellipse2D.Float(leftCornerX, leftCornerY, 2 * semiAxes[0], 2 * semiAxes[1]);
+    // rotate around blob pos by rotAngle
     graphics.rotate(rotAngle, blob.getPos()[0], blob.getPos()[1]);
     graphics.setColor(color);
     graphics.draw(ellipse);
