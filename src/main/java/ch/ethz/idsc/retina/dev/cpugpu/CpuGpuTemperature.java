@@ -11,6 +11,10 @@ import com.profesorfalken.jsensors.model.sensors.Temperature;
 
 enum CpuGpuTemperature {
   ;
+  //TODO make class name consistent with 
+  // /retina/src/main/java/ch/ethz/idsc/gokart/core/fuse/ComputerSensorsModule.java 
+  // TODO make this a decoder of the lcm transmitted signal 
+  
   public static void main(String[] args) {
     Components components = JSensors.get.components();
     List<Cpu> cpus = components.cpus;
