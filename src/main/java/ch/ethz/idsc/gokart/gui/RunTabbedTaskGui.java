@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.ComputerTemperatureModule;
+import ch.ethz.idsc.gokart.core.fuse.ComputerSensorsModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
@@ -54,7 +54,7 @@ enum RunTabbedTaskGui {
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
-      ComputerTemperatureModule.class, //
+      ComputerSensorsModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class //
