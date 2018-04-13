@@ -14,6 +14,7 @@ public class RimoPutEvent extends DataEvent {
   public static final RimoPutEvent PASSIVE = //
       new RimoPutEvent(RimoPutTire.PASSIVE, RimoPutTire.PASSIVE);
   // ---
+  // TODO rename to putTireL (analogous to rime get event
   public final RimoPutTire putL;
   public final RimoPutTire putR;
 

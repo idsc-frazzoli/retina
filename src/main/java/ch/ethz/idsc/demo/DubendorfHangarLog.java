@@ -68,6 +68,8 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180307T165102_6e45300d, //
   /** autonomous driving shape 8 */
   _20180307T171311_fc084dc9, //
+  /***************************************************/
+  _20180409T150925_d520ea0d, //
   ;
   @Override
   public File file(File directory) {
