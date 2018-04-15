@@ -10,11 +10,14 @@ import com.profesorfalken.jsensors.model.components.Gpu;
 import com.profesorfalken.jsensors.model.sensors.Fan;
 import com.profesorfalken.jsensors.model.sensors.Temperature;
 
+import ch.ethz.idsc.gokart.core.fuse.ComputerSensorsModule;
+
+/** code in CpuGpuTemperature evaluates the 3rd party libary
+ * com.profesorfalken.jsensors
+ * 
+ * the api is now used in {@link ComputerSensorsModule} */
 enum CpuGpuTemperature {
   ;
-  // TODO make class name consistent with
-  // /retina/src/main/java/ch/ethz/idsc/gokart/core/fuse/ComputerSensorsModule.java
-  // TODO make this a decoder of the lcm transmitted signal
   public static void main(String[] args) {
     Components components = JSensors.get.components();
     List<Cpu> cpus = components.cpus;
