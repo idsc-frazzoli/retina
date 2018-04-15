@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum PRBS7 {
+/* package */ enum PRBS7 {
   ;
   public static Tensor sequence() {
     Tensor vector = Tensors.empty();

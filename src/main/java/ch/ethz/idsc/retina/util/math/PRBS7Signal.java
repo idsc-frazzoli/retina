@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.opt.MappedInterpolation;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+/** operator returns RealScalar.ZERO or RealScalar.ONE */
 public class PRBS7Signal implements ScalarUnaryOperator {
   private static final Mod MOD = Mod.function(127);
   // ---

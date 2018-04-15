@@ -74,11 +74,11 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       LinmotEmergencyModule.class, //
       DeadManSwitchModule.class, // joystick
-      JoystickGroupModule.class //
+      JoystickGroupModule.class, //
+      SysidRimoModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      PurePursuitModule.class, //
-      SysidRimoModule.class //
+      PurePursuitModule.class //
   );
 
   public static void main(String[] args) {
