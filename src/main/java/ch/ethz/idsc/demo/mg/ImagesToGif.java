@@ -20,13 +20,13 @@ enum ImagesToGif {
     // ImageIO.write(bufferedImage, "png", new File(dir, String.format("dvs%05d.png", ++count)));
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(2500).collect(Collectors.toList());
     try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("5.5Mevents_3times_slower_v2.gif"), 60)) {
-       int count = 0;
+      int count = 0;
       for (File file : list) {
         BufferedImage bufferedImage = ImageIO.read(file);
         animationWriter.append(bufferedImage);
         count++;
-        if(count%100 ==0) {
-        System.out.println(count+" out of "+list.size());
+        if (count % 100 == 0) {
+          System.out.println(count + " out of " + list.size());
         }
       }
       System.out.println("Terminated");

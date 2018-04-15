@@ -24,14 +24,11 @@ public class BlobFeatureFilter {
     checkShape();
   }
 
-
   private void checkShape() {
-    for(int i=0;i<trackedBlobs.size();i++) {
-      if(trackedBlobs.get(i).getIsCone()) {
-        
+    for (int i = 0; i < trackedBlobs.size(); i++) {
+      if (trackedBlobs.get(i).getIsCone()) {
       }
     }
-    
   }
 
   private void checkPosition() {

@@ -62,7 +62,6 @@ public class DavisBlobTracker {
   // general todo list
   // TODO instead of exponential, use a lookup table or an approximation
   // TODO attraction equation: calculate on an evenbasis or time interval basis?
-  // TODO why is there a score threshold for active blobs --> is removed, investigate further
   // TODO implement merging operation and test it --> implemented
   // TODO generalize algorithm by testing several scoring functions and compare them
   // TODO in general, use float or double?
@@ -101,7 +100,7 @@ public class DavisBlobTracker {
     float hiddenHighScore = 0;
     int highScoreBlob = 0;
     int hiddenHighScoreBlob = 0;
-    // calculate score for all active blobs
+    // calculate score for all blobs
     for (int i = 0; i < blobs.size(); i++) {
       // if (blobs.get(i).getLayerID()) {
       float score = blobs.get(i).gaussianBlobScore(davisDvsEvent);

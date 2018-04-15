@@ -16,7 +16,7 @@ class ImageDisplayFrame {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawImage(bufferedImage, 0, 0, null);
-      System.out.println("repaint");
+      // System.out.println("repaint");
     }
   };
 

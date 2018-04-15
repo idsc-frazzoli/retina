@@ -56,7 +56,6 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       startTime = System.currentTimeMillis();
     }
     ++eventCount;
-    // if(eventCount<1000000) return;
     // send event to tracker and image frame
     track.receiveNewEvent(davisDvsEvent);
     frames[0].receiveEvent(davisDvsEvent);

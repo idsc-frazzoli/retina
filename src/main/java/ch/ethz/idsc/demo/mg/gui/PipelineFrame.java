@@ -31,7 +31,7 @@ public class PipelineFrame {
   // general todo list
 
   public BufferedImage getAccumulatedEvents() {
-    return flipHorizontally(bufferedImage);
+    return rotate180Degrees(bufferedImage);
   }
 
   // overlays the active blobs on the image
@@ -49,14 +49,13 @@ public class PipelineFrame {
       }
       graphics.setTransform(old);
     }
-    return flipHorizontally(bufferedImage);
+    return rotate180Degrees(bufferedImage);
   }
 
   // marks the event in the image plane as a dark or light pixel
   public void receiveEvent(DavisDvsEvent davisDvsEvent) {
-    // int value = davisDvsEvent.brightToDark() ? 0 : 255;
     int index = davisDvsEvent.x + davisDvsEvent.y * 240;
-    bytes[index] = VALUE[davisDvsEvent.i]; // (byte) value;
+    bytes[index] = VALUE[davisDvsEvent.i];
   }
 
   // resets all pixel to grey
@@ -64,10 +63,10 @@ public class PipelineFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  // flips image along horizontal axis
-  private static BufferedImage flipHorizontally(BufferedImage bufferedImage) {
-    AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-    tx.translate(0, -bufferedImage.getHeight());
+  // rotates image by 180 degrees
+  private static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
+    AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
+    tx.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
     AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     bufferedImage = op.filter(bufferedImage, null);
     return bufferedImage;

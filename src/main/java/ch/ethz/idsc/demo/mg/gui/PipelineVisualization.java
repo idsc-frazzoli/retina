@@ -30,9 +30,9 @@ public class PipelineVisualization {
   private int imageCount = 0;
 
   public PipelineVisualization() {
-    bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+    bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
+    bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
+    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);

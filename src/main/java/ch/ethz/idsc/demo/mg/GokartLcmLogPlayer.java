@@ -9,11 +9,14 @@ import lcm.logging.LogPlayerConfig;
 
 enum GokartLcmLogPlayer {
   ;
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    DavisDetailModule davis = new DavisDetailModule();
-    cfg.logFile = LogfileLocations.DUBI4;
+    cfg.logFile = LogfileLocations.DUBI11d;
     LogPlayer.create(cfg);
-    DavisDetailModule.standalone();
+    try {
+      DavisDetailModule.standalone();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
