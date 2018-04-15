@@ -34,7 +34,7 @@ In conclusion: please spend some time on code items that may not be the highligh
 
 Typically, these objectives are not achieved in the first version of the implementation.
 The staff will give you suggestions on how to modify your code in order to come closer to the above standards.
-Please be give the suggestions of the reviewers a high priority in your schedule.
+Please give the suggestions of the reviewers a high priority in your schedule.
 We operate the gokart using code that adheres to best practices.
 
 ## Language
@@ -64,7 +64,7 @@ The use of `Python` *may* be advantageous for modules that involve
 
 ### C
 
-Implementing an algorithm in the `C` language can optimize the performance of that module.
+Implementing an algorithm in the `C` language can optimize the performance of a module.
 For instance, if an algorithm prototype runs at a rate of 20[Hz] in a single thread in Java, the careful `C` port may permit operation at 100[Hz].
 
 ### C++
