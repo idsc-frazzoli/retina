@@ -130,10 +130,10 @@ public class DavisSingleBlob {
     pos[0] = (1 / totActivity) * (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]);
     pos[1] = (1 / totActivity) * (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]);
     // covariance merge TODO find out which is the correct way to do that
-    covariance[0][0] = 0.5 * (covariance[0][0]+ otherBlob.getCovariance()[0][0]);
-    covariance[0][1] = 0.5 * (covariance[0][1]+ otherBlob.getCovariance()[0][1]);
-    covariance[1][0] = 0.5 * (covariance[1][0]+ otherBlob.getCovariance()[1][0]);
-    covariance[1][1] = 0.5 * (covariance[1][1]+ otherBlob.getCovariance()[1][1]);
+    covariance[0][0] = 0.5 * (covariance[0][0] + otherBlob.getCovariance()[0][0]);
+    covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
+    covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);
+    covariance[1][1] = 0.5 * (covariance[1][1] + otherBlob.getCovariance()[1][1]);
     // acitivty merge... TODO is it reasonable?
     activity = totActivity;
   }

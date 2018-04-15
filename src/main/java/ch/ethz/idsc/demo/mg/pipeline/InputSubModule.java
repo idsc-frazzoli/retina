@@ -76,6 +76,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       if (saveImages) {
         try {
           viz.saveImage();
+          // viz.saveImages();
           // track.printStatusUpdate(davisDvsEvent);
         } catch (IOException e) {
           // TODO Auto-generated catch block
