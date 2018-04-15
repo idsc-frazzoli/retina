@@ -14,7 +14,7 @@ public class TrackedBlob {
   private boolean isCone;
   private boolean isHidden;
 
-  TrackedBlob(float[] pos, double[][] covariance, boolean isHidden) {
+  public TrackedBlob(float[] pos, double[][] covariance, boolean isHidden) {
     this.pos = pos;
     this.covariance = covariance;
     this.isHidden = isHidden;
@@ -54,6 +54,12 @@ public class TrackedBlob {
 
   public float[] getPos() {
     return pos;
+  }
+  
+  //required for handlabeling
+  public void setPos(float[] pos) {
+    this.pos[0] = pos[0];
+    this.pos[1] = pos[1];
   }
 
   public void setIsCone(boolean isCone) {

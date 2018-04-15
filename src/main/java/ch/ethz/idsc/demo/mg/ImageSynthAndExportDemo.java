@@ -14,9 +14,9 @@ import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // dirty demo code to illustrate ellipse merging
-enum ImageSynthAndExportDemo {
+public enum ImageSynthAndExportDemo {
   ;
-  static BufferedImage createImage(int pix) {
+  public static BufferedImage createImage(int pix) {
     BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_INDEXED);
     Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);

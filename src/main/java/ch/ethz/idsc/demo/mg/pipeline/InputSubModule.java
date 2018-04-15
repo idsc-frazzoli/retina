@@ -21,9 +21,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisBlobTracker track = new DavisBlobTracker(featureFilter); // next module in pipeline
   private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
   private final PipelineFrame[] frames = new PipelineFrame[3]; // for visualization
-  private final int maxEventCount = 5500000;
-  private final int backgroundActivityFilterTime = 3500; // [us] the shorter the more is filtered
-  private final int imageInterval = 20000; // [us] visualization interval
+  private final int maxEventCount = 1500000;
+  private final int backgroundActivityFilterTime = 5000; // [us] the shorter the more is filtered
+  private final int imageInterval = 50000; // [us] visualization interval
   private final boolean useFilter = true;
   // fields for testing
   private float eventCount;
@@ -31,7 +31,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int lastTimestamp;
   private int begin, end;
   private long startTime, endTime;
-  private boolean saveImages = false;
+  private boolean saveImages = true;
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -75,10 +75,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       if (saveImages) {
         try {
           viz.saveImage();
-          // viz.saveImages();
           // track.printStatusUpdate(davisDvsEvent);
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }

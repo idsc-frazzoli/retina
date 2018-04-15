@@ -13,6 +13,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 
 // sets up the window for all the pipelineFrames
+// TODO scale all frames by a bit
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
@@ -49,10 +50,10 @@ public class PipelineVisualization {
     imageCount++;
     BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
     jFrame.paint(wholeGUI.getGraphics());
-    ImageIO.write(wholeGUI, "png", UserHome.Pictures(String.format("/dvs/example%04d.png", imageCount)));
-    // ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("example%03d.png", imageCount)));
-    // ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%03d.png", imageCount)));
-    // ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%03d.png", imageCount)));
+//    ImageIO.write(wholeGUI, "png", UserHome.Pictures(String.format("/dvs/example%04d.png", imageCount)));
+     ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("/handlabeling/test%04d.png", imageCount)));
+    // ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%04d.png", imageCount)));
+    // ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%04d.png", imageCount)));
     System.out.printf("Images saved as example%03d.png\n", imageCount);
   }
 }
