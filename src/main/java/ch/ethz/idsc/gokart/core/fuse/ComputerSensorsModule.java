@@ -21,9 +21,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // fork the library and modify the API
 public class ComputerSensorsModule extends AbstractClockedModule {
   public static final String CHANNEL_GET = "computer.sensors.get";
-  private static final Scalar PERIOD = Quantity.of(2, "s");
+  /** a sensor readout blocks for 10[ms] on average */
+  private static final Scalar PERIOD = Quantity.of(4, "s");
   // ---
-  private final BinaryBlobPublisher getPublisher = new BinaryBlobPublisher(CHANNEL_GET);
+  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL_GET);
 
   @Override
   protected void first() throws Exception {
@@ -40,31 +41,36 @@ public class ComputerSensorsModule extends AbstractClockedModule {
     return PERIOD;
   }
 
-  @Override
-  protected void runAlgo() {
-    // TODO not covered by tests
-    // TODO write functionality that decodes the lcm message and provides functions for accessing the temperatures
+  byte[] sensor() {
     Components components = JSensors.get.components();
     List<Cpu> cpus = components.cpus;
     List<Gpu> gpus = components.gpus;
-    int cpu_size = cpus.size();
-    int gpu_size = gpus.size();
-    byte[] data = new byte[20]; // FIXME fix it
+    int size = 3;
+    for (final Cpu cpu : cpus) {
+      List<Temperature> temps = cpu.sensors.temperatures;
+      size += 1 + temps.size();
+    }
+    byte[] data = new byte[size];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     // the current implementation may not make full use of the
     // external library and the introspection capabilities of the computer
     // therefore the first byte is reserved to encode the version of the byte ordering
     byteBuffer.put((byte) 0); // version of protocol
-    byteBuffer.put((byte) cpu_size);
-    byteBuffer.put((byte) gpu_size);
-    for (final Cpu cpu : cpus) {
+    byteBuffer.put((byte) cpus.size());
+    byteBuffer.put((byte) gpus.size());
+    for (Cpu cpu : cpus)
       if (cpu.sensors != null) {
         List<Temperature> temps = cpu.sensors.temperatures;
         byteBuffer.put((byte) temps.size());
-        for (final Temperature temp : temps)
+        for (Temperature temp : temps)
           byteBuffer.put(temp.value.byteValue());
       }
-    }
-    getPublisher.accept(data, byteBuffer.position());
+    return data;
+  }
+
+  @Override
+  protected void runAlgo() {
+    byte[] data = sensor();
+    binaryBlobPublisher.accept(data, data.length);
   }
 }

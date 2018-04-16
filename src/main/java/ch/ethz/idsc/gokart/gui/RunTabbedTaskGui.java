@@ -45,6 +45,7 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
+      ComputerSensorsModule.class, //
       GokartPoseLcmModule.class, // move to DEV list
       LoggerModule.class //
   );
@@ -55,7 +56,6 @@ enum RunTabbedTaskGui {
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
-      ComputerSensorsModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class //

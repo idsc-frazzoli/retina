@@ -71,6 +71,7 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /***************************************************/
   _20180409T150925_d520ea0d, //
   /***************************************************/
+  _20180412T114245_7e5b46c2, //
   /** stationary gokart in center of hangar
    * pedestrians, bicycles and motorcycles moving around
    * no Davis240C */

@@ -199,7 +199,8 @@ The length of the arrays `axes` and `hats` depends on the joystick device id
 
 ## davis240c.overview.dvs
 
-Class for decoding: `DavisDvsBlockCollector`
+Class for decoding:
+Class for encoding: `DavisDvsBlockCollector`
 Message with events of Davis240C
 Total length: variable bytes. at most 1208
 
@@ -220,6 +221,20 @@ Message contains array of `DvsEvent`
 <tr><td>byte   <td>y</tr>
 </table>
 
-## davis240c.overview.gta
+## davis240c.overview.atg
 
+Class for decoding: `DavisImuFrame`
+Message with inertial measurements of Davis240C
+Total length: 18 bytes
 
+<table>
+<tr><th>type   <th>name</tr>
+<tr><td>int    <td>timestamp</tr>
+<tr><td>short  <td>accelX</tr>
+<tr><td>short  <td>accelY</tr>
+<tr><td>short  <td>accelZ</tr>
+<tr><td>short  <td>temperature</tr>
+<tr><td>short  <td>gyroX</tr>
+<tr><td>short  <td>gyroY</tr>
+<tr><td>short  <td>gyroZ</tr>
+</table>

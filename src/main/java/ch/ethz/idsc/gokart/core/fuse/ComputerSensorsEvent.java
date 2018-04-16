@@ -1,4 +1,4 @@
-// code by jph & az
+// code by jph and az
 package ch.ethz.idsc.gokart.core.fuse;
 
 import java.nio.ByteBuffer;
