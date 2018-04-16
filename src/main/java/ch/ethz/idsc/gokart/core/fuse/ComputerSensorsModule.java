@@ -21,7 +21,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // fork the library and modify the API
 public class ComputerSensorsModule extends AbstractClockedModule {
   public static final String CHANNEL_GET = "computer.sensors.get";
-  private static final Scalar PERIOD = Quantity.of(2, "s");
+  /** a sensor readout blocks for 10[ms] on average */
+  private static final Scalar PERIOD = Quantity.of(4, "s");
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(CHANNEL_GET);
 

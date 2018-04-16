@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
 public class ComputerSensorsTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  Set<String> set = new HashSet<>();
+  private final Set<String> set = new HashSet<>();
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
