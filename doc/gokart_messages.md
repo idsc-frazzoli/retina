@@ -86,7 +86,6 @@ Total length: 6 bytes
 
 <table>
 <tr><th>type   <th>name</tr>
-<tr><td>byte   <td></tr>
 <tr><td>byte   <td>resetConnection</tr>
 <tr><td>byte   <td>resetRimoL</tr>
 <tr><td>byte   <td>resetRimoR</tr>
@@ -143,7 +142,7 @@ Total length: 30 bytes
 <tr><td>`RimoPutTire`<td>putTireR</tr>
 </table>
 
-Message contains of two `RimoPutTire` messages.
+Message contains two `RimoPutTire` messages.
 
 <table>
 <tr><th>type   <th>name</tr>
@@ -200,4 +199,27 @@ The length of the arrays `axes` and `hats` depends on the joystick device id
 
 ## davis240c.overview.dvs
 
+Class for decoding: `DavisDvsBlockCollector`
+Message with events of Davis240C
+Total length: variable bytes. at most 1208
+
+<table>
+<tr><th>type   <th>name</tr>
+<tr><td>short  <td>number of events</tr>
+<tr><td>short  <td>packet id</tr>
+<tr><td>int    <td>timestamp offset</tr>
+<tr><td>`DvsEvent`[]<td>dvs event</tr>
+</table>
+
+Message contains array of `DvsEvent`
+
+<table>
+<tr><th>type   <th>name</tr>
+<tr><td>short  <td>polarity and timestamp increment</tr>
+<tr><td>byte   <td>x</tr>
+<tr><td>byte   <td>y</tr>
+</table>
+
 ## davis240c.overview.gta
+
+

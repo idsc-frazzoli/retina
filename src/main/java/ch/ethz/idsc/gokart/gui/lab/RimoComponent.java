@@ -103,12 +103,12 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
   public void putEvent(RimoPutEvent rimoPutEvent) {
     /** as long as there is only 1 valid command word,
      * there is no need to update the spinner label */
-    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
-    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
+    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putTireL);
+    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putTireR);
     // ---
     if (Objects.nonNull(rimoGetEvent)) { // may not be received yet
-      rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
-      rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
+      rimoGetFieldsL.updateRateColor(rimoPutEvent.putTireL, rimoGetEvent.getTireL);
+      rimoGetFieldsR.updateRateColor(rimoPutEvent.putTireR, rimoGetEvent.getTireR);
     }
   }
 

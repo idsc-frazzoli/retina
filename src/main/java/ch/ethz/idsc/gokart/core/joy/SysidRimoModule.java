@@ -10,7 +10,7 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -66,9 +66,6 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
     value = value.multiply(aheadAverage).multiply(MAGNITUDE);
     short armsL_raw = (short) (-value.number().shortValue()); // sign left invert
     short armsR_raw = (short) (+value.number().shortValue()); // sign right id
-    return new RimoPutEvent( //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
-    );
+    return RimoPutHelper.operationTorque(armsL_raw, armsR_raw);
   }
 }
