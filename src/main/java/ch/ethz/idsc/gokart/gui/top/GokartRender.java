@@ -100,8 +100,8 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(rimoPutEvent)) {
       double factor = 5E-4;
-      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putL.getTorque()).number().doubleValue() * factor;
-      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putR.getTorque()).number().doubleValue() * factor;
+      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireL.getTorque()).number().doubleValue() * factor;
+      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireR.getTorque()).number().doubleValue() * factor;
       graphics.setColor(Color.BLUE);
       graphics.setStroke(new BasicStroke(2));
       graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));

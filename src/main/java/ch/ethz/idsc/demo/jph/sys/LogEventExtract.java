@@ -17,18 +17,15 @@ enum LogEventExtract {
   public static void main(String[] args) throws Exception {
     File src = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00");
     src = UserHome.file("temp/20180108T165210_manual.lcm");
-    src = UserHome.file("gokart/pursuit/20180108T165210/log.lcm");
-    src = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
-    src = DubendorfHangarLog._20180307T154859_0cd18c6b.file(GokartLcmLogPlayer.LOG_ROOT);
-    // new File("/media/datahaki/mobile/temp", "20180108T162528_5f742add.lcm.00");
+    src = DubendorfHangarLog._20180412T164740_7e5b46c2.file(GokartLcmLogPlayer.LOG_ROOT);
     File dst = null;
-    dst = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
+    dst = UserHome.file("gokart/linmot/20180412T164740/log.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 1438629;
-    int hi = 3262582;
+    int lo = 3108744;
+    int hi = 3136421;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

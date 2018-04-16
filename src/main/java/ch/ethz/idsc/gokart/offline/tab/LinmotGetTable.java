@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -25,7 +26,12 @@ public class LinmotGetTable implements OfflineTableSupplier {
           linmotGetEvent.getDemandPosition().map(Magnitude.METER), //
           linmotGetEvent.getPositionDiscrepancy().map(Magnitude.METER), //
           linmotGetEvent.getWindingTemperature1().map(Magnitude.DEGREE_CELSIUS).map(Round._1), //
-          linmotGetEvent.getWindingTemperature2().map(Magnitude.DEGREE_CELSIUS).map(Round._1) //
+          linmotGetEvent.getWindingTemperature2().map(Magnitude.DEGREE_CELSIUS).map(Round._1), //
+          Tensors.vector( //
+              linmotGetEvent.status_word, //
+              linmotGetEvent.state_variable, //
+              linmotGetEvent.isOperational() ? 1 : 0 //
+          ) //
       );
     }
   }

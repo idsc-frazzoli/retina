@@ -51,8 +51,8 @@ public class PurePursuitRimoTest extends TestCase {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
       RimoPutEvent rpe = optional.get();
-      short trqL = rpe.putL.getTorqueRaw();
-      short trqR = rpe.putR.getTorqueRaw();
+      short trqL = rpe.putTireL.getTorqueRaw();
+      short trqR = rpe.putTireR.getTorqueRaw();
       assertTrue(trqL < 0);
       assertTrue(0 < trqR);
     }
@@ -72,8 +72,8 @@ public class PurePursuitRimoTest extends TestCase {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
       RimoPutEvent rpe = optional.get();
-      short trqL = rpe.putL.getTorqueRaw();
-      short trqR = rpe.putR.getTorqueRaw();
+      short trqL = rpe.putTireL.getTorqueRaw();
+      short trqR = rpe.putTireR.getTorqueRaw();
       assertTrue(trqL > 0);
       assertTrue(0 > trqR);
     }

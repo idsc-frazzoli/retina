@@ -70,6 +70,18 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180307T171311_fc084dc9, //
   /***************************************************/
   _20180409T150925_d520ea0d, //
+  /***************************************************/
+  /** stationary gokart in center of hangar
+   * pedestrians, bicycles and motorcycles moving around
+   * no Davis240C */
+  _20180412T163109_7e5b46c2, //
+  /** stationary gokart in center of hangar
+   * pedestrians and bicycles moving around */
+  _20180412T163855_7e5b46c2, //
+  /** manual drive with markers on floor for davis240c
+   * without cones
+   * contains linmot failure */
+  _20180412T164740_7e5b46c2, //
   ;
   @Override
   public File file(File directory) {

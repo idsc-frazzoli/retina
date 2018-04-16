@@ -35,8 +35,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -57,8 +57,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -79,8 +79,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -101,8 +101,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
