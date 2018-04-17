@@ -21,7 +21,7 @@ public enum LogfileLocations {
   public static final String DUBI8d = "/home/mario/logs/20180412T114245_7e5b46c2Extracted4.lcm";
   // extracted ale's fast double round of DUBI8
   public static final String DUBI8e = "/home/mario/logs/20180412T114245_7e5b46c2Extracted5.lcm";
-  // manual driving with cones, zoomed out camera --> helmet blocking small corner of image
+  // manual driving with cones, zoomed out camera --> helmet blocking corner of image
   public static final String DUBI9 = "/home/mario/logs/20180412T143634_7e5b46c2.lcm.00";
   // extracted slow round of DUBI9
   public static final String DUBI9a = "/home/mario/logs/20180412T143634_7e5b46c2Extracted1.lcm";
@@ -33,7 +33,7 @@ public enum LogfileLocations {
   public static final String DUBI9d = "/home/mario/logs/20180412T143634_7e5b46c2Extracted4.lcm";
   // extracted fast round of DUBI9, tight track
   public static final String DUBI9e = "/home/mario/logs/20180412T143634_7e5b46c2Extracted5.lcm";
-  // manual driving, second half with cones and stripes on floor
+  // manual driving, second half with cones and stripes on floor. no helmet blocking sight
   public static final String DUBI10 = "/home/mario/logs/20180412T152900_7e5b46c2.lcm.00";
   // extracted fast round of DUBI10
   public static final String DUBI10a = "/home/mario/logs/20180412T152900_7e5b46c2Extracted1.lcm";

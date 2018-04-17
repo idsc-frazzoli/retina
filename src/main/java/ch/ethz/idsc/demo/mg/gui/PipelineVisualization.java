@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.gui;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -10,22 +11,22 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 
 // sets up the window for all the pipelineFrames
-// TODO scale all frames by a bit
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
+  private final float scaling = 1.5f; // since the original images are tiny
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Raw event stream", 50, 13);
-      graphics.drawImage(bufferedImage[0], 50, 20, null);
-      graphics.drawString("Filtered event stream with active blobs", 50, 213);
-      graphics.drawImage(bufferedImage[1], 50, 220, null);
-      graphics.drawString("Filtered event stream with hidden blobs", 50, 413);
-      graphics.drawImage(bufferedImage[2], 50, 420, null);
+      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[0], scaling), 50, 20, null);
+      graphics.drawString("Filtered event stream with active blobs", 50, 313);
+      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[1], scaling), 50, 320, null);
+      graphics.drawString("Filtered event stream with hidden blobs", 50, 613);
+      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[2], scaling), 50, 620, null);
     }
   };
   private int imageCount = 0;
@@ -37,7 +38,7 @@ public class PipelineVisualization {
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
-    jFrame.setBounds(100, 100, 350, 650);
+    jFrame.setBounds(100, 100, 450, 950);
     jFrame.setVisible(true);
   }
 
@@ -46,14 +47,13 @@ public class PipelineVisualization {
     jComponent.repaint();
   }
 
-  public void saveImage() throws IOException {
+  public void saveImage(String imagePrefix, int timeStamp) throws IOException {
     imageCount++;
     BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
     jFrame.paint(wholeGUI.getGraphics());
-//    ImageIO.write(wholeGUI, "png", UserHome.Pictures(String.format("/dvs/example%04d.png", imageCount)));
-     ImageIO.write(bufferedImage[0], "png", UserHome.Pictures(String.format("/handlabeling/test%04d.png", imageCount)));
-    // ImageIO.write(bufferedImage[1], "png", UserHome.Pictures(String.format("exampleActive%04d.png", imageCount)));
-    // ImageIO.write(bufferedImage[2], "png", UserHome.Pictures(String.format("exampleHidden%04d.png", imageCount)));
-    System.out.printf("Images saved as example%03d.png\n", imageCount);
+    String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
+    ImageIO.write(bufferedImage[1], "png", new File(HandLabelFileLocations.Images+fileName));
+    // ImageIO.write(wholeGUI, "png", new File(HandLabelFileLocations.GUIVisualization+fileName);
+    System.out.printf("Images saved as %s\n", fileName);
   }
 }

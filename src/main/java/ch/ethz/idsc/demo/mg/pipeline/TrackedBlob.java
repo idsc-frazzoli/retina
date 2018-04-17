@@ -1,22 +1,26 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // this class provides a simple tracked blob object for visualization and pass to next modules
-public class TrackedBlob {
-  // fields
+public class TrackedBlob implements Serializable {
+  private static final long serialVersionUID = 1L;
   private final float[] pos;
   private final double[][] covariance;
+  private final int timeStamp; //
   private boolean isCone;
   private boolean isHidden;
 
-  public TrackedBlob(float[] pos, double[][] covariance, boolean isHidden) {
+  public TrackedBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
     this.pos = pos;
     this.covariance = covariance;
+    this.timeStamp = timeStamp;
     this.isHidden = isHidden;
   }
 
@@ -48,10 +52,6 @@ public class TrackedBlob {
     return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
   }
 
-  public double[][] getCovariance() {
-    return covariance;
-  }
-
   public float[] getPos() {
     return pos;
   }
@@ -61,7 +61,14 @@ public class TrackedBlob {
     this.pos[0] = pos[0];
     this.pos[1] = pos[1];
   }
+  
+  public double[][] getCovariance() {
+    return covariance;
+  }
 
+  public int getTimeStamp() {
+    return timeStamp;
+  }
   public void setIsCone(boolean isCone) {
     this.isCone = isCone;
   }

@@ -39,8 +39,6 @@ public class DavisBlobTracker {
   private final List<DavisSingleBlob> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
-  // private int lastUpdateTimestamp;
-  // private int lastAcquireTimestamp;
   // testing
   public float hitthreshold = 0;
 
@@ -302,11 +300,11 @@ public class DavisBlobTracker {
     List<TrackedBlob> blobList = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       if (layerId == 1 && blobs.get(i).getLayerID()) {
-        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), false);
+        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
         blobList.add(trackedBlob);
       }
       if (layerId == 0 && !blobs.get(i).getLayerID()) {
-        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), true);
+        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
         blobList.add(trackedBlob);
       }
     }
@@ -337,19 +335,4 @@ public class DavisBlobTracker {
   private int getEventTimestamp() {
     return lastEventTimestamp;
   }
-  // private void setUpdateTimestamp(int timestamp) {
-  // lastUpdateTimestamp = timestamp;
-  // }
-  //
-  // private int getUpdateTimestamp() {
-  // return lastUpdateTimestamp;
-  // }
-  //
-  // private void setAcquireTimestamp(int timestamp) {
-  // lastAcquireTimestamp = timestamp;
-  // }
-  //
-  // private int getAcquireTimestamp() {
-  // return lastAcquireTimestamp;
-  // }
 }

@@ -24,19 +24,19 @@ public enum ImageSynthAndExportDemo {
     graphics.setColor(Color.BLACK);
     // first ellipse
     float[] posA = { 50, 50 };
-    double[][] covA = { { 1000, 0 }, { 0, 1000 } };
+    double[][] covA = { { 1000, 300 }, { 300, 1500 } };
     float activityA = 100;
     // second ellipse
     float[] posB = { 150, 100 };
-    double[][] covB = { { 1000, 0 }, { 0, 1000 } };
-    float activityB = 100;
+    double[][] covB = { { 800, -200 }, { -200, 1000 } };
+    float activityB = 200;
     AffineTransform old = graphics.getTransform();
     createEllipse(posA, covA, graphics);
     graphics.setTransform(old);
     createEllipse(posB, covB, graphics);
     graphics.setTransform(old);
     float[] posC = mergePos(posA, activityA, posB, activityB);
-    double[][] covC = mergeCov(covA, activityA, covB, activityB);
+    double[][] covC = mergeCovA(covA, activityA, covB, activityB);
     graphics.setColor(Color.RED);
     createEllipse(posC, covC, graphics);
     // WritableRaster writableRaster = bufferedImage.getRaster();
@@ -76,12 +76,21 @@ public enum ImageSynthAndExportDemo {
     return pos;
   }
 
-  static double[][] mergeCov(double[][] covA, float actA, double[][] covB, float actB) {
+  static double[][] mergeCovA(double[][] covA, float actA, double[][] covB, float actB) {
     double[][] cov = new double[2][2];
     cov[0][0] = 1 / ((actA + actB) * (actA + actB)) * (actA * actA * covA[0][0] + actB * actB * covB[0][0]);
     cov[0][1] = 1 / ((actA + actB) * (actA + actB)) * (actA * actA * covA[0][1] + actB * actB * covB[0][1]);
     cov[1][0] = 1 / ((actA + actB) * (actA + actB)) * (actA * actA * covA[1][0] + actB * actB * covB[1][0]);
     cov[1][1] = 1 / ((actA + actB) * (actA + actB)) * (actA * actA * covA[1][1] + actB * actB * covB[1][1]);
+    return cov;
+  }
+
+  static double[][] mergeCovB(double[][] covA, float actA, double[][] covB, float actB) {
+    double[][] cov = new double[2][2];
+    cov[0][0] = 1 / (actA * actA + actB * actB) * (actA * actA * covA[0][0] + actB * actB * covB[0][0]);
+    cov[0][1] = 1 / (actA * actA + actB * actB) * (actA * actA * covA[0][1] + actB * actB * covB[0][1]);
+    cov[1][0] = 1 / (actA * actA + actB * actB) * (actA * actA * covA[1][0] + actB * actB * covB[1][0]);
+    cov[1][1] = 1 / (actA * actA + actB * actB) * (actA * actA * covA[1][1] + actB * actB * covB[1][1]);
     return cov;
   }
 
