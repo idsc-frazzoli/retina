@@ -32,6 +32,11 @@
 			<version>0.0.4</version>
 		</dependency>
 		<dependency>
+			<groupId>de.lmu.ifi.dbs.elki</groupId>
+			<artifactId>elki-bundle</artifactId>
+			<version>0.7.1</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
