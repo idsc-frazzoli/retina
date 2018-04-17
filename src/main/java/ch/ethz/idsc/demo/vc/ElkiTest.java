@@ -1,12 +1,10 @@
 package ch.ethz.idsc.demo.vc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Unprotect;
-import ch.ethz.idsc.tensor.pdf.Distribution;
-import ch.ethz.idsc.tensor.pdf.RandomVariate;
-import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -20,9 +18,9 @@ import de.lmu.ifi.dbs.elki.datasource.ArrayAdapterDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
-enum ElkiTest {
+public enum ElkiTest {
   ;
-  private static double[][] fromMatrix(Tensor matrix) {
+  static double[][] fromMatrix(Tensor matrix) {
     final int cols = Unprotect.dimension1(matrix);
     double[][] array = new double[matrix.length()][cols];
     for (int row = 0; row < matrix.length(); ++row)
@@ -31,46 +29,77 @@ enum ElkiTest {
     return array;
   }
 
-  private static Database sample() {
-    double[][] data = new double[10][2];
-    Distribution d = UniformDistribution.of(-1, 10);
-    data = fromMatrix(RandomVariate.of(d, 16000, 2));
-    // Adapter to load data from an existing array.
+  public static Database sample(Tensor p) {
+    double[][] data = fromMatrix(p);
     DatabaseConnection dbc = new ArrayAdapterDatabaseConnection(data);
-    // Create a database (which may contain multiple relations!)
     Database db = new StaticArrayDatabase(dbc, null);
-    // Load the data into the database (do NOT forget to initialize...)
     db.initialize();
     return db;
   }
 
-  public static void testDBSCANResults() {
-    Database db = sample();
+  static Database sample() {
+    double[][] data = new double[10][2];
+    data[3][0] = 0.98;
+    data[3][1] = 0.1;
+    data[0][0] = 0.99;
+    data[0][1] = 0.16;
+    data[2][0] = 2.16;
+    data[2][1] = 3.99;
+    data[1][0] = 2.1;
+    data[1][1] = 3.98;
+    System.out.println(Arrays.deepToString(data));
+    DatabaseConnection dbc = new ArrayAdapterDatabaseConnection(data);
+    Database db = new StaticArrayDatabase(dbc, null);
+    db.initialize();
+    return db;
+  }
+
+  public static void testDBSCANResults(Tensor p) {
+    Database db = sample(p);
     long nanoTime = System.nanoTime();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.04, 20);
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 1.5, 5);
     Clustering<Model> result = dbscan.run(db);
     // new ELKIBuilder<DBSCAN<DoubleVector>>(DBSCAN.class) //
     // .with(DBSCAN.Parameterizer.EPSILON_ID, 0.04) //
     // .with(DBSCAN.Parameterizer.MINPTS_ID, 20) //
     // .build().run(db);
     long nanoTime2 = System.nanoTime();
-    System.out.println(nanoTime2 - nanoTime);
+    System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
-    System.out.println(allClusters.size());
+    // System.out.println(allClusters.size());
     for (Cluster<Model> cluster : allClusters) {
       System.out.println(cluster.size());
       System.out.println(cluster.isNoise());
-      Model model = cluster.getModel();
-      DBIDs ids = cluster.getIDs();
-      // ids.
-      for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
-        // DBID id = iter.
-        // System.out.println(iter);
-        // iter.
-      }
-      System.out.println(ids.getClass().getName());
+      // DBIDs ids = cluster.getIDs();
+      // // ids.
+      // for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
+      // // DBID id = iter.
+      // System.out.println(iter);
+      // // iter.
+      // }
+      // System.out.println(ids.getClass().getName());
     }
     // System.out.println(iDs);
+    System.out.println("end");
+  }
+
+  public static void testDBSCANResults() {
+    Database db = sample();
+    long nanoTime = System.nanoTime();
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.4, 2);
+    Clustering<Model> result = dbscan.run(db);
+    long nanoTime2 = System.nanoTime();
+    System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
+    List<Cluster<Model>> allClusters = result.getAllClusters();
+    for (Cluster<Model> cluster : allClusters) {
+      System.out.println(cluster.size());
+      System.out.println(cluster.isNoise());
+      DBIDs ids = cluster.getIDs();
+      for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
+        System.out.println(iter);
+      }
+    }
+    System.out.println("end");
   }
 
   public static void main(String[] args) {
