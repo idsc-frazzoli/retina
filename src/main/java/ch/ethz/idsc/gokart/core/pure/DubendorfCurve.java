@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 // TODO consider stating coordinates in [m]eters
 public enum DubendorfCurve {
   ;
+  public static final Tensor EIGHT_HYPERLOOP = eight_hyperloop();
   public static final Tensor EIGHT_DEMODAY = eight_demoday();
   public static final Tensor OVAL_DEMODAY = oval_demoday();
   /** the shifted oval was created for the test on 2018-03-05
@@ -81,9 +82,37 @@ public enum DubendorfCurve {
         Tensors.vector(48.400, 56.533), // ins
         Tensors.vector(46.667, 43.467) // ins 48.133, 44.800
     );
+    // careful: shift is subtracted
     Tensor shift = Tensors.vector(0.71, 0.71); // 1[m] away from balloon
     Tensor poly = Tensor.of(poly_pre.stream().map(point -> point.subtract(shift)));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  private static Tensor eight_hyperloop() {
+    Tensor poly_pre = Tensors.of( //
+        Tensors.vector(42.000, 38.533), //
+        Tensors.vector(37.733, 40.533), // mid
+        Tensors.vector(36.133, 45.200), //
+        Tensors.vector(40.267, 49.600), // ins
+        Tensors.vector(54.000, 50.533), // ins
+        Tensors.vector(57.067, 54.133), //
+        Tensors.vector(55.867, 58.267), // mid
+        Tensors.vector(51.633, 59.400), //
+        Tensors.vector(48.400, 56.533), // ins
+        Tensors.vector(46.667, 43.467) // ins 48.133, 44.800
+    );
+    // careful: shift is added
+    // 1[m] away from balloon, and 1[m] away from hyperloop
+    Tensor shift = Tensors.vector(0.0, -1.42);
+    Tensor poly = Tensor.of(poly_pre.stream().map(point -> point.add(shift)));
+    CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  public static void main(String[] args) {
+    Tensor s1 = Tensors.vector(0.71, 0.71).negate();
+    Tensor s2 = Tensors.vector(0.71, -0.71);
+    System.out.println(s1.add(s2));
   }
 }
