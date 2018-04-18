@@ -17,6 +17,10 @@ public class TrackedBlob implements Serializable {
   private boolean isCone;
   private boolean isHidden;
 
+  /** @param pos array of length 2
+   * @param covariance array of size 2 x 2
+   * @param timeStamp
+   * @param isHidden */
   public TrackedBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
     this.pos = pos;
     this.covariance = covariance;
@@ -55,13 +59,13 @@ public class TrackedBlob implements Serializable {
   public float[] getPos() {
     return pos;
   }
-  
-  //required for handlabeling
+
+  // required for handlabeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
     this.pos[1] = pos[1];
   }
-  
+
   public double[][] getCovariance() {
     return covariance;
   }
@@ -69,6 +73,7 @@ public class TrackedBlob implements Serializable {
   public int getTimeStamp() {
     return timeStamp;
   }
+
   public void setIsCone(boolean isCone) {
     this.isCone = isCone;
   }

@@ -10,16 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +33,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
+import ch.ethz.idsc.demo.mg.TrackedBlobIO;
 import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
 
-// GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature. Labels can be loaded/saved to a file
-// Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
+/** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
+ * Labels can be loaded/saved to a file
+ * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
 // TODO how to specify shape of feature?
 public class HandLabeler {
   private final int longAxis = 60; // default feature shape
@@ -49,7 +49,7 @@ public class HandLabeler {
   private String fileName = "labeledFeatures.dat";
   private String imagePrefix = "dubi8a_";
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
-  private List<List<TrackedBlob>> labeledFeatures = new ArrayList<List<TrackedBlob>>(numberOfFiles); // main field of the class
+  private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
   private JComponent jComponent = new JComponent() {
@@ -60,11 +60,17 @@ public class HandLabeler {
       drawEllipsesOnImage(labeledFeatures.get(currentImgNumber - 1), (Graphics2D) graphics);
     }
   };
+  private final MouseWheelListener mwl = new MouseWheelListener() {
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+      System.out.println("mousewheel = " + e.getWheelRotation());
+    }
+  };
 
   public HandLabeler() {
     // set up empty list of lists
     for (int i = 0; i < numberOfFiles; i++) {
-      List<TrackedBlob> emptyList = new ArrayList<TrackedBlob>();
+      List<TrackedBlob> emptyList = new ArrayList<>();
       labeledFeatures.add(emptyList);
     }
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,14 +82,14 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          saveFeatures(HandLabelFileLocations.Labels + fileName);
+          TrackedBlobIO.saveFeatures(HandLabelFileLocations.Labels + fileName, labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = loadFeatures(HandLabelFileLocations.Labels + fileName);
+          labeledFeatures = TrackedBlobIO.loadFeatures(HandLabelFileLocations.Labels + fileName);
           System.out.println("Successfully loaded from file " + fileName);
           jComponent.repaint();
         }
@@ -112,6 +118,7 @@ public class HandLabeler {
     jComponent.addMouseListener(new MouseListener() {
       @Override
       public void mouseReleased(MouseEvent e) {
+        // ---
       }
 
       @Override
@@ -132,16 +139,20 @@ public class HandLabeler {
 
       @Override
       public void mouseClicked(MouseEvent e) {
+        // ---
       }
 
       @Override
       public void mouseEntered(MouseEvent e) {
+        // ---
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
+        // ---
       }
     });
+    jComponent.addMouseWheelListener(mwl);
     jPanelMain.add("Center", jComponent);
     jFrame.setContentPane(jPanelMain);
     jFrame.setBounds(100, 100, 500, 440);
@@ -156,30 +167,6 @@ public class HandLabeler {
     AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     scaleOp.filter(unscaled, scaled);
     return scaled;
-  }
-
-  // loads binary file and draws the ellipses accordingly
-  public static List<List<TrackedBlob>> loadFeatures(String pathToFile) {
-    List<List<TrackedBlob>> loadedList = null;
-    try {
-      ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(pathToFile));
-      loadedList = (List<List<TrackedBlob>>) inputStream.readObject(); // gives a warning
-      inputStream.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return loadedList;
-  }
-
-  // saves array to binary file
-  private void saveFeatures(String pathToFile) {
-    try {
-      ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(pathToFile));
-      outputStream.writeObject(labeledFeatures);
-      outputStream.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   // display a scaled image according to which position the slider is
@@ -220,7 +207,7 @@ public class HandLabeler {
     }
   }
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     HandLabeler handlabeler = new HandLabeler();
   }
 }

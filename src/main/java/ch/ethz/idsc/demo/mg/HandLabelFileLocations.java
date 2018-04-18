@@ -1,3 +1,4 @@
+// code by mg
 package ch.ethz.idsc.demo.mg;
 
 public enum HandLabelFileLocations {
@@ -8,5 +9,4 @@ public enum HandLabelFileLocations {
   public static final String Labels = "/home/mario/Pictures/handlabels/";
   // directory for the GUI screenshots
   public static final String GUIVisualization = "/home/mario/Pictures/dvs";
-  
 }

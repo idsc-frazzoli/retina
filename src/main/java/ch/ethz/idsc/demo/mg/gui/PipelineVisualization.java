@@ -52,7 +52,7 @@ public class PipelineVisualization {
     BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
     jFrame.paint(wholeGUI.getGraphics());
     String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-    ImageIO.write(bufferedImage[1], "png", new File(HandLabelFileLocations.Images+fileName));
+    ImageIO.write(bufferedImage[1], "png", new File(HandLabelFileLocations.Images + fileName));
     // ImageIO.write(wholeGUI, "png", new File(HandLabelFileLocations.GUIVisualization+fileName);
     System.out.printf("Images saved as %s\n", fileName);
   }

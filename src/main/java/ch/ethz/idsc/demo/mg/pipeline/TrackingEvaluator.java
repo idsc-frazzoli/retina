@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.gui.HandLabeler;
+import ch.ethz.idsc.demo.mg.TrackedBlobIO;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded and compared with
@@ -16,7 +16,7 @@ public class TrackingEvaluator {
   int numberOfLabelInstants = 0;
 
   TrackingEvaluator(String pathToFile, DavisBlobTracker track) {
-    labeledFeatures = HandLabeler.loadFeatures(pathToFile);
+    labeledFeatures = TrackedBlobIO.loadFeatures(pathToFile);
     numberOfLabelInstants = labeledFeatures.size();
     System.out.println(numberOfLabelInstants);
     this.track = track;
@@ -30,7 +30,7 @@ public class TrackingEvaluator {
     if (davisDvsEvent.time == timeStamps[currentLabelInstant]) {
       System.out.println("Performance evaluation instant happening now!");
       evaluatePerformance();
-      if (currentLabelInstant < numberOfLabelInstants-1) {
+      if (currentLabelInstant < numberOfLabelInstants - 1) {
         currentLabelInstant++;
       }
     }
