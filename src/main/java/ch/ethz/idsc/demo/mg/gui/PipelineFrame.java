@@ -36,7 +36,6 @@ public class PipelineFrame {
 
   // overlays the active blobs on the image
   public BufferedImage trackOverlay(List<TrackedBlob> blobs) {
-    AffineTransform old = graphics.getTransform();
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getIsCone()) {
         rotatedEllipse(graphics, blobs.get(i), Color.GREEN);
@@ -47,7 +46,6 @@ public class PipelineFrame {
       if (blobs.get(i).getIsHidden()) {
         rotatedEllipse(graphics, blobs.get(i), Color.GRAY);
       }
-      graphics.setTransform(old);
     }
     return rotate180Degrees(bufferedImage);
   }
@@ -73,7 +71,8 @@ public class PipelineFrame {
   }
 
   // use to Tensor library to correctly draw the ellipses
-  private static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
+  public static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
+    AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();
     float[] semiAxes = blob.getStandardDeviation();
     float leftCornerX = blob.getPos()[0] - semiAxes[0];
@@ -84,5 +83,6 @@ public class PipelineFrame {
     graphics.rotate(rotAngle, blob.getPos()[0], blob.getPos()[1]);
     graphics.setColor(color);
     graphics.draw(ellipse);
+    graphics.setTransform(old);
   }
 }

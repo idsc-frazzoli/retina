@@ -11,13 +11,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-
 // sets up the window for all the pipelineFrames
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
-  private final float scaling = 1.5f; // since the original images are tiny
+  private final float scaling = 1.5f; // original images are tiny
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
