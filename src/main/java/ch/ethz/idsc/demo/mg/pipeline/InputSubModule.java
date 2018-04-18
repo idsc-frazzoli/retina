@@ -22,20 +22,23 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisBlobTracker track = new DavisBlobTracker(featureFilter); // next module in pipeline
   private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
   private final PipelineFrame[] frames = new PipelineFrame[3]; // for visualization
-  private final String pathToFile = HandLabelFileLocations.Labels + "labeledFeatures.dat";
-  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToFile, track);
-  private final int maxDuration = 2000; // [ms]
+  private final String pathToHandlabelsFile = HandLabelFileLocations.Labels + "labeledFeatures.dat";
+  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  private final int maxDuration = 5000; // [ms]
   private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
-  private final int imageInterval = 50000; // [us] visualization interval
+  private final int imageInterval = 50; // [ms] visualization interval
+  private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
+  private String imagePrefix = "Test";
+  private String pathToImages = HandLabelFileLocations.Images;
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;
-  private int lastTimestamp;
+  private int lastImagingTimestamp;
+  private int lastSavingTimestamp;
   private int begin, end;
   private long startTime, endTime;
   private boolean saveImages = false;
-  private String imagePrefix = "dubi8a";
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -53,10 +56,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    // start timer
+    // initialize timers
     if (eventCount == 0) {
       begin = davisDvsEvent.time;
-      lastTimestamp = davisDvsEvent.time;
+      lastImagingTimestamp = davisDvsEvent.time;
+      lastSavingTimestamp = davisDvsEvent.time;
       startTime = System.currentTimeMillis();
     }
     ++eventCount;
@@ -70,24 +74,24 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       frames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
       // the events are accumulated for the interval time and then displayed in a single frame
-      if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
+      if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval*1000) {
         viz.setImage(frames[0].getAccumulatedEvents(), 0);
         // active blobs color coded by featurefilter
         viz.setImage(frames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
         // hidden blobs
         viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
-        if (saveImages) {
+        if (saveImages && (davisDvsEvent.time -lastSavingTimestamp) > savingInterval*1000 ) {
           try {
-            viz.saveImage(imagePrefix, davisDvsEvent.time);
-            // track.printStatusUpdate(davisDvsEvent);
+            viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);
           } catch (IOException e) {
             e.printStackTrace();
           }
+          lastSavingTimestamp = davisDvsEvent.time;
         }
         frames[0].clearImage();
         frames[1].clearImage();
         frames[2].clearImage();
-        lastTimestamp = davisDvsEvent.time;
+        lastImagingTimestamp = davisDvsEvent.time;
       }
     }
     if (davisDvsEvent.time - begin > maxDuration * 1000) {

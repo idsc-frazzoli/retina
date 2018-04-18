@@ -47,7 +47,7 @@ public class HandLabeler {
   private final float scaling = 2;
   private int currentImgNumber;
   private String fileName = "labeledFeatures.dat";
-  private String imagePrefix = "dubi8a_";
+  private String imagePrefix = "dubi8a";
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
   private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
@@ -172,7 +172,7 @@ public class HandLabeler {
   // display a scaled image according to which position the slider is
   private void displayImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
-    String fileName = imagePrefix + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
+    String fileName = imagePrefix +"_"+ imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
     String pathToFile = HandLabelFileLocations.Images + fileName;
     try {
       BufferedImage unscaled = ImageIO.read(new File(pathToFile));
