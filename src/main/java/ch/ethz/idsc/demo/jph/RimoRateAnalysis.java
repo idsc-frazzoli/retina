@@ -21,8 +21,9 @@ enum RimoRateAnalysis {
     // _20180307T154859_0cd18c6b no extraction needed (with stops)
     File file = DubendorfHangarLog._20180307T154859_0cd18c6b.file(LOG_ROOT);
     file = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
+    file = UserHome.file("20180418T132333_bca165ae_prbs4.lcm");
     RimoRateTable rimoRateTable = new RimoRateTable(Quantity.of(0.01, "s"));
     OfflineLogPlayer.process(file, rimoRateTable);
-    Export.of(UserHome.file("pursuit_20180307T154859.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file("20180418T132333_bca165ae_prbs4.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
   }
 }
