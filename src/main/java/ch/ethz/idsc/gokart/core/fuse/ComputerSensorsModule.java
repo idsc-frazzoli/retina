@@ -19,6 +19,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // understand and comment more about the external library
 // TODO the external library does not follow Java standards. therefore we may want to
 // fork the library and modify the API
+/** the activation of the module has affected the operation of other modules in
+ * a negative way. For instance, the communication with the micro autobox is impeded,
+ * which results in a required manual reset. */
 public class ComputerSensorsModule extends AbstractClockedModule {
   public static final String CHANNEL_GET = "computer.sensors.get";
   /** a sensor readout blocks for 10[ms] on average */

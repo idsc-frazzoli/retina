@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.ComputerSensorsModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
@@ -45,7 +44,9 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      ComputerSensorsModule.class, //
+      // ComputerSensorsModule blocks the system and jeopardises
+      // the communication to the micro autobox
+      // Computer Sensors Module.class, // <- do not enable!
       GokartPoseLcmModule.class, // move to DEV list
       LoggerModule.class //
   );
