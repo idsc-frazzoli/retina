@@ -22,12 +22,12 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutListener;
     jButton.addActionListener(event -> LinmotCalibrationProvider.INSTANCE.schedule());
   }
 
-  @Override
+  @Override // from LinmotPutListener
   public void putEvent(LinmotPutEvent putEvent) {
     jButton.setEnabled(isEnabled());
   }
 
-  @Override
+  @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent getEvent) {
     _getEvent = getEvent;
   }

@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.Scalar;
 /* package */ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
   public static final int RESOLUTION = 1000;
   // ---
-  public final SteerInitButton steerInitButton = new SteerInitButton();
+  final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderPosition;

@@ -20,6 +20,7 @@ public class ToolbarsComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
   public static final int HEIGHT_CBOX = 15;
+  public static final String UNKNOWN = "<unknown>";
   // ---
   private final JPanel jPanel = new JPanel(new BorderLayout());
   private final RowPanel rowTitle = new RowPanel();
@@ -75,7 +76,7 @@ public class ToolbarsComponent {
    * @return editable text field that allows user modification */
   protected JTextField createEditing(String title) {
     JTextField jTextField = new JTextField(20);
-    jTextField.setText("<unknown>");
+    jTextField.setText(UNKNOWN);
     JToolBar jToolBar1 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));

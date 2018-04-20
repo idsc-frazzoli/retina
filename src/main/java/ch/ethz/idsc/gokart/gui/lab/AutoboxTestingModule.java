@@ -61,32 +61,36 @@ public class AutoboxTestingModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
-        LinmotSocket.INSTANCE.removePutListener(linmotComponent);
-        LinmotSocket.INSTANCE.removePutProvider(linmotComponent);
-        // ---
-        LinmotSocket.INSTANCE.removeGetListener(linmotComponent.linmotInitButton);
-        LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
-        // ---
-        MiscSocket.INSTANCE.removeGetListener(miscComponent);
-        MiscSocket.INSTANCE.removePutListener(miscComponent);
-        MiscSocket.INSTANCE.removePutProvider(miscComponent);
-        // ---
-        SteerSocket.INSTANCE.removeGetListener(steerComponent);
-        SteerSocket.INSTANCE.removePutListener(steerComponent);
-        SteerSocket.INSTANCE.removePutProvider(steerComponent);
-        // ---
-        SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
-        // ---
-        RimoSocket.INSTANCE.removeGetListener(rimoComponent);
-        RimoSocket.INSTANCE.removePutListener(rimoComponent);
-        RimoSocket.INSTANCE.removePutProvider(rimoComponent);
-        System.out.println("removed listeners and providers");
+        private_windowClosed();
       }
     });
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
+  }
+
+  private void private_windowClosed() {
+    LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
+    LinmotSocket.INSTANCE.removePutListener(linmotComponent);
+    LinmotSocket.INSTANCE.removePutProvider(linmotComponent);
+    // ---
+    LinmotSocket.INSTANCE.removeGetListener(linmotComponent.linmotInitButton);
+    LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
+    // ---
+    MiscSocket.INSTANCE.removeGetListener(miscComponent);
+    MiscSocket.INSTANCE.removePutListener(miscComponent);
+    MiscSocket.INSTANCE.removePutProvider(miscComponent);
+    // ---
+    SteerSocket.INSTANCE.removeGetListener(steerComponent);
+    SteerSocket.INSTANCE.removePutListener(steerComponent);
+    SteerSocket.INSTANCE.removePutProvider(steerComponent);
+    // ---
+    SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
+    // ---
+    RimoSocket.INSTANCE.removeGetListener(rimoComponent);
+    RimoSocket.INSTANCE.removePutListener(rimoComponent);
+    RimoSocket.INSTANCE.removePutProvider(rimoComponent);
+    System.out.println("removed listeners and providers");
   }
 
   @Override
