@@ -21,7 +21,7 @@ public class LinmotPutEvent extends DataEvent {
    * @param motion command header
    * @return */
   /* package */ static LinmotPutEvent configuration(Word control, Word motion) {
-    return new LinmotPutEvent(control, motion, (short) 0, (short) 0, (short) 0, (short) 0);
+    return new LinmotPutEvent(control, motion.getShort(), (short) 0, (short) 0, (short) 0, (short) 0);
   }
 
   // ---
@@ -44,10 +44,10 @@ public class LinmotPutEvent extends DataEvent {
    * @param max_velocity
    * @param acceleration
    * @param deceleration */
-  public LinmotPutEvent(Word control, Word motion, //
+  public LinmotPutEvent(Word control, short motion_cmd_hdr, //
       short target_position, short max_velocity, short acceleration, short deceleration) {
     control_word = control.getShort();
-    motion_cmd_hdr = motion.getShort();
+    this.motion_cmd_hdr = motion_cmd_hdr;
     this.target_position = target_position;
     this.max_velocity = max_velocity;
     this.acceleration = acceleration;

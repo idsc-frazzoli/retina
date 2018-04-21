@@ -146,7 +146,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   public Optional<LinmotPutEvent> putEvent() {
     return Optional.of(new LinmotPutEvent( //
         spinnerLabelCtrl.getValue(), //
-        spinnerLabelHdr.getValue(), //
+        spinnerLabelHdr.getValue().getShort(), // TODO
         (short) sliderExtTPos.jSlider.getValue(), // position
         (short) sliderExtMVel.jSlider.getValue(), // max velocity
         (short) sliderExtAcc.jSlider.getValue(), // acceleration

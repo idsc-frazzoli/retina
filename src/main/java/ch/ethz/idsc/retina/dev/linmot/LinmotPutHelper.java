@@ -69,7 +69,7 @@ public enum LinmotPutHelper {
   private static LinmotPutEvent operationToPosition(short pos) {
     return new LinmotPutEvent( //
         LinmotPutHelper.CMD_OPERATION, //
-        LinmotPutHelper.MC_POSITION, //
+        LinmotPutHelper.MC_POSITION.getShort(), //
         pos, //
         MAXVELOCITY_INIT, //
         ACCELERATION_INIT, //
