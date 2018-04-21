@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.linmot.LinmotBitCycler;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutPosition;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 
@@ -23,6 +23,6 @@ public class LinmotJoystickModule extends JoystickModule<LinmotPutEvent> {
   /***************************************************/
   @Override // from JoystickModule
   Optional<LinmotPutEvent> translate(GokartJoystickInterface joystick) {
-    return Optional.of(LinmotBitCycler.INSTANCE.operationToRelativePosition(joystick.getBreakStrength()));
+    return Optional.of(LinmotPutPosition.INSTANCE.toRelativePosition(joystick.getBreakStrength()));
   }
 }
