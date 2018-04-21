@@ -26,7 +26,12 @@ public class LinmotPutEvent extends DataEvent {
 
   // ---
   public final short control_word;
-  public final short motion_cmd_hdr;
+  /** motion_cmd_hdr is private because the bits of the short value encode two different values:
+   * <pre>
+   * 0xfff0 motion_cmd
+   * 0x000f counter
+   * </pre> */
+  private final short motion_cmd_hdr;
   public final short target_position;
   public final short max_velocity;
   public final short acceleration;
@@ -81,7 +86,14 @@ public class LinmotPutEvent extends DataEvent {
 
   public boolean isOperational() {
     return control_word == LinmotPutHelper.CMD_OPERATION.getShort() //
-        && motion_cmd_hdr == LinmotPutHelper.MC_POSITION.getShort();
+        && getMotionCmdHeaderWithoutCounter() == LinmotPutHelper.MC_POSITION.getShort();
+  }
+
+  /** the last lowest 4 bits of motion_cmd_hdr contain a counter
+   * 
+   * @return motion_cmd_hdr with bits of counter == 0 */
+  public short getMotionCmdHeaderWithoutCounter() {
+    return (short) (motion_cmd_hdr & 0xfff0);
   }
 
   /** function only used in post-processing

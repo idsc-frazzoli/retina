@@ -158,7 +158,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (linmotPutEvent.isOperational())
       sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
-    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
+    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.getMotionCmdHeaderWithoutCounter()));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
     // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);
