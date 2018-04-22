@@ -21,8 +21,6 @@ public enum DubendorfCurve {
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
   public static final Tensor OVAL = oval();
   public static final Tensor REVERSE_OVAL = Reverse.of(oval());
-  @Deprecated
-  public static final Tensor KIDNEY = kidney(); // curvature is not feasible
 
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
@@ -32,17 +30,6 @@ public enum DubendorfCurve {
         Tensors.vector(49.867, 59.200), //
         Tensors.vector(57.200, 54.800), //
         Tensors.vector(49.200, 45.067), //
-        Tensors.vector(40.800, 37.333));
-    CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
-  }
-
-  private static Tensor kidney() {
-    Tensor poly = Tensors.of( //
-        Tensors.vector(35.200, 44.933), //
-        Tensors.vector(49.867, 59.200), //
-        Tensors.vector(57.200, 54.800), //
-        Tensors.vector(47.200, 47.733), //
         Tensors.vector(40.800, 37.333));
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();

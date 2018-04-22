@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -28,5 +30,21 @@ public class SysidRimoModuleTest extends TestCase {
       RimoPutEvent rpe = sysidRimoModule.create(RealScalar.of(.6), DoubleScalar.of(2.5));
       assertEquals(rpe.getTorque_Y_pair(), Tensors.fromString("{-900[ARMS], -900[ARMS]}"));
     }
+  }
+
+  public void testJoystickPresent() {
+    SysidRimoModule sysidRimoModule = new SysidRimoModule();
+    GokartJoystickInterface gji = //
+        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), true);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gji);
+    assertTrue(optional.isPresent());
+  }
+
+  public void testJoystickNotPresent() {
+    SysidRimoModule sysidRimoModule = new SysidRimoModule();
+    GokartJoystickInterface gji = //
+        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gji);
+    assertFalse(optional.isPresent());
   }
 }

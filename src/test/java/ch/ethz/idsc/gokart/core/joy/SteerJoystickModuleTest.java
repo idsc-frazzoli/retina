@@ -44,4 +44,9 @@ public class SteerJoystickModuleTest extends TestCase {
     assertTrue(optional.isPresent());
     assertFalse(sjm.putEvent().isPresent()); // joystick missing
   }
+
+  public void testPublic() {
+    int modifs = SteerJoystickModule.class.getModifiers();
+    assertEquals(modifs & 1, 1);
+  }
 }

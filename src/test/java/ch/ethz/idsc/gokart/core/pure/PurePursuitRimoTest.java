@@ -78,4 +78,32 @@ public class PurePursuitRimoTest extends TestCase {
       assertTrue(0 > trqR);
     }
   }
+
+  public void testSimpleBranch() {
+    PurePursuitRimo ppr = new PurePursuitRimo();
+    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
+    assertFalse(ppr.putEvent().isPresent());
+    {
+      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertFalse(optional.isPresent()); // because speed reading is missing
+    }
+    {
+      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertFalse(optional.isPresent());
+    }
+    ppr.rimoRateControllerWrap.getEvent(RimoGetEvents.create(123, 234));
+    {
+      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertFalse(optional.isPresent());
+    }
+    ppr.setOperational(true);
+    {
+      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertTrue(optional.isPresent());
+    }
+    {
+      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      assertTrue(optional.isPresent());
+    }
+  }
 }

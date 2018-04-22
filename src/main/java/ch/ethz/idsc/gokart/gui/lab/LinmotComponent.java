@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
@@ -147,9 +148,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.of(new LinmotPutEvent( //
+    return Optional.of(LinmotPutOperation.INSTANCE.generic( //
         spinnerLabelCtrl.getValue(), //
-        spinnerLabelHdr.getValue().getShort(), // TODO
+        spinnerLabelHdr.getValue(), //
         (short) sliderExtTPos.jSlider.getValue(), // position
         (short) sliderExtMVel.jSlider.getValue(), // max velocity
         (short) sliderExtAcc.jSlider.getValue(), // acceleration
