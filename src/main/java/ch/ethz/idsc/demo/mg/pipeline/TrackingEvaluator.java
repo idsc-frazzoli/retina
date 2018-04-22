@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.File;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.TrackedBlobIO;
@@ -15,7 +16,7 @@ public class TrackingEvaluator {
   int currentLabelInstant = 0;
   int numberOfLabelInstants = 0;
 
-  TrackingEvaluator(String pathToFile, DavisBlobTracker track) {
+  TrackingEvaluator(File pathToFile, DavisBlobTracker track) {
     labeledFeatures = TrackedBlobIO.loadFeatures(pathToFile);
     numberOfLabelInstants = labeledFeatures.size();
     System.out.println(numberOfLabelInstants);

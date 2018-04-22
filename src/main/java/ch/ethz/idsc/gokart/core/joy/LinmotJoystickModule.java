@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutPosition;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutPosition;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 
 /** conversion of joystick event to brake command */

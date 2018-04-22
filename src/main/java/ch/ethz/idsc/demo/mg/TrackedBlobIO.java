@@ -12,10 +12,10 @@ import ch.ethz.idsc.tensor.io.Import;
 public enum TrackedBlobIO {
   ;
   // loads binary file
-  public static List<List<TrackedBlob>> loadFeatures(String pathToFile) {
+  public static List<List<TrackedBlob>> loadFeatures(File pathToFile) {
     List<List<TrackedBlob>> loadedList = null;
     try {
-      loadedList = Import.object(new File(pathToFile));
+      loadedList = Import.object(pathToFile);
     } catch (ClassNotFoundException e1) {
       e1.printStackTrace();
     } catch (IOException e1) {
@@ -27,9 +27,9 @@ public enum TrackedBlobIO {
   }
 
   // saves array to binary file
-  public static void saveFeatures(String pathToFile, List<List<TrackedBlob>> labeledFeatures) {
+  public static void saveFeatures(File pathToFile, List<List<TrackedBlob>> labeledFeatures) {
     try {
-      Export.object(new File(pathToFile), labeledFeatures);
+      Export.object(pathToFile, labeledFeatures);
     } catch (IOException e1) {
       e1.printStackTrace();
     }
