@@ -15,11 +15,15 @@ abstract class PurePursuitBase<PE> implements StartAndStoppable, PutProvider<PE>
   /** status default false */
   private boolean status = false;
 
-  public final void setOperational(boolean status) {
+  /** @param status */
+  /* package */ final void setOperational(boolean status) {
     this.status = status;
   }
 
-  final boolean private_isOperational() {
+  /** function used in tests
+   * 
+   * @return status */
+  /* package */ final boolean private_isOperational() {
     return status;
   }
 
