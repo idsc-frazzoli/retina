@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** j2b2 project */
-public class Se2MultiresGrids {
+/* package */ class Se2MultiresGrids {
   private static final Scalar DECR = DoubleScalar.of(0.6);
   // ---
   private final List<Se2Grid> list = new ArrayList<>();

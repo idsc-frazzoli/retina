@@ -6,7 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-public class Se2Grid {
+/* package */ class Se2Grid {
   private final List<Se2GridPoint> list = new ArrayList<>();
 
   public Se2Grid(Scalar shift, Scalar angle, final int fan) {
