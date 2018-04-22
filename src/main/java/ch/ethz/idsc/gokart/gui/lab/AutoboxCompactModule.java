@@ -15,8 +15,6 @@ import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
@@ -36,12 +34,7 @@ public class AutoboxCompactModule extends AbstractModule implements DavisImuFram
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addGetListener(autoboxCompactComponent.linmotInitButton);
-    LinmotSocket.INSTANCE.addPutListener(autoboxCompactComponent.linmotInitButton);
-    // ---
-    MiscSocket.INSTANCE.addGetListener(autoboxCompactComponent.miscResetButton);
-    // ---
-    SteerSocket.INSTANCE.addPutListener(autoboxCompactComponent.steerInitButton);
+    autoboxCompactComponent.start();
     // ---
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
@@ -80,12 +73,7 @@ public class AutoboxCompactModule extends AbstractModule implements DavisImuFram
     joystickLcmClient.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
     // ---
-    SteerSocket.INSTANCE.removePutListener(autoboxCompactComponent.steerInitButton);
-    // ---
-    MiscSocket.INSTANCE.removeGetListener(autoboxCompactComponent.miscResetButton);
-    // ---
-    LinmotSocket.INSTANCE.removeGetListener(autoboxCompactComponent.linmotInitButton);
-    LinmotSocket.INSTANCE.removePutListener(autoboxCompactComponent.linmotInitButton);
+    autoboxCompactComponent.stop();
   }
 
   public static void standalone() throws Exception {

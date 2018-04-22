@@ -7,13 +7,14 @@ import javax.swing.JToolBar;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGetListener {
+public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGetListener, StartAndStoppable {
   // TODO document for all gui elements why the subscriptions are the way they are
-  final LinmotInitButton linmotInitButton = new LinmotInitButton();
-  final MiscResetButton miscResetButton = new MiscResetButton();
-  final SteerInitButton steerInitButton = new SteerInitButton();
+  private final LinmotInitButton linmotInitButton = new LinmotInitButton();
+  private final MiscResetButton miscResetButton = new MiscResetButton();
+  private final SteerInitButton steerInitButton = new SteerInitButton();
   final JTextField[] jTextField = new JTextField[2];
   final JTextField jTF_joystick;
   final JTextField jTF_davis240c;
@@ -41,5 +42,19 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
   public void getEvent(RimoGetEvent getEvent) {
     jTextField[0].setText(getEvent.getTireL.getAngularRate_Y().map(Round._3).toString());
     jTextField[1].setText(getEvent.getTireR.getAngularRate_Y().map(Round._3).toString());
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    linmotInitButton.start();
+    miscResetButton.start();
+    steerInitButton.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    linmotInitButton.stop();
+    miscResetButton.stop();
+    steerInitButton.stop();
   }
 }

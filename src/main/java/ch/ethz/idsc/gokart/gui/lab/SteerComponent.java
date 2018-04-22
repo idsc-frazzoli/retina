@@ -20,16 +20,19 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
+/* package */ class SteerComponent extends //
+    AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> implements //
+    StartAndStoppable {
   public static final int RESOLUTION = 1000;
   // ---
-  final SteerInitButton steerInitButton = new SteerInitButton();
+  private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderPosition;
@@ -161,5 +164,15 @@ import ch.ethz.idsc.tensor.Scalar;
         return Optional.of(SteerPutEvent.create(spinnerLabelLw.getValue(), torqueCmd));
     }
     return Optional.empty();
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    steerInitButton.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    steerInitButton.stop();
   }
 }

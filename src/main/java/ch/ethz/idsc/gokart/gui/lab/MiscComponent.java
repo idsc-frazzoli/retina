@@ -15,11 +15,13 @@ import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
+/* package */ class MiscComponent extends //
+    AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> implements StartAndStoppable {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -29,7 +31,7 @@ import ch.ethz.idsc.tensor.Scalar;
       Word.createByte("ON", (byte) 1) //
   );
   // ---
-  final MiscResetButton miscResetButton = new MiscResetButton();
+  private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -121,5 +123,15 @@ import ch.ethz.idsc.tensor.Scalar;
     miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
     miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
     return Optional.of(miscPutEvent);
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    miscResetButton.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    miscResetButton.stop();
   }
 }

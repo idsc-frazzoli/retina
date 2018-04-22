@@ -34,20 +34,19 @@ public class AutoboxTestingModule extends AbstractModule {
     LinmotSocket.INSTANCE.addGetListener(linmotComponent);
     LinmotSocket.INSTANCE.addPutListener(linmotComponent);
     LinmotSocket.INSTANCE.addPutProvider(linmotComponent);
-    // ---
-    LinmotSocket.INSTANCE.addGetListener(linmotComponent.linmotInitButton);
-    LinmotSocket.INSTANCE.addPutListener(linmotComponent.linmotInitButton);
+    linmotComponent.start();
     addTab(linmotComponent);
     // ---
     MiscSocket.INSTANCE.addGetListener(miscComponent);
     MiscSocket.INSTANCE.addPutListener(miscComponent);
     MiscSocket.INSTANCE.addPutProvider(miscComponent);
+    miscComponent.start();
     addTab(miscComponent);
     // ---
     SteerSocket.INSTANCE.addGetListener(steerComponent);
     SteerSocket.INSTANCE.addPutListener(steerComponent);
     SteerSocket.INSTANCE.addPutProvider(steerComponent);
-    SteerSocket.INSTANCE.addPutListener(steerComponent.steerInitButton);
+    steerComponent.start();
     addTab(steerComponent);
     // ---
     RimoSocket.INSTANCE.addGetListener(rimoComponent);
@@ -73,19 +72,17 @@ public class AutoboxTestingModule extends AbstractModule {
     LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
     LinmotSocket.INSTANCE.removePutListener(linmotComponent);
     LinmotSocket.INSTANCE.removePutProvider(linmotComponent);
-    // ---
-    LinmotSocket.INSTANCE.removeGetListener(linmotComponent.linmotInitButton);
-    LinmotSocket.INSTANCE.removePutListener(linmotComponent.linmotInitButton);
+    linmotComponent.stop();
     // ---
     MiscSocket.INSTANCE.removeGetListener(miscComponent);
     MiscSocket.INSTANCE.removePutListener(miscComponent);
     MiscSocket.INSTANCE.removePutProvider(miscComponent);
+    miscComponent.stop();
     // ---
     SteerSocket.INSTANCE.removeGetListener(steerComponent);
     SteerSocket.INSTANCE.removePutListener(steerComponent);
     SteerSocket.INSTANCE.removePutProvider(steerComponent);
-    // ---
-    SteerSocket.INSTANCE.removePutListener(steerComponent.steerInitButton);
+    steerComponent.stop();
     // ---
     RimoSocket.INSTANCE.removeGetListener(rimoComponent);
     RimoSocket.INSTANCE.removePutListener(rimoComponent);
