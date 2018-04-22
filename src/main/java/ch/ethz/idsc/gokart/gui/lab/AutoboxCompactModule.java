@@ -12,22 +12,27 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-public class AutoboxCompactModule extends AbstractModule {
+public class AutoboxCompactModule extends AbstractModule implements DavisImuFrameListener {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final AutoboxCompactComponent autoboxCompactComponent = new AutoboxCompactComponent();
   private final JFrame jFrame = new JFrame("Autobox Compact");
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   Timer timer = new Timer();
+  int imuFrame_count = 0;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -38,6 +43,8 @@ public class AutoboxCompactModule extends AbstractModule {
     // ---
     SteerSocket.INSTANCE.addPutListener(autoboxCompactComponent.steerInitButton);
     // ---
+    davisImuLcmClient.addListener(this);
+    davisImuLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
     // ---
     jFrame.setContentPane(autoboxCompactComponent.getScrollPane());
@@ -57,6 +64,7 @@ public class AutoboxCompactModule extends AbstractModule {
         Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
         String string = optional.isPresent() ? optional.get().toString() : ToolbarsComponent.UNKNOWN;
         autoboxCompactComponent.jTF_joystick.setText(string);
+        autoboxCompactComponent.jTF_davis240c.setText("#=" + imuFrame_count);
       }
     }, 100, 100);
   }
@@ -70,6 +78,7 @@ public class AutoboxCompactModule extends AbstractModule {
   private void private_windowClosed() {
     timer.cancel();
     joystickLcmClient.stopSubscriptions();
+    davisImuLcmClient.stopSubscriptions();
     // ---
     SteerSocket.INSTANCE.removePutListener(autoboxCompactComponent.steerInitButton);
     // ---
@@ -87,5 +96,10 @@ public class AutoboxCompactModule extends AbstractModule {
 
   public static void main(String[] args) throws Exception {
     standalone();
+  }
+
+  @Override
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    ++imuFrame_count;
   }
 }
