@@ -44,4 +44,9 @@ public class LinmotJoystickModuleTest extends TestCase {
     assertEquals(linmotPutEvent.acceleration, 500);
     assertEquals(linmotPutEvent.deceleration, 500);
   }
+
+  public void testPublic() {
+    int modifs = LinmotJoystickModule.class.getModifiers();
+    assertEquals(modifs & 1, 1);
+  }
 }

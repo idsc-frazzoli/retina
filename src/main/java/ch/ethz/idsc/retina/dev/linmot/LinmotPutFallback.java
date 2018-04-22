@@ -17,6 +17,6 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.of(LinmotPutPosition.INSTANCE.fallback());
+    return Optional.of(LinmotPutOperation.INSTANCE.fallback());
   }
 }
