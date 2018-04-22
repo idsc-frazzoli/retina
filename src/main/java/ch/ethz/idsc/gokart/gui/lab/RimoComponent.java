@@ -107,8 +107,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
     rimoPutFieldsR.updateGuiElements(rimoPutEvent.putTireR);
     // ---
     if (Objects.nonNull(rimoGetEvent)) { // may not be received yet
-      rimoGetFieldsL.updateRateColor(rimoPutEvent.putTireL, rimoGetEvent.getTireL);
-      rimoGetFieldsR.updateRateColor(rimoPutEvent.putTireR, rimoGetEvent.getTireR);
+      rimoGetFieldsL.updateRateColor(rimoGetEvent.getTireL);
+      rimoGetFieldsR.updateRateColor(rimoGetEvent.getTireR);
     }
   }
 

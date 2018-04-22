@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.SysidRimoModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
+import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
@@ -54,6 +55,7 @@ enum RunTabbedTaskGui {
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
+      AutoboxCompactModule.class, //
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //

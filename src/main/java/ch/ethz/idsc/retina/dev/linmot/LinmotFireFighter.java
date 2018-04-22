@@ -35,6 +35,6 @@ public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.ofNullable(penaltyCards.isPenalty() ? LinmotPutHelper.FALLBACK_OPERATION : null);
+    return Optional.ofNullable(penaltyCards.isPenalty() ? LinmotPutPosition.INSTANCE.fallback() : null);
   }
 }

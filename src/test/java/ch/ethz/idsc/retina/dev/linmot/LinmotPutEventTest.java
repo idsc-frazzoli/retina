@@ -11,7 +11,10 @@ import junit.framework.TestCase;
 public class LinmotPutEventTest extends TestCase {
   public void testSimple() {
     LinmotPutEvent linmotPutEvent = //
-        new LinmotPutEvent(LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_POSITION, (short) 302, (short) 303, (short) 304, (short) 305);
+        new LinmotPutEvent( //
+            LinmotPutHelper.CMD_HOME, //
+            LinmotPutHelper.MC_POSITION.getShort(), //
+            (short) 302, (short) 303, (short) 304, (short) 305);
     assertTrue(Objects.nonNull(linmotPutEvent.toInfoString()));
     byte[] array = linmotPutEvent.asArray();
     assertEquals(array.length, 12);
@@ -27,7 +30,10 @@ public class LinmotPutEventTest extends TestCase {
 
   public void testConstructorBuffer() {
     LinmotPutEvent linmotPutEvent = //
-        new LinmotPutEvent(LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS, (short) -302, (short) -303, (short) -304, (short) -305);
+        new LinmotPutEvent( //
+            LinmotPutHelper.CMD_ERR_ACK, //
+            LinmotPutHelper.MC_ZEROS.getShort(), //
+            (short) -302, (short) -303, (short) -304, (short) -305);
     byte[] array = linmotPutEvent.asArray();
     assertEquals(array.length, 12);
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
