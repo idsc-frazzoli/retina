@@ -70,6 +70,14 @@ public class TrackedBlob implements Serializable {
     return covariance;
   }
 
+  // required for handlabeling
+  public void setCovariance(double[][] covariance) {
+    this.covariance[0][0] = covariance[0][0];
+    this.covariance[0][1] = covariance[0][1];
+    this.covariance[1][0] = covariance[1][0];
+    this.covariance[1][1] = covariance[1][1];
+  }
+
   public int getTimeStamp() {
     return timeStamp;
   }

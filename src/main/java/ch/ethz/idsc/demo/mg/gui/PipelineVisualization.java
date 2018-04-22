@@ -11,13 +11,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-
 // sets up the window for all the pipelineFrames
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
-  private final float scaling = 1.5f; // since the original images are tiny
+  private final float scaling = 1.5f; // original images are tiny
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -47,12 +45,12 @@ public class PipelineVisualization {
     jComponent.repaint();
   }
 
-  public void saveImage(String imagePrefix, int timeStamp) throws IOException {
+  public void saveImage(String pathToFile, String imagePrefix, int timeStamp) throws IOException {
     imageCount++;
     BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
     jFrame.paint(wholeGUI.getGraphics());
     String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-    ImageIO.write(bufferedImage[1], "png", new File(HandLabelFileLocations.Images + fileName));
+    ImageIO.write(bufferedImage[1], "png", new File(pathToFile + fileName));
     // ImageIO.write(wholeGUI, "png", new File(HandLabelFileLocations.GUIVisualization+fileName);
     System.out.printf("Images saved as %s\n", fileName);
   }
