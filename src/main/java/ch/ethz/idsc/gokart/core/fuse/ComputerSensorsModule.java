@@ -19,6 +19,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // understand and comment more about the external library.
 // The external library does not follow Java standards. therefore we may want to
 // fork the library and modify the API
+// ComputerSensorsModule blocks the system and jeopardises
+// the communication to the micro autobox
 /** the activation of the module has affected the operation of other modules in
  * a negative way. For instance, the communication with the micro autobox is impeded,
  * which results in a required manual reset. */

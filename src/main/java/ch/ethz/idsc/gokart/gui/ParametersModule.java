@@ -32,12 +32,6 @@ public class ParametersModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    protected_init();
-    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    jFrame.setVisible(true);
-  }
-
-  /* package for testing */ void protected_init() {
     addTab(ChassisGeometry.GLOBAL);
     addTab(SensorsConfig.GLOBAL);
     addTab(LinmotConfig.GLOBAL);
@@ -49,6 +43,8 @@ public class ParametersModule extends AbstractModule {
     addTab(PursuitConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
+    jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    jFrame.setVisible(true);
   }
 
   @Override // from AbstractModule
