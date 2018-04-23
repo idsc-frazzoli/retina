@@ -57,7 +57,7 @@ public class DubendorfPlannerDemo {
     // Tensors.vector(2, 2, Degree.of(10).number()), //
     // carFlows, //
     // RimoSinusIonModel.standard().footprint());
-    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423;
     BufferedImage bufferedImage = predefinedMap.getImage();
     Tensor tensor = ImageFormat.from(bufferedImage);
     Dimensions.of(tensor);
