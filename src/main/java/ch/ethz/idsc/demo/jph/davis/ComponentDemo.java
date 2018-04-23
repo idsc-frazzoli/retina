@@ -24,6 +24,8 @@ import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 import ch.ethz.idsc.tensor.opt.ConvexHull;
 
+/** visualization of log files from Robotics and Perception Group
+ * http://rpg.ifi.uzh.ch/ */
 enum ComponentDemo {
   ;
   public static void main(String[] args) throws Exception {

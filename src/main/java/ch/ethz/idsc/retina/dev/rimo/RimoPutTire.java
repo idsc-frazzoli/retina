@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.retina.sys.OfflineUse;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
@@ -89,12 +90,12 @@ public class RimoPutTire implements Serializable {
     byteBuffer.putInt(sdoData); // 11 ... total == 15
   }
 
-  // ONLY FOR POST-PROCESSING
-  public Tensor vector_raw() {
-    return Tensors.vector(command, rate, torque, trigger, sdoCommand, mainIndex, subIndex, sdoData);
-  }
-
   public String toSDOHexString() {
     return String.format("%02x %04x.%02x %08x", sdoCommand, mainIndex, subIndex, sdoData);
+  }
+
+  @OfflineUse
+  public Tensor vector_raw() {
+    return Tensors.vector(command, rate, torque, trigger, sdoCommand, mainIndex, subIndex, sdoData);
   }
 }

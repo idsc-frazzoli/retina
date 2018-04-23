@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 public enum LinmotGetEventSimulator {
   ;
-  public static LinmotGetEvent create(int t1, int t2) {
+  public static LinmotGetEvent createTemperature(int t1, int t2) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putShort((short) 0x4c37);
