@@ -36,7 +36,7 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423;
   public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
