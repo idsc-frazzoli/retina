@@ -23,8 +23,7 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum ElkiTest {
   ;
-  static Tensor pi = Tensors.empty();
-
+  // static Tensor pi = Tensors.empty();
   static double[][] fromMatrix(Tensor matrix) {
     final int cols = Unprotect.dimension1(matrix);
     double[][] array = new double[matrix.length()][cols];
@@ -43,19 +42,20 @@ public enum ElkiTest {
   }
 
   public static Tensor testDBSCANResults(Tensor p) {
+    Tensor pi = Tensors.empty();
     Database db = sample(p);
     long nanoTime = System.nanoTime();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 1.5, 4); //TODO:tuning of parameters
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.1, 5); // TODO:tuning of parameters
     Clustering<Model> result = dbscan.run(db);
     long nanoTime2 = System.nanoTime();
     System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
-    // System.out.println(allClusters.size());
+    System.out.println("Number of clusters: " + allClusters.size());
     for (Cluster<Model> cluster : allClusters) {
       Tensor pr = Tensors.empty();
       System.out.println("Cluster size:" + cluster.size());
       System.out.println("Is noise:" + cluster.isNoise());
-      if (cluster.size() < 100) {
+      if (!cluster.isNoise()) {
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
@@ -65,8 +65,8 @@ public enum ElkiTest {
           // System.out.println(p.get(offset));
           pr.append(Tensors.of(p.get(offset)));
         }
+        pi.append(pr);
       }
-      pi.append(pr);
     }
     System.out.println("end");
     return (pi);

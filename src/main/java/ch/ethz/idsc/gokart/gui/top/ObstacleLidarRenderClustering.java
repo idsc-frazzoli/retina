@@ -46,14 +46,21 @@ class ObstacleLidarRenderClustering extends LidarRender {
       }
       System.out.println("Size of p:" + p.length());
       Tensor pi = ElkiTest.testDBSCANResults(p);
+      // System.out.println(pi);
+      int i = 0;
+      int col = 255 / pi.length();
+      System.out.println(pi.length());
       for (Tensor x : pi) {
+        // System.out.println(x);
+        // System.out.println(x.length());
         for (Tensor y : x) {
-          graphics.setColor(new Color(255, 0, 0, 128)); //need to change colors for each cluster
           for (Tensor z : y) {
+            graphics.setColor(new Color(i, col * i, col * i, 128));
             Point2D point2D = geometricLayer.toPoint2D(z);
-            graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 1, 1);
+            graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 3, 3);
           }
         }
+        i++;
       }
     }
     geometricLayer.popMatrix();
