@@ -14,7 +14,7 @@ enum Aedat20ViewerDemo {
   public static void main(String[] args) throws Exception {
     DavisDecoder davisDecoder = Davis240c.INSTANCE.createDecoder();
     StartAndStoppable davisEventProvider = //
-        new Aedat20FileSupplier(Aedat.LOG_04.file, davisDecoder);
+        new Aedat20FileSupplier(Aedat20.LOG_01.file, davisDecoder);
     DavisEventViewer.of(davisEventProvider, davisDecoder, Davis240c.INSTANCE, 1.0);
   }
 }
