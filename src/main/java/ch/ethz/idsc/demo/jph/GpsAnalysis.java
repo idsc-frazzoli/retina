@@ -15,6 +15,9 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** export to determine characteristics and accuracy of gps sensor
+ * 
+ * https://github.com/idsc-frazzoli/retina/issues/147 */
 enum GpsAnalysis {
   ;
   public static void main(String[] args) throws IOException {

@@ -14,6 +14,8 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** investigation of temporal regularity/sampling rate of davis240c imu measurements
+ * as the samples enhance the lidar based localization algorithm */
 enum ImuTimingsAnalysis {
   ;
   public static void main(String[] args) throws IOException {

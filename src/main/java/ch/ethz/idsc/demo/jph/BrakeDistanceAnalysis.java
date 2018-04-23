@@ -16,6 +16,9 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** Post processing to determine emergency braking distance.
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/1801717/20180217_emergency_braking.pdf */
 enum BrakeDistanceAnalysis {
   ;
   static void brakeAnalysis() throws FileNotFoundException, IOException {
