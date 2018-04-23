@@ -6,6 +6,7 @@ import ch.ethz.idsc.retina.util.curve.FourPointSubdivision;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.red.Nest;
 
 // TODO consider stating coordinates in [m]eters
@@ -77,29 +78,17 @@ public enum DubendorfCurve {
   }
 
   private static Tensor eight_hyperloop() {
-    Tensor poly_pre = Tensors.of( //
-        Tensors.vector(42.000, 38.533), //
-        Tensors.vector(37.733, 40.533), // mid
-        Tensors.vector(36.133, 45.200), //
-        Tensors.vector(40.267, 49.600), // ins
-        Tensors.vector(54.000, 50.533), // ins
-        Tensors.vector(57.067, 54.133), //
-        Tensors.vector(55.867, 58.267), // mid
-        Tensors.vector(51.633, 59.400), //
-        Tensors.vector(48.400, 56.533), // ins
-        Tensors.vector(46.667, 43.467) // ins 48.133, 44.800
-    );
     // careful: shift is added
     // 1[m] away from balloon, and 1[m] away from hyperloop
-    Tensor shift = Tensors.vector(0.0, -1.42);
-    Tensor poly = Tensor.of(poly_pre.stream().map(point -> point.add(shift)));
+    Tensor poly = ResourceData.of("/map/dubendorf/hangar/eight_hyperloop.csv");
     CurveSubdivision unaryOperator = new CurveSubdivision(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 
   public static void main(String[] args) {
-    Tensor s1 = Tensors.vector(0.71, 0.71).negate();
-    Tensor s2 = Tensors.vector(0.71, -0.71);
-    System.out.println(s1.add(s2));
+    // Tensor s1 = Tensors.vector(0.71, 0.71).negate();
+    // Tensor s2 = Tensors.vector(0.71, -0.71);
+    // System.out.println(s1.add(s2));
+    EIGHT_HYPERLOOP.length();
   }
 }
