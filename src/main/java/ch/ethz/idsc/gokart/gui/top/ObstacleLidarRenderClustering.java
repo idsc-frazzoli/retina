@@ -39,13 +39,22 @@ class ObstacleLidarRenderClustering extends LidarRender {
       SpacialObstaclePredicate spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
       for (Tensor point : points) {
         if (spacialObstaclePredicate.isObstacle(point)) {
-          Point2D point2D = geometricLayer.toPoint2D(point);
-          p.append(Tensors.of(DoubleScalar.of(point2D.getX()), DoubleScalar.of(point2D.getY())));
-          graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
+          // Point2D point2D = geometricLayer.toPoint2D(point);
+          p.append(Tensors.of(DoubleScalar.of(point.Get(0).number().doubleValue()), DoubleScalar.of(point.Get(1).number().doubleValue())));
+          // graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
       }
-      System.out.println("Size of p:"+ p.length());
-      ElkiTest.testDBSCANResults(p);
+      System.out.println("Size of p:" + p.length());
+      Tensor pi = ElkiTest.testDBSCANResults(p);
+      for (Tensor x : pi) {
+        for (Tensor y : x) {
+          graphics.setColor(new Color(255, 0, 0, 128)); //need to change colors for each cluster
+          for (Tensor z : y) {
+            Point2D point2D = geometricLayer.toPoint2D(z);
+            graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 1, 1);
+          }
+        }
+      }
     }
     geometricLayer.popMatrix();
   }

@@ -23,6 +23,8 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum ElkiTest {
   ;
+  static Tensor pi = Tensors.empty();
+
   static double[][] fromMatrix(Tensor matrix) {
     final int cols = Unprotect.dimension1(matrix);
     double[][] array = new double[matrix.length()][cols];
@@ -40,11 +42,10 @@ public enum ElkiTest {
     return db;
   }
 
-
-  public static void testDBSCANResults(Tensor p) {
+  public static Tensor testDBSCANResults(Tensor p) {
     Database db = sample(p);
     long nanoTime = System.nanoTime();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 1.5, 5);
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 1.5, 4); //TODO:tuning of parameters
     Clustering<Model> result = dbscan.run(db);
     long nanoTime2 = System.nanoTime();
     System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
@@ -63,12 +64,12 @@ public enum ElkiTest {
           // System.out.println("offset:" + offset);
           // System.out.println(p.get(offset));
           pr.append(Tensors.of(p.get(offset)));
-         
         }
-        System.out.println(pr);
       }
+      pi.append(pr);
     }
     System.out.println("end");
+    return (pi);
   }
 
   public static void main(String[] args) {
@@ -82,6 +83,6 @@ public enum ElkiTest {
     data[1][0] = 2.1;
     data[1][1] = 3.98;
     Tensor p = Tensors.matrixDouble(data);
-   testDBSCANResults(p);
+    Tensor testDBSCANResults = ElkiTest.testDBSCANResults(p);
   }
 }
