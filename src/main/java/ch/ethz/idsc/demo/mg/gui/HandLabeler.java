@@ -43,7 +43,7 @@ import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
 public class HandLabeler {
   private final int initXAxis = 500; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
-  private final int numberOfFiles = new File(HandLabelFileLocations.Images).list().length;
+  private final int numberOfFiles = HandLabelFileLocations.images().list().length;
   private final float scaling = 2; // original images are tiny
   private int currentXAxis = initXAxis;
   private int currentYAxis = initYAxis;
@@ -100,14 +100,14 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          TrackedBlobIO.saveFeatures(HandLabelFileLocations.Labels + fileName, labeledFeatures);
+          TrackedBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = TrackedBlobIO.loadFeatures(HandLabelFileLocations.Labels + fileName);
+          labeledFeatures = TrackedBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
           System.out.println("Successfully loaded from file " + fileName);
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
@@ -194,9 +194,9 @@ public class HandLabeler {
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
-    String pathToFile = HandLabelFileLocations.Images + fileName;
+    File pathToFile = new File(HandLabelFileLocations.images(), fileName);
     try {
-      bufferedImage = ImageIO.read(new File(pathToFile));
+      bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -212,7 +212,7 @@ public class HandLabeler {
   // goes through all files in the directory an extracts the timestamps
   private void extractImageTimestamps() {
     // get all filenames and sort
-    String[] fileNames = new File(HandLabelFileLocations.Images).list();
+    String[] fileNames = HandLabelFileLocations.images().list();
     Arrays.sort(fileNames);
     for (int i = 0; i < numberOfFiles; i++) {
       String fileName = fileNames[i];

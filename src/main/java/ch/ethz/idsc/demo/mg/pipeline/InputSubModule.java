@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -22,7 +23,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisBlobTracker track = new DavisBlobTracker(featureFilter); // next module in pipeline
   private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
   private final PipelineFrame[] frames = new PipelineFrame[3]; // for visualization
-  private final String pathToHandlabelsFile = HandLabelFileLocations.Labels + "labeledFeatures.dat";
+  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
   private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
   private final int maxDuration = 5000; // [ms]
   private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
@@ -30,7 +31,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
   private String imagePrefix = "Test";
-  private String pathToImages = HandLabelFileLocations.Images;
+  private File pathToImages = HandLabelFileLocations.images();
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;

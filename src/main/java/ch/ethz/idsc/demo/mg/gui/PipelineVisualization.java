@@ -45,12 +45,12 @@ public class PipelineVisualization {
     jComponent.repaint();
   }
 
-  public void saveImage(String pathToFile, String imagePrefix, int timeStamp) throws IOException {
+  public void saveImage(File pathToFile, String imagePrefix, int timeStamp) throws IOException {
     imageCount++;
     BufferedImage wholeGUI = new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
     jFrame.paint(wholeGUI.getGraphics());
     String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-    ImageIO.write(bufferedImage[1], "png", new File(pathToFile + fileName));
+    ImageIO.write(bufferedImage[1], "png", new File(pathToFile, fileName));
     // ImageIO.write(wholeGUI, "png", new File(HandLabelFileLocations.GUIVisualization+fileName);
     System.out.printf("Images saved as %s\n", fileName);
   }
