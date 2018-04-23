@@ -50,6 +50,18 @@ public class TrackedBlob implements Serializable {
     return eigenVectors;
   }
 
+  // rotates the covariance matrix
+  // TODO implement for the handlabeler
+  public void setRotAngle(float rotAngle) {
+    // ...
+  }
+
+  // scales the eigenvalues of the covariance matrix
+  // TODO implement for the handlabeler
+  public void setEigenValues(float first, float second) {
+    // ...
+  }
+
   // returns the angle between the eigenvector belonging to the first eigenvalue and the x-axis
   public double getRotAngle() {
     float[][] eigenVec = getEigenVectors();
