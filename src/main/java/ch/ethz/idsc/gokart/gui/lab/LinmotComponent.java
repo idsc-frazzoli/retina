@@ -14,7 +14,9 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -26,8 +28,10 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
-  public final LinmotInitButton linmotInitButton = new LinmotInitButton();
+/* package */ class LinmotComponent extends //
+    AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> implements //
+    StartAndStoppable {
+  private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
   private final SliderExt sliderExtTPos;
@@ -144,7 +148,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.of(new LinmotPutEvent( //
+    return Optional.of(LinmotPutOperation.INSTANCE.generic( //
         spinnerLabelCtrl.getValue(), //
         spinnerLabelHdr.getValue(), //
         (short) sliderExtTPos.jSlider.getValue(), // position
@@ -158,10 +162,20 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (linmotPutEvent.isOperational())
       sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
-    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
+    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.getMotionCmdHeaderWithoutCounter()));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
     // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);
     // sliderExtDec.jSlider.setValue(linmotPutEvent.deceleration);
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    linmotInitButton.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    linmotInitButton.stop();
   }
 }

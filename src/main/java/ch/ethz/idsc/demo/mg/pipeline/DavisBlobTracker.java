@@ -25,15 +25,9 @@ public class DavisBlobTracker {
   private static final float alphaTwo = 0.998f; // for blob covariance update
   private static final float alphaAttr = 0.002f; // attraction parameter - large value pulls blobs more towards initPos
   private static final float dAttr = 50; // [pixel] hidden blobs attraction
-  private static final float enlargementFactor = 1.01f; // increase covariance matrix by this if too small
-  private static final float minSize = 200; // trace of matrix should not be smaller than this
   private static final float dMerge = 20; // [pixel] if blobs closer than that, they merge
-  // private final float alphaRep = 0; // repulsion equation
-  // private final float dRep = 10; // repulsion equation
   private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
   private static final int tau = 8000; // [us] tunes activity update
-  // private final int acquiringInterval = 2500; // [us] acquiring interval to rise activity over aDown
-  // private static final int attractInterval = 3; // [us] update interval attraction
   // fields
   private BlobFeatureFilter blobFeatureFilter; // next module in pipeline
   private final List<DavisSingleBlob> blobs;
@@ -44,7 +38,7 @@ public class DavisBlobTracker {
 
   // initialize the tracker with all blobs uniformly distributed
   DavisBlobTracker(BlobFeatureFilter blobFeatureFilter) {
-    blobs = new ArrayList<>();
+    blobs = new ArrayList<>(initNumberOfBlobs);
     int columnSpacing = WIDTH / numberRows;
     int rowSpacing = HEIGHT / (initNumberOfBlobs / numberRows);
     for (int i = 0; i < initNumberOfBlobs; i++) {
@@ -62,7 +56,6 @@ public class DavisBlobTracker {
   // TODO attraction equation: calculate on an evenbasis or time interval basis?
   // TODO implement merging operation and test it --> implemented
   // TODO generalize algorithm by testing several scoring functions and compare them
-  // TODO in general, use float or double?
   public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
     calcScoreAndParams(davisDvsEvent);
@@ -78,11 +71,6 @@ public class DavisBlobTracker {
     deleteBlobs();
     // attraction equation for hidden blobs
     hiddenBlobAttraction();
-    // control the blob size
-    // controlBlobSize();
-    // if (davisDvsEvent.time - getUpdateTimestamp() > attractInterval) {
-    // setUpdateTimestamp(davisDvsEvent.time);
-    // }
     // for testing
     // printStatusUpdate(davisDvsEvent);
     // merging operation
@@ -139,10 +127,6 @@ public class DavisBlobTracker {
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     isPromoted = blobs.get(matchingBlob).updateBlobActivity(true, aUp, exponential);
-    // sanity check: no active blob should be promoted
-    if (blobs.get(matchingBlob).getLayerID() && isPromoted) {
-      System.out.println("Active blob is being promoted. This should not happen!");
-    }
     for (int i = 0; i < blobs.size(); i++) {
       if (i != matchingBlob) {
         blobs.get(i).updateBlobActivity(false, aUp, exponential);
@@ -178,16 +162,8 @@ public class DavisBlobTracker {
     }
   }
 
-  // degrade active blobs with activity lower than aUp to hidden layer
+  // delete active blobs when activity is lower than aDown
   private void deleteBlobs() {
-    // FIXME this is probably not functioning
-    // for (int i = 0; i < blobs.size(); i++) {
-    // if (blobs.get(i).getLayerID()) {
-    // if (blobs.get(i).getActivity() < aDown) {
-    // blobs.remove(i);
-    // }
-    // }
-    // }
     Iterator<DavisSingleBlob> iterator = blobs.iterator();
     while (iterator.hasNext()) {
       DavisSingleBlob davisSingleBlob = iterator.next();
@@ -198,27 +174,6 @@ public class DavisBlobTracker {
       }
     }
   }
-  // // delete/restore blobs with low activity
-  // private void deletelowActivityBlobs() {
-  // // initial blobs with low activity are put back to initial position
-  // for (int i = 0; i < initNumberOfBlobs; i++) {
-  // if (blobs.get(i).getActivity() < aDown) {
-  // DavisSingleBlob newInitBlob = new DavisSingleBlob(blobs.get(i).getInitPos()[0], blobs.get(i).getInitPos()[1], initVariance);
-  // blobs.set(i, newInitBlob);
-  // }
-  // }
-  // // make sure further blobs are present
-  // if (blobs.size() == initNumberOfBlobs) {
-  // return;
-  // }
-  // // delete all additional blobs with low activity
-  // for (int i = initNumberOfBlobs; i < blobs.size(); i++) {
-  // if (blobs.get(i).getActivity() < aDown) {
-  // // System.out.println("Blob #" + i + " of " + blobs.size() + " has been removed due to low activity!");
-  // blobs.remove(i);
-  // }
-  // }
-  // }
 
   // apply attraction equation
   private void hiddenBlobAttraction() {
@@ -226,18 +181,6 @@ public class DavisBlobTracker {
     for (int i = 0; i < blobs.size(); i++) {
       if (!blobs.get(i).getLayerID()) {
         isReset = blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
-        if (isReset) {
-          // System.out.println("Blob # " + i + " is reset due to attraction equation");
-        }
-      }
-    }
-  }
-
-  // control blob size. Size metric: sum of eigenvalues. TODO maybe different for active and hidden blobs?
-  private void controlBlobSize() {
-    for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getSizeMetric() < minSize) {
-        blobs.get(i).increaseBlobSize(enlargementFactor);
       }
     }
   }
@@ -265,17 +208,6 @@ public class DavisBlobTracker {
     }
   }
 
-  //
-  // // apply repulsion equation
-  // private void calcRepulsion() {
-  // // find each pair of two trackers
-  // for (int i = 0; i < (blobs.size() - 1); i++) {
-  // for (int j = i; j < blobs.size(); j++) {
-  // blobs.get(i).updateRepulsionEquation(alphaRep, dRep, blobs.get(j));
-  // }
-  // }
-  // }
-  //
   public void printStatusUpdate(DavisDvsEvent davisDvsEvent) {
     if (matchingBlob >= blobs.size()) {
       System.out.println("Matching blob was deleted");

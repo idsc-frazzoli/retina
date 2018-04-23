@@ -18,7 +18,6 @@ import ch.ethz.idsc.tensor.alg.MatrixQ;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
-// TODO not public
 enum OfflineProcessing {
   ;
   private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");

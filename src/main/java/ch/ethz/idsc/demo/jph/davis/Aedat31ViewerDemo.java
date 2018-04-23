@@ -30,7 +30,7 @@ enum Aedat31ViewerDemo {
       // davisDecoder.addPolarityListener(aedat31PolarityImage);
       try (AnimatedGifWriter agw = AnimatedGifWriter.of(UserHome.file("camera.gif"), 100)) {
         Aedat31FileSupplier davisEventProvider = //
-            new Aedat31FileSupplier(Aedat.LOG_04.file);
+            new Aedat31FileSupplier(Aedat31.LOG_04.file);
         davisEventProvider.aedat31PolarityListeners.add(aedat31PolarityImage);
         davisEventProvider.start();
         System.out.println("done");

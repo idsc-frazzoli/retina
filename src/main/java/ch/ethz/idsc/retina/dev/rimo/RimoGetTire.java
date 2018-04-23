@@ -84,6 +84,9 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(actual_rate * sign * MIN_TO_S, UNIT_RATE);
   }
 
+  /** the value of RmsMotorCurrent is not correlated to the expected motor current.
+   * 
+   * @return */
   public Scalar getRmsMotorCurrent() {
     return Quantity.of(rms_motor_current, ARMS);
   }

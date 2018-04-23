@@ -2,14 +2,28 @@
 package ch.ethz.idsc.retina.dev.linmot;
 
 import java.util.Objects;
+import java.util.Set;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class LinmotGetEventTest extends TestCase {
+  public void testPosition() {
+    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createPos(123_000, 124_000);
+    assertEquals(linmotGetEvent.getActualPosition(), Quantity.of(0.0123, "m"));
+    assertEquals(linmotGetEvent.getDemandPosition(), Quantity.of(0.0124, "m"));
+    assertTrue(Chop._13.close(linmotGetEvent.getPositionDiscrepancy(), Quantity.of(0.0001, "m")));
+    Set<LinmotStatusWordBit> set = linmotGetEvent.getStatusWordBits();
+    assertTrue(set.contains(LinmotStatusWordBit.OPERATION_ENABLED));
+    LinmotStateVariable linmotStateVariable = linmotGetEvent.getStateVariable();
+    assertEquals(linmotStateVariable.linmotStateVarMain, LinmotStateVarMain.OPERATION_ENABLED);
+    assertEquals(linmotStateVariable.substate, 193);
+  }
+
   public void testOperation() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.create(500, 200);
+    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(500, 200);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));
@@ -24,7 +38,7 @@ public class LinmotGetEventTest extends TestCase {
   }
 
   public void testHardware() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.create(1000, 700);
+    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(1000, 700);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));
@@ -39,7 +53,7 @@ public class LinmotGetEventTest extends TestCase {
   }
 
   public void testFireworks() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.create(1150, 900);
+    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(1150, 900);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));

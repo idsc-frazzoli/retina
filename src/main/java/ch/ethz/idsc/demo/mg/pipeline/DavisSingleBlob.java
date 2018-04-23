@@ -138,21 +138,6 @@ public class DavisSingleBlob {
     activity = totActivity;
   }
 
-  // function is not tested!
-  // public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
-  // float[] otherPos = otherBlob.getPos();
-  // float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
-  // float exponential = (float) (Math.exp(posDiff / dRep));
-  // // blob is not repulsed if other blob has zero activity
-  // // what should happen if both blobs have zero activity?
-  // if (otherBlob.getActivity() != 0) {
-  // pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
-  // pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
-  // }
-  // }
-  //
   public boolean blobPromotion(float aUp) {
     layerID = activity > aUp;
     return layerID;

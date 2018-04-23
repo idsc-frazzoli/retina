@@ -28,6 +28,8 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
+/** localization algorithm described in
+ * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();

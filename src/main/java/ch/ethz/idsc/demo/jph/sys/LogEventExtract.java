@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 
 import ch.ethz.idsc.demo.DubendorfHangarLog;
-import ch.ethz.idsc.demo.jph.MessageConsistency;
+import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import idsc.BinaryBlob;

@@ -5,15 +5,18 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.Word;
 
+/** decoding of rimo put event message in lcm client and offline processing */
 public enum RimoPutHelper {
   ;
-  /** @param byteBuffer with order little endian
+  /** @param byteBuffer with order little endian and at least 30 bytes remaining
    * @return */
   public static RimoPutEvent from(ByteBuffer byteBuffer) {
-    return new RimoPutEvent(tire(byteBuffer), tire(byteBuffer));
+    return new RimoPutEvent( //
+        tire(byteBuffer), //
+        tire(byteBuffer));
   }
 
-  /** @param byteBuffer
+  /** @param byteBuffer with at least 15 bytes remaining
    * @return */
   private static RimoPutTire tire(ByteBuffer byteBuffer) {
     Word command = Word.createShort("", byteBuffer.getShort());

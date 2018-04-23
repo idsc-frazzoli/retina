@@ -15,19 +15,21 @@ public class LinmotEmergencyModuleTest extends TestCase {
 
   public void testTimeout() throws Exception {
     LinmotEmergencyModule linmotEmergencyModule = new LinmotEmergencyModule();
-    // linmotEmergencyModule.first();
+    linmotEmergencyModule.first();
     assertFalse(linmotEmergencyModule.putEvent().isPresent());
     Thread.sleep(70);
     assertTrue(linmotEmergencyModule.putEvent().isPresent()); // timeout
+    linmotEmergencyModule.last();
   }
 
   public void testOperational() throws Exception {
     LinmotEmergencyModule linmotEmergencyModule = new LinmotEmergencyModule();
-    // linmotEmergencyModule.first();
+    linmotEmergencyModule.first();
     assertFalse(linmotEmergencyModule.putEvent().isPresent());
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
     LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
     linmotEmergencyModule.getEvent(linmotGetEvent);
     assertTrue(linmotEmergencyModule.putEvent().isPresent()); // not operational
+    linmotEmergencyModule.last();
   }
 }

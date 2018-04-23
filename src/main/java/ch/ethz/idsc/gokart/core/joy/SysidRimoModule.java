@@ -49,13 +49,16 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
     Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
-    if (joystick.isPresent()) {
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-      if (gokartJoystickInterface.isAutonomousPressed()) {
-        Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
-        Scalar timestamp = DoubleScalar.of(stopwatch.display_seconds());
-        return Optional.of(create(aheadAverage, timestamp));
-      }
+    if (joystick.isPresent())
+      return fromJoystick((GokartJoystickInterface) joystick.get());
+    return Optional.empty();
+  }
+
+  /* package */ Optional<RimoPutEvent> fromJoystick(GokartJoystickInterface gokartJoystickInterface) {
+    if (gokartJoystickInterface.isAutonomousPressed()) {
+      Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
+      Scalar timestamp = DoubleScalar.of(stopwatch.display_seconds());
+      return Optional.of(create(aheadAverage, timestamp));
     }
     return Optional.empty();
   }

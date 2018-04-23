@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
@@ -91,7 +91,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
     if (triggeredTimeInterval.isActive())
-      return Optional.of(LinmotPutHelper.operationToRelativePosition(RealScalar.ONE));
+      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ONE));
     return Optional.empty(); // allow other entity to control brake
   }
 }

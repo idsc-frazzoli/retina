@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Watchdog;
@@ -50,6 +50,6 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
     isBlown |= watchdog.isBlown();
-    return Optional.ofNullable(isBlown ? LinmotPutHelper.OFF_MODE_EVENT : null); // deactivate break
+    return Optional.ofNullable(isBlown ? LinmotPutOperation.INSTANCE.offMode() : null); // deactivate break
   }
 }

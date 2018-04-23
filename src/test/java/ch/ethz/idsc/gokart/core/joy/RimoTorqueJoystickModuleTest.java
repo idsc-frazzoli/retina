@@ -121,4 +121,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
     assertFalse(optional.isPresent());
   }
+
+  public void testPublic() {
+    int modifs = RimoTorqueJoystickModule.class.getModifiers();
+    assertEquals(modifs & 1, 1);
+  }
 }

@@ -8,7 +8,8 @@ import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaListener;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-public class Hdl32ePanoramaWriter implements LidarPanoramaListener {
+/** export of panorama to animated gif */
+class Hdl32ePanoramaWriter implements LidarPanoramaListener {
   private final AnimationWriter animationWriter;
   private final int width;
   private final BufferedImage image;
