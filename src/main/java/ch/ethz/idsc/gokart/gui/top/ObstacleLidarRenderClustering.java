@@ -44,7 +44,7 @@ class ObstacleLidarRenderClustering extends LidarRender {
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
       }
-      System.out.println(p.length());
+      System.out.println("Size of p:"+ p.length());
       ElkiTest.testDBSCANResults(p);
     }
     geometricLayer.popMatrix();
