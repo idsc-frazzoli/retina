@@ -11,6 +11,8 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
+/** Failure: the measurements of computer sensors blocks the operation
+ * of the other modules. therefore no post processing is available. */
 enum ComputerSensorsAnalysis {
   ;
   private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");

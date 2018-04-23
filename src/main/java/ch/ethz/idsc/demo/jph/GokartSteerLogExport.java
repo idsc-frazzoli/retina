@@ -21,6 +21,7 @@ import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
+/** code helped to perform system identification of the steering mechanism */
 enum GokartSteerLogExport {
   ;
   public static void main(String[] args) throws IOException {

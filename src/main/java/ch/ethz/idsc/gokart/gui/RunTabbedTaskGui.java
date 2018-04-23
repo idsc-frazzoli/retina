@@ -45,9 +45,6 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      // ComputerSensorsModule blocks the system and jeopardises
-      // the communication to the micro autobox
-      // Computer Sensors Module.class, // <- do not enable!
       GokartPoseLcmModule.class, // move to DEV list
       LoggerModule.class //
   );

@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.slam;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 
-public enum Se2Exp {
+/* package */ enum Se2Exp {
   ;
   /** maps an element x = (vx, vy, be) of the Lie-algebra se2 in standard coordinates:
    * [0 -be vx]
