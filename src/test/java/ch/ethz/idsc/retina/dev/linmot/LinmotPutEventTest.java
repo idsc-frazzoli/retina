@@ -26,6 +26,7 @@ public class LinmotPutEventTest extends TestCase {
     assertEquals(byteBuffer.getShort(), 303);
     assertEquals(byteBuffer.getShort(), 304);
     assertEquals(byteBuffer.getShort(), 305);
+    assertFalse(linmotPutEvent.isOperational());
   }
 
   public void testConstructorBuffer() {
@@ -34,6 +35,7 @@ public class LinmotPutEventTest extends TestCase {
             LinmotPutHelper.CMD_ERR_ACK, //
             LinmotPutHelper.MC_ZEROS.getShort(), //
             (short) -302, (short) -303, (short) -304, (short) -305);
+    assertFalse(linmotPutEvent.isOperational());
     byte[] array = linmotPutEvent.asArray();
     assertEquals(array.length, 12);
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
@@ -47,5 +49,7 @@ public class LinmotPutEventTest extends TestCase {
     byteBuffer.position(0);
     LinmotPutEvent lpe2 = new LinmotPutEvent(byteBuffer);
     assertTrue(Arrays.equals(array, lpe2.asArray()));
+    assertEquals(linmotPutEvent.vector_raw().length(), 6);
+    assertEquals(linmotPutEvent.vector_raw(), lpe2.vector_raw());
   }
 }
