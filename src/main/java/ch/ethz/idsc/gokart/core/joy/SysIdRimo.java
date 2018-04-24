@@ -9,25 +9,25 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public enum SysIdRimo implements Supplier<ScalarUnaryOperator> {
-  PRBS7SIGNEDFAST() {
+  PRBS7_SIGNEDFAST() {
     @Override
     public ScalarUnaryOperator get() {
       return new PRBS7SignedSignal(DoubleScalar.of(0.2));
     }
   },
-  PRBS7SIGNEDSLOW() {
+  PRBS7_SIGNEDSLOW() {
     @Override
     public ScalarUnaryOperator get() {
       return new PRBS7SignedSignal(DoubleScalar.of(0.5));
     }
   },
-  CHIRPFAST() {
+  CHIRP_FAST() {
     @Override
     public ScalarUnaryOperator get() {
       return new ChirpSignal(0.02, 0.256, 10);
     }
   },
-  CHIRPSLOW() {
+  CHIRP_SLOW() {
     @Override
     public ScalarUnaryOperator get() {
       return new ChirpSignal(0.02, 0.1, 20);

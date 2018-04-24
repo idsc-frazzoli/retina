@@ -27,7 +27,7 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
   // ---
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Stopwatch stopwatch = Stopwatch.started();
-  private ScalarUnaryOperator signal = SysIdRimo.CHIRPSLOW.get();
+  private ScalarUnaryOperator signal = SysIdRimo.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
