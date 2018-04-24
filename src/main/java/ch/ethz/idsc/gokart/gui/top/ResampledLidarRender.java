@@ -32,7 +32,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 // the points should be resampled after each scan and not before each draw!
 // the localization should happen in a separate thread that does not require the window to be open
 public class ResampledLidarRender extends LidarRender {
-  protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   private final MappedPoseInterface mappedPoseInterface;
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;

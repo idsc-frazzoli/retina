@@ -1,7 +1,9 @@
+// code by vc
 package ch.ethz.idsc.gokart.gui.top;
 
 public enum ResampledLidarOverlay {
   ;
+  // protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   // BufferedImage biglobal = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
   // LidarRayBlockListener lrbl = new LidarRayBlockListener() {
   // @Override

@@ -39,7 +39,7 @@ import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
  * scrolling while holding ctrl/shift changes x/y-axis length.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
-// TODO impelement ability to rotate ellipse (method stub set up in TrackedBlob)
+// TODO implement ability to rotate ellipse (method stub set up in TrackedBlob)
 public class HandLabeler {
   private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
@@ -207,7 +207,7 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
+  private static void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
       AccumulatedEventFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
     }
