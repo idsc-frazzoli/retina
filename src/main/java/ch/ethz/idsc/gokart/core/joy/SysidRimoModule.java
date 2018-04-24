@@ -18,16 +18,16 @@ import ch.ethz.idsc.retina.util.math.PRBS7Signal;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** module generates ... */
 public class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
-  private static final Scalar[] VALUE = new Scalar[] { RealScalar.of(-1), RealScalar.of(+1) };
   private static final Scalar MAGNITUDE = RealScalar.of(1500); // TODO magic const, unit [ARMS]
   private static final Scalar PERIOD = RealScalar.of(.3); // TODO magic const, unit [s]
   // ---
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Stopwatch stopwatch = Stopwatch.started();
-  private final PRBS7Signal prbs7Signal = new PRBS7Signal(PERIOD);
+  private ScalarUnaryOperator signal = SysIdRimo.CHIRPSLOW.get();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -39,6 +39,10 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     joystickLcmClient.stopSubscriptions();
+  }
+
+  void set(ScalarUnaryOperator signal) {
+    this.signal = signal;
   }
 
   @Override // from PutProvider
@@ -64,8 +68,7 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
   }
 
   /* package */ RimoPutEvent create(Scalar aheadAverage, Scalar timestamp) {
-    Scalar bit = prbs7Signal.apply(timestamp); // 0 or 1
-    Scalar value = VALUE[bit.number().intValue()]; // -1 or 1
+    Scalar value = signal.apply(timestamp);
     value = value.multiply(aheadAverage).multiply(MAGNITUDE);
     short armsL_raw = (short) (-value.number().shortValue()); // sign left invert
     short armsR_raw = (short) (+value.number().shortValue()); // sign right id
