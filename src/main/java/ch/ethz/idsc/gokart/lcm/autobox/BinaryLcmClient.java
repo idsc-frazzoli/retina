@@ -25,8 +25,10 @@ public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscrib
 
   @Override // from LcmClientInterface
   public final void stopSubscriptions() {
-    if (Objects.nonNull(subscriptionRecord))
+    if (Objects.nonNull(subscriptionRecord)) {
       LCM.getSingleton().unsubscribe(subscriptionRecord);
+      subscriptionRecord = null;
+    }
   }
 
   @Override // from LCMSubscriber
