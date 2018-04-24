@@ -24,7 +24,8 @@ public enum PredefinedMap {
   /** dubendorf hangar map version 20180423
    * features the outside fence visible when the hangar doors are open */
   DUBENDORF_HANGAR_20180423(7.5), //
-  DUBENDORF_HANGAR_20180423obstacles(7.5), //
+  /** image of known static obstacles */
+  DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
   ;
   /** number of pixels to extrude geometry */
   public static final int TTL = 3;

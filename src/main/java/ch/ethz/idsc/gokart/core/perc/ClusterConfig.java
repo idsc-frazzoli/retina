@@ -1,5 +1,5 @@
-// code by jph
-package ch.ethz.idsc.gokart.core.fuse;
+// code by vc
+package ch.ethz.idsc.gokart.core.perc;
 
 import java.io.Serializable;
 

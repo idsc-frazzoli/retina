@@ -7,7 +7,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.vc.ElkiTest;
+import ch.ethz.idsc.gokart.core.perc.Clusters;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -53,7 +53,7 @@ class ObstacleLidarRenderClustering extends LidarRender {
         }
       }
       System.out.println("Size of p:" + p.length());
-      Tensor pi = ElkiTest.testDBSCANResults(p);
+      Tensor pi = Clusters.testDBSCANResults(p);
       // System.out.println(pi);
       int i = 0;
       int size = ColorDataLists._097.size();
