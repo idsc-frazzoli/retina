@@ -5,17 +5,20 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
+import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
+import ch.ethz.idsc.tensor.red.Entrywise;
 
 public class SideGokartRender extends AbstractGokartRender {
   public static final Tensor CIRCLE = CirclePoints.of(20);
@@ -43,8 +46,11 @@ public class SideGokartRender extends AbstractGokartRender {
       ));
       geometricLayer.pushMatrix(translate);
       for (int i = -15; i < 16; i += 2) {
-        Tensor polygon = Tensors.of(Tensors.vector(-Math.cos(Math.toRadians(i)) * 30, -Math.sin(Math.toRadians(i)) * 30),
-            Tensors.vector(Math.cos(Math.toRadians(i)) * 30, Math.sin(Math.toRadians(i)) * 30));
+        Tensor dir = AngleVector.of(Degree.of(i));
+        Tensor polygon = Tensors.of( //
+            dir.multiply(RealScalar.of(-30)), //
+            dir.multiply(RealScalar.of(30)) //
+        );
         Path2D path2D = geometricLayer.toPath2D(polygon);
         graphics.setStroke(new BasicStroke(1.0f));
         graphics.setColor(new Color(0, 0, 255, 128));
@@ -52,23 +58,18 @@ public class SideGokartRender extends AbstractGokartRender {
       }
       geometricLayer.popMatrix();
     }
-    {// draw lateral shape of the go-kart
-      Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusRear);
-      Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
-          0, // translation right (in pixel space)
-          radius.number().doubleValue(), // translation up (in pixel space)
-          0 // rotation is pixel space
-      ));
-      geometricLayer.pushMatrix(translate);
-      Point2D p1 = geometricLayer.toPoint2D(Tensors.vector(-0.25, 0.2));
-      Point2D p2 = geometricLayer.toPoint2D(Tensors.vector(1.5, 0.2));
-      Point2D p3 = geometricLayer.toPoint2D(Tensors.vector(0, 0));
-      Point2D p4 = geometricLayer.toPoint2D(Tensors.vector(0, 0.3));
-      double w = p1.distance(p2);
-      double w1 = p3.distance(p4);
+    { // draw lateral shape of the go-kart
+      Scalar min = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.min()).get().Get(0);
+      Scalar max = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.max()).get().Get(0);
+      // TODO DUBENDORF obtain side profile
+      Tensor polygon = Tensors.of( //
+          Tensors.of(min, RealScalar.of(0.02)), //
+          Tensors.of(max, RealScalar.of(0.02)), //
+          Tensors.of(max, RealScalar.of(0.3)), //
+          Tensors.of(min, RealScalar.of(0.9)) //
+      );
       graphics.setColor(new Color(128, 128, 128, 128));
-      graphics.fill(new Rectangle2D.Double(p1.getX(), p2.getY(), w, w1));
-      geometricLayer.popMatrix();
+      graphics.fill(geometricLayer.toPath2D(polygon));
     }
     { // draw rear tire
       Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusRear);
