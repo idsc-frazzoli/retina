@@ -14,20 +14,18 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.math.PRBS7Signal;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** module generates ... */
-public class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
+/* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   private static final Scalar MAGNITUDE = RealScalar.of(1500); // TODO magic const, unit [ARMS]
-  private static final Scalar PERIOD = RealScalar.of(.3); // TODO magic const, unit [s]
   // ---
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final Stopwatch stopwatch = Stopwatch.started();
-  private ScalarUnaryOperator signal = SysIdRimo.CHIRP_SLOW.get();
+  private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -41,7 +39,8 @@ public class SysidRimoModule extends AbstractModule implements PutProvider<RimoP
     joystickLcmClient.stopSubscriptions();
   }
 
-  void set(ScalarUnaryOperator signal) {
+  /** @param signal */
+  /* package */ void setSignal(ScalarUnaryOperator signal) {
     this.signal = signal;
   }
 

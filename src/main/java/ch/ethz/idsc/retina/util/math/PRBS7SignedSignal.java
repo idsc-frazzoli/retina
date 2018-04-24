@@ -19,16 +19,16 @@ public class PRBS7SignedSignal implements ScalarUnaryOperator {
 
   /** @param width of single bit */
   public PRBS7SignedSignal(Scalar width) {
-    Tensor vector = PRBS7.sequence().map(this::zeroToMinusOne);
+    Tensor vector = PRBS7.sequence().map(PRBS7SignedSignal::zeroToMinusOne);
     interpolation = MappedInterpolation.of(vector, tensor -> MOD.of(tensor.divide(width)));
   }
 
-  @Override
+  @Override // from ScalarUnaryOperator
   public Scalar apply(Scalar scalar) {
     return interpolation.get(Tensors.of(scalar)).Get();
   }
 
-  private Scalar zeroToMinusOne(Scalar bit) {
+  private static Scalar zeroToMinusOne(Scalar bit) {
     return VALUE[bit.number().intValue()]; // -1 or 1
   }
 }
