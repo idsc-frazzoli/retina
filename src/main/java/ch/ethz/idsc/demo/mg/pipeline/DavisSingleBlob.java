@@ -81,8 +81,8 @@ public class DavisSingleBlob {
     return currentScore;
   }
 
-  // EXPERIMENTAL STATUS function
-  // scoring function based on Gabor filters - implementation based on same paper as tracking algorithm
+  // scoring function based on Gabor filters
+  // TODO how to incorporate event polarity?
   public float gaborBlobScore(DavisDvsEvent davisDvsEvent) {
     double sigma = 3;
     double gamma = sigma / 15;
@@ -92,6 +92,13 @@ public class DavisSingleBlob {
     double yU = -(davisDvsEvent.x - pos[0]) * Math.sin(theta) + (davisDvsEvent.y - pos[1]) * Math.cos(theta);
     currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
     return currentScore;
+  }
+
+  // maybe use also Manhattan distance?
+  public float geometricBlobScore(DavisDvsEvent davisDvsEvent) {
+    double distance = Math.sqrt((davisDvsEvent.x - pos[0]) * (davisDvsEvent.x - pos[0]) + (davisDvsEvent.y - pos[1]) * (davisDvsEvent.y - pos[1]));
+    // somehow normalize the distance
+    return (float) distance;
   }
 
   public boolean updateAttractionEquation(float alphaAttr, float dRep) {
@@ -109,21 +116,28 @@ public class DavisSingleBlob {
     return reset;
   }
 
-  // function is not tested!
-  // public void updateRepulsionEquation(float alphaRep, float dRep, DavisSingleBlob otherBlob) {
-  // float[] otherPos = otherBlob.getPos();
-  // float posDiff = (float) Math.sqrt((pos[0] - otherPos[0]) * (pos[0] - otherPos[0]) + (pos[1] - otherPos[1]) * (pos[1] - otherPos[1]));
-  // float exponential = (float) (Math.exp(posDiff / dRep));
-  // // blob is not repulsed if other blob has zero activity
-  // // TODO what should happen if both blobs have zero activity?
-  // if (otherBlob.getActivity() != 0) {
-  // pos[0] = pos[0] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[0] - pos[0]);
-  // pos[1] = pos[1] - alphaRep * exponential * otherBlob.getActivity() * otherBlob.getActivity()
-  // / (otherBlob.getActivity() * otherBlob.getActivity() + activity * activity) * (otherPos[1] - pos[1]);
-  // }
-  // }
-  //
+  // required for merging
+  public float getDistanceTo(DavisSingleBlob otherBlob) {
+    double distance = Math
+        .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
+    return (float) distance;
+  }
+
+  // merge blobs by using activity-weighted average
+  public void eat(DavisSingleBlob otherBlob) {
+    float totActivity = activity + otherBlob.getActivity();
+    // position merge
+    pos[0] = (1 / totActivity) * (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]);
+    pos[1] = (1 / totActivity) * (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]);
+    // covariance merge TODO find out which is the correct way to do that
+    covariance[0][0] = 0.5 * (covariance[0][0] + otherBlob.getCovariance()[0][0]);
+    covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
+    covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);
+    covariance[1][1] = 0.5 * (covariance[1][1] + otherBlob.getCovariance()[1][1]);
+    // acitivty merge... TODO is it reasonable?
+    activity = totActivity;
+  }
+
   public boolean blobPromotion(float aUp) {
     layerID = activity > aUp;
     return layerID;
@@ -148,14 +162,6 @@ public class DavisSingleBlob {
   // return a size metric, currently trace of matrix
   public double getSizeMetric() {
     return covariance[0][0] + covariance[1][1];
-  }
-
-  // length of semiaxes equal to eigenvalues CONFIRMED to be same as tensor.eigenvalues method
-  public float[] getSemiAxes() {
-    double root = Math.sqrt((covariance[0][0] - covariance[1][1]) * (covariance[0][0] - covariance[1][1]) + 4 * covariance[0][1] * covariance[0][1]);
-    float largeAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] + root)));
-    float smallAxis = (float) (Math.sqrt(0.5 * (covariance[0][0] + covariance[1][1] - root)));
-    return new float[] { largeAxis, smallAxis };
   }
 
   public void setLayerID(boolean layerID) {

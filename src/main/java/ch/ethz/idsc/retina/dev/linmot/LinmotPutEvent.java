@@ -13,20 +13,14 @@ import ch.ethz.idsc.tensor.Tensors;
 public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
   private static final int LENGTH = 12;
-
-  /** function generates messages for calibration and linmot de-activation.
-   * the values that determine position control are all set to zero.
-   * 
-   * @param control
-   * @param motion command header
-   * @return */
-  /* package */ static LinmotPutEvent configuration(Word control, Word motion) {
-    return new LinmotPutEvent(control, motion, (short) 0, (short) 0, (short) 0, (short) 0);
-  }
-
   // ---
   public final short control_word;
-  public final short motion_cmd_hdr;
+  /** motion_cmd_hdr is private because the bits of the short value encode two different values:
+   * <pre>
+   * 0xfff0 motion_cmd
+   * 0x000f counter
+   * </pre> */
+  private final short motion_cmd_hdr;
   public final short target_position;
   public final short max_velocity;
   public final short acceleration;
@@ -36,18 +30,16 @@ public class LinmotPutEvent extends DataEvent {
    * not all parameter combinations make sense.
    * the flexibility is required for testing.
    * 
-   * TODO remark on interpretation
-   * 
    * @param control
    * @param motion command header
    * @param target_position
    * @param max_velocity
    * @param acceleration
    * @param deceleration */
-  public LinmotPutEvent(Word control, Word motion, //
+  /* package */ LinmotPutEvent(Word control, short motion_cmd_hdr, //
       short target_position, short max_velocity, short acceleration, short deceleration) {
     control_word = control.getShort();
-    motion_cmd_hdr = motion.getShort();
+    this.motion_cmd_hdr = motion_cmd_hdr;
     this.target_position = target_position;
     this.max_velocity = max_velocity;
     this.acceleration = acceleration;
@@ -81,7 +73,18 @@ public class LinmotPutEvent extends DataEvent {
 
   public boolean isOperational() {
     return control_word == LinmotPutHelper.CMD_OPERATION.getShort() //
-        && motion_cmd_hdr == LinmotPutHelper.MC_POSITION.getShort();
+        && getMotionCmdHeaderWithoutCounter() == LinmotPutHelper.MC_POSITION.getShort();
+  }
+
+  /** the last lowest 4 bits of motion_cmd_hdr contain a counter
+   * 
+   * @return motion_cmd_hdr with bits of counter == 0 */
+  public short getMotionCmdHeaderWithoutCounter() {
+    return (short) (motion_cmd_hdr & 0xfff0);
+  }
+
+  public byte getMotionCmdHeaderCounter() {
+    return (byte) (motion_cmd_hdr & 0xf);
   }
 
   /** function only used in post-processing

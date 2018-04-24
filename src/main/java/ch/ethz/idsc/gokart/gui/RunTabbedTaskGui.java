@@ -16,8 +16,10 @@ import ch.ethz.idsc.gokart.core.fuse.Vlp16ActiveSlowingModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
+import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
+import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -51,6 +53,7 @@ enum RunTabbedTaskGui {
       SpyModule.class, //
       ParametersModule.class, //
       AutoboxIntrospectionModule.class, //
+      AutoboxCompactModule.class, //
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
       GlobalViewLcmModule.class, //
@@ -73,7 +76,8 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       LinmotEmergencyModule.class, //
       DeadManSwitchModule.class, // joystick
-      JoystickGroupModule.class //
+      JoystickGroupModule.class, //
+      SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       PurePursuitModule.class //

@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.yt;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.jph.MessageConsistency;
+import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import idsc.BinaryBlob;
 import lcm.logging.Log;

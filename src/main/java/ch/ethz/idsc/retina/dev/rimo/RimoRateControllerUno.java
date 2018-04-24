@@ -18,9 +18,6 @@ public class RimoRateControllerUno extends RimoRateControllerWrap {
     short value_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
     short armsL_raw = (short) -value_Yaxis; // negative sign LEFT
     short armsR_raw = (short) +value_Yaxis; // positive sign RIGHT
-    return new RimoPutEvent( //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
-    );
+    return RimoPutHelper.operationTorque(armsL_raw, armsR_raw);
   }
 }

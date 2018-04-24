@@ -40,7 +40,7 @@ public class PresenterLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() throws Exception {
     {
-      ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180122.getImageRegion();
+      ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180423.getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
     {

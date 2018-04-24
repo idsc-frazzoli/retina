@@ -65,4 +65,10 @@ public class RimoRateJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
     assertFalse(optional.isPresent());
   }
+
+  public void testStartStop() {
+    RimoRateJoystickModule rtjm = new RimoRateJoystickModule();
+    rtjm.protected_first();
+    rtjm.protected_last();
+  }
 }

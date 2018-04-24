@@ -3,8 +3,7 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.jph.MessageConsistency;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
@@ -14,17 +13,16 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    // File src = new File("home/mario/"+LogfileLocations.DUBI1);
-    File src = UserHome.file(LogfileLocations.DUBI4);
+    File src = new File(LogfileLocations.DUBI11);
     System.out.println(src.toString());
     File dst = null;
-    dst = new File("/home/mario/logs/20180307T154859_0cd18c6bExtracted.lcm");
+    dst = new File("/home/mario/logs/20180412T164740_7e5b46c2Extracted4.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 1755000;
-    int hi = 1859000;
+    int lo = 2929000;
+    int hi = 3049000;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

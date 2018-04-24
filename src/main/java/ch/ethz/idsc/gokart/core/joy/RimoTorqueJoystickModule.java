@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
@@ -35,9 +36,6 @@ public class RimoTorqueJoystickModule extends GuideJoystickModule<RimoPutEvent> 
     pair = pair.map(RimoPutTire.MAGNITUDE_ARMS); // confim that units are correct
     short armsL_raw = (short) (-pair.Get(0).number().shortValue()); // sign left invert
     short armsR_raw = (short) (+pair.Get(1).number().shortValue()); // sign right id
-    return Optional.of(new RimoPutEvent( //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsL_raw), //
-        new RimoPutTire(RimoPutTire.OPERATION, (short) 0, armsR_raw) //
-    ));
+    return Optional.of(RimoPutHelper.operationTorque(armsL_raw, armsR_raw));
   }
 }

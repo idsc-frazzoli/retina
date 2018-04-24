@@ -22,8 +22,8 @@ public class RimoPutTable implements OfflineTableSupplier {
       RimoPutEvent rimoGetEvent = RimoPutHelper.from(byteBuffer);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
-          rimoGetEvent.putL.vector_raw(), //
-          rimoGetEvent.putR.vector_raw() //
+          rimoGetEvent.putTireL.vector_raw(), //
+          rimoGetEvent.putTireR.vector_raw() //
       );
     }
   }

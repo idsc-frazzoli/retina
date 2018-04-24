@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
+import ch.ethz.idsc.tensor.Tensor;
 import junit.framework.TestCase;
 
 public class SteerGetEventTest extends TestCase {
@@ -27,6 +28,8 @@ public class SteerGetEventTest extends TestCase {
     steerGetEvent.insert(byteBuffer);
     assertTrue(Arrays.equals(array, array2));
     assertEquals(steerGetEvent.length(), 44);
+    Tensor raw = steerGetEvent.values_raw();
+    assertEquals(raw.length(), 11);
   }
 
   public void testIsActive() {

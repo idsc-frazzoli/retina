@@ -78,7 +78,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format(">>> PUT at time = %s\n", time.map(Round._6)));
         stringBuilder.append(String.format(" control_word = 0x%04x\n", linmotPutEvent.control_word));
-        stringBuilder.append(String.format(" motion_cmd_hdr = 0x%04x\n", linmotPutEvent.motion_cmd_hdr));
+        stringBuilder.append(String.format(" motion_cmd_hdr = 0x%04x\n", linmotPutEvent.getMotionCmdHeaderWithoutCounter()));
         stringBuilder.append(String.format(" target_position = %d\n", linmotPutEvent.target_position));
         stringBuilder.append(String.format(" max_velocity = %d\n", linmotPutEvent.max_velocity));
         stringBuilder.append(String.format(" acceleration = %d\n", linmotPutEvent.acceleration));
@@ -89,7 +89,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
           time.map(Magnitude.SECOND).map(Round._6), //
           StringScalar.of("PUT"), //
           RealScalar.of(linmotPutEvent.control_word), //
-          RealScalar.of(linmotPutEvent.motion_cmd_hdr), //
+          RealScalar.of(linmotPutEvent.getMotionCmdHeaderWithoutCounter()), //
           RealScalar.of(linmotPutEvent.target_position), //
           RealScalar.of(linmotPutEvent.max_velocity), //
           RealScalar.of(linmotPutEvent.acceleration), //

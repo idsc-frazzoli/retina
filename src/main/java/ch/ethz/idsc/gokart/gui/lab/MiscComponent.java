@@ -3,27 +3,25 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
+/* package */ class MiscComponent extends //
+    AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> implements StartAndStoppable {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -33,7 +31,7 @@ import ch.ethz.idsc.tensor.Scalar;
       Word.createByte("ON", (byte) 1) //
   );
   // ---
-  private final JButton jButtonCommReset = new JButton("Reset");
+  private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SpinnerLabel<Word> spinnerLabelRimoL = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelRimoR = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelLinmot = new SpinnerLabel<>();
@@ -46,14 +44,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public MiscComponent() {
     {
       JToolBar jToolBar = createRow("Communication");
-      // jButtonCommReset.setEnabled(false);
-      jButtonCommReset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          MiscIgnitionProvider.INSTANCE.schedule();
-        }
-      });
-      jToolBar.add(jButtonCommReset);
+      jToolBar.add(miscResetButton.getComponent());
     }
     {
       JToolBar jToolBar = createRow("Reset RimoL");
@@ -97,8 +88,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
-    jButtonCommReset.setEnabled(miscGetEvent.isCommTimeout());
-    // ---
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
@@ -134,5 +123,15 @@ import ch.ethz.idsc.tensor.Scalar;
     miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
     miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
     return Optional.of(miscPutEvent);
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    miscResetButton.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    miscResetButton.stop();
   }
 }

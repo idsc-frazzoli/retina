@@ -8,7 +8,9 @@ import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
 
-/** demo txt file read */
+/** demo events.txt file read
+ * file format used by Robotics and Perception Group
+ * http://rpg.ifi.uzh.ch/ */
 enum TxtSupplierTest {
   ;
   public static void main(String[] args) throws Exception {

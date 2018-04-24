@@ -38,10 +38,15 @@ public class LinmotJoystickModuleTest extends TestCase {
     assertTrue(optional.isPresent());
     LinmotPutEvent linmotPutEvent = optional.get();
     assertEquals(linmotPutEvent.control_word, LinmotPutHelper.CMD_OPERATION.getShort());
-    assertEquals(linmotPutEvent.motion_cmd_hdr, LinmotPutHelper.MC_POSITION.getShort());
+    assertEquals(linmotPutEvent.getMotionCmdHeaderWithoutCounter(), LinmotPutHelper.MC_POSITION.getShort());
     assertEquals(linmotPutEvent.target_position, -50);
     assertEquals(linmotPutEvent.max_velocity, 1000);
     assertEquals(linmotPutEvent.acceleration, 500);
     assertEquals(linmotPutEvent.deceleration, 500);
+  }
+
+  public void testPublic() {
+    int modifs = LinmotJoystickModule.class.getModifiers();
+    assertEquals(modifs & 1, 1);
   }
 }

@@ -15,11 +15,15 @@ import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** static resource of Dubendorf hangar
+ * name refers to png-file in repository, do not rename!
  * 
  * the predefined geometry is crucial for lidar-based localization */
 public enum PredefinedMap {
   /** dubendorf hangar map version 20180122 */
-  DUBENDORF_HANGAR_20180122(7.5), // name refers to png-file in repository, do not rename!
+  DUBENDORF_HANGAR_20180122(7.5), //
+  /** dubendorf hangar map version 20180423
+   * features the outside fence visible when the hangar doors are open */
+  DUBENDORF_HANGAR_20180423(7.5), //
   DUBENDORF_HANGAR_20180423obstacles(7.5), //
   ;
   /** number of pixels to extrude geometry */

@@ -206,7 +206,8 @@ Confirm: there are
 
     8 channels starting with autobox.* 
     4 channels starting with davis.*
-    1 channel starting with joystick
-    2 channels starting with vlp16
+    1 channel starting with joystick.*
+    2 channels starting with vlp16.*
+    1 channel starting with computer.*
 
 deactivate the toggle-button "Spy".

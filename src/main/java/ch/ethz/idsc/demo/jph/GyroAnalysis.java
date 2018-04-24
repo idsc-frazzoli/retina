@@ -15,6 +15,11 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** export of davis240c imu content to determine accuracy of measurements.
+ * subsequently, the gyro readings are used to stabilize the lidar based
+ * localization algorithm.
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/1801712/20180131_davis_imu.pdf */
 enum GyroAnalysis {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {

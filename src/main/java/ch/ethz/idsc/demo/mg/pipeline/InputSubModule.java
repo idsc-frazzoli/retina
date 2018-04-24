@@ -1,11 +1,12 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.demo.mg.gui.PipelineFrame;
+import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
+import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -16,30 +17,35 @@ import ch.ethz.idsc.tensor.Scalar;
 // this module distributes the event stream to the visualization and control pipeline
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // parameters
-  private final int maxEventCount = 5000000;
-  private final int backgroundActivityFilterTime = 3500; // [us] the shorter the more is filtered
-  private final int imageInterval = 15000; // [us]
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // for event processing
+  private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents(); // for filtering of event stream
+  private final BlobFeatureFilter featureFilter = new BlobFeatureFilter(); // receive tracked cones from that module
+  private final DavisBlobTracker tracking = new DavisBlobTracker(featureFilter); // next module in pipeline
+  private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
+  private final AccumulatedEventFrame[] frames = new AccumulatedEventFrame[3]; // for visualization
+  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
+  // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  private final int maxDuration = 10000; // [ms]
+  private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
+  private final int imageInterval = 50; // [ms] visualization interval
+  private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
-  // objects required for the module
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents();
-  private final DavisBlobTracker track = new DavisBlobTracker();
-  // below for visualization
-  private final PipelineVisualization viz = new PipelineVisualization();
-  private final PipelineFrame[] frames = new PipelineFrame[3];
+  private String imagePrefix = "Test";
+  private File pathToImages = HandLabelFileLocations.images();
   // fields for testing
-  private float eventCount;
+  private float eventCount = 0;
   private float filteredEventCount;
-  private int lastTimestamp;
+  private int lastImagingTimestamp;
+  private int lastSavingTimestamp;
   private int begin, end;
   private long startTime, endTime;
   private boolean saveImages = false;
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
-    frames[0] = new PipelineFrame();
-    frames[1] = new PipelineFrame();
-    frames[2] = new PipelineFrame();
+    frames[0] = new AccumulatedEventFrame();
+    frames[1] = new AccumulatedEventFrame();
+    frames[2] = new AccumulatedEventFrame();
   }
 
   @Override
@@ -51,49 +57,49 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    // start timer
+    // initialize timers
     if (eventCount == 0) {
       begin = davisDvsEvent.time;
-      lastTimestamp = davisDvsEvent.time;
+      lastImagingTimestamp = davisDvsEvent.time;
+      lastSavingTimestamp = davisDvsEvent.time;
       startTime = System.currentTimeMillis();
     }
     ++eventCount;
-    // if(eventCount<1000000) return;
-    // send event to tracker and image frame
-    track.receiveNewEvent(davisDvsEvent);
+    // send raw event stream to visualization
     frames[0].receiveEvent(davisDvsEvent);
-    // send filtered events to image frame
+    // send filtered events to visualization, tracker and evaluator
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
+      tracking.receiveNewEvent(davisDvsEvent);
+      // evaluator.receiveEvent(davisDvsEvent);
       frames[1].receiveEvent(davisDvsEvent);
       frames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
-    }
-    // the events are accumulated for the interval time and then displayed in a single frame
-    if ((davisDvsEvent.time - lastTimestamp) > imageInterval) {
-      viz.setImage(frames[0].getAccumulatedEvents(), 0);
-      // active blobs get red color
-      viz.setImage(frames[1].trackOverlay(track.getBlobList(1), Color.RED), 1);
-      // hidden blobs get gray
-      viz.setImage(frames[2].trackOverlay(track.getBlobList(0), Color.GRAY), 2);
-      if (saveImages) {
-        try {
-          viz.saveImages();
-          // track.printStatusUpdate(davisDvsEvent);
-        } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+      // the events are accumulated for the interval time and then displayed in a single frame
+      if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval * 1000) {
+        viz.setImage(frames[0].getAccumulatedEvents(), 0);
+        // active blobs color coded by featurefilter
+        viz.setImage(frames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
+        // hidden blobs
+        viz.setImage(frames[2].trackOverlay(tracking.getBlobList(0)), 2);
+        if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
+          try {
+            viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          lastSavingTimestamp = davisDvsEvent.time;
         }
+        frames[0].clearImage();
+        frames[1].clearImage();
+        frames[2].clearImage();
+        lastImagingTimestamp = davisDvsEvent.time;
       }
-      frames[0].clearImage();
-      frames[1].clearImage();
-      frames[2].clearImage();
-      lastTimestamp = davisDvsEvent.time;
     }
-    if (eventCount > maxEventCount) {
+    if (davisDvsEvent.time - begin > maxDuration * 1000) {
       end = davisDvsEvent.time;
       endTime = System.currentTimeMillis();
       int diff = end - begin;
-      System.out.println("Percentage hit by active blobs: " + track.hitthreshold / maxEventCount * 100);
+      System.out.println("Percentage hit by active blobs: " + tracking.hitthreshold / eventCount * 100);
       System.out.println("Elapsed time in the eventstream [ms]: " + diff / 1000 + " with " + eventCount + " events");
       long elapsedTime = endTime - startTime;
       System.out.println("Computation time: " + elapsedTime + "[ms]");

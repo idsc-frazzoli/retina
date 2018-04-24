@@ -68,6 +68,39 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180307T165102_6e45300d, //
   /** autonomous driving shape 8 */
   _20180307T171311_fc084dc9, //
+  /***************************************************/
+  _20180409T150925_d520ea0d, //
+  /***************************************************/
+  _20180412T114245_7e5b46c2, //
+  /** stationary gokart in center of hangar
+   * pedestrians, bicycles and motorcycles moving around
+   * no Davis240C */
+  _20180412T163109_7e5b46c2, //
+  /** stationary gokart in center of hangar
+   * pedestrians and bicycles moving around */
+  _20180412T163855_7e5b46c2, //
+  /** manual drive with markers on floor for davis240c
+   * without cones
+   * contains linmot failure */
+  _20180412T164740_7e5b46c2, //
+  /***************************************************/
+  /* 2018-04-18 */
+  /** joystick driving and single prbs */
+  _20180418T102854_5a650fbf, //
+  /** pure pursuit */
+  _20180418T125913_bca165ae, //
+  /** multiple prbs */
+  _20180418T132333_bca165ae, //
+  /***************************************************/
+  /* 2018-04-19 */
+  /** pure pursuit with hangar doors closed and then open */
+  _20180419T124700_7373f83e, //
+  /** pure pursuit with speed controller going in reverse */
+  _20180419T150253_7373f83e, //
+  /** pure pursuit with speed controller going in reverse */
+  _20180419T172115_f80284e9, //
+  /** joystick driving along figure 8 */
+  _20180419T172918_f80284e9, //
   ;
   @Override
   public File file(File directory) {

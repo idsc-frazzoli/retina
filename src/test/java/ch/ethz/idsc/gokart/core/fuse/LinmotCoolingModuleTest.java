@@ -21,9 +21,9 @@ public class LinmotCoolingModuleTest extends TestCase {
   public void testEvents() {
     LinmotCoolingModule lcm = new LinmotCoolingModule();
     assertTrue(lcm.putEvent().isPresent());
-    lcm.getEvent(LinmotGetEventSimulator.create(1000, 700));
+    lcm.getEvent(LinmotGetEventSimulator.createTemperature(1000, 700));
     assertTrue(lcm.putEvent().isPresent());
-    lcm.getEvent(LinmotGetEventSimulator.create(700, 700));
+    lcm.getEvent(LinmotGetEventSimulator.createTemperature(700, 700));
     assertFalse(lcm.putEvent().isPresent());
   }
 }

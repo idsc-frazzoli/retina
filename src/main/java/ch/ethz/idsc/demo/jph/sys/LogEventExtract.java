@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 
 import ch.ethz.idsc.demo.DubendorfHangarLog;
-import ch.ethz.idsc.demo.jph.MessageConsistency;
+import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
 import idsc.BinaryBlob;
@@ -17,18 +17,16 @@ enum LogEventExtract {
   public static void main(String[] args) throws Exception {
     File src = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00");
     src = UserHome.file("temp/20180108T165210_manual.lcm");
-    src = UserHome.file("gokart/pursuit/20180108T165210/log.lcm");
-    src = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
-    src = DubendorfHangarLog._20180307T154859_0cd18c6b.file(GokartLcmLogPlayer.LOG_ROOT);
-    // new File("/media/datahaki/mobile/temp", "20180108T162528_5f742add.lcm.00");
+    src = UserHome.file("gokartlogs/20180418/20180418T132333_bca165ae.lcm.00");
+    src = DubendorfHangarLog._20180419T124700_7373f83e.file(GokartLcmLogPlayer.LOG_ROOT);
     File dst = null;
-    dst = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
+    dst = UserHome.file("20180419T124700_7373f83e_fast.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 1438629;
-    int hi = 3262582;
+    int lo = 3975496 + 2000;
+    int hi = 3985570 - 2000;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

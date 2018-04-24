@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.gui;
 
+import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -54,7 +55,11 @@ public class WindowConfiguration implements Serializable {
 
       @Override
       public void componentShown(ComponentEvent componentEvent) {
-        shown = jFrame.getLocationOnScreen();
+        try {
+          shown = jFrame.getLocationOnScreen();
+        } catch (IllegalComponentStateException illegalComponentStateException) {
+          illegalComponentStateException.printStackTrace();
+        }
         stopwatch.start();
       }
 

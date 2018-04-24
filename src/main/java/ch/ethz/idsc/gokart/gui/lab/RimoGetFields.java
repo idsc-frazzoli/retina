@@ -8,7 +8,6 @@ import javax.swing.JTextField;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoEmergencyError;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
@@ -48,7 +47,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_SdoMessage.setText(rimoGetTire.sdoMessage.toString());
   }
 
-  public void updateRateColor(RimoPutTire rimoPutTire, RimoGetTire rimoGetTire) {
+  public void updateRateColor(RimoGetTire rimoGetTire) {
     Scalar scalar = rimoGetTire.getAngularRate_Y();
     Tensor vector = ColorDataGradients.TEMPERATURE_LIGHT.apply(RATE_RANGE.rescale(scalar));
     Color color = ColorFormat.toColor(vector);

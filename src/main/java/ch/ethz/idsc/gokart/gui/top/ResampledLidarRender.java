@@ -45,7 +45,7 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private boolean flagSnap = false;
-  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180122;
+  private PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423;
   BufferedImage biglobal = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
   public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
   LidarRayBlockListener lrbl = new LidarRayBlockListener() {

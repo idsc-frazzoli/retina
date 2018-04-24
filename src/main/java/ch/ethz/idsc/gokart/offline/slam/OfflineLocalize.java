@@ -39,7 +39,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
   protected SlamScore slamScore;
-  protected final BufferedImage vis_image = PredefinedMap.DUBENDORF_HANGAR_20180122.getImage();
+  protected final BufferedImage vis_image = PredefinedMap.DUBENDORF_HANGAR_20180423.getImage();
   private Scalar time;
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
