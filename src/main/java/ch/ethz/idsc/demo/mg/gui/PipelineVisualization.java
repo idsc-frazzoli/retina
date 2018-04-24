@@ -11,7 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-// sets up the window for all the pipelineFrames
+// provides a visualization of the complete pipeline
+// TODO integrate PhysicalBlobFrame (maybe left side perception module, right side control module)
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-import ch.ethz.idsc.demo.mg.gui.PipelineFrame;
+import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -20,12 +20,12 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // for event processing
   private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents(); // for filtering of event stream
   private final BlobFeatureFilter featureFilter = new BlobFeatureFilter(); // receive tracked cones from that module
-  private final DavisBlobTracker track = new DavisBlobTracker(featureFilter); // next module in pipeline
+  private final DavisBlobTracker tracking = new DavisBlobTracker(featureFilter); // next module in pipeline
   private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
-  private final PipelineFrame[] frames = new PipelineFrame[3]; // for visualization
+  private final AccumulatedEventFrame[] frames = new AccumulatedEventFrame[3]; // for visualization
   private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
-  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
-  private final int maxDuration = 5000; // [ms]
+  // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  private final int maxDuration = 10000; // [ms]
   private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
   private final int imageInterval = 50; // [ms] visualization interval
   private final int savingInterval = 1000; // [ms] image saving interval
@@ -43,9 +43,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
-    frames[0] = new PipelineFrame();
-    frames[1] = new PipelineFrame();
-    frames[2] = new PipelineFrame();
+    frames[0] = new AccumulatedEventFrame();
+    frames[1] = new AccumulatedEventFrame();
+    frames[2] = new AccumulatedEventFrame();
   }
 
   @Override
@@ -69,8 +69,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     frames[0].receiveEvent(davisDvsEvent);
     // send filtered events to visualization, tracker and evaluator
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
-      track.receiveNewEvent(davisDvsEvent);
-      evaluator.receiveEvent(davisDvsEvent);
+      tracking.receiveNewEvent(davisDvsEvent);
+      // evaluator.receiveEvent(davisDvsEvent);
       frames[1].receiveEvent(davisDvsEvent);
       frames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
@@ -80,7 +80,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
         // active blobs color coded by featurefilter
         viz.setImage(frames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
         // hidden blobs
-        viz.setImage(frames[2].trackOverlay(track.getBlobList(0)), 2);
+        viz.setImage(frames[2].trackOverlay(tracking.getBlobList(0)), 2);
         if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
           try {
             viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);
@@ -99,7 +99,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       end = davisDvsEvent.time;
       endTime = System.currentTimeMillis();
       int diff = end - begin;
-      System.out.println("Percentage hit by active blobs: " + track.hitthreshold / eventCount * 100);
+      System.out.println("Percentage hit by active blobs: " + tracking.hitthreshold / eventCount * 100);
       System.out.println("Elapsed time in the eventstream [ms]: " + diff / 1000 + " with " + eventCount + " events");
       long elapsedTime = endTime - startTime;
       System.out.println("Computation time: " + elapsedTime + "[ms]");

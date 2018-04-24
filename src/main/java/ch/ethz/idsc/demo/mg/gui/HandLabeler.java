@@ -39,17 +39,18 @@ import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
  * scrolling while holding ctrl/shift changes x/y-axis length.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
-// TODO how to specify rotation of feature? (not urgent)
+// TODO impelement ability to rotate ellipse (method stub set up in TrackedBlob)
 public class HandLabeler {
-  private final int initXAxis = 500; // initial feature shape
+  private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
   private final int numberOfFiles = HandLabelFileLocations.images().list().length;
   private final float scaling = 2; // original images are tiny
-  private int currentXAxis = initXAxis;
-  private int currentYAxis = initYAxis;
+  private int firstAxis = initXAxis;
+  private int secondAxis = initYAxis;
+  private float rotAngle = 0; // to rotate the feature
   private int currentImgNumber;
-  private String fileName = "labeledFeatures.dat";
   private String imagePrefix = "dubi8a";
+  private String fileName = imagePrefix + "_labeledFeatures.dat";
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
   private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
@@ -67,18 +68,21 @@ public class HandLabeler {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
       if (e.isControlDown()) {
-        currentXAxis += 20 * e.getWheelRotation();
-        if (currentXAxis < 0) {
-          currentXAxis = 0;
+        firstAxis += 20 * e.getWheelRotation();
+        if (firstAxis < 0) {
+          firstAxis = 0;
         }
       }
       if (e.isShiftDown()) {
-        currentYAxis += 20 * e.getWheelRotation();
-        if (currentYAxis < 0) {
-          currentYAxis = 0;
+        secondAxis += 20 * e.getWheelRotation();
+        if (secondAxis < 0) {
+          secondAxis = 0;
         }
       }
-      double[][] updatedCov = new double[][] { { currentXAxis, 0 }, { 0, currentYAxis } };
+      if (e.isAltDown()) {
+        rotAngle += 0.1 * e.getWheelRotation();
+      }
+      double[][] updatedCov = new double[][] { { firstAxis, 0 }, { 0, secondAxis } };
       // change shape of most recent feature
       labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setCovariance(updatedCov);
       jComponent.repaint();
@@ -205,7 +209,7 @@ public class HandLabeler {
   // draw ellipses for image based on list of blobs for the image.
   private void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
-      PipelineFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
+      AccumulatedEventFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
     }
   }
 

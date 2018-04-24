@@ -14,8 +14,8 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// provides a bufferedImage with the accumulated events and overlaid tracked objects
-public class PipelineFrame {
+// provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
+public class AccumulatedEventFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
   // ---
@@ -23,7 +23,7 @@ public class PipelineFrame {
   private final Graphics2D graphics = bufferedImage.createGraphics();
   private final byte[] bytes;
 
-  public PipelineFrame() {
+  public AccumulatedEventFrame() {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     clearImage();
@@ -70,7 +70,7 @@ public class PipelineFrame {
     return bufferedImage;
   }
 
-  // use to Tensor library to correctly draw the ellipses
+  // use Tensor library to correctly draw the ellipses
   public static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();
