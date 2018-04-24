@@ -21,7 +21,7 @@ public class PhysicalBlobFrame {
     bytes = dataBufferByte.getData();
     clearImage();
   }
-  
+
   // resets all pixel to grey
   public void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);

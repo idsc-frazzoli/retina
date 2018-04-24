@@ -24,8 +24,8 @@ public class EstimationAlgorithm {
     // we start simple: measurement is process model
     estimatedBlobs = measurementBlobs;
   }
-  
-  List<PhysicalBlob> getEstimatedBlobs(){
+
+  List<PhysicalBlob> getEstimatedBlobs() {
     return estimatedBlobs;
   }
 }

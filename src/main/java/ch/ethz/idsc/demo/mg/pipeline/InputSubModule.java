@@ -24,7 +24,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
   private final AccumulatedEventFrame[] frames = new AccumulatedEventFrame[3]; // for visualization
   private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
-//  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
   private final int maxDuration = 10000; // [ms]
   private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
   private final int imageInterval = 50; // [ms] visualization interval
@@ -70,7 +70,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     // send filtered events to visualization, tracker and evaluator
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       tracking.receiveNewEvent(davisDvsEvent);
-//      evaluator.receiveEvent(davisDvsEvent);
+      // evaluator.receiveEvent(davisDvsEvent);
       frames[1].receiveEvent(davisDvsEvent);
       frames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
