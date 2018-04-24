@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public enum PredefinedMap {
   /** dubendorf hangar map version 20180122 */
   DUBENDORF_HANGAR_20180122(7.5), // name refers to png-file in repository, do not rename!
+  DUBENDORF_HANGAR_20180423obstacles(7.5), //
   ;
   /** number of pixels to extrude geometry */
   public static final int TTL = 3;

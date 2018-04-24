@@ -45,7 +45,7 @@ public enum ElkiTest {
     Tensor pi = Tensors.empty();
     Database db = sample(p);
     long nanoTime = System.nanoTime();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.1, 5); // TODO:tuning of parameters
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.03, 4); // TODO:tuning of parameters
     Clustering<Model> result = dbscan.run(db);
     long nanoTime2 = System.nanoTime();
     System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
