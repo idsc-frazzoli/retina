@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
-class PresenterLcmModule extends AbstractModule {
+public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final boolean SHOW_OBSTACLES = true;
   // ---
@@ -58,7 +58,7 @@ class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     if (SHOW_OBSTACLES) { // set to true in order to visualize obstacles
-      LidarRender lidarRender = new ObstacleLidarRender(gokartPoseInterface);
+      LidarRender lidarRender = new ObstacleLidarRenderClustering(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 0, 128));
       lidarRender.pointSize = 4;

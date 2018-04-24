@@ -57,6 +57,8 @@ public class SensorsConfig implements Serializable {
 
   public LidarSpacialProvider planarEmulatorVlp16_p01deg() {
     double angle_offset = vlp16_twist.number().doubleValue();
+    // TODO optimize TiltedVelodynePlanarEmulator and test offline
+    // return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
     return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
   }
 
