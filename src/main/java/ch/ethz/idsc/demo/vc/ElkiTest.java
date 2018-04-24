@@ -2,6 +2,7 @@ package ch.ethz.idsc.demo.vc;
 
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.fuse.ClusterConfig;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.Unprotect;
@@ -45,7 +46,9 @@ public enum ElkiTest {
     Tensor pi = Tensors.empty();
     Database db = sample(p);
     long nanoTime = System.nanoTime();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, 0.03, 4); // TODO:tuning of parameters
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, ClusterConfig.GLOBAL.getEpsilon(), ClusterConfig.GLOBAL.getMinPoints()); // TODO:tuning
+                                                                                                                                                                 // of
+                                                                                                                                                                 // parameters
     Clustering<Model> result = dbscan.run(db);
     long nanoTime2 = System.nanoTime();
     System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");

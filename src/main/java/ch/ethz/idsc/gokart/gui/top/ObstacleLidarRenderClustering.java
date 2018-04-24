@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.red.Mean;
 
 class ObstacleLidarRenderClustering extends LidarRender {
@@ -54,7 +55,8 @@ class ObstacleLidarRenderClustering extends LidarRender {
       System.out.println("Size of p:" + p.length());
       Tensor pi = ElkiTest.testDBSCANResults(p);
       // System.out.println(pi);
-      // int i = 0;
+      int i = 0;
+      int size = ColorDataLists._097.size();
       // int col = 255 / pi.length();
       System.out.println(pi.length());
       for (Tensor x : pi) {
@@ -62,7 +64,9 @@ class ObstacleLidarRenderClustering extends LidarRender {
         mean.append(Mean.of(x));
         // System.out.println(x);
         // System.out.println(x.length());
-        graphics.setColor(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255), 128));
+        Color col = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255), 128);
+        col = ColorDataLists._097.getColor(i % size);
+        graphics.setColor(col);
         for (Tensor y : x) {
           for (Tensor z : y) {
             // graphics.setColor(new Color(255, 0, 0, 128));
@@ -70,7 +74,7 @@ class ObstacleLidarRenderClustering extends LidarRender {
             graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 3, 3);
           }
         }
-        // i++;
+        i++;
       }
       for (Tensor w : mean) {
         for (Tensor z : w) {

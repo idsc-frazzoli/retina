@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.fuse.ClusterConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -41,6 +42,7 @@ public class ParametersModule extends AbstractModule {
     addTab(LocalizationConfig.GLOBAL);
     addTab(JoystickConfig.GLOBAL);
     addTab(PursuitConfig.GLOBAL);
+    addTab(ClusterConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
