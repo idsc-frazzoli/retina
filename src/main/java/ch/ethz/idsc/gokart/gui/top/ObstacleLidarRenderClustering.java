@@ -1,4 +1,4 @@
-// code by jph,vc
+// code by vc
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
@@ -18,8 +18,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.red.Mean;
 
+/** used in {@link PresenterLcmModule} */
 class ObstacleLidarRenderClustering extends LidarRender {
-  private static final Tensor evalPose = Tensors.fromString("{46.93368[m], 48.46428[m], 1.15958657}");
+  // FIXME obtain real pose from lcm
+  private static final Tensor EVAL_POSE = Tensors.fromString("{46.93368[m], 48.46428[m], 1.15958657}");
 
   public ObstacleLidarRenderClustering(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -43,17 +45,15 @@ class ObstacleLidarRenderClustering extends LidarRender {
       Tensor mean = Tensors.empty();
       graphics.setColor(color);
       UnknownObstaclePredicate spacialObstaclePredicate = new UnknownObstaclePredicate();
-      spacialObstaclePredicate.setPose(evalPose);
-      // SimpleSpacialObstaclePredicate.createVlp16();
-      for (Tensor point : points) {
+      spacialObstaclePredicate.setPose(EVAL_POSE);
+      for (Tensor point : points)
         if (spacialObstaclePredicate.isObstacle(point)) {
           // Point2D point2D = geometricLayer.toPoint2D(point);
           p.append(Tensors.of(DoubleScalar.of(point.Get(0).number().doubleValue()), DoubleScalar.of(point.Get(1).number().doubleValue())));
           // graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
-      }
       System.out.println("Size of p:" + p.length());
-      Tensor pi = Clusters.testDBSCANResults(p);
+      Tensor pi = Clusters.elkiDBSCAN(p);
       // System.out.println(pi);
       int i = 0;
       int size = ColorDataLists._097.size();

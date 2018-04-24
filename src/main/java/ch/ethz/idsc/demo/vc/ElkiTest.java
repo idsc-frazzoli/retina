@@ -41,6 +41,6 @@ public enum ElkiTest {
     data[1][0] = 2.1;
     data[1][1] = 3.98;
     Tensor p = Tensors.matrixDouble(data);
-    Tensor testDBSCANResults = Clusters.testDBSCANResults(p);
+    Tensor testDBSCANResults = Clusters.elkiDBSCAN(p);
   }
 }

@@ -1,9 +1,10 @@
-// code by jph
+// code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
 import java.util.List;
 
 import ch.ethz.idsc.demo.vc.ElkiTest;
+import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
@@ -21,17 +22,20 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum Clusters {
   ;
-  public static Tensor testDBSCANResults(Tensor p) {
-    Tensor pi = Tensors.empty();
+  /** @param p
+   * @return unstructured */
+  // TODO remove print outs. provide timing and properties in separate class if necessary
+  public static Tensor elkiDBSCAN(Tensor p) {
     Database db = ElkiTest.sample(p);
-    long nanoTime = System.nanoTime();
-    // TODO tuning of parameters
+    Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, ClusterConfig.GLOBAL.getEpsilon(), ClusterConfig.GLOBAL.getMinPoints());
     Clustering<Model> result = dbscan.run(db);
-    long nanoTime2 = System.nanoTime();
-    System.out.println((nanoTime2 - nanoTime) * 0.000001 + "ms");
+    long ns = stopwatch.display_nanoSeconds();
+    System.out.println((ns * 1e-3) + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
     System.out.println("Number of clusters: " + allClusters.size());
+    // ---
+    Tensor pi = Tensors.empty();
     for (Cluster<Model> cluster : allClusters) {
       Tensor pr = Tensors.empty();
       System.out.println("Cluster size:" + cluster.size());
@@ -50,6 +54,6 @@ public enum Clusters {
       }
     }
     System.out.println("end");
-    return (pi);
+    return pi;
   }
 }

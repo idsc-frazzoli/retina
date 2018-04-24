@@ -1,4 +1,4 @@
-// code by jph
+// code by vc
 package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.nio.ByteBuffer;
@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
 /** extracts points at horizontal level for velodyne */
+// TODO make more general: enable emulation of any angle (not just +1[deg])
 public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
   public static TiltedVelodynePlanarEmulator vlp16_p01deg(double angle_offset) {
     return new TiltedVelodynePlanarEmulator(angle_offset); // index of beam with 1 degree inclination == +1
