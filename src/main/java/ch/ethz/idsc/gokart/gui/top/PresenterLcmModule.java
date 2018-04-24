@@ -58,11 +58,12 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     if (SHOW_OBSTACLES) { // set to true in order to visualize obstacles
-      LidarRender lidarRender = new ObstacleLidarRenderClustering(gokartPoseInterface);
+      ObstacleLidarRenderClustering lidarRender = new ObstacleLidarRenderClustering(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 0, 128));
       lidarRender.pointSize = 4;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
