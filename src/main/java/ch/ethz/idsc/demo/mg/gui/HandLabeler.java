@@ -49,8 +49,8 @@ public class HandLabeler {
   private int secondAxis = initYAxis;
   private float rotAngle = 0; // to rotate the feature
   private int currentImgNumber;
-  private String fileName = "labeledFeatures.dat";
   private String imagePrefix = "dubi8a";
+  private String fileName = imagePrefix + "_labeledFeatures.dat";
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
   private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
@@ -79,8 +79,8 @@ public class HandLabeler {
           secondAxis = 0;
         }
       }
-      if ( e.isAltDown()) {
-        rotAngle += 0.1*e.getWheelRotation();
+      if (e.isAltDown()) {
+        rotAngle += 0.1 * e.getWheelRotation();
       }
       double[][] updatedCov = new double[][] { { firstAxis, 0 }, { 0, secondAxis } };
       // change shape of most recent feature
@@ -209,7 +209,7 @@ public class HandLabeler {
   // draw ellipses for image based on list of blobs for the image.
   private void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
-      PipelineFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
+      AccumulatedEventFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
     }
   }
 
