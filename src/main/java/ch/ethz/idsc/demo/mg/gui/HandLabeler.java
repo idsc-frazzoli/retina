@@ -33,7 +33,7 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.TrackedBlobIO;
-import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
+import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length.
@@ -52,7 +52,7 @@ public class HandLabeler {
   private String imagePrefix = "dubi8a";
   private String fileName = imagePrefix + "_labeledFeatures.dat";
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
-  private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
+  private List<List<ImageBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
   private JComponent jComponent = new JComponent() {
@@ -92,7 +92,7 @@ public class HandLabeler {
   public HandLabeler() {
     // set up empty list of lists
     for (int i = 0; i < numberOfFiles; i++) {
-      List<TrackedBlob> emptyList = new ArrayList<>();
+      List<ImageBlob> emptyList = new ArrayList<>();
       labeledFeatures.add(emptyList);
     }
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -150,7 +150,7 @@ public class HandLabeler {
         if (e.getButton() == MouseEvent.BUTTON1) {
           Point p = e.getPoint();
           // point coordinates need to be scaled back since we click on a scaled image
-          TrackedBlob blob = new TrackedBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
+          ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
               timeStamps[currentImgNumber - 1], true);
           labeledFeatures.get(currentImgNumber - 1).add(blob);
         }
@@ -207,9 +207,9 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
+  private static void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
-      AccumulatedEventFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
+      AccumulatedEventFrame.drawTrackedBlob(graphics, blobs.get(i), Color.WHITE);
     }
   }
 

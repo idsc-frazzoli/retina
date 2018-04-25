@@ -15,14 +15,15 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 // Transformation from image to physical space. For documentation, see MATLAB single camera calibration. Also, my master thesis.
-// The CSV file must have the following structure:
+// The CSV file must have the structure as below. Also important, exponential format must use capitalized E ("%E" in MATLAB).
 // 1st-3rd lines represent the transformation matrix
 // 4th line represents image coordinates of principal point [pixel]
 // 5th line represents radial distortion coefficients [-]
 // 6th line represents focal lengths [mm]
+// TODO still need to transform from checkerboard frame to gokart frame
 public class ImageToWorldTransform {
   // fields
-  private String fileName = "test.csv"; // in the directory Userhome.Pictures
+  private String fileName = "test.csv"; // in the directory UserHome.Pictures
   private final int unitConversion = 1000; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
@@ -32,12 +33,12 @@ public class ImageToWorldTransform {
   ImageToWorldTransform() {
     importCameraParams();
     // for testing purposes
-    TrackedBlob test = new TrackedBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);
+    ImageBlob test = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);
     transformSingleBlob(test);
   }
 
   // main function which transforms list of TrackedBlobs to list of PhysicalBlobs.
-  private List<PhysicalBlob> transformBlobs(List<TrackedBlob> blobs) {
+  private List<PhysicalBlob> transformBlobs(List<ImageBlob> blobs) {
     List<PhysicalBlob> physicalBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       PhysicalBlob singlePhysicalBlob = transformSingleBlob(blobs.get(i));
@@ -46,7 +47,7 @@ public class ImageToWorldTransform {
     return physicalBlobs;
   }
 
-  private PhysicalBlob transformSingleBlob(TrackedBlob trackedBlob) {
+  private PhysicalBlob transformSingleBlob(ImageBlob trackedBlob) {
     Tensor normalizedImgCoord;
     Tensor undistortedImgCoord;
     Tensor physicalCoord;
@@ -69,6 +70,7 @@ public class ImageToWorldTransform {
     physicalCoord = undistortedImgCoord.dot(transformationMatrix);
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
+    // here will be a further transformation into gokart frame which will require additional parameters
     PhysicalBlob physicalBlob = new PhysicalBlob(new double[] { physicalCoord.get(0).Get(0).number().doubleValue() / unitConversion,
         physicalCoord.get(0).Get(1).number().doubleValue() / unitConversion });
     return physicalBlob;

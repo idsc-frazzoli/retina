@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
+import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -16,15 +17,21 @@ import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
-  // parameters
+  // event filtering
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // for event processing
   private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents(); // for filtering of event stream
-  private final BlobFeatureFilter featureFilter = new BlobFeatureFilter(); // receive tracked cones from that module
-  private final DavisBlobTracker tracking = new DavisBlobTracker(featureFilter); // next module in pipeline
-  private final PipelineVisualization viz = new PipelineVisualization(); // for visualization
-  private final AccumulatedEventFrame[] frames = new AccumulatedEventFrame[3]; // for visualization
+  // feature filtering
+  private final ImageBlobFilter featureFilter = new ImageBlobFilter(); // receive tracked cones from that module
+  // blob tracking
+  private final BlobTracking tracking = new BlobTracking(featureFilter); // next module in pipeline
+  // visualization
+  private final PipelineVisualization viz = new PipelineVisualization(); // visualization GUI
+  private final AccumulatedEventFrame[] eventFrames = new AccumulatedEventFrame[3]; // perception module visualization frames
+  private final PhysicalBlobFrame[] physicalFrames = new PhysicalBlobFrame[3]; // control module visualization frames
+  // performance evaluation
   private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
   // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  // log file configuration
   private final int maxDuration = 10000; // [ms]
   private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
   private final int imageInterval = 50; // [ms] visualization interval
@@ -43,9 +50,12 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   public InputSubModule() {
     davisDvsDatagramDecoder.addDvsListener(this);
-    frames[0] = new AccumulatedEventFrame();
-    frames[1] = new AccumulatedEventFrame();
-    frames[2] = new AccumulatedEventFrame();
+    eventFrames[0] = new AccumulatedEventFrame();
+    eventFrames[1] = new AccumulatedEventFrame();
+    eventFrames[2] = new AccumulatedEventFrame();
+    physicalFrames[0] = new PhysicalBlobFrame();
+    physicalFrames[1] = new PhysicalBlobFrame();
+    physicalFrames[2] = new PhysicalBlobFrame();
   }
 
   @Override
@@ -66,21 +76,27 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     }
     ++eventCount;
     // send raw event stream to visualization
-    frames[0].receiveEvent(davisDvsEvent);
+    eventFrames[0].receiveEvent(davisDvsEvent);
     // send filtered events to visualization, tracker and evaluator
     if (surface.backgroundActivityFilter(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       tracking.receiveNewEvent(davisDvsEvent);
       // evaluator.receiveEvent(davisDvsEvent);
-      frames[1].receiveEvent(davisDvsEvent);
-      frames[2].receiveEvent(davisDvsEvent);
+      eventFrames[1].receiveEvent(davisDvsEvent);
+      eventFrames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
       // the events are accumulated for the interval time and then displayed in a single frame
       if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval * 1000) {
-        viz.setImage(frames[0].getAccumulatedEvents(), 0);
+        viz.setImage(eventFrames[0].getAccumulatedEvents(), 0);
         // active blobs color coded by featurefilter
-        viz.setImage(frames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
+        viz.setImage(eventFrames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
         // hidden blobs
-        viz.setImage(frames[2].trackOverlay(tracking.getBlobList(0)), 2);
+        viz.setImage(eventFrames[2].trackOverlay(tracking.getBlobList(0)), 2);
+        // physical location of raw features
+        viz.setImage(physicalFrames[0].getFrame(), 3);
+        // physical location of estimated features
+        viz.setImage(physicalFrames[1].getFrame(), 4);
+        // maybe show planned trajectory here?
+        viz.setImage(physicalFrames[2].getFrame(), 5);
         if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
           try {
             viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);
@@ -89,9 +105,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
           }
           lastSavingTimestamp = davisDvsEvent.time;
         }
-        frames[0].clearImage();
-        frames[1].clearImage();
-        frames[2].clearImage();
+        eventFrames[0].clearImage();
+        eventFrames[1].clearImage();
+        eventFrames[2].clearImage();
         lastImagingTimestamp = davisDvsEvent.time;
       }
     }

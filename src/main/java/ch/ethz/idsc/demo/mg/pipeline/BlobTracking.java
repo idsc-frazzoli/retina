@@ -8,8 +8,9 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
- * "asynchronous event-based multikernel algorithm for high-speed visual features tracking". */
-public class DavisBlobTracker {
+ * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
+ * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
+public class BlobTracking {
   // camera parameters
   private static final int WIDTH = 240; // maybe import width/height from other file?
   private static final int HEIGHT = 180;
@@ -29,22 +30,22 @@ public class DavisBlobTracker {
   private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
   private static final int tau = 8000; // [us] tunes activity update
   // fields
-  private BlobFeatureFilter blobFeatureFilter; // next module in pipeline
-  private final List<DavisSingleBlob> blobs;
+  private ImageBlobFilter blobFeatureFilter; // next module in pipeline
+  private final List<BlobTrackObj> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
   // testing
   public float hitthreshold = 0;
 
   // initialize the tracker with all blobs uniformly distributed
-  DavisBlobTracker(BlobFeatureFilter blobFeatureFilter) {
+  BlobTracking(ImageBlobFilter blobFeatureFilter) {
     blobs = new ArrayList<>(initNumberOfBlobs);
     int columnSpacing = WIDTH / numberRows;
     int rowSpacing = HEIGHT / (initNumberOfBlobs / numberRows);
     for (int i = 0; i < initNumberOfBlobs; i++) {
       int column = (i % numberRows);
       int row = i / numberRows; // use integer division
-      DavisSingleBlob davisSingleBlob = new DavisSingleBlob((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
+      BlobTrackObj davisSingleBlob = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
       blobs.add(davisSingleBlob);
     }
     // this object is shared hence given to the constructor
@@ -142,7 +143,7 @@ public class DavisBlobTracker {
     blobs.get(blobs.size() - 1).setLayerID(true);
     // replace the promoted blob with a new initial blob
     float[] oldInitPos = blobs.get(matchingBlob).getInitPos();
-    DavisSingleBlob newInitBlob = new DavisSingleBlob(oldInitPos[0], oldInitPos[1], initVariance);
+    BlobTrackObj newInitBlob = new BlobTrackObj(oldInitPos[0], oldInitPos[1], initVariance);
     blobs.set(matchingBlob, newInitBlob);
     // set new reference since we moved matchingBlob to end of list
     matchingBlob = blobs.size() - 1;
@@ -156,7 +157,7 @@ public class DavisBlobTracker {
         blobs.remove(matchingBlob);
       } else {
         // hidden blobs get re-initialized
-        DavisSingleBlob newInitBlob = new DavisSingleBlob(blobs.get(matchingBlob).getInitPos()[0], blobs.get(matchingBlob).getInitPos()[1], initVariance);
+        BlobTrackObj newInitBlob = new BlobTrackObj(blobs.get(matchingBlob).getInitPos()[0], blobs.get(matchingBlob).getInitPos()[1], initVariance);
         blobs.set(matchingBlob, newInitBlob);
       }
     }
@@ -164,9 +165,9 @@ public class DavisBlobTracker {
 
   // delete active blobs when activity is lower than aDown
   private void deleteBlobs() {
-    Iterator<DavisSingleBlob> iterator = blobs.iterator();
+    Iterator<BlobTrackObj> iterator = blobs.iterator();
     while (iterator.hasNext()) {
-      DavisSingleBlob davisSingleBlob = iterator.next();
+      BlobTrackObj davisSingleBlob = iterator.next();
       if (davisSingleBlob.getLayerID()) {
         if (davisSingleBlob.getActivity() < aDown) {
           iterator.remove();
@@ -228,15 +229,15 @@ public class DavisBlobTracker {
 
   // return list of blobs for visualization and feature filtering
   // layerId=0: hidden blobs, layerId=1: active blobs
-  public List<TrackedBlob> getBlobList(int layerId) {
-    List<TrackedBlob> blobList = new ArrayList<>();
+  public List<ImageBlob> getBlobList(int layerId) {
+    List<ImageBlob> blobList = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       if (layerId == 1 && blobs.get(i).getLayerID()) {
-        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
+        ImageBlob trackedBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
         blobList.add(trackedBlob);
       }
       if (layerId == 0 && !blobs.get(i).getLayerID()) {
-        TrackedBlob trackedBlob = new TrackedBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
+        ImageBlob trackedBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
         blobList.add(trackedBlob);
       }
     }

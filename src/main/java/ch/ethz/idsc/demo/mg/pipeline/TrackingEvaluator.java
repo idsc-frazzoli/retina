@@ -10,13 +10,13 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 // this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded and compared with
 // the position of the tracked features as provided by the tracking algorithm.
 public class TrackingEvaluator {
-  List<List<TrackedBlob>> labeledFeatures; // contains the ground truth
+  List<List<ImageBlob>> labeledFeatures; // contains the ground truth
   int[] timeStamps; // contains timestamps for which ground truth is available
-  DavisBlobTracker track;
+  BlobTracking track;
   int currentLabelInstant = 0;
   int numberOfLabelInstants = 0;
 
-  TrackingEvaluator(File pathToFile, DavisBlobTracker track) {
+  TrackingEvaluator(File pathToFile, BlobTracking track) {
     labeledFeatures = TrackedBlobIO.loadFeatures(pathToFile);
     numberOfLabelInstants = labeledFeatures.size();
     System.out.println(numberOfLabelInstants);
@@ -39,7 +39,7 @@ public class TrackingEvaluator {
 
   // compare estimated with ground truth features and calculate performance metric
   private void evaluatePerformance() {
-    List<TrackedBlob> estimatedFeatures = track.getBlobList(1);
-    List<TrackedBlob> groundTruthFeatures = labeledFeatures.get(currentLabelInstant);
+    List<ImageBlob> estimatedFeatures = track.getBlobList(1);
+    List<ImageBlob> groundTruthFeatures = labeledFeatures.get(currentLabelInstant);
   }
 }
