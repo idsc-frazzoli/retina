@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /**  */
@@ -24,5 +25,9 @@ public class ClusterConfig implements Serializable {
 
   public int getMinPoints() {
     return minPoints.number().intValue();
+  }
+
+  public Tensor elkiDBSCAN(Tensor matrix) {
+    return Clusters.elkiDBSCAN(matrix, getEpsilon(), getMinPoints());
   }
 }

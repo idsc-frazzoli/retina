@@ -7,7 +7,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.perc.Clusters;
+import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -44,7 +44,7 @@ class ObstacleLidarRenderClustering extends LidarRender {
       System.out.println("Size of p:" + p.length());
       oldMean = mean;
       if (!Tensors.isEmpty(p)) {
-        pi = Clusters.elkiDBSCAN(p);
+        pi = ClusterConfig.GLOBAL.elkiDBSCAN(p);
         System.out.println("#clusters: " + pi.length());
         // oldMean = mean;
         mean = Tensor.of(pi.stream().map(Mean::of));
