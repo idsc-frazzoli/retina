@@ -25,48 +25,46 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum Clusters {
   ;
-  /** @param p
-   * @return unstructured */
+  /** @param matrix
+   * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
-  public static Tensor elkiDBSCAN(Tensor p) {
-    Database db = Clusters.sample(p);
+  public static Tensor elkiDBSCAN(Tensor matrix) {
+    Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, ClusterConfig.GLOBAL.getEpsilon(), ClusterConfig.GLOBAL.getMinPoints());
-    Clustering<Model> result = dbscan.run(db);
+    Clustering<Model> result = dbscan.run(database);
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
     // System.out.println("Number of clusters: " + allClusters.size());
-    // ---
     Tensor pi = Tensors.empty();
-    for (Cluster<Model> cluster : allClusters) {
-      Tensor pr = Tensors.empty();
+    for (Cluster<Model> cluster : allClusters)
       // System.out.println("Cluster size:" + cluster.size());
       // System.out.println("Is noise:" + cluster.isNoise());
       if (!cluster.isNoise()) {
+        Tensor pr = Tensors.empty();
         DBIDs ids = cluster.getIDs();
-        Relation<NumberVector> rel = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
+        Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
           int offset = id.getOffset(iter);
           // System.out.println("offset:" + offset);
           // System.out.println(p.get(offset));
-          pr.append(Tensors.of(p.get(offset)));
+          pr.append(matrix.get(offset));
         }
         pi.append(pr);
       }
-    }
     // System.out.println("end");
     return pi;
   }
 
-  static Database sample(Tensor p) {
-    double[][] data = fromMatrix(p);
-    DatabaseConnection dbc = new ArrayAdapterDatabaseConnection(data);
-    Database db = new StaticArrayDatabase(dbc, null);
-    db.initialize();
-    return db;
+  static Database sample(Tensor matrix) {
+    double[][] data = fromMatrix(matrix);
+    DatabaseConnection databaseConnection = new ArrayAdapterDatabaseConnection(data);
+    Database database = new StaticArrayDatabase(databaseConnection, null);
+    database.initialize();
+    return database;
   }
 
   // TODO TENSOR V052
