@@ -19,26 +19,28 @@ import ch.ethz.idsc.tensor.Scalar;
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // event filtering
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // for event processing
-  private final DavisSurfaceOfActiveEvents surface = new DavisSurfaceOfActiveEvents(); // for filtering of event stream
+  private final EventFiltering surface = new EventFiltering(); // for filtering of event stream
   // feature filtering
-  private final ImageBlobFilter featureFilter = new ImageBlobFilter(); // receive tracked cones from that module
+  private final ImageBlobSelector imageBlobSelector = new ImageBlobSelector(); // receive tracked cones from that module
   // blob tracking
-  private final BlobTracking tracking = new BlobTracking(featureFilter); // next module in pipeline
+  private final BlobTracking tracking = new BlobTracking(imageBlobSelector); // next module in pipeline
+  // blob transformation
+  private final ImageToWorldTransform transformer = new ImageToWorldTransform();
   // visualization
   private final PipelineVisualization viz = new PipelineVisualization(); // visualization GUI
   private final AccumulatedEventFrame[] eventFrames = new AccumulatedEventFrame[3]; // perception module visualization frames
   private final PhysicalBlobFrame[] physicalFrames = new PhysicalBlobFrame[3]; // control module visualization frames
   // performance evaluation
-  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat");
+  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat"); // ground truth file for tracking evaluator
   // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
   // log file configuration
   private final int maxDuration = 10000; // [ms]
-  private final int backgroundActivityFilterTime = 2000; // [us] the shorter the more is filtered
+  private final int backgroundActivityFilterTime = 200; // [us] the shorter the more is filtered
   private final int imageInterval = 50; // [ms] visualization interval
   private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
-  private String imagePrefix = "Test";
-  private File pathToImages = HandLabelFileLocations.images();
+  private String imagePrefix = "Test"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
+  private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;
@@ -83,20 +85,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       // evaluator.receiveEvent(davisDvsEvent);
       eventFrames[1].receiveEvent(davisDvsEvent);
       eventFrames[2].receiveEvent(davisDvsEvent);
+      transformer.transformBlobs(imageBlobSelector.getTrackedBlobs());
       ++filteredEventCount;
       // the events are accumulated for the interval time and then displayed in a single frame
       if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval * 1000) {
         viz.setImage(eventFrames[0].getAccumulatedEvents(), 0);
         // active blobs color coded by featurefilter
-        viz.setImage(eventFrames[1].trackOverlay(featureFilter.getTrackedBlobs()), 1);
+        viz.setImage(eventFrames[1].trackOverlay(imageBlobSelector.getTrackedBlobs()), 1);
         // hidden blobs
         viz.setImage(eventFrames[2].trackOverlay(tracking.getBlobList(0)), 2);
         // physical location of raw features
-        viz.setImage(physicalFrames[0].getFrame(), 3);
-        // physical location of estimated features
-        viz.setImage(physicalFrames[1].getFrame(), 4);
-        // maybe show planned trajectory here?
-        viz.setImage(physicalFrames[2].getFrame(), 5);
+        viz.setImage(physicalFrames[0].receiveBlobs(transformer.getPhysicalBlobs()), 3);
         if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
           try {
             viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);

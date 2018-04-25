@@ -3,18 +3,11 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** provides a Surface of Active Events data structure. */
-public class DavisSurfaceOfActiveEvents {
-  private static final int WIDTH = 240; // TODO import these two values from some other file?
+// provides event filters
+public class EventFiltering {
+  private static final int WIDTH = 240;
   private static final int HEIGHT = 180;
-  // fields
   private final int[][] timestamps = new int[WIDTH][HEIGHT];
-
-  // general todos
-  // TODO: update neighbors for the four corner lines (or maybe just ignore?)
-  void updateSurface(DavisDvsEvent davisDvsEvent) {
-    timestamps[davisDvsEvent.x][davisDvsEvent.y] = davisDvsEvent.time;
-  }
 
   // update all neighboring cells with the timestamp of the incoming event
   void updateNeighboursTimestamps(int x, int y, int time) {
@@ -31,7 +24,7 @@ public class DavisSurfaceOfActiveEvents {
     }
   }
 
-  // this function implements a very simple noise filter
+  // events on the image boarders are always filtered. smaller filterConstant results in more aggressive filtering.
   boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
     updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
     return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;

@@ -30,7 +30,7 @@ public class BlobTracking {
   private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
   private static final int tau = 8000; // [us] tunes activity update
   // fields
-  private ImageBlobFilter blobFeatureFilter; // next module in pipeline
+  private ImageBlobSelector blobFeatureFilter; // next module in pipeline
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
@@ -38,7 +38,7 @@ public class BlobTracking {
   public float hitthreshold = 0;
 
   // initialize the tracker with all blobs uniformly distributed
-  BlobTracking(ImageBlobFilter blobFeatureFilter) {
+  BlobTracking(ImageBlobSelector blobFeatureFilter) {
     blobs = new ArrayList<>(initNumberOfBlobs);
     int columnSpacing = WIDTH / numberRows;
     int rowSpacing = HEIGHT / (initNumberOfBlobs / numberRows);

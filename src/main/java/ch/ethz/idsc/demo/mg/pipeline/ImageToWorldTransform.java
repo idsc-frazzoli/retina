@@ -29,8 +29,10 @@ public class ImageToWorldTransform {
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
   private Tensor focalLength; // [mm]
   private Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
+  private List<PhysicalBlob> physicalBlobs;
 
   ImageToWorldTransform() {
+    physicalBlobs = new ArrayList<>();
     importCameraParams();
     // for testing purposes
     ImageBlob test = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);
@@ -38,22 +40,23 @@ public class ImageToWorldTransform {
   }
 
   // main function which transforms list of TrackedBlobs to list of PhysicalBlobs.
-  private List<PhysicalBlob> transformBlobs(List<ImageBlob> blobs) {
+  public List<PhysicalBlob> transformBlobs(List<ImageBlob> blobs) {
     List<PhysicalBlob> physicalBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       PhysicalBlob singlePhysicalBlob = transformSingleBlob(blobs.get(i));
       physicalBlobs.add(singlePhysicalBlob);
     }
-    return physicalBlobs;
+    this.physicalBlobs = physicalBlobs;
+    return this.physicalBlobs;
   }
 
-  private PhysicalBlob transformSingleBlob(ImageBlob trackedBlob) {
+  private PhysicalBlob transformSingleBlob(ImageBlob imageBlob) {
     Tensor normalizedImgCoord;
     Tensor undistortedImgCoord;
     Tensor physicalCoord;
     Scalar radDistSqr;
     // normalize image coordinates
-    normalizedImgCoord = Tensors.matrixDouble(new double[][] { { trackedBlob.getPos()[0], trackedBlob.getPos()[1] } }).subtract(principalPoint)
+    normalizedImgCoord = Tensors.matrixDouble(new double[][] { { imageBlob.getPos()[0], imageBlob.getPos()[1] } }).subtract(principalPoint)
         .pmul(focalLength.map(Scalar::reciprocal));
     // calculate squared radial distance
     radDistSqr = (normalizedImgCoord.get(0).Get(0).multiply(normalizedImgCoord.get(0).Get(0)))
@@ -88,6 +91,10 @@ public class ImageToWorldTransform {
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);
     focalLength = inputTensor.extract(5, 6);
+  }
+  
+  public List<PhysicalBlob> getPhysicalBlobs(){
+    return physicalBlobs;
   }
 
   // main function for testing

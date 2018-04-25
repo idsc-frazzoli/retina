@@ -30,10 +30,11 @@ public class PhysicalBlobFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  private void receiveBlobs(List<PhysicalBlob> physicalBlobs) {
+  public BufferedImage receiveBlobs(List<PhysicalBlob> physicalBlobs) {
     for (int i = 0; i < physicalBlobs.size(); i++) {
       drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.BLACK);
     }
+    return bufferedImage;
   }
 
   // draws an ellipse representing a PhysicalBlob object onto a Graphics2D object
@@ -50,9 +51,5 @@ public class PhysicalBlobFrame {
   private double[] convertWorldToImageCoord(double[] physicalPos) {
     double[] imageCoord = new double[2];
     return imageCoord;
-  }
-
-  public BufferedImage getFrame() {
-    return bufferedImage;
   }
 }
