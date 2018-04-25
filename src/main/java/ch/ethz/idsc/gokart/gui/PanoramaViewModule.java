@@ -40,4 +40,14 @@ public class PanoramaViewModule extends AbstractModule {
     velodyneLcmClient.stopSubscriptions();
     panoramaFrame.close();
   }
+
+  public static void standalone() throws Exception {
+    PanoramaViewModule sideLcmModule = new PanoramaViewModule();
+    sideLcmModule.first();
+    sideLcmModule.panoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  }
+
+  public static void main(String[] args) throws Exception {
+    standalone();
+  }
 }
