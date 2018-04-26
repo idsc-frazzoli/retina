@@ -23,16 +23,18 @@ public class SysidSignalsModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        sysidSignalsComponent.shutdown();
+        // sysidSignalsComponent.shutdown();
       }
     });
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
+    sysidSignalsComponent.sysidRimoModule.first();
   }
 
   @Override // from AbstractModule
   protected void last() {
+    sysidSignalsComponent.sysidRimoModule.last();
     jFrame.setVisible(false);
     jFrame.dispose();
   }
