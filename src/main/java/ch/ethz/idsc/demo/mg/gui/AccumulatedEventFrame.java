@@ -35,18 +35,21 @@ public class AccumulatedEventFrame {
     return rotate180Degrees(bufferedImage);
   }
 
-  // overlays the active blobs on the image
-  public BufferedImage trackOverlay(List<ImageBlob> blobs) {
+  // overlays blobs and sets color according to ImageBlobSelector module
+  public BufferedImage overlayActiveBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getIsRecognized()) {
-        drawTrackedBlob(graphics, blobs.get(i), Color.GREEN);
+        drawImageBlob(graphics, blobs.get(i), Color.GREEN);
+      } else {
+        drawImageBlob(graphics, blobs.get(i), Color.RED);
       }
-      if (!blobs.get(i).getIsRecognized() && !blobs.get(i).getIsHidden()) {
-        drawTrackedBlob(graphics, blobs.get(i), Color.RED);
-      }
-      if (blobs.get(i).getIsHidden()) {
-        drawTrackedBlob(graphics, blobs.get(i), Color.GRAY);
-      }
+    }
+    return rotate180Degrees(bufferedImage);
+  }
+
+  public BufferedImage overlayHiddenBlobs(List<ImageBlob> blobs) {
+    for (int i = 0; i < blobs.size(); i++) {
+      drawImageBlob(graphics, blobs.get(i), Color.GRAY);
     }
     return rotate180Degrees(bufferedImage);
   }
@@ -71,8 +74,8 @@ public class AccumulatedEventFrame {
     return bufferedImage;
   }
 
-  // draws an ellipse representing a TrackedBlob object onto a Graphics2D object
-  public static void drawTrackedBlob(Graphics2D graphics, ImageBlob blob, Color color) {
+  // draws an ellipse representing an ImageBlob object onto a Graphics2D object
+  public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();
     float[] semiAxes = blob.getStandardDeviation();

@@ -49,8 +49,11 @@ public class PipelineVisualization {
     jFrame.setVisible(true);
   }
 
-  public void setImage(BufferedImage bufferedImage, int imgNumber) {
-    this.bufferedImage[imgNumber] = bufferedImage;
+  // set all frames and repaint
+  public void setFrames(BufferedImage[] bufferedImages) {
+    for (int i = 0; i < bufferedImages.length; i++) {
+      bufferedImage[i] = bufferedImages[i];
+    }
     jComponent.repaint();
   }
 

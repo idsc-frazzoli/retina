@@ -32,7 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-import ch.ethz.idsc.demo.mg.TrackedBlobIO;
+import ch.ethz.idsc.demo.mg.ImageBlobIO;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
@@ -40,6 +40,7 @@ import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
 // TODO implement ability to rotate ellipse (method stub set up in TrackedBlob)
+// TODO save labels as .CSV file
 public class HandLabeler {
   private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
@@ -104,14 +105,14 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          TrackedBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
+          ImageBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = TrackedBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
+          labeledFeatures = ImageBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
           System.out.println("Successfully loaded from file " + fileName);
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
@@ -207,9 +208,9 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
+  private void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
-      AccumulatedEventFrame.drawTrackedBlob(graphics, blobs.get(i), Color.WHITE);
+      AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
     }
   }
 

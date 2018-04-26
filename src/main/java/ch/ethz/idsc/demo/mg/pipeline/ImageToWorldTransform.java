@@ -1,11 +1,11 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -20,10 +20,11 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // 4th line represents image coordinates of principal point [pixel]
 // 5th line represents radial distortion coefficients [-]
 // 6th line represents focal lengths [mm]
-// TODO still need to transform from checkerboard frame to gokart frame
+// TODO how to get path of current directory to load .CSV file?
+// TODO still need to transform from checkerboard frame to gokart frame (once we try calibration on gokart)
 public class ImageToWorldTransform {
   // fields
-  private String fileName = "test.csv"; // in the directory UserHome.Pictures
+  private String fileName = "test.csv"; // in demo.mg.pipeline
   private final int unitConversion = 1000; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
@@ -34,20 +35,20 @@ public class ImageToWorldTransform {
   ImageToWorldTransform() {
     physicalBlobs = new ArrayList<>();
     importCameraParams();
-    // for testing purposes
-    ImageBlob test = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);
-    transformSingleBlob(test);
   }
 
   // main function which transforms list of TrackedBlobs to list of PhysicalBlobs.
-  public List<PhysicalBlob> transformBlobs(List<ImageBlob> blobs) {
+  public void transformSelectedBlobs(List<ImageBlob> blobs) {
     List<PhysicalBlob> physicalBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       PhysicalBlob singlePhysicalBlob = transformSingleBlob(blobs.get(i));
       physicalBlobs.add(singlePhysicalBlob);
     }
     this.physicalBlobs = physicalBlobs;
-    return this.physicalBlobs;
+  }
+
+  public List<PhysicalBlob> getPhysicalBlobs() {
+    return physicalBlobs;
   }
 
   private PhysicalBlob transformSingleBlob(ImageBlob imageBlob) {
@@ -83,7 +84,8 @@ public class ImageToWorldTransform {
   private void importCameraParams() {
     Tensor inputTensor = null;
     try {
-      inputTensor = Import.of(UserHome.Pictures(fileName));
+      // not very elegant below
+      inputTensor = Import.of(new File("/home/mario/Projects/retina/src/main/java/ch/ethz/idsc/demo/mg/pipeline/test.csv"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -92,13 +94,12 @@ public class ImageToWorldTransform {
     radDistortion = inputTensor.extract(4, 5);
     focalLength = inputTensor.extract(5, 6);
   }
-  
-  public List<PhysicalBlob> getPhysicalBlobs(){
-    return physicalBlobs;
-  }
 
-  // main function for testing
+  // for testing
   public static void main(String[] args) {
     ImageToWorldTransform test = new ImageToWorldTransform();
+    ImageBlob imageBlob = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);
+    PhysicalBlob physicalBlob = test.transformSingleBlob(imageBlob);
+    System.out.println(physicalBlob.getPos()[0] + "/" + physicalBlob.getPos()[1]);
   }
 }

@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import java.io.File;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.TrackedBlobIO;
+import ch.ethz.idsc.demo.mg.ImageBlobIO;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded and compared with
@@ -17,7 +17,7 @@ public class TrackingEvaluator {
   int numberOfLabelInstants = 0;
 
   TrackingEvaluator(File pathToFile, BlobTracking track) {
-    labeledFeatures = TrackedBlobIO.loadFeatures(pathToFile);
+    labeledFeatures = ImageBlobIO.loadFeatures(pathToFile);
     numberOfLabelInstants = labeledFeatures.size();
     System.out.println(numberOfLabelInstants);
     this.track = track;

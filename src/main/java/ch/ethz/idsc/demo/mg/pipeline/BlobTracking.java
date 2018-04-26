@@ -30,7 +30,6 @@ public class BlobTracking {
   private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
   private static final int tau = 8000; // [us] tunes activity update
   // fields
-  private ImageBlobSelector blobFeatureFilter; // next module in pipeline
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
@@ -38,18 +37,16 @@ public class BlobTracking {
   public float hitthreshold = 0;
 
   // initialize the tracker with all blobs uniformly distributed
-  BlobTracking(ImageBlobSelector blobFeatureFilter) {
+  BlobTracking() {
     blobs = new ArrayList<>(initNumberOfBlobs);
     int columnSpacing = WIDTH / numberRows;
     int rowSpacing = HEIGHT / (initNumberOfBlobs / numberRows);
     for (int i = 0; i < initNumberOfBlobs; i++) {
       int column = (i % numberRows);
       int row = i / numberRows; // use integer division
-      BlobTrackObj davisSingleBlob = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
-      blobs.add(davisSingleBlob);
+      BlobTrackObj blobTrackObj = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
+      blobs.add(blobTrackObj);
     }
-    // this object is shared hence given to the constructor
-    this.blobFeatureFilter = blobFeatureFilter;
   }
 
   // general todo list
@@ -57,7 +54,7 @@ public class BlobTracking {
   // TODO attraction equation: calculate on an evenbasis or time interval basis?
   // TODO implement merging operation and test it --> implemented
   // TODO generalize algorithm by testing several scoring functions and compare them
-  public void receiveNewEvent(DavisDvsEvent davisDvsEvent) {
+  public void receiveEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
     calcScoreAndParams(davisDvsEvent);
     // update activity of all blobs and check if matching blob gets promoted
@@ -76,8 +73,6 @@ public class BlobTracking {
     // printStatusUpdate(davisDvsEvent);
     // merging operation
     mergeBlobs(dMerge);
-    // send active tracked blobs to feature filter
-    blobFeatureFilter.receiveBlobList(getBlobList(1));
     // update time
     setEventTimestamp(davisDvsEvent.time);
   }
@@ -242,6 +237,28 @@ public class BlobTracking {
       }
     }
     return blobList;
+  }
+  
+  public List<ImageBlob> getActiveBlobs(){
+    List <ImageBlob> activeBlobs = new ArrayList<>();
+    for(int i=0;i<blobs.size();i++) {
+      if(blobs.get(i).getLayerID()) {
+        ImageBlob activeBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
+        activeBlobs.add(activeBlob);
+      }
+    }
+    return activeBlobs;
+  }
+  
+  public List<ImageBlob> getHiddenBlobs(){
+    List<ImageBlob> hiddenBlobs = new ArrayList<>();
+    for(int i=0;i<blobs.size();i++) {
+      if(!blobs.get(i).getLayerID()) {
+        ImageBlob hiddenBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
+        hiddenBlobs.add(hiddenBlob);
+      }
+    }
+    return hiddenBlobs;
   }
 
   // return number of blobs. layerId=0: hidden blobs, layerId=1: active blobs, layerId=2: all blobs

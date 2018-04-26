@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
 
-public enum TrackedBlobIO {
+public enum ImageBlobIO {
   ;
   // loads binary file
   public static List<List<ImageBlob>> loadFeatures(File pathToFile) {

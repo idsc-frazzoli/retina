@@ -16,7 +16,7 @@ public class ImageBlobSelector {
     imageBlobs = new ArrayList<>();
   }
 
-  public void receiveBlobList(List<ImageBlob> imageblobs) {
+  public void receiveActiveBlobs(List<ImageBlob> imageblobs) {
     this.imageBlobs = imageblobs;
     // only consider region of interest, i.e. floor
     checkPosition();
@@ -40,7 +40,19 @@ public class ImageBlobSelector {
     }
   }
 
-  public List<ImageBlob> getTrackedBlobs() {
+  // return both selected and neglected blobs for visualization
+  public List<ImageBlob> getProcessedBlobs(){
     return imageBlobs;
+  }
+  
+  // return selected blobs for next module in pipeline
+  public List<ImageBlob> getSelectedBlobs() {
+    List<ImageBlob> selectedBlobs = new ArrayList<>();
+    for(int i = 0;i<imageBlobs.size();i++) {
+      if(imageBlobs.get(i).getIsRecognized()) {
+        selectedBlobs.add(imageBlobs.get(i));
+      }
+    }
+    return selectedBlobs;
   }
 }
