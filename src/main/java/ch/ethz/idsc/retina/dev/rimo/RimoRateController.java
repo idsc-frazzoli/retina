@@ -2,7 +2,9 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
+import ch.ethz.idsc.retina.lcm.TensorPublisher;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** two instance of this class are used for left and right rear motors
@@ -19,12 +21,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   /** @param vel_error with unit "rad*s^-1"
    * @return value with unit "ARMS" */
-  public Scalar iterate(Scalar vel_error) {
-    Scalar pPart = vel_error.subtract(lastVel_error).multiply(RimoConfig.GLOBAL.Kp);
-    Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT);
+  public Scalar iterate(final Scalar vel_error) {
+    final Scalar pPart = vel_error.subtract(lastVel_error).multiply(RimoConfig.GLOBAL.Kp);
+    final Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT);
+    final Scalar TEMP_LVE = lastVel_error; // TODO removal pending
     lastVel_error = vel_error;
-    Scalar tor_value = lastTor_value.add(pPart).add(iPart);
+    final Scalar TEMP_LTV = lastTor_value;
+    final Scalar tor_value = lastTor_value.add(pPart).add(iPart);
     lastTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // anti-windup
+    // TODO preliminary for debugging: publish ctrl internals
+    TensorPublisher.publish("rimo.controller.pi", Tensors.of( //
+        vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value));
     return lastTor_value;
   }
 }

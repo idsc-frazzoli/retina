@@ -6,7 +6,9 @@ import java.util.function.Supplier;
 import ch.ethz.idsc.retina.util.math.ChirpSignal;
 import ch.ethz.idsc.retina.util.math.PRBS7SignedSignal;
 import ch.ethz.idsc.retina.util.math.ToggleSignal;
+import ch.ethz.idsc.retina.util.math.VectorSignal;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public enum SysidSignals implements Supplier<ScalarUnaryOperator> {
@@ -34,6 +36,12 @@ public enum SysidSignals implements Supplier<ScalarUnaryOperator> {
       return new ChirpSignal(0.02, 0.1, 20);
     }
   }, //
+  STEPS() {
+    @Override
+    public ScalarUnaryOperator get() {
+      return new VectorSignal(StaticHelper.incrSteps(10), RealScalar.of(3));
+    }
+  },
   TOGGLE_010() {
     @Override
     public ScalarUnaryOperator get() {
