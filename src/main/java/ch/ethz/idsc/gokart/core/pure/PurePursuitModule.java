@@ -43,6 +43,11 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   private Optional<Tensor> optionalCurve = Optional.of(CURVE);
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
+  public static PurePursuitModule PPM;
+
+  public PurePursuitModule() {
+    PPM = this;
+  }
 
   /** function setCurve is for testing only.
    * for normal operation, set the curve via the static field CURVE
@@ -61,6 +66,8 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    System.out.println(PPM);
+    System.out.println(this);
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
@@ -90,13 +97,16 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   }
 
   private boolean isOperational() {
+    System.err.println("check isOperational");
     if (Objects.nonNull(gokartPoseEvent)) // is localization pose available?
       if (optionalCurve.isPresent()) {
+        System.out.println("curve is present");
         final Scalar quality = gokartPoseEvent.getQuality();
         if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
           Tensor pose = gokartPoseEvent.getPose(); // latest pose
           Tensor curve = optionalCurve.get();
           Optional<Scalar> optional = getLookAhead(pose, curve);
+          System.out.println("has lookahae " + optional.isPresent());
           if (optional.isPresent()) { // is look ahead beacon available?
             Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
             if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
@@ -109,6 +119,8 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
             }
           }
         }
+      } else {
+        System.err.println("no curve in pure pursuit");
       }
     return false; // autonomous operation denied
   }

@@ -61,7 +61,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final PurePursuitModule purePursuitModule = new PurePursuitModule();
+//  private final PurePursuitModule purePursuitModule = new PurePursuitModule();
   // private // TODO
   GokartPoseEvent gokartPoseEvent = null;
   Tensor obstacleMap;
@@ -73,7 +73,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-    purePursuitModule.first();
+//    purePursuitModule.launch();
     // TODO initialze cost funct
     obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
     Tensor tensor = ImageEdges.extrusion(obstacleMap, 6); // == 0.73 * 7.5 == 5.475
@@ -91,7 +91,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
 
   @Override
   protected void last() {
-    purePursuitModule.last();
+//    purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
   }
 
@@ -112,7 +112,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
       int index = ArgMin.of(distances);
       if (0 <= index) {
-        index += 2;
+        index += 4;
         index %= waypoints.length();
         System.out.println("goal index = " + index);
         Tensor goal = waypoints.get(index);
@@ -133,7 +133,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     }
     // no pose -> no traj
     // set curve to optional.empty
-    purePursuitModule.setCurve(Optional.empty());
+    PurePursuitModule.PPM.setCurve(Optional.empty());
     System.err.println("no curve because no pose");
   }
 
@@ -155,10 +155,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       // set curve
       Tensor curve = Tensor.of(tail.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
-      purePursuitModule.setCurve(Optional.of(curve));
+      PurePursuitModule.PPM.setCurve(Optional.of(curve));
       System.out.println("yey! assigned curve length == " + curve.length());
     } else {
-      purePursuitModule.setCurve(Optional.empty());
+      PurePursuitModule.PPM.setCurve(Optional.empty());
       System.err.println("no curve");
     }
   }
