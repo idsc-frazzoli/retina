@@ -11,7 +11,7 @@ enum StaticHelper {
   ;
   public static Tensor incrSteps(int n) {
     Tensor tensor = Tensors.empty();
-    for (Tensor _s : Subdivide.of(.1, .6, n)) {
+    for (Tensor _s : Subdivide.of(.03, .5, n)) {
       Scalar s = (Scalar) _s;
       tensor.append(UnitVector.of(3, 0).multiply(s));
       tensor.append(UnitVector.of(3, 0).multiply(s.negate()));

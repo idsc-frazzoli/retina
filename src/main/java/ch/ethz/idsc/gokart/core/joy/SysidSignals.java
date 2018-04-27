@@ -39,7 +39,7 @@ public enum SysidSignals implements Supplier<ScalarUnaryOperator> {
   STEPS() {
     @Override
     public ScalarUnaryOperator get() {
-      return new VectorSignal(StaticHelper.incrSteps(10), RealScalar.of(3));
+      return new VectorSignal(StaticHelper.incrSteps(15), RealScalar.of(1.6));
     }
   },
   TOGGLE_010() {

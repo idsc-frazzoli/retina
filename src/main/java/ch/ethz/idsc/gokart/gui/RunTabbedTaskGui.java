@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
@@ -80,7 +81,8 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      PurePursuitModule.class //
+      PurePursuitModule.class, //
+      GokartTrajectoryModule.class //
   );
 
   public static void main(String[] args) {
