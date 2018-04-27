@@ -34,8 +34,8 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
         Urg04lxDevice.FOV_LO * Math.PI / 180, //
         Urg04lxDevice.FOV_HI * Math.PI / 180, //
         Urg04lxDevice.MAX_POINTS - 1);
-    dirx = Primitives.toArrayFloat(Cos.of(angle));
-    diry = Primitives.toArrayFloat(Sin.of(angle));
+    dirx = Primitives.toFloatArray(Cos.of(angle));
+    diry = Primitives.toFloatArray(Sin.of(angle));
     setLimitLo(THRESHOLD);
   }
 

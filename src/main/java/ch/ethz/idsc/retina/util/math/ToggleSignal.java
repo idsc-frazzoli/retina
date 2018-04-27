@@ -13,12 +13,12 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** operator returns RealScalar.ZERO or RealScalar.ONE */
 public class ToggleSignal implements ScalarUnaryOperator {
-  private static final Tensor SIGNAL = Tensors.vector(1, 0, -1, 0).unmodifiable();
-  private static final Mod MOD = Mod.function(4);
+  private static final Tensor SIGNAL = Tensors.vector(1, 0, 0, -1, 0, 0).unmodifiable();
+  private static final Mod MOD = Mod.function(SIGNAL.length());
 
   // ---
   /** @param width
-   * @param amplitude between 0,1
+   * @param amplitude in the unit interval [0, 1]
    * @return */
   public static ScalarUnaryOperator create(double width, double amplitude) {
     return new ToggleSignal( //

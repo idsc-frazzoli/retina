@@ -11,5 +11,7 @@ public class RimoSinusIonModelTest extends TestCase {
     VehicleModel vm = RimoSinusIonModel.standard();
     Tensor fp = vm.footprint();
     assertEquals(Dimensions.of(fp).get(1), (Integer) 3);
+    // Tensor fpm = Tensor.of(fp.stream().map(t -> t.extract(0, 2).map(Round._2)));
+    // Export.of(UserHome.file("gokart_footprint.csv"), fpm);
   }
 }
