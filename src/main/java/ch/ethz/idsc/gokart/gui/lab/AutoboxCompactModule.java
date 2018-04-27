@@ -28,8 +28,8 @@ public class AutoboxCompactModule extends AbstractModule implements DavisImuFram
   private final JFrame jFrame = new JFrame("Autobox Compact");
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  Timer timer = new Timer();
-  int imuFrame_count = 0;
+  private final Timer timer = new Timer();
+  private int imuFrame_count = 0;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
