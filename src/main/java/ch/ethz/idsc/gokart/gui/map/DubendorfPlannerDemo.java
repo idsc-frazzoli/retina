@@ -65,9 +65,9 @@ public class DubendorfPlannerDemo {
     Tensor range = predefinedMap.range();
     ImageRegion imageRegion = new ImageRegion(tensor, range, true);
     TrajectoryRegionQuery trq = createCarQuery(imageRegion);
-    carEntity.obstacleQuery = trq;
+    // carEntity.obstacleQuery = trq;
     owlyAnimationFrame.set(carEntity);
-    owlyAnimationFrame.setObstacleQuery(trq);
+    // owlyAnimationFrame.setObstacleQuery(trq);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(ViewLcmFrame.MODEL2PIXEL_INITIAL);
     Tensor total = Tensors.empty();

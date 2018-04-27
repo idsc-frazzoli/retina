@@ -11,13 +11,13 @@ import ch.ethz.idsc.owl.car.model.CarState;
 import ch.ethz.idsc.owl.car.model.CarStateSpaceModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
+import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.gui.ani.PlannerType;
 import ch.ethz.idsc.owl.gui.ani.TrajectoryEntity;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.flow.Integrator;
 import ch.ethz.idsc.owl.math.flow.RungeKutta4Integrator;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -55,11 +55,6 @@ import ch.ethz.idsc.tensor.Tensor;
   }
 
   @Override
-  public TrajectoryPlanner createTrajectoryPlanner(TrajectoryRegionQuery obstacleQuery, Tensor goal) {
-    throw new RuntimeException();
-  }
-
-  @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor state = getStateTimeNow().state();
     CarState carState = new CarState(state);
@@ -76,5 +71,15 @@ import ch.ethz.idsc.tensor.Tensor;
       graphics.fill(geometricLayer.toPath2D(rimoSinusIonModel.footprint()));
       geometricLayer.popMatrix();
     }
+  }
+
+  @Override
+  public Scalar distance(Tensor x, Tensor y) {
+    throw new RuntimeException();
+  }
+
+  @Override
+  public TrajectoryPlanner createTrajectoryPlanner(PlannerConstraint plannerConstraint, Tensor goal) {
+    throw new RuntimeException();
   }
 }
