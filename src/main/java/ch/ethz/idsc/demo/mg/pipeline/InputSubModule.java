@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import javax.imageio.ImageIO;
+
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
@@ -37,12 +39,15 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // pipeline configuration
   private final int maxDuration = 10000; // [ms]
   private final int backgroundActivityFilterTime = 200; // [us] the shorter the more is filtered
-  private final int imageInterval = 200; // [ms] visualization interval
+  private final int imageInterval = 33; // [ms] visualization interval
   private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
-  private boolean saveImages = false;
-  private String imagePrefix = "Test"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
+  // image saving
+  private boolean saveImages = true;
+  private String imagePrefix = "Dubi9e"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
   private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
+  private int imageCount = 0;
+  private int saveConfig = 0; // 0 for saving filtered accumulated events, 1 for saving whole GUI
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;
@@ -94,19 +99,13 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       ++filteredEventCount;
       // the events are accumulated for the interval time and then displayed in a single frame
       if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval * 1000) {
-        // visualization repaint
-        viz.setFrames(constructFrames());
-        System.out.println("ActiveBlobs: " + tracking.getActiveBlobs().size());
-        System.out.println("SelectedBlobs: " + blobSelector.getSelectedBlobs().size());
-        System.out.println("TransformedBlobs: " + transformer.getPhysicalBlobs().size());
+        // save frames
         if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
-          try {
-            viz.saveImage(pathToImages, imagePrefix, davisDvsEvent.time);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+          saveFrame(pathToImages, imagePrefix, davisDvsEvent.time, saveConfig);
           lastSavingTimestamp = davisDvsEvent.time;
         }
+        // visualization repaint
+        viz.setFrames(constructFrames());
         clearAllFrames();
         lastImagingTimestamp = davisDvsEvent.time;
       }
@@ -143,6 +142,24 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     }
     for (int i = 0; i < physicalFrames.length; i++) {
       physicalFrames[i].clearImage();
+    }
+  }
+
+  // for visualization
+  private void saveFrame(File pathToFile, String imagePrefix, int timeStamp, int saveConfig) {
+    try {
+      imageCount++;
+      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
+      if (saveConfig == 0) {
+        ImageIO.write(eventFrames[1].getAccumulatedEvents(), "png", new File(pathToFile, fileName));
+      }
+      if (saveConfig == 1) {
+        BufferedImage wholeGUI = viz.getGUIFrame();
+        ImageIO.write(wholeGUI, "png", new File(pathToFile, fileName));
+      }
+      System.out.printf("Images saved as %s\n", fileName);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 

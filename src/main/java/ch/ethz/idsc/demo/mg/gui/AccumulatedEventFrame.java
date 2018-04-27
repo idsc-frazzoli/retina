@@ -29,7 +29,6 @@ public class AccumulatedEventFrame {
     bytes = dataBufferByte.getData();
     clearImage();
   }
-  // general todo list
 
   public BufferedImage getAccumulatedEvents() {
     return rotate180Degrees(bufferedImage);
