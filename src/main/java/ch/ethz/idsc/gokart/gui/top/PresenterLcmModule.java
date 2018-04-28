@@ -2,6 +2,9 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.WindowConstants;
 
@@ -21,6 +24,8 @@ import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.Get;
+import ch.ethz.idsc.tensor.io.Put;
 
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -78,6 +83,7 @@ public class PresenterLcmModule extends AbstractModule {
     // }
     {
       GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      joystickLcmClient.addListener(gokartRender.joystickListener);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
@@ -86,7 +92,8 @@ public class PresenterLcmModule extends AbstractModule {
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
-      GokartHudRender gokartHudRender = new GokartHudRender(joystickLcmClient);
+      GokartHudRender gokartHudRender = new GokartHudRender();
+      joystickLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
       rimoGetLcmClient.addListener(gokartHudRender);
     }
@@ -101,21 +108,40 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
+    final File file = AppCustomization.file(PresenterLcmModule.class.getSimpleName() + "_model2pixel.tensor");
+    try {
+      timerFrame.geometricComponent.setModel2Pixel(Get.of(file));
+    } catch (Exception exception) {
+      // ---
+    }
+    timerFrame.jFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(WindowEvent windowEvent) {
+        try {
+          Put.of(file, timerFrame.geometricComponent.getModel2Pixel());
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+        private_windowClosed();
+      }
+    });
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
   }
 
   @Override // from AbstractModule
   protected void last() {
+    timerFrame.close();
+  }
+
+  private void private_windowClosed() {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
     joystickLcmClient.stopSubscriptions();
-    // ---
     vlp16LcmHandler.stopSubscriptions();
-    timerFrame.close();
   }
 
   public static void main(String[] args) throws Exception {
