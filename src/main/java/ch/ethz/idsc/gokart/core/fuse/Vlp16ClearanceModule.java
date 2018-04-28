@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
-import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -33,7 +33,7 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  private final SpacialObstaclePredicate spacialObstaclePredicate;
+  private final SpacialXZObstaclePredicate spacialObstaclePredicate;
 
   public Vlp16ClearanceModule() {
     spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();

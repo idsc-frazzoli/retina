@@ -18,14 +18,13 @@ import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.gui.ani.TrajectoryPlannerCallback;
+import ch.ethz.idsc.owl.gui.ani.GlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.owl.rrts.core.RrtsPlanner;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -65,19 +64,14 @@ public class DubendorfPlannerDemo {
     Tensor range = predefinedMap.range();
     ImageRegion imageRegion = new ImageRegion(tensor, range, true);
     TrajectoryRegionQuery trq = createCarQuery(imageRegion);
-    carEntity.obstacleQuery = trq;
+    // carEntity.obstacleQuery = trq;
     owlyAnimationFrame.set(carEntity);
-    owlyAnimationFrame.setObstacleQuery(trq);
+    // owlyAnimationFrame.setObstacleQuery(trq);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(ViewLcmFrame.MODEL2PIXEL_INITIAL);
     Tensor total = Tensors.empty();
     // owlyAnimationFrame.trajectoryPlannerCallbackExtra =
-    new TrajectoryPlannerCallback() {
-      @Override
-      public void expandResult(List<TrajectorySample> head, RrtsPlanner rrtsPlanner, List<TrajectorySample> tail) {
-        throw new RuntimeException();
-      }
-
+    new GlcPlannerCallback() {
       @Override
       public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
         System.out.println("HERE !!!");

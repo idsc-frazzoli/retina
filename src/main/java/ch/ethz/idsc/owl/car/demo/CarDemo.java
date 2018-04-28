@@ -8,7 +8,6 @@ import ch.ethz.idsc.owl.car.model.CarStateSpaceModel;
 import ch.ethz.idsc.owl.car.model.CarStatic;
 import ch.ethz.idsc.owl.car.model.HomogenousTrack;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -24,7 +23,8 @@ public class CarDemo {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     owlyAnimationFrame.set(carEntity);
     Region<Tensor> region = new R2NoiseRegion(RealScalar.of(0.2));
-    owlyAnimationFrame.setObstacleQuery(SimpleTrajectoryRegionQuery.timeInvariant(region));
+    // FIXME
+    // owlyAnimationFrame.setObstacleQuery(SimpleTrajectoryRegionQuery.timeInvariant(region));
     owlyAnimationFrame.jFrame.setVisible(true);
   }
 

@@ -41,9 +41,9 @@ class ObstacleLidarRenderClustering extends LidarRender {
       Tensor p = Tensor.of(points.stream() //
           .filter(spacialObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
-      System.out.println("Size of p:" + p.length());
       oldMean = mean;
       if (!Tensors.isEmpty(p)) {
+        System.out.println("Size of p:" + p.length());
         pi = ClusterConfig.GLOBAL.elkiDBSCAN(p);
         System.out.println("#clusters: " + pi.length());
         // oldMean = mean;

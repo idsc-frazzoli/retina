@@ -7,6 +7,7 @@ import javax.swing.JToolBar;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -49,6 +50,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
     linmotInitButton.start();
     miscResetButton.start();
     steerInitButton.start();
+    RimoSocket.INSTANCE.addGetListener(this);
   }
 
   @Override // from StartAndStoppable
@@ -56,5 +58,6 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
     linmotInitButton.stop();
     miscResetButton.stop();
     steerInitButton.stop();
+    RimoSocket.INSTANCE.removeGetListener(this);
   }
 }

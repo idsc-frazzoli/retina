@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.alg.Array;
  * 1) NOT already in the static obstacle map
  * 2) NOT floor */
 public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
+  private static final int NON_BLACK_MASK = 0xff00;
   // TODO definition of LIDAR already exists in the codebase
   protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
   // ---
@@ -37,14 +38,9 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   @Override // from SpacialObstaclePredicate
   public boolean isObstacle(Tensor point) {
     Point2D point2d = geometricLayer.toPoint2D(point);
-    int rgb = predefinedMap.getImage().getRGB((int) point2d.getX(), (int) point2d.getY());
-    if ((rgb & 0xff00) == 0xff00)
+    int rgb = predefinedMap.getRGB(point2d);
+    if ((rgb & NON_BLACK_MASK) == NON_BLACK_MASK)
       return false;
     return floorPredicate.isObstacle(point);
-  }
-
-  @Override // from SpacialObstaclePredicate
-  public boolean isObstacle(double x, double z) {
-    throw new RuntimeException();
   }
 }

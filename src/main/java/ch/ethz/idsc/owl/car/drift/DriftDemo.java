@@ -11,6 +11,7 @@ import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
+import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.gui.win.OwlyGui;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -38,9 +39,10 @@ enum DriftDemo {
         Tensors.vector(0.05, 0.05, 0.25));
     TrajectoryRegionQuery obstacleQuery = //
         SimpleTrajectoryRegionQuery.timeInvariant(new NegativeHalfspaceRegion(1));
+    PlannerConstraint plannerConstraint = null; // FIXME
     // ---
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-        eta, stateIntegrator, controls, obstacleQuery, goalInterface);
+        eta, stateIntegrator, controls, plannerConstraint, goalInterface);
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 4), RealScalar.ZERO));
     int iters = Expand.maxSteps(trajectoryPlanner, 5000);

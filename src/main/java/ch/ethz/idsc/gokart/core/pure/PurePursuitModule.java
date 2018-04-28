@@ -40,20 +40,34 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
-  private Tensor curve = CURVE;
+  private Optional<Tensor> optionalCurve = Optional.of(CURVE);
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
+  public static PurePursuitModule PPM;
+
+  public PurePursuitModule() {
+    PPM = this;
+  }
 
   /** function setCurve is for testing only.
    * for normal operation, set the curve via the static field CURVE
    * 
+   * @param curve non-null */
+  /* testing only */ void test_setCurve(Tensor curve) {
+    this.optionalCurve = Optional.of(curve);
+  }
+
+  /** function for trajectory planner
+   * 
    * @param curve */
-  void setCurve(Tensor curve) {
-    this.curve = curve;
+  public void setCurve(Optional<Tensor> curve) {
+    optionalCurve = curve;
   }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    System.out.println(PPM);
+    System.out.println(this);
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
@@ -83,24 +97,31 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   }
 
   private boolean isOperational() {
-    if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
-      final Scalar quality = gokartPoseEvent.getQuality();
-      if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
-        Tensor pose = gokartPoseEvent.getPose(); // latest pose
-        Optional<Scalar> optional = getLookAhead(pose, curve);
-        if (optional.isPresent()) { // is look ahead beacon available?
-          Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
-          if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
-            purePursuitSteer.setHeading(angle);
-            Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
-            if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
-              GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-              return gokartJoystickInterface.isAutonomousPressed();
+    System.err.println("check isOperational");
+    if (Objects.nonNull(gokartPoseEvent)) // is localization pose available?
+      if (optionalCurve.isPresent()) {
+        System.out.println("curve is present");
+        final Scalar quality = gokartPoseEvent.getQuality();
+        if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
+          Tensor pose = gokartPoseEvent.getPose(); // latest pose
+          Tensor curve = optionalCurve.get();
+          Optional<Scalar> optional = getLookAhead(pose, curve);
+          System.out.println("has lookahae " + optional.isPresent());
+          if (optional.isPresent()) { // is look ahead beacon available?
+            Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
+            if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
+              purePursuitSteer.setHeading(angle);
+              Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+              if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+                GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+                return gokartJoystickInterface.isAutonomousPressed();
+              }
             }
           }
         }
+      } else {
+        System.err.println("no curve in pure pursuit");
       }
-    }
     return false; // autonomous operation denied
   }
 
