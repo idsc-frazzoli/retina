@@ -61,7 +61,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-//  private final PurePursuitModule purePursuitModule = new PurePursuitModule();
+  // private final PurePursuitModule purePursuitModule = new PurePursuitModule();
   // private // TODO
   GokartPoseEvent gokartPoseEvent = null;
   Tensor obstacleMap;
@@ -73,7 +73,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-//    purePursuitModule.launch();
+    // purePursuitModule.launch();
     // TODO initialze cost funct
     obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
     Tensor tensor = ImageEdges.extrusion(obstacleMap, 6); // == 0.73 * 7.5 == 5.475
@@ -91,7 +91,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
 
   @Override
   protected void last() {
-//    purePursuitModule.terminate();
+    // purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
   }
 

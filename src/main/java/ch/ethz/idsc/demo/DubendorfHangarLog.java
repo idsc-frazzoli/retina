@@ -101,10 +101,34 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180419T172115_f80284e9, //
   /** joystick driving along figure 8 */
   _20180419T172918_f80284e9, //
-  ;
+  /***************************************************/
+  /* 2018-04-23 */
+  // TODO DUBENDORF obtain and document log files
+  /***************************************************/
+  /* 2018-04-27 */
+  /** joystick driving small circles at different speeds
+   * TODO investigate min turning radius */
+  _20180427T105421_08cf25f5, //
+  /** torque signals to rimo for sys id */
+  _20180427T121545_22662115, //
+  /** torque signals to rimo for sys id */
+  _20180427T123334_22662115, //
+  /** rimo PI controller with Kp=74 Ki==0
+   * exhibits backwards driving
+   * log includes internals of PI controller */
+  _20180427T125356_22662115, //
+  /** slow and medium joystick driving with 2 pedestrians walking
+   * gokart localization not successful */
+  _20180427T140645_22662115, //
+  /** trajectory planning and pure pursuit */
+  _20180427T155210_987cb124, //
+  /** trajectory planning and pure pursuit */
+  _20180427T155709_987cb124, //
+  ; //
   @Override
   public File file(File directory) {
-    return new File(directory, name().substring(1) + ".lcm.00");
+    File folder = new File(directory, name().substring(1, 9));
+    return new File(folder, name().substring(1) + ".lcm.00");
   }
 
   /** Example: "20180112T105400"

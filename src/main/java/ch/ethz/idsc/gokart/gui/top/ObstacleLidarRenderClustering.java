@@ -39,11 +39,12 @@ class ObstacleLidarRenderClustering extends LidarRender {
       UnknownObstaclePredicate spacialObstaclePredicate = new UnknownObstaclePredicate();
       spacialObstaclePredicate.setPose(EVAL_POSE);
       Tensor p = Tensor.of(points.stream() //
-          .filter(spacialObstaclePredicate::isObstacle) //
+          .filter(t -> false) //
+          // .filter(spacialObstaclePredicate::isObstacle) // FIXME
           .map(point -> point.extract(0, 2))); // only x,y matter
-      System.out.println("Size of p:" + p.length());
       oldMean = mean;
       if (!Tensors.isEmpty(p)) {
+        System.out.println("Size of p:" + p.length());
         pi = ClusterConfig.GLOBAL.elkiDBSCAN(p);
         System.out.println("#clusters: " + pi.length());
         // oldMean = mean;

@@ -37,6 +37,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   @Override // from SpacialObstaclePredicate
   public boolean isObstacle(Tensor point) {
     Point2D point2d = geometricLayer.toPoint2D(point);
+    // FIXME not safe! need to check bounds!
     int rgb = predefinedMap.getImage().getRGB((int) point2d.getX(), (int) point2d.getY());
     if ((rgb & 0xff00) == 0xff00)
       return false;
