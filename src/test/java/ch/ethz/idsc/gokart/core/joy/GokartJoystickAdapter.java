@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.joystick;
+package ch.ethz.idsc.gokart.core.joy;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -8,7 +9,7 @@ import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class GokartJoystickAdapter implements GokartJoystickInterface {
+/* package */ class GokartJoystickAdapter implements GokartJoystickInterface {
   private final Scalar steerLeft;
   private final Scalar breakStrength;
   private final Scalar ahead;

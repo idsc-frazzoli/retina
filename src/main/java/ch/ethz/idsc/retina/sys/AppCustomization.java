@@ -10,11 +10,15 @@ import ch.ethz.idsc.retina.util.data.TensorProperties;
 public enum AppCustomization {
   ;
   private static File file(Class<?> cls) {
+    return file(cls.getSimpleName() + ".properties");
+  }
+
+  public static File file(String filename) {
     File dir1 = new File("resources", "custom");
     dir1.mkdir();
     File dir2 = new File(dir1, System.getProperty("user.name"));
     dir2.mkdir();
-    return new File(dir2, cls.getSimpleName() + ".properties");
+    return new File(dir2, filename);
   }
 
   public static <T> T load(Class<?> cls, T object) {

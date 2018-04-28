@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -45,5 +47,9 @@ public class JoystickConfig implements Serializable {
   /** @return clip interval for permitted torque */
   public Clip torqueLimitClip() {
     return Clip.function(torqueLimit.negate(), torqueLimit);
+  }
+
+  public JoystickLcmProvider createProvider() {
+    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 200);
   }
 }

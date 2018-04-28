@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** module tested on 20180427 */
 public class SysidSignalsModule extends AbstractModule {
   private final SysidSignalsComponent sysidSignalsComponent = new SysidSignalsComponent();
   private final JFrame jFrame = new JFrame("Signals for System Identification Rimo");
