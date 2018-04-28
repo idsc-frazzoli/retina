@@ -16,7 +16,7 @@ public class CarStateSpaceModelTest extends TestCase {
     // CarControl carControl = carModel.createControl();
     Tensor u = Tensors.vector(0.4, .03, 0, .4);
     StateSpaceModel ssm = new CarStateSpaceModel(carModel, HomogenousTrack.DRY_ROAD);
-    // FIXME units don't match anymore!
+    // LONGTERM units don't match anymore!
     // Tensor res = ssm.f(carState.asVector(), u);
     // Tensor gnd = Tensors.fromString(
     // "{1.4243749104432206, 2.1618367009520716, -1.8297547914814403, 0.4, 5.0631654668445165, -2.4241717228308928, -1231.189048069456, 764.091380010576,

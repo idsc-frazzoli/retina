@@ -46,7 +46,7 @@ public enum CarStatic {
    * 25.794871794871792, 25.794871794871792, 25.794871794871792, 25.794871794871792}
    * 
    * @return */
-  // FIXME the model doesn't seem to work with vel < 0
+  // LONGTERM the model doesn't seem to work with vel < 0
   // however, there is no good reason for this failure: using a different arrangement of tires,
   // one could easily adapt the model on a "mirrored" car
   public static CarState x0_demo1Reverse() {

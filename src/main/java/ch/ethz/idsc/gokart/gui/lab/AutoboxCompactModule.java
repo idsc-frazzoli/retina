@@ -21,6 +21,8 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** AutoboxCompactModule facilitates the initialization of the actuators
+ * and the monitoring of the joystick and Davis240C sensor */
 public class AutoboxCompactModule extends AbstractModule implements DavisImuFrameListener {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -75,6 +77,11 @@ public class AutoboxCompactModule extends AbstractModule implements DavisImuFram
     autoboxCompactComponent.stop();
   }
 
+  @Override // from DavisImuFrameListener
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    ++imuFrame_count;
+  }
+
   public static void standalone() throws Exception {
     AutoboxCompactModule autoboxCompactModule = new AutoboxCompactModule();
     autoboxCompactModule.first();
@@ -83,10 +90,5 @@ public class AutoboxCompactModule extends AbstractModule implements DavisImuFram
 
   public static void main(String[] args) throws Exception {
     standalone();
-  }
-
-  @Override
-  public void imuFrame(DavisImuFrame davisImuFrame) {
-    ++imuFrame_count;
   }
 }
