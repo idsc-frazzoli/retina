@@ -52,8 +52,6 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180305T150255_9e1dc13c, //
   /** joystick */
   _20180305T151234_9e1dc13c, //
-  /** */
-  _20180305T164035_9e1dc13c, //
   /** pure pursuit without davis */
   _20180305T170018_9e1dc13c, //
   /***************************************************/
@@ -85,12 +83,13 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180412T164740_7e5b46c2, //
   /***************************************************/
   /* 2018-04-18 */
+  // TODO DUBENDORF/OFFICE HD obtain log files
   /** joystick driving and single prbs */
-  _20180418T102854_5a650fbf, //
+  // _20180418T102854_5a650fbf, //
   /** pure pursuit */
-  _20180418T125913_bca165ae, //
+  // _20180418T125913_bca165ae, //
   /** multiple prbs */
-  _20180418T132333_bca165ae, //
+  // _20180418T132333_bca165ae, //
   /***************************************************/
   /* 2018-04-19 */
   /** pure pursuit with hangar doors closed and then open */
@@ -100,7 +99,8 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** pure pursuit with speed controller going in reverse */
   _20180419T172115_f80284e9, //
   /** joystick driving along figure 8 */
-  _20180419T172918_f80284e9, //
+  // TODO DUBENDORF obtain and document log files
+  // _20180419T172918_f80284e9, //
   /***************************************************/
   /* 2018-04-23 */
   // TODO DUBENDORF obtain and document log files

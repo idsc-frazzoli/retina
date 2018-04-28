@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import ch.ethz.idsc.owl.glc.adapter.EmptyPlannerConstraint;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
 import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.glc.std.EmptyPlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.math.flow.Flow;

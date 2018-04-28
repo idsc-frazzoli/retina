@@ -43,9 +43,4 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
       return false;
     return floorPredicate.isObstacle(point);
   }
-
-  @Override // from SpacialObstaclePredicate
-  public boolean isObstacle(double x, double z) {
-    throw new RuntimeException();
-  }
 }

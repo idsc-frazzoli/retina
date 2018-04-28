@@ -20,13 +20,13 @@ import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
 import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
+import ch.ethz.idsc.owl.glc.adapter.TrajectoryObstacleConstraint;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.glc.std.TrajectoryObstacleConstraint;
-import ch.ethz.idsc.owl.gui.ani.TrajectoryPlannerCallback;
+import ch.ethz.idsc.owl.gui.ani.GlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.win.MotionPlanWorker;
 import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
@@ -35,7 +35,6 @@ import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.owl.rrts.core.RrtsPlanner;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -50,7 +49,7 @@ import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 public class GokartTrajectoryModule extends AbstractClockedModule implements //
-    GokartPoseListener, TrajectoryPlannerCallback {
+    GokartPoseListener, GlcPlannerCallback {
   static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
@@ -161,10 +160,5 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       PurePursuitModule.PPM.setCurve(Optional.empty());
       System.err.println("no curve");
     }
-  }
-
-  @Override
-  public void expandResult(List<TrajectorySample> head, RrtsPlanner rrtsPlanner, List<TrajectorySample> tail) {
-    throw new RuntimeException();
   }
 }

@@ -9,12 +9,12 @@ import ch.ethz.idsc.tensor.Tensor;
 /** the purpose of the class is to carry out the math for the simple obstacle
  * check method. */
 // the class name is preliminary
-public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate {
+public class SimpleSpacialObstaclePredicate implements SpacialXZObstaclePredicate {
   /** convenient way for the application layer to obtain an instance
    * without having to specify the geometric configuration
    * 
    * @return */
-  public static SpacialObstaclePredicate createVlp16() {
+  public static SpacialXZObstaclePredicate createVlp16() {
     return new SimpleSpacialObstaclePredicate( //
         SafetyConfig.GLOBAL.vlp16_ZLo, //
         SafetyConfig.GLOBAL.vlp16_ZHi, //
@@ -39,7 +39,7 @@ public class SimpleSpacialObstaclePredicate implements SpacialObstaclePredicate 
         point.Get(2).number().doubleValue());
   }
 
-  @Override // from SpacialObstaclePredicate
+  @Override // from SpacialXZObstaclePredicate
   public boolean isObstacle(double x, double z) {
     double z_corrected = z - x * inc; // negative sign
     return lo < z_corrected && z_corrected < hi;
