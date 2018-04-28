@@ -1,8 +1,9 @@
-// concept by jelavice 
+// concept by jelavice
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import ch.ethz.idsc.retina.lcm.TensorPublisher;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.retina.lcm.TensorFloatLcm;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -30,7 +31,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar tor_value = lastTor_value.add(pPart).add(iPart);
     lastTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // anti-windup
     // TODO preliminary for debugging: publish ctrl internals
-    TensorPublisher.publish("rimo.controller.pi", Tensors.of( //
+    TensorFloatLcm.publish(GokartLcmChannel.RIMO_CONTROLLER_PI, Tensors.of( //
         vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value));
     return lastTor_value;
   }
