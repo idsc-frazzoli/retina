@@ -238,22 +238,22 @@ public class BlobTracking {
     }
     return blobList;
   }
-  
-  public List<ImageBlob> getActiveBlobs(){
-    List <ImageBlob> activeBlobs = new ArrayList<>();
-    for(int i=0;i<blobs.size();i++) {
-      if(blobs.get(i).getLayerID()) {
+
+  public List<ImageBlob> getActiveBlobs() {
+    List<ImageBlob> activeBlobs = new ArrayList<>();
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getLayerID()) {
         ImageBlob activeBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
         activeBlobs.add(activeBlob);
       }
     }
     return activeBlobs;
   }
-  
-  public List<ImageBlob> getHiddenBlobs(){
+
+  public List<ImageBlob> getHiddenBlobs() {
     List<ImageBlob> hiddenBlobs = new ArrayList<>();
-    for(int i=0;i<blobs.size();i++) {
-      if(!blobs.get(i).getLayerID()) {
+    for (int i = 0; i < blobs.size(); i++) {
+      if (!blobs.get(i).getLayerID()) {
         ImageBlob hiddenBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
         hiddenBlobs.add(hiddenBlob);
       }

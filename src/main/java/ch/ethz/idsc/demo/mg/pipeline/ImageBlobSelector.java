@@ -41,15 +41,15 @@ public class ImageBlobSelector {
   }
 
   // return both selected and neglected blobs for visualization
-  public List<ImageBlob> getProcessedBlobs(){
+  public List<ImageBlob> getProcessedBlobs() {
     return imageBlobs;
   }
-  
+
   // return selected blobs for next module in pipeline
   public List<ImageBlob> getSelectedBlobs() {
     List<ImageBlob> selectedBlobs = new ArrayList<>();
-    for(int i = 0;i<imageBlobs.size();i++) {
-      if(imageBlobs.get(i).getIsRecognized()) {
+    for (int i = 0; i < imageBlobs.size(); i++) {
+      if (imageBlobs.get(i).getIsRecognized()) {
         selectedBlobs.add(imageBlobs.get(i));
       }
     }

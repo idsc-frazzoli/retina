@@ -239,7 +239,7 @@ public class HandLabeler {
   private void saveToCSV(List<List<ImageBlob>> labeledFeatures) {
     FileWriter writer = null;
     try {
-      writer = new FileWriter(new File(UserHome.Pictures("handlabels"),fileName));
+      writer = new FileWriter(new File(UserHome.Pictures("handlabels"), fileName));
       for (int i = 0; i < labeledFeatures.size(); i++) {
         for (int j = 0; j < labeledFeatures.get(i).size(); j++) {
           // we wanna store the following values:
@@ -270,7 +270,7 @@ public class HandLabeler {
       }
     }
   }
-  
+
   // stub
   private void loadFromCSV() {
     // ...

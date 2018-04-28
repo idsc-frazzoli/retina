@@ -94,6 +94,7 @@ public enum ImageSynthAndExportDemo {
     return cov;
   }
 
+  @SuppressWarnings("unused")
   public static void main(String[] args) throws IOException {
     BufferedImage bufferedImage = createImage(10);
     int count = 0;

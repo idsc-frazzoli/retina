@@ -15,6 +15,7 @@ public class EstimationAlgorithm {
   }
 
   // call this function for a measurement update. how often to call this function?
+  // TODO should this be "setMeasurement?
   private void getMeasurement(List<PhysicalBlob> measurementBlobs) {
     this.measurementBlobs = measurementBlobs;
   }

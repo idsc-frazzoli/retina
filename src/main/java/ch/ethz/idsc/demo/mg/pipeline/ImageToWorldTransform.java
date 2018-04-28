@@ -1,8 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
-import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 // Transformation from image to physical space. For documentation, see MATLAB single camera calibration. Also, my master thesis.
@@ -24,7 +22,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // TODO still need to transform from checkerboard frame to gokart frame (once we try calibration on gokart)
 public class ImageToWorldTransform {
   // fields
-  private String fileName = "test.csv"; // in demo.mg.pipeline
+  // private String fileName = "test.csv"; // in demo.mg.pipeline
   private final int unitConversion = 1000; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
@@ -82,13 +80,13 @@ public class ImageToWorldTransform {
 
   // imports parameters from CSV file that was generated with MATLAB
   private void importCameraParams() {
-    Tensor inputTensor = null;
-    try {
-      // not very elegant below
-      inputTensor = Import.of(new File("/home/mario/Projects/retina/src/main/java/ch/ethz/idsc/demo/mg/pipeline/test.csv"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    // try {
+    // not very elegant below
+    Tensor inputTensor = ResourceData.of("/demo/mg/test.csv"); // <- notation for files in src/main/resources/...
+    // Import.of(new File("/home/mario/Projects/retina/src/main/java/ch/ethz/idsc/demo/mg/pipeline/test.csv"));
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);
