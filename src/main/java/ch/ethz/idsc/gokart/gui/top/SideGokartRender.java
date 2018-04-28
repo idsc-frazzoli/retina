@@ -1,4 +1,4 @@
-// code by jph
+// code by vc and jph
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.BasicStroke;
@@ -18,10 +18,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
+import ch.ethz.idsc.tensor.red.CopySign;
 import ch.ethz.idsc.tensor.red.Entrywise;
+import ch.ethz.idsc.tensor.sca.Chop;
 
-public class SideGokartRender extends AbstractGokartRender {
-  public static final Tensor CIRCLE = CirclePoints.of(20);
+/* package */ class SideGokartRender extends AbstractGokartRender {
+  private static final Scalar RAY_CUTOFF = RealScalar.of(40);
+  private static final Tensor CIRCLE = CirclePoints.of(20);
 
   public SideGokartRender() {
     super(GokartPoseLocal.INSTANCE);
@@ -38,23 +41,24 @@ public class SideGokartRender extends AbstractGokartRender {
       graphics.setStroke(new BasicStroke(1.0f));
     }
     { // draw the 16 lidar rays from -15deg to 15deg
+      final Scalar py = Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height);
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.of( //
           SensorsConfig.GLOBAL.vlp16.Get(0), // translation right (in pixel space)
-          Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height), // translation up (in pixel space) to
-          /** negate incline for rotation in pixel space */
-          SensorsConfig.GLOBAL.vlp16_incline.negate() // rotation is pixel space
+          py, // translation up (in pixel space) to
+          RealScalar.ZERO // rotation is pixel space
       ));
       geometricLayer.pushMatrix(translate);
+      /** negate incline for rotation in pixel space */
+      Scalar incline = SensorsConfig.GLOBAL.vlp16_incline.negate();
+      graphics.setStroke(new BasicStroke(1.0f));
+      graphics.setColor(new Color(0, 0, 255, 64));
       for (int i = -15; i < 16; i += 2) {
-        Tensor dir = AngleVector.of(Degree.of(i));
-        Tensor polygon = Tensors.of( //
-            dir.multiply(RealScalar.of(-30)), //
-            dir.multiply(RealScalar.of(30)) //
-        );
-        Path2D path2D = geometricLayer.toPath2D(polygon);
-        graphics.setStroke(new BasicStroke(1.0f));
-        graphics.setColor(new Color(0, 0, 255, 128));
-        graphics.draw(path2D);
+        Tensor dir = AngleVector.of(Degree.of(i).add(incline));
+        Scalar dy = dir.Get(1);
+        Scalar lambda = Chop._06.allZero(dy) ? RAY_CUTOFF : py.divide(dy).negate();
+        Scalar factor = CopySign.of(RAY_CUTOFF, lambda);
+        Tensor line = Tensors.of(dir.multiply(lambda), dir.multiply(factor.negate()));
+        graphics.draw(geometricLayer.toPath2D(line));
       }
       geometricLayer.popMatrix();
     }

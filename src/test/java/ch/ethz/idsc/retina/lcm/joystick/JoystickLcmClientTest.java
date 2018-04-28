@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
@@ -36,7 +37,7 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.startSubscriptions();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
@@ -61,7 +62,7 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testAutonomous() {
-    JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.startSubscriptions();
     assertFalse(joystickLcmClient.getJoystick().isPresent());

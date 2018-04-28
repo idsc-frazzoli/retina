@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** module tested on 20180427 */
 public class SysidSignalsModule extends AbstractModule {
   private final SysidSignalsComponent sysidSignalsComponent = new SysidSignalsComponent();
   private final JFrame jFrame = new JFrame("Signals for System Identification Rimo");
@@ -23,16 +24,18 @@ public class SysidSignalsModule extends AbstractModule {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        sysidSignalsComponent.shutdown();
+        // sysidSignalsComponent.shutdown();
       }
     });
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
+    sysidSignalsComponent.sysidRimoModule.first();
   }
 
   @Override // from AbstractModule
   protected void last() {
+    sysidSignalsComponent.sysidRimoModule.last();
     jFrame.setVisible(false);
     jFrame.dispose();
   }

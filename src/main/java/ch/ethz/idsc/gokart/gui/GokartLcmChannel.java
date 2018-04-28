@@ -9,4 +9,7 @@ public enum GokartLcmChannel {
   public static final String JOYSTICK = "generic_xbox_pad";
   public static final String STATUS = "gokart.status.get";
   public static final String POSE_LIDAR = "gokart.pose.lidar";
+  // ---
+  /** for debugging of rimo rate controller */
+  public static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";
 }

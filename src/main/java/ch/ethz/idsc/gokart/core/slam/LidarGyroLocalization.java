@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.red.Mean;
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
-  protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
+  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---

@@ -15,6 +15,9 @@ import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -43,6 +46,10 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  // ---
+  private JoystickEvent joystickEvent;
+  public final JoystickListener joystickListener = getEvent -> joystickEvent = getEvent;
+  // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
 
@@ -66,7 +73,13 @@ public class GokartRender extends AbstractGokartRender {
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     {
-      graphics.setColor(new Color(192, 192, 192, 64));
+      Color color = new Color(192, 192, 192, 64);
+      if (Objects.nonNull(joystickEvent)) {
+        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
+        if (gokartJoystickInterface.isAutonomousPressed())
+          color = new Color(255, 128, 128, 64);
+      }
+      graphics.setColor(color);
       graphics.fill(geometricLayer.toPath2D(vehicleModel.footprint()));
     }
     {

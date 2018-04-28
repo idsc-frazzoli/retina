@@ -29,10 +29,11 @@ public enum Clusters {
    * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
-  public static Tensor elkiDBSCAN(Tensor matrix) {
+  public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
-    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, ClusterConfig.GLOBAL.getEpsilon(), ClusterConfig.GLOBAL.getMinPoints());
+    DBSCAN<NumberVector> dbscan = //
+        new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
     Clustering<Model> result = dbscan.run(database);
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");

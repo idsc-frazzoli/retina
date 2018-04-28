@@ -10,7 +10,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 
 public abstract class AbstractGokartRender implements RenderInterface {
-  private final GokartPoseInterface gokartPoseInterface;
+  final GokartPoseInterface gokartPoseInterface;
 
   public AbstractGokartRender(GokartPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;

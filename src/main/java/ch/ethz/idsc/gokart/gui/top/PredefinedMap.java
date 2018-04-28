@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -27,11 +28,14 @@ public enum PredefinedMap {
   /** image of known static obstacles */
   DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
   ;
-  /** number of pixels to extrude geometry */
+  /** number of pixels to extrude geometry for localization */
   public static final int TTL = 3;
+  /** assume void, i.e. no obstacle, in area outside of image */
+  private static final int RGBA_VOID = 0;
   // ---
   private final Scalar scale;
   private final BufferedImage bufferedImage;
+  /** size == width == height of square bufferedImage */
   private final int size;
   private final BufferedImage extrudedImage;
   private final ImageRegion imageRegion;
@@ -62,6 +66,19 @@ public enum PredefinedMap {
    * @return instance of extruded map used for lidar-based localization */
   public BufferedImage getImageExtruded() {
     return extrudedImage;
+  }
+
+  /** @param point2d
+   * @return color value at pixel in given location */
+  public int getRGB(Point2D point2d) {
+    // LONGTERM refactor: bufferedImage, size, color lookup can go in wrapper class?
+    int pix = (int) point2d.getX();
+    if (0 <= pix && pix < size) {
+      int piy = (int) point2d.getY();
+      if (0 <= piy && piy < size)
+        return bufferedImage.getRGB(pix, piy);
+    }
+    return RGBA_VOID;
   }
 
   /** @return image region currently used only for visualization */

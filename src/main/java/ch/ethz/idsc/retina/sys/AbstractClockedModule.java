@@ -38,8 +38,9 @@ public abstract class AbstractClockedModule extends AbstractModule {
    * @return task period as {@link Quantity} time unit, i.e. [s], [ms], or [Hz^-1] etc. */
   protected abstract Scalar getPeriod();
 
+  // FIXME
   @Override
-  protected final void launch() throws Exception {
+  public final void launch() throws Exception {
     first();
     // TODO AbstractClockedModule is launched differently from AbstractModule -> not elegant!
     TimerTask timerTask = new TimerTask() {
@@ -52,7 +53,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   }
 
   @Override
-  protected final void terminate() {
+  public final void terminate() {
     // order of launch() reversed
     if (timer != null)
       timer.cancel();

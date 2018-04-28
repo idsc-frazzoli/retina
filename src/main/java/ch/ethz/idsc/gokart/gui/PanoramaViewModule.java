@@ -15,6 +15,9 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
+/** TODO collect information at the full resolution 36000
+ * and zoom into sectors
+ * TODO ensure that image only takes 16 x N space; rescale only when drawing */
 public class PanoramaViewModule extends AbstractModule {
   VelodyneLcmClient velodyneLcmClient;
   LidarPanoramaFrame panoramaFrame;

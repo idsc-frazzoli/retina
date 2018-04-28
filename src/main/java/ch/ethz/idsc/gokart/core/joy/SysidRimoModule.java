@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -12,7 +11,7 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -23,20 +22,20 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   private static final Scalar MAGNITUDE = RealScalar.of(1500); // TODO magic const, unit [ARMS]
   // ---
-  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Stopwatch stopwatch = Stopwatch.started();
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    joystickLcmClient.startSubscriptions();
+    joystickLcmProvider.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
-    joystickLcmClient.stopSubscriptions();
+    joystickLcmProvider.stopSubscriptions();
   }
 
   /** @param signal */
@@ -51,7 +50,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<JoystickEvent> joystick = joystickLcmClient.getJoystick();
+    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent())
       return fromJoystick((GokartJoystickInterface) joystick.get());
     return Optional.empty();
