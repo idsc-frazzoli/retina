@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg;
 
-public enum LogfileLocations {
+public enum LogFileLocations {
   ;
   // driving around in the 8 track
   public static final String DUBI4 = "/home/mario/logs/20180307T154859_0cd18c6b.lcm.00";

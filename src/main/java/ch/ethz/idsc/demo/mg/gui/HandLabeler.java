@@ -16,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,14 +33,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-import ch.ethz.idsc.demo.mg.TrackedBlobIO;
-import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
+import ch.ethz.idsc.demo.mg.ImageBlobIO;
+import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.subare.util.UserHome;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
-// TODO implement ability to rotate ellipse (method stub set up in TrackedBlob)
+// TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
+// TODO implement loading from CSV method
 public class HandLabeler {
   private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
@@ -49,10 +52,14 @@ public class HandLabeler {
   private int secondAxis = initYAxis;
   private float rotAngle = 0; // to rotate the feature
   private int currentImgNumber;
-  private String imagePrefix = "dubi8a";
-  private String fileName = imagePrefix + "_labeledFeatures.dat";
+  private String imagePrefix = "Dubi9e";
+  private String fileName = imagePrefix + "_labeledFeatures.csv";
+  // for saving of .csv
+  private static final String COMMA_DELIMITER = ",";
+  private static final String NEW_LINE = "\n";
+  // fields for labels
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
-  private List<List<TrackedBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
+  private List<List<ImageBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
   private final JFrame jFrame = new JFrame();
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
   private JComponent jComponent = new JComponent() {
@@ -92,7 +99,7 @@ public class HandLabeler {
   public HandLabeler() {
     // set up empty list of lists
     for (int i = 0; i < numberOfFiles; i++) {
-      List<TrackedBlob> emptyList = new ArrayList<>();
+      List<ImageBlob> emptyList = new ArrayList<>();
       labeledFeatures.add(emptyList);
     }
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,14 +111,15 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          TrackedBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
+          ImageBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
+          saveToCSV(labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = TrackedBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
+          labeledFeatures = ImageBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
           System.out.println("Successfully loaded from file " + fileName);
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
@@ -150,7 +158,7 @@ public class HandLabeler {
         if (e.getButton() == MouseEvent.BUTTON1) {
           Point p = e.getPoint();
           // point coordinates need to be scaled back since we click on a scaled image
-          TrackedBlob blob = new TrackedBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
+          ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
               timeStamps[currentImgNumber - 1], true);
           labeledFeatures.get(currentImgNumber - 1).add(blob);
         }
@@ -207,9 +215,9 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(List<TrackedBlob> blobs, Graphics2D graphics) {
+  private void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
     for (int i = 0; i < blobs.size(); i++) {
-      AccumulatedEventFrame.rotatedEllipse(graphics, blobs.get(i), Color.WHITE);
+      AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
     }
   }
 
@@ -225,6 +233,47 @@ public class HandLabeler {
       String splitFileName[] = fileName.split("_");
       timeStamps[i] = Integer.parseInt(splitFileName[2]);
     }
+  }
+
+  // saves labeledFeatures in a .CSV file
+  private void saveToCSV(List<List<ImageBlob>> labeledFeatures) {
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(new File(UserHome.Pictures("handlabels"), fileName));
+      for (int i = 0; i < labeledFeatures.size(); i++) {
+        for (int j = 0; j < labeledFeatures.get(i).size(); j++) {
+          // we wanna store the following values:
+          // timestamps[i], labeledFeatures.get(i).get(j).getPos()[0], labeledFeatures.get(i).get(j).getPos()[1],
+          // labeledFeatures.get(i).get(j).getCovariance()[0][0]
+          writer.append(String.valueOf(timeStamps[i]));
+          writer.append(COMMA_DELIMITER);
+          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getPos()[0]));
+          writer.append(COMMA_DELIMITER);
+          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getPos()[1]));
+          writer.append(COMMA_DELIMITER);
+          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[0][0]));
+          writer.append(COMMA_DELIMITER);
+          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[1][1]));
+          writer.append(COMMA_DELIMITER);
+          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[1][0]));
+          writer.append(NEW_LINE);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        writer.flush();
+        writer.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  // stub
+  private void loadFromCSV() {
+    // ...
   }
 
   public static void main(String[] args) {

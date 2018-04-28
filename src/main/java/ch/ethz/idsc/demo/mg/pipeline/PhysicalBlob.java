@@ -12,11 +12,11 @@ public class PhysicalBlob {
     vel = new double[] { 0, 0 };
   }
 
-  double[] getPos() {
+  public double[] getPos() {
     return pos;
   }
 
-  double[] getVel() {
+  public double[] getVel() {
     return vel;
   }
 }

@@ -13,7 +13,7 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = new File(LogfileLocations.DUBI11);
+    File src = new File(LogFileLocations.DUBI11);
     System.out.println(src.toString());
     File dst = null;
     dst = new File("/home/mario/logs/20180412T164740_7e5b46c2Extracted4.lcm");

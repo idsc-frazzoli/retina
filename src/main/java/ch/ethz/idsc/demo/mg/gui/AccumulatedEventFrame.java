@@ -11,10 +11,11 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.demo.mg.pipeline.TrackedBlob;
+import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
+// also contains static methods to be used by other visualization tools
 public class AccumulatedEventFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
@@ -28,24 +29,26 @@ public class AccumulatedEventFrame {
     bytes = dataBufferByte.getData();
     clearImage();
   }
-  // general todo list
 
   public BufferedImage getAccumulatedEvents() {
     return rotate180Degrees(bufferedImage);
   }
 
-  // overlays the active blobs on the image
-  public BufferedImage trackOverlay(List<TrackedBlob> blobs) {
+  // overlays blobs and sets color according to ImageBlobSelector module
+  public BufferedImage overlayActiveBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
-      if (blobs.get(i).getIsCone()) {
-        rotatedEllipse(graphics, blobs.get(i), Color.GREEN);
+      if (blobs.get(i).getIsRecognized()) {
+        drawImageBlob(graphics, blobs.get(i), Color.GREEN);
+      } else {
+        drawImageBlob(graphics, blobs.get(i), Color.RED);
       }
-      if (!blobs.get(i).getIsCone() && !blobs.get(i).getIsHidden()) {
-        rotatedEllipse(graphics, blobs.get(i), Color.RED);
-      }
-      if (blobs.get(i).getIsHidden()) {
-        rotatedEllipse(graphics, blobs.get(i), Color.GRAY);
-      }
+    }
+    return rotate180Degrees(bufferedImage);
+  }
+
+  public BufferedImage overlayHiddenBlobs(List<ImageBlob> blobs) {
+    for (int i = 0; i < blobs.size(); i++) {
+      drawImageBlob(graphics, blobs.get(i), Color.GRAY);
     }
     return rotate180Degrees(bufferedImage);
   }
@@ -61,7 +64,7 @@ public class AccumulatedEventFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  // rotates image by 180 degrees
+  // rotates BufferedImage by 180 degrees
   private static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
     AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
     tx.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
@@ -70,8 +73,8 @@ public class AccumulatedEventFrame {
     return bufferedImage;
   }
 
-  // use Tensor library to correctly draw the ellipses
-  public static void rotatedEllipse(Graphics2D graphics, TrackedBlob blob, Color color) {
+  // draws an ellipse representing an ImageBlob object onto a Graphics2D object
+  public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();
     float[] semiAxes = blob.getStandardDeviation();

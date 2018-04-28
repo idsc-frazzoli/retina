@@ -8,20 +8,20 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
-// this class provides a simple tracked blob object for visualization and pass to next modules
-public class TrackedBlob implements Serializable {
+// this class provides a blob object in image coordinates
+public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
   private final float[] pos;
   private final double[][] covariance;
   private final int timeStamp; //
-  private boolean isCone;
+  private boolean isRecognized;
   private boolean isHidden;
 
   /** @param pos array of length 2
    * @param covariance array of size 2 x 2
    * @param timeStamp
    * @param isHidden */
-  public TrackedBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
+  public ImageBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
     this.pos = pos;
     this.covariance = covariance;
     this.timeStamp = timeStamp;
@@ -94,12 +94,12 @@ public class TrackedBlob implements Serializable {
     return timeStamp;
   }
 
-  public void setIsCone(boolean isCone) {
-    this.isCone = isCone;
+  public void setIsRecognized(boolean isRecognized) {
+    this.isRecognized = isRecognized;
   }
 
-  public boolean getIsCone() {
-    return isCone;
+  public boolean getIsRecognized() {
+    return isRecognized;
   }
 
   public boolean getIsHidden() {

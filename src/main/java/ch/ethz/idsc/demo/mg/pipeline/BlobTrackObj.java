@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// provides blob object in image space
-public class DavisSingleBlob {
+// provides blob object for the tracking algorithm.
+public class BlobTrackObj {
   // camera parameters
   private static final int WIDTH = 240; // maybe import those values from other file?
   private static final int HEIGHT = 180;
@@ -17,7 +17,7 @@ public class DavisSingleBlob {
   private float currentScore;
 
   // initialize with position and covariance
-  DavisSingleBlob(float initialX, float initialY, float initVariance) {
+  BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
     pos = new float[] { initialX, initialY };
     covariance = new double[][] { { initVariance, 0 }, { 0, initVariance } };
@@ -117,14 +117,14 @@ public class DavisSingleBlob {
   }
 
   // required for merging
-  public float getDistanceTo(DavisSingleBlob otherBlob) {
+  public float getDistanceTo(BlobTrackObj otherBlob) {
     double distance = Math
         .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
     return (float) distance;
   }
 
   // merge blobs by using activity-weighted average
-  public void eat(DavisSingleBlob otherBlob) {
+  public void eat(BlobTrackObj otherBlob) {
     float totActivity = activity + otherBlob.getActivity();
     // position merge
     pos[0] = (1 / totActivity) * (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]);
