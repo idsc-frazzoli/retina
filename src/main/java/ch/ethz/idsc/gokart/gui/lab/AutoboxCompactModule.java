@@ -22,7 +22,9 @@ import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 /** AutoboxCompactModule facilitates the initialization of the actuators
- * and the monitoring of the joystick and Davis240C sensor */
+ * and the monitoring of the joystick and Davis240C sensor
+ * 
+ * module tested on 20180427 */
 public class AutoboxCompactModule extends AbstractModule implements DavisImuFrameListener {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);

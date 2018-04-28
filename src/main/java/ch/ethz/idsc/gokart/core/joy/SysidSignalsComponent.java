@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.gui.SpinnerListener;
 
-/* package */ class SysidSignalsComponent extends ToolbarsComponent {
+/* package */ class SysidSignalsComponent extends ToolbarsComponent implements SpinnerListener<SysidSignals> {
   private static final SysidSignals DEFAULT = SysidSignals.CHIRP_SLOW;
   // ---
   private final SpinnerLabel<SysidSignals> spinnerLabelSignals = new SpinnerLabel<>();
@@ -19,17 +19,16 @@ import ch.ethz.idsc.retina.util.gui.SpinnerListener;
     spinnerLabelSignals.setArray(SysidSignals.values());
     spinnerLabelSignals.setValue(DEFAULT);
     sysidRimoModule.setSignal(DEFAULT.get());
-    spinnerLabelSignals.addSpinnerListener(new SpinnerListener<SysidSignals>() {
-      @Override
-      public void actionPerformed(SysidSignals sysidSignals) {
-        sysidRimoModule.setSignal(sysidSignals.get());
-        // System.out.println(sysidSignals);
-      }
-    });
+    spinnerLabelSignals.addSpinnerListener(this);
     {
       JToolBar jToolBar = createRow("Input signal");
       spinnerLabelSignals.addToComponentReduced( //
           jToolBar, new Dimension(200, 28), "Select input signal for rimo");
     }
+  }
+
+  @Override
+  public void actionPerformed(SysidSignals sysidSignals) {
+    sysidRimoModule.setSignal(sysidSignals.get());
   }
 }

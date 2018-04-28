@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -15,6 +16,7 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -29,12 +31,10 @@ public class PresenterLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
-
-  public PresenterLcmModule() {
-  }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -56,7 +56,7 @@ public class PresenterLcmModule extends AbstractModule {
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
-    { // set to true in order to visualize obstacles
+    {
       ObstacleClusterRender obstacleClusterRender = //
           new ObstacleClusterRender(gokartPoseInterface);
       obstacleClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
@@ -86,9 +86,9 @@ public class PresenterLcmModule extends AbstractModule {
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
-      OdometryHudRender hudOdometryRender = new OdometryHudRender();
-      timerFrame.geometricComponent.addRenderInterface(hudOdometryRender);
-      rimoGetLcmClient.addListener(hudOdometryRender);
+      GokartHudRender gokartHudRender = new GokartHudRender(joystickLcmClient);
+      timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
+      rimoGetLcmClient.addListener(gokartHudRender);
     }
     // ---
     gokartPoseInterface.gokartPoseLcmClient.startSubscriptions();
@@ -96,6 +96,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
+    joystickLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
@@ -111,6 +112,7 @@ public class PresenterLcmModule extends AbstractModule {
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
+    joystickLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();
     timerFrame.close();
