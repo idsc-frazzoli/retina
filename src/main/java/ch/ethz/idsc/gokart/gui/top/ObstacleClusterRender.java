@@ -3,9 +3,13 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
+
+import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
@@ -23,23 +27,27 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 import ch.ethz.idsc.tensor.red.Mean;
 
 /** used in {@link PresenterLcmModule} */
-class ObstacleLidarRenderClustering extends LidarRender {
-  // FIXME obtain real pose from lcm
-  private static final Tensor EVAL_POSE = Tensors.fromString("{46.93368[m], 48.46428[m], 1.15958657}");
+class ObstacleClusterRender extends LidarRender implements ActionListener {
+  final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
+  private boolean isClustering = false;
   private Tensor pi = null;
   private Tensor hulls = Tensors.empty();
   private Tensor mean = Tensors.empty();
   private Tensor oldMean = Tensors.empty(); // TODO presently
   /** LidarRayBlockListener to be subscribed after LidarRender */
-  LidarRayBlockListener lrbl = new LidarRayBlockListener() {
+  LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
     @Override
     public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+      if (!isClustering)
+        return;
+      // ---
       Tensor points = _points;
-      UnknownObstaclePredicate spacialObstaclePredicate = new UnknownObstaclePredicate();
-      spacialObstaclePredicate.setPose(EVAL_POSE);
+      UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
+      Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
+      unknownObstaclePredicate.setPose(state);
       Tensor p = Tensor.of(points.stream() //
-          .filter(spacialObstaclePredicate::isObstacle) //
+          .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
       oldMean = mean;
       if (!Tensors.isEmpty(p)) {
@@ -56,12 +64,17 @@ class ObstacleLidarRenderClustering extends LidarRender {
     }
   };
 
-  public ObstacleLidarRenderClustering(GokartPoseInterface gokartPoseInterface) {
+  public ObstacleClusterRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
+    jToggleButton.setSelected(isClustering);
+    jToggleButton.addActionListener(this);
   }
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    if (!isClustering)
+      return;
+    // ---
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -110,5 +123,10 @@ class ObstacleLidarRenderClustering extends LidarRender {
       // oldMean = mean;
     }
     geometricLayer.popMatrix();
+  }
+
+  @Override // from ActionListener
+  public void actionPerformed(ActionEvent actionEvent) {
+    isClustering = jToggleButton.isSelected();
   }
 }

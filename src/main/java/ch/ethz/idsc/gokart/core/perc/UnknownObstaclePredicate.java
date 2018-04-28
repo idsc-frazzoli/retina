@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
@@ -17,8 +16,7 @@ import ch.ethz.idsc.tensor.alg.Array;
  * 2) NOT floor */
 public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private static final int NON_BLACK_MASK = 0xff00;
-  // TODO definition of LIDAR already exists in the codebase
-  protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
+  private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   // ---
   private final SpacialObstaclePredicate floorPredicate = SimpleSpacialObstaclePredicate.createVlp16();
   private final PredefinedMap predefinedMap;
@@ -29,6 +27,11 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
     predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
   }
 
+  /** since the obstacle query uses a predefined map of the terrain,
+   * before calling {@link #isObstacle(Tensor)} with lidar points in local
+   * coordinates, the pose estimate has to be set.
+   * 
+   * @param xya */
   public void setPose(Tensor xya) {
     geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
     geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(xya));

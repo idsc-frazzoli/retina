@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
 public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
-  protected static final Tensor LIDAR = Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16).unmodifiable();
+  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
   protected SlamScore slamScore;

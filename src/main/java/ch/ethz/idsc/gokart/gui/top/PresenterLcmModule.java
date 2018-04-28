@@ -22,7 +22,6 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  private static final boolean SHOW_OBSTACLES = true;
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -57,14 +56,16 @@ public class PresenterLcmModule extends AbstractModule {
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
-    if (SHOW_OBSTACLES) { // set to true in order to visualize obstacles
-      ObstacleLidarRenderClustering lidarRender = new ObstacleLidarRenderClustering(gokartPoseInterface);
-      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
-      lidarRender.setColor(new Color(255, 0, 0, 128));
-      lidarRender.pointSize = 4;
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
-      timerFrame.geometricComponent.addRenderInterface(lidarRender);
+    { // set to true in order to visualize obstacles
+      ObstacleClusterRender obstacleClusterRender = //
+          new ObstacleClusterRender(gokartPoseInterface);
+      obstacleClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      obstacleClusterRender.setColor(new Color(255, 0, 0, 128));
+      obstacleClusterRender.pointSize = 4;
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender.lidarRayBlockListener);
+      timerFrame.geometricComponent.addRenderInterface(obstacleClusterRender);
+      timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
     }
     {
       timerFrame.geometricComponent.addRenderInterface(new CurveRender());
