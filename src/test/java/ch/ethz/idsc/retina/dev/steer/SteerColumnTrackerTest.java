@@ -33,10 +33,11 @@ public class SteerColumnTrackerTest extends TestCase {
     assertTrue(steerColumnTracker.isCalibratedAndHealthy());
     Scalar scalar = steerColumnTracker.getSteerColumnEncoderCentered();
     assertTrue(scalar instanceof Quantity);
-    steerColumnTracker.getEvent(SteerGetHelper.create(+0.95f)); // 1.7
+    steerColumnTracker.getEvent(SteerGetHelper.create(+0.79f)); // 1.54
+    assertTrue(Math.abs(steerColumnTracker.getIntervalWidth() - 1.5400000214576721) < 1e-6);
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
     assertTrue(steerColumnTracker.isCalibratedAndHealthy());
-    steerColumnTracker.getEvent(SteerGetHelper.create(-0.95f)); // 1.9
+    steerColumnTracker.getEvent(SteerGetHelper.create(-0.76f)); // >1.55
     assertFalse(steerColumnTracker.isCalibratedAndHealthy());
   }
 }
