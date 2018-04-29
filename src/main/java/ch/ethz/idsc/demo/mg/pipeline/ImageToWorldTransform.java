@@ -80,13 +80,7 @@ public class ImageToWorldTransform {
 
   // imports parameters from CSV file that was generated with MATLAB
   private void importCameraParams() {
-    // try {
-    // not very elegant below
-    Tensor inputTensor = ResourceData.of("/demo/mg/test.csv"); // <- notation for files in src/main/resources/...
-    // Import.of(new File("/home/mario/Projects/retina/src/main/java/ch/ethz/idsc/demo/mg/pipeline/test.csv"));
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
+    Tensor inputTensor = ResourceData.of("/demo/mg/test.csv"); // notation for files in src/main/resources/...
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);
