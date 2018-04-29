@@ -4,60 +4,53 @@ package ch.ethz.idsc.retina.dev.lidar.app;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
 
 /** [2304 x 32] hue color images visualizing distance and intensity with better
- * contrast than {@link LidarGrayscalePanorama} */
-public class LidarHuePanorama implements LidarPanorama {
+ * contrast than {@link GrayscaleLidarPanorama} */
+public class HueLidarPanorama implements LidarPanorama {
   private static final double DISTANCE_WRAP = 0.1; // wrap every 10[m]
   private static final double INTENSITY_WRAP = 0.00976563;
   // ---
-  private final Tensor angle = Tensors.empty();
-  // ---
+  private final int max_width;
   private final BufferedImage distancesImage;
   private final int[] distances;
-  // ---
   private final BufferedImage intensityImage;
   private final int[] intensity;
-
   // ---
-  public LidarHuePanorama(int max_width, int height) {
+  private int width = -1;
+
+  public HueLidarPanorama(int max_width, int height) {
+    this.max_width = max_width;
     distancesImage = new BufferedImage(max_width, height, BufferedImage.TYPE_INT_ARGB);
     distances = ((DataBufferInt) distancesImage.getRaster().getDataBuffer()).getData();
     intensityImage = new BufferedImage(max_width, height, BufferedImage.TYPE_INT_ARGB);
     intensity = ((DataBufferInt) intensityImage.getRaster().getDataBuffer()).getData();
   }
 
-  @Override
-  public int getWidth() {
-    return angle.length();
+  @Override // from LidarPanorama
+  public void setRotational(int rotational) {
+    ++width;
+    width = Math.min(width, max_width - 1);
   }
 
-  @Override
-  public void setAngle(Scalar scalar) {
-    angle.append(scalar);
-  }
-
-  /** @param x
+  /** @param width
    * @param y_abs
    * @param distance 256 == 0.512[m] */
-  @Override
+  @Override // from LidarPanorama
   public void setReading(int address, float distance, byte _intensity) {
     // TODO JAN not efficient, use lookup table!
-    distances[address] = Hue.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();
-    intensity[address] = Hue.of(_intensity * INTENSITY_WRAP + 0.5, 1, 1, 1).getRGB();
+    distances[width + address] = Hue.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();
+    intensity[width + address] = Hue.of(_intensity * INTENSITY_WRAP + 0.5, 1, 1, 1).getRGB();
   }
 
-  @Override
+  @Override // from LidarPanorama
   public BufferedImage distances() {
-    return distancesImage;
+    return distancesImage.getSubimage(0, 0, width, distancesImage.getHeight());
   }
 
-  @Override
+  @Override // from LidarPanorama
   public BufferedImage intensity() {
-    return intensityImage;
+    return intensityImage.getSubimage(0, 0, width, distancesImage.getHeight());
   }
 }

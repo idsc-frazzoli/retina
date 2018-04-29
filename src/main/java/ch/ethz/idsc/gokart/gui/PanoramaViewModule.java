@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
  * TODO ensure that image only takes 16 x N space; rescale only when drawing */
 public class PanoramaViewModule extends AbstractModule {
   VelodyneLcmClient velodyneLcmClient;
-  LidarPanoramaFrame panoramaFrame;
+  LidarPanoramaFrame lidarPanoramaFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
@@ -31,23 +31,23 @@ public class PanoramaViewModule extends AbstractModule {
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");
     LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider();
     // ---
-    panoramaFrame = VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
-    windowConfiguration.attach(getClass(), panoramaFrame.jFrame);
-    panoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    panoramaFrame.jFrame.setVisible(true);
+    lidarPanoramaFrame = VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
+    windowConfiguration.attach(getClass(), lidarPanoramaFrame.jFrame);
+    lidarPanoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    lidarPanoramaFrame.jFrame.setVisible(true);
     velodyneLcmClient.startSubscriptions();
   }
 
   @Override // from AbstractModule
   protected void last() {
     velodyneLcmClient.stopSubscriptions();
-    panoramaFrame.close();
+    lidarPanoramaFrame.close();
   }
 
   public static void standalone() throws Exception {
-    PanoramaViewModule sideLcmModule = new PanoramaViewModule();
-    sideLcmModule.first();
-    sideLcmModule.panoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    PanoramaViewModule panoramaViewModule = new PanoramaViewModule();
+    panoramaViewModule.first();
+    panoramaViewModule.lidarPanoramaFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {

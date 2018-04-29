@@ -3,13 +3,9 @@ package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.tensor.Scalar;
-
 public interface LidarPanorama {
-  int getWidth();
-
-  // TODO is this function really needed?
-  void setAngle(Scalar scalar); // probably should work with basic type
+  /** @param rotational */
+  void setRotational(int rotational);
 
   /** in the outdoors the values for distance typically range from [0, ..., ~52592]
    * 1 bit represents a 2 mm increments, i.e. distance == 500 corresponds to 1[m]
@@ -21,7 +17,9 @@ public interface LidarPanorama {
    * @param intensity */
   void setReading(int address, float distance, byte intensity);
 
+  /** @return */
   BufferedImage distances();
 
+  /** @return */
   BufferedImage intensity();
 }

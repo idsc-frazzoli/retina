@@ -13,7 +13,7 @@ public abstract class LidarPanoramaProvider implements LidarRayDataListener, Lid
   protected LidarPanorama lidarPanorama;
 
   public LidarPanoramaProvider() {
-    lidarPanorama = supply();
+    lidarPanorama = resetPanorama();
   }
 
   public final void addListener(LidarPanoramaListener lidarPanoramaListener) {
@@ -28,8 +28,8 @@ public abstract class LidarPanoramaProvider implements LidarRayDataListener, Lid
   @Override
   public final void lidarRotation(LidarRotationEvent lidarRotationEvent) {
     lidarPanoramaListeners.forEach(listener -> listener.lidarPanorama(lidarPanorama));
-    lidarPanorama = supply();
+    lidarPanorama = resetPanorama();
   }
 
-  protected abstract LidarPanorama supply();
+  protected abstract LidarPanorama resetPanorama();
 }

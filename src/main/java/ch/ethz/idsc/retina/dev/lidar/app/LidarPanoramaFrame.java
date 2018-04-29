@@ -20,11 +20,11 @@ import ch.ethz.idsc.retina.util.IntervalClock;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosListener {
+public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosListener, AutoCloseable {
   public static final int SCALE_Y = 3;
   // ---
   public final JFrame jFrame = new JFrame();
-  private LidarPanorama lidarPanorama;
+  private LidarPanorama _lidarPanorama;
   private Hdl32ePosEvent hdl32ePosEvent;
   private final IntervalClock intervalClock = new IntervalClock();
   JComponent jComponent = new JComponent() {
@@ -34,13 +34,13 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
       final int height = 32 * SCALE_Y;
       List<String> list = new LinkedList<>();
       {
-        LidarPanorama lidarPanoramaRef = lidarPanorama;
-        if (Objects.nonNull(lidarPanoramaRef)) {
-          list.add("width=" + lidarPanoramaRef.getWidth());
-          BufferedImage bufferedImage = lidarPanoramaRef.distances();
+        LidarPanorama lidarPanorama = _lidarPanorama;
+        if (Objects.nonNull(lidarPanorama)) {
+          BufferedImage bufferedImage = lidarPanorama.distances();
           final int width = bufferedImage.getWidth();
-          graphics.drawImage(lidarPanoramaRef.distances(), 0, 0, width, height, null);
-          graphics.drawImage(lidarPanoramaRef.intensity(), 0, 16 + height, width, height, null);
+          list.add("width=" + width);
+          graphics.drawImage(lidarPanorama.distances(), 0, 0, width, height, null);
+          graphics.drawImage(lidarPanorama.intensity(), 0, 16 + height, width, height, null);
         }
       }
       {
@@ -71,18 +71,18 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
     jFrame.setContentPane(jComponent);
   }
 
-  @Override
+  @Override // from LidarPanoramaListener
   public void lidarPanorama(LidarPanorama lidarPanorama) {
-    this.lidarPanorama = lidarPanorama;
+    _lidarPanorama = lidarPanorama;
     jComponent.repaint();
   }
 
-  @Override
+  @Override // from VelodynePosListener
   public void velodynePos(VelodynePosEvent velodynePosEvent) {
     this.hdl32ePosEvent = (Hdl32ePosEvent) velodynePosEvent;
   }
 
-  @Override
+  @Override // from AutoCloseable
   public void close() {
     jFrame.setVisible(false);
     jFrame.dispose();
