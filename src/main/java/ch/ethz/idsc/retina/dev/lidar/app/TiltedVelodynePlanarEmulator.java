@@ -12,21 +12,23 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
-/** extracts points at horizontal level for velodyne */
+/** extracts points at horizontal level, or arbitrary inclination for Velodyne VLP-16 */
 // TODO make more general: enable emulation of any angle (not just +1[deg])
 public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
-  public static TiltedVelodynePlanarEmulator vlp16_p01deg(double angle_offset) {
-    return new TiltedVelodynePlanarEmulator(angle_offset); // index of beam with 1 degree inclination == +1
-  }
-
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
+  private final double emulation_deg;
+  private final double tiltY_deg;
   private int usec;
   private final AngleVectorLookupFloat lookup;
 
-  /** @param index of horizontal laser */
-  public TiltedVelodynePlanarEmulator(double angle_offset) {
+  /** @param angle_offset
+   * @param tiltY
+   * @param emulation_deg */
+  public TiltedVelodynePlanarEmulator(double angle_offset, double tiltY, double emulation_deg) {
     lookup = new AngleVectorLookupFloat(36000, true, angle_offset);
+    tiltY_deg = Math.toDegrees(tiltY);
+    this.emulation_deg = emulation_deg;
   }
 
   @Override // from LidarSpacialProvider
@@ -50,8 +52,10 @@ public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
     this.usec = usec;
   }
 
-  static int closestRay(double tilt) {
-    return (int) (2 * Math.round(tilt / 2) + 1);
+  /** @param tilt_deg
+   * @return */
+  int closestRay(double tilt_deg) {
+    return (int) (2 * Math.round((tilt_deg + emulation_deg - 1) / 2) + 1);
   }
 
   @Override // from LidarRayDataListener
@@ -59,7 +63,7 @@ public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
     float dx = lookup.dx(rotational);
     float dy = lookup.dy(rotational);
     double angle = ArcTan.of(dx, dy).number().doubleValue();
-    double tilt = Math.toDegrees(0.04) * Math.cos(angle); // TODO pass as parameter
+    double tilt = tiltY_deg * Math.cos(angle); // Math.toDegrees(0.04) * cos(angle)
     final float[] coords = new float[2];
     int index = degreeToLidarID(closestRay(tilt));
     byteBuffer.position(byteBuffer.position() + index * 3);
@@ -75,7 +79,9 @@ public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
     }
   }
 
-  public static int degreeToLidarID(int degree) {
+  /** @param degree in {-15, -13, -11, -1, +1, +3, ..., +15}
+   * @return lidar ID */
+  static int degreeToLidarID(int degree) {
     return (degree + 15) % 15;
   }
 }

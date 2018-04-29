@@ -94,7 +94,8 @@ abstract class ViewLcmModule extends AbstractModule {
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(255, 0, 128, 128));
       LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-      LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+      // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+      LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.horizontalEmulatorVlp16();
       lidarSpacialProvider.addListener(lidarAngularFiringCollector);
       LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
       lidarRotationProvider.addListener(lidarAngularFiringCollector);

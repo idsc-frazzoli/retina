@@ -25,7 +25,7 @@ enum GpsAnalysis {
       System.out.println(folder);
       GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
-      LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND), false);
+      LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND), true);
       OfflineLogPlayer.process(olr.file(), localizationAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), localizationAnalysis.getTable().map(CsvFormat.strict()));
     }

@@ -30,7 +30,8 @@ public class LidarAngularFiringCollectorTest extends TestCase {
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+    // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.horizontalEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);

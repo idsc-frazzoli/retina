@@ -47,6 +47,8 @@ public class LocalizationTable implements OfflineTableSupplier {
   public LocalizationTable(Scalar delta, boolean usePose) {
     this.delta = delta;
     this.usePose = usePose;
+    if (!usePose)
+      System.err.println("warning: pose is not exported");
   }
 
   @Override
