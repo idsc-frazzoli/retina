@@ -25,11 +25,6 @@ enum Hdl32ePacketConsumerDemo {
       public void lidarPanorama(LidarPanorama hdl32ePanorama) {
         // System.out.println("here");
       }
-
-      @Override
-      public void close() {
-        // ---
-      }
     };
     Hdl32ePanoramaProvider hdl32ePanoramaCollector = new Hdl32ePanoramaProvider();
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaListener);

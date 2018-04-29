@@ -48,7 +48,9 @@ enum RunTabbedTaskGui {
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, // move to DEV list
-      LoggerModule.class //
+      LoggerModule.class, //
+      SteerEmergencyModule.class, //
+      Vlp16ClearanceModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
@@ -66,13 +68,10 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       MiscEmergencyModule.class, //
-      SteerEmergencyModule.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
-      Vlp16ClearanceModule.class, //
       Vlp16ActiveSlowingModule.class, //
       DavisImuWatchdog.class //
-  //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       LinmotEmergencyModule.class, //

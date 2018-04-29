@@ -54,7 +54,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   static final Scalar SPEED = RealScalar.of(2.5);
-  static final CarFlows CARFLOWS = new CarForwardFlows(SPEED, Degree.of(15)); // TODO radius
+  /** rotation per meter driven is at least 23[deg/m]
+   * 20180429_minimum_turning_radius.pdf */
+  static final CarFlows CARFLOWS = new CarForwardFlows(SPEED, Degree.of(23));
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = // node interval == 2/5
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 10), 4);
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));

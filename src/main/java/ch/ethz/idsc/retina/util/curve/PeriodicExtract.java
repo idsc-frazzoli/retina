@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.curve;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-public class PeriodicExtract {
+/* package */ class PeriodicExtract {
   private final Tensor tensor;
   private final int length;
 

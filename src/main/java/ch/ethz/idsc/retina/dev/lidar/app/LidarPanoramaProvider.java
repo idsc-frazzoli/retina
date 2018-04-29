@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationEvent;
@@ -10,10 +11,12 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationListener;
 
 public abstract class LidarPanoramaProvider implements LidarRayDataListener, LidarRotationListener {
   private final List<LidarPanoramaListener> lidarPanoramaListeners = new LinkedList<>();
+  private final Supplier<LidarPanorama> supplier;
   protected LidarPanorama lidarPanorama;
 
-  public LidarPanoramaProvider() {
-    lidarPanorama = supply();
+  protected LidarPanoramaProvider(Supplier<LidarPanorama> supplier) {
+    this.supplier = supplier;
+    lidarPanorama = supplier.get();
   }
 
   public final void addListener(LidarPanoramaListener lidarPanoramaListener) {
@@ -28,8 +31,6 @@ public abstract class LidarPanoramaProvider implements LidarRayDataListener, Lid
   @Override
   public final void lidarRotation(LidarRotationEvent lidarRotationEvent) {
     lidarPanoramaListeners.forEach(listener -> listener.lidarPanorama(lidarPanorama));
-    lidarPanorama = supply();
+    lidarPanorama = supplier.get();
   }
-
-  protected abstract LidarPanorama supply();
 }

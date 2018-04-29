@@ -16,7 +16,7 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![usecase_gokart](https://user-images.githubusercontent.com/4012178/35968269-a92a3b46-0cc3-11e8-8d5e-1276762cdc36.png)
 
-Trajectory pursuit
+[Trajectory pursuit](https://www.youtube.com/watch?v=XgmS8CP6gqw)
 
 </tr>
 </table>
