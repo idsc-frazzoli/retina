@@ -6,7 +6,6 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 
 public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
@@ -34,27 +33,17 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
 
   // ---
   public Hdl32ePanoramaProvider() {
+    super(() -> new GrayscaleLidarPanorama(MAX_WIDTH, Hdl32eDevice.INSTANCE.LASERS));
     IntStream.range(0, index.length).forEach(i -> index[i] *= MAX_WIDTH);
   }
 
-  private int x = 0;
-
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (x < MAX_WIDTH) {
-      for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
-        int distance = byteBuffer.getShort() & 0xffff;
-        byte intensity = byteBuffer.get(); // 255 == most intensive return
-        lidarPanorama.setReading(x + index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
-      }
-    } else
-      System.err.println("width <= " + x);
-    ++x;
-  }
-
-  @Override
-  protected LidarPanorama resetPanorama() {
-    x = 0;
-    return new GrayscaleLidarPanorama(MAX_WIDTH, Hdl32eDevice.INSTANCE.LASERS);
+    lidarPanorama.setRotational(rotational);
+    for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
+      int distance = byteBuffer.getShort() & 0xffff;
+      byte intensity = byteBuffer.get(); // 255 == most intensive return
+      lidarPanorama.setReading(index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
+    }
   }
 }

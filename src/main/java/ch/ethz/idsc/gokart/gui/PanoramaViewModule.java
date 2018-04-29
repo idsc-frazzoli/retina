@@ -1,10 +1,16 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
+import java.util.function.Supplier;
+
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.app.FullGrayscaleLidarPanorama;
+import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
+import ch.ethz.idsc.retina.dev.lidar.app.HueLidarPanorama;
+import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaFrame;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
@@ -29,7 +35,11 @@ public class PanoramaViewModule extends AbstractModule {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");
-    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider();
+    FullGrayscaleLidarPanorama gfp = new FullGrayscaleLidarPanorama(16);
+    Supplier<LidarPanorama> supplier1 = () -> gfp;
+    Supplier<LidarPanorama> supplier2 = () -> new GrayscaleLidarPanorama(2304, 16);
+    Supplier<LidarPanorama> supplier3 = () -> new HueLidarPanorama(2304, 16);
+    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider(supplier3);
     // ---
     lidarPanoramaFrame = VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
     windowConfiguration.attach(getClass(), lidarPanoramaFrame.jFrame);

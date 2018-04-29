@@ -6,53 +6,51 @@ import java.awt.image.DataBufferByte;
 import java.util.stream.IntStream;
 
 /** grayscale images visualizing distance and intensity */
-public class GrayscaleLidarPanorama implements LidarPanorama {
+public class FullGrayscaleLidarPanorama implements LidarPanorama {
   private static final double DISTANCE_WRAP = 25.6; // wrap every 10[m] and multiply by 256
+  private static final int RESOLUTION = 36000;
   // ---
-  private final int cutoff;
   private final int[] offset;
   private final BufferedImage distancesImage;
   private final byte[] distances;
   private final BufferedImage intensityImage;
   private final byte[] intensity;
   // ---
-  private int width = -1;
+  private int rotational = -1;
 
-  public GrayscaleLidarPanorama(int max_width, int height) {
-    cutoff = max_width - 1;
+  public FullGrayscaleLidarPanorama(int height) {
     offset = new int[height];
-    IntStream.range(0, height).forEach(i -> offset[i] = i * max_width);
-    distancesImage = new BufferedImage(max_width, height, BufferedImage.TYPE_BYTE_GRAY);
+    IntStream.range(0, height).forEach(i -> offset[i] = i * RESOLUTION);
+    distancesImage = new BufferedImage(RESOLUTION, height, BufferedImage.TYPE_BYTE_GRAY);
     distances = ((DataBufferByte) distancesImage.getRaster().getDataBuffer()).getData();
-    intensityImage = new BufferedImage(max_width, height, BufferedImage.TYPE_BYTE_GRAY);
+    intensityImage = new BufferedImage(RESOLUTION, height, BufferedImage.TYPE_BYTE_GRAY);
     intensity = ((DataBufferByte) intensityImage.getRaster().getDataBuffer()).getData();
   }
 
   @Override // from LidarPanorama
   public void setRotational(int rotational) {
-    ++width;
-    width = Math.min(width, cutoff);
+    this.rotational = rotational;
   }
 
   @Override // from LidarPanorama
   public void setReading(int piy, float distance, byte ivalue) {
     int address = offset[piy];
-    distances[width + address] = (byte) (distance * DISTANCE_WRAP); // loss of least significant bits
-    intensity[width + address] = ivalue; // confirmed for vlp16
+    distances[rotational + address] = (byte) (distance * DISTANCE_WRAP); // loss of least significant bits
+    intensity[rotational + address] = ivalue; // confirmed for vlp16
   }
 
   @Override // from LidarPanorama
   public BufferedImage distances() {
-    return distancesImage.getSubimage(0, 0, width, distancesImage.getHeight());
+    return distancesImage;
   }
 
   @Override // from LidarPanorama
   public BufferedImage intensity() {
-    return intensityImage.getSubimage(0, 0, width, distancesImage.getHeight());
+    return intensityImage;
   }
 
   @Override
   public int getMaxWidth() {
-    return distancesImage.getWidth();
+    return RESOLUTION;
   }
 }

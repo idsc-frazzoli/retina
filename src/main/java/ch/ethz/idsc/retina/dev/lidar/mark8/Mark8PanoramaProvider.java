@@ -6,17 +6,15 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 
 public class Mark8PanoramaProvider extends LidarPanoramaProvider {
   private static final int MAX_WIDTH = 5360;
   /** constructor multiplies index values with image width */
   private final int[] index = new int[8];
-  private int x = 0;
 
-  // ---
   public Mark8PanoramaProvider() {
+    super(() -> new GrayscaleLidarPanorama(MAX_WIDTH, 8));
     IntStream.range(0, index.length).forEach(i -> index[i] = (7 - i) * MAX_WIDTH);
   }
 
@@ -24,20 +22,11 @@ public class Mark8PanoramaProvider extends LidarPanoramaProvider {
   public void scan(int rotational, ByteBuffer byteBuffer) {
     // final int x = lidarPanorama.getWidth();
     // lidarPanorama.setAngle(RealScalar.of(rotational));
-    if (x < MAX_WIDTH) {
-      for (int laser = 0; laser < 8; ++laser) {
-        int distance = byteBuffer.getShort() & 0xffff;
-        byte intensity = byteBuffer.get(); // 255 == most intensive return
-        lidarPanorama.setReading(x + index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
-      }
-    } else
-      System.err.println("width <= " + x);
-    ++x;
-  }
-
-  @Override
-  protected LidarPanorama resetPanorama() {
-    x = 0;
-    return new GrayscaleLidarPanorama(MAX_WIDTH, 8);
+    lidarPanorama.setRotational(rotational);
+    for (int laser = 0; laser < 8; ++laser) {
+      int distance = byteBuffer.getShort() & 0xffff;
+      byte intensity = byteBuffer.get(); // 255 == most intensive return
+      lidarPanorama.setReading(index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
+    }
   }
 }

@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dev.lidar.app;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
@@ -68,12 +70,16 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, VelodynePosLis
 
   public LidarPanoramaFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    jFrame.setContentPane(jComponent);
+    // jComponent.setMinimumSize(new Dimension(36000, 400));
+    JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    // jScrollPane.setSize(new Dimension(36000, 400));
+    jFrame.setContentPane(jScrollPane);
   }
 
   @Override // from LidarPanoramaListener
   public void lidarPanorama(LidarPanorama lidarPanorama) {
     _lidarPanorama = lidarPanorama;
+    jComponent.setPreferredSize(new Dimension(lidarPanorama.getMaxWidth(), 300));
     jComponent.repaint();
   }
 
