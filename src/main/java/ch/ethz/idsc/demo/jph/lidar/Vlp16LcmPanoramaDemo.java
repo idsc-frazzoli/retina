@@ -1,8 +1,12 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
+import java.util.function.Supplier;
+
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
+import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
@@ -16,7 +20,8 @@ enum Vlp16LcmPanoramaDemo {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     VelodyneLcmClient velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");
-    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider();
+    Supplier<LidarPanorama> supplier = () -> new GrayscaleLidarPanorama(2304, 16);
+    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider(supplier);
     // ---
     VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
     velodyneLcmClient.startSubscriptions();

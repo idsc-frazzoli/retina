@@ -80,4 +80,5 @@ fabric.properties
 # data files
 *.log
 export/
+mvninstall.sh
 

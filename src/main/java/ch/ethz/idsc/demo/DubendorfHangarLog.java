@@ -39,22 +39,26 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** oval pursuit 758.18[s] */
   _20180112T154355_9e1d3699, //
   /***************************************************/
+  /* 2018-02-26 */
   /** joystick driving */
   _20180226T150533_ed1c7f0a, //
   /** */
   _20180226T164802_ed1c7f0a, //
   /***************************************************/
+  /* 2018-03-05 */
   /** joystick */
   _20180305T114356_9e1dc13c, //
   /** NOT MUCH HAPPENS HERE */
   _20180305T121016_9e1dc13c, //
-  /** joystick driving */
+  /** joystick driving
+   * contains LCM_SELF_TEST */
   _20180305T150255_9e1dc13c, //
   /** joystick */
   _20180305T151234_9e1dc13c, //
   /** pure pursuit without davis */
   _20180305T170018_9e1dc13c, //
   /***************************************************/
+  /* 2018-03-07 */
   /** joystick slow, with safety barriers for demo */
   _20180307T095540_1cd7a2e2, //
   // TODO comment content
@@ -67,8 +71,10 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** autonomous driving shape 8 */
   _20180307T171311_fc084dc9, //
   /***************************************************/
+  /* 2018-04-09 */
   _20180409T150925_d520ea0d, //
   /***************************************************/
+  /* 2018-04-12 */
   _20180412T114245_7e5b46c2, //
   /** stationary gokart in center of hangar
    * pedestrians, bicycles and motorcycles moving around

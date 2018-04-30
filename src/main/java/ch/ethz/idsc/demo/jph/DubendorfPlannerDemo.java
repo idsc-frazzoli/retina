@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.map;
+package ch.ethz.idsc.demo.jph;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -11,7 +11,7 @@ import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegion;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.CarEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
-import ch.ethz.idsc.owl.bot.se2.glc.CarStandardFlows;
+import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
@@ -49,7 +49,7 @@ public class DubendorfPlannerDemo {
   }
 
   void configure(OwlyAnimationFrame owlyAnimationFrame) {
-    CarFlows carFlows = new CarStandardFlows(RealScalar.of(3.0), Degree.of(25));
+    CarFlows carFlows = new CarForwardFlows(RealScalar.of(3.0), Degree.of(25));
     CarEntity carEntity = null; // FIXME
     // new CarEntity( //
     // new StateTime(Tensors.vector(35.600, 42.933, 0.942), RealScalar.ZERO), //
