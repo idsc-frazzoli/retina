@@ -36,6 +36,7 @@ import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.Primitives;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length.
@@ -113,7 +114,6 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // ImageBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures); // soon to be replaced
           saveToCSV(HandLabelFileLocations.labels(fileName), labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
@@ -121,8 +121,7 @@ public class HandLabeler {
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // labeledFeatures = ImageBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName)); // soon to be replaced
-          loadFromCSV(HandLabelFileLocations.labels(fileName));
+          labeledFeatures = loadFromCSV(HandLabelFileLocations.labels(fileName), timeStamps);
           System.out.println("Successfully loaded from file " + fileName);
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
@@ -272,20 +271,27 @@ public class HandLabeler {
   }
 
   // loads labeledFeatures from .CSV file
-  private void loadFromCSV(File file) {
+  public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
+    // set up empty list
+    List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
+    for (int i = 0; i < timeStamps.length; i++) {
+      List<ImageBlob> emptyList = new ArrayList<>();
+      extractedFeatures.add(emptyList);
+    }
     try {
       Tensor inputTensor = Import.of(file);
-      for (int i = 0; i < inputTensor.length(); i++) {
-        int timestamp = inputTensor.get(i).Get(0).number().intValue();
+      for (Tensor row : inputTensor) {
+        int timestamp = row.Get(0).number().intValue();
         int index = Arrays.binarySearch(timeStamps, timestamp);
-        float[] pos = new float[] { inputTensor.get(i).Get(1).number().floatValue(), inputTensor.get(i).Get(2).number().floatValue() };
-        double[][] cov = new double[][] { { inputTensor.get(i).Get(3).number().floatValue(), inputTensor.get(i).Get(5).number().doubleValue() },
-            { inputTensor.get(i).Get(5).number().doubleValue(), inputTensor.get(i).Get(4).number().doubleValue() } };
-        labeledFeatures.get(index).add(new ImageBlob(pos, cov,timestamp, true));
+        float[] pos = Primitives.toFloatArray(row.extract(1, 3));
+        double[][] cov = new double[][] { { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
+            { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true));
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
+    return extractedFeatures;
   }
 
   public static void main(String[] args) {
