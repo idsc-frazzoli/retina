@@ -63,8 +63,11 @@ public class SensorsConfig implements Serializable {
    * at the best approximation of zero inclination == horizon level */
   public LidarSpacialProvider horizontalEmulatorVlp16() {
     double angle_offset = vlp16_twist.number().doubleValue();
-    double tiltY = vlp16_incline.number().doubleValue();
-    return new TiltedVelodynePlanarEmulator(angle_offset, tiltY, 0.0);
+    // double tiltY = vlp16_incline.number().doubleValue();
+    // return new TiltedVelodynePlanarEmulator(angle_offset, tiltY, 0.0);
+    // TODO optimize TiltedVelodynePlanarEmulator and test offline
+    // return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
   }
 
   @Deprecated

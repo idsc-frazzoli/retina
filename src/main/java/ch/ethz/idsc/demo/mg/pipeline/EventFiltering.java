@@ -24,8 +24,8 @@ public class EventFiltering {
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
   public boolean filterPipeline(DavisDvsEvent davisDvsEvent, double filterConstant) {
-    return backgroundActivityFilter(davisDvsEvent, filterConstant);
-    // return cornerDetector(davisDvsEvent);
+//    return backgroundActivityFilter(davisDvsEvent, filterConstant);
+     return cornerDetector(davisDvsEvent);
   }
 
   // update all neighboring cells with the timestamp of the incoming event

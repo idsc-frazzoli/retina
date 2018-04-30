@@ -33,16 +33,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-import ch.ethz.idsc.demo.mg.ImageBlobIO;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.Primitives;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
+// the .CSV file is formatted as follows:
+// timestamp , pos[0], pos[1], covariance[0][0], covariance[1][1], covariance[0][1]
 // TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
-// TODO implement loading from CSV method
 public class HandLabeler {
   private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
@@ -50,16 +52,17 @@ public class HandLabeler {
   private final float scaling = 2; // original images are tiny
   private int firstAxis = initXAxis;
   private int secondAxis = initYAxis;
-  private float rotAngle = 0; // to rotate the feature
-  private int currentImgNumber;
+  private float rotAngle = 0;
+  // handling of .csv file
   private String imagePrefix = "Dubi9e";
   private String fileName = imagePrefix + "_labeledFeatures.csv";
-  // for saving of .csv
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
   // fields for labels
   private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
   private List<List<ImageBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
+  private int currentImgNumber;
+  // visualization
   private final JFrame jFrame = new JFrame();
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
   private JComponent jComponent = new JComponent() {
@@ -111,15 +114,14 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          ImageBlobIO.saveFeatures(HandLabelFileLocations.labels(fileName), labeledFeatures);
-          saveToCSV(labeledFeatures);
+          saveToCSV(HandLabelFileLocations.labels(fileName), labeledFeatures);
           System.out.println("Successfully saved to file " + fileName);
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = ImageBlobIO.loadFeatures(HandLabelFileLocations.labels(fileName));
+          labeledFeatures = loadFromCSV(HandLabelFileLocations.labels(fileName), timeStamps);
           System.out.println("Successfully loaded from file " + fileName);
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
@@ -236,15 +238,12 @@ public class HandLabeler {
   }
 
   // saves labeledFeatures in a .CSV file
-  private void saveToCSV(List<List<ImageBlob>> labeledFeatures) {
+  private void saveToCSV(File file, List<List<ImageBlob>> labeledFeatures) {
     FileWriter writer = null;
     try {
-      writer = new FileWriter(new File(UserHome.Pictures("handlabels"), fileName));
+      writer = new FileWriter(file);
       for (int i = 0; i < labeledFeatures.size(); i++) {
         for (int j = 0; j < labeledFeatures.get(i).size(); j++) {
-          // we wanna store the following values:
-          // timestamps[i], labeledFeatures.get(i).get(j).getPos()[0], labeledFeatures.get(i).get(j).getPos()[1],
-          // labeledFeatures.get(i).get(j).getCovariance()[0][0]
           writer.append(String.valueOf(timeStamps[i]));
           writer.append(COMMA_DELIMITER);
           writer.append(String.valueOf(labeledFeatures.get(i).get(j).getPos()[0]));
@@ -271,9 +270,28 @@ public class HandLabeler {
     }
   }
 
-  // stub
-  private void loadFromCSV() {
-    // ...
+  // loads labeledFeatures from .CSV file
+  public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
+    // set up empty list
+    List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
+    for (int i = 0; i < timeStamps.length; i++) {
+      List<ImageBlob> emptyList = new ArrayList<>();
+      extractedFeatures.add(emptyList);
+    }
+    try {
+      Tensor inputTensor = Import.of(file);
+      for (Tensor row : inputTensor) {
+        int timestamp = row.Get(0).number().intValue();
+        int index = Arrays.binarySearch(timeStamps, timestamp);
+        float[] pos = Primitives.toFloatArray(row.extract(1, 3));
+        double[][] cov = new double[][] { { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
+            { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true));
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return extractedFeatures;
   }
 
   public static void main(String[] args) {
