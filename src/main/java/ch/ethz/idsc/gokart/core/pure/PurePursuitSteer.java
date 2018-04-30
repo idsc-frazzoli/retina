@@ -36,7 +36,7 @@ class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   }
 
   /***************************************************/
-  @Override
+  @Override // from PurePursuitBase
   Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);

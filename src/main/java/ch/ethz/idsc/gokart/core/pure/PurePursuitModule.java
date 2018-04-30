@@ -51,6 +51,10 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     optionalCurve = curve;
   }
 
+  /* for tests */ Optional<Tensor> getCurve() {
+    return optionalCurve;
+  }
+
   @Override // from AbstractModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);

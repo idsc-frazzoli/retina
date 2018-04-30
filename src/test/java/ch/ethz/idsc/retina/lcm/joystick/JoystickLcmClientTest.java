@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 
 public class JoystickLcmClientTest extends TestCase {
+  /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
     BinaryBlobPublisher bbp = new BinaryBlobPublisher("joystick." + GokartLcmChannel.JOYSTICK);
     JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
@@ -71,6 +72,7 @@ public class JoystickLcmClientTest extends TestCase {
     assertTrue(optional.isPresent());
     GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
+    // System.out.println(gokartJoystickInterface.getAheadAverage());
     joystickLcmClient.stopSubscriptions();
   }
 }

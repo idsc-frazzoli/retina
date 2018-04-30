@@ -50,15 +50,17 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 
 public class GokartTrajectoryModule extends AbstractClockedModule implements //
     GokartPoseListener, GlcPlannerCallback {
-  static final Tensor PARTITIONSCALE = Tensors.of( //
+  // TODO make configurable as parameter
+  private static final Scalar PLANNING_PERIOD = Quantity.of(1, "s");
+  private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
-  static final Scalar SPEED = RealScalar.of(2.5);
+  private static final Scalar SPEED = RealScalar.of(2.5);
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf */
   static final CarFlows CARFLOWS = new CarForwardFlows(SPEED, Degree.of(23));
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = // node interval == 2/5
-      FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(3, 10), 4);
+      FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -68,8 +70,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   Tensor waypoints;
   private PlannerConstraint plannerConstraint;
   private Tensor goalRadius;
+  MotionPlanWorker motionPlanWorker;
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
@@ -89,15 +92,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void last() {
     purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
   }
 
-  private MotionPlanWorker motionPlanWorker;
-
-  @Override
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (Objects.nonNull(gokartPoseEvent)) {
       if (Objects.nonNull(motionPlanWorker)) {
@@ -125,7 +126,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
         motionPlanWorker.addCallback(this);
         TrajectorySample trajectorySample = TrajectorySample.head(stateTime);
         motionPlanWorker.start(Arrays.asList(trajectorySample), trajectoryPlanner);
-        System.out.println("started");
+        // System.out.println("started");
         // [yes: find closest point on previous traj+delayHint... then plan to "best waypoint"]
         // in call back set curve
         return;
@@ -139,7 +140,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
 
   @Override
   protected Scalar getPeriod() {
-    return Quantity.of(0.5, "s"); // TODO make configurable as parameter
+    return PLANNING_PERIOD;
   }
 
   @Override // from GokartPoseListener
@@ -147,19 +148,19 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  @Override
+  @Override // from GlcPlannerCallback
   public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
+    // System.out.println("CALLBACK ");
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
-      // set curve
       Tensor curve = Tensor.of(tail.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
       purePursuitModule.setCurve(Optional.of(curve));
-      System.out.println("yey! assigned curve length == " + curve.length());
+      // System.out.println("yey! assigned curve length == " + curve.length());
     } else {
+      // failure to reach goal
       purePursuitModule.setCurve(Optional.empty());
-      System.err.println("no curve");
     }
   }
 }
