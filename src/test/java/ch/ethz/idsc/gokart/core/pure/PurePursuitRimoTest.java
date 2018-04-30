@@ -15,8 +15,8 @@ public class PurePursuitRimoTest extends TestCase {
   public void testNotCalibrated() {
     PurePursuitRimo pps = new PurePursuitRimo();
     assertFalse(pps.putEvent().isPresent());
-    Optional<RimoPutEvent> optional;
-    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    Optional<RimoPutEvent> optional = //
+        pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     assertFalse(optional.isPresent());
   }
 
@@ -24,8 +24,8 @@ public class PurePursuitRimoTest extends TestCase {
     PurePursuitRimo pps = new PurePursuitRimo();
     pps.setOperational(true);
     assertFalse(pps.putEvent().isPresent());
-    Optional<RimoPutEvent> optional;
-    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    Optional<RimoPutEvent> optional = //
+        pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     assertFalse(optional.isPresent());
   }
 
