@@ -82,6 +82,12 @@ public class PresenterLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
+    {
+      Vlp16ClearanceRender vlp16ClearanceRender = new Vlp16ClearanceRender(gokartPoseInterface);
+      gokartStatusLcmClient.addListener(vlp16ClearanceRender.gokartStatusListener);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(vlp16ClearanceRender);
+      timerFrame.geometricComponent.addRenderInterface(vlp16ClearanceRender);
+    }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
     // // lidarRender.setColor(new Color(128, 0, 0, 255));

@@ -84,7 +84,7 @@ public class TsiotrasModel extends DefaultCarModel {
 
   private static final Scalar maxDelta = DoubleScalar.of(45 * Math.PI / 180); // maximal steering angle [rad]
   // maximal motor torque [Nm], with gears included
-  // TODO should result in 3000 Nm maximal master cylinder pressure [MPa]
+  // LONGTERM should result in 3000 Nm maximal master cylinder pressure [MPa]
   private static final Scalar maxPress = DoubleScalar.of(13.0);
   private static final Scalar maxThb = DoubleScalar.of(1000.0); // max handbrake torque [Nm]
   private static final Scalar maxThrottle = DoubleScalar.of(2000.0);

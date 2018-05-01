@@ -59,7 +59,7 @@ public enum ModuleAuto {
       moduleMap.remove(module);
       System.out.println(new Date() + " Module Auto: Terminating: " + module);
       abstractModule.terminate();
-    }
-    // TODO print warning if module is not present
+    } else
+      System.err.println("not registered: " + module.getSimpleName());
   }
 }
