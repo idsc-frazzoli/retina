@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.demo.jph;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
@@ -32,21 +32,19 @@ class SteerRangeAnalysis implements OfflineLogListener {
     }
   }
 
-  private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
-
   public static void main(String[] args) throws IOException {
     // int lo = DubendorfHangarLog._20180226T150533_ed1c7f0a.ordinal();
     // int hi = DubendorfHangarLog._20180427T155709_987cb124.ordinal();
-    int lo = DubendorfHangarLog._20171213T161500_55710a6b.ordinal();
-    int hi = DubendorfHangarLog._20180112T154355_9e1d3699.ordinal();
+    int lo = GokartLogFile._20171213T161500_55710a6b.ordinal();
+    int hi = GokartLogFile._20180112T154355_9e1d3699.ordinal();
     TableBuilder tableBuilder = new TableBuilder();
-    for (DubendorfHangarLog dubendorfHangarLog : DubendorfHangarLog.values())
-      if (lo <= dubendorfHangarLog.ordinal() && dubendorfHangarLog.ordinal() <= hi) {
+    for (GokartLogFile gokartLogFile : GokartLogFile.values())
+      if (lo <= gokartLogFile.ordinal() && gokartLogFile.ordinal() <= hi) {
         SteerRangeAnalysis steerRangeAnalysis = new SteerRangeAnalysis();
         try {
-          OfflineLogPlayer.process(dubendorfHangarLog.file(LOG_ROOT), steerRangeAnalysis);
+          OfflineLogPlayer.process(DatahakiLogFileLocator.file(gokartLogFile), steerRangeAnalysis);
           Tensor range = Tensors.of( //
-              StringScalar.of(dubendorfHangarLog.title()), //
+              StringScalar.of(gokartLogFile.name().substring(1)), //
               DoubleScalar.of(steerRangeAnalysis.steerColumnTracker.getIntervalWidth()));
           System.out.println(range);
           tableBuilder.appendRow(range);

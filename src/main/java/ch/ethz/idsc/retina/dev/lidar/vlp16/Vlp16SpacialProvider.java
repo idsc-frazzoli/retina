@@ -21,7 +21,7 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
   private final float[] IZ = new float[LASERS];
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = 10; // TODO document magic const for closest threshold
+  /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
   private int usec;
 
   public Vlp16SpacialProvider(double angle_offset) {

@@ -1,15 +1,19 @@
 // code by jph
 package ch.ethz.idsc.demo;
 
-import java.io.File;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
 
-// TODO remove empty on 20180305T151234
-public enum DubendorfHangarLog implements LogFileInterface {
+public enum GokartLogFile implements LogFile {
+  /* 2017-12-07 */
+  /***************************************************/
+  /* 2017-12-08 */
+  /***************************************************/
   /* 2017-12-13 */
   /** lot's of braking */
   _20171213T161500_55710a6b, //
   /** brake distance testing */
   _20171213T162832_55710a6b, //
+  /***************************************************/
   /* 2017-12-18 */
   // gokart.pose.lidar does not contain quality field
   /***************************************************/
@@ -42,7 +46,7 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /* 2018-02-26 */
   /** joystick driving */
   _20180226T150533_ed1c7f0a, //
-  /** */
+  /** joystick driving */
   _20180226T164802_ed1c7f0a, //
   /***************************************************/
   /* 2018-03-05 */
@@ -61,15 +65,61 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /* 2018-03-07 */
   /** joystick slow, with safety barriers for demo */
   _20180307T095540_1cd7a2e2, //
-  // TODO comment content
+  /** pure pursuit with localization failure */
   _20180307T150715_28f09b86, //
+  /** pure pursuit of oval shape */
   _20180307T151633_28f09b86, //
+  /** pure pursuit of figure 8 */
   _20180307T154859_0cd18c6b, //
   /** autonomous driving shape 8
    * velocity peak ~3.6[m*s^-1] */
   _20180307T165102_6e45300d, //
   /** autonomous driving shape 8 */
   _20180307T171311_fc084dc9, //
+  /***************************************************/
+  /* 2018-03-08 */
+  /** no driving */
+  _20180308T145954_45b9eed8, //
+  /** pure pursuit figure 8 */
+  _20180308T151702_45b9eed8, //
+  /** pure pursuit figure 8 */
+  _20180308T165333_1ab0c811, //
+  /***************************************************/
+  /* 2018-03-10 DEMO DAY */
+  /** pure pursuit figure 8 */
+  _20180310T102810_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T110029_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T112508_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T120222_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T130740_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T132414_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T135043_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T142811_1ab0c811, //
+  /** not moving */
+  _20180310T151418_1ab0c811, //
+  /** not moving */
+  _20180310T152653_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T153409_1ab0c811, //
+  /** pure pursuit figure 8 */
+  _20180310T160324_1ab0c811, //
+  /***************************************************/
+  /* 2018-03-19 */
+  /** pure pursuit figure 8 */
+  _20180319T133213_1ab0c811, //
+  /***************************************************/
+  /* 2018-03-22 */
+  /** pure pursuit figure 8 */
+  _20180322T120834_d520ea0d, //
+  /** fast pure pursuit figure 8 with escapes */
+  _20180322T124329_d520ea0d, //
   /***************************************************/
   /* 2018-04-09 */
   _20180409T150925_d520ea0d, //
@@ -89,13 +139,12 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180412T164740_7e5b46c2, //
   /***************************************************/
   /* 2018-04-18 */
-  // TODO DUBENDORF/OFFICE HD obtain log files
   /** joystick driving and single prbs */
-  // _20180418T102854_5a650fbf, //
+  _20180418T102854_5a650fbf, //
   /** pure pursuit */
-  // _20180418T125913_bca165ae, //
+  _20180418T125913_bca165ae, //
   /** multiple prbs */
-  // _20180418T132333_bca165ae, //
+  _20180418T132333_bca165ae, //
   /***************************************************/
   /* 2018-04-19 */
   /** pure pursuit with hangar doors closed and then open */
@@ -105,8 +154,7 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** pure pursuit with speed controller going in reverse */
   _20180419T172115_f80284e9, //
   /** joystick driving along figure 8 */
-  // TODO DUBENDORF obtain and document log files
-  // _20180419T172918_f80284e9, //
+  _20180419T172918_f80284e9, //
   /***************************************************/
   /* 2018-04-23 */
   /** pure pursuit with controller driving backwards */
@@ -114,7 +162,7 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /***************************************************/
   /* 2018-04-27 */
   /** joystick driving small circles at different speeds
-   * TODO investigate min turning radius */
+   * used to approx. min turning radius 2.45[m] */
   _20180427T105421_08cf25f5, //
   /** torque signals to rimo for sys id */
   _20180427T121545_22662115, //
@@ -142,26 +190,21 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** joystick driving along oval with markers for dvs */
   _20180430T153747_0e959fc6, //
   /** no driving */
-  // _20180430T161506_0e959fc6, //
+  _20180430T161506_0e959fc6, //
   /** taking pictures with APS for Davis240C calibration
    * no driving */
-  // _20180430T163141_0e959fc6, //
+  _20180430T163141_0e959fc6, //
   /** joystick driving with camera calibrated
    * localization not working */
   _20180430T164704_0e959fc6, //
-  ; //
+  ;
   @Override
-  public File file(File directory) {
-    File folder = new File(directory, name().substring(1, 9));
-    return new File(folder, name().substring(1) + ".lcm.00");
+  public String getFilename() {
+    return name().substring(1) + ".lcm.00";
   }
 
-  /** Example: "20180112T105400"
-   * 
-   * @return file name without commit id and extension */
   @Override
-  public String title() {
-    int index = name().indexOf('_', 1);
-    return name().substring(1, index);
+  public String getTitle() {
+    return name().substring(1, 13);
   }
 }

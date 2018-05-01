@@ -30,7 +30,7 @@ public class VelodynePlanarEmulator implements LidarSpacialProvider {
   // ---
 
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
+  /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
   private int usec;
   private final AngleVectorLookupFloat lookup;
   private final int index;

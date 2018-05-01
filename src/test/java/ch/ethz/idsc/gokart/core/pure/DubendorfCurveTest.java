@@ -14,9 +14,9 @@ import junit.framework.TestCase;
 
 public class DubendorfCurveTest extends TestCase {
   public void testDistances() {
-    List<Integer> list = Dimensions.of(PurePursuitModule.CURVE);
+    List<Integer> list = Dimensions.of(FigureEightModule.CURVE);
     assertEquals((int) list.get(1), 2);
-    DoubleSummaryStatistics dss = Differences.of(PurePursuitModule.CURVE).stream() //
+    DoubleSummaryStatistics dss = Differences.of(FigureEightModule.CURVE).stream() //
         .map(Norm._2::ofVector) //
         .map(Scalar::number) //
         .mapToDouble(Number::doubleValue).summaryStatistics();

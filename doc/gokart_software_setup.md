@@ -38,9 +38,7 @@ run
 
 run
 
-    RunTaskGui.java
-
-enable toggle-button "Generic Xbox Pad Lcm Server"
+    GenericXboxPadLcmServerModule.java
 
 Confirm: console printed
 
@@ -56,41 +54,17 @@ run
 
 activate the modules by enabling the toggle-buttons
 * Autobox Introspection
-* Autobox Testing
+* Autobox Compact
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
-
-### In the tab Testing::Linmot
 
 press button "Init" and wait for 3 sec for the brake to calibrate.
 
 Confirm: the brake makes some noise
 
-Confirm: the status word field should be green
-
-### In the tab Testing::Misc
-
-If the Emergency field is "red" then press button "Reset".
-
-Confirm: the Emergency field is "white"
-
-Confirm: the steering battery voltage is above 11.7 V
-
-### In the tab Testing::Steer
+press button "Reset"
 
 press button "Calibration"
-
-Confirm: the steering moves left and right
-
-Confirm: the RangePos field is green
-
-enable button "controller"
-
-Confirm: steering goes to center
-
-disable button "controller"
-
-### In the tab Testing::Rimo
 
 turn the emergency-off button to start engine
 
@@ -100,22 +74,7 @@ manually roll the gokart forward and backward a bit and check if the actual spee
 
 (back in the "lab" tab)
 
-deactivate toggle-button "Autobox Testing"
-
-Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
-
-activate 2 modules by enabling the toggle-buttons:
-* Davis Detail
-
-Confirm: sensors are running without delay by moving something in front of the sensors
-
-stop the module "Davis Detail" by disabling the toggle-buttons
-
-### in the tab "fuse"
-
-activate all (not always! here you are supposed to know what you are doing) modules from top to bottom
-
-Confirm: the console did not print anything in red
+deactivate toggle-button "Autobox Compact"
 
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 

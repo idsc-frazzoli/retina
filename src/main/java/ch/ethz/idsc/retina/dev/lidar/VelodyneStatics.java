@@ -25,4 +25,6 @@ public enum VelodyneStatics {
    */
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
+  /** TODO choose reasonable value */
+  public static final int DEFAULT_LIMIT_LO = 10;
 }

@@ -26,6 +26,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -94,15 +95,10 @@ public class GokartRender extends AbstractGokartRender {
     }
     // rear wheels
     if (Objects.nonNull(rimoGetEvent)) {
-      Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair().unmodifiable();
-      // TODO
-      // graphics.setColor(Color.BLACK);
-      // graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
-      // ---
+      final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
-      // TODO use quantity
-      Tensor rateY_draw = rateY_pair.multiply(RealScalar.of(0.1));
+      Tensor rateY_draw = rateY_pair.map(Magnitude.ANGULAR_RATE).multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
           Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));

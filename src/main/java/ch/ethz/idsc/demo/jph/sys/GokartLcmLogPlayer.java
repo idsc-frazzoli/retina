@@ -4,15 +4,13 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.subare.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
 enum GokartLcmLogPlayer {
   ;
-  public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
-
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
@@ -25,7 +23,8 @@ enum GokartLcmLogPlayer {
     file = UserHome.file("20180419T124700_7373f83e_fast.lcm");
     file = new File("/media/datahaki/media/ethz/gokartlogs", "20180427/20180427T155709_987cb124.lcm.00");
     file = UserHome.file("gokart/manual/20180427T105421_circle/log.lcm");
-    file = DubendorfHangarLog._20180430T164704_0e959fc6.file(LOG_ROOT);
+    file = new File("/media/datahaki/backup/gokartlogs/20180226", "20180226T164802_ed1c7f0a.lcm.00");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180430T153747_0e959fc6);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;

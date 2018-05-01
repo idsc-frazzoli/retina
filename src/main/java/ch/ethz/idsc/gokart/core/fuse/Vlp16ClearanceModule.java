@@ -33,11 +33,8 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private ClearanceTracker clearanceTracker;
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  private final SpacialXZObstaclePredicate spacialObstaclePredicate;
-
-  public Vlp16ClearanceModule() {
-    spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
-  }
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
+      = SimpleSpacialObstaclePredicate.createVlp16();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -62,7 +59,7 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
     if (Objects.nonNull(_clearanceTracker)) {
       float x = lidarSpacialEvent.coords[0];
       float z = lidarSpacialEvent.coords[2];
-      if (spacialObstaclePredicate.isObstacle(x, z)) {
+      if (spacialXZObstaclePredicate.isObstacle(x, z)) {
         Tensor local = Tensors.vectorDouble( //
             lidarSpacialEvent.coords[0], //
             lidarSpacialEvent.coords[1]);

@@ -19,7 +19,7 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
   public static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true, 0);
   // ---
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
+  /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
   private int usec;
 
   @Override

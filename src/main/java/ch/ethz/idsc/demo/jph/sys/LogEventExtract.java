@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.sys;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.subare.util.UserHome;
@@ -18,7 +18,7 @@ enum LogEventExtract {
     File src = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00");
     src = UserHome.file("temp/20180108T165210_manual.lcm");
     src = UserHome.file("gokartlogs/20180418/20180418T132333_bca165ae.lcm.00");
-    src = DubendorfHangarLog._20180427T155709_987cb124.file(GokartLcmLogPlayer.LOG_ROOT);
+    src = DatahakiLogFileLocator.file(GokartLogFile._20180427T155709_987cb124);
     File dst = null;
     dst = UserHome.file("20180427T155709.lcm");
     if (dst.exists()) {

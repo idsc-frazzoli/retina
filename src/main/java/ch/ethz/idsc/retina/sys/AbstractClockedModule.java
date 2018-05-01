@@ -1,6 +1,7 @@
 // code by swisstrolley+ and jph
 package ch.ethz.idsc.retina.sys;
 
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,7 +19,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 public abstract class AbstractClockedModule extends AbstractModule {
   static final ScalarUnaryOperator TO_MILLI_SECONDS = QuantityMagnitude.SI().in("ms");
   // always private
-  private Timer timer = new Timer(getClass().getSimpleName()); // <- this is the thread
+  private final Timer timer = new Timer(getClass().getSimpleName()); // <- this is the thread
 
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
@@ -38,11 +39,9 @@ public abstract class AbstractClockedModule extends AbstractModule {
    * @return task period as {@link Quantity} time unit, i.e. [s], [ms], or [Hz^-1] etc. */
   protected abstract Scalar getPeriod();
 
-  // FIXME
   @Override
   public final void launch() throws Exception {
     first();
-    // TODO AbstractClockedModule is launched differently from AbstractModule -> not elegant!
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
@@ -55,7 +54,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   @Override
   public final void terminate() {
     // order of launch() reversed
-    if (timer != null)
+    if (Objects.nonNull(timer))
       timer.cancel();
     last();
   }
