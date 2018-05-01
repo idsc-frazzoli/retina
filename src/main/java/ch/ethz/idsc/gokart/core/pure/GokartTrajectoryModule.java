@@ -113,18 +113,16 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
-      List<TrajectorySample> head = Arrays.asList(TrajectorySample.head(stateTime));
-      ;
-      // has prev traj ?
-      if (Objects.nonNull(trajectory)) {
-        // [yes: find closest point on previous traj+delay... then plan to "best waypoint"]
+      final List<TrajectorySample> head;
+      if (Objects.isNull(trajectory)) { // has prev traj ?
+        // no: plan from current position to "best waypoint")
+        head = Arrays.asList(TrajectorySample.head(stateTime));
+      } else {
+        // yes: find closest point on previous traj+delay... then plan to "best waypoint"
         Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), xya)));
         int closestIdx = ArgMin.of(distances);
         StateTime closestStateTime = trajectory.get(closestIdx).stateTime();
-        head = getTrajectoryUntil(closestStateTime, closestIdx, Magnitude.METER.apply(PLANNING_PERIOD));
-      } else {
-        // no: plan from current position to "best waypoint")
-        head = Arrays.asList(TrajectorySample.head(stateTime));
+        head = getTrajectoryUntil(closestStateTime, closestIdx, Magnitude.SECOND.apply(PLANNING_PERIOD));
       }
       // get waypoint index closest from current position to find suitable goal
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));

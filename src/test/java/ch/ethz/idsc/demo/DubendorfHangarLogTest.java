@@ -12,10 +12,16 @@ public class DubendorfHangarLogTest extends TestCase {
     if (username.equals("datahaki")) {
       File directory = new File("/media/datahaki/media/ethz/gokartlogs");
       for (DubendorfHangarLog dhl : DubendorfHangarLog.values()) {
-        boolean isFile = dhl.file(directory).isFile();
-        if (!isFile)
-          System.err.println("log file missing: " + dhl);
-        assertTrue(isFile);
+        File file = dhl.file(directory);
+        boolean isFile = file.isFile();
+        if (!isFile) {
+          File host = file.getParentFile();
+          File marker = new File(host.getParentFile(), host.getName() + "_");
+          if (!marker.isDirectory()) {
+            System.err.println("log file missing: " + dhl);
+            assertTrue(false);
+          }
+        }
       }
     }
   }

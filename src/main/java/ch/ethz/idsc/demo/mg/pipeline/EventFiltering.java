@@ -13,10 +13,15 @@ public class EventFiltering {
   private int boarder = 4; // events too close to image boarder are neglected
   private int[][][] SAE = new int[WIDTH][HEIGHT][2]; // surface of active events for each polarity
   // hard coded circle parameters for corner detector
-  private final int[][] circle3 = { { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, { 3, 0 }, { 3, -1 }, { 2, -2 }, { 1, -3 }, { 0, -3 }, { -1, -3 }, { -2, -2 },
-      { -3, -1 }, { -3, 0 }, { -3, 1 }, { -2, 2 }, { -1, 3 } };
-  private final int[][] circle4 = { { 0, 4 }, { 1, 4 }, { 2, 3 }, { 3, 2 }, { 4, 1 }, { 4, 0 }, { 4, -1 }, { 3, -2 }, { 2, -3 }, { 1, -4 }, { 0, -4 },
-      { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
+  private final int[][] circle3 = { //
+      { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, { 3, 0 }, //
+      { 3, -1 }, { 2, -2 }, { 1, -3 }, { 0, -3 }, { -1, -3 }, //
+      { -2, -2 }, { -3, -1 }, { -3, 0 }, { -3, 1 }, { -2, 2 }, { -1, 3 } };
+  private final int[][] circle4 = { //
+      { 0, 4 }, { 1, 4 }, { 2, 3 }, { 3, 2 }, { 4, 1 }, //
+      { 4, 0 }, { 4, -1 }, { 3, -2 }, { 2, -3 }, { 1, -4 }, //
+      { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
+      { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
   public EventFiltering() {
     // ...
@@ -24,8 +29,8 @@ public class EventFiltering {
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
   public boolean filterPipeline(DavisDvsEvent davisDvsEvent, double filterConstant) {
-//    return backgroundActivityFilter(davisDvsEvent, filterConstant);
-     return cornerDetector(davisDvsEvent);
+    // return backgroundActivityFilter(davisDvsEvent, filterConstant);
+    return cornerDetector(davisDvsEvent);
   }
 
   // update all neighboring cells with the timestamp of the incoming event
