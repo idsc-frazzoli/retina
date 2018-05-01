@@ -1,9 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo;
 
-import java.io.File;
-
-public enum DubendorfHangarLog implements LogFileInterface {
+public enum GokartLogFile implements LogFile {
   /* 2017-12-07 */
   /***************************************************/
   /* 2017-12-08 */
@@ -197,19 +195,14 @@ public enum DubendorfHangarLog implements LogFileInterface {
   /** joystick driving with camera calibrated
    * localization not working */
   _20180430T164704_0e959fc6, //
-  ; //
+  ;
   @Override
-  public File file(File directory) {
-    File folder = new File(directory, name().substring(1, 9));
-    return new File(folder, name().substring(1) + ".lcm.00");
+  public String getFilename() {
+    return name().substring(1) + ".lcm.00";
   }
 
-  /** Example: "20180112T105400"
-   * 
-   * @return file name without commit id and extension */
   @Override
-  public String title() {
-    int index = name().indexOf('_', 1);
-    return name().substring(1, index);
+  public String getTitle() {
+    return name().substring(1, 13);
   }
 }

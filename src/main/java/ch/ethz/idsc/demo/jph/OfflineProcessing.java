@@ -3,11 +3,9 @@ package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
 import ch.ethz.idsc.demo.LogFileInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -22,10 +20,9 @@ enum OfflineProcessing {
   ;
   private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
 
-  public static void handle(Supplier<OfflineTableSupplier> supplier) throws IOException {
-    handle(Arrays.asList(DubendorfHangarLog.values()), supplier);
-  }
-
+  // public static void handle(Supplier<OfflineTableSupplier> supplier) throws IOException {
+  // handle(Arrays.asList(DubendorfHangarLog.values()), supplier);
+  // }
   public static void handle(Collection<? extends LogFileInterface> collection, Supplier<OfflineTableSupplier> supplier) //
       throws IOException {
     for (LogFileInterface logFileInterface : collection) {
