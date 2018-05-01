@@ -23,6 +23,7 @@ public class SensorsConfig implements Serializable {
   /***************************************************/
   // TODO at some point also introduce units here
   /** urg04lx is the pose of the front lidar {px, py, angle} */
+  // @Deprecated
   public Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
   /** angular offset that rotates the sensor azimuth 0 onto the gokart positive x axis */
   public Scalar vlp16_twist = RealScalar.of(-1.61);

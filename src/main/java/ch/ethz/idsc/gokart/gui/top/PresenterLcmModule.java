@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
+import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -73,7 +74,13 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
     }
     {
-      timerFrame.geometricComponent.addRenderInterface(new CurveRender());
+      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      timerFrame.geometricComponent.addRenderInterface(curveRender);
+    }
+    {
+      TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
+      gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);

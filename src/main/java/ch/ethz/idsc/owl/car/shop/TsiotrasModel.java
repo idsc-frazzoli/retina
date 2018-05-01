@@ -37,7 +37,7 @@ public class TsiotrasModel extends DefaultCarModel {
     final Pacejka3 PACEJKA = new Pacejka3(7, 1.4);
     final Scalar RADIUS = DoubleScalar.of(0.29); // wheel radius [m]
     final Scalar HEIGHT_COG = DoubleScalar.of(0.58); // height of COG [m]
-    final Scalar LW = DoubleScalar.of(0.8375); // TODO unspecified lateral distance of wheels from COG [m]
+    final Scalar LW = DoubleScalar.of(0.8375); // LONGTERM unspecified lateral distance of wheels from COG [m]
     final Scalar LF = DoubleScalar.of(1.1); // front axle distance from COG [m]
     final Scalar LR = DoubleScalar.of(1.3); // rear axle distance from COG [m]
     Scalar h_negate = HEIGHT_COG.negate();
@@ -47,7 +47,7 @@ public class TsiotrasModel extends DefaultCarModel {
         Tensors.of(LR.negate(), LW, h_negate), // 2L
         Tensors.of(LR.negate(), LW.negate(), h_negate) // 2R
     ).unmodifiable();
-    // TODO define tires!
+    // LONGTERM define tires!
     // DoubleScalar.of(1 / 1.8); // wheel moment of inertia [kgm2]
   }
 
