@@ -47,7 +47,7 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, // move to DEV list
+      GokartPoseLcmModule.class, //
       LoggerModule.class, //
       SteerEmergencyModule.class, //
       Vlp16ClearanceModule.class //

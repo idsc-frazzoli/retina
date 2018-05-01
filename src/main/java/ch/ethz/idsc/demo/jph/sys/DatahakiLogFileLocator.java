@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.jph.sys;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.LogFile;
-import ch.ethz.idsc.demo.LogFileLocator;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
+import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
 public enum DatahakiLogFileLocator implements LogFileLocator {
   INSTANCE;

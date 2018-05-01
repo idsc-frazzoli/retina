@@ -9,6 +9,7 @@ import java.util.Optional;
 import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -19,6 +20,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class ClearanceTracker {
+  private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   // TODO design: make class more generic by passing all clearance config as parameters
   private final Scalar clearanceFrontMeter = SafetyConfig.GLOBAL.clearanceFrontMeter();
   private final Clip clip_Y;
@@ -33,7 +35,7 @@ public class ClearanceTracker {
    * @param xya reference frame of sensor as 3-vector {px, py, angle} */
   public ClearanceTracker(Scalar half, Scalar angle, Tensor xya) {
     clip_Y = Clip.function(half.negate(), half); // TODO there is a small error as gokart turns
-    Scalar speed = RealScalar.of(1.0); // assume unit speed // TODO use actual speed in logic
+    Scalar speed = UNIT_SPEED; // assume unit speed // use actual speed in logic
     u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed)).unmodifiable();
     min = clearanceFrontMeter;
     se2ForwardAction = new Se2ForwardAction(xya);

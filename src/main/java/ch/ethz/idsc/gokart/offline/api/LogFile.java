@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo;
+package ch.ethz.idsc.gokart.offline.api;
 
 public interface LogFile {
   /** @return */

@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.demo;
 
+import ch.ethz.idsc.gokart.offline.api.LogFile;
+
 public enum GokartLogFile implements LogFile {
   /* 2017-12-07 */
   /***************************************************/

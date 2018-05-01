@@ -27,8 +27,8 @@ public enum Clusters {
   ;
   /** @param matrix
    * @return tensor of clusters */
-  // TODO remove print outs. provide timing and properties in separate class if necessary
-  // TODO also handle empty input
+  // TODO VC remove print outs. provide timing and properties in separate class if necessary
+  // TODO VC also handle empty input
   public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();

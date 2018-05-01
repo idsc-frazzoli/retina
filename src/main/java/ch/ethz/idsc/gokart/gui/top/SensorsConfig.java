@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -31,19 +32,20 @@ public class SensorsConfig implements Serializable {
   /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
    * 
    * due to the small magnitude of vlp16_incline, the approximations hold
-   * Cos[vlp16_incline] == 1
-   * Sin[vlp16_incline] == 0
+   * Cos[vlp16_incline] ~ 1
+   * Sin[vlp16_incline] ~ 0
    * then, vlp16_inclinea can correct a height of a lidar point
    * by adding an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
    * z_gokart = z_lidar - vlp16_incline * x_lidar */
   public Scalar vlp16_incline = RealScalar.of(0.04);
-  /** height of vlp scan from ground
+  /** height of vlp scan rays from ground
    * 1.10[m] from ground to platform top (until 2018-02-25, the value was 1.18[m])
    * 0.006[m] TODO DUBENDORF width of heat sink
    * 0.0378[m] == 37.8[mm] from heat sink to height of optical center
-   * total = 1.10 + 0.006 + 0.0378 == 1.1438 */
-  // TODO vlp16Height is not yet used, instead see SafetyConfig
+   * total = 1.10 + 0.006 + 0.0378 == 1.1438
+   * 
+   * @see SafetyConfig */
   public Scalar vlp16Height = Quantity.of(1.1438, SI.METER);
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
