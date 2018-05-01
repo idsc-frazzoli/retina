@@ -13,8 +13,7 @@ import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16ActiveSlowingModule;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
+import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
@@ -52,7 +51,7 @@ enum RunTabbedTaskGui {
       LoggerModule.class, //
       SteerCalibrationWatchdog.class, //
       MiscEmergencyWatchdog.class, // autobox comm watchdog
-      Vlp16ClearanceModule.class //
+      Vlp16PassiveSlowing.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
@@ -72,7 +71,7 @@ enum RunTabbedTaskGui {
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
-      Vlp16ActiveSlowingModule.class, //
+      // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
       DavisImuWatchdog.class //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //

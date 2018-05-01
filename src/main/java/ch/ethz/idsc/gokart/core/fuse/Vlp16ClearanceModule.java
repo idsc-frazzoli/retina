@@ -24,37 +24,47 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
+abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = SensorsConfig.GLOBAL.vlp16SpacialLcmHandler();
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  private ClearanceTracker clearanceTracker;
-  private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
       = SimpleSpacialObstaclePredicate.createVlp16();
+  final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
+  ClearanceTracker clearanceTracker;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected final void first() throws Exception {
     vlp16SpacialLcmHandler.lidarSpacialProvider.addListener(this);
     vlp16SpacialLcmHandler.startSubscriptions();
     gokartStatusLcmClient.addListener(this);
     gokartStatusLcmClient.startSubscriptions();
+    protected_first();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  protected void last() {
+  protected final void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
+    protected_last();
     vlp16SpacialLcmHandler.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
   }
 
+  void protected_first() {
+    // ---
+  }
+
+  void protected_last() {
+    // ---
+  }
+
   /***************************************************/
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+  public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     ClearanceTracker _clearanceTracker = clearanceTracker;
     if (Objects.nonNull(_clearanceTracker)) {
       float x = lidarSpacialEvent.coords[0];
@@ -70,7 +80,7 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   }
 
   @Override // from GokartStatusListener
-  public void getEvent(GokartStatusEvent gokartStatusEvent) {
+  public final void getEvent(GokartStatusEvent gokartStatusEvent) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
@@ -80,10 +90,12 @@ public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> im
   }
 
   @Override // from RimoPutProvider
-  public Optional<RimoPutEvent> putEvent() {
+  public final Optional<RimoPutEvent> putEvent() {
     boolean status = false;
     status |= Objects.isNull(clearanceTracker);
     status |= penaltyTimeout.isPenalty();
-    return Optional.ofNullable(status ? RimoPutEvent.PASSIVE : null);
+    return status ? penaltyAction() : Optional.empty();
   }
+
+  abstract Optional<RimoPutEvent> penaltyAction();
 }
