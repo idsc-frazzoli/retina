@@ -10,16 +10,17 @@ import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
-import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyModule;
-import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16ActiveSlowingModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
-import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -49,7 +50,8 @@ enum RunTabbedTaskGui {
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, //
       LoggerModule.class, //
-      SteerEmergencyModule.class, //
+      SteerCalibrationWatchdog.class, //
+      MiscEmergencyWatchdog.class, // autobox comm watchdog
       Vlp16ClearanceModule.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
@@ -67,7 +69,7 @@ enum RunTabbedTaskGui {
   // DavisOverviewModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      MiscEmergencyModule.class, //
+      SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, //
       LinmotTakeoverModule.class, //
       Vlp16ActiveSlowingModule.class, //
@@ -80,7 +82,7 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      PurePursuitModule.class, //
+      FigureEightModule.class, //
       GokartTrajectoryModule.class //
   );
 
