@@ -109,7 +109,8 @@ public enum DubendorfHangarLog implements LogFileInterface {
   // _20180419T172918_f80284e9, //
   /***************************************************/
   /* 2018-04-23 */
-  // TODO DUBENDORF obtain and document log files
+  /** pure pursuit with controller driving backwards */
+  _20180423T181849_633cc6e6, //
   /***************************************************/
   /* 2018-04-27 */
   /** joystick driving small circles at different speeds
@@ -130,6 +131,24 @@ public enum DubendorfHangarLog implements LogFileInterface {
   _20180427T155210_987cb124, //
   /** trajectory planning and pure pursuit */
   _20180427T155709_987cb124, //
+  /***************************************************/
+  /* 2018-04-30 */
+  /** pure pursuit at different speeds with pedestrians walking
+   * PI-controller with Kp==20 and Ki==0 */
+  _20180430T104113_a5291af9, //
+  /** slow driving for recording improved map with hangar doors open+closed
+   * at the end: driving fast circles */
+  _20180430T141530_a5291af9, //
+  /** joystick driving along oval with markers for dvs */
+  _20180430T153747_0e959fc6, //
+  /** no driving */
+  // _20180430T161506_0e959fc6, //
+  /** taking pictures with APS for Davis240C calibration
+   * no driving */
+  // _20180430T163141_0e959fc6, //
+  /** joystick driving with camera calibrated
+   * localization not working */
+  _20180430T164704_0e959fc6, //
   ; //
   @Override
   public File file(File directory) {

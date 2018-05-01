@@ -41,7 +41,7 @@ public class TrackingEvaluator {
     System.out.println("Performance evaluation instant happening now!");
     List<ImageBlob> groundTruthFeatures = labeledFeatures.get(currentLabelInstant);
     // compare the two lists somehow
-    //..
+    // ..
     // increase count
     currentLabelInstant++;
   }
