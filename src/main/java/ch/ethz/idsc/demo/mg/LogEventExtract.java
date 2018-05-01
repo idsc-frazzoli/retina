@@ -13,16 +13,16 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = new File(LogFileLocations.DUBI11);
+    File src = new File(LogFileLocations.DUBI12);
     System.out.println(src.toString());
     File dst = null;
-    dst = new File("/home/mario/logs/20180412T164740_7e5b46c2Extracted4.lcm");
+    dst = new File("/home/mario/logs/20180430T164704_0e959fc6Extracted5.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 2929000;
-    int hi = 3049000;
+    int lo = 2855000;
+    int hi = 2950000;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

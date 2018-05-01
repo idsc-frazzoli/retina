@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 
-// this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded from a hand labeled .csv file
+// this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded from a hand labeled .CSV file
 // and then compared with the tracking algorithm during runtime.
 public class TrackingEvaluator {
   List<List<ImageBlob>> labeledFeatures; // contains handlabeled features
@@ -55,7 +55,7 @@ public class TrackingEvaluator {
     currentLabelInstant++;
   }
 
-  // extract timeStamps from .csv file
+  // extract timeStamps from .CSV file
   private void setTimestampsFromCSV(File file) {
     // use list because length is unknown
     List<Integer> timestampList = new ArrayList<>();
