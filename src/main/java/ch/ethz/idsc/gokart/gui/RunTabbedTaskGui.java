@@ -49,8 +49,8 @@ enum RunTabbedTaskGui {
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, //
       LoggerModule.class, //
-      SteerCalibrationWatchdog.class, //
-      MiscEmergencyWatchdog.class, // autobox comm watchdog
+      SteerCalibrationWatchdog.class, // <- DON'T REMOVE
+      MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //

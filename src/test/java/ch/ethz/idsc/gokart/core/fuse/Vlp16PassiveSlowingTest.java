@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class Vlp16PassiveSlowingTest extends TestCase {
@@ -16,8 +15,7 @@ public class Vlp16PassiveSlowingTest extends TestCase {
 
   public void testSimple() {
     Vlp16ClearanceModule vcm = new Vlp16PassiveSlowing();
-    assertTrue(vcm.putEvent().isPresent());
-    assertEquals(vcm.putEvent().get(), RimoPutEvent.PASSIVE);
+    assertFalse(vcm.putEvent().isPresent()); // not calibrated
   }
 
   public void testEvents() throws Exception {
@@ -72,7 +70,7 @@ public class Vlp16PassiveSlowingTest extends TestCase {
     vcm.getEvent(new GokartStatusEvent(0.1f));
     assertFalse(vcm.putEvent().isPresent());
     vcm.getEvent(new GokartStatusEvent(Float.NaN));
-    assertTrue(vcm.putEvent().isPresent());
+    assertFalse(vcm.putEvent().isPresent());
   }
 
   public void testProviderRank() {

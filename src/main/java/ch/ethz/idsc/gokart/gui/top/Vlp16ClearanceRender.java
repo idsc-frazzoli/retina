@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.fuse.ClearanceTracker;
+import ch.ethz.idsc.gokart.core.fuse.CircleClearanceTracker;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -42,7 +42,7 @@ class Vlp16ClearanceRender extends LidarRender {
         Tensor points = _points; // in reference frame of lidar
         // ---
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-        ClearanceTracker clearanceTracker = new ClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
+        CircleClearanceTracker clearanceTracker = new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
         points.stream() //
             .filter(spacialXZObstaclePredicate::isObstacle) //
             .forEach(clearanceTracker::feed);
