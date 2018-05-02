@@ -16,7 +16,7 @@ public class FigureOvalModule extends AbstractModule {
    * 
    * then the hyperloop project was introduced to the hanger which further reduced
    * the operating domain for the gokart. */
-  public static final Tensor CURVE = DubendorfCurve.EIGHT_HYPERLOOP; // TODO
+  public static final Tensor CURVE = DubendorfCurve.HYPERLOOP_OVAL;
   // ---
   private final PurePursuitModule purePursuitModule = new PurePursuitModule();
 
