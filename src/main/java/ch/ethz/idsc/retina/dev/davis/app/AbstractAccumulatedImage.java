@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -44,7 +43,6 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    GlobalAssert.that(bytes.length == width * height);
     clearImage();
   }
 
@@ -70,7 +68,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
       assign(delta, davisDvsEvent);
     else //
     if (max_gap <= delta) {
-      System.err.println("dvs image clear due to forward timing");
+      System.err.println("dvs image clear due to forward timing: " + delta);
       clearImage();
       last = davisDvsEvent.time;
     } else //

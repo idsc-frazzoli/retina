@@ -6,9 +6,11 @@ import java.util.List;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.red.ScalarSummaryStatistics;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -24,5 +26,26 @@ public class DubendorfCurveTest extends TestCase {
     Clip clip = Clip.function(0.05, 0.4);
     clip.requireInside(RealScalar.of(dss.getMin()));
     clip.requireInside(RealScalar.of(dss.getMax()));
+  }
+
+  public void testHyperloop() {
+    assertEquals(DubendorfCurve.EIGHT_HYPERLOOP.length(), 640);
+  }
+
+  private static void testCurve(Tensor curve) {
+    List<Integer> list = Dimensions.of(curve);
+    assertEquals((int) list.get(1), 2);
+    ScalarSummaryStatistics sss = Differences.of(curve).stream() //
+        .map(Norm._2::ofVector).collect(ScalarSummaryStatistics.collector());
+    // changed from 0.1 to 0.05 for eight demoday curve
+    Clip clip = Clip.function(0.05, 0.4);
+    clip.requireInside(sss.getMin());
+    clip.requireInside(sss.getMax());
+  }
+
+  public void testDistances2() {
+    testCurve(DubendorfCurve.OVAL);
+    testCurve(DubendorfCurve.EIGHT_DEMODAY);
+    testCurve(DubendorfCurve.EIGHT_HYPERLOOP);
   }
 }

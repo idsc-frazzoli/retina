@@ -6,9 +6,16 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public class CurveSubdivision implements TensorUnaryOperator {
+  /** @param ics
+   * @return */
+  public static TensorUnaryOperator of(InterpolatingCurveSubdivision ics) {
+    return new CurveSubdivision(ics);
+  }
+
+  // ---
   private final InterpolatingCurveSubdivision ics;
 
-  public CurveSubdivision(InterpolatingCurveSubdivision ics) {
+  private CurveSubdivision(InterpolatingCurveSubdivision ics) {
     this.ics = ics;
   }
 
