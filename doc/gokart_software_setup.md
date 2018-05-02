@@ -58,7 +58,7 @@ activate the modules by enabling the toggle-buttons
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
-press button "Init", "Reset", "Calibration"
+press button `Init`, `Reset`, `Calibration`
 
 Confirm: the brake makes some noise and the steering wheel moves
 
@@ -74,7 +74,7 @@ Confirm: all 4 fields in the Introspection window are gray and display "...PutFa
 
 ### in the tab "joy" (only if driving by joystick)
 
-activate all modules from top to bottom
+activate the module `JoystickGroupModule`
 
 Confirm: all the fields in the Introspection window are green except for "Misc"
 
