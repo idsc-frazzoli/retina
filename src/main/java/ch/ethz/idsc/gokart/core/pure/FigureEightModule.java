@@ -17,7 +17,7 @@ public class FigureEightModule extends AbstractModule {
    * then the hyperloop project was introduced to the hanger which further reduced
    * the operating domain for the gokart. the trajectory is now
    * DubendorfCurve.EIGHT_HYPERLOOP */
-  public static final Tensor CURVE = DubendorfCurve.EIGHT_HYPERLOOP;
+  public static final Tensor CURVE = DubendorfCurve.HYPERLOOP_EIGHT;
   // ---
   private final PurePursuitModule purePursuitModule = new PurePursuitModule();
 

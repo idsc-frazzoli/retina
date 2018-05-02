@@ -13,9 +13,11 @@ import ch.ethz.idsc.tensor.red.Nest;
 // TODO consider stating coordinates in [m]eters
 public enum DubendorfCurve {
   ;
-  public static final Tensor EIGHT_HYPERLOOP = eight_hyperloop();
-  public static final Tensor EIGHT_DEMODAY = eight_demoday();
-  public static final Tensor OVAL_DEMODAY = oval_demoday();
+  public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
+  public static final Tensor HYPERLOOP_OVAL = hyperloop_oval();
+  // ---
+  public static final Tensor DEMODAY_EIGHT = eight_demoday();
+  public static final Tensor DEMODAY_OVAL = oval_demoday();
   /** the shifted oval was created for the test on 2018-03-05
    * due to the safety barriers put into place on 2018-02-26 */
   public static final Tensor OVAL_SHIFTED = oval_shifted();
@@ -78,8 +80,14 @@ public enum DubendorfCurve {
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 
-  private static Tensor eight_hyperloop() {
-    Tensor poly = ResourceData.of("/map/dubendorf/hangar/eight_hyperloop.csv");
+  private static Tensor hyperloop_eight() {
+    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180424eight.csv");
+    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  private static Tensor hyperloop_oval() {
+    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180502oval.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }

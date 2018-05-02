@@ -29,7 +29,7 @@ public class DubendorfCurveTest extends TestCase {
   }
 
   public void testHyperloop() {
-    assertEquals(DubendorfCurve.EIGHT_HYPERLOOP.length(), 640);
+    assertEquals(DubendorfCurve.HYPERLOOP_EIGHT.length(), 640);
   }
 
   private static void testCurve(Tensor curve) {
@@ -45,7 +45,8 @@ public class DubendorfCurveTest extends TestCase {
 
   public void testDistances2() {
     testCurve(DubendorfCurve.OVAL);
-    testCurve(DubendorfCurve.EIGHT_DEMODAY);
-    testCurve(DubendorfCurve.EIGHT_HYPERLOOP);
+    testCurve(DubendorfCurve.DEMODAY_EIGHT);
+    testCurve(DubendorfCurve.HYPERLOOP_EIGHT);
+    testCurve(DubendorfCurve.HYPERLOOP_OVAL);
   }
 }

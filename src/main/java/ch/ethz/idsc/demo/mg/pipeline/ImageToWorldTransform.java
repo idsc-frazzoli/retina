@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // TODO still need to transform from checkerboard frame to gokart frame (once we try calibration on gokart)
 public class ImageToWorldTransform {
   // fields
-   private String fileName = "dubi0008.csv"; // for camera pose in DUBI12
+  private String fileName = "dubi0008.csv"; // for camera pose in DUBI12
   private final int unitConversion = 1000; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
@@ -79,7 +79,7 @@ public class ImageToWorldTransform {
 
   // imports parameters from CSV file that was generated with MATLAB
   private void importCameraParams() {
-    Tensor inputTensor = ResourceData.of("/demo/mg/"+fileName);
+    Tensor inputTensor = ResourceData.of("/demo/mg/" + fileName);
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);

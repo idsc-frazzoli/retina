@@ -106,10 +106,14 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
       davisImuLcmClient.addListener(lidarRender.lidarGyroLocalization);
     }
-    {
+    { // TODO not generic
       CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
+    // {
+    // CurveRender curveRender = new CurveRender(FigureOvalModule.CURVE);
+    // viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    // }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
     // // lidarRender.setColor(new Color(128, 0, 0, 255));
