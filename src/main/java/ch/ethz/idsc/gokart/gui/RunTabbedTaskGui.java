@@ -14,10 +14,13 @@ import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
+import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
@@ -59,12 +62,14 @@ enum RunTabbedTaskGui {
       ParametersModule.class // configure parameters
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
-      // DeadManSwitchModule.class, // joystick
+      //
       JoystickGroupModule.class, //
-      SysidSignalsModule.class //
+      SysidSignalsModule.class, //
+      RimoThrustJoystickModule.class // UNDER EVALUATION
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //
+      FigureOvalModule.class, //
       GokartTrajectoryModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
@@ -73,7 +78,8 @@ enum RunTabbedTaskGui {
       LinmotTakeoverModule.class, //
       LinmotEmergencyModule.class, //
       // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
-      DavisImuWatchdog.class //
+      DavisImuWatchdog.class, //
+      DeadManSwitchModule.class // joystick
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
