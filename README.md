@@ -37,7 +37,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
 
-![retina-repo](https://user-images.githubusercontent.com/4012178/36646636-5d8d2cec-1a7a-11e8-8164-95f256912c4e.png)
+![retina-repo](https://user-images.githubusercontent.com/4012178/39506091-ddca7cfe-4dd6-11e8-904b-b5ed1f267422.png)
 
 ## GOKART
 

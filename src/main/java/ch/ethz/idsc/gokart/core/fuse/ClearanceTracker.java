@@ -41,7 +41,7 @@ public class ClearanceTracker {
     clip_X = Clip.function(RealScalar.of(0.2), clearanceFrontMeter); // TODO magic const 0.2
   }
 
-  /** @param local coordinates of obstacle in sensor reference frame
+  /** @param local coordinates {x, y} of obstacle in sensor reference frame
    * @return whether given point is an obstruction */
   public boolean probe(Tensor local) {
     Tensor point = se2ForwardAction.apply(local);
