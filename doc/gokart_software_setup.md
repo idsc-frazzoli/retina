@@ -50,7 +50,7 @@ run
 
     QuickStartGui.java
 
-### in the tab "lab"
+### in the tab "cfg"
 
 activate the modules by enabling the toggle-buttons
 * Autobox Introspection
@@ -58,21 +58,15 @@ activate the modules by enabling the toggle-buttons
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
-press button "Init" and wait for 3 sec for the brake to calibrate.
+press button "Init", "Reset", "Calibration"
 
-Confirm: the brake makes some noise
-
-press button "Reset"
-
-press button "Calibration"
+Confirm: the brake makes some noise and the steering wheel moves
 
 turn the emergency-off button to start engine
 
-manually roll the gokart forward and backward a bit and check if the actual speed values change accordingly   
+manually roll the gokart forward and backward a bit and check if the actual speed values change accordingly
 
----
-
-(back in the "lab" tab)
+confirm that joystick and davis240c measurements are indicated in GUI   
 
 deactivate toggle-button "Autobox Compact"
 
@@ -87,7 +81,7 @@ Confirm: all the fields in the Introspection window are green except for "Misc"
 The gokart is now controllable by joystick.
 
 ## Autonomous mode (pure pursuit trajectory following)
-### in the tab "lab"
+### in the tab "cfg"
 
 activate
 * Global View Lcm
@@ -95,10 +89,10 @@ activate
 Drag and rotate the live-map to almost match the preloaded one 
 
 Once the the maps almost overlap, click in sequence:
-* set
-* snap
-* set (again)
-* track
+* 1 set
+* 2 snap
+* 3 set
+* 4 track
 
 Leave the `Global View Lcm` open during operations
 
