@@ -7,8 +7,10 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 
 /** sends stop command if steer angle is not calibrated or steer angle tracking is unhealthy */
+@SafetyCritical
 public final class SteerCalibrationWatchdog extends EmergencyModule<RimoPutEvent> {
   @Override // from AbstractModule
   protected void first() throws Exception {

@@ -79,8 +79,8 @@ public class TrackingEvaluator {
     this.timeStamps = timeStamps;
   }
 
-  private float computeDistance(ImageBlob firstBlob, ImageBlob secondBlob) {
+  private static float computeDistance(ImageBlob firstBlob, ImageBlob secondBlob) {
     float distance = 0;
-    return distance;
+    return distance; // TODO implementation incomplete
   }
 }
