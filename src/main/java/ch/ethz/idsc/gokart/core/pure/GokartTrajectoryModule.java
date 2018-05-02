@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.owl.bot.r2.ImageCostFunction;
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
@@ -21,8 +23,10 @@ import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
 import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
+import ch.ethz.idsc.owl.glc.adapter.MultiCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.adapter.TrajectoryObstacleConstraint;
+import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
@@ -34,6 +38,9 @@ import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.owl.math.region.PolygonRegion;
+import ch.ethz.idsc.owl.math.region.Region;
+import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
@@ -48,18 +55,17 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.ResourceData;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 public class GokartTrajectoryModule extends AbstractClockedModule implements //
     GokartPoseListener, GlcPlannerCallback {
   // TODO make configurable as parameter
-  private static final Scalar PLANNING_PERIOD = Quantity.of(1, "s");
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   private static final Scalar SPEED = RealScalar.of(2.5);
+  private static final Tensor VIRTUAL = Tensors.fromString("{{38, 39}, {42, 47}, {51, 52}, {46, 43}}");
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf */
   static final CarFlows CARFLOWS = new CarForwardFlows(SPEED, Degree.of(23));
@@ -68,6 +74,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private Collection<CostFunction> costCollection = new LinkedList<>();
   final PurePursuitModule purePursuitModule = new PurePursuitModule();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
@@ -88,9 +95,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     final Scalar scale = DoubleScalar.of(7.5); // meter_to_pixel
     Tensor range = Tensors.vector(Dimensions.of(tensor)).divide(scale);
     ImageRegion region = new ImageRegion(tensor, range, false);
+    Region<Tensor> polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle
+    Region<Tensor> union = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
     // ---
     waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
-    plannerConstraint = new TrajectoryObstacleConstraint(SimpleTrajectoryRegionQuery.timeInvariant(region));
+    plannerConstraint = new TrajectoryObstacleConstraint(SimpleTrajectoryRegionQuery.timeInvariant(union));
+    costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO)); // TODO fix
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
@@ -122,20 +132,23 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
         Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), xya)));
         int closestIdx = ArgMin.of(distances);
         StateTime closestStateTime = trajectory.get(closestIdx).stateTime();
-        head = getTrajectoryUntil(closestStateTime, closestIdx, Magnitude.SECOND.apply(PLANNING_PERIOD));
+        head = getTrajectoryUntil(closestStateTime, closestIdx, Magnitude.SECOND.apply(TrajectoryConfig.GLOBAL.planningPeriod));
       }
-      // get waypoint index closest from current position to find suitable goal
+      // find a goal waypoint that is located at the horizonDistance
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
-      int wpIdx = ArgMin.of(distances);
+      int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
       if (0 <= wpIdx) {
-        wpIdx += 4;
-        wpIdx %= waypoints.length();
-        System.out.println("goal index = " + wpIdx);
         Tensor goal = waypoints.get(wpIdx);
+        while (Scalars.lessThan(SE2WRAP.distance(xya, goal), TrajectoryConfig.GLOBAL.horizonDistance)) {
+          wpIdx = (wpIdx + 1) % waypoints.length();
+          goal = waypoints.get(wpIdx);
+        }
+        System.out.format("goal index = " + wpIdx + ",  distance = %.2f", SE2WRAP.distance(xya, goal).number().floatValue());
         Collection<Flow> controls = CARFLOWS.getFlows(9); // TODO magic const
         GoalInterface goalInterface = Se2MinTimeGoalManager.create(goal, goalRadius, controls);
+        GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-            PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, goalInterface);
+            PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);
         motionPlanWorker = new MotionPlanWorker();
         motionPlanWorker.addCallback(this);
@@ -164,7 +177,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
 
   @Override
   protected Scalar getPeriod() {
-    return PLANNING_PERIOD;
+    return TrajectoryConfig.GLOBAL.planningPeriod;
   }
 
   @Override // from GokartPoseListener
