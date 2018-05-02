@@ -18,10 +18,12 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.util.gui.Colors;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
+import ch.ethz.idsc.tensor.opt.ConvexHull;
 import ch.ethz.idsc.tensor.red.Mean;
 
 /** used in {@link PresenterLcmModule} */
@@ -52,7 +54,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       if (!Tensors.isEmpty(p)) {
         p1.append(p);
         if (p1.length() > 3) {
-          p1 = Tensors.of(p1.get(p1.length() - 1), p1.get(p1.length() - 2), p1.get(p1.length() - 3), p1.get(p1.length() - 4));
+          p1 = Tensors.of(p1.get(p1.length() - 4), p1.get(p1.length() - 3), p1.get(p1.length() - 2), p1.get(p1.length() - 1));
           pi = ClusterConfig.GLOBAL.elkiDBSCANTime(Tensor.of(p1.flatten(1)));
         }
         // hulls = Tensor.of(pi.stream().map(ConvexHull::of));
@@ -72,6 +74,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       return;
     // ---
     Tensor mean = Tensors.empty();
+    Tensor hulls = Tensors.empty();
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -84,34 +87,37 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       Tensor _pi = pi;
       ColorDataIndexed colorDataIndexed = ColorDataLists._097;
       final int size = colorDataIndexed.size();
-      // {
-      // int i = 0;
-      // for (Tensor hull : hulls) {
-      // Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 128);
-      // graphics.setColor(color);
-      // graphics.fill(geometricLayer.toPath2D(hull));
-      // ++i;
-      // }
-      // }
       {
         int i = 0;
         for (Tensor x : _pi) {
+          graphics.setColor(colorDataIndexed.getColor(i % size));
           for (Tensor y : x) {
-            graphics.setColor(colorDataIndexed.getColor(i % size));
             if (!Tensors.isEmpty(y))
               mean.append(Mean.of(y));
+            hulls.append(ConvexHull.of(y));
             for (Tensor z : y) {
               Point2D point2D = geometricLayer.toPoint2D(z);
               graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
-            ++i;
           }
+          ++i;
         }
       }
-      graphics.setColor(new Color(255, 0, 0, 255));
-      for (Tensor w : mean) {
-        Point2D point2D = geometricLayer.toPoint2D(w);
-        graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 5, 5);
+      {
+        graphics.setColor(new Color(255, 0, 0, 255));
+        for (Tensor w : mean) {
+          Point2D point2D = geometricLayer.toPoint2D(w);
+          graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 5, 5);
+        }
+      }
+      {
+        int i = 0;
+        for (Tensor hull : hulls) {
+          Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
+          graphics.setColor(color);
+          graphics.fill(geometricLayer.toPath2D(hull));
+          ++i;
+        }
       }
     }
     geometricLayer.popMatrix();
