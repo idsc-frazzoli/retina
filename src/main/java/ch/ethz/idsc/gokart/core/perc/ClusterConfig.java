@@ -30,4 +30,8 @@ public class ClusterConfig implements Serializable {
   public Tensor elkiDBSCAN(Tensor matrix) {
     return Clusters.elkiDBSCAN(matrix, getEpsilon(), getMinPoints());
   }
+
+  public Tensor elkiDBSCANTime(Tensor matrix) {
+    return ClustersTime.elkiDBSCAN(matrix, getEpsilon(), getMinPoints());
+  }
 }

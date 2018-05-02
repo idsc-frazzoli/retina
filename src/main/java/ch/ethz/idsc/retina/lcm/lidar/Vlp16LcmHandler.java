@@ -18,11 +18,12 @@ public class Vlp16LcmHandler implements LcmClientInterface {
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(MAX_COORDINATES, 3);
   private final VelodyneLcmClient velodyneLcmClient;
+  public final Vlp16SpacialProvider lidarSpacialProvider;
 
   public Vlp16LcmHandler(String lidarId, double angle_offset) {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, lidarId);
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider(angle_offset);
+    lidarSpacialProvider = new Vlp16SpacialProvider(angle_offset);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);

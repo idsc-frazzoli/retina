@@ -43,6 +43,7 @@ public class PresenterLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    vlp16LcmHandler.lidarSpacialProvider.addListener(new LidarSpaceTimeListener());
     {
       ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180423.getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
@@ -54,23 +55,34 @@ public class PresenterLcmModule extends AbstractModule {
     }
     // ---
     {
-      LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
+      ParallelLidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       lidarRender.pointSize = 1;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
+    // {
+    // ObstacleClusterRender obstacleClusterRender = //
+    // new ObstacleClusterRender(gokartPoseInterface);
+    // obstacleClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+    // obstacleClusterRender.setColor(new Color(255, 0, 0, 128));
+    // obstacleClusterRender.pointSize = 4;
+    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender);
+    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender.lidarRayBlockListener);
+    // timerFrame.geometricComponent.addRenderInterface(obstacleClusterRender);
+    // timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
+    // }
     {
-      ObstacleClusterRender obstacleClusterRender = //
-          new ObstacleClusterRender(gokartPoseInterface);
-      obstacleClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
-      obstacleClusterRender.setColor(new Color(255, 0, 0, 128));
-      obstacleClusterRender.pointSize = 4;
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender);
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender.lidarRayBlockListener);
-      timerFrame.geometricComponent.addRenderInterface(obstacleClusterRender);
-      timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
+      ObstacleTimeClusterRender obstacleTimeClusterRender = //
+          new ObstacleTimeClusterRender(gokartPoseInterface);
+      obstacleTimeClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      obstacleTimeClusterRender.setColor(new Color(255, 0, 0, 128));
+      obstacleTimeClusterRender.pointSize = 4;
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender.lidarRayBlockListener);
+      timerFrame.geometricComponent.addRenderInterface(obstacleTimeClusterRender);
+      timerFrame.jToolBar.add(obstacleTimeClusterRender.jToggleButton);
     }
     {
       timerFrame.geometricComponent.addRenderInterface(new CurveRender());
