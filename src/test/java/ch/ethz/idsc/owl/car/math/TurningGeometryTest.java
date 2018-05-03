@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
@@ -32,5 +33,10 @@ public class TurningGeometryTest extends TestCase {
   public void testClose0() {
     Optional<Scalar> offsetY = TurningGeometry.offset_y(RealScalar.ONE, TurningGeometry.ANGLE_THRESHOLD);
     assertTrue(offsetY.isPresent());
+  }
+
+  public void test45Units() {
+    Optional<Scalar> offsetY = TurningGeometry.offset_y(Quantity.of(1.23, "m"), RealScalar.of(0.345));
+    assertTrue(Chop._10.close(offsetY.get(), Quantity.of(3.4226321090018064, "m")));
   }
 }

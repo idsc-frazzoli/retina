@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 
-// this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded from a hand labeled .csv file
+// this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded from a hand labeled .CSV file
 // and then compared with the tracking algorithm during runtime.
 public class TrackingEvaluator {
   List<List<ImageBlob>> labeledFeatures; // contains handlabeled features
@@ -41,12 +41,21 @@ public class TrackingEvaluator {
     System.out.println("Performance evaluation instant happening now!");
     List<ImageBlob> groundTruthFeatures = labeledFeatures.get(currentLabelInstant);
     // compare the two lists somehow
-    //..
-    // increase count
+    for (int i = 0; i < groundTruthFeatures.size(); i++) {
+      for (int j = 0; j < estimatedFeatures.size(); j++) {
+        if (computeDistance(groundTruthFeatures.get(i), estimatedFeatures.get(j)) < distanceForAgreement) {
+          // then we have a true positive --> delete matching features from both lists or so?
+        }
+      }
+      // if we get here without hitting a true positive, we have a false negative. mark corresponding blob in ground truth.
+    }
+    // the remaining features in estimatedFeatures are false positives.
+    // cannot measure true negatives because that is "everything" that was not detected by either GT or tracking algo.
+    // counter
     currentLabelInstant++;
   }
 
-  // extract timeStamps from .csv file
+  // extract timeStamps from .CSV file
   private void setTimestampsFromCSV(File file) {
     // use list because length is unknown
     List<Integer> timestampList = new ArrayList<>();
@@ -68,5 +77,10 @@ public class TrackingEvaluator {
       timeStamps[i] = timestampList.get(i);
     }
     this.timeStamps = timeStamps;
+  }
+
+  private static float computeDistance(ImageBlob firstBlob, ImageBlob secondBlob) {
+    float distance = 0;
+    return distance; // TODO implementation incomplete
   }
 }

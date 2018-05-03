@@ -55,4 +55,16 @@ public enum LogFileLocations {
   public static final String DUBI11c = "/home/mario/logs/20180412T164740_7e5b46c2Extracted3.lcm";
   // extracted fast round of DUBI11, Jan driving
   public static final String DUBI11d = "/home/mario/logs/20180412T164740_7e5b46c2Extracted4.lcm";
+  // new camera pose, calibration images under "Dubi first try". Corresponding transform is dubi0008.csv
+  public static final String DUBI12 = "/home/mario/logs/20180430T164704_0e959fc6.lcm.00";
+  // extracted slow round of DUBI12, camera zoomed and looking down.
+  public static final String DUBI12a = "/home/mario/logs/20180430T164704_0e959fc6Extracted1.lcm";
+  // extracted slightly faster round of DUBI12, camera zoomed and looking down.
+  public static final String DUBI12b = "/home/mario/logs/20180430T164704_0e959fc6Extracted2.lcm";
+  // extracted faster & chaotic round of DUBI12, camera zoomed and looking down.
+  public static final String DUBI12c = "/home/mario/logs/20180430T164704_0e959fc6Extracted3.lcm";
+  // extracted slow round of DUBI12, camera zoomed and looking down.
+  public static final String DUBI12d = "/home/mario/logs/20180430T164704_0e959fc6Extracted4.lcm";
+  // extracted fast & chaotic round of DUBI12, camera zoomed and looking down.
+  public static final String DUBI12e = "/home/mario/logs/20180430T164704_0e959fc6Extracted5.lcm";
 }

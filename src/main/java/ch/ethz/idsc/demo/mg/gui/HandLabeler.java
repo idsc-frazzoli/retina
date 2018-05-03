@@ -217,10 +217,9 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
-    for (int i = 0; i < blobs.size(); i++) {
+  private static void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
+    for (int i = 0; i < blobs.size(); i++)
       AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
-    }
   }
 
   // goes through all files in the directory an extracts the timestamps

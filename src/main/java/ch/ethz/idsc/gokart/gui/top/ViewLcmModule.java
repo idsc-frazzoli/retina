@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
-import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
@@ -27,7 +27,7 @@ abstract class ViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
-  private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
+  // private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -47,9 +47,9 @@ abstract class ViewLcmModule extends AbstractModule {
   protected void first() throws Exception {
     {
       TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-      trigonometryRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
+      // trigonometryRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
-      urg04lxLcmHandler.lidarAngularFiringCollector.addListener(trigonometryRender);
+      // vlp16LcmHandler.lidarAngularFiringCollector.addListener(trigonometryRender);
       viewLcmFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {
@@ -59,20 +59,20 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     // ---
     if (true) {
-      {
-        LidarRender lidarRender = new PlanarLidarRender(gokartPoseInterface);
-        lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
-        lidarRender.setColor(new Color(128, 192, 128, 64));
-        urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-        viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
-      }
-      {
-        LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
-        lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
-        lidarRender.setColor(new Color(128, 0, 0, 128));
-        urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-        viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
-      }
+      // {
+      // LidarRender lidarRender = new PlanarLidarRender(gokartPoseInterface);
+      // lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
+      // lidarRender.setColor(new Color(128, 192, 128, 64));
+      // urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      // viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
+      // }
+      // {
+      // LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
+      // lidarRender.setReference(() -> SensorsConfig.GLOBAL.urg04lx);
+      // lidarRender.setColor(new Color(128, 0, 0, 128));
+      // urg04lxLcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
+      // viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
+      // }
       // ---
       {
         LidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
@@ -106,9 +106,14 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
       davisImuLcmClient.addListener(lidarRender.lidarGyroLocalization);
     }
-    {
-      viewLcmFrame.geometricComponent.addRenderInterface(new CurveRender());
+    { // TODO not generic
+      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
+    // {
+    // CurveRender curveRender = new CurveRender(FigureOvalModule.CURVE);
+    // viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    // }
     // {
     // LidarRender lidarRender = new PerspectiveLidarRender(() -> SensorsConfig.GLOBAL.vlp16);
     // // lidarRender.setColor(new Color(128, 0, 0, 255));
@@ -129,7 +134,7 @@ abstract class ViewLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
-    urg04lxLcmHandler.startSubscriptions();
+    // urg04lxLcmHandler.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
     // ---
@@ -151,7 +156,7 @@ abstract class ViewLcmModule extends AbstractModule {
     // odometryLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();
-    urg04lxLcmHandler.stopSubscriptions();
+    // urg04lxLcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
     viewLcmFrame.close();
   }

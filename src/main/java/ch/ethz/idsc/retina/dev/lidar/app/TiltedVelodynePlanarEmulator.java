@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 // TODO make more general: enable emulation of any angle (not just +1[deg])
 public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = 10; // TODO choose reasonable value
+  /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
   private final double emulation_deg;
   private final double tiltY_deg;
   private int usec;
