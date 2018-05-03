@@ -24,8 +24,7 @@ import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
 import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.MultiCostGoalAdapter;
-import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
-import ch.ethz.idsc.owl.glc.adapter.TrajectoryObstacleConstraint;
+import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
@@ -99,8 +98,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     Region<Tensor> union = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
     // ---
     waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
-    plannerConstraint = new TrajectoryObstacleConstraint(SimpleTrajectoryRegionQuery.timeInvariant(union));
-    costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO)); // TODO fix
+    plannerConstraint = RegionConstraints.timeInvariant(union);
+    costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO));
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
