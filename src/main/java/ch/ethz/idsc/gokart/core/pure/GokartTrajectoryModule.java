@@ -19,6 +19,7 @@ import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2MinTimeGoalManager;
+import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
 import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
@@ -93,7 +94,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     Tensor tensor = ImageEdges.extrusion(obstacleMap, 6); // == 0.73 * 7.5 == 5.475
     final Scalar scale = DoubleScalar.of(7.5); // meter_to_pixel
     Tensor range = Tensors.vector(Dimensions.of(tensor)).divide(scale);
-    ImageRegion region = new ImageRegion(tensor, range, false);
+    ImageRegion imageRegion = new ImageRegion(tensor, range, false);
+    // TODO obtain magic const from footprint
+    Region<Tensor> region = Se2PointsVsRegions.line(Tensors.vector(-0.3, 0.8, 1.77), imageRegion);
     Region<Tensor> polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle
     Region<Tensor> union = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
     // ---
