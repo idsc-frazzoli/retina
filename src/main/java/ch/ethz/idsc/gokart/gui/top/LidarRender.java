@@ -20,6 +20,7 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
 
   protected Supplier<Tensor> supplier = () -> Array.zeros(3);
   // ---
+  /** points in reference frame of lidar */
   Tensor _points = Tensors.empty();
   Color color = Color.BLACK;
   int pointSize = 1;
@@ -40,8 +41,6 @@ abstract class LidarRender extends AbstractGokartRender implements LidarRayBlock
 
   @Override // from LidarRayBlockListener
   public final void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    // String info = LidarRayBlockEvents.toInfoString(lidarRayBlockEvent);
-    // System.out.println("here " + info);
     final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     final int position = floatBuffer.position();
     if (lidarRayBlockEvent.dimensions == 2) {

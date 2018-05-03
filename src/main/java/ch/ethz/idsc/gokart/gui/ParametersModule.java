@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
@@ -43,6 +44,7 @@ public class ParametersModule extends AbstractModule {
     addTab(JoystickConfig.GLOBAL);
     addTab(PursuitConfig.GLOBAL);
     addTab(ClusterConfig.GLOBAL);
+    addTab(TrajectoryConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

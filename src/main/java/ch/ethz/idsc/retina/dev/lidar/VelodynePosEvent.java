@@ -21,9 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */
 public class VelodynePosEvent {
-  /** when reading from lcm log file the byteBuffer should be at position 12 TODO where do these 12 bytes come from ?
-   * 
-   * @param byteBuffer
+  /** @param byteBuffer
    * @return */
   public static VelodynePosEvent vlp16(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42 in pcap file

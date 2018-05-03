@@ -11,10 +11,8 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
-/** sends stop command if either of the conditions is met
- * 1) steer battery voltage is outside of valid range for a certain duration
- * 2) the emergency flag is set in {@link MiscGetEvent} */
-public final class MiscEmergencyModule extends EmergencyModule<RimoPutEvent> implements MiscGetListener {
+/** sends stop command if the steer battery voltage is outside of valid range for a certain duration */
+public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> implements MiscGetListener {
   /** the steering motor is powered through a separate battery.
    * due to abrupt maneuvers that require peak power consumption
    * we tolerate voltage drops below a threshold for a short period of time */
@@ -40,7 +38,6 @@ public final class MiscEmergencyModule extends EmergencyModule<RimoPutEvent> imp
   public void getEvent(MiscGetEvent miscGetEvent) {
     if (SteerConfig.GLOBAL.operatingVoltageClip().isInside(miscGetEvent.getSteerBatteryVoltage()))
       watchdog_steerVoltage.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
-    isBlown |= miscGetEvent.isEmergency(); // comm timeout, or manual switch
   }
 
   /***************************************************/

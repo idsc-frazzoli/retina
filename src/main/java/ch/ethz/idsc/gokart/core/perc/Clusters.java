@@ -6,7 +6,7 @@ import java.util.List;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.Unprotect;
+import ch.ethz.idsc.tensor.io.Primitives;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -27,8 +27,8 @@ public enum Clusters {
   ;
   /** @param matrix
    * @return tensor of clusters */
-  // TODO remove print outs. provide timing and properties in separate class if necessary
-  // TODO also handle empty input
+  // TODO VC remove print outs. provide timing and properties in separate class if necessary
+  // TODO VC also handle empty input
   public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
@@ -61,20 +61,10 @@ public enum Clusters {
   }
 
   static Database sample(Tensor matrix) {
-    double[][] data = fromMatrix(matrix);
+    double[][] data = Primitives.toDoubleArray2D(matrix);
     DatabaseConnection databaseConnection = new ArrayAdapterDatabaseConnection(data);
     Database database = new StaticArrayDatabase(databaseConnection, null);
     database.initialize();
     return database;
-  }
-
-  // TODO TENSOR V052
-  static double[][] fromMatrix(Tensor matrix) {
-    final int cols = Unprotect.dimension1(matrix);
-    double[][] array = new double[matrix.length()][cols];
-    for (int row = 0; row < matrix.length(); ++row)
-      for (int col = 0; col < cols; ++col)
-        array[row][col] = matrix.Get(row, col).number().doubleValue();
-    return array;
   }
 }

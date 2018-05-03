@@ -35,9 +35,12 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
   protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  /** the imu sampling rate is 1000[Hz], the vlp16 revolution rate is configured to 20[Hz]
+   * that means per lidar scan there are 50 samples from the imu */
+  private static final int SAMPLES = 50;
   // ---
   private Tensor _model = null;
-  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, 50); // TODO document magic const
+  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, SAMPLES);
   private int gyro_index = 0;
   private final SlamScore slamScore;
   public static final int MIN_POINTS = 250;

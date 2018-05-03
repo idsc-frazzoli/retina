@@ -23,24 +23,14 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-// TODO pose quality check could be an independent fuse module preventing autonomous modes
 public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
-  /** until 20180226 the curve for trajectory pursuit was
-   * DubendorfCurve.OVAL
-   * 
-   * due to new safety structure, the curve made a bit smaller and shifted slightly
-   * in the direction away from the container. the new curve is
-   * DubendorfCurve.OVAL_SHIFTED
-   * 
-   * both trajectories are in clockwise direction */
-  public static final Tensor CURVE = DubendorfCurve.EIGHT_HYPERLOOP;
   public static final Clip VALID_RANGE = SteerConfig.GLOBAL.getAngleLimit();
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  private Optional<Tensor> optionalCurve = Optional.of(CURVE);
+  private Optional<Tensor> optionalCurve = Optional.empty();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
 

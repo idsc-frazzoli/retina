@@ -17,76 +17,81 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
-/** prevents acceleration if something is in the way
+/** Important: the module requires the steering to be calibrated.
+ * 
+ * prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-public final class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
+@SafetyCritical
+abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = SensorsConfig.GLOBAL.vlp16SpacialLcmHandler();
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  private ClearanceTracker clearanceTracker;
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
+      = SimpleSpacialObstaclePredicate.createVlp16();
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  private final SpacialXZObstaclePredicate spacialObstaclePredicate;
-
-  public Vlp16ClearanceModule() {
-    spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
-  }
+  private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected final void first() throws Exception {
     vlp16SpacialLcmHandler.lidarSpacialProvider.addListener(this);
     vlp16SpacialLcmHandler.startSubscriptions();
     gokartStatusLcmClient.addListener(this);
     gokartStatusLcmClient.startSubscriptions();
+    protected_first();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  protected void last() {
+  protected final void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
+    protected_last();
     vlp16SpacialLcmHandler.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
   }
 
+  void protected_first() {
+    // ---
+  }
+
+  void protected_last() {
+    // ---
+  }
+
   /***************************************************/
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+  public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    if (Objects.nonNull(_clearanceTracker)) {
-      float x = lidarSpacialEvent.coords[0];
-      float z = lidarSpacialEvent.coords[2];
-      if (spacialObstaclePredicate.isObstacle(x, z)) {
-        Tensor local = Tensors.vectorDouble( //
-            lidarSpacialEvent.coords[0], //
-            lidarSpacialEvent.coords[1]);
-        if (_clearanceTracker.probe(local))
-          penaltyTimeout.flagPenalty();
-      }
-    }
+    float x = lidarSpacialEvent.coords[0];
+    float z = lidarSpacialEvent.coords[2];
+    if (spacialXZObstaclePredicate.isObstacle(x, z) && //
+        _clearanceTracker.isObstructed(lidarSpacialEvent.getXY()))
+      penaltyTimeout.flagPenalty();
   }
 
   @Override // from GokartStatusListener
-  public void getEvent(GokartStatusEvent gokartStatusEvent) {
+  public final void getEvent(GokartStatusEvent gokartStatusEvent) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      clearanceTracker = new ClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
+      clearanceTracker = new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
     } else
-      clearanceTracker = null;
+      clearanceTracker = EmptyClearanceTracker.INSTANCE;
   }
 
   @Override // from RimoPutProvider
-  public Optional<RimoPutEvent> putEvent() {
+  public final Optional<RimoPutEvent> putEvent() {
     boolean status = false;
     status |= Objects.isNull(clearanceTracker);
     status |= penaltyTimeout.isPenalty();
-    return Optional.ofNullable(status ? RimoPutEvent.PASSIVE : null);
+    return Optional.ofNullable(status ? penaltyAction() : null);
   }
+
+  abstract RimoPutEvent penaltyAction();
 }

@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -46,7 +47,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
         stringBuilder.append(String.format(" demand_pos = %d\n", linmotGetEvent.demand_position));
         stringBuilder.append(String.format(" windingT_1 = %s\n", linmotGetEvent.getWindingTemperature1().map(Round._1)));
         stringBuilder.append(String.format(" windingT_2 = %s\n", linmotGetEvent.getWindingTemperature2().map(Round._1)));
-        System.out.println(stringBuilder);
+        // System.out.println(stringBuilder); // <-- show linmot status (don't delete line)
       }
       final boolean status = linmotGetEvent.isOperational();
       if (!isFused) {
@@ -83,7 +84,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
         stringBuilder.append(String.format(" max_velocity = %d\n", linmotPutEvent.max_velocity));
         stringBuilder.append(String.format(" acceleration = %d\n", linmotPutEvent.acceleration));
         stringBuilder.append(String.format(" deceleration = %d\n", linmotPutEvent.deceleration));
-        System.out.println(stringBuilder);
+        // System.out.println(stringBuilder); // <-- show linmot status (don't delete line)
       }
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
@@ -102,6 +103,8 @@ public class LinmotStatusTable implements OfflineTableSupplier {
   public Tensor getTable() {
     if (!isFused)
       throw new RuntimeException("not fused");
+    if (Objects.isNull(failure_index))
+      return Tensors.empty();
     return tableBuilder.toTable().extract(failure_index - 60, failure_index + 20);
   }
 }

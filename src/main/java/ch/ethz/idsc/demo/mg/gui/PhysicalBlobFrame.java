@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 
-// provides a BufferedImage to visualize a list of PhysialBlob objects
+/** provides a BufferedImage to visualize a list of PhysialBlob objects */
 public class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private final BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_INDEXED);
@@ -24,17 +24,22 @@ public class PhysicalBlobFrame {
     clearImage();
   }
 
-  // resets all pixel to grey
+  /** resets all pixel to grey */
   public void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  // simple fct to be replaced later
+  /** simple fct to be replaced later
+   * 
+   * @return */
   public BufferedImage getFrame() {
     return bufferedImage;
   }
 
-  // paint physical Blobs
+  /** paint physical Blobs
+   * 
+   * @param physicalBlobs
+   * @return */
   public BufferedImage overlayPhysicalBlobs(List<PhysicalBlob> physicalBlobs) {
     for (int i = 0; i < physicalBlobs.size(); i++) {
       drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.BLACK);
@@ -42,8 +47,12 @@ public class PhysicalBlobFrame {
     return bufferedImage;
   }
 
-  // draws an ellipse representing a PhysicalBlob object onto a Graphics2D object
-  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob blob, Color color) {
+  /** draws an ellipse representing a PhysicalBlob object onto a Graphics2D object
+   * 
+   * @param graphics
+   * @param blob
+   * @param color */
+  private static void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob blob, Color color) {
     double[] imageCoord = convertWorldToImageCoord(blob.getPos());
     // AffineTransform old = graphics.getTransform();
     Ellipse2D ellipse = new Ellipse2D.Double(imageCoord[0], imageCoord[1], 50, 50);
@@ -52,8 +61,11 @@ public class PhysicalBlobFrame {
     // graphics.setTransform(old);
   }
 
-  // this defines which part of the physical world is shown in the image
-  private double[] convertWorldToImageCoord(double[] physicalPos) {
+  /** this defines which part of the physical world is shown in the image
+   * 
+   * @param physicalPos
+   * @return */
+  private static double[] convertWorldToImageCoord(double[] physicalPos) {
     double[] imageCoord = new double[2];
     imageCoord[0] = 100 * physicalPos[0] + 50;
     imageCoord[1] = 100 * physicalPos[1] + 50;

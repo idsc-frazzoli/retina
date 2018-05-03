@@ -34,16 +34,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final AccumulatedEventFrame[] eventFrames = new AccumulatedEventFrame[3]; // perception module visualization frames
   private final PhysicalBlobFrame[] physicalFrames = new PhysicalBlobFrame[3]; // control module visualization frames
   // performance evaluation
-  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("labeledFeatures.dat"); // ground truth file for tracking evaluator
-  // private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile, track);
+  private final boolean evaluatePerformance = true;
+  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("Dubi9e_labeledFeatures.csv"); // ground truth file for tracking evaluator
+  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile);
   // pipeline configuration
-  private final int maxDuration = 10000; // [ms]
+  private final int maxDuration = 20000; // [ms]
   private final int backgroundActivityFilterTime = 200; // [us] the shorter the more is filtered
   private final int imageInterval = 33; // [ms] visualization interval
   private final int savingInterval = 1000; // [ms] image saving interval
   private final boolean useFilter = true;
   // image saving
-  private boolean saveImages = true;
+  private boolean saveImages = false;
   private String imagePrefix = "Dubi9e"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
   private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
   private int imageCount = 0;
@@ -85,14 +86,16 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     ++eventCount;
     // visualization of raw events
     eventFrames[0].receiveEvent(davisDvsEvent);
+    // evaluation tool
+    if (evaluatePerformance && evaluator.isGroundTruthAvailable(davisDvsEvent)) {
+      evaluator.evaluatePerformance(blobSelector.getSelectedBlobs());
+    }
     // filtering returns a boolean
     if (eventFiltering.filterPipeline(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
       // control pipeline
       tracking.receiveEvent(davisDvsEvent);
       blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
       transformer.transformSelectedBlobs(blobSelector.getSelectedBlobs());
-      // evaluation tool
-      // evaluator.receiveEvent(davisDvsEvent);
       // visualization
       eventFrames[1].receiveEvent(davisDvsEvent);
       eventFrames[2].receiveEvent(davisDvsEvent);

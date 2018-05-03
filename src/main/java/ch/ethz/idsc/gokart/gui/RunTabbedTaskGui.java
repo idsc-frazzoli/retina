@@ -10,16 +10,18 @@ import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
-import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyModule;
-import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16ActiveSlowingModule;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16ClearanceModule;
+import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
+import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
-import ch.ethz.idsc.gokart.core.pure.PurePursuitModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -47,51 +49,58 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, // move to DEV list
+      GokartPoseLcmModule.class, //
       LoggerModule.class, //
-      SteerEmergencyModule.class, //
-      Vlp16ClearanceModule.class //
+      SteerCalibrationWatchdog.class, // <- DON'T REMOVE
+      MiscEmergencyWatchdog.class, // <- DON'T REMOVE
+      Vlp16PassiveSlowing.class //
+  );
+  static final List<Class<?>> MODULES_CFG = Arrays.asList( //
+      AutoboxIntrospectionModule.class, // actuation monitoring
+      GlobalViewLcmModule.class, // initialize localization
+      AutoboxCompactModule.class, // initialize actuation
+      ParametersModule.class // configure parameters
+  );
+  static final List<Class<?>> MODULES_JOY = Arrays.asList( //
+      //
+      JoystickGroupModule.class, //
+      SysidSignalsModule.class, //
+      RimoThrustJoystickModule.class // UNDER EVALUATION
+  );
+  static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      FigureEightModule.class, //
+      FigureOvalModule.class, //
+      GokartTrajectoryModule.class //
+  );
+  static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
+      SteerBatteryWatchdog.class, //
+      LinmotCoolingModule.class, //
+      LinmotTakeoverModule.class, //
+      LinmotEmergencyModule.class, //
+      // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
+      DavisImuWatchdog.class, //
+      DeadManSwitchModule.class // joystick
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
-      ParametersModule.class, //
-      AutoboxIntrospectionModule.class, //
-      AutoboxCompactModule.class, //
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
-      GlobalViewLcmModule.class, //
       DavisDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
       PresenterLcmModule.class
   // DavisOverviewModule.class //
   );
-  static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      MiscEmergencyModule.class, //
-      LinmotCoolingModule.class, //
-      LinmotTakeoverModule.class, //
-      Vlp16ActiveSlowingModule.class, //
-      DavisImuWatchdog.class //
-  );
-  static final List<Class<?>> MODULES_JOY = Arrays.asList( //
-      LinmotEmergencyModule.class, //
-      DeadManSwitchModule.class, // joystick
-      JoystickGroupModule.class, //
-      SysidSignalsModule.class //
-  );
-  static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      PurePursuitModule.class, //
-      GokartTrajectoryModule.class //
-  );
 
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui taskTabGui = new TabbedTaskGui(PROPERTIES);
     taskTabGui.tab("dev", MODULES_DEV);
-    taskTabGui.tab("lab", MODULES_LAB);
-    taskTabGui.tab("fuse", MODULES_FUSE);
+    taskTabGui.tab("cfg", MODULES_CFG);
     taskTabGui.tab("joy", MODULES_JOY);
     taskTabGui.tab("aut", MODULES_AUT);
+    taskTabGui.tab("fuse", MODULES_FUSE);
+    taskTabGui.tab("lab", MODULES_LAB);
     wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }

@@ -49,7 +49,7 @@ public class SteerConfig implements Serializable {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 
-  /** @return scalar without unit but with interpretation in radians,
+  /** @return scalar without unit but with interpretation in radians
    * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
   public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
     return UnitSystem.SI().apply( //
