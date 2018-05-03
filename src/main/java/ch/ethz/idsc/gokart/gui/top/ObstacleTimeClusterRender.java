@@ -61,6 +61,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       }
     }
   };
+  private Tensor meanFour=Tensors.empty();
 
   public ObstacleTimeClusterRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -100,6 +101,10 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
               graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
           }
+//          meanFour.append(mean);
+//          System.out.println(meanFour);
+//          if (!Tensors.isEmpty(meanFour))
+//            computeCorrespondences(meanFour);
           ++i;
         }
       }
@@ -121,6 +126,18 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       }
     }
     geometricLayer.popMatrix();
+  }
+
+  public static Boolean computeCorrespondences(Tensor means) {
+    for (Tensor x : means) {
+      for (Tensor y : means) {
+        if ((x.get(1) == y.get(2))) {
+          System.out.println(x.get(1));
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override // from ActionListener
