@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +13,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
 import ch.ethz.idsc.owl.bot.r2.ImageCostFunction;
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
@@ -124,17 +124,18 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       }
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
-      StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
       final List<TrajectorySample> head;
       if (Objects.isNull(trajectory)) { // has prev traj ?
         // no: plan from current position to "best waypoint")
+        StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
         head = Arrays.asList(TrajectorySample.head(stateTime));
       } else {
         // yes: find closest point on previous traj+delay... then plan to "best waypoint"
         Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), xya)));
         int closestIdx = ArgMin.of(distances);
         StateTime closestStateTime = trajectory.get(closestIdx).stateTime();
-        head = getTrajectoryUntil(closestStateTime, closestIdx, Magnitude.SECOND.apply(TrajectoryConfig.GLOBAL.planningPeriod));
+        head = getTrajectoryUntil(trajectory, closestIdx, //
+            closestStateTime.time().add(Magnitude.SECOND.apply(TrajectoryConfig.GLOBAL.planningPeriod)));
       }
       // find a goal waypoint that is located at the horizonDistance
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
@@ -167,13 +168,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     System.err.println("no curve because no pose");
   }
 
-  private List<TrajectorySample> getTrajectoryUntil(StateTime tail, int tailIdx, Scalar delay) {
-    Scalar tail_delay = tail.time().add(delay);
-    if (Objects.isNull(trajectory))
-      return Collections.singletonList(TrajectorySample.head(new StateTime(tail.state(), tail_delay)));
+  private static List<TrajectorySample> getTrajectoryUntil( //
+      List<TrajectorySample> trajectory, int tailIdx, Scalar abs_cutoff) {
     return trajectory.stream() //
         .skip(tailIdx) //
-        .filter(trajectorySample -> Scalars.lessEquals(trajectorySample.stateTime().time(), tail_delay)) //
+        .filter(trajectorySample -> Scalars.lessEquals(trajectorySample.stateTime().time(), abs_cutoff)) //
         .collect(Collectors.toList());
   }
 
@@ -195,10 +194,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
       trajectory = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       Tensor curve = Tensor.of(trajectory.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
+      TrajectoryRender.TRAJECTORY = trajectory;
       purePursuitModule.setCurve(Optional.of(curve));
       // System.out.println("yey! assigned curve length == " + curve.length());
     } else {
       // failure to reach goal
+      TrajectoryRender.TRAJECTORY = null;
       purePursuitModule.setCurve(Optional.empty());
     }
   }

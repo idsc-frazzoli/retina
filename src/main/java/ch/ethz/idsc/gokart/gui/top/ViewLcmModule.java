@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.util.List;
 
 import javax.swing.WindowConstants;
 
@@ -14,6 +15,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -25,6 +27,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 abstract class ViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  public static List<TrajectorySample> plannedTrajectory;
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   // private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
@@ -109,6 +112,10 @@ abstract class ViewLcmModule extends AbstractModule {
     { // TODO not generic
       CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    }
+    {
+      TrajectoryRender trajectoryRender = new TrajectoryRender();
+      viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     // {
     // CurveRender curveRender = new CurveRender(FigureOvalModule.CURVE);
