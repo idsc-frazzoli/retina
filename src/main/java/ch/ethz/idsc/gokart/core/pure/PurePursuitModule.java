@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.MiscJoystickModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -32,6 +33,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private Optional<Tensor> optionalCurve = Optional.empty();
   // ---
+  private MiscJoystickModule miscJoystickModule = new MiscJoystickModule();
   private GokartPoseEvent gokartPoseEvent = null;
 
   /** function for trajectory planner
@@ -52,10 +54,12 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
     joystickLcmProvider.startSubscriptions();
     purePursuitRimo.start();
     purePursuitSteer.start();
+    miscJoystickModule.first();
   }
 
   @Override // from AbstractModule
   protected void last() {
+    miscJoystickModule.last();
     purePursuitRimo.stop();
     purePursuitSteer.stop();
     gokartPoseLcmClient.stopSubscriptions();

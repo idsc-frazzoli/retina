@@ -30,4 +30,6 @@ public interface GokartJoystickInterface {
   boolean isPassive();
 
   boolean isAutonomousPressed();
+
+  boolean isResetPressed();
 }
