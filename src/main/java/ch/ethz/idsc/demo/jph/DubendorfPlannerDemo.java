@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
-import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegion;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.CarEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
@@ -44,7 +43,7 @@ public class DubendorfPlannerDemo {
   }
 
   static TrajectoryRegionQuery createCarQuery(Region<Tensor> region) {
-    Se2PointsVsRegion se2PointsVsRegion = Se2PointsVsRegions.line(Tensors.vector(0.2, 0.1, 0, -0.1), region);
+    Region<Tensor> se2PointsVsRegion = Se2PointsVsRegions.line(Tensors.vector(0.2, 0.1, 0, -0.1), region);
     return SimpleTrajectoryRegionQuery.timeInvariant(se2PointsVsRegion);
   }
 
