@@ -26,6 +26,7 @@ import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.MultiCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
+import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
@@ -45,7 +46,6 @@ import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -83,6 +83,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   private PlannerConstraint plannerConstraint;
   private Tensor goalRadius;
   MotionPlanWorker motionPlanWorker;
+  private Region<Tensor> unionRegion;
 
   @Override // from AbstractClockedModule
   protected void first() throws Exception {
@@ -97,12 +98,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
     ImageRegion imageRegion = new ImageRegion(tensor, range, false);
     // TODO obtain magic const from footprint
     Region<Tensor> region = Se2PointsVsRegions.line(Tensors.vector(-0.3, 0.8, 1.77), imageRegion);
-    Region<Tensor> polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle
-    Region<Tensor> union = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
+    Region<Tensor> polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
+    unionRegion = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
     // ---
     waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
-    plannerConstraint = RegionConstraints.timeInvariant(union);
+    plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO));
+    costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
@@ -130,23 +132,19 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
         StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
         head = Arrays.asList(TrajectorySample.head(stateTime));
       } else {
-        // yes: find closest point on previous traj+delay... then plan to "best waypoint"
-        Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), xya)));
-        int closestIdx = ArgMin.of(distances);
-        StateTime closestStateTime = trajectory.get(closestIdx).stateTime();
-        head = getTrajectoryUntil(trajectory, closestIdx, //
-            closestStateTime.time().add(Magnitude.SECOND.apply(TrajectoryConfig.GLOBAL.planningPeriod)));
+        // yes: find closest point on previous traj+cut... then plan to "best waypoint"
+        head = getTrajectoryUntil(trajectory, xya, RealScalar.of(3)); // TODO cutoffDist should depend on gokart speed
       }
       // find a goal waypoint that is located at the horizonDistance
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
       int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
       if (0 <= wpIdx) {
         Tensor goal = waypoints.get(wpIdx);
-        while (Scalars.lessThan(SE2WRAP.distance(xya, goal), TrajectoryConfig.GLOBAL.horizonDistance)) {
+        while (Scalars.lessThan(SE2WRAP.distance(xya, goal), TrajectoryConfig.GLOBAL.horizonDistance) || unionRegion.isMember(goal)) {
           wpIdx = (wpIdx + 1) % waypoints.length();
           goal = waypoints.get(wpIdx);
         }
-        System.out.format("goal index = " + wpIdx + ",  distance = %.2f", SE2WRAP.distance(xya, goal).number().floatValue());
+        System.out.format("goal index = " + wpIdx + ",  distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
         Collection<Flow> controls = CARFLOWS.getFlows(9); // TODO magic const
         GoalInterface goalInterface = Se2MinTimeGoalManager.create(goal, goalRadius, controls);
         GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
@@ -169,10 +167,14 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
   }
 
   private static List<TrajectorySample> getTrajectoryUntil( //
-      List<TrajectorySample> trajectory, int tailIdx, Scalar abs_cutoff) {
+      List<TrajectorySample> trajectory, Tensor pose, Scalar cutoffDistHead) {
+    Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), pose)));
+    int closestIdx = ArgMin.of(distances);
     return trajectory.stream() //
-        .skip(tailIdx) //
-        .filter(trajectorySample -> Scalars.lessEquals(trajectorySample.stateTime().time(), abs_cutoff)) //
+        .skip(Math.max((closestIdx - 5), 0)) //
+        .filter(trajectorySample -> Scalars.lessEquals(SE2WRAP.distance(trajectory.get(closestIdx).stateTime().state(), //
+            trajectorySample.stateTime().state()), cutoffDistHead)) //
+        // .limit(headIdx) //
         .collect(Collectors.toList());
   }
 
@@ -188,11 +190,15 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements //
 
   @Override // from GlcPlannerCallback
   public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
+    System.out.println("head-length: " + head.size());
     // System.out.println("CALLBACK ");
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) {
-      trajectory = //
+      // trajectory = //
+      // GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
+      List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
+      trajectory = Trajectories.glue(head, tail);
       Tensor curve = Tensor.of(trajectory.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
       TrajectoryRender.TRAJECTORY = trajectory;
       purePursuitModule.setCurve(Optional.of(curve));
