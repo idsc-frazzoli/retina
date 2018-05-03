@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateJoystickTable;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -19,11 +19,13 @@ enum RimoRateAnalysis {
     // _20180307T150715_28f09b86 ok but needs extraction
     // _20180307T151633_28f09b86 no extraction needed
     // _20180307T154859_0cd18c6b no extraction needed (with stops)
-    File file = DatahakiLogFileLocator.file(GokartLogFile._20180307T154859_0cd18c6b);
-    file = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
-    file = UserHome.file("datasets/gokart_logs/20180423T181849_633cc6e6.lcm.00");
+    // File file = DatahakiLogFileLocator.file(GokartLogFile._20180307T154859_0cd18c6b);
+    // file = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
+    // file = UserHome.file("datasets/gokart_logs/20180423T181849_633cc6e6.lcm.00");
     RimoRateJoystickTable rimoRateTable = new RimoRateJoystickTable(Quantity.of(0.01, "s"));
+    LogFile logFile = GokartLogFile._20180427T121545_22662115;
+    File file = AleLogFileLocator.file(logFile);
     OfflineLogPlayer.process(file, rimoRateTable);
-    Export.of(UserHome.file("20180423T181849_633cc6e6.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file(logFile.getTitle() + ".csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
   }
 }

@@ -3,11 +3,7 @@ package ch.ethz.idsc.demo.az;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.function.Supplier;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -19,25 +15,6 @@ import ch.ethz.idsc.tensor.io.Export;
 
 enum OfflineProcessing {
   ;
-  private static final File LOG_ROOT = new File("/home/ale/datasets/gokart_logs/");
-  
-  public static void handle(Supplier<OfflineTableSupplier> supplier) throws IOException {
-    handle(Arrays.asList(GokartLogFile.values()), supplier);
-  }
-
-  public static void handle(Collection<? extends LogFileInterface> collection, Supplier<OfflineTableSupplier> supplier) //
-      throws IOException {
-    for (LogFileInterface logFileInterface : collection) {
-      File file = logFileInterface.file(LOG_ROOT + _20180427T121545_22662115);
-      if (file.isFile()) {
-        System.out.println(logFileInterface.title());
-        single(file, supplier.get(), logFileInterface.title());
-      } else
-        System.err.println(logFileInterface);
-      // break;
-    }
-  }
-
   public static void single(File file, OfflineTableSupplier offlineTableSupplier, String title) throws IOException {
     OfflineLogPlayer.process(file, offlineTableSupplier);
     Tensor table = offlineTableSupplier.getTable();

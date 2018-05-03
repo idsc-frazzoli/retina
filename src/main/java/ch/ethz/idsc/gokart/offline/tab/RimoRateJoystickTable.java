@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.offline.tab;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -18,6 +19,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.lcm.TensorFloatLcm;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -56,6 +58,11 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
     if (channel.equals("joystick.generic_xbox_pad")) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       gji = (GokartJoystickInterface) joystickEvent;
+    } else //
+    if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
+      byteBuffer.order(ByteOrder.BIG_ENDIAN);
+      Tensor tensor = TensorFloatLcm.receive(byteBuffer);
+
     }
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated() && Objects.nonNull(gji)) {
