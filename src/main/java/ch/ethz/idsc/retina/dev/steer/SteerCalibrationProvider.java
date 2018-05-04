@@ -35,8 +35,8 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
           SteerPutEvent.createOn(ampli.Get(index).negate()));
   }
 
-  @Override
-  protected boolean hintCalibrationRequired() {
+  @Override // from AutoboxCalibrationProvider
+  protected boolean hintScheduleRequired() {
     return false;
   }
 }

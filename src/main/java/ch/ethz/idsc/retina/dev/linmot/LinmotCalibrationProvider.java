@@ -38,7 +38,7 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
   }
 
   @Override // from AutoboxCalibrationProvider
-  protected boolean hintCalibrationRequired() {
+  protected boolean hintScheduleRequired() {
     return !isOperational;
   }
 

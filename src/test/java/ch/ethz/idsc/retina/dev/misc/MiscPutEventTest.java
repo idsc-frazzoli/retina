@@ -5,6 +5,11 @@ import junit.framework.TestCase;
 
 public class MiscPutEventTest extends TestCase {
   public void testSimple() {
-    assertEquals(MiscPutEvent.PASSIVE.length(), 6);
+    assertEquals(MiscPutEvent.FALLBACK.resetConnection, 0);
+    assertEquals(MiscPutEvent.FALLBACK.length(), 6);
+  }
+
+  public void testResetcon() {
+    assertEquals(MiscPutEvent.RESETCON.resetConnection, 1);
   }
 }

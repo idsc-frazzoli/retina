@@ -100,13 +100,13 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
    * Exception: {@link SteerCalibrationProvider}
    * 
    * @return true if calibration is known to be required */
-  public final boolean isCalibrationSuggested() {
-    return isIdle() && hintCalibrationRequired();
+  public final boolean isScheduleSuggested() {
+    return isIdle() && hintScheduleRequired();
   }
 
   /** function should return false if no information is present
    * to determine state of actuator
    * 
    * @return true if calibration is known to be required */
-  protected abstract boolean hintCalibrationRequired();
+  protected abstract boolean hintScheduleRequired();
 }

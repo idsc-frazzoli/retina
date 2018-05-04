@@ -20,13 +20,11 @@ public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEven
 
   @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
-    MiscPutEvent miscPutEvent = new MiscPutEvent();
-    miscPutEvent.resetConnection = 1;
-    eventUntil(now_ms() + DURATION_MS, miscPutEvent);
+    eventUntil(now_ms() + DURATION_MS, MiscPutEvent.RESETCON);
   }
 
   @Override // from AutoboxCalibrationProvider
-  protected boolean hintCalibrationRequired() {
+  protected boolean hintScheduleRequired() {
     return isCommTimeout;
   }
 

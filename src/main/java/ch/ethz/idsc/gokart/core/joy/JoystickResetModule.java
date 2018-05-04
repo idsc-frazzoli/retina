@@ -29,10 +29,10 @@ public class JoystickResetModule extends AbstractModule implements JoystickListe
     GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
     if (gokartJoystickInterface.isResetPressed()) {
       // reset misc comm
-      if (MiscIgnitionProvider.INSTANCE.isCalibrationSuggested())
+      if (MiscIgnitionProvider.INSTANCE.isScheduleSuggested())
         MiscIgnitionProvider.INSTANCE.schedule();
       // calibate linmot
-      if (LinmotCalibrationProvider.INSTANCE.isCalibrationSuggested())
+      if (LinmotCalibrationProvider.INSTANCE.isScheduleSuggested())
         LinmotCalibrationProvider.INSTANCE.schedule();
     }
   }

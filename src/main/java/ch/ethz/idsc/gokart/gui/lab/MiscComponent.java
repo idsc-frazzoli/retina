@@ -116,12 +116,13 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
-    MiscPutEvent miscPutEvent = new MiscPutEvent();
-    miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
-    miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
-    miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
-    miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
-    miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
+    MiscPutEvent miscPutEvent = new MiscPutEvent( //
+        (byte) 0, // no reset connection
+        spinnerLabelRimoL.getValue().getByte(), //
+        spinnerLabelRimoR.getValue().getByte(), //
+        spinnerLabelLinmot.getValue().getByte(), //
+        spinnerLabelSteer.getValue().getByte(), //
+        spinnerLabelLed.getValue().getByte());
     return Optional.of(miscPutEvent);
   }
 
