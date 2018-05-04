@@ -10,13 +10,14 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
+import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -28,9 +29,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class LinmotComponent extends //
-    AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> implements //
-    StartAndStoppable {
+/* package */ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
@@ -115,6 +114,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from GetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
+    linmotInitButton.updateEnabled();
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
     for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values()) {
@@ -169,13 +169,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     // sliderExtDec.jSlider.setValue(linmotPutEvent.deceleration);
   }
 
-  @Override // from StartAndStoppable
-  public void start() {
-    linmotInitButton.start();
-  }
-
-  @Override // from StartAndStoppable
-  public void stop() {
-    linmotInitButton.stop();
+  @Override
+  protected AutoboxSocket<LinmotGetEvent, LinmotPutEvent> getSocket() {
+    return LinmotSocket.INSTANCE;
   }
 }

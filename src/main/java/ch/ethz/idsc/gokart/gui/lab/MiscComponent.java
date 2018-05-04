@@ -11,17 +11,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class MiscComponent extends //
-    AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> implements StartAndStoppable {
+/* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -88,6 +88,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
+    miscResetButton.updateEnabled();
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
@@ -126,13 +127,8 @@ import ch.ethz.idsc.tensor.Scalar;
     return Optional.of(miscPutEvent);
   }
 
-  @Override // from StartAndStoppable
-  public void start() {
-    miscResetButton.start();
-  }
-
-  @Override // from StartAndStoppable
-  public void stop() {
-    miscResetButton.stop();
+  @Override
+  public AutoboxSocket<MiscGetEvent, MiscPutEvent> getSocket() {
+    return MiscSocket.INSTANCE;
   }
 }
