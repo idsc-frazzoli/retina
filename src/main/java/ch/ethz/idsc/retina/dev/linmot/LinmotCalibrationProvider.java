@@ -2,13 +2,18 @@
 package ch.ethz.idsc.retina.dev.linmot;
 
 import ch.ethz.idsc.gokart.core.AutoboxCalibrationProvider;
+import ch.ethz.idsc.gokart.core.GetListener;
 
 /** the procedure re-initializes linmot brake from any initial condition.
  * the procedure leaves the linmot in positioning mode so that
  * position commands are executed */
-public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<LinmotPutEvent> {
+public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<LinmotPutEvent> //
+    implements GetListener<LinmotGetEvent> {
+  /** instance is a critical member of {@link LinmotSocket} */
   public static final LinmotCalibrationProvider INSTANCE = new LinmotCalibrationProvider();
   // ---
+  /** by default no calibration is necessary */
+  private boolean isOperational = true;
 
   private LinmotCalibrationProvider() {
   }
@@ -30,5 +35,15 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
     /** the last "position" command with all ratings == 0 is required */
     eventUntil(timestamp += 200, //
         LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
+  }
+
+  @Override // from AutoboxCalibrationProvider
+  protected boolean hintCalibrationRequired() {
+    return !isOperational;
+  }
+
+  @Override // from GetListener
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    isOperational = linmotGetEvent.isOperational();
   }
 }

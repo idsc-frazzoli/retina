@@ -6,9 +6,11 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.core.DataEvent;
 
 /** misc information sent to micro-autobox */
+// TODO make immutable!
 public class MiscPutEvent extends DataEvent {
   private static final int LENGTH = 6;
-  public static final MiscPutEvent PASSIVE = new MiscPutEvent();
+  // ---
+  static final MiscPutEvent PASSIVE = new MiscPutEvent(); // FIXME needs to be immutable!
   // ---
   /** table of values for resetConnection:
    * 0 - for normal operation

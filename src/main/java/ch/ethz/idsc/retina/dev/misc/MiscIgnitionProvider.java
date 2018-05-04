@@ -6,12 +6,17 @@ import ch.ethz.idsc.gokart.core.GetListener;
 
 /** command sent to micro-autobox to acknowledge communication timeout
  * calibration procedure is mandatory to send at the beginning */
-public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEvent> implements GetListener<MiscGetEvent> {
+public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEvent> //
+    implements GetListener<MiscGetEvent> {
   /** instance is critical member of {@link MiscSocket} */
   public static final MiscIgnitionProvider INSTANCE = new MiscIgnitionProvider();
   // ---
   private static final int DURATION_MS = 250;
+  /** by default no calibration is necessary */
   private boolean isCommTimeout = false;
+
+  private MiscIgnitionProvider() {
+  }
 
   @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
@@ -20,16 +25,13 @@ public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEven
     eventUntil(now_ms() + DURATION_MS, miscPutEvent);
   }
 
-  @Override // from GetListener
-  public void getEvent(MiscGetEvent getEvent) {
-    isCommTimeout = getEvent.isCommTimeout();
+  @Override // from AutoboxCalibrationProvider
+  protected boolean hintCalibrationRequired() {
+    return isCommTimeout;
   }
 
-  /** the application layer is discouraged to {@link #schedule()}
-   * the calibration procedure unless {@link #isCommTimeout()} returns true
-   * 
-   * @return true if comm reset is required */
-  public boolean isCommTimeout() {
-    return isCommTimeout;
+  @Override // from GetListener
+  public void getEvent(MiscGetEvent miscGetEvent) {
+    isCommTimeout = miscGetEvent.isCommTimeout();
   }
 }

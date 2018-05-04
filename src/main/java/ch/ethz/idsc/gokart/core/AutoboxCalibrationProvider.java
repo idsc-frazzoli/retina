@@ -93,4 +93,20 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> implement
   protected static long now_ms() {
     return System.currentTimeMillis();
   }
+
+  /** the application layer is discouraged to {@link #schedule()}
+   * the calibration procedure unless function returns true
+   * 
+   * Exception: {@link SteerCalibrationProvider}
+   * 
+   * @return true if calibration is known to be required */
+  public final boolean isCalibrationSuggested() {
+    return isIdle() && hintCalibrationRequired();
+  }
+
+  /** function should return false if no information is present
+   * to determine state of actuator
+   * 
+   * @return true if calibration is known to be required */
+  protected abstract boolean hintCalibrationRequired();
 }
