@@ -15,13 +15,13 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
   private final JoystickLcmProvider recentJoystickLcmClient = JoystickConfig.GLOBAL.createProvider();
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  public final void first() throws Exception {
     recentJoystickLcmClient.startSubscriptions();
     protected_first();
   }
 
   @Override // from AbstractModule
-  protected final void last() {
+  public final void last() {
     protected_last();
     recentJoystickLcmClient.stopSubscriptions();
   }

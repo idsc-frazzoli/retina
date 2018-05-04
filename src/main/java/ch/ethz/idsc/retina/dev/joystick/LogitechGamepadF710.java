@@ -154,4 +154,9 @@ public final class LogitechGamepadF710 extends JoystickEvent implements GokartJo
   public boolean isAutonomousPressed() {
     throw new RuntimeException();
   }
+
+  @Override
+  public boolean isResetPressed() {
+    throw new RuntimeException();
+  }
 }

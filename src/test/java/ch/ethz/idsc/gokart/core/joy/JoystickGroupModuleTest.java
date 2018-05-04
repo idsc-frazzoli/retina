@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class JoystickGroupModuleTest extends TestCase {
   public void testSize() {
-    assertEquals(new JoystickGroupModule().modules().size(), 3);
+    assertEquals(new JoystickGroupModule().modules().size(), 4);
   }
 
   public void testSimple() throws Exception {

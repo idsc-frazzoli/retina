@@ -31,6 +31,7 @@ public class MiscGetEvent extends DataEvent {
     return emergency != 0;
   }
 
+  // TODO document
   public boolean isCommTimeout() {
     int mask = 1 << MiscEmergencyBit.COMM_TIMEOUT.ordinal();
     return (emergency & mask) == mask;

@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.util.List;
 
 import javax.swing.WindowConstants;
 
@@ -14,6 +15,9 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
+import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -22,9 +26,14 @@ import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  public static List<TrajectorySample> plannedTrajectory;
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   // private final Urg04lxLcmHandler urg04lxLcmHandler = new Urg04lxLcmHandler(GokartLcmChannel.URG04LX_FRONT);
@@ -109,6 +118,17 @@ abstract class ViewLcmModule extends AbstractModule {
     { // TODO not generic
       CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    }
+    {
+      final Tensor waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
+      final Tensor ARROWHEAD = Tensors.matrixDouble( //
+          new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
+      RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));
+      viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
+    }
+    {
+      TrajectoryRender trajectoryRender = new TrajectoryRender();
+      viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     // {
     // CurveRender curveRender = new CurveRender(FigureOvalModule.CURVE);
