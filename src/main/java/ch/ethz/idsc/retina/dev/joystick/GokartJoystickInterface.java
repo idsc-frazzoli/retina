@@ -29,7 +29,9 @@ public interface GokartJoystickInterface {
   /** @return true if none of the manipulators on the joystick are pressed by user */
   boolean isPassive();
 
+  /** @return true when operator authorizes autonomous mode */
   boolean isAutonomousPressed();
 
+  /** @return true when operator authorizes calibration, or reset */
   boolean isResetPressed();
 }

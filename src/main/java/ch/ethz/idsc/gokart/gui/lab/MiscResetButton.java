@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
+// TODO don't implement MiscGetListener and StartAndStoppable
 /* package */ class MiscResetButton implements MiscGetListener, ActionListener, StartAndStoppable {
   private final JButton jButton = new JButton("Reset");
 
