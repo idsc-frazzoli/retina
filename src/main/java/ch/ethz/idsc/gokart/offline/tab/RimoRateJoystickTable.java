@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.lcm.TensorFloatLcm;
+import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -33,6 +33,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 public class RimoRateJoystickTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
+  private final ByteOrder byteOrder;
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
@@ -40,8 +41,11 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
   private GokartStatusEvent gse;
   private GokartJoystickInterface gji;
 
-  public RimoRateJoystickTable(Scalar delta) {
+  /** @param delta
+   * @param byteOrder use BIG_ENDIAN for log files on day: 20180427 */
+  public RimoRateJoystickTable(Scalar delta, ByteOrder byteOrder) {
     this.delta = delta;
+    this.byteOrder = byteOrder;
   }
 
   @Override // from OfflineLogListener
@@ -60,12 +64,15 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
       gji = (GokartJoystickInterface) joystickEvent;
     } else //
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
-      byteBuffer.order(ByteOrder.BIG_ENDIAN);
-      Tensor tensor = TensorFloatLcm.receive(byteBuffer);
-
+      byteBuffer.order(byteOrder);
+      Tensor tensor = VectorFloatBlob.decode(byteBuffer); // TODO not used yet
     }
     if (Scalars.lessThan(time_next, time)) {
-      if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated() && Objects.nonNull(gji)) {
+      if (Objects.nonNull(rge) && //
+          Objects.nonNull(rpe) && //
+          Objects.nonNull(gse) && //
+          gse.isSteerColumnCalibrated() && //
+          Objects.nonNull(gji)) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
         // ---
