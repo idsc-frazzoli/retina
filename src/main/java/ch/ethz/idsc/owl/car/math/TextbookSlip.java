@@ -1,6 +1,8 @@
 // code by edo and jph
 package ch.ethz.idsc.owl.car.math;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -12,7 +14,7 @@ import ch.ethz.idsc.tensor.red.Hypot;
  * straight forward implementation suffers from numerical badness.
  * 
  * Important: use {@link RobustSlip} instead */
-class TextbookSlip implements SlipInterface {
+class TextbookSlip implements SlipInterface, Serializable {
   private static final Scalar EPS = RealScalar.of(1e-8);
   // ---
   private final Scalar mux;
@@ -34,7 +36,7 @@ class TextbookSlip implements SlipInterface {
     muy = mu.multiply(robustDiv(sy, s, EPS)).negate(); // hack !
   }
 
-  @Override
+  @Override // from SlipInterface
   public Tensor slip() {
     return Tensors.of(mux, muy);
   }

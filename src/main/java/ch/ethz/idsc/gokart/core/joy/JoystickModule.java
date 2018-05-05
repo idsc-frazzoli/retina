@@ -12,18 +12,18 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** abstract base class for modules that convert joystick events into actuation */
 /* package */ abstract class JoystickModule<PE> extends AbstractModule implements PutProvider<PE> {
-  private final JoystickLcmProvider recentJoystickLcmClient = JoystickConfig.GLOBAL.createProvider();
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
-    recentJoystickLcmClient.startSubscriptions();
+  public final void first() throws Exception {
+    joystickLcmProvider.startSubscriptions();
     protected_first();
   }
 
   @Override // from AbstractModule
-  protected final void last() {
+  public final void last() {
     protected_last();
-    recentJoystickLcmClient.stopSubscriptions();
+    joystickLcmProvider.stopSubscriptions();
   }
 
   /** function invoked upon start of the module */
@@ -40,7 +40,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 
   @Override // from PutProvider
   public final Optional<PE> putEvent() {
-    Optional<JoystickEvent> optional = recentJoystickLcmClient.getJoystick();
+    Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
     return optional.isPresent() //
         ? translate((GokartJoystickInterface) optional.get())
         : Optional.empty();

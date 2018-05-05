@@ -27,7 +27,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
@@ -103,7 +102,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   protected final void render(Tensor points) {
-    GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+    GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
     geometricLayer.pushMatrix(model);
     geometricLayer.pushMatrix(LIDAR);
     graphics2d.setColor(Color.GREEN);

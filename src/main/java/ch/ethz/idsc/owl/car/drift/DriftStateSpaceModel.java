@@ -1,6 +1,8 @@
 // code by edo
 package ch.ethz.idsc.owl.car.drift;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.owl.math.StateSpaceModel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.Sin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
-public class DriftStateSpaceModel implements StateSpaceModel {
+class DriftStateSpaceModel implements StateSpaceModel, Serializable {
   private final DriftParameters driftParameters;
 
   public DriftStateSpaceModel(DriftParameters driftParameters) {

@@ -46,13 +46,12 @@ public class LinmotGetEvent extends DataEvent {
     winding_temp2 = byteBuffer.getShort();
   }
 
-  /** @return temperature of winding 1 in degree Celsius */
+  /** @return temperature of winding 1 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature1() {
-    // TODO consider not losing precision
     return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
   }
 
-  /** @return temperature of winding 2 in degree Celsius */
+  /** @return temperature of winding 2 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature2() {
     return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
   }

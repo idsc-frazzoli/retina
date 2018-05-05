@@ -19,9 +19,12 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   private MiscSocket() {
     super(MiscGetEvent.LENGTH, LOCAL_PORT);
     // ---
-    addPutProvider(MiscPutFallback.INSTANCE);
-    addPutProvider(MiscIgnitionProvider.INSTANCE);
-    addGetListener(SteerBatteryCharger.INSTANCE);
+    addPutProvider(MiscPutFallback.INSTANCE); // default message: no action
+    // ---
+    addPutProvider(MiscIgnitionProvider.INSTANCE); // calibration procedue
+    addGetListener(MiscIgnitionProvider.INSTANCE); // monitor of comm timeout
+    // ---
+    addGetListener(SteerBatteryCharger.INSTANCE); // steering passive when steering battery is charged
   }
 
   @Override // from AutoboxSocket

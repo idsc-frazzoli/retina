@@ -11,6 +11,10 @@ public enum GokartLcmChannel {
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */
   public static final String POSE_LIDAR = "gokart.pose.lidar";
+  /** current trajectory infos from GokartTrajectoryModule
+   * message is self contained: state, time, flow */
+  public static final String TRAJECTORY_STATETIME = "gokart.planner.trajectory.statetime";
+  // public static final String TRAJECTORY_FLOW = "gokart.planner.trajectory.flow"; // <- not necessary
   // ---
   /** for debugging of rimo rate controller */
   public static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";

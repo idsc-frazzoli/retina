@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.gokart.gui.ControllerInfoPublish;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -166,13 +167,8 @@ import ch.ethz.idsc.tensor.Scalar;
     return Optional.empty();
   }
 
-  @Override // from StartAndStoppable
-  public void start() {
-    steerInitButton.start();
-  }
-
-  @Override // from StartAndStoppable
-  public void stop() {
-    steerInitButton.stop();
+  @Override
+  protected AutoboxSocket<SteerGetEvent, SteerPutEvent> getSocket() {
+    return SteerSocket.INSTANCE;
   }
 }

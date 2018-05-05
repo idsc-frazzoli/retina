@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
   private final Scalar ahead;
   private final Tensor pair;
   private final boolean isAutonomousPressed;
+  public boolean isResetPressed;
 
   /** see {@link GokartJoystickInterface} for valid range of arguments
    * 
@@ -69,5 +70,10 @@ import ch.ethz.idsc.tensor.sca.Clip;
   @Override
   public boolean isAutonomousPressed() {
     return isAutonomousPressed;
+  }
+
+  @Override
+  public boolean isResetPressed() {
+    return isResetPressed;
   }
 }

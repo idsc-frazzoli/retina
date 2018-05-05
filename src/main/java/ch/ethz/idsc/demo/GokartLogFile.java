@@ -197,6 +197,26 @@ public enum GokartLogFile implements LogFile {
   /** joystick driving with camera calibrated
    * localization not working */
   _20180430T164704_0e959fc6, //
+  /***************************************************/
+  /* 2018-05-03 */
+  /** slow pure pursuit oval with Kp==30, Ki==0 */
+  _20180503T094457_ce8724ba, //
+  /** pure pursuit oval
+   * initial localization failure
+   * last round success */
+  _20180503T103916_836189cd, //
+  /** motion planning with driving speeds up to 4[m/s] */
+  _20180503T140722_16144bb6, //
+  /** motion planning with driving speeds up to 3[m/s] */
+  _20180503T150559_16144bb6, //
+  /** motion planning
+   * pure pursuit figure 8 */
+  _20180503T151615_16144bb6, //
+  /** pure pursuit figure 8 with Kp==40, Ki==0
+   * first at slow speed then up to 4[m/s]
+   * pedestrians, bicycle, static obstacles
+   * speed controller allows very minor backwards motion */
+  _20180503T160522_16144bb6, //
   ;
   @Override
   public String getFilename() {

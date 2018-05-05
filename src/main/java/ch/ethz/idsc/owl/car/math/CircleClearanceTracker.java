@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.fuse;
+package ch.ethz.idsc.owl.car.math;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,27 +19,30 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class CircleClearanceTracker implements ClearanceTracker {
+// TODO make collection of obstacle points optional
+// TODO make dependent on actual speed and require sufficient time to stop
+public class CircleClearanceTracker implements ClearanceTracker, Serializable {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
-  // TODO design: make class more generic by passing all clearance config as parameters
-  private final Scalar clearanceFrontMeter = SafetyConfig.GLOBAL.clearanceFrontMeter();
+  // ---
   private final Clip clip_Y;
   private final Clip clip_X;
   private final Se2ForwardAction se2ForwardAction;
   private final Tensor u;
   private final Collection<Tensor> collection = new LinkedList<>();
+  // ---
   private Scalar min;
 
   /** @param half width along y-axis
    * @param angle steering
-   * @param xya reference frame of sensor as 3-vector {px, py, angle} */
-  public CircleClearanceTracker(Scalar half, Scalar angle, Tensor xya) {
+   * @param xya reference frame of sensor as 3-vector {px, py, angle}
+   * @param clearanceFront */
+  public CircleClearanceTracker(Scalar half, Scalar angle, Tensor xya, Clip clip_X) {
     clip_Y = Clip.function(half.negate(), half); // TODO there is a small error as gokart turns
+    this.clip_X = clip_X;
     Scalar speed = UNIT_SPEED; // assume unit speed // use actual speed in logic
     u = Tensors.of(speed, RealScalar.ZERO, angle.multiply(speed)).unmodifiable();
-    min = clearanceFrontMeter;
+    min = clip_X.max();
     se2ForwardAction = new Se2ForwardAction(xya);
-    clip_X = Clip.function(RealScalar.of(0.2), clearanceFrontMeter); // TODO magic const 0.2
   }
 
   @Override // from ClearanceTracker
@@ -62,14 +66,12 @@ public class CircleClearanceTracker implements ClearanceTracker {
     // negate() in the next line helps to move point from front of gokart to y-axis of rear axle
     Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t.negate())));
     Tensor v = se2ForwardAction.apply(point);
-    // if (!Chop._08.allZero(v.Get(0)))
-    // System.err.println("did not map to rear axle(2)");
     return clip_Y.isInside(v.Get(1)) && clip_X.isInside(t);
   }
 
   /** @return closest of all obstructing points, or empty */
   public Optional<Tensor> violation() {
-    if (Scalars.lessThan(min, clearanceFrontMeter))
+    if (Scalars.lessThan(min, clip_X.max())) // strictly less than
       return Optional.of(Se2Utils.integrate_g0(u.multiply(min)));
     return Optional.empty();
   }

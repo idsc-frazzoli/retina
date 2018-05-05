@@ -7,4 +7,15 @@ public enum MiscEmergencyBit {
   /** not yet implemented: in the future, stop signal by driver or other mechanism */
   MANUAL_SWITCH, //
   ;
+  private final int MASK;
+
+  private MiscEmergencyBit() {
+    MASK = 1 << ordinal();
+  }
+
+  /** @param emergency
+   * @return true if given emergency bit mask has this bit set */
+  public boolean isActive(byte emergency) {
+    return (emergency & MASK) == MASK;
+  }
 }

@@ -17,7 +17,6 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.N;
 
@@ -39,7 +38,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (LidarGyroLocalization.MIN_POINTS < sum) {
-      GeometricLayer geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+      GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(LIDAR);
       Stopwatch stopwatch = Stopwatch.started();

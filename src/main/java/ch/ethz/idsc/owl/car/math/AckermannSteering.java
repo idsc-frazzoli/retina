@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owl.car.math;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -17,7 +19,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * 
  * see also
  * <a href="https://en.wikipedia.org/wiki/Ackermann_steering_geometry">Ackermann steering geometry</a> */
-public class AckermannSteering {
+public class AckermannSteering implements Serializable {
   private final Scalar factor;
 
   /** @param x_front non-zero distance from rear to front axis

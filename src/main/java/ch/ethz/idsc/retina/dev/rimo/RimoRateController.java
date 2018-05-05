@@ -3,7 +3,8 @@
 package ch.ethz.idsc.retina.dev.rimo;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.TensorFloatLcm;
+import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -15,6 +16,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * Ki with unit "ARMS*rad^-1" */
 /* package */ class RimoRateController {
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
+  // ---
+  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_PI);
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastVel_error = Quantity.of(0, RimoGetTire.UNIT_RATE); // unit "rad*s^-1"
@@ -31,8 +34,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar tor_value = lastTor_value.add(pPart).add(iPart);
     lastTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // anti-windup
     // TODO preliminary for debugging: publish ctrl internals
-    TensorFloatLcm.publish(GokartLcmChannel.RIMO_CONTROLLER_PI, Tensors.of( //
-        vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value));
+    binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
+        vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value)));
     return lastTor_value;
   }
 }
