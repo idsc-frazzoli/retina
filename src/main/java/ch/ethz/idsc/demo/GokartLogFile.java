@@ -170,7 +170,8 @@ public enum GokartLogFile implements LogFile {
   _20180427T123334_22662115, //
   /** rimo PI controller with Kp=74 Ki==0
    * exhibits backwards driving
-   * log includes internals of PI controller */
+   * log includes internals of PI controller
+   * channel rimo.controller.pi is encoded in BIG_ENDIAN */
   _20180427T125356_22662115, //
   /** slow and medium joystick driving with 2 pedestrians walking
    * gokart localization not successful */
