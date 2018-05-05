@@ -1,25 +1,21 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
-import ch.ethz.idsc.tensor.Scalar;
 
 /** Important: the module requires the steering to be calibrated.
  * 
@@ -36,6 +32,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
       = SimpleSpacialObstaclePredicate.createVlp16();
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
+  /** clearanceTracker is always non-null */
   private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
 
   @Override // from AbstractModule
@@ -77,21 +74,14 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
 
   @Override // from GokartStatusListener
   public final void getEvent(GokartStatusEvent gokartStatusEvent) {
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
-      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      clearanceTracker = new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16);
-    } else
-      clearanceTracker = EmptyClearanceTracker.INSTANCE;
+    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider
   public final Optional<RimoPutEvent> putEvent() {
-    boolean status = false;
-    status |= Objects.isNull(clearanceTracker);
-    status |= penaltyTimeout.isPenalty();
-    return Optional.ofNullable(status ? penaltyAction() : null);
+    return Optional.ofNullable(penaltyTimeout.isPenalty() ? penaltyAction() : null);
   }
 
+  /** @return non-null */
   abstract RimoPutEvent penaltyAction();
 }
