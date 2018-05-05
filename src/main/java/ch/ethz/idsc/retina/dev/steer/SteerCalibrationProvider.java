@@ -34,4 +34,9 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
           timestamp + times.Get(index).number().intValue() + oneside_ms, //
           SteerPutEvent.createOn(ampli.Get(index).negate()));
   }
+
+  @Override // from AutoboxCalibrationProvider
+  protected boolean hintScheduleRequired() {
+    return false;
+  }
 }

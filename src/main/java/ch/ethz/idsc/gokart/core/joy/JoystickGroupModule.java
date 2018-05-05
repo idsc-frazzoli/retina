@@ -13,7 +13,6 @@ public class JoystickGroupModule extends GroupModule {
     return Arrays.asList( //
         LinmotJoystickModule.class, //
         SteerJoystickModule.class, //
-        RimoTorqueJoystickModule.class, //
-        MiscJoystickModule.class);
+        RimoTorqueJoystickModule.class);
   }
 }

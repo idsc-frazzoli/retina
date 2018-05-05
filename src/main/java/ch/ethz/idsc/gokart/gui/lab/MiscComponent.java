@@ -11,17 +11,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.retina.dev.misc.MiscSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class MiscComponent extends //
-    AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> implements StartAndStoppable {
+/* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {
   public static final List<Word> COMMANDS = Arrays.asList( //
       Word.createByte("PASSIVE", (byte) 0), //
       Word.createByte("RESET", (byte) 1) //
@@ -88,6 +88,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from GetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
+    miscResetButton.updateEnabled();
     {
       jTextFieldEmg.setText(String.format("0x%02x", miscGetEvent.getEmergency()));
       Color color = miscGetEvent.isEmergency() ? Color.RED : Color.WHITE;
@@ -116,22 +117,18 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
-    MiscPutEvent miscPutEvent = new MiscPutEvent();
-    miscPutEvent.resetRimoL = spinnerLabelRimoL.getValue().getByte();
-    miscPutEvent.resetRimoR = spinnerLabelRimoR.getValue().getByte();
-    miscPutEvent.resetLinmot = spinnerLabelLinmot.getValue().getByte();
-    miscPutEvent.resetSteer = spinnerLabelSteer.getValue().getByte();
-    miscPutEvent.ledControl = spinnerLabelLed.getValue().getByte();
+    MiscPutEvent miscPutEvent = new MiscPutEvent( //
+        (byte) 0, // no reset connection
+        spinnerLabelRimoL.getValue().getByte(), //
+        spinnerLabelRimoR.getValue().getByte(), //
+        spinnerLabelLinmot.getValue().getByte(), //
+        spinnerLabelSteer.getValue().getByte(), //
+        spinnerLabelLed.getValue().getByte());
     return Optional.of(miscPutEvent);
   }
 
-  @Override // from StartAndStoppable
-  public void start() {
-    miscResetButton.start();
-  }
-
-  @Override // from StartAndStoppable
-  public void stop() {
-    miscResetButton.stop();
+  @Override
+  public AutoboxSocket<MiscGetEvent, MiscPutEvent> getSocket() {
+    return MiscSocket.INSTANCE;
   }
 }

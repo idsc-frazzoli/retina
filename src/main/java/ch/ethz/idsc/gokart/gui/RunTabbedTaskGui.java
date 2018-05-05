@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
+import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
@@ -56,6 +57,7 @@ enum RunTabbedTaskGui {
       Vlp16PassiveSlowing.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
+      JoystickResetModule.class, // TODO DUBENDORF test
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation

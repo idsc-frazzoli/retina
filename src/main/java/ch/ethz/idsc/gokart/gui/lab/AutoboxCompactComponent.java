@@ -41,23 +41,20 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
 
   @Override
   public void getEvent(RimoGetEvent getEvent) {
+    linmotInitButton.updateEnabled();
+    miscResetButton.updateEnabled();
+    steerInitButton.updateEnabled();
     jTextField[0].setText(getEvent.getTireL.getAngularRate_Y().map(Round._3).toString());
     jTextField[1].setText(getEvent.getTireR.getAngularRate_Y().map(Round._3).toString());
   }
 
   @Override // from StartAndStoppable
   public void start() {
-    linmotInitButton.start();
-    miscResetButton.start();
-    steerInitButton.start();
     RimoSocket.INSTANCE.addGetListener(this);
   }
 
   @Override // from StartAndStoppable
   public void stop() {
-    linmotInitButton.stop();
-    miscResetButton.stop();
-    steerInitButton.stop();
     RimoSocket.INSTANCE.removeGetListener(this);
   }
 }
