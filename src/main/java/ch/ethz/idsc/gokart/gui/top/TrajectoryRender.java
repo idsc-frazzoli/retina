@@ -27,7 +27,7 @@ public class TrajectoryRender implements RenderInterface {
   private static final Color COLOR_NODES = new Color(255, 0, 0, 96);
   private static final Color COLOR_TRAJECTORY = new Color(0, 192, 0, 192);
   // ---
-  public static List<TrajectorySample> TRAJECTORY;
+  public static List<TrajectorySample> TRAJECTORY; // TODO get from lcm
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
