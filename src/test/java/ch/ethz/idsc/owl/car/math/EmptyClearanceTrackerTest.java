@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.fuse;
+package ch.ethz.idsc.owl.car.math;
 
 import junit.framework.TestCase;
 

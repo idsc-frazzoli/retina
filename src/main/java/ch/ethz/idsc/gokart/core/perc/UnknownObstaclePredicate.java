@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 
 /** the purpose of the class is filter lidar points that are
  * 1) NOT already in the static obstacle map
@@ -20,8 +19,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   // ---
   private final SpacialObstaclePredicate floorPredicate = SimpleSpacialObstaclePredicate.createVlp16();
   private final PredefinedMap predefinedMap;
-  private GeometricLayer geometricLayer = //
-      new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+  private GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
 
   public UnknownObstaclePredicate() {
     predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
@@ -33,7 +31,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
    * 
    * @param xya */
   public void setPose(Tensor xya) {
-    geometricLayer = new GeometricLayer(ViewLcmFrame.MODEL2PIXEL_INITIAL, Array.zeros(3));
+    geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
     geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(xya));
     geometricLayer.pushMatrix(LIDAR);
   }

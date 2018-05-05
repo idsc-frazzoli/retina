@@ -2,6 +2,9 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
+import ch.ethz.idsc.owl.car.math.ClearanceTracker;
+import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 

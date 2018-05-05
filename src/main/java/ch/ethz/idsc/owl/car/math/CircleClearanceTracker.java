@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.fuse;
+package ch.ethz.idsc.owl.car.math;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -19,6 +19,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 
+// TODO make collection of obstacle points optional
+// TODO make dependent on actual speed and require sufficient time to stop
 public class CircleClearanceTracker implements ClearanceTracker, Serializable {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   // ---
