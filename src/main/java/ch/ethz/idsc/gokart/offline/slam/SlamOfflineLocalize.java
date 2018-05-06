@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.slam;
 
+import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
 import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -23,9 +25,13 @@ import ch.ethz.idsc.tensor.sca.N;
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class SlamOfflineLocalize extends OfflineLocalize {
+  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
+  final ScatterImage scatterImage;
+
   /** @param model */
-  public SlamOfflineLocalize(Tensor model) {
-    super(model);
+  public SlamOfflineLocalize(BufferedImage map_image, Tensor model, ScatterImage scatterImage) {
+    super(map_image, model);
+    this.scatterImage = scatterImage;
   }
 
   @Override // from LidarRayBlockListener
@@ -50,7 +56,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
       model = model.dot(poseDelta); // advance gokart
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
       appendRow(ratio, sum, duration);
-      render(scattered);
+      scatterImage.render(model, scattered);
     } else
       skip();
   }

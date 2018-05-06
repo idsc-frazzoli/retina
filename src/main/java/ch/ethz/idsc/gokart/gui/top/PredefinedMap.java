@@ -24,9 +24,12 @@ public enum PredefinedMap {
   DUBENDORF_HANGAR_20180122(7.5), //
   /** dubendorf hangar map version 20180423
    * features the outside fence visible when the hangar doors are open */
+  @Deprecated
   DUBENDORF_HANGAR_20180423(7.5), //
   /** image of known static obstacles */
   DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
+  /** image */
+  DUBENDORF_HANGAR_20180506(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   public static final int TTL = 3;
@@ -92,5 +95,16 @@ public enum PredefinedMap {
    * @return */
   public Tensor range() {
     return Tensors.vector(size, size).divide(scale);
+  }
+
+  /** @return 3x3 matrix */
+  public Tensor getModel2Pixel() {
+    double s = scale.number().doubleValue();
+    int h = bufferedImage.getHeight();
+    return Tensors.matrix(new Number[][] { //
+        { s, 0, 0 }, //
+        { 0, -s, h }, //
+        { 0, 0, 1 }, //
+    }).unmodifiable();
   }
 }
