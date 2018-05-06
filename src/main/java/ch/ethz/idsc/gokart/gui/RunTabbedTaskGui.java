@@ -51,7 +51,7 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, //
+      GokartPoseLcmModule.class, // publishes pose
       LoggerModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
@@ -60,7 +60,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       JoystickResetModule.class, // TODO DUBENDORF test
       AutoboxIntrospectionModule.class, // actuation monitoring
-      LidarLocalizationModule.class, //
+      LidarLocalizationModule.class, // TODO DUBENDORF test
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
       ParametersModule.class // configure parameters

@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
@@ -22,9 +21,9 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dimensions;
 
 public class LidarLocalizationModule extends AbstractModule implements LidarRayBlockListener {
+  // TODO bad design
   public static boolean TRACKING = false;
   public static boolean FLAGSNAP = false;
   // ---
@@ -65,15 +64,15 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
     // Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
     Tensor state = gokartPoseOdometry.getPose(); // {x[m],y[m],angle[]}
-    System.out.println("HERE " + Dimensions.of(points) + " " + state);
+    // System.out.println("HERE " + Dimensions.of(points) + " " + state);
     // System.out.println("IN = " + state);
     if (FLAGSNAP || TRACKING) {
       FLAGSNAP = false;
-      System.out.println("tracking");
+      // System.out.println("tracking");
       lidarGyroLocalization.setState(state);
-      Stopwatch stopwatch = Stopwatch.started();
+      // Stopwatch stopwatch = Stopwatch.started();
       Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
-      double duration = stopwatch.display_seconds();
+      // double duration = stopwatch.display_seconds();
       if (optional.isPresent()) {
         SlamResult slamResult = optional.get();
         // OUT={37.85[m], 38.89[m], -0.5658221}
