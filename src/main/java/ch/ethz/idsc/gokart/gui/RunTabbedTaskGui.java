@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -59,6 +60,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       JoystickResetModule.class, // TODO DUBENDORF test
       AutoboxIntrospectionModule.class, // actuation monitoring
+      LidarLocalizationModule.class, //
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
       ParametersModule.class // configure parameters

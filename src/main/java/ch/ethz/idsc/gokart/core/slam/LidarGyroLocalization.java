@@ -1,23 +1,18 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
-import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,7 +24,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFrameListener {
+public class LidarGyroLocalization implements DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
@@ -55,15 +50,6 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
   /** @param state {x[m], y[m], angle} */
   public void setState(Tensor state) {
     _model = GokartPoseHelper.toSE2Matrix(state);
-  }
-
-  @Override // from LidarRayBlockListener
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    Tensor points = Tensors.vector(i -> Tensors.of( //
-        DoubleScalar.of(floatBuffer.get()), //
-        DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    handle(points);
   }
 
   public Optional<SlamResult> handle(Tensor points) {

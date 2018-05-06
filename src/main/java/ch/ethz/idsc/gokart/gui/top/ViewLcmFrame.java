@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -23,28 +24,28 @@ public class ViewLcmFrame extends TimerFrame {
   public final JButton jButtonMapUpdate = new JButton("map update");
   public final JButton jButtonSetLocation1 = new JButton("1 set");
   public final JButton jButtonSnap = new JButton("2 snap");
-  public final JButton jButtonSetLocation2 = new JButton("3 set (again)");
-  public final JToggleButton jToggleButton = new JToggleButton("4 track");
+  private final JButton jButtonSetLocation2 = new JButton("3 set (again)");
+  private final JToggleButton jToggleButton = new JToggleButton("4 track");
+  // TODO obtain matrix from predefined map
   public static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 7.5, 0, 0 }, //
       { 0, -7.5, 640 }, //
       { 0, 0, 1 }, //
   }).unmodifiable();
-  private MappedPoseInterface gokartPoseInterface;
-  ActionListener al = new ActionListener() {
+  private MappedPoseInterface mappedPoseInterface;
+  private final ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       Tensor model2pixel = geometricComponent.getModel2Pixel();
-      Tensor state = gokartPoseInterface.getPose(); // {x[m],y[y],angle[]}
+      Tensor state = mappedPoseInterface.getPose(); // {x[m],y[y],angle[]}
       state = state.map(s -> RealScalar.of(s.number()));
       Tensor pose = Se2Utils.toSE2Matrix(state);
-      // Tensor newPose = Inverse.of(MODEL2PIXEL_INITIAL).dot(model2pixel).dot(pose);
       Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
       Tensor newState = Se2Utils.fromSE2Matrix(newPose);
       newState.set(s -> Quantity.of(s.Get(), SI.METER), 0);
       newState.set(s -> Quantity.of(s.Get(), SI.METER), 1);
       System.out.println("new state=" + newState);
-      gokartPoseInterface.setPose(newState, RealScalar.ONE);
+      mappedPoseInterface.setPose(newState, RealScalar.ONE);
       geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
     }
   };
@@ -52,11 +53,13 @@ public class ViewLcmFrame extends TimerFrame {
   public ViewLcmFrame() {
     jToolBar.add(jButtonMapCreate);
     jToolBar.add(jButtonMapUpdate);
-    jButtonSetLocation1.addActionListener(al);
+    jButtonSetLocation1.addActionListener(actionListener);
     jToolBar.add(jButtonSetLocation1);
     jToolBar.add(jButtonSnap);
-    jButtonSetLocation2.addActionListener(al);
+    jButtonSetLocation2.addActionListener(actionListener);
     jToolBar.add(jButtonSetLocation2);
+    jToggleButton.setSelected(LidarLocalizationModule.TRACKING);
+    jToggleButton.addActionListener(e -> LidarLocalizationModule.TRACKING = jToggleButton.isSelected());
     jToolBar.add(jToggleButton);
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
     // Tensors.fromString("{{7.5,0,300},{0,-7.5,300},{0,0,1}}"));
@@ -64,7 +67,7 @@ public class ViewLcmFrame extends TimerFrame {
     System.out.println("m2p=" + Pretty.of(tensor));
   }
 
-  protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
-    this.gokartPoseInterface = gokartPoseInterface;
+  protected void setGokartPoseInterface(MappedPoseInterface mappedPoseInterface) {
+    this.mappedPoseInterface = mappedPoseInterface;
   }
 }

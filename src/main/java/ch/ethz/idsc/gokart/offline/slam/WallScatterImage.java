@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.gokart.gui.top.LocalizationImage;
+import ch.ethz.idsc.gokart.core.slam.LocalizationImage;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 

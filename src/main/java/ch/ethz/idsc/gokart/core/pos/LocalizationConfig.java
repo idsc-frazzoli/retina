@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.RealScalar;
