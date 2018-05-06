@@ -19,12 +19,12 @@ import ch.ethz.idsc.tensor.io.ResourceData;
  * name refers to png-file in repository, do not rename!
  * 
  * the predefined geometry is crucial for lidar-based localization */
-public enum PredefinedMap {
+public enum PredefinedMap implements LocalizationImage {
   /** dubendorf hangar map version 20180122 */
   DUBENDORF_HANGAR_20180122(7.5), //
   /** dubendorf hangar map version 20180423
    * features the outside fence visible when the hangar doors are open */
-  @Deprecated
+  @Deprecated // superseded by DUBENDORF_HANGAR_20180506
   DUBENDORF_HANGAR_20180423(7.5), //
   /** image of known static obstacles */
   DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
@@ -42,6 +42,7 @@ public enum PredefinedMap {
   private final int size;
   private final BufferedImage extrudedImage;
   private final ImageRegion imageRegion;
+  private final Tensor model2pixel;
 
   /** @param meter_to_pixel for instance 1[m] may correspond to 7.5 pixel */
   private PredefinedMap(double meter_to_pixel) {
@@ -55,11 +56,19 @@ public enum PredefinedMap {
     // ---
     if (bufferedImage.getHeight() != size)
       new RuntimeException("map image not squared").printStackTrace();
+    double s = scale.number().doubleValue();
+    int h = bufferedImage.getHeight();
+    model2pixel = Tensors.matrix(new Number[][] { //
+        { s, 0, 0 }, //
+        { 0, -s, h }, //
+        { 0, 0, 1 }, //
+    }).unmodifiable();
   }
 
   /** the map for visualization is strictly black and white
    * 
    * @return instance of map used for visualization */
+  @Override
   public BufferedImage getImage() {
     return bufferedImage;
   }
@@ -67,6 +76,7 @@ public enum PredefinedMap {
   /** the map for localization has grayscale values in the proximity of static geometry
    * 
    * @return instance of extruded map used for lidar-based localization */
+  @Override
   public BufferedImage getImageExtruded() {
     return extrudedImage;
   }
@@ -98,13 +108,8 @@ public enum PredefinedMap {
   }
 
   /** @return 3x3 matrix */
+  @Override
   public Tensor getModel2Pixel() {
-    double s = scale.number().doubleValue();
-    int h = bufferedImage.getHeight();
-    return Tensors.matrix(new Number[][] { //
-        { s, 0, 0 }, //
-        { 0, -s, h }, //
-        { 0, 0, 1 }, //
-    }).unmodifiable();
+    return model2pixel;
   }
 }

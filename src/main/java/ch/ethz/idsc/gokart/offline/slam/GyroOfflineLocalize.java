@@ -30,8 +30,8 @@ import ch.ethz.idsc.tensor.sca.N;
 public class GyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
   /** 3x3 transformation matrix of lidar to center of rear axle */
-  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
-  final ScatterImage scatterImage;
+  private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
+  private final ScatterImage scatterImage;
 
   /** @param model */
   public GyroOfflineLocalize(BufferedImage map_image, Tensor model, ScatterImage scatterImage) {
@@ -56,17 +56,17 @@ public class GyroOfflineLocalize extends OfflineLocalize {
       Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
-      geometricLayer.pushMatrix(LIDAR);
+      geometricLayer.pushMatrix(lidar);
       Stopwatch stopwatch = Stopwatch.started();
       SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
-      Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
+      Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));
       // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
       Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
       appendRow(ratio, sum, duration);
-      scatterImage.render(model, scattered);
+      scatterImage.render(model.dot(lidar), scattered);
     } else {
       System.err.println("few points " + sum);
       skip();

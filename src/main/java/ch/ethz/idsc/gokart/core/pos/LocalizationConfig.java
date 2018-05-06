@@ -25,6 +25,7 @@ public class LocalizationConfig implements Serializable {
   public static PredefinedMap getPredefinedMap() {
     return PredefinedMap.DUBENDORF_HANGAR_20180506;
   }
+
   public static PredefinedMap getPredefinedMapObstacles() {
     return PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
   }

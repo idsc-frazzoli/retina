@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 public enum VoidScatterImage implements ScatterImage {
   INSTANCE;
   @Override
-  public void render(Tensor model, Tensor points) {
+  public void render(Tensor model_dot_lidar, Tensor points) {
     // ---
   }
 

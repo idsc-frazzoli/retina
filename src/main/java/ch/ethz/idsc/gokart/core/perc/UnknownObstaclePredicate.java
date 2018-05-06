@@ -23,9 +23,8 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
 
   public UnknownObstaclePredicate() {
-    
-    predefinedMap = LocalizationConfig.getPredefinedMapObstacles(); 
-//    predefinedMap.
+    predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    // predefinedMap.
   }
 
   /** since the obstacle query uses a predefined map of the terrain,

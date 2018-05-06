@@ -52,7 +52,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-    ScatterImage scatterImage = new PoseScatterImage(predefinedMap.getImage(), SensorsConfig.GLOBAL.vlp16Gokart());
+    ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
     offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), olr.model(), scatterImage);
     lidarAngularFiringCollector.addListener(offlineLocalize);
   }
