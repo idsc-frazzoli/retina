@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -19,5 +20,13 @@ public class LocalizationConfig implements Serializable {
   // private static final ScalarUnaryOperator TOMETER = QuantityMagnitude.SI().in(Unit.of("m"));
   public ParametricResample getUniformResample() {
     return new ParametricResample(threshold, resampleDs);
+  }
+
+  public static PredefinedMap getPredefinedMap() {
+    return PredefinedMap.DUBENDORF_HANGAR_20180506;
+  }
+
+  public static PredefinedMap getPredefinedMapObstacles() {
+    return PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
   }
 }

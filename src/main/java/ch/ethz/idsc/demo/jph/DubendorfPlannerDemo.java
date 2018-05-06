@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.CarEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
@@ -55,7 +55,7 @@ public class DubendorfPlannerDemo {
     // Tensors.vector(2, 2, Degree.of(10).number()), //
     // carFlows, //
     // RimoSinusIonModel.standard().footprint());
-    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423;
+    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     BufferedImage bufferedImage = predefinedMap.getImage();
     Tensor tensor = ImageFormat.from(bufferedImage);
     Dimensions.of(tensor);
@@ -67,7 +67,7 @@ public class DubendorfPlannerDemo {
     owlyAnimationFrame.set(carEntity);
     // owlyAnimationFrame.setObstacleQuery(trq);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
-    owlyAnimationFrame.geometricComponent.setModel2Pixel(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+    owlyAnimationFrame.geometricComponent.setModel2Pixel(predefinedMap.getModel2Pixel());
     Tensor total = Tensors.empty();
     // owlyAnimationFrame.trajectoryPlannerCallbackExtra =
     new GlcPlannerCallback() {

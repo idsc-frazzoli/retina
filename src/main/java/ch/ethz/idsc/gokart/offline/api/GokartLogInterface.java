@@ -5,6 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO document
 public interface GokartLogInterface {
   File file();
 

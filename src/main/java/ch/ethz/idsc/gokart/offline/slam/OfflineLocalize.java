@@ -1,24 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.slam;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
-import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
@@ -32,42 +20,31 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Clip;
 
+/** functionality is strictly for offline processing
+ * do not use during live operation: memory consumption is not bounded */
 public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
-  /** 3x3 transformation matrix of lidar to center of rear axle */
-  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   // ---
-  protected SlamScore slamScore;
-  protected final BufferedImage vis_image = PredefinedMap.DUBENDORF_HANGAR_20180423.getImage();
-  private Scalar time;
+  protected final SlamScore slamScore;
+  private final List<LocalizationResultListener> listeners = new LinkedList<>();
   public final Tensor skipped = Tensors.empty();
   /** 3x3 matrix */
-  protected Tensor model;
   private Tensor gyro_y = Tensors.empty();
-  // ---
-  private final BufferedImage sum_image;
-  private final Graphics2D graphics2d;
-  private final List<LocalizationResultListener> listeners = new LinkedList<>();
+  protected Tensor model;
+  private Scalar time;
 
-  public OfflineLocalize(Tensor model) {
+  public OfflineLocalize(BufferedImage map_image, Tensor model) {
     if (!SquareMatrixQ.of(model))
       throw new RuntimeException();
-    setScoreImage(vis_image);
     this.model = model;
     // ---
-    sum_image = new BufferedImage(vis_image.getWidth(), vis_image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    graphics2d = sum_image.createGraphics();
-    graphics2d.drawImage(vis_image, 0, 0, null);
+    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+      throw new RuntimeException();
+    slamScore = ImageScore.of(map_image);
   }
 
   public final void addListener(LocalizationResultListener localizationResultListener) {
     listeners.add(localizationResultListener);
-  }
-
-  public final void setScoreImage(BufferedImage map_image) {
-    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
-      throw new RuntimeException();
-    slamScore = ImageScore.of(map_image);
   }
 
   public final void setTime(Scalar time) {
@@ -99,33 +76,5 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   protected final void skip() {
     skipped.append(time);
     System.err.println("skip " + time);
-  }
-
-  protected final void render(Tensor points) {
-    GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
-    geometricLayer.pushMatrix(model);
-    geometricLayer.pushMatrix(LIDAR);
-    graphics2d.setColor(Color.GREEN);
-    for (Tensor x : points) {
-      Point2D p = geometricLayer.toPoint2D(x);
-      graphics2d.fillRect((int) p.getX(), (int) p.getY(), 1, 1);
-    }
-    graphics2d.setColor(Color.GRAY);
-    {
-      Point2D p0 = geometricLayer.toPoint2D(Tensors.vector(0, 0));
-      Point2D pX = geometricLayer.toPoint2D(Tensors.vector(10, 0));
-      Point2D pY = geometricLayer.toPoint2D(Tensors.vector(0, 10));
-      graphics2d.draw(new Line2D.Double(p0, pX));
-      graphics2d.draw(new Line2D.Double(p0, pY));
-    }
-  }
-
-  public final void end() {
-    File file = UserHome.Pictures(getClass().getSimpleName() + ".png");
-    try {
-      ImageIO.write(sum_image, "png", file);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
   }
 }

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.perc;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
@@ -22,7 +23,8 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
 
   public UnknownObstaclePredicate() {
-    predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
+    predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    // predefinedMap.
   }
 
   /** since the obstacle query uses a predefined map of the terrain,

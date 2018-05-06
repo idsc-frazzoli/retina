@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
@@ -39,13 +38,17 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
    * that means per lidar scan there are 50 samples from the imu */
   private static final int SAMPLES = 50;
   // ---
+  // private final PredefinedMap predefinedMap;
+  private final Tensor model2pixel;
   private Tensor _model = null;
   private final Tensor gyro_y = Array.of(l -> ZERO_RATE, SAMPLES);
   private int gyro_index = 0;
   private final SlamScore slamScore;
-  public static final int MIN_POINTS = 250;
+  public static final int MIN_POINTS = 250; // TODO magic const in config
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
+    // this.predefinedMap = predefinedMap;
+    model2pixel = predefinedMap.getModel2Pixel();
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
   }
 
@@ -72,7 +75,7 @@ public class LidarGyroLocalization implements LidarRayBlockListener, DavisImuFra
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (LidarGyroLocalization.MIN_POINTS < sum) {
-      GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+      GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
       Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
