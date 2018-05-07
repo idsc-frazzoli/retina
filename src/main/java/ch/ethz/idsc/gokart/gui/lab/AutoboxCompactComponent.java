@@ -19,6 +19,8 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
   final JTextField[] jTextField = new JTextField[2];
   final JTextField jTF_joystick;
   final JTextField jTF_davis240c;
+  final JTextField jTF_localPose;
+  final JTextField jTF_localQual;
 
   public AutoboxCompactComponent() {
     {
@@ -37,6 +39,8 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
     jTextField[1] = createReading("Rimo RIGHT");
     jTF_davis240c = createReading("Davis240C");
     jTF_joystick = createReading("Joystick");
+    jTF_localPose = createReading("Pose");
+    jTF_localQual = createReading("Pose quality");
   }
 
   @Override

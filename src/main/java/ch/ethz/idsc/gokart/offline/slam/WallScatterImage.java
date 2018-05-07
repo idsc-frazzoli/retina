@@ -6,27 +6,26 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.gokart.gui.top.LocalizationImage;
+import ch.ethz.idsc.gokart.core.slam.LocalizationImage;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class WallScatterImage implements ScatterImage {
-  private final LocalizationImage lmi;
-  // ---
-  private final BufferedImage sum_image;
+  private final LocalizationImage localizationImage;
+  private final BufferedImage bufferedImage;
   private final Graphics2D graphics2d;
 
-  public WallScatterImage(LocalizationImage lmi) {
-    this.lmi = lmi;
-    BufferedImage vis_image = lmi.getImage();
-    sum_image = new BufferedImage(vis_image.getWidth(), vis_image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    graphics2d = sum_image.createGraphics();
-    graphics2d.drawImage(vis_image, 0, 0, null);
+  public WallScatterImage(LocalizationImage localizationImage) {
+    this.localizationImage = localizationImage;
+    BufferedImage background = localizationImage.getImage();
+    bufferedImage = new BufferedImage(background.getWidth(), background.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    graphics2d = bufferedImage.createGraphics();
+    graphics2d.drawImage(background, 0, 0, null);
   }
 
-  @Override
+  @Override // from ScatterImage
   public void render(Tensor model_dot_lidar, Tensor points) {
-    GeometricLayer geometricLayer = GeometricLayer.of(lmi.getModel2Pixel());
+    GeometricLayer geometricLayer = GeometricLayer.of(localizationImage.getModel2Pixel());
     geometricLayer.pushMatrix(model_dot_lidar);
     graphics2d.setColor(Color.WHITE);
     for (Tensor x : points) {
@@ -35,8 +34,8 @@ public class WallScatterImage implements ScatterImage {
     }
   }
 
-  @Override
+  @Override // from ScatterImage
   public BufferedImage getImage() {
-    return sum_image;
+    return bufferedImage;
   }
 }

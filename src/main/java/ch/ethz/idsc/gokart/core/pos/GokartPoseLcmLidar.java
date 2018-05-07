@@ -6,6 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO extra value of this class in comparison with GokartPoseLcmClient is limited
 public class GokartPoseLcmLidar implements MappedPoseInterface, GokartPoseListener {
   public final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = null;

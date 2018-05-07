@@ -5,9 +5,8 @@ import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.gui.top.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -20,11 +19,11 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   // ---
   private final SpacialObstaclePredicate floorPredicate = SimpleSpacialObstaclePredicate.createVlp16();
   private final PredefinedMap predefinedMap;
-  private GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+  private GeometricLayer geometricLayer;
 
   public UnknownObstaclePredicate() {
     predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
-    // predefinedMap.
+    geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
   }
 
   /** since the obstacle query uses a predefined map of the terrain,
@@ -33,7 +32,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
    * 
    * @param xya */
   public void setPose(Tensor xya) {
-    geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+    geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
     geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(xya));
     geometricLayer.pushMatrix(LIDAR);
   }

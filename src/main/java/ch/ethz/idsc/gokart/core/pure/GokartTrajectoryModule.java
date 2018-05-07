@@ -59,8 +59,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
-public class GokartTrajectoryModule extends AbstractClockedModule implements //
-    GokartPoseListener {
+public class GokartTrajectoryModule extends AbstractClockedModule implements GokartPoseListener {
   // TODO make configurable as parameter
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
