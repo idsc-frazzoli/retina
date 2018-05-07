@@ -48,6 +48,14 @@ public class SensorsConfig implements Serializable {
    * 
    * @see SafetyConfig */
   public Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
+  /** number of rotations per second */
+  public Scalar vlp16_rate = Quantity.of(20, "s^-1");
+  /** due to the inclined mounting of the davis camera,
+   * the imuY measurement may have to be scaled.
+   * until 20180507 the factor was 1 because the davis camera
+   * was upside down at almost no inclination */
+  // TODO create a conversion formula from inclination to scaling factor (will have singularity)
+  public Scalar davis_imuY_scale = RealScalar.of(1.0);
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);
