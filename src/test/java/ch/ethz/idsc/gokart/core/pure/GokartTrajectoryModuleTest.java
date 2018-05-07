@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
@@ -40,6 +41,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       GokartPoseLcmServer.INSTANCE.publish( //
           GokartPoseEvents.getPoseEvent(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
+      RimoLcmServer.INSTANCE.getEvent( //
+          RimoGetEvents.create(500, 500));
       Thread.sleep(50);
       gtm.runAlgo();
       Thread.sleep(500);
