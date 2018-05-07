@@ -35,6 +35,8 @@ public class ChassisGeometry implements Serializable {
   /** rear tire half width */
   public Scalar tireHalfWidthRear = Quantity.of(0.0975, SI.METER);
   public Scalar tireHalfWidthContactRear = Quantity.of(0.0675, SI.METER);
+  /** approximation of ground clearance measured on 20180507 */
+  public Scalar groundClearance = Quantity.of(0.03, SI.METER);
 
   /***************************************************/
   public Scalar yHalfWidthMeter() {

@@ -55,12 +55,12 @@ enum RunTabbedTaskGui {
       LoggerModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
-      Vlp16PassiveSlowing.class //
+      Vlp16PassiveSlowing.class, //
+      LidarLocalizationModule.class, //
+      JoystickResetModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
-      JoystickResetModule.class, // TODO DUBENDORF test
       AutoboxIntrospectionModule.class, // actuation monitoring
-      LidarLocalizationModule.class, // TODO DUBENDORF test
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
       ParametersModule.class // configure parameters
