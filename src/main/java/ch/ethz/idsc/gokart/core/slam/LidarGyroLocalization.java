@@ -27,11 +27,11 @@ import ch.ethz.idsc.tensor.red.Mean;
 public class LidarGyroLocalization implements DavisImuFrameListener {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
-  private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+  private Scalar lidarRate = SensorsConfig.GLOBAL.vlp16_rate;
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
   /** the imu sampling rate is 1000[Hz], the vlp16 revolution rate is configured to 20[Hz]
    * that means per lidar scan there are 50 samples from the imu */
-  private static final int SAMPLES = 50;
+  private static final int SAMPLES = 50; // TODO couple const to 1000 Hz of imu & lidarRate
   // ---
   // private final PredefinedMap predefinedMap;
   private final Tensor model2pixel;
@@ -54,7 +54,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
 
   public Optional<SlamResult> handle(Tensor points) {
     Tensor model = _model;
-    Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
+    Scalar rate = getGyroAndReset().divide(lidarRate);
     // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
         .apply(points).getPointsSpin(rate); // TODO optimize
@@ -93,6 +93,6 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
   }
 
   protected final Scalar getGyroAndReset() {
-    return Mean.of(gyro_y).Get();
+    return Mean.of(gyro_y).Get().multiply(SensorsConfig.GLOBAL.davis_imuY_scale);
   }
 }

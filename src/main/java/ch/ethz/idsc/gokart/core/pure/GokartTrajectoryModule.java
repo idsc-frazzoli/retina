@@ -1,6 +1,7 @@
 // code by ynager and jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -13,7 +14,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.r2.ImageCostFunction;
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
@@ -46,7 +49,11 @@ import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -56,6 +63,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
@@ -74,6 +82,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private Collection<CostFunction> costCollection = new LinkedList<>();
   final PurePursuitModule purePursuitModule = new PurePursuitModule();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -83,12 +92,22 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private PlannerConstraint plannerConstraint;
   private Tensor goalRadius;
   private Region<Tensor> unionRegion;
+  private Scalar tangentSpeed = null;
+  private RimoGetListener rgl = new RimoGetListener() {
+    @Override
+    public void getEvent(RimoGetEvent getEvent) {
+      tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+    }
+  };
 
   @Override // from AbstractClockedModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     purePursuitModule.launch();
+    // ---
+    rimoGetLcmClient.addListener(rgl);
+    rimoGetLcmClient.startSubscriptions();
     // ---
     obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
     Tensor tensor = ImageEdges.extrusion(obstacleMap, 6); // == 0.73 * 7.5 == 5.475
@@ -118,7 +137,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    if (Objects.nonNull(gokartPoseEvent)) {
+    Scalar tangentSpeed_ = tangentSpeed;
+    if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
@@ -128,7 +148,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         head = Arrays.asList(TrajectorySample.head(stateTime));
       } else {
         // yes: find closest point on previous traj+delay... then plan to "best waypoint"
-        head = getTrajectoryUntil(trajectory, xya, RealScalar.of(3)); // TODO cutoffDist should depend on gokart speed
+        Scalar cutoffDist = tangentSpeed_ //
+            .multiply(TrajectoryConfig.GLOBAL.planningPeriod) //
+            .add(Quantity.of(0.5, SI.METER));
+        head = getTrajectoryUntil(trajectory, xya, cutoffDist);
       }
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
       int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
@@ -164,8 +187,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     int closestIdx = ArgMin.of(distances);
     return trajectory.stream() //
         .skip(Math.max((closestIdx - 5), 0)) //
-        .filter(trajectorySample -> Scalars.lessEquals(SE2WRAP.distance(trajectory.get(closestIdx).stateTime().state(), //
-            trajectorySample.stateTime().state()), cutoffDistHead)) //
+        .filter(trajectorySample -> Scalars.lessEquals( //
+            SE2WRAP.distance(trajectory.get(closestIdx).stateTime().state(), //
+                trajectorySample.stateTime().state()),
+            Magnitude.METER.apply(cutoffDistHead))) //
         .collect(Collectors.toList());
   }
 
@@ -192,6 +217,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     } else {
       TrajectoryRender.TRAJECTORY = null; // failure to reach goal
       purePursuitModule.setCurve(Optional.empty());
+      PlannerPublish.publishTrajectory(new ArrayList<>());
     }
   }
 }
