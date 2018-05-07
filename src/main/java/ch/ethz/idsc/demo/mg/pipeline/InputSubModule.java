@@ -12,6 +12,7 @@ import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
@@ -38,17 +39,18 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final File pathToHandlabelsFile = HandLabelFileLocations.labels("Dubi9e_labeledFeatures.csv"); // ground truth file for tracking evaluator
   private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile);
   // pipeline configuration
-  private final int maxDuration = 20000; // [ms]
-  private final int backgroundActivityFilterTime = 200; // [us] the shorter the more is filtered
-  private final int imageInterval = 33; // [ms] visualization interval
-  private final int savingInterval = 1000; // [ms] image saving interval
+  private final int maxDuration = 9000; // [ms]
+  private final int backgroundActivityFilterTime = 500; // [us] the shorter the more is filtered
+  private final int visualizationInterval = 33; // [ms]
   private final boolean useFilter = true;
   // image saving
-  private boolean saveImages = false;
-  private String imagePrefix = "Dubi9e"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
-  private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
-  private int imageCount = 0;
+  private boolean saveImages = true;
+  private String imagePrefix = "Dubi8c"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
+//  private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
+  private File pathToImages = UserHome.Pictures("dvs"); // path where images are saved
+  private final int savingInterval = 33; // [ms]
   private int saveConfig = 0; // 0 for saving filtered accumulated events, 1 for saving whole GUI
+  private int imageCount = 0;
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;
@@ -100,18 +102,18 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       eventFrames[1].receiveEvent(davisDvsEvent);
       eventFrames[2].receiveEvent(davisDvsEvent);
       ++filteredEventCount;
-      // the events are accumulated for the interval time and then displayed in a single frame
-      if ((davisDvsEvent.time - lastImagingTimestamp) > imageInterval * 1000) {
-        // save frames
-        if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
-          saveFrame(pathToImages, imagePrefix, davisDvsEvent.time, saveConfig);
-          lastSavingTimestamp = davisDvsEvent.time;
-        }
-        // visualization repaint
-        viz.setFrames(constructFrames());
-        clearAllFrames();
-        lastImagingTimestamp = davisDvsEvent.time;
-      }
+    }
+    // save frames
+    if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
+      saveFrame(pathToImages, imagePrefix, davisDvsEvent.time, saveConfig);
+      lastSavingTimestamp = davisDvsEvent.time;
+    }
+    // the events are accumulated for the interval time and then displayed in a single frame
+    if ((davisDvsEvent.time - lastImagingTimestamp) > visualizationInterval * 1000) {
+      // visualization repaint
+      viz.setFrames(constructFrames());
+      clearAllFrames();
+      lastImagingTimestamp = davisDvsEvent.time;
     }
     if (davisDvsEvent.time - begin > maxDuration * 1000) {
       end = davisDvsEvent.time;
@@ -154,7 +156,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
       if (saveConfig == 0) {
-        ImageIO.write(eventFrames[1].getAccumulatedEvents(), "png", new File(pathToFile, fileName));
+        ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(pathToFile, fileName));
       }
       if (saveConfig == 1) {
         BufferedImage wholeGUI = viz.getGUIFrame();

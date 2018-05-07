@@ -17,9 +17,8 @@ enum ImagesToGif {
   public static void main(String[] args) throws Exception {
     File dir = UserHome.Pictures("dvs");
     dir.mkdir();
-    // ImageIO.write(bufferedImage, "png", new File(dir, String.format("dvs%05d.png", ++count)));
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(2500).collect(Collectors.toList());
-    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("5.5Mevents_3times_slower_v2.gif"), 60)) {
+    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("dubi8cthirdSpeed.gif"), 100)) {
       int count = 0;
       for (File file : list) {
         BufferedImage bufferedImage = ImageIO.read(file);

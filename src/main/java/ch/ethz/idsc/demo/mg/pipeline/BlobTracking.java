@@ -28,7 +28,7 @@ public class BlobTracking {
   private static final float dAttr = 50; // [pixel] hidden blobs attraction
   private static final float dMerge = 20; // [pixel] if blobs closer than that, they merge
   private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
-  private static final int tau = 8000; // [us] tunes activity update
+  private  final int tau = 8000; // [us] tunes activity update
   // fields
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
