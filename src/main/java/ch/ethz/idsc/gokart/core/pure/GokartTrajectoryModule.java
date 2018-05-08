@@ -65,6 +65,8 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.sca.Ramp;
+import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 public class GokartTrajectoryModule extends AbstractClockedModule implements GokartPoseListener {
@@ -142,12 +144,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
-      if (Objects.isNull(trajectory)) { // has prev traj ?
-        // no: plan from current position to "best waypoint")
+      if (Objects.isNull(trajectory)) { // exists previous trajectory?
+        // no: plan from current position
         StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
         head = Arrays.asList(TrajectorySample.head(stateTime));
       } else {
-        // yes: find closest point on previous traj+delay... then plan to "best waypoint"
+        // yes: plan from closest point + cutoffDist on previous trajectory
+        tangentSpeed_ = Ramp.FUNCTION.apply(tangentSpeed_);
         Scalar cutoffDist = tangentSpeed_ //
             .multiply(TrajectoryConfig.GLOBAL.planningPeriod) //
             .add(Quantity.of(0.5, SI.METER));
@@ -170,7 +173,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
             PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);
         // Do Planning
-        StateTime root = Lists.getLast(head).stateTime(); // last statetime in head trajectory
+        StateTime root = Lists.getLast(head).stateTime();
         trajectoryPlanner.insertRoot(root);
         Expand.maxTime(trajectoryPlanner, getPeriod().multiply(Scalars.fromString("3/4"))); // TODO magic
         expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
@@ -183,6 +186,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   private static List<TrajectorySample> getTrajectoryUntil( //
       List<TrajectorySample> trajectory, Tensor pose, Scalar cutoffDistHead) {
+    Sign.requirePositiveOrZero(cutoffDistHead);
     Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), pose)));
     int closestIdx = ArgMin.of(distances);
     return trajectory.stream() //
