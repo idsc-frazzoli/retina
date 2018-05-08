@@ -26,14 +26,11 @@ public class RimoThrustJoystickModule extends GuideJoystickModule<RimoPutEvent> 
   @Override
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
-    // if (joystick.isAutonomousPressed()) {
     Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
     pair = pair.multiply(JoystickConfig.GLOBAL.torqueLimit);
     pair = RimoPutTire.MAGNITUDE_ARMS.apply(pair); // confim that units are correct
     short armsL_raw = (short) (-pair.number().shortValue()); // sign left invert
     short armsR_raw = (short) (+pair.number().shortValue()); // sign right id
     return Optional.of(RimoPutHelper.operationTorque(armsL_raw, armsR_raw));
-    // }
-    // return Optional.empty();
   }
 }

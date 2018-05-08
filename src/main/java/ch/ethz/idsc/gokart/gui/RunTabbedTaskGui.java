@@ -69,7 +69,7 @@ enum RunTabbedTaskGui {
       //
       JoystickGroupModule.class, //
       SysidSignalsModule.class, //
-      RimoThrustJoystickModule.class // UNDER EVALUATION
+      RimoThrustJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //
