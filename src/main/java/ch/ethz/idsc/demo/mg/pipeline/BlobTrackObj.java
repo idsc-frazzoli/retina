@@ -6,8 +6,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 // provides blob object for the tracking algorithm.
 public class BlobTrackObj {
   // camera parameters
-  private static final int WIDTH = 240; // maybe import those values from other file?
-  private static final int HEIGHT = 180;
+  private static int width;
+  private static int height;
   // blob parameters
   private final float[] initPos;
   private final float[] pos;
@@ -26,6 +26,12 @@ public class BlobTrackObj {
     currentScore = 0.0f;
   }
 
+  // set static parameters of class
+  public static void setParams(PipelineConfig pipelineConfig) {
+    width = pipelineConfig.width.number().intValue();
+    height = pipelineConfig.height.number().intValue();
+  }
+  
   // updates the activity of a blob
   public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
@@ -149,7 +155,7 @@ public class BlobTrackObj {
     float boundPointRight = pos[0] + boundaryDistance;
     float boundPointUp = pos[1] - boundaryDistance;
     float boundPointDown = pos[1] + boundaryDistance;
-    return boundPointLeft < 0 || boundPointRight > (WIDTH - 1) || boundPointUp < 0 || boundPointDown > HEIGHT;
+    return boundPointLeft < 0 || boundPointRight > (width - 1) || boundPointUp < 0 || boundPointDown > height;
   }
 
   public void increaseBlobSize(float enlargement) {

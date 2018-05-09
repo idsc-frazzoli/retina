@@ -5,13 +5,14 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides event filters
 public class EventFiltering {
-  private static final int WIDTH = 240;
-  private static final int HEIGHT = 180;
+  private static int width;
+  private static int height;
   // for background activity filter
-  private final int[][] timestamps = new int[WIDTH][HEIGHT];
+  private final int[][] timestamps;
+  private double filterConstant;
   // for corner detector
-  private int boarder = 4; // events too close to image boarder are neglected
-  private int[][][] SAE = new int[WIDTH][HEIGHT][2]; // surface of active events for each polarity
+  private int boarder; // events too close to image boarder are neglected
+  private int[][][] SAE; // surface of active events for each polarity
   // hard coded circle parameters for corner detector
   private final int[][] circle3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, { 3, 0 }, //
@@ -23,20 +24,25 @@ public class EventFiltering {
       { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
-  public EventFiltering() {
-    // ...
+  public EventFiltering(PipelineConfig pipelineConfig) {
+    width = pipelineConfig.width.number().intValue();
+    height = pipelineConfig.height.number().intValue();
+    timestamps = new int[width][height];
+    filterConstant = pipelineConfig.filterConstant.number().doubleValue();
+    boarder = pipelineConfig.boarder.number().intValue();
+    SAE = new int[width][height][2];
   }
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
-  public boolean filterPipeline(DavisDvsEvent davisDvsEvent, double filterConstant) {
-     return backgroundActivityFilter(davisDvsEvent, filterConstant);
-//    return cornerDetector(davisDvsEvent);
+  public boolean filterPipeline(DavisDvsEvent davisDvsEvent) {
+    return backgroundActivityFilter(davisDvsEvent, filterConstant);
+    // return cornerDetector(davisDvsEvent);
   }
 
   // update all neighboring cells with the timestamp of the incoming event
   private void updateNeighboursTimestamps(int x, int y, int time) {
     // check if we are not on an edge and then update all 8 neighbours
-    if (x != 0 && x != (WIDTH - 1) && y != 0 && y != (HEIGHT - 1)) {
+    if (x != 0 && x != (width - 1) && y != 0 && y != (height - 1)) {
       timestamps[x - 1][y] = time;
       timestamps[x + 1][y] = time;
       timestamps[x - 1][y - 1] = time;
@@ -60,7 +66,7 @@ public class EventFiltering {
     int pol = e.i;
     SAE[e.x][e.y][pol] = e.time;
     // check if not too close to boarder
-    if (e.x < boarder || e.x > WIDTH - boarder - 1 || e.y < boarder || e.y > HEIGHT - boarder - 1) {
+    if (e.x < boarder || e.x > width - boarder - 1 || e.y < boarder || e.y > height - boarder - 1) {
       return false;
     }
     boolean found_streak = false;

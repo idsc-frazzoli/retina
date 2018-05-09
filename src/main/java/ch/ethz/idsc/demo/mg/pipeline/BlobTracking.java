@@ -12,23 +12,23 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
 public class BlobTracking {
   // camera parameters
-  private static final int WIDTH = 240; // maybe import width/height from other file?
-  private static final int HEIGHT = 180;
+  private static int width;
+  private static int height;
   // tracker initialization parameters
-  private static final int initNumberOfBlobs = 24;
-  private static final int numberRows = 6; // on how many rows are the blobs initially distributed
-  private static final int initVariance = 250;
+  private static int initNumberOfBlobs;
+  private static int numberRows; // on how many rows are the blobs initially distributed
+  private static int initVariance;
   // algorithm parameters
-  private static final float aUp = 0.2f; // if activity is higher, blob is in active layer
-  private static final float aDown = 0.1f; // if activity is lower, active blob gets deleted
-  private static final float scoreThreshold = 4e-4f; // score threshold for active blobs
-  private static final float alphaOne = 0.9f; // for blob position update
-  private static final float alphaTwo = 0.998f; // for blob covariance update
-  private static final float alphaAttr = 0.002f; // attraction parameter - large value pulls blobs more towards initPos
-  private static final float dAttr = 50; // [pixel] hidden blobs attraction
-  private static final float dMerge = 20; // [pixel] if blobs closer than that, they merge
-  private static final int boundaryDistance = 1; // [pixel] for out of bounds calculation
-  private  final int tau = 8000; // [us] tunes activity update
+  private static float aUp; // if activity is higher, blob is in active layer
+  private static float aDown; // if activity is lower, active blob gets deleted
+  private static float scoreThreshold; // score threshold for active blobs
+  private static float alphaOne; // for blob position update
+  private static float alphaTwo; // for blob covariance update
+  private static float alphaAttr; // attraction parameter - large value pulls blobs more towards initPos
+  private static float dAttr; // [pixel] hidden blobs attraction
+  private static float dMerge; // [pixel] if blobs closer than that, they merge
+  private static int boundaryDistance; // [pixel] for out of bounds calculation
+  private static int tau; // [us] tunes activity update
   // fields
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
@@ -36,17 +36,39 @@ public class BlobTracking {
   // testing
   public float hitthreshold = 0;
 
-  // initialize the tracker with all blobs uniformly distributed
-  BlobTracking() {
+  BlobTracking(PipelineConfig pipelineConfig) {
+    // set parameters with config
+    setParameters(pipelineConfig);
+    // set static parameters for blob objects
+    BlobTrackObj.setParams(pipelineConfig);
+    // initialize the tracker with all blobs uniformly distributed
     blobs = new ArrayList<>(initNumberOfBlobs);
-    int columnSpacing = WIDTH / numberRows;
-    int rowSpacing = HEIGHT / (initNumberOfBlobs / numberRows);
+    int columnSpacing = width / numberRows;
+    int rowSpacing = height / (initNumberOfBlobs / numberRows);
     for (int i = 0; i < initNumberOfBlobs; i++) {
       int column = (i % numberRows);
       int row = i / numberRows; // use integer division
       BlobTrackObj blobTrackObj = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
       blobs.add(blobTrackObj);
     }
+  }
+
+  private void setParameters(PipelineConfig pipelineConfig) {
+    width = pipelineConfig.width.number().intValue();
+    height = pipelineConfig.height.number().intValue();
+    initNumberOfBlobs = pipelineConfig.initNumberOfBlobs.number().intValue();
+    numberRows = pipelineConfig.numberRows.number().intValue();
+    initVariance = pipelineConfig.initVariance.number().intValue();
+    aUp = pipelineConfig.aUp.number().floatValue();
+    aDown = pipelineConfig.aDown.number().floatValue();
+    scoreThreshold = pipelineConfig.scoreThreshold.number().floatValue();
+    alphaOne = pipelineConfig.alphaOne.number().floatValue();
+    alphaTwo = pipelineConfig.alphaTwo.number().floatValue();
+    alphaAttr = pipelineConfig.alphaAttr.number().floatValue();
+    dAttr = pipelineConfig.dAttr.number().floatValue();
+    dMerge = pipelineConfig.dMerge.number().floatValue();
+    boundaryDistance = pipelineConfig.boundaryDistance.number().intValue();
+    tau = pipelineConfig.tau.number().intValue();
   }
 
   // general todo list

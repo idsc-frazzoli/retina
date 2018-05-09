@@ -22,14 +22,22 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 public class ImageToWorldTransform {
   // fields
   private String fileName = "dubi0008.csv"; // for camera pose in DUBI12
-  private final int unitConversion = 1000; // [mm] to [m]
+  private static int unitConversion; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
   private Tensor focalLength; // [mm]
   private Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
   private List<PhysicalBlob> physicalBlobs;
 
-  ImageToWorldTransform() {
+  ImageToWorldTransform(PipelineConfig pipelineConfig) {
+    unitConversion = pipelineConfig.unitConversion.number().intValue();
+    physicalBlobs = new ArrayList<>();
+    importCameraParams();
+  }
+
+  // only for testing! will be removed later
+  public ImageToWorldTransform() {
+    unitConversion = 1000;
     physicalBlobs = new ArrayList<>();
     importCameraParams();
   }
@@ -72,6 +80,8 @@ public class ImageToWorldTransform {
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
     // here will be a further transformation into gokart frame which will require additional parameters
+    //..
+    // create physicalBlob object
     PhysicalBlob physicalBlob = new PhysicalBlob(new double[] { physicalCoord.get(0).Get(0).number().doubleValue() / unitConversion,
         physicalCoord.get(0).Get(1).number().doubleValue() / unitConversion });
     return physicalBlob;
@@ -86,7 +96,7 @@ public class ImageToWorldTransform {
     focalLength = inputTensor.extract(5, 6);
   }
 
-  // for testing
+  // only for testing
   public static void main(String[] args) {
     ImageToWorldTransform test = new ImageToWorldTransform();
     ImageBlob imageBlob = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);

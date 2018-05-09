@@ -8,11 +8,12 @@ import java.util.List;
 // filter has no memory --> a further filtering step is conducted by the estimation algorithm in physical space.
 public class ImageBlobSelector {
   // parameters
-  private static final int upperBoarder = 100; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
+  private static int upperBoarder; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
   // fields
   private List<ImageBlob> imageBlobs;
 
-  ImageBlobSelector() {
+  ImageBlobSelector(PipelineConfig pipelineConfig) {
+    upperBoarder = pipelineConfig.upperBoarder.number().intValue();
     imageBlobs = new ArrayList<>();
   }
 

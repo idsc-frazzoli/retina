@@ -17,19 +17,23 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
+import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
+  // set up listener
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
+  // config
+  private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());;
   // event filtering
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder(); // listener
-  private final EventFiltering eventFiltering = new EventFiltering(); // for filtering of event stream
+  private final EventFiltering eventFiltering = new EventFiltering(pipelineConfig);
   // blob tracking
-  private final BlobTracking tracking = new BlobTracking(); // tracks blobs
+  private final BlobTracking tracking = new BlobTracking(pipelineConfig);
   // feature filtering
-  private final ImageBlobSelector blobSelector = new ImageBlobSelector(); // selects blobs that match certain criteria
+  private final ImageBlobSelector blobSelector = new ImageBlobSelector(pipelineConfig);
   // blob transformation
-  private final ImageToWorldTransform transformer = new ImageToWorldTransform(); // transform to world coordinates
+  private final ImageToWorldTransform transformer = new ImageToWorldTransform();
   // visualization
   private final PipelineVisualization viz = new PipelineVisualization(); // visualization GUI
   private final AccumulatedEventFrame[] eventFrames = new AccumulatedEventFrame[3]; // perception module visualization frames
@@ -39,14 +43,13 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final File pathToHandlabelsFile = HandLabelFileLocations.labels("Dubi9e_labeledFeatures.csv"); // ground truth file for tracking evaluator
   private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile);
   // pipeline configuration
-  private final int maxDuration = 9000; // [ms]
-  private final int backgroundActivityFilterTime = 500; // [us] the shorter the more is filtered
+  private final int maxDuration = 10000; // [ms]
   private final int visualizationInterval = 33; // [ms]
   private final boolean useFilter = true;
   // image saving
-  private boolean saveImages = true;
-  private String imagePrefix = "Dubi8c"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
-//  private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
+  private boolean saveImages = false;
+  private String imagePrefix = "Dubi10d"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
+  // private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
   private File pathToImages = UserHome.Pictures("dvs"); // path where images are saved
   private final int savingInterval = 33; // [ms]
   private int saveConfig = 0; // 0 for saving filtered accumulated events, 1 for saving whole GUI
@@ -93,7 +96,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       evaluator.evaluatePerformance(blobSelector.getSelectedBlobs());
     }
     // filtering returns a boolean
-    if (eventFiltering.filterPipeline(davisDvsEvent, backgroundActivityFilterTime) && useFilter) {
+    if (eventFiltering.filterPipeline(davisDvsEvent) && useFilter) {
       // control pipeline
       tracking.receiveEvent(davisDvsEvent);
       blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
@@ -156,7 +159,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
       if (saveConfig == 0) {
-        ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(pathToFile, fileName));
+        // ImageIO.write(eventFrames[0].getAccumulatedEvents(), "png", new File(pathToFile, "0"+fileName));
+        ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(pathToFile, "1" + fileName));
+        ImageIO.write(eventFrames[2].overlayHiddenBlobs((tracking.getHiddenBlobs())), "png", new File(pathToFile, "2" + fileName));
       }
       if (saveConfig == 1) {
         BufferedImage wholeGUI = viz.getGUIFrame();
