@@ -8,6 +8,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -43,6 +44,7 @@ abstract class ViewLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final TrajectoryLcmClient trajectoryLcmClient = new TrajectoryLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private MappedPoseInterface mappedPoseInterface;
@@ -128,6 +130,7 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
+      trajectoryLcmClient.addListener(trajectoryRender);
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     // {
@@ -157,6 +160,7 @@ abstract class ViewLcmModule extends AbstractModule {
     // urg04lxLcmHandler.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
+    trajectoryLcmClient.startSubscriptions();
     // ---
     // odometryLcmClient.startSubscriptions();
     // ---
@@ -178,6 +182,7 @@ abstract class ViewLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     // urg04lxLcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
+    trajectoryLcmClient.stopSubscriptions();
     viewLcmFrame.close();
   }
 }

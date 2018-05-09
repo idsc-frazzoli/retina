@@ -15,7 +15,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.r2.ImageCostFunction;
@@ -95,7 +94,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private Tensor goalRadius;
   private Region<Tensor> unionRegion;
   private Scalar tangentSpeed = null;
-  private RimoGetListener rgl = new RimoGetListener() {
+  private RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
@@ -108,7 +107,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     gokartPoseLcmClient.startSubscriptions();
     purePursuitModule.launch();
     // ---
-    rimoGetLcmClient.addListener(rgl);
+    rimoGetLcmClient.addListener(rimoGetListener);
     rimoGetLcmClient.startSubscriptions();
     // ---
     obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
@@ -150,15 +149,15 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         head = Arrays.asList(TrajectorySample.head(stateTime));
       } else {
         // yes: plan from closest point + cutoffDist on previous trajectory
-        tangentSpeed_ = Ramp.FUNCTION.apply(tangentSpeed_);
+        tangentSpeed_ = Ramp.FUNCTION.apply(tangentSpeed_); // with unit "m*s^-1"
         Scalar cutoffDist = tangentSpeed_ //
             .multiply(TrajectoryConfig.GLOBAL.planningPeriod) //
-            .add(Quantity.of(0.5, SI.METER));
-        head = getTrajectoryUntil(trajectory, xya, cutoffDist);
+            .add(Quantity.of(0.5, SI.METER)); // TODO magic const
+        head = getTrajectoryUntil(trajectory, xya, Magnitude.METER.apply(cutoffDist));
       }
       Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
       int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
-      if (0 <= wpIdx) {
+      if (0 <= wpIdx && !head.isEmpty()) { // jan inserted check for non-empty
         Tensor goal = waypoints.get(wpIdx);
         // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
         while (Scalars.lessThan(SE2WRAP.distance(xya, goal), TrajectoryConfig.GLOBAL.horizonDistance) || unionRegion.isMember(goal)) {
@@ -173,7 +172,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
             PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);
         // Do Planning
-        StateTime root = Lists.getLast(head).stateTime();
+        StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);
         Expand.maxTime(trajectoryPlanner, getPeriod().multiply(Scalars.fromString("3/4"))); // TODO magic
         expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
@@ -184,17 +183,21 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     System.err.println("no curve because no pose");
   }
 
+  /** @param trajectory
+   * @param pose
+   * @param cutoffDistHead non-negative unit-less
+   * @return
+   * @throws Exception if cutoffDistHead is negative */
   private static List<TrajectorySample> getTrajectoryUntil( //
       List<TrajectorySample> trajectory, Tensor pose, Scalar cutoffDistHead) {
     Sign.requirePositiveOrZero(cutoffDistHead);
     Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), pose)));
     int closestIdx = ArgMin.of(distances);
+    Tensor closest = trajectory.get(closestIdx).stateTime().state();
     return trajectory.stream() //
-        .skip(Math.max((closestIdx - 5), 0)) //
+        .skip(Math.max((closestIdx - 5), 0)) // TODO magic const
         .filter(trajectorySample -> Scalars.lessEquals( //
-            SE2WRAP.distance(trajectory.get(closestIdx).stateTime().state(), //
-                trajectorySample.stateTime().state()),
-            Magnitude.METER.apply(cutoffDistHead))) //
+            SE2WRAP.distance(closest, trajectorySample.stateTime().state()), cutoffDistHead)) //
         .collect(Collectors.toList());
   }
 
@@ -215,11 +218,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
       Tensor curve = Tensor.of(trajectory.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
-      TrajectoryRender.TRAJECTORY = trajectory;
       purePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(trajectory);
     } else {
-      TrajectoryRender.TRAJECTORY = null; // failure to reach goal
+      // failure to reach goal
       purePursuitModule.setCurve(Optional.empty());
       PlannerPublish.publishTrajectory(new ArrayList<>());
     }

@@ -56,7 +56,7 @@ public class ArrayFloatBlobTest extends TestCase {
     Tensor result = ArrayFloatBlob.decode(byteBuffer);
     assertTrue(Chop._06.close(tensor, result));
   }
-  
+
   public void testEmpty() {
     PlannerPublish.publishTrajectory(new ArrayList<>());
   }
