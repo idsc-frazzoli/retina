@@ -90,16 +90,14 @@ public class GokartTrajectoryModuleTest extends TestCase {
       assertTrue(optional.isPresent());
     }
     {
+      RimoLcmServer.INSTANCE.getEvent( //
+          RimoGetEvents.create(-900, -900));
       GokartPoseLcmServer.INSTANCE.publish( //
-          GokartPoseEvents.getPoseEvent(Tensors.fromString("{-36.8[m], -44.2[m], 2.8}"), RealScalar.ONE));
-      Thread.sleep(50);
+          GokartPoseEvents.getPoseEvent(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
+      Thread.sleep(1000);
       gtm.runAlgo();
-      Thread.sleep(1000); // failure
-    }
-    {
-      // TODO check failure
-      // Optional<Tensor> optional = gtm.purePursuitModule.getCurve();
-      // assertFalse(optional.isPresent());
+      Optional<Tensor> optional = gtm.purePursuitModule.getCurve();
+      assertTrue(optional.isPresent());
     }
     gtm.last();
   }

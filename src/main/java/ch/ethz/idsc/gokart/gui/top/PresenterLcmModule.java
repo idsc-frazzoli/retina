@@ -10,6 +10,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -40,6 +41,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final TrajectoryLcmClient trajectoryLcmClient = new TrajectoryLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
@@ -107,6 +109,11 @@ public class PresenterLcmModule extends AbstractModule {
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
+      TrajectoryRender trajectoryRender = new TrajectoryRender();
+      trajectoryLcmClient.addListener(trajectoryRender);
+      timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
+    }
+    {
       GokartHudRender gokartHudRender = new GokartHudRender();
       joystickLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
@@ -120,6 +127,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
+    trajectoryLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
@@ -157,6 +165,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
     joystickLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
+    trajectoryLcmClient.stopSubscriptions();
   }
 
   public static void main(String[] args) throws Exception {
