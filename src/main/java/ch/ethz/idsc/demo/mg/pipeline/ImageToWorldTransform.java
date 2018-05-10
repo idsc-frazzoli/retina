@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-// Transformation from image to physical space. For documentation, see MATLAB single camera calibration. Also, my master thesis.
+// Transformation from image to physical space. For documentation, see MATLAB single camera calibration.
 // The CSV file must have the structure as below. Also important, exponential format must use capitalized E ("%E" in MATLAB).
 // 1st-3rd lines represent the transformation matrix
 // 4th line represents image coordinates of principal point [pixel]
@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // TODO still need to transform from checkerboard frame to gokart frame (once we try calibration on gokart)
 public class ImageToWorldTransform {
   // fields
-  private String fileName = "dubi0008.csv"; // for camera pose in DUBI12
+  private String calibrationFileName;
   private static int unitConversion; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
@@ -31,6 +31,7 @@ public class ImageToWorldTransform {
 
   ImageToWorldTransform(PipelineConfig pipelineConfig) {
     unitConversion = pipelineConfig.unitConversion.number().intValue();
+    calibrationFileName = pipelineConfig.calibrationFileName.toString();
     physicalBlobs = new ArrayList<>();
     importCameraParams();
   }
@@ -38,6 +39,7 @@ public class ImageToWorldTransform {
   // only for testing! will be removed later
   public ImageToWorldTransform() {
     unitConversion = 1000;
+    calibrationFileName = "dubi008.csv";
     physicalBlobs = new ArrayList<>();
     importCameraParams();
   }
@@ -89,7 +91,7 @@ public class ImageToWorldTransform {
 
   // imports parameters from CSV file that was generated with MATLAB
   private void importCameraParams() {
-    Tensor inputTensor = ResourceData.of("/demo/mg/" + fileName);
+    Tensor inputTensor = ResourceData.of(calibrationFileName);
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);

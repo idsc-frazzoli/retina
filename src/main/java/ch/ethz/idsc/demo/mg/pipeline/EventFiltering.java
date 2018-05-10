@@ -8,7 +8,7 @@ public class EventFiltering {
   private static int width;
   private static int height;
   // for background activity filter
-  private final int[][] timestamps;
+  private int[][] timestamps;
   private double filterConstant;
   // for corner detector
   private int boarder; // events too close to image boarder are neglected
@@ -25,6 +25,10 @@ public class EventFiltering {
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
   public EventFiltering(PipelineConfig pipelineConfig) {
+    setParameters(pipelineConfig);
+  }
+
+  private void setParameters(PipelineConfig pipelineConfig) {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
     timestamps = new int[width][height];

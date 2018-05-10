@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.gui.HandLabeler;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
@@ -14,17 +15,21 @@ import ch.ethz.idsc.tensor.io.Import;
 // this class provides a evaluation of the tracking algorithm performance. The ground truth is loaded from a hand labeled .CSV file
 // and then compared with the tracking algorithm during runtime.
 public class TrackingEvaluator {
-  List<List<ImageBlob>> labeledFeatures; // contains handlabeled features
-  int[] timeStamps; // timestamps for which handlabeld features are available
-  int currentLabelInstant = 0;
-  int numberOfLabelInstants = 0;
-  int distanceForAgreement = 20; // [pixel]
+  private String handLabelFileName;
+  private File handLabelFile;
+  private List<List<ImageBlob>> labeledFeatures; // contains handlabeled features
+  private int[] timeStamps; // timestamps for which handlabeld features are available
+  private int currentLabelInstant = 0;
+  private int numberOfLabelInstants = 0;
+  private int distanceForAgreement = 20; // [pixel]
 
   // load the labeled data
-  TrackingEvaluator(File file) {
-    setTimestampsFromCSV(file);
+  TrackingEvaluator(PipelineConfig pipelineConfig) {
+    handLabelFileName = pipelineConfig.handLabelFileName.toString();
+    handLabelFile = HandLabelFileLocations.labels(handLabelFileName);
+    setTimestampsFromCSV(handLabelFile);
     numberOfLabelInstants = timeStamps.length;
-    labeledFeatures = HandLabeler.loadFromCSV(file, timeStamps);
+    labeledFeatures = HandLabeler.loadFromCSV(handLabelFile, timeStamps);
   }
 
   public boolean isGroundTruthAvailable(DavisDvsEvent davisDvsEvent) {

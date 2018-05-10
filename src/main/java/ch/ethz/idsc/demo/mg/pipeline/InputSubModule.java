@@ -25,7 +25,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // set up listener
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   // config
-  private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());;
+  private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
   // event filtering
   private final EventFiltering eventFiltering = new EventFiltering(pipelineConfig);
   // blob tracking
@@ -33,27 +33,23 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // feature filtering
   private final ImageBlobSelector blobSelector = new ImageBlobSelector(pipelineConfig);
   // blob transformation
-  private final ImageToWorldTransform transformer = new ImageToWorldTransform();
+  private final ImageToWorldTransform transformer = new ImageToWorldTransform(pipelineConfig);
   // visualization
   private final PipelineVisualization viz = new PipelineVisualization(); // visualization GUI
   private final AccumulatedEventFrame[] eventFrames = new AccumulatedEventFrame[3]; // perception module visualization frames
   private final PhysicalBlobFrame[] physicalFrames = new PhysicalBlobFrame[3]; // control module visualization frames
   // performance evaluation
-  private final boolean evaluatePerformance = true;
-  private final File pathToHandlabelsFile = HandLabelFileLocations.labels("Dubi9e_labeledFeatures.csv"); // ground truth file for tracking evaluator
-  private final TrackingEvaluator evaluator = new TrackingEvaluator(pathToHandlabelsFile);
+  private final TrackingEvaluator evaluator = new TrackingEvaluator(pipelineConfig);
   // pipeline configuration
-  private final int maxDuration = 10000; // [ms]
-  private final int visualizationInterval = 33; // [ms]
-  private final boolean useFilter = true;
-  // image saving
-  private boolean saveImages = false;
-  private String imagePrefix = "Dubi10d"; // image name structure: "%s_%04d_%d.png", imagePrefix, imageCount, timeStamp
-  // private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
-  private File pathToImages = UserHome.Pictures("dvs"); // path where images are saved
-  private final int savingInterval = 33; // [ms]
-  private int saveConfig = 0; // 0 for saving filtered accumulated events, 1 for saving whole GUI
+  private boolean evaluatePerformance;
+  private boolean saveImages;
+  private int maxDuration;
+  private int visualizationInterval;
   private int imageCount = 0;
+  // image saving
+  private String imagePrefix;
+   private File pathToImages = HandLabelFileLocations.images(); // path where images are saved
+  private int savingInterval;
   // fields for testing
   private float eventCount = 0;
   private float filteredEventCount;
@@ -62,7 +58,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int begin, end;
   private long startTime, endTime;
 
-  public InputSubModule() {
+  public InputSubModule(PipelineConfig pipelineConfig) {
+    setParameters(pipelineConfig);
     davisDvsDatagramDecoder.addDvsListener(this);
     for (int i = 0; i < eventFrames.length; i++) {
       eventFrames[i] = new AccumulatedEventFrame();
@@ -70,6 +67,16 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     for (int i = 0; i < physicalFrames.length; i++) {
       physicalFrames[i] = new PhysicalBlobFrame();
     }
+  }
+  
+  private void setParameters(PipelineConfig pipelineConfig) {
+    saveImages = (0 != pipelineConfig.saveImages.number().intValue());
+    System.out.println(saveImages);
+    evaluatePerformance = (0 != pipelineConfig.evaluatePerformance.number().intValue());
+    maxDuration = pipelineConfig.maxDuration.number().intValue();
+    visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
+    imagePrefix = pipelineConfig.imagePrefix.toString();
+    savingInterval = pipelineConfig.savingInterval.number().intValue();
   }
 
   @Override
@@ -96,7 +103,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       evaluator.evaluatePerformance(blobSelector.getSelectedBlobs());
     }
     // filtering returns a boolean
-    if (eventFiltering.filterPipeline(davisDvsEvent) && useFilter) {
+    if (eventFiltering.filterPipeline(davisDvsEvent)) {
       // control pipeline
       tracking.receiveEvent(davisDvsEvent);
       blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
@@ -108,7 +115,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     }
     // save frames
     if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
-      saveFrame(pathToImages, imagePrefix, davisDvsEvent.time, saveConfig);
+      saveFrame(pathToImages, imagePrefix, davisDvsEvent.time);
       lastSavingTimestamp = davisDvsEvent.time;
     }
     // the events are accumulated for the interval time and then displayed in a single frame
@@ -154,19 +161,14 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   // for visualization
-  private void saveFrame(File pathToFile, String imagePrefix, int timeStamp, int saveConfig) {
+  private void saveFrame(File parentFilePath, String imagePrefix, int timeStamp) {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      if (saveConfig == 0) {
-        // ImageIO.write(eventFrames[0].getAccumulatedEvents(), "png", new File(pathToFile, "0"+fileName));
-        ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(pathToFile, "1" + fileName));
-        ImageIO.write(eventFrames[2].overlayHiddenBlobs((tracking.getHiddenBlobs())), "png", new File(pathToFile, "2" + fileName));
-      }
-      if (saveConfig == 1) {
-        BufferedImage wholeGUI = viz.getGUIFrame();
-        ImageIO.write(wholeGUI, "png", new File(pathToFile, fileName));
-      }
+      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(parentFilePath, "1" + fileName));
+      // possibility to save whole GUI
+      // BufferedImage wholeGUI = viz.getGUIFrame();
+      // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));
       System.out.printf("Images saved as %s\n", fileName);
     } catch (IOException e) {
       e.printStackTrace();
