@@ -2,11 +2,13 @@
 package ch.ethz.idsc.gokart.core.perc;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.Unprotect;
+import ch.ethz.idsc.tensor.alg.Flatten;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -29,9 +31,10 @@ public enum ClustersTime {
    * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
-  public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
+  public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
+    Tensor matrix = Flatten.of(scans, 1);
+    int[] array = scans.stream().mapToInt(Tensor::length).toArray();
     Database database = ClustersTime.sample(matrix);
-    int length = matrix.length() / 2;
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
@@ -42,31 +45,20 @@ public enum ClustersTime {
     Tensor pi = Tensors.empty();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
-        Tensor p1 = Tensors.empty();
-        Tensor p2 = Tensors.empty();
-        Tensor p3 = Tensors.empty();
-        Tensor p4 = Tensors.empty();
+        TreeMap<Integer, Tensor> map = new TreeMap<>();
+        int sum = 0;
+        for (int index = 0; index < array.length; index++) {
+          map.put(sum, Tensors.empty());
+          sum = sum + array[index];
+        }
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
           int offset = id.getOffset(iter);
-          if (offset < length) {
-            if (offset < length / 2)
-              p1.append(matrix.get(offset));
-            else
-              p2.append(matrix.get(offset));
-          } else {
-            if (offset >= 3 * length / 2)
-              p4.append(matrix.get(offset));
-            else
-              p3.append(matrix.get(offset));
-          }
+          map.floorEntry(offset).getValue().append(matrix.get(offset));
         }
-        // System.out.println("p2"+p2);
-        Tensor of = Tensors.of(p1, p2, p3, p4);
-        // System.out.println("of"+ of);
-        // System.out.println("p1"+p1);
+        Tensor of = Tensor.of(map.values().stream());
         pi.append(of);
       }
     return pi;

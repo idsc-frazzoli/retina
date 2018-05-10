@@ -54,10 +54,11 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       i++;
       if (!Tensors.isEmpty(p)) {
         p1.append(p);
-        if (p1.length() > 3) {
-          p1 = Tensors.of(p1.get(p1.length() - 4), p1.get(p1.length() - 3), p1.get(p1.length() - 2), p1.get(p1.length() - 1));
-          pi = ClusterConfig.GLOBAL.elkiDBSCANTime(Tensor.of(p1.flatten(1)));
+        int scanCount = ClusterConfig.GLOBAL.getScanCount();
+        if (p1.length() > scanCount) {
+          p1 = p1.extract(p1.length() - scanCount, p1.length());
         }
+        pi = ClusterConfig.GLOBAL.elkiDBSCANTime(p1);
         {
           if (Objects.nonNull(pi)) {
             Tensor meanFour = Tensors.empty();
