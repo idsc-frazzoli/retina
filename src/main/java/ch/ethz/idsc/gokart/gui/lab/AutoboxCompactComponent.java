@@ -1,24 +1,55 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.lab;
 
+import java.awt.Color;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGetListener, StartAndStoppable {
+public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable, DavisImuFrameListener {
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final Timer timer = new Timer();
+  private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
+  private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  private int imuFrame_count = 0;
+  private GokartPoseEvent gokartPoseEvent;
+  private RimoGetEvent rimoGetEvent;
   // TODO document for all gui elements why the subscriptions are the way they are
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
-  final JTextField[] jTextField = new JTextField[2];
-  final JTextField jTF_joystick;
-  final JTextField jTF_davis240c;
+  private final JTextField jTF_rimoRatePair;
+  private final JTextField jTF_joystick;
+  private final JTextField jTF_davis240c;
+  private final JTextField jTF_localPose;
+  private final JTextField jTF_localQual;
 
   public AutoboxCompactComponent() {
     {
@@ -33,31 +64,70 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements RimoGe
       JToolBar jToolBar = createRow("Steer");
       jToolBar.add(steerInitButton.getComponent());
     }
-    jTextField[0] = createReading("Rimo LEFT");
-    jTextField[1] = createReading("Rimo RIGHT");
+    jTF_rimoRatePair = createReading("Rimo");
     jTF_davis240c = createReading("Davis240C");
     jTF_joystick = createReading("Joystick");
-  }
-
-  @Override
-  public void getEvent(RimoGetEvent getEvent) {
-    jTextField[0].setText(getEvent.getTireL.getAngularRate_Y().map(Round._3).toString());
-    jTextField[1].setText(getEvent.getTireR.getAngularRate_Y().map(Round._3).toString());
+    jTF_localPose = createReading("Pose");
+    jTF_localQual = createReading("Pose quality");
   }
 
   @Override // from StartAndStoppable
   public void start() {
-    linmotInitButton.start();
-    miscResetButton.start();
-    steerInitButton.start();
-    RimoSocket.INSTANCE.addGetListener(this);
+    rimoGetLcmClient.addListener(rimoGetListener);
+    rimoGetLcmClient.startSubscriptions();
+    davisImuLcmClient.addListener(this);
+    davisImuLcmClient.startSubscriptions();
+    joystickLcmProvider.startSubscriptions();
+    gokartPoseLcmClient.addListener(gokartPoseListener);
+    gokartPoseLcmClient.startSubscriptions();
+    // ---
+    timer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        {
+          linmotInitButton.updateEnabled();
+          miscResetButton.updateEnabled();
+          steerInitButton.updateEnabled();
+          if (Objects.nonNull(rimoGetEvent)) {
+            String pair = rimoGetEvent.getAngularRate_Y_pair().map(Round._3).toString();
+            jTF_rimoRatePair.setText(pair);
+          }
+        }
+        {
+          Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
+          String string = optional.isPresent() ? optional.get().toString() : ToolbarsComponent.UNKNOWN;
+          jTF_joystick.setText(string);
+        }
+        jTF_davis240c.setText("#=" + imuFrame_count);
+        { // pose coordinates
+          String string = Objects.nonNull(gokartPoseEvent) //
+              ? gokartPoseEvent.getPose().map(Round._3).toString()
+              : ToolbarsComponent.UNKNOWN;
+          jTF_localPose.setText(string);
+        }
+        if (Objects.isNull(gokartPoseEvent)) { // pose quality
+          jTF_localQual.setText(ToolbarsComponent.UNKNOWN);
+          jTF_localQual.setBackground(null);
+        } else {
+          String string = gokartPoseEvent.getQuality().map(Round._3).toString();
+          jTF_localQual.setText(string);
+          Color color = ColorFormat.toColor(ColorDataGradients.MINT.apply(RealScalar.ONE.subtract(gokartPoseEvent.getQuality())));
+          jTF_localQual.setBackground(color);
+        }
+      }
+    }, 100, 50); // update rate 20[hz]
   }
 
   @Override // from StartAndStoppable
   public void stop() {
-    linmotInitButton.stop();
-    miscResetButton.stop();
-    steerInitButton.stop();
-    RimoSocket.INSTANCE.removeGetListener(this);
+    timer.cancel();
+    joystickLcmProvider.stopSubscriptions();
+    davisImuLcmClient.stopSubscriptions();
+    rimoGetLcmClient.stopSubscriptions();
+  }
+
+  @Override // from DavisImuFrameListener
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    ++imuFrame_count;
   }
 }

@@ -163,8 +163,13 @@ import ch.ethz.idsc.tensor.sca.Clip;
         && Chop.NONE.allZero(getAheadPair_Unit());
   }
 
-  @Override
+  @Override // from GokartJoystickInterface
   public boolean isAutonomousPressed() {
     return isButtonPressedA();
+  }
+
+  @Override // from GokartJoystickInterface
+  public boolean isResetPressed() {
+    return isButtonPressedY();
   }
 }

@@ -10,10 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
@@ -21,38 +17,16 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
-  private final LinmotComponent linmotComponent = new LinmotComponent();
-  private final MiscComponent miscComponent = new MiscComponent();
-  private final SteerComponent steerComponent = new SteerComponent();
-  private final RimoComponent rimoComponent = new RimoComponent();
   private final JFrame jFrame = new JFrame("Monitor and Testing");
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addGetListener(linmotComponent);
-    LinmotSocket.INSTANCE.addPutListener(linmotComponent);
-    LinmotSocket.INSTANCE.addPutProvider(linmotComponent);
-    linmotComponent.start();
-    addTab(linmotComponent);
-    // ---
-    MiscSocket.INSTANCE.addGetListener(miscComponent);
-    MiscSocket.INSTANCE.addPutListener(miscComponent);
-    MiscSocket.INSTANCE.addPutProvider(miscComponent);
-    miscComponent.start();
-    addTab(miscComponent);
-    // ---
-    SteerSocket.INSTANCE.addGetListener(steerComponent);
-    SteerSocket.INSTANCE.addPutListener(steerComponent);
-    SteerSocket.INSTANCE.addPutProvider(steerComponent);
-    steerComponent.start();
-    addTab(steerComponent);
-    // ---
-    RimoSocket.INSTANCE.addGetListener(rimoComponent);
-    RimoSocket.INSTANCE.addPutListener(rimoComponent);
-    RimoSocket.INSTANCE.addPutProvider(rimoComponent);
-    addTab(rimoComponent);
+    addTab(new LinmotComponent());
+    addTab(new MiscComponent());
+    addTab(new SteerComponent());
+    addTab(new RimoComponent());
     // ---
     jTabbedPane.setSelectedIndex(0);
     // ---
@@ -69,24 +43,7 @@ public class AutoboxTestingModule extends AbstractModule {
   }
 
   private void private_windowClosed() {
-    LinmotSocket.INSTANCE.removeGetListener(linmotComponent);
-    LinmotSocket.INSTANCE.removePutListener(linmotComponent);
-    LinmotSocket.INSTANCE.removePutProvider(linmotComponent);
-    linmotComponent.stop();
-    // ---
-    MiscSocket.INSTANCE.removeGetListener(miscComponent);
-    MiscSocket.INSTANCE.removePutListener(miscComponent);
-    MiscSocket.INSTANCE.removePutProvider(miscComponent);
-    miscComponent.stop();
-    // ---
-    SteerSocket.INSTANCE.removeGetListener(steerComponent);
-    SteerSocket.INSTANCE.removePutListener(steerComponent);
-    SteerSocket.INSTANCE.removePutProvider(steerComponent);
-    steerComponent.stop();
-    // ---
-    RimoSocket.INSTANCE.removeGetListener(rimoComponent);
-    RimoSocket.INSTANCE.removePutListener(rimoComponent);
-    RimoSocket.INSTANCE.removePutProvider(rimoComponent);
+    list.forEach(AutoboxTestingComponent::stop);
     System.out.println("removed listeners and providers");
   }
 
@@ -97,6 +54,7 @@ public class AutoboxTestingModule extends AbstractModule {
   }
 
   private void addTab(AutoboxTestingComponent<?, ?> autoboxTestingComponent) {
+    autoboxTestingComponent.start();
     list.add(autoboxTestingComponent);
     String string = autoboxTestingComponent.getClass().getSimpleName();
     string = string.substring(0, string.length() - 9);

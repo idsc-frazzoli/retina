@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -12,6 +14,8 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
+import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
+import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.SlamOfflineLocalize;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
@@ -47,7 +51,9 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    offlineLocalize = new SlamOfflineLocalize(olr.model());
+    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+    ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
+    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), olr.model(), scatterImage);
     lidarAngularFiringCollector.addListener(offlineLocalize);
   }
 

@@ -10,6 +10,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -28,6 +30,7 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 
+// TODO visualize traj in presenter module
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
@@ -38,6 +41,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final TrajectoryLcmClient trajectoryLcmClient = new TrajectoryLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
@@ -46,7 +50,7 @@ public class PresenterLcmModule extends AbstractModule {
   protected void first() throws Exception {
     vlp16LcmHandler.lidarSpacialProvider.addListener(new LidarSpaceTimeListener());
     {
-      ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180423.getImageRegion();
+      ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180506.getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
     {
@@ -117,6 +121,11 @@ public class PresenterLcmModule extends AbstractModule {
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
+      TrajectoryRender trajectoryRender = new TrajectoryRender();
+      trajectoryLcmClient.addListener(trajectoryRender);
+      timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
+    }
+    {
       GokartHudRender gokartHudRender = new GokartHudRender();
       joystickLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
@@ -130,6 +139,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
+    trajectoryLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
@@ -167,6 +177,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
     joystickLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
+    trajectoryLcmClient.stopSubscriptions();
   }
 
   public static void main(String[] args) throws Exception {

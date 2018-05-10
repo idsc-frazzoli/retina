@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owl.data.tree.Nodes;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
-import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
+import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
@@ -21,11 +21,11 @@ import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.flow.MidpointIntegrator;
 import ch.ethz.idsc.owl.math.region.HyperplaneRegion;
 import ch.ethz.idsc.owl.math.region.NegativeHalfspaceRegion;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
-import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -39,22 +39,20 @@ enum DriftExtDemo {
     StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
         MidpointIntegrator.INSTANCE, RationalScalar.of(1, 10), 7);
     System.out.println("scale=" + eta);
-    Collection<Flow> controls = DriftControls.createExtended(10); // magic const
+    Collection<Flow> controls = new DriftExtFlows().getFlows(10); // magic const
     GoalInterface goalInterface = DriftGoalManager.createStandard(//
         Tensors.vector(0, 0, 0, -0.3055, 0.5032, 8), //
         Tensors.vector( //
             Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, //
             0.05, 0.05, 0.25));
     // ---
-    TrajectoryRegionQuery obstacleQuery = //
-        SimpleTrajectoryRegionQuery.timeInvariant( //
-            RegionUnion.wrap(Arrays.asList( //
-                new NegativeHalfspaceRegion(4) // ensure that r is non-negative
-                , // impose that x < Threshold
-                new HyperplaneRegion(Tensors.vector(-1, 0, 0, 0, 0, 0), RealScalar.of(12)) //
-            )));
+    Region<Tensor> region = RegionUnion.wrap(Arrays.asList( //
+        new NegativeHalfspaceRegion(4) // ensure that r is non-negative
+        , // impose that x < Threshold
+        new HyperplaneRegion(Tensors.vector(-1, 0, 0, 0, 0, 0), RealScalar.of(12)) //
+    ));
     // ---
-    PlannerConstraint plannerConstraint = null; // FIXME
+    PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(region);
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         eta, stateIntegrator, controls, plannerConstraint, goalInterface);
     trajectoryPlanner.represent = x -> x.state().extract(3, 6); // consider only (beta,r,Ux)

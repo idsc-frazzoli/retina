@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
@@ -40,6 +41,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       GokartPoseLcmServer.INSTANCE.publish( //
           GokartPoseEvents.getPoseEvent(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
+      RimoLcmServer.INSTANCE.getEvent( //
+          RimoGetEvents.create(500, 500));
       Thread.sleep(50);
       gtm.runAlgo();
       Thread.sleep(500);
@@ -87,16 +90,14 @@ public class GokartTrajectoryModuleTest extends TestCase {
       assertTrue(optional.isPresent());
     }
     {
+      RimoLcmServer.INSTANCE.getEvent( //
+          RimoGetEvents.create(-900, -900));
       GokartPoseLcmServer.INSTANCE.publish( //
-          GokartPoseEvents.getPoseEvent(Tensors.fromString("{-36.8[m], -44.2[m], 2.8}"), RealScalar.ONE));
-      Thread.sleep(50);
+          GokartPoseEvents.getPoseEvent(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
+      Thread.sleep(1000);
       gtm.runAlgo();
-      Thread.sleep(1000); // failure
-    }
-    {
-      // TODO check failure
-      // Optional<Tensor> optional = gtm.purePursuitModule.getCurve();
-      // assertFalse(optional.isPresent());
+      Optional<Tensor> optional = gtm.purePursuitModule.getCurve();
+      assertTrue(optional.isPresent());
     }
     gtm.last();
   }

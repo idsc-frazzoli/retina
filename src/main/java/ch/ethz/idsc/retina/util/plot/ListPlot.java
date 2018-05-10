@@ -67,7 +67,7 @@ public class ListPlot {
     model2pixel.set(RealScalar.of(MARGIN_EAST), 0, 2);
     model2pixel.set(RealScalar.of(view.height + MARGIN_TOP), 1, 2);
     // System.out.println(Pretty.of(model2pixel));
-    GeometricLayer geometricLayer = new GeometricLayer(model2pixel, Tensors.vector(1, 2, 3));
+    GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
     geometricLayer.pushMatrix(point2res);
     // ---
     graphics.drawRect(MARGIN_EAST, MARGIN_TOP, 0, view.height);

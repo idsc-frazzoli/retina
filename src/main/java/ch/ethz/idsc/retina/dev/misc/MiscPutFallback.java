@@ -15,6 +15,6 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 
   @Override // from PutProvider
   public Optional<MiscPutEvent> putEvent() {
-    return Optional.of(MiscPutEvent.PASSIVE);
+    return Optional.of(MiscPutEvent.FALLBACK);
   }
 }

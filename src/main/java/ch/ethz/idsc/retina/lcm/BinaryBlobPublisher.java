@@ -21,6 +21,10 @@ public class BinaryBlobPublisher implements ByteArrayConsumer {
     BinaryBlob binaryBlob = new BinaryBlob();
     binaryBlob.data_length = data_length;
     binaryBlob.data = data;
+    accept(binaryBlob);
+  }
+
+  public void accept(BinaryBlob binaryBlob) {
     lcm.publish(channel, binaryBlob);
   }
 }

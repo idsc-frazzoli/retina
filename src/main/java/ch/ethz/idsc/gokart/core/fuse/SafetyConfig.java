@@ -3,11 +3,20 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
+import ch.ethz.idsc.owl.car.math.ClearanceTracker;
+import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /**  */
 public class SafetyConfig implements Serializable {
@@ -36,5 +45,20 @@ public class SafetyConfig implements Serializable {
 
   public Scalar vlp16_ZHiMeter() {
     return Magnitude.METER.apply(vlp16_ZHi);
+  }
+
+  public Clip getClearanceClip() {
+    return Clip.function(RealScalar.of(0.2), clearanceFrontMeter());
+  }
+
+  /** @param gokartStatusEvent non-null
+   * @return */
+  public ClearanceTracker getClearanceTracker(GokartStatusEvent gokartStatusEvent) {
+    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
+      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+      return new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
+    }
+    return EmptyClearanceTracker.INSTANCE;
   }
 }

@@ -22,7 +22,10 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
     // ---
     addPutProvider(LinmotFireFighter.INSTANCE);
     addGetListener(LinmotFireFighter.INSTANCE);
+    // ---
     addPutProvider(LinmotCalibrationProvider.INSTANCE);
+    addGetListener(LinmotCalibrationProvider.INSTANCE);
+    // ---
     addPutProvider(LinmotPutFallback.INSTANCE);
   }
 

@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.TensorFloatLcm;
+import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -30,7 +30,7 @@ class RimoControllerAnalysis implements OfflineTableSupplier {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
-      Tensor tensor = TensorFloatLcm.receive(byteBuffer);
+      Tensor tensor = VectorFloatBlob.decode(byteBuffer);
       tableBuilder.appendRow(time.map(Magnitude.SECOND), tensor);
     }
   }
