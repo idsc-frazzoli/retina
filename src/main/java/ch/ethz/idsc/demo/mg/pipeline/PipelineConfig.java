@@ -16,12 +16,12 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public Scalar logFileName = StringScalar.of("DUBI10d"); // must match name in LogFileLocations
-  public Scalar maxDuration = RealScalar.of(2000); // [ms]
+  public String logFileName = "DUBI10d"; // must match name in LogFileLocations
+  public final Scalar maxDuration = RealScalar.of(2000); // [ms]
   // general parameters
-  public Scalar width = RealScalar.of(240);
-  public Scalar height = RealScalar.of(180);
-  public Scalar unitConversion = RealScalar.of(1000);
+  public final Scalar width = RealScalar.of(240);
+  public final Scalar height = RealScalar.of(180);
+  public final Scalar unitConversion = RealScalar.of(1000);
   // event filtering
   public Scalar filterConstant = RealScalar.of(500); // [us]
   public Scalar boarder = RealScalar.of(4);
@@ -42,15 +42,15 @@ public class PipelineConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(100);
   // image to world transform
-  public Scalar calibrationFileName = StringScalar.of("/demo/mg/dubi0008.csv"); // path in main/resources/..
+  public String calibrationFileName = "/demo/mg/dubi0008.csv"; // path in main/resources/..
   // image saving
-  public Scalar saveImages = RealScalar.of(0); // used as boolean: 0 == false, else == true
-  public Scalar savingInterval = RealScalar.of(33); // [ms]
+  public final Scalar saveImages = RealScalar.of(0); // used as boolean: 0 == false, else == true
+  public final Scalar savingInterval = RealScalar.of(33); // [ms]
   /** tracking evaluation in HandLabelFileLocations.labels(..) */
-  public Scalar handLabelFileName = StringScalar.of(logFileName.toString() + "_labeledFeatures.csv");
+  public final Scalar handLabelFileName = StringScalar.of(logFileName + "_labeledFeatures.csv");
   /** used as boolean: 0 == false, else == true
    * access via function isPerformanceEvaluated() */
-  public Scalar evaluatePerformance = RealScalar.of(0);
+  public final Scalar evaluatePerformance = RealScalar.of(0);
   /** visualization used as boolean: 0 == false, else == true
    * access via function isVisualized() */
   public Scalar visualizePipeline = RealScalar.of(1);
@@ -58,7 +58,7 @@ public class PipelineConfig {
 
   /***************************************************/
   public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName.toString());
+    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
     if (Objects.isNull(logFileLocations))
       throw new RuntimeException("invalid logFileName: " + logFileName);
     return logFileLocations.getFile();

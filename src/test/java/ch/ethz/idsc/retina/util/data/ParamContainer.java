@@ -10,9 +10,13 @@ class ParamContainer {
       ResourceData.properties("/properties/ParamContainer.properties"), //
       new ParamContainer());
   // ---
-  public String value;
+  public String string;
   public Scalar maxTor;
   public Tensor shape;
   public Scalar abc;
-  public int nono;
+  // ---
+  // ignore the following
+  public transient Scalar ignoreTransient;
+  /* package */ Scalar ignorePackage; // ignored
+  public int nono; // int's are ignored
 }

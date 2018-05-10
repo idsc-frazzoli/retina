@@ -22,6 +22,10 @@ import ch.ethz.idsc.tensor.Tensors;
  * and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
+  private static final int MASK_FILTER = Modifier.PUBLIC;
+  private static final int MASK_TESTED = //
+      Modifier.FINAL | Modifier.STATIC | Modifier.TRANSIENT | MASK_FILTER;
+
   /** @param object
    * @return properties with fields of given object as keys mapping to values as string expression */
   public static Properties extract(Object object) {
@@ -71,8 +75,7 @@ public enum TensorProperties {
   }
 
   public static boolean isTracked(Field field) {
-    int mod = field.getModifiers();
-    if (!Modifier.isFinal(mod) && !Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+    if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
       Class<?> type = field.getType();
       return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class);
     }

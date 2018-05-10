@@ -20,9 +20,11 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
+// TODO JAN more tests!
 public class TensorPropertiesTest extends TestCase {
   public void testStore() throws Exception {
     ParamContainer ori = new ParamContainer();
+    ori.string = "some string, no new line please";
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
     ori.shape = Tensors.fromString("{1,2,3}");
     ori.abc = RealScalar.ONE;
@@ -31,12 +33,14 @@ public class TensorPropertiesTest extends TestCase {
     {
       ParamContainer pc = new ParamContainer();
       TensorProperties.insert(properties, pc);
+      assertEquals(ori.string, pc.string);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
       assertEquals(ori.abc, pc.abc);
     }
     {
       ParamContainer pc = TensorProperties.newInstance(properties, ParamContainer.class);
+      assertEquals(ori.string, pc.string);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
       assertEquals(ori.abc, pc.abc);
