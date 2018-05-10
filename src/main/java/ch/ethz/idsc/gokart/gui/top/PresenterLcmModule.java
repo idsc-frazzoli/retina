@@ -75,8 +75,8 @@ public class PresenterLcmModule extends AbstractModule {
     // timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
     // }
     {
-      ObstacleTimeClusterRender obstacleTimeClusterRender = //
-          new ObstacleTimeClusterRender(gokartPoseInterface);
+      ObstacleClusterTrackingRender obstacleTimeClusterRender = //
+          new ObstacleClusterTrackingRender(gokartPoseInterface);
       obstacleTimeClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       obstacleTimeClusterRender.setColor(new Color(255, 0, 0, 128));
       obstacleTimeClusterRender.pointSize = 4;

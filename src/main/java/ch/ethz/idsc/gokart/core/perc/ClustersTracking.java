@@ -1,11 +1,11 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
@@ -24,14 +24,16 @@ import de.lmu.ifi.dbs.elki.database.ids.DBIDs;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
-public enum ClustersTime {
+public enum ClustersTracking {
   ;
   /** @param matrix
    * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
-  public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
-    Tensor matrix = Flatten.of(scans, 1);
+  public static void elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
+    Tensor scans = oldClusters.toMatrices().append(newScan);
+    oldClusters.collection.forEach(ClusterDeque::appendEmpty);
+    int sizeCollection = oldClusters.collection.size();
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
     TreeMap<Integer, Integer> origin = new TreeMap<>();
     int sum = 0;
@@ -39,6 +41,7 @@ public enum ClustersTime {
       origin.put(sum, index);
       sum = sum + array[index];
     }
+    Tensor matrix = Flatten.of(scans, 1);
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
@@ -47,7 +50,6 @@ public enum ClustersTime {
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
-    Tensor pi = Tensors.empty();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
         TreeMap<Integer, Tensor> map = new TreeMap<>();
@@ -59,7 +61,7 @@ public enum ClustersTime {
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
-        Set<Integer> set = new HashSet<>();
+        TreeSet<Integer> set = new TreeSet<>();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
           int offset = id.getOffset(iter);
           set.add(origin.floorEntry(offset).getValue());
@@ -67,10 +69,16 @@ public enum ClustersTime {
           // floorEntry.
           floorEntry.getValue().append(matrix.get(offset));
         }
+        if (set.equals(Collections.singleton(sizeCollection))) {
+          oldClusters.collection.add(new ClusterDeque(map.lastEntry().getValue()));
+        } else if (set.size() == 2 && set.contains(sizeCollection)) {
+          Tensor points = map.lastEntry().getValue();
+          ClusterDeque next = oldClusters.collection.get(set.iterator().next());
+          next.replaceLast(points);
+        }
         // System.out.println(set);
-        Tensor of = Tensor.of(map.values().stream());
-        pi.append(of);
+        // Tensor of = Tensor.of(map.values().stream());
       }
-    return pi;
+    oldClusters.maintainUntil(sizeCollection);
   }
 }
