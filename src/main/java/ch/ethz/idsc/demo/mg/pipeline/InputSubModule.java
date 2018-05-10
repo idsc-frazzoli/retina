@@ -32,7 +32,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // visualization
   private boolean visualizePipeline;
   private PipelineVisualization visualizer = null;
-  private AccumulatedEventFrame[] eventFrames = null; 
+  private AccumulatedEventFrame[] eventFrames = null;
   private PhysicalBlobFrame[] physicalFrames = null;
   // pipeline configuration
   private boolean evaluatePerformance;
@@ -66,7 +66,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if (visualizePipeline) {
       visualizer = new PipelineVisualization();
       eventFrames = new AccumulatedEventFrame[3];
-      physicalFrames =  new PhysicalBlobFrame[3];
+      physicalFrames = new PhysicalBlobFrame[3];
       for (int i = 0; i < eventFrames.length; i++) {
         eventFrames[i] = new AccumulatedEventFrame();
       }
@@ -80,8 +80,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
 
   private void setParameters(PipelineConfig pipelineConfig) {
     saveImages = (0 != pipelineConfig.saveImages.number().intValue());
-    visualizePipeline = (0 != pipelineConfig.visualizePipeline.number().intValue());
-    evaluatePerformance = (0 != pipelineConfig.evaluatePerformance.number().intValue());
+    visualizePipeline = pipelineConfig.isVisualized();
+    evaluatePerformance = pipelineConfig.isPerformanceEvaluated();
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
     pathToImages = HandLabelFileLocations.images(imagePrefix);

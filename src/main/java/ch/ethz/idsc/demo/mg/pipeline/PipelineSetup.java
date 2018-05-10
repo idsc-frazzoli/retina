@@ -4,9 +4,10 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.tensor.RealScalar;
 
-// pipeline setup for single/multirun
+/** pipeline setup for single/multirun */
 public class PipelineSetup {
   private PipelineConfig pipelineConfig;
   private InputSubModule inputSubModule;
@@ -30,12 +31,13 @@ public class PipelineSetup {
 
   private void runPipeline() {
     // get logFile
-    File logFile = new File(pipelineConfig.pathToLogFile.toString());
+    File logFile = pipelineConfig.getLogFile();
     try {
       System.out.println("****Begin of pipeline run****");
       // initialize inputSubModule with current config and run logplayer
       inputSubModule = new InputSubModule(pipelineConfig);
-      OfflineLogPlayerDemo.process(pipelineConfig.maxDuration.number().longValue() * 1000, logFile, inputSubModule);
+      BoundedOfflineLogPlayer.process(logFile, //
+          pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
       // show summary
       inputSubModule.summarizeLog();
     } catch (IOException e) {
@@ -43,7 +45,7 @@ public class PipelineSetup {
     }
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     // initialize config -- could also load existing config
     PipelineConfig pipelineConfig = new PipelineConfig();
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());

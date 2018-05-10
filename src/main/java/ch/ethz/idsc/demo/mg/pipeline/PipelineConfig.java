@@ -1,25 +1,27 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.io.StringScalar;
 
-// defines all parameters of the control pipeline and optionally saves them to a .properties file 
+/** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
   public Scalar logFileName = StringScalar.of("DUBI10d"); // must match name in LogFileLocations
-  public final Scalar maxDuration = RealScalar.of(2000); // [ms]
-  public Scalar pathToLogFile;
+  public Scalar maxDuration = RealScalar.of(2000); // [ms]
   // general parameters
-  public final Scalar width = RealScalar.of(240);
-  public final Scalar height = RealScalar.of(180);
-  public final Scalar unitConversion = RealScalar.of(1000);
+  public Scalar width = RealScalar.of(240);
+  public Scalar height = RealScalar.of(180);
+  public Scalar unitConversion = RealScalar.of(1000);
   // event filtering
   public Scalar filterConstant = RealScalar.of(500); // [us]
   public Scalar boarder = RealScalar.of(4);
@@ -42,28 +44,38 @@ public class PipelineConfig {
   // image to world transform
   public Scalar calibrationFileName = StringScalar.of("/demo/mg/dubi0008.csv"); // path in main/resources/..
   // image saving
-  public final Scalar saveImages = RealScalar.of(0); // used as boolean: 0 == false, else == true
-  public final Scalar savingInterval = RealScalar.of(33); // [ms]
-  // tracking evaluation
-  public final Scalar handLabelFileName = StringScalar.of(logFileName.toString()+"_labeledFeatures.csv"); // in HandLabelFileLocations.labels(..)
-  public final Scalar evaluatePerformance = RealScalar.of(0); // used as boolean: 0 == false, else == true
-  // visualization
-  public Scalar visualizePipeline = RealScalar.of(1); // used as boolean: 0 == false, else == true
-  public final Scalar visualizationInterval = RealScalar.of(33); // [ms]
+  public Scalar saveImages = RealScalar.of(0); // used as boolean: 0 == false, else == true
+  public Scalar savingInterval = RealScalar.of(33); // [ms]
+  /** tracking evaluation in HandLabelFileLocations.labels(..) */
+  public Scalar handLabelFileName = StringScalar.of(logFileName.toString() + "_labeledFeatures.csv");
+  /** used as boolean: 0 == false, else == true
+   * access via function isPerformanceEvaluated() */
+  public Scalar evaluatePerformance = RealScalar.of(0);
+  /** visualization used as boolean: 0 == false, else == true
+   * access via function isVisualized() */
+  public Scalar visualizePipeline = RealScalar.of(1);
+  public Scalar visualizationInterval = RealScalar.of(33); // [ms]
 
-  PipelineConfig() {
-    // TODO quite ugly but works -- maybe a more elegant way is possible?
-    try {
-      pathToLogFile = StringScalar.of(LogFileLocations.class.getField(logFileName.toString()).get(LogFileLocations.class).toString());    
-    } catch(IllegalArgumentException | IllegalAccessException | SecurityException | NoSuchFieldException e) {
-      throw new RuntimeException(e);
-    }
+  /***************************************************/
+  public File getLogFile() {
+    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName.toString());
+    if (Objects.isNull(logFileLocations))
+      throw new RuntimeException("invalid logFileName: " + logFileName);
+    return logFileLocations.getFile();
+  }
+
+  public boolean isVisualized() {
+    return Scalars.nonZero(visualizePipeline);
+  }
+
+  public boolean isPerformanceEvaluated() {
+    return Scalars.nonZero(evaluatePerformance);
   }
 
   // for testing
   public static void main(String[] args) throws IOException {
     PipelineConfig test = new PipelineConfig();
-    System.out.println(test.pathToLogFile);
+    System.out.println(test.getLogFile());
     TensorProperties.manifest(UserHome.file("config2.properties"), test);
     // private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
   }

@@ -1,4 +1,4 @@
-// code by jph and mg
+// code by mg
 package ch.ethz.idsc.demo.mg;
 
 import java.awt.Color;
@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
-// dirty demo code to illustrate ellipse merging
+/** dirty demo code to illustrate ellipse merging */
 public enum ImageSynthAndExportDemo {
   ;
   public static BufferedImage createImage(int pix) {

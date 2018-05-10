@@ -31,7 +31,7 @@ public class BlobTrackObj {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
   }
-  
+
   // updates the activity of a blob
   public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;

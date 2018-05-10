@@ -82,7 +82,7 @@ public class ImageToWorldTransform {
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
     // here will be a further transformation into gokart frame which will require additional parameters
-    //..
+    // ..
     // create physicalBlob object
     PhysicalBlob physicalBlob = new PhysicalBlob(new double[] { physicalCoord.get(0).Get(0).number().doubleValue() / unitConversion,
         physicalCoord.get(0).Get(1).number().doubleValue() / unitConversion });

@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import idsc.BinaryBlob;
@@ -13,10 +14,10 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = new File(LogFileLocations.DUBI12);
+    File src = LogFileLocations.DUBI12.getFile();
     System.out.println(src.toString());
     File dst = null;
-    dst = new File("/home/mario/logs/20180430T164704_0e959fc6Extracted5.lcm");
+    dst = UserHome.file("logs/20180430T164704_0e959fc6Extracted5.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
