@@ -23,15 +23,14 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-public class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
-  public static final Clip VALID_RANGE = SteerConfig.GLOBAL.getAngleLimit();
-  // ---
+public final class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
+  private final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  private Optional<Tensor> optionalCurve = Optional.empty();
   // ---
+  private Optional<Tensor> optionalCurve = Optional.empty();
   private GokartPoseEvent gokartPoseEvent = null;
 
   /** function for trajectory planner
@@ -88,7 +87,7 @@ public class PurePursuitModule extends AbstractClockedModule implements GokartPo
           // System.out.println("has lookahaed " + optional.isPresent());
           if (optional.isPresent()) { // is look ahead beacon available?
             Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
-            if (VALID_RANGE.isInside(angle)) { // is look ahead beacon within steering range?
+            if (angleClip.isInside(angle)) { // is look ahead beacon within steering range?
               purePursuitSteer.setHeading(angle);
               Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
               if (joystick.isPresent()) { // is joystick button "autonomous" pressed?

@@ -19,8 +19,7 @@ public abstract class AbstractGokartRender implements RenderInterface {
   @Override // from RenderInterface
   public final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
-    Tensor matrix = GokartPoseHelper.toSE2Matrix(state);
-    geometricLayer.pushMatrix(matrix);
+    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(state));
     // ---
     protected_render(geometricLayer, graphics);
     // ---

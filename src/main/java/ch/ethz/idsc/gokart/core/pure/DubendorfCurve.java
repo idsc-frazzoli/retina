@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Nest;
 
-// TODO consider stating coordinates in [m]eters
 public enum DubendorfCurve {
   ;
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();

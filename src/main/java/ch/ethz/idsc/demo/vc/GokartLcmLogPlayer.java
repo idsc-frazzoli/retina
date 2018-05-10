@@ -21,6 +21,8 @@ enum GokartLcmLogPlayer {
     file = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
     file = UserHome.file("/Desktop/ETHZ/2_MA2/0_SemesterProject/log.lcm");
     file = UserHome.file("/Desktop/ETHZ/log/20180412T163855_7e5b46c2.lcm.00");
+    // file = UserHome.file("/Desktop/20180430T141530_a5291af9.lcm.00");
+    // file = UserHome.file("/Desktop/20180430T104113_a5291af9.lcm.00");
     // file = UserHome.file("gokartlogs/20180308/20180308T151702_45b9eed8.lcm.00");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;

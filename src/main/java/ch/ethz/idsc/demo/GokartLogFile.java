@@ -170,7 +170,8 @@ public enum GokartLogFile implements LogFile {
   _20180427T123334_22662115, //
   /** rimo PI controller with Kp=74 Ki==0
    * exhibits backwards driving
-   * log includes internals of PI controller */
+   * log includes internals of PI controller
+   * channel rimo.controller.pi is encoded in BIG_ENDIAN */
   _20180427T125356_22662115, //
   /** slow and medium joystick driving with 2 pedestrians walking
    * gokart localization not successful */
@@ -217,6 +218,26 @@ public enum GokartLogFile implements LogFile {
    * pedestrians, bicycle, static obstacles
    * speed controller allows very minor backwards motion */
   _20180503T160522_16144bb6, //
+  /***************************************************/
+  /* 2018-05-07 */
+  /** pure pursuit figure 8 */
+  _20180507T090040_28e21174, //
+  /** pure pursuit figure 8 with speed then up to 5[m/s] */
+  _20180507T132022_588d4c6c, //
+  /** pure pursuit figure 8 with speed then up to 5[m/s]
+   * exhibits backwards driving */
+  _20180507T135949_588d4c6c, //
+  /** pure pursuit figure 8 with davis camera calibrated */
+  _20180507T143002_588d4c6c, //
+  /** trajectory planning
+   * several ovals until planner stop */
+  _20180507T152619_8d5acc24, //
+  /** trajectory planning few ovals */
+  _20180507T153455_8d5acc24, //
+  /** stationary gokart single pedestrian walking at various distances */
+  _20180507T160755_8d5acc24, //
+  /** driving by joystick fast */
+  _20180507T161322_8d5acc24, //
   ;
   @Override
   public String getFilename() {

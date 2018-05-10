@@ -7,20 +7,22 @@ import java.nio.ByteOrder;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
+import idsc.BinaryBlob;
 import junit.framework.TestCase;
 
-public class TensorFloatLcmTest extends TestCase {
+public class VectorFloatBlobTest extends TestCase {
   public void testSimple() {
     Tensor vector = Tensors.fromString("{1[A],2.34[s*y^-1],{2,3,4,{4[A*V]}}}");
-    TensorFloatLcm.publish("test_publisher", vector);
+    BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher("test_publisher");
+    binaryBlobPublisher.accept(VectorFloatBlob.encode(vector));
   }
 
   public void testReceive() {
     Tensor vector = Tensors.fromString("{1[A],2.34[s*y^-1],{2,3,4,{4[A*V]}}}");
-    byte[] array = TensorFloatLcm.toByteArray(vector);
-    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    BinaryBlob binaryBlob = VectorFloatBlob.encode(vector);
+    ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    Tensor tensor = TensorFloatLcm.receive(byteBuffer);
+    Tensor tensor = VectorFloatBlob.decode(byteBuffer);
     assertTrue(Chop._10.close(tensor, Tensors.fromString("{1.0, 2.3399999141693115, 2.0, 3.0, 4.0, 4.0}")));
   }
 }

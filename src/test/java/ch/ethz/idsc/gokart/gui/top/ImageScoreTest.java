@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import junit.framework.TestCase;
 

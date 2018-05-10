@@ -1,6 +1,8 @@
 // code by edo and jph
 package ch.ethz.idsc.owl.car.math;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -10,7 +12,7 @@ import ch.ethz.idsc.tensor.red.Hypot;
 import ch.ethz.idsc.tensor.red.Norm;
 
 /** robust computation of slip */
-public class RobustSlip implements SlipInterface {
+public class RobustSlip implements SlipInterface, Serializable {
   private final Tensor mu;
 
   /** if U == {rtw, 0} that means no slip
@@ -26,7 +28,7 @@ public class RobustSlip implements SlipInterface {
     mu = Normalize.unlessZero(Tensors.of(ux, uy), Norm._2).multiply(total.negate());
   }
 
-  @Override
+  @Override // from SlipInterface
   public Tensor slip() {
     return mu;
   }

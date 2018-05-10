@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ani.TrajectoryListener;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -20,18 +21,18 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class TrajectoryRender implements RenderInterface {
+public class TrajectoryRender implements RenderInterface, TrajectoryListener {
   private static final Color COLOR_FLOW = new Color(64, 64, 64, 128);
   private static final Scalar U_SCALE = RealScalar.of(0.33);
   private static final Color COLOR_GROUND = new Color(255, 255, 255, 128);
   private static final Color COLOR_NODES = new Color(255, 0, 0, 96);
   private static final Color COLOR_TRAJECTORY = new Color(0, 192, 0, 192);
   // ---
-  public static List<TrajectorySample> TRAJECTORY;
+  private List<TrajectorySample> _trajectory;
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    List<TrajectorySample> trajectory = TRAJECTORY;
+    List<TrajectorySample> trajectory = _trajectory;
     if (Objects.nonNull(trajectory)) {
       { // draw detailed trajectory from root to goal/furthestgo
         final List<TrajectorySample> list = trajectory;
@@ -69,5 +70,10 @@ public class TrajectoryRender implements RenderInterface {
         });
       }
     }
+  }
+
+  @Override // from TrajectoryListener
+  public void setTrajectory(List<TrajectorySample> trajectory) {
+    _trajectory = trajectory;
   }
 }

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.core.slam;
 
 import java.awt.image.BufferedImage;
 

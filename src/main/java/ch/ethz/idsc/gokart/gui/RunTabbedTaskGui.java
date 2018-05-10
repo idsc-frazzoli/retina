@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -50,14 +51,15 @@ enum RunTabbedTaskGui {
       Vlp16LcmServerModule.class, // sensing
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, //
+      GokartPoseLcmModule.class, // publishes pose
       LoggerModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
-      Vlp16PassiveSlowing.class //
+      Vlp16PassiveSlowing.class, //
+      LidarLocalizationModule.class, //
+      JoystickResetModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
-      JoystickResetModule.class, // TODO DUBENDORF test
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
@@ -67,7 +69,7 @@ enum RunTabbedTaskGui {
       //
       JoystickGroupModule.class, //
       SysidSignalsModule.class, //
-      RimoThrustJoystickModule.class // UNDER EVALUATION
+      RimoThrustJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //

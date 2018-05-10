@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util;
 
-/** provides an image with a single timestamp.
+/** consumer of {@link TimedImageEvent}
  * 
  * <p>
  * the interface does not specify how exactly the timestamp correlates to the
