@@ -17,6 +17,7 @@ public class ClusterConfig implements Serializable {
   /***************************************************/
   public Scalar epsilon = Quantity.of(0.03, SI.METER);
   public Scalar minPoints = RealScalar.of(5);
+  public Scalar scanCount = RealScalar.of(6);
 
   /***************************************************/
   public double getEpsilon() {
@@ -27,7 +28,19 @@ public class ClusterConfig implements Serializable {
     return minPoints.number().intValue();
   }
 
+  public int getScanCount() {
+    return scanCount.number().intValue();
+  }
+
   public Tensor elkiDBSCAN(Tensor matrix) {
     return Clusters.elkiDBSCAN(matrix, getEpsilon(), getMinPoints());
+  }
+
+  public Tensor elkiDBSCANTime(Tensor matrix) {
+    return ClustersTime.elkiDBSCAN(matrix, getEpsilon(), getMinPoints());
+  }
+
+  public void elkiDBSCANTracking(ClusterCollection collection, Tensor matrix) {
+    ClustersTracking.elkiDBSCAN(collection, matrix, getEpsilon(), getMinPoints());
   }
 }
