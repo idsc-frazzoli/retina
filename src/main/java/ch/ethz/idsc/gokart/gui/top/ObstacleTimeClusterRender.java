@@ -33,6 +33,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
   private boolean isClustering = true;
   private Tensor p1 = Tensors.empty();
   private Tensor pi = null;
+  private Tensor data = Tensors.empty();
   // private Tensor hulls = Tensors.empty();
   // private Tensor mean = Tensors.empty();
   int i = 0;// TODO presently
@@ -57,11 +58,30 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
           p1 = Tensors.of(p1.get(p1.length() - 4), p1.get(p1.length() - 3), p1.get(p1.length() - 2), p1.get(p1.length() - 1));
           pi = ClusterConfig.GLOBAL.elkiDBSCANTime(Tensor.of(p1.flatten(1)));
         }
-        // hulls = Tensor.of(pi.stream().map(ConvexHull::of));
+        {
+          if (Objects.nonNull(pi)) {
+            Tensor meanFour = Tensors.empty();
+            Tensor _pi = pi;
+            for (Tensor x : _pi) {
+              if (!Tensors.isEmpty(x)) {
+                Tensor mean = Tensors.empty();
+                for (Tensor y : x) {
+                  if (!Tensors.isEmpty(y)) {
+                    mean.append(Mean.of(y));
+                  }
+                }
+                meanFour.append(mean);
+              }
+            }
+            data.append(meanFour);
+            if (data.length() > 2)
+              data = Tensors.of(data.get(data.length() - 2), data.get(data.length() - 1));
+            System.out.println(data);
+          }
+        }
       }
     }
   };
-  private Tensor meanFour=Tensors.empty();
 
   public ObstacleTimeClusterRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -93,18 +113,15 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
         for (Tensor x : _pi) {
           graphics.setColor(colorDataIndexed.getColor(i % size));
           for (Tensor y : x) {
-            if (!Tensors.isEmpty(y))
+            if (!Tensors.isEmpty(y)) {
               mean.append(Mean.of(y));
+            }
             hulls.append(ConvexHull.of(y));
             for (Tensor z : y) {
               Point2D point2D = geometricLayer.toPoint2D(z);
               graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
           }
-//          meanFour.append(mean);
-//          System.out.println(meanFour);
-//          if (!Tensors.isEmpty(meanFour))
-//            computeCorrespondences(meanFour);
           ++i;
         }
       }
@@ -126,18 +143,6 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       }
     }
     geometricLayer.popMatrix();
-  }
-
-  public static Boolean computeCorrespondences(Tensor means) {
-    for (Tensor x : means) {
-      for (Tensor y : means) {
-        if ((x.get(1) == y.get(2))) {
-          System.out.println(x.get(1));
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   @Override // from ActionListener
