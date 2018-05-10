@@ -47,6 +47,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       Tensor points = _points;
       UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
       Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
+      state = Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}");
       unknownObstaclePredicate.setPose(state);
       Tensor p = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
@@ -77,7 +78,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
             data.append(meanFour);
             if (data.length() > 2)
               data = Tensors.of(data.get(data.length() - 2), data.get(data.length() - 1));
-            System.out.println(data);
+            // System.out.println(data);
           }
         }
       }
@@ -96,7 +97,6 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
       return;
     // ---
     Tensor mean = Tensors.empty();
-    Tensor hulls = Tensors.empty();
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
@@ -113,6 +113,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
         int i = 0;
         for (Tensor x : _pi) {
           graphics.setColor(colorDataIndexed.getColor(i % size));
+          Tensor hulls = Tensors.empty();
           for (Tensor y : x) {
             if (!Tensors.isEmpty(y)) {
               mean.append(Mean.of(y));
@@ -123,6 +124,15 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
               graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
           }
+          {
+            // int i = 0;
+            for (Tensor hull : hulls) {
+              Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
+              graphics.setColor(color);
+              graphics.fill(geometricLayer.toPath2D(hull));
+              // ++i;
+            }
+          }
           ++i;
         }
       }
@@ -131,15 +141,6 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
         for (Tensor w : mean) {
           Point2D point2D = geometricLayer.toPoint2D(w);
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 5, 5);
-        }
-      }
-      {
-        int i = 0;
-        for (Tensor hull : hulls) {
-          Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
-          graphics.setColor(color);
-          graphics.fill(geometricLayer.toPath2D(hull));
-          ++i;
         }
       }
     }

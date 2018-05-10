@@ -1,14 +1,17 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Flatten;
+import ch.ethz.idsc.tensor.io.Primitives;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -34,6 +37,12 @@ public enum ClustersTime {
   public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
     Tensor matrix = Flatten.of(scans, 1);
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
+    TreeMap<Integer, Integer> origin = new TreeMap<>();
+    int sum = 0;
+    for (int index = 0; index < array.length; index++) {
+      origin.put(sum, index);
+      sum = sum + array[index];
+    }
     Database database = ClustersTime.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
@@ -46,7 +55,7 @@ public enum ClustersTime {
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
         TreeMap<Integer, Tensor> map = new TreeMap<>();
-        int sum = 0;
+        sum = 0;
         for (int index = 0; index < array.length; index++) {
           map.put(sum, Tensors.empty());
           sum = sum + array[index];
@@ -54,10 +63,15 @@ public enum ClustersTime {
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
+        Set<Integer> set = new HashSet<>();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
           int offset = id.getOffset(iter);
-          map.floorEntry(offset).getValue().append(matrix.get(offset));
+          set.add(origin.floorEntry(offset).getValue());
+          Entry<Integer, Tensor> floorEntry = map.floorEntry(offset);
+          // floorEntry.
+          floorEntry.getValue().append(matrix.get(offset));
         }
+        // System.out.println(set);
         Tensor of = Tensor.of(map.values().stream());
         pi.append(of);
       }
@@ -65,20 +79,10 @@ public enum ClustersTime {
   }
 
   static Database sample(Tensor matrix) {
-    double[][] data = fromMatrix(matrix);
+    double[][] data = Primitives.toDoubleArray2D(matrix);
     DatabaseConnection databaseConnection = new ArrayAdapterDatabaseConnection(data);
     Database database = new StaticArrayDatabase(databaseConnection, null);
     database.initialize();
     return database;
-  }
-
-  // TODO TENSOR V052
-  static double[][] fromMatrix(Tensor matrix) {
-    final int cols = Unprotect.dimension1(matrix);
-    double[][] array = new double[matrix.length()][cols];
-    for (int row = 0; row < matrix.length(); ++row)
-      for (int col = 0; col < cols; ++col)
-        array[row][col] = matrix.Get(row, col).number().doubleValue();
-    return array;
   }
 }
