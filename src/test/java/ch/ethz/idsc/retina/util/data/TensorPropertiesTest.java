@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -22,14 +23,33 @@ import junit.framework.TestCase;
 
 // TODO JAN more tests!
 public class TensorPropertiesTest extends TestCase {
-  public void testStore() throws Exception {
+  public void testListSize1() throws Exception {
     ParamContainer ori = new ParamContainer();
     ori.string = "some string, no new line please";
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
+    List<String> list = TensorProperties.strings(ori);
+    assertEquals(list.size(), 2);
+  }
+
+  public void testListSize2() throws Exception {
+    ParamContainer ori = new ParamContainer();
     ori.shape = Tensors.fromString("{1,2,3}");
     ori.abc = RealScalar.ONE;
+    ori.maxTor = Scalars.fromString("3.13[m*s^2]");
+    List<String> list = TensorProperties.strings(ori);
+    assertEquals(list.size(), 3);
+  }
+
+  public void testStore() throws Exception {
+    ParamContainer ori = new ParamContainer();
+    ori.string = "some string, no new line please";
+    assertEquals(TensorProperties.strings(ori).size(), 1);
+    ori.maxTor = Scalars.fromString("3.13[m*s^2]");
+    ori.shape = Tensors.fromString("{1,2,3}");
+    assertEquals(TensorProperties.strings(ori).size(), 3);
+    ori.abc = RealScalar.ONE;
+    assertEquals(TensorProperties.strings(ori).size(), 4);
     Properties properties = TensorProperties.extract(ori);
-    // properties.list(System.out);
     {
       ParamContainer pc = new ParamContainer();
       TensorProperties.insert(properties, pc);

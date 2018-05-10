@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 /** pipeline setup for single/multirun */
 public class PipelineSetup {
   private PipelineConfig pipelineConfig;
-  private InputSubModule inputSubModule;
   private boolean multiRunPipeline;
 
   PipelineSetup(PipelineConfig pipelineConfig) {
@@ -23,26 +22,29 @@ public class PipelineSetup {
     for (int i = 0; i < 5; i++) {
       System.out.println("*************new Iteration **************");
       pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
-      runPipeline();
+      InputSubModule inputSubModule = runPipeline();
       // somehow collect results here
+      // TODO the collection of results should happen in a separate class
       inputSubModule.collectResults();
     }
   }
 
-  private void runPipeline() {
+  private InputSubModule runPipeline() {
     // get logFile
     File logFile = pipelineConfig.getLogFile();
     try {
       System.out.println("****Begin of pipeline run****");
       // initialize inputSubModule with current config and run logplayer
-      inputSubModule = new InputSubModule(pipelineConfig);
+      InputSubModule inputSubModule = new InputSubModule(pipelineConfig);
       BoundedOfflineLogPlayer.process(logFile, //
           pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
       // show summary
       inputSubModule.summarizeLog();
+      return inputSubModule;
     } catch (IOException e) {
       e.printStackTrace();
     }
+    return null;
   }
 
   public static void main(String[] args) {

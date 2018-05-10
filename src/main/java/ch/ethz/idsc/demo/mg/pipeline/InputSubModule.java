@@ -152,6 +152,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   // collect pipeline results from evaluator
+  @Deprecated // don't collected results in this class
   public void collectResults() {
     // ..
   }
