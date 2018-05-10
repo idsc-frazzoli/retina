@@ -80,7 +80,7 @@ public class PresenterLcmModule extends AbstractModule {
       obstacleTimeClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       obstacleTimeClusterRender.setColor(new Color(255, 0, 0, 128));
       obstacleTimeClusterRender.pointSize = 4;
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender); //TODO
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender.lidarRayBlockListener);
       timerFrame.geometricComponent.addRenderInterface(obstacleTimeClusterRender);
       timerFrame.jToolBar.add(obstacleTimeClusterRender.jToggleButton);
