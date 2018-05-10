@@ -4,28 +4,55 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.tensor.RealScalar;
 
-// class handles interface with TrackingIterator and also used as standalone version to run pipeline
+// pipeline setup for single/multirun
 public class PipelineSetup {
-  // ..
-  private static void runPipeline(String pathToFile, PipelineConfig pipelineConfig) {
-    File logFile = new File(pathToFile);
-    InputSubModule inputSubModule = new InputSubModule(pipelineConfig);
+  private PipelineConfig pipelineConfig;
+  private InputSubModule inputSubModule;
+  private boolean multiRunPipeline;
+
+  PipelineSetup(PipelineConfig pipelineConfig) {
+    this.pipelineConfig = pipelineConfig;
+  }
+
+  private void iterate() {
+    // no visualization for multirun
+    pipelineConfig.visualizePipeline = RealScalar.of(0);
+    for (int i = 0; i < 5; i++) {
+      System.out.println("*************new Iteration **************");
+      pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
+      runPipeline();
+      // somehow collect results here
+      inputSubModule.collectResults();
+    }
+  }
+
+  private void runPipeline() {
+    // get logFile
+    File logFile = new File(pipelineConfig.pathToLogFile.toString());
     try {
-      OfflineLogPlayer.process(logFile, inputSubModule);
+      System.out.println("****Begin of pipeline run****");
+      // initialize inputSubModule with current config and run logplayer
+      inputSubModule = new InputSubModule(pipelineConfig);
+      OfflineLogPlayerDemo.process(pipelineConfig.maxDuration.number().longValue() * 1000, logFile, inputSubModule);
+      // show summary
+      inputSubModule.summarizeLog();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  // for standalone running of pipeline
   public static void main(String[] args) throws IOException {
-    String pathToFile = LogFileLocations.DUBI10d;
-    // could also load pipelineConfig from somewhere
-    // TensorProperties.manifest(UserHome.file("config2.properties"), test);
+    // initialize config -- could also load existing config
     PipelineConfig pipelineConfig = new PipelineConfig();
-    runPipeline(pathToFile, pipelineConfig);
+    // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
+    PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);
+    pipelineSetup.multiRunPipeline = false;
+    if (pipelineSetup.multiRunPipeline) {
+      pipelineSetup.iterate();
+    } else {
+      pipelineSetup.runPipeline();
+    }
   }
 }

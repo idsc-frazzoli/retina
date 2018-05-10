@@ -48,13 +48,13 @@ import ch.ethz.idsc.tensor.io.Primitives;
 public class HandLabeler {
   private final int initXAxis = 400; // initial feature shape
   private final int initYAxis = initXAxis; // initial feature shape
-  private final int numberOfFiles = HandLabelFileLocations.images().list().length;
-  private final float scaling = 2; // original images are tiny
   private int firstAxis = initXAxis;
   private int secondAxis = initYAxis;
+  private final float scaling = 2; // original images are tiny
   private float rotAngle = 0;
   // handling of .csv file
   private String imagePrefix = "Dubi9e";
+  private final int numberOfFiles = HandLabelFileLocations.images(imagePrefix).list().length;
   private String fileName = imagePrefix + "_labeledFeatures.csv";
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
@@ -208,7 +208,7 @@ public class HandLabeler {
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
-    File pathToFile = new File(HandLabelFileLocations.images(), fileName);
+    File pathToFile = new File(HandLabelFileLocations.images(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
@@ -225,7 +225,7 @@ public class HandLabeler {
   // goes through all files in the directory an extracts the timestamps
   private void extractImageTimestamps() {
     // get all filenames and sort
-    String[] fileNames = HandLabelFileLocations.images().list();
+    String[] fileNames = HandLabelFileLocations.images(imagePrefix).list();
     Arrays.sort(fileNames);
     for (int i = 0; i < numberOfFiles; i++) {
       String fileName = fileNames[i];

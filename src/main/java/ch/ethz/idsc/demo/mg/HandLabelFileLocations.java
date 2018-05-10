@@ -7,9 +7,10 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 
 public enum HandLabelFileLocations {
   ;
-  /** @return directory of the images to be labelled. NOTE: only the images should be in that directory */
-  public static File images() {
-    return warningIfNotDirectory(UserHome.Pictures("handlabelimages"));
+  /** @param subfolder name
+   * @return directory of the images to be labelled. NOTE: only the images should be in that directory */
+  public static File images(String subfolder) {
+    return warningIfNotDirectory(UserHome.Pictures("handlabelimages/"+subfolder));
   }
 
   /** @param filename
