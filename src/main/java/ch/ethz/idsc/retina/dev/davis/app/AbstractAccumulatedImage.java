@@ -1,6 +1,8 @@
 // code by jpg
 package ch.ethz.idsc.retina.dev.davis.app;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.List;
@@ -35,6 +37,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private int interval;
   private int max_gap;
   private Integer last = null;
+  private boolean rotated = false;
 
   protected AbstractAccumulatedImage(DavisDevice davisDevice) {
     setInterval(INTERVAL_DEFAULT_US);
@@ -58,6 +61,10 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   public final int getInterval() {
     return interval;
   }
+  
+  public  void setRotated(boolean setValue) {
+    rotated = setValue;
+  }
 
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
@@ -73,7 +80,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
       last = davisDvsEvent.time;
     } else //
     if (interval <= delta) {
-      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
+      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage, rotated);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;

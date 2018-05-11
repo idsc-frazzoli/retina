@@ -111,6 +111,11 @@ public class DavisViewerFrame implements TimedImageListener {
         jToggleButton.addActionListener(event -> recording = jToggleButton.isSelected());
         jToolBar.add(jToggleButton);
       }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Rotate frame");
+        jToggleButton.addActionListener(event -> abstractAccumulatedImage.setRotated(jToggleButton.isSelected()));
+        jToolBar.add(jToggleButton);
+      }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     jPanel.add(davisViewerComponent.jComponent, BorderLayout.CENTER);
