@@ -20,42 +20,36 @@ import lcm.logging.Log;
 import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
+/** demo */
 enum LogPoseCorrect {
   ;
   public static void main(String[] args) throws Exception {
-    File src = DatahakiLogFileLocator.file(GokartLogFile._20180412T163109_7e5b46c2);
+    File src = DatahakiLogFileLocator.file(GokartLogFile._20180412T163855_7e5b46c2);
     File dst = null;
-    dst = UserHome.file("20180412T163109_with_pose.lcm");
+    dst = UserHome.file("20180412T163855_pose.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 184738;
+    int lo = 316075;
     int hi = 1076858;
     // ---
-    GokartPoseEvent gpe = GokartPoseEvents.getPoseEvent(//
-        Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}"), //
+    GokartPoseEvent gpe = GokartPoseEvents.getPoseEvent( //
+        Tensors.fromString("{46.92496702465816[m], 48.60602413267636[m], 1.1602311755823995}"), //
         RealScalar.ONE);
-    BinaryBlob bbb = BinaryBlobs.create(gpe.asArray());
+    final BinaryBlob binaryBlob = BinaryBlobs.create(gpe.asArray());
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);
     try {
-      // int count = 0;
       while (true) {
         Event event = log.readNext();
         if (lo <= event.eventNumber && event.eventNumber < hi) {
           try {
             if (GokartLcmChannel.POSE_LIDAR.equals(event.channel)) {
-              BinaryBlob binaryBlob = bbb; // new BinaryBlob(event.data);
-              // GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
               LCMDataOutputStream encodeBuffer = new LCMDataOutputStream(new byte[1024]);
               binaryBlob.encode(encodeBuffer);
-              // byte[] buffer = encodeBuffer.getBuffer();
-              event.data = // new byte[encodeBuffer.size()];
-                  Arrays.copyOf(encodeBuffer.getBuffer(), encodeBuffer.size());
-              // , 0, encodeBuffer.size());
-              // event.data = gpe.asArray();
+              event.data = Arrays.copyOf(encodeBuffer.getBuffer(), encodeBuffer.size());
             }
             logWriter.write(event);
           } catch (Exception exception) {

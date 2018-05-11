@@ -9,6 +9,8 @@ import java.nio.FloatBuffer;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
@@ -23,6 +25,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 class Handler {
+  UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private ClusterCollection collection = new ClusterCollection();
   /** LidarRayBlockListener to be subscribed after LidarRender */
   LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
@@ -41,9 +44,8 @@ class Handler {
       }
       floatBuffer.position(position);
       // ---
-      UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
-      Tensor state = Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}");
-      unknownObstaclePredicate.setPose(state);
+      // Tensor state = Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}");
+      // unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
@@ -75,9 +77,13 @@ enum GokartRayLogExport {
       public void event(Scalar time, String _channel, ByteBuffer byteBuffer) {
         if (_channel.equals(channel))
           vlp16LcmHandler.velodyneDecoder.lasers(byteBuffer);
+        else if (_channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+          GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+          handler.unknownObstaclePredicate.setPose(gpe.getPose());
+        }
       }
     };
-    File file = UserHome.file("/Desktop/ETHZ/log/20180412T163855_7e5b46c2.lcm.00");
+    File file = UserHome.file("Desktop/ETHZ/log/20180412T163855_7e5b46c2.lcm.00");
     OfflineLogPlayer.process(file, offlineLogListener);
   }
 }
