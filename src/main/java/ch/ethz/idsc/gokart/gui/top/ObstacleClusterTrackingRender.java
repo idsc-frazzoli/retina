@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
@@ -29,13 +30,12 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** used in {@link PresenterLcmModule} */
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
+  private static final boolean ENABLED = UserHome.file("").getName().equals("vc"); // TODO VC username
+  // ---
   final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
   private ClusterCollection collection = new ClusterCollection();
-  private boolean isClustering = true;
-  // private Tensor hulls = Tensors.empty();
-  // private Tensor mean = Tensors.empty();
-  int i = 0;// TODO presently
+  private boolean isClustering = ENABLED;
   /** LidarRayBlockListener to be subscribed after LidarRender */
   LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
     @Override
@@ -46,12 +46,10 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       Tensor points = _points;
       UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
       Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
-      state = Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}");
       unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
-      i++;
       if (!Tensors.isEmpty(newScan)) {
         synchronized (collection) {
           ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
