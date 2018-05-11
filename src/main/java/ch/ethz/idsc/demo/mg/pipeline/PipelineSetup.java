@@ -20,12 +20,11 @@ public class PipelineSetup {
     // no visualization for multirun
     pipelineConfig.visualizePipeline = RealScalar.of(0);
     for (int i = 0; i < 5; i++) {
-      System.out.println("*************new Iteration **************");
+      System.out.println("****new Iteration ****");
       pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
       InputSubModule inputSubModule = runPipeline();
       // somehow collect results here
       // TODO the collection of results should happen in a separate class
-      inputSubModule.collectResults();
     }
   }
 
@@ -52,7 +51,7 @@ public class PipelineSetup {
     PipelineConfig pipelineConfig = new PipelineConfig();
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);
-    pipelineSetup.multiRunPipeline = false;
+    pipelineSetup.multiRunPipeline = true;
     if (pipelineSetup.multiRunPipeline) {
       pipelineSetup.iterate();
     } else {

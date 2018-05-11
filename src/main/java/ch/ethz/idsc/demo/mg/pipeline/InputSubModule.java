@@ -151,12 +151,6 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * filteredEventCount / eventCount));
   }
 
-  // collect pipeline results from evaluator
-  @Deprecated // don't collected results in this class
-  public void collectResults() {
-    // ..
-  }
-
   // for visualization
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
