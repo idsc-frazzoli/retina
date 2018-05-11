@@ -34,6 +34,7 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
@@ -45,22 +46,23 @@ import ch.ethz.idsc.tensor.io.Primitives;
 // the .CSV file is formatted as follows:
 // timestamp , pos[0], pos[1], covariance[0][0], covariance[1][1], covariance[0][1]
 // TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
+// TODO image is set twice somehow
 public class HandLabeler {
-  private final int initXAxis = 400; // initial feature shape
-  private final int initYAxis = initXAxis; // initial feature shape
-  private final int numberOfFiles = HandLabelFileLocations.images().list().length;
+  private static String COMMA_DELIMITER;
+  private static String NEW_LINE;
+  private final int initXAxis; // initial feature shape
+  private final int initYAxis;
+  private int firstAxis;
+  private int secondAxis;
   private final float scaling = 2; // original images are tiny
-  private int firstAxis = initXAxis;
-  private int secondAxis = initYAxis;
   private float rotAngle = 0;
   // handling of .csv file
-  private String imagePrefix = "Dubi9e";
-  private String fileName = imagePrefix + "_labeledFeatures.csv";
-  private static final String COMMA_DELIMITER = ",";
-  private static final String NEW_LINE = "\n";
+  private String imagePrefix;
+  private final int numberOfFiles;
+  private String fileName;
   // fields for labels
-  private int[] timeStamps = new int[numberOfFiles]; // stores timestamp of each image
-  private List<List<ImageBlob>> labeledFeatures = new ArrayList<>(numberOfFiles); // main field of the class
+  private int[] timeStamps; // stores timestamp of each image
+  private List<List<ImageBlob>> labeledFeatures; // main field of the class
   private int currentImgNumber;
   // visualization
   private final JFrame jFrame = new JFrame();
@@ -69,7 +71,7 @@ public class HandLabeler {
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      drawEllipsesOnImage(labeledFeatures.get(currentImgNumber - 1), bufferedImage.createGraphics());
+      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(scaleImage(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
@@ -99,7 +101,19 @@ public class HandLabeler {
     }
   };
 
-  public HandLabeler() {
+  public HandLabeler(PipelineConfig pipelineConfig) {
+    // set parameters
+    COMMA_DELIMITER = pipelineConfig.comma_delimiter.toString();
+    NEW_LINE = pipelineConfig.new_line.toString();
+    imagePrefix = pipelineConfig.logFileName.toString();
+    numberOfFiles = HandLabelFileLocations.images(imagePrefix).list().length;
+    fileName = pipelineConfig.handLabelFileName.toString();
+    initXAxis = pipelineConfig.initXAxis.number().intValue();
+    initYAxis = initXAxis;
+    firstAxis = initXAxis;
+    secondAxis = initXAxis;
+    timeStamps = new int[numberOfFiles];
+    labeledFeatures = new ArrayList<>(numberOfFiles);
     // set up empty list of lists
     for (int i = 0; i < numberOfFiles; i++) {
       List<ImageBlob> emptyList = new ArrayList<>();
@@ -141,7 +155,6 @@ public class HandLabeler {
         @Override
         public void stateChanged(ChangeEvent e) {
           currentImgNumber = jSlider.getValue();
-          setBufferedImage();
           jComponent.repaint();
         }
       });
@@ -208,7 +221,7 @@ public class HandLabeler {
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
-    File pathToFile = new File(HandLabelFileLocations.images(), fileName);
+    File pathToFile = new File(HandLabelFileLocations.images(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
@@ -217,7 +230,7 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
+  private static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++)
       AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
   }
@@ -225,7 +238,7 @@ public class HandLabeler {
   // goes through all files in the directory an extracts the timestamps
   private void extractImageTimestamps() {
     // get all filenames and sort
-    String[] fileNames = HandLabelFileLocations.images().list();
+    String[] fileNames = HandLabelFileLocations.images(imagePrefix).list();
     Arrays.sort(fileNames);
     for (int i = 0; i < numberOfFiles; i++) {
       String fileName = fileNames[i];
@@ -294,6 +307,7 @@ public class HandLabeler {
   }
 
   public static void main(String[] args) {
-    HandLabeler handlabeler = new HandLabeler();
+    PipelineConfig pipelineConfig = new PipelineConfig();
+    HandLabeler handlabeler = new HandLabeler(pipelineConfig);
   }
 }

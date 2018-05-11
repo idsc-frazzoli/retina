@@ -38,9 +38,9 @@ public class AccumulatedEventFrame {
   public BufferedImage overlayActiveBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getIsRecognized()) {
-        drawImageBlob(graphics, blobs.get(i), Color.GREEN);
+        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
       } else {
-        drawImageBlob(graphics, blobs.get(i), Color.RED);
+        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
       }
     }
     return rotate180Degrees(bufferedImage);

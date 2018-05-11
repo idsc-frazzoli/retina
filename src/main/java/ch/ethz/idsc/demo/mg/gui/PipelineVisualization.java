@@ -13,7 +13,6 @@ public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[6];
   private final float scaling = 1.5f; // original images are tiny
-  private int imageCount = 0;
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {

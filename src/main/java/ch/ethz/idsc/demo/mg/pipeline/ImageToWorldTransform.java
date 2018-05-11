@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
-// Transformation from image to physical space. For documentation, see MATLAB single camera calibration. Also, my master thesis.
+// Transformation from image to physical space. For documentation, see MATLAB single camera calibration.
 // The CSV file must have the structure as below. Also important, exponential format must use capitalized E ("%E" in MATLAB).
 // 1st-3rd lines represent the transformation matrix
 // 4th line represents image coordinates of principal point [pixel]
@@ -21,15 +21,25 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // TODO still need to transform from checkerboard frame to gokart frame (once we try calibration on gokart)
 public class ImageToWorldTransform {
   // fields
-  private String fileName = "dubi0008.csv"; // for camera pose in DUBI12
-  private final int unitConversion = 1000; // [mm] to [m]
+  private String calibrationFileName;
+  private static int unitConversion; // [mm] to [m]
   private Tensor principalPoint; // [pixel]
   private Tensor radDistortion; // [-] radial distortion with two coeffcients is assumed
   private Tensor focalLength; // [mm]
   private Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
   private List<PhysicalBlob> physicalBlobs;
 
-  ImageToWorldTransform() {
+  ImageToWorldTransform(PipelineConfig pipelineConfig) {
+    unitConversion = pipelineConfig.unitConversion.number().intValue();
+    calibrationFileName = pipelineConfig.calibrationFileName.toString();
+    physicalBlobs = new ArrayList<>();
+    importCameraParams();
+  }
+
+  // only for testing! will be removed later
+  public ImageToWorldTransform() {
+    unitConversion = 1000;
+    calibrationFileName = "dubi008.csv";
     physicalBlobs = new ArrayList<>();
     importCameraParams();
   }
@@ -72,6 +82,8 @@ public class ImageToWorldTransform {
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
     // here will be a further transformation into gokart frame which will require additional parameters
+    // ..
+    // create physicalBlob object
     PhysicalBlob physicalBlob = new PhysicalBlob(new double[] { physicalCoord.get(0).Get(0).number().doubleValue() / unitConversion,
         physicalCoord.get(0).Get(1).number().doubleValue() / unitConversion });
     return physicalBlob;
@@ -79,14 +91,14 @@ public class ImageToWorldTransform {
 
   // imports parameters from CSV file that was generated with MATLAB
   private void importCameraParams() {
-    Tensor inputTensor = ResourceData.of("/demo/mg/" + fileName);
+    Tensor inputTensor = ResourceData.of(calibrationFileName);
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);
     focalLength = inputTensor.extract(5, 6);
   }
 
-  // for testing
+  // only for testing
   public static void main(String[] args) {
     ImageToWorldTransform test = new ImageToWorldTransform();
     ImageBlob imageBlob = new ImageBlob(new float[] { 169.3935f, 111.6323f }, new double[][] { { 1, 0 }, { 0, 1 } }, 0, false);

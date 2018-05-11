@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -22,6 +24,11 @@ import ch.ethz.idsc.tensor.Tensors;
  * and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
+  private static final int MASK_FILTER = Modifier.PUBLIC;
+  private static final int MASK_TESTED = //
+      Modifier.FINAL | Modifier.STATIC | Modifier.TRANSIENT | MASK_FILTER;
+  private static final Collector<CharSequence, ?, String> NEWLINE = Collectors.joining("\n");
+
   /** @param object
    * @return properties with fields of given object as keys mapping to values as string expression */
   public static Properties extract(Object object) {
@@ -71,8 +78,7 @@ public enum TensorProperties {
   }
 
   public static boolean isTracked(Field field) {
-    int mod = field.getModifiers();
-    if (!Modifier.isFinal(mod) && !Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+    if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
       Class<?> type = field.getType();
       return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class);
     }
@@ -88,11 +94,16 @@ public enum TensorProperties {
     return insert(StaticHelper.load(file), object);
   }
 
+  /** store tracked fields of given object in file
+   * 
+   * @param file
+   * @param object
+   * @throws IOException */
   public static void manifest(File file, Object object) throws IOException {
     Files.write(file.toPath(), (Iterable<String>) strings(object)::iterator);
   }
 
-  private static List<String> strings(Object object) {
+  /* package for testing */ static List<String> strings(Object object) {
     List<String> list = new LinkedList<>();
     Field[] fields = object.getClass().getFields();
     for (Field field : fields)
@@ -105,5 +116,9 @@ public enum TensorProperties {
           exception.printStackTrace();
         }
     return list;
+  }
+
+  /* package for testing */ static String toString(Object object) {
+    return strings(object).stream().collect(NEWLINE);
   }
 }

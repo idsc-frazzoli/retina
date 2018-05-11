@@ -7,9 +7,21 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 
 public enum HandLabelFileLocations {
   ;
-  /** @return directory of the images to be labelled. NOTE: only the images should be in that directory */
-  public static File images() {
-    return warningIfNotDirectory(UserHome.Pictures("handlabelimages"));
+  private static final File HANDLABEL_IMAGES = UserHome.Pictures("handlabelimages");
+  private static final File EVALUATED_IMAGES = UserHome.Pictures("evaluatedimages");
+
+  /** @param subfolder name
+   * @return directory of the images to be labeled. NOTE: only the images should be in that directory */
+  public static File images(String subfolder) {
+    warningIfNotDirectory(HANDLABEL_IMAGES);
+    return warningIfNotDirectory(new File(HANDLABEL_IMAGES, subfolder));
+  }
+
+  /** @param subfolder name
+   * @return directory where evaluated images are saved */
+  public static File evaluatedImages(String subfolder) {
+    warningIfNotDirectory(EVALUATED_IMAGES);
+    return warningIfNotDirectory(new File(EVALUATED_IMAGES, subfolder));
   }
 
   /** @param filename
