@@ -13,9 +13,15 @@ import ch.ethz.idsc.tensor.red.Mean;
 public class ClusterDeque {
   private final Deque<Tensor> deque = new ArrayDeque<>();
   private final Deque<Tensor> means = new ArrayDeque<>();
+  private int id = 0;
 
   public ClusterDeque(Tensor points) {
     deque.add(points);
+  }
+
+  public ClusterDeque(int i, Tensor value) {
+    deque.add(value);
+    id = i;
   }
 
   public Stream<Tensor> vertexStream() {
@@ -49,5 +55,9 @@ public class ClusterDeque {
 
   public Collection<Tensor> getDeque() {
     return Collections.unmodifiableCollection(deque);
+  }
+
+  public int getID() {
+    return id;
   }
 }

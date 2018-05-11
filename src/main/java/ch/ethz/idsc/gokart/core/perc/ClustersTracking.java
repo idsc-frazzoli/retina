@@ -26,6 +26,8 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum ClustersTracking {
   ;
+  private static int i;
+
   /** @param matrix
    * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
@@ -70,14 +72,14 @@ public enum ClustersTracking {
           floorEntry.getValue().append(matrix.get(offset));
         }
         if (set.equals(Collections.singleton(sizeCollection))) {
-          oldClusters.collection.add(new ClusterDeque(map.lastEntry().getValue()));
+          oldClusters.collection.add(new ClusterDeque(i, map.lastEntry().getValue()));
+          // Tensors.of(i,map.lastEntry().getValue())));
+          i++;
         } else if (set.size() == 2 && set.contains(sizeCollection)) {
           Tensor points = map.lastEntry().getValue();
           ClusterDeque next = oldClusters.collection.get(set.iterator().next());
           next.replaceLast(points);
         }
-        // System.out.println(set);
-        // Tensor of = Tensor.of(map.values().stream());
       }
     oldClusters.maintainUntil(sizeCollection);
   }
