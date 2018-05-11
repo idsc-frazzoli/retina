@@ -127,10 +127,12 @@ public enum GokartLogFile implements LogFile {
   /* 2018-04-12 */
   _20180412T114245_7e5b46c2, //
   /** stationary gokart in center of hangar
+   * {46.9657[m], 48.4280[m], 1.1587704741}
    * pedestrians, bicycles and motorcycles moving around
    * no Davis240C */
   _20180412T163109_7e5b46c2, //
   /** stationary gokart in center of hangar
+   * {46.9249[m], 48.6060[m], 1.1602311755}
    * pedestrians and bicycles moving around */
   _20180412T163855_7e5b46c2, //
   /** manual drive with markers on floor for davis240c

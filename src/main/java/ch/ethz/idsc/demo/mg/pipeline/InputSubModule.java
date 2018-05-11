@@ -178,7 +178,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(parentFilePath,fileName));
+      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(parentFilePath, fileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
       // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));

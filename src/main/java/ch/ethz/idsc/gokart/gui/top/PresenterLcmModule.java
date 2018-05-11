@@ -126,7 +126,7 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartHudRender gokartHudRender = new GokartHudRender();
+      GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseInterface);
       joystickLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
       rimoGetLcmClient.addListener(gokartHudRender);
