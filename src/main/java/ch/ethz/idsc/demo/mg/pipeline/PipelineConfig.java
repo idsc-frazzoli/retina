@@ -11,20 +11,20 @@ import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.io.StringScalar;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI10d"; // must match name in LogFileLocations
-  public final Scalar maxDuration = RealScalar.of(2000); // [ms]
+  public String logFileName = "DUBI12a"; // must match name in LogFileLocations
+  public final Scalar maxDuration = RealScalar.of(5000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
-  // event filtering
+  /** filterConfig can currently be 0 or 1 */
+  public final Scalar filterConfig = RealScalar.of(0); 
+  public final Scalar boarder = RealScalar.of(4);
   public Scalar filterConstant = RealScalar.of(500); // [us]
-  public Scalar boarder = RealScalar.of(4);
   // feature tracking
   public Scalar initNumberOfBlobs = RealScalar.of(24);
   public Scalar numberRows = RealScalar.of(6);
@@ -43,11 +43,13 @@ public class PipelineConfig {
   public Scalar upperBoarder = RealScalar.of(100);
   // image to world transform
   public String calibrationFileName = "/demo/mg/dubi0008.csv"; // path in main/resources/..
-  // image saving
-  public final Scalar saveImages = RealScalar.of(0); // used as boolean: 0 == false, else == true
-  public final Scalar savingInterval = RealScalar.of(33); // [ms]
+  /** image saving
+   * used as boolean: 0 == false, else == true
+   * access via function isImageSaved() */
+  public final Scalar saveImages = RealScalar.of(1);
+  public final Scalar savingInterval = RealScalar.of(1000); // [ms]
   /** tracking evaluation in HandLabelFileLocations.labels(..) */
-  public final Scalar handLabelFileName = StringScalar.of(logFileName + "_labeledFeatures.csv");
+  public final String handLabelFileName = logFileName + "_labeledFeatures.csv";
   /** used as boolean: 0 == false, else == true
    * access via function isPerformanceEvaluated() */
   public final Scalar evaluatePerformance = RealScalar.of(0);
@@ -55,6 +57,10 @@ public class PipelineConfig {
    * access via function isVisualized() */
   public Scalar visualizePipeline = RealScalar.of(1);
   public Scalar visualizationInterval = RealScalar.of(33); // [ms]
+  // handlabeling tool
+  public final String comma_delimiter = ",";
+  public final String new_line = "\n";
+  public final Scalar initXAxis = RealScalar.of(400);
 
   /***************************************************/
   public File getLogFile() {
@@ -62,6 +68,10 @@ public class PipelineConfig {
     if (Objects.isNull(logFileLocations))
       throw new RuntimeException("invalid logFileName: " + logFileName);
     return logFileLocations.getFile();
+  }
+  
+  public boolean isImageSaved() {
+    return Scalars.nonZero(saveImages);
   }
 
   public boolean isVisualized() {

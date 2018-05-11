@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 /** pipeline setup for single/multirun */
 public class PipelineSetup {
   private PipelineConfig pipelineConfig;
-  private boolean multiRunPipeline;
 
   PipelineSetup(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
@@ -51,8 +50,8 @@ public class PipelineSetup {
     PipelineConfig pipelineConfig = new PipelineConfig();
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);
-    pipelineSetup.multiRunPipeline = true;
-    if (pipelineSetup.multiRunPipeline) {
+    // multirun for tracking evaluation
+    if (pipelineConfig.isPerformanceEvaluated()) {
       pipelineSetup.iterate();
     } else {
       pipelineSetup.runPipeline();

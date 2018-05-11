@@ -7,6 +7,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 public class EventFiltering {
   private static int width;
   private static int height;
+  // filter choice
+  private int filterConfig;
   // for background activity filter
   private int[][] timestamps;
   private double filterConstant;
@@ -31,6 +33,7 @@ public class EventFiltering {
   private void setParameters(PipelineConfig pipelineConfig) {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
+    filterConfig = pipelineConfig.filterConfig.number().intValue();
     timestamps = new int[width][height];
     filterConstant = pipelineConfig.filterConstant.number().doubleValue();
     boarder = pipelineConfig.boarder.number().intValue();
@@ -39,8 +42,15 @@ public class EventFiltering {
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
   public boolean filterPipeline(DavisDvsEvent davisDvsEvent) {
-    // return backgroundActivityFilter(davisDvsEvent, filterConstant);
-    return cornerDetector(davisDvsEvent);
+    if (filterConfig == 0) {
+      return backgroundActivityFilter(davisDvsEvent, filterConstant);
+    } else if (filterConfig == 1) {
+      return cornerDetector(davisDvsEvent);
+    } else {
+      System.out.println("filterConfig parameter not correctly set... exiting program.");
+      System.exit(0);
+      return false;
+    }
   }
 
   // update all neighboring cells with the timestamp of the incoming event

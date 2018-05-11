@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class TrackingEvaluator {
   private int currentLabelInstant = 0;
   private int numberOfLabelInstants = 0;
   private int distanceForAgreement = 20; // [pixel]
+  // visualization
+  private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
 
   // load the labeled data
   TrackingEvaluator(PipelineConfig pipelineConfig) {
@@ -42,22 +45,43 @@ public class TrackingEvaluator {
   }
 
   // compare estimated with ground truth features and calculate performance metric
+  // first version: we only care about feature position
   public void evaluatePerformance(List<ImageBlob> estimatedFeatures) {
     System.out.println("Performance evaluation instant happening now!");
     List<ImageBlob> groundTruthFeatures = labeledFeatures.get(currentLabelInstant);
-    // compare the two lists somehow
+    // array to save distance and feature number of closest estimate
+    float[][] distToClosestEstimate = new float[groundTruthFeatures.size()][2];
+    // TODO initialize to large distance and feature number that is impossible
+    // ..
+    // iterate through all combinations
     for (int i = 0; i < groundTruthFeatures.size(); i++) {
       for (int j = 0; j < estimatedFeatures.size(); j++) {
-        if (computeDistance(groundTruthFeatures.get(i), estimatedFeatures.get(j)) < distanceForAgreement) {
-          // then we have a true positive --> delete matching features from both lists or so?
+        float currentDist = computeDistance(groundTruthFeatures.get(i), estimatedFeatures.get(j));
+        if (currentDist < distToClosestEstimate[i][0]) {
+          distToClosestEstimate[i][0] = currentDist;
+          distToClosestEstimate[i][1] = j;
         }
       }
-      // if we get here without hitting a true positive, we have a false negative. mark corresponding blob in ground truth.
     }
-    // the remaining features in estimatedFeatures are false positives.
-    // cannot measure true negatives because that is "everything" that was not detected by either GT or tracking algo.
+    // setup for logic:
+    // if distToClosestEstimate[i][0] is smaller than threshold, we have a Tp
+    // if distToClosestEstimate[i][0] is larger than threshold, we have a Fn
+    // all estimatedFeatures that are not assigned true positive are therefore Fp
+    
+    // precision: Tp/(Tp+Fp)
+    // recall: Tp/(Tp+Fn)
+    
     // counter
     currentLabelInstant++;
+  }
+  
+  // TODO we need some nice visualization for the evaluation moments: labeled features overlaid on labeledEventframe with the estimated 
+  // features in another color also overlaid
+  private void performanceVisualization() {
+    // load matching accumulatedEventFrame (very similar as in HandLabeler)
+    // draw groundtruthFeatures (like in Handlabeler)
+    // overlay estimatedFeatures
+    // save frames
   }
 
   // extract timeStamps from .CSV file

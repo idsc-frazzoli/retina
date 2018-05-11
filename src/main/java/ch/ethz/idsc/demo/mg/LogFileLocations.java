@@ -70,6 +70,10 @@ public enum LogFileLocations {
   DUBI12d("logs/20180430T164704_0e959fc6Extracted4.lcm"), //
   /** extracted fast & chaotic round of DUBI12, camera zoomed and looking down. */
   DUBI12e("logs/20180430T164704_0e959fc6Extracted5.lcm"), //
+  /** log with new optimized camera pose */
+  DUBI13("logs/20180507T135949_588d4c6c.lcm.00"), //
+  /** log with new optimized camera pose */
+  DUBI14("logs/20180507T143002_588d4c6c.lcm.00"), //
   ;
   // ---
   private final File file;
