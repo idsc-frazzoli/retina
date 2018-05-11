@@ -80,7 +80,7 @@ public enum TensorProperties {
   public static boolean isTracked(Field field) {
     if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
       Class<?> type = field.getType();
-      return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class);
+      return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class) || type.equals(Boolean.class);
     }
     return false;
   }

@@ -60,6 +60,8 @@ public class PipelineConfig {
   public final String comma_delimiter = ",";
   public final String new_line = "\n";
   public final Scalar initXAxis = RealScalar.of(400);
+  // test if Boolean now tracked
+  public Boolean testBool = false;
 
   /***************************************************/
   public File getLogFile() {
@@ -84,7 +86,8 @@ public class PipelineConfig {
   // for testing
   public static void main(String[] args) throws IOException {
     PipelineConfig test = new PipelineConfig();
-    System.out.println(test.getLogFile());
+    boolean retrieveBool = test.testBool;
+    System.out.println(retrieveBool);
     TensorProperties.manifest(UserHome.file("config2.properties"), test);
     // private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
   }
