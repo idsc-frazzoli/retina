@@ -46,13 +46,12 @@ public class PipelineConfig {
   /** image saving
    * used as boolean: 0 == false, else == true
    * access via function isImageSaved() */
-  public final Scalar saveImages = RealScalar.of(1);
+  public final Scalar saveImages = RealScalar.of(0);
   public final Scalar savingInterval = RealScalar.of(1000); // [ms]
-  /** tracking evaluation in HandLabelFileLocations.labels(..) */
   public final String handLabelFileName = logFileName + "_labeledFeatures.csv";
   /** used as boolean: 0 == false, else == true
    * access via function isPerformanceEvaluated() */
-  public final Scalar evaluatePerformance = RealScalar.of(0);
+  public final Scalar evaluatePerformance = RealScalar.of(1);
   /** visualization used as boolean: 0 == false, else == true
    * access via function isVisualized() */
   public Scalar visualizePipeline = RealScalar.of(1);

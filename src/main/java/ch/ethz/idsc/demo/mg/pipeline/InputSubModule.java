@@ -41,7 +41,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   // image saving
   private boolean saveImages;
   private String imagePrefix;
-  private File pathToImages;
+  private File parentFilePath;
   private int savingInterval;
   // log summary
   private float eventCount = 0;
@@ -84,7 +84,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     evaluatePerformance = pipelineConfig.isPerformanceEvaluated();
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
-    pathToImages = HandLabelFileLocations.images(imagePrefix);
+    parentFilePath = HandLabelFileLocations.images(imagePrefix);
     savingInterval = pipelineConfig.savingInterval.number().intValue();
   }
 
@@ -128,7 +128,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     }
     // save frames
     if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
-      saveFrame(pathToImages, imagePrefix, davisDvsEvent.time);
+      saveFrame(parentFilePath, imagePrefix, davisDvsEvent.time);
       lastSavingTimestamp = davisDvsEvent.time;
     }
     // the events are accumulated for the interval time and then displayed in a single frame

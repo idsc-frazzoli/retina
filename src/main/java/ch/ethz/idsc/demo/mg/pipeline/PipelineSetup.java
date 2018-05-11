@@ -17,8 +17,8 @@ public class PipelineSetup {
 
   private void iterate() {
     // no visualization for multirun
-    pipelineConfig.visualizePipeline = RealScalar.of(0);
-    for (int i = 0; i < 5; i++) {
+    pipelineConfig.visualizePipeline = RealScalar.of(1);
+    for (int i = 0; i < 1; i++) {
       System.out.println("****new Iteration ****");
       pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
       InputSubModule inputSubModule = runPipeline();

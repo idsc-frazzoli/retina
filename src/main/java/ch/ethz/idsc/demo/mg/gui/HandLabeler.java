@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
 // TODO image is set twice somehow
 public class HandLabeler {
   private static String COMMA_DELIMITER;
-  private static String NEW_LINE = "\n";
+  private static String NEW_LINE;
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
   private int firstAxis;
@@ -71,7 +71,7 @@ public class HandLabeler {
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      drawEllipsesOnImage(labeledFeatures.get(currentImgNumber - 1), bufferedImage.createGraphics());
+      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(scaleImage(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
@@ -110,6 +110,8 @@ public class HandLabeler {
     fileName = pipelineConfig.handLabelFileName.toString();
     initXAxis = pipelineConfig.initXAxis.number().intValue();
     initYAxis = initXAxis;
+    firstAxis = initXAxis;
+    secondAxis = initXAxis;
     timeStamps = new int[numberOfFiles];
     labeledFeatures = new ArrayList<>(numberOfFiles);
     // set up empty list of lists
@@ -153,7 +155,6 @@ public class HandLabeler {
         @Override
         public void stateChanged(ChangeEvent e) {
           currentImgNumber = jSlider.getValue();
-          setBufferedImage();
           jComponent.repaint();
         }
       });
@@ -204,7 +205,7 @@ public class HandLabeler {
     jFrame.setBounds(100, 100, 480, 440);
     jFrame.setVisible(true);
   }
-  
+
   // scale image for better visualization - static because it is used by all visualization tools
   public static BufferedImage scaleImage(BufferedImage unscaled, float scale) {
     int newWidth = (int) (unscaled.getWidth() * scale);
@@ -221,7 +222,6 @@ public class HandLabeler {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
     File pathToFile = new File(HandLabelFileLocations.images(imagePrefix), fileName);
-    System.out.println("its called twice?");
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
@@ -230,7 +230,7 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(List<ImageBlob> blobs, Graphics2D graphics) {
+  private static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++)
       AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
   }
