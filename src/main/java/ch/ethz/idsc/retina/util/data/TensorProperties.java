@@ -65,6 +65,9 @@ public enum TensorProperties {
             else //
             if (type.equals(String.class))
               field.set(object, string);
+            else //
+            if(type.equals(Boolean.class))
+              field.set(object, Boolean.getBoolean(string));
           }
         } catch (Exception exception) {
           exception.printStackTrace();

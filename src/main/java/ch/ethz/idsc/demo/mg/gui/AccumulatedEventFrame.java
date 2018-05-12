@@ -64,6 +64,7 @@ public class AccumulatedEventFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
+  // TODO will be replaced by ImageRotate.rotate180Degrees(BufferedImage bufferedImage)
   // rotates BufferedImage by 180 degrees
   private static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
     AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
@@ -73,7 +74,11 @@ public class AccumulatedEventFrame {
     return bufferedImage;
   }
 
-  // draws an ellipse representing an ImageBlob object onto a Graphics2D object
+  /** draws an ellipse representing a ImageBlob object onto a Graphics2D object
+   * 
+   * @param graphics
+   * @param blob
+   * @param color */
   public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();

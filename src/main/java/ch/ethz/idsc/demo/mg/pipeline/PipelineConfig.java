@@ -86,8 +86,6 @@ public class PipelineConfig {
   // for testing
   public static void main(String[] args) throws IOException {
     PipelineConfig test = new PipelineConfig();
-    boolean retrieveBool = test.testBool;
-    System.out.println(retrieveBool);
     TensorProperties.manifest(UserHome.file("config2.properties"), test);
     // private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
   }
