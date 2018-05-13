@@ -40,6 +40,28 @@ public class TensorPropertiesTest extends TestCase {
     assertEquals(list.size(), 3);
   }
 
+  public void testBoolean() throws Exception {
+    ParamContainer ori = new ParamContainer();
+    ori.status = true;
+    assertEquals(TensorProperties.strings(ori).size(), 1);
+    Properties properties = TensorProperties.extract(ori);
+    assertEquals(properties.getProperty("status"), "true");
+    properties.setProperty("status", "corrupt");
+    TensorProperties.insert(properties, ori);
+    assertNull(ori.status);
+    assertEquals(TensorProperties.strings(ori).size(), 0);
+    // ---
+    properties.setProperty("status", "true");
+    TensorProperties.insert(properties, ori);
+    assertTrue(ori.status);
+    assertEquals(TensorProperties.strings(ori).size(), 1);
+    // ---
+    properties.setProperty("status", "false");
+    TensorProperties.insert(properties, ori);
+    assertFalse(ori.status);
+    assertEquals(TensorProperties.strings(ori).size(), 1);
+  }
+
   public void testStore() throws Exception {
     ParamContainer ori = new ParamContainer();
     ori.string = "some string, no new line please";

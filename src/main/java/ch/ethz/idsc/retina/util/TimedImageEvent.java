@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, mg
 package ch.ethz.idsc.retina.util;
 
 import java.awt.image.BufferedImage;
@@ -16,10 +16,8 @@ public class TimedImageEvent {
 
   public TimedImageEvent(int time, BufferedImage bufferedImage, boolean rotated) {
     this.time = time;
-    if (rotated) {
-      this.bufferedImage = ImageRotate.rotate180Degrees(bufferedImage);
-    } else {
-      this.bufferedImage = bufferedImage;
-    }
+    this.bufferedImage = rotated //
+        ? ImageRotate._180deg(bufferedImage)
+        : bufferedImage;
   }
 }

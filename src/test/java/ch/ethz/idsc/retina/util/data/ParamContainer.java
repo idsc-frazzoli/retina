@@ -14,6 +14,7 @@ class ParamContainer {
   public Scalar maxTor;
   public Tensor shape;
   public Scalar abc;
+  public Boolean status;
   // ---
   // ignore the following
   public transient Scalar ignoreTransient;

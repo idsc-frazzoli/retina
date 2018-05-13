@@ -5,13 +5,17 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
+/** inspired by
+ * <a href="https://reference.wolfram.com/language/ref/ImageRotate.html">ImageRotate</a> */
 public enum ImageRotate {
   ;
-  public static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
-    AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
-    tx.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
-    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    bufferedImage = op.filter(bufferedImage, null);
-    return bufferedImage;
+  /** @param bufferedImage
+   * @return new image that is the old one */
+  public static BufferedImage _180deg(BufferedImage bufferedImage) {
+    AffineTransform affineTransform = AffineTransform.getScaleInstance(-1, -1);
+    affineTransform.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
+    AffineTransformOp affineTransformOp = //
+        new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    return affineTransformOp.filter(bufferedImage, null);
   }
 }

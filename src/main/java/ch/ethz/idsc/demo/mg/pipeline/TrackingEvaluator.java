@@ -84,7 +84,7 @@ public class TrackingEvaluator {
   // visualize evaluation
   private void evaluationViz(int currentTimestamp, List<ImageBlob> estimatedFeatures, List<ImageBlob> groundTruthFeatures) {
     // load matching accumulatedEventFrame (very similar as in HandLabeler)
-    String imgNumberString = String.format("%04d", currentLabelInstant+1);
+    String imgNumberString = String.format("%04d", currentLabelInstant + 1);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentLabelInstant] + ".png";
     File pathToFile = new File(HandLabelFileLocations.images(imagePrefix), fileName);
     try {
