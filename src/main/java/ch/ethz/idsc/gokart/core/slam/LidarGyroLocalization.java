@@ -25,24 +25,23 @@ import ch.ethz.idsc.tensor.red.Mean;
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements DavisImuFrameListener {
-  /** 3x3 transformation matrix of lidar to center of rear axle */
-  protected static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
-  private Scalar lidarRate = SensorsConfig.GLOBAL.vlp16_rate;
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  // ---
+  private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
+  /** 3x3 transformation matrix of lidar to center of rear axle */
+  private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
+  private final Tensor inverseLidar = Inverse.of(lidar).unmodifiable();
+  private final Scalar lidarRate = SensorsConfig.GLOBAL.vlp16_rate;
+  // ---
+  private final Tensor model2pixel;
+  private final SlamScore slamScore;
   /** the imu sampling rate is 1000[Hz], the vlp16 revolution rate is configured to 20[Hz]
    * that means per lidar scan there are 50 samples from the imu */
-  private static final int SAMPLES = 50; // TODO couple const to 1000 Hz of imu & lidarRate
-  // ---
-  // private final PredefinedMap predefinedMap;
-  private final Tensor model2pixel;
-  private Tensor _model = null;
-  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, SAMPLES);
+  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, SensorsConfig.GLOBAL.imuSamplesPerLidarScan());
   private int gyro_index = 0;
-  private final SlamScore slamScore;
-  public static final int MIN_POINTS = 250; // TODO magic const in config
+  private Tensor _model = null;
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
-    // this.predefinedMap = predefinedMap;
     model2pixel = predefinedMap.getModel2Pixel();
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
   }
@@ -52,6 +51,10 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
     _model = GokartPoseHelper.toSE2Matrix(state);
   }
 
+  /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}
+   * 
+   * @param points
+   * @return */
   public Optional<SlamResult> handle(Tensor points) {
     Tensor model = _model;
     Scalar rate = getGyroAndReset().divide(lidarRate);
@@ -60,17 +63,17 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
         .apply(points).getPointsSpin(rate); // TODO optimize
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
-    if (LidarGyroLocalization.MIN_POINTS < sum) {
+    if (min_points < sum) {
       GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
       Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
-      geometricLayer.pushMatrix(LIDAR);
+      geometricLayer.pushMatrix(lidar);
       // Stopwatch stopwatch = Stopwatch.started();
       SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
       // double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
-      Tensor poseDelta = LIDAR.dot(pre_delta).dot(Inverse.of(LIDAR));
+      Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart
       Tensor result = Se2Utils.fromSE2Matrix(model);
       Tensor vector = Tensors.of( //
@@ -92,7 +95,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
     gyro_index %= gyro_y.length();
   }
 
-  protected final Scalar getGyroAndReset() {
+  private final Scalar getGyroAndReset() {
     return Mean.of(gyro_y).Get().multiply(SensorsConfig.GLOBAL.davis_imuY_scale);
   }
 }

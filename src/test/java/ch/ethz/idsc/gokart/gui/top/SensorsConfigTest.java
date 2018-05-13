@@ -23,4 +23,9 @@ public class SensorsConfigTest extends TestCase {
     Sign.requirePositive(SensorsConfig.GLOBAL.vlp16_incline);
     Sign.requirePositive(new SensorsConfig().vlp16_incline);
   }
+
+  public void testImuSamplesPerLidarScan() {
+    int samples = SensorsConfig.GLOBAL.imuSamplesPerLidarScan();
+    assertEquals(samples, 50);
+  }
 }

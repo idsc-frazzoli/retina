@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -22,12 +21,10 @@ import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-// TODO this is not the final API:
 public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-  public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);

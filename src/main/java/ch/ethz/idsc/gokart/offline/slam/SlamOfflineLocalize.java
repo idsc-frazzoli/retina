@@ -7,7 +7,6 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
-import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -25,6 +24,7 @@ import ch.ethz.idsc.tensor.sca.N;
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class SlamOfflineLocalize extends OfflineLocalize {
+  private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
 
@@ -43,7 +43,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
-    if (LidarGyroLocalization.MIN_POINTS < sum) {
+    if (min_points < sum) {
       GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);

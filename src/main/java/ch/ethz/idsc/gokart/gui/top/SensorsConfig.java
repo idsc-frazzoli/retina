@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class SensorsConfig implements Serializable {
   public static final SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
@@ -54,6 +55,7 @@ public class SensorsConfig implements Serializable {
    * the imuY measurement may have to be scaled.
    * until 20180507 the factor was 1 because the davis camera
    * was upside down at almost no inclination */
+  public Scalar davis_imu_rate = Quantity.of(1000, "s^-1");
   // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   public Scalar davis_imuY_scale = RealScalar.of(1.0);
   /** shift from center of VLP16 to DAVIS */
@@ -96,5 +98,9 @@ public class SensorsConfig implements Serializable {
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */
   public Tensor vlp16Gokart() {
     return Se2Utils.toSE2Matrix(vlp16).unmodifiable();
+  }
+
+  public int imuSamplesPerLidarScan() {
+    return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
   }
 }

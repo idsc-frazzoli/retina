@@ -115,7 +115,6 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
-      davisImuLcmClient.addListener(resampledLidarRender.lidarGyroLocalization);
     }
     { // TODO not generic
       CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
