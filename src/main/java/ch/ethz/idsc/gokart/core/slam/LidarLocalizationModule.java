@@ -23,6 +23,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** match the most recent lidar scan to static geometry of a pre-recorded map
+ * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements LidarRayBlockListener, Runnable {
   // TODO bad design
   public static boolean TRACKING = false;
@@ -32,8 +34,11 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
       GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-  public final LidarGyroLocalization lidarGyroLocalization = new LidarGyroLocalization(predefinedMap);
+  public final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
+  /** tear down flag to stop thread */
+  private boolean isLaunched = true;
+  private final Thread thread = new Thread(this);
+  private Tensor points_ferry = null;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -60,10 +65,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     davisImuLcmClient.stopSubscriptions();
   }
 
-  private final Thread thread = new Thread(this);
-  private Tensor points_ferry = null;
-
-  @Override
+  @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) { // receive 2D block event
     if (FLAGSNAP || TRACKING) {
       FLAGSNAP = false;
@@ -75,9 +77,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     }
   }
 
-  private boolean isLaunched = true;
-
-  @Override
+  @Override // from Runnable
   public void run() {
     while (isLaunched) {
       Tensor points = points_ferry;
@@ -103,6 +103,5 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
           // ---
         }
     }
-    System.out.println("exit thread");
   }
 }

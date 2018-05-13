@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
@@ -26,5 +27,11 @@ public class LinmotComponentTest extends TestCase {
   public void testRank() {
     LinmotComponent linmotComponent = new LinmotComponent();
     assertEquals(linmotComponent.getProviderRank(), ProviderRank.TESTING);
+  }
+
+  public void testMinPoints() {
+    int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
+    assertTrue(150 < min_points);
+    assertTrue(min_points < 300);
   }
 }
