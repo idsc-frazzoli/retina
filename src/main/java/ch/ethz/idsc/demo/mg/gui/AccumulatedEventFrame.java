@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.img.ImageRotate;
 
 // provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
 // also contains static methods to be used by other visualization tools
@@ -31,7 +31,7 @@ public class AccumulatedEventFrame {
   }
 
   public BufferedImage getAccumulatedEvents() {
-    return rotate180Degrees(bufferedImage);
+    return ImageRotate._180deg(bufferedImage);
   }
 
   // overlays blobs and sets color according to ImageBlobSelector module
@@ -43,14 +43,14 @@ public class AccumulatedEventFrame {
         drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
       }
     }
-    return rotate180Degrees(bufferedImage);
+    return ImageRotate._180deg(bufferedImage);
   }
 
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       drawImageBlob(graphics, blobs.get(i), Color.GRAY);
     }
-    return rotate180Degrees(bufferedImage);
+    return ImageRotate._180deg(bufferedImage);
   }
 
   // marks the event in the image plane as a dark or light pixel
@@ -62,16 +62,6 @@ public class AccumulatedEventFrame {
   // resets all pixel to grey
   public void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
-  }
-
-  // TODO will be replaced by ImageRotate.rotate180Degrees(BufferedImage bufferedImage)
-  // rotates BufferedImage by 180 degrees
-  private static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
-    AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
-    tx.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
-    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    bufferedImage = op.filter(bufferedImage, null);
-    return bufferedImage;
   }
 
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object

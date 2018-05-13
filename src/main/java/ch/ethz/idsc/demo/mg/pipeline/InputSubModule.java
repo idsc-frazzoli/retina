@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
-// TODO if we just wanna evaluate tracking performance, no need to incorporate imageToWorldTransform
+// TODO if we just wanna evaluate tracking performance, no need to incorporate blobTransform
 // TODO collectResults fct once evaluator is implemented
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -27,7 +27,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final EventFiltering eventFiltering;
   private final BlobTracking tracking;
   private final ImageBlobSelector blobSelector;
-  private final ImageToWorldTransform transformer;
+  private final BlobTransform transformer;
   private TrackingEvaluator evaluator = null; // default initialization if unused
   // visualization
   private boolean visualizePipeline;
@@ -57,7 +57,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     eventFiltering = new EventFiltering(pipelineConfig);
     tracking = new BlobTracking(pipelineConfig);
     blobSelector = new ImageBlobSelector(pipelineConfig);
-    transformer = new ImageToWorldTransform(pipelineConfig);
+    transformer = new BlobTransform();
+    // TODO inelegant
+    TransformUtil.initialize(pipelineConfig);
     // optional evaluation
     if (evaluatePerformance) {
       evaluator = new TrackingEvaluator(pipelineConfig);
@@ -79,9 +81,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   private void setParameters(PipelineConfig pipelineConfig) {
-    saveImages = (0 != pipelineConfig.saveImages.number().intValue());
-    visualizePipeline = pipelineConfig.isVisualized();
-    evaluatePerformance = pipelineConfig.isPerformanceEvaluated();
+    saveImages = pipelineConfig.saveImages;
+    visualizePipeline = pipelineConfig.visualizePipeline;
+    evaluatePerformance = pipelineConfig.evaluatePerformance;
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
     parentFilePath = HandLabelFileLocations.images(imagePrefix);
@@ -169,7 +171,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       eventFrames[i].clearImage();
     }
     for (int i = 0; i < physicalFrames.length; i++) {
-      physicalFrames[i].clearImage();
+      // physicalFrames[i].clearImage();
     }
   }
 

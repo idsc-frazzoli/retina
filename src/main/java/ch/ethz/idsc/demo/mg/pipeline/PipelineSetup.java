@@ -17,7 +17,7 @@ public class PipelineSetup {
 
   private void iterate() {
     // no visualization for multirun
-    pipelineConfig.visualizePipeline = RealScalar.of(1);
+    pipelineConfig.visualizePipeline = false;
     for (int i = 0; i < 1; i++) {
       System.out.println("****new Iteration ****");
       pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
@@ -51,7 +51,7 @@ public class PipelineSetup {
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);
     // multirun for tracking evaluation
-    if (pipelineConfig.isPerformanceEvaluated()) {
+    if (pipelineConfig.evaluatePerformance) {
       pipelineSetup.iterate();
     } else {
       pipelineSetup.runPipeline();

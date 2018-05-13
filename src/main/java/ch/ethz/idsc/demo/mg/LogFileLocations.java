@@ -58,7 +58,7 @@ public enum LogFileLocations {
   DUBI11c("logs/20180412T164740_7e5b46c2Extracted3.lcm"), //
   /** extracted fast round of DUBI11, Jan driving */
   DUBI11d("logs/20180412T164740_7e5b46c2Extracted4.lcm"), //
-  /** new camera pose, calibration images under "Dubi first try". Corresponding transform is dubi0008.csv */
+  /** new camera pose, calibration images under "Dubi first try". camera calibration available */
   DUBI12("logs/20180430T164704_0e959fc6.lcm.00"), //
   /** extracted slow round of DUBI12, camera zoomed and looking down. */
   DUBI12a("logs/20180430T164704_0e959fc6Extracted1.lcm"), //
@@ -71,9 +71,13 @@ public enum LogFileLocations {
   /** extracted fast & chaotic round of DUBI12, camera zoomed and looking down. */
   DUBI12e("logs/20180430T164704_0e959fc6Extracted5.lcm"), //
   /** log with new optimized camera pose */
-  DUBI13("logs/20180507T135949_588d4c6c.lcm.00"), //
-  /** log with new optimized camera pose */
-  DUBI14("logs/20180507T143002_588d4c6c.lcm.00"), //
+  DUBI13("logs/20180507T143002_588d4c6c.lcm.00"), //
+  /** driving in 8 shape, cones and duct tape markings */
+  DUBI13a("logs/20180507T143002_588d4c6Extracted1.lcm"), //
+  /** driving in 8 shape, cones and duct tape markings */
+  DUBI13b("logs/20180507T143002_588d4c6Extracted2.lcm"), //
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI13c("logs/20180507T143002_588d4c6Extracted3.lcm"), //
   ;
   // ---
   private final File file;
