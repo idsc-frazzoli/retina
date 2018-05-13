@@ -13,11 +13,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 public class ClusterDeque {
   private final Deque<Tensor> deque = new ArrayDeque<>();
   private final Deque<Tensor> means = new ArrayDeque<>();
-  private int id = 0;
-
-  public ClusterDeque(Tensor points) {
-    deque.add(points);
-  }
+  private final int id;
 
   public ClusterDeque(int i, Tensor value) {
     deque.add(value);

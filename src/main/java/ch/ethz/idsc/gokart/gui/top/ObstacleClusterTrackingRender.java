@@ -79,8 +79,7 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       ColorDataIndexed colorDataIndexed = ColorDataLists._097;
       final int size = colorDataIndexed.size();
       {
-        // int i = 0;
-        for (ClusterDeque x : collection.collection) {
+        for (ClusterDeque x : collection.getCollection()) {
           graphics.setColor(colorDataIndexed.getColor(x.getID() % size));
           Tensor hulls = Tensors.empty();
           for (Tensor y : x.getDeque()) {
@@ -92,7 +91,7 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
           }
           {
             for (Tensor hull : hulls) {
-              // Color color = Colors.withAlpha(colorDataIndexed.getColor(clusterColor % size), 64);
+              // Color color = Colors.withAlpha(colorDataIndexed.getColor(x.getID() % size), 64);
               // graphics.setColor(color);
               graphics.fill(geometricLayer.toPath2D(hull));
             }
@@ -103,7 +102,6 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
             Path2D path2d = geometricLayer.toPath2D(nonEmptyMeans);
             graphics.draw(path2d);
           }
-          // ++i;
         }
       }
     }
