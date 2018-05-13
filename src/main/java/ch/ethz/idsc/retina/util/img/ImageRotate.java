@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public enum ImageRotate {
   ;
   /** @param bufferedImage
-   * @return new image that is the old one */
+   * @return new image that is the old one rotated by 180[deg] */
   public static BufferedImage _180deg(BufferedImage bufferedImage) {
     AffineTransform affineTransform = AffineTransform.getScaleInstance(-1, -1);
     affineTransform.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
