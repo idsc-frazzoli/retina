@@ -35,6 +35,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private int interval;
   private int max_gap;
   private Integer last = null;
+  private boolean rotated = false;
 
   protected AbstractAccumulatedImage(DavisDevice davisDevice) {
     setInterval(INTERVAL_DEFAULT_US);
@@ -59,6 +60,10 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     return interval;
   }
 
+  public void setRotated(boolean setValue) {
+    rotated = setValue;
+  }
+
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (Objects.isNull(last))
@@ -73,7 +78,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
       last = davisDvsEvent.time;
     } else //
     if (interval <= delta) {
-      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
+      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage, rotated);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;

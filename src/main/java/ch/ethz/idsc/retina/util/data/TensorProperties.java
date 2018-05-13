@@ -20,8 +20,9 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** manages configurable parameters by introspection of a given instance
  * 
- * values of members of type {@link Tensor} or {@link Scalar} are stored in
- * and retrieved from files in the {@link Properties} format */
+ * values of non-final, non-static, non-transient but public members of type
+ * {@link Tensor}, {@link Scalar}, {@link String}, {@link Boolean}
+ * are stored in, and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
   private static final int MASK_FILTER = Modifier.PUBLIC;
@@ -48,6 +49,9 @@ public enum TensorProperties {
     return properties;
   }
 
+  /** @param properties
+   * @param object with fields to be assigned according to given properties
+   * @return given object */
   public static <T> T insert(Properties properties, T object) {
     if (Objects.isNull(properties))
       return object;
@@ -65,6 +69,9 @@ public enum TensorProperties {
             else //
             if (type.equals(String.class))
               field.set(object, string);
+            else //
+            if (type.equals(Boolean.class))
+              field.set(object, StaticHelper.booleanOrNull(string));
           }
         } catch (Exception exception) {
           exception.printStackTrace();
@@ -80,7 +87,10 @@ public enum TensorProperties {
   public static boolean isTracked(Field field) {
     if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
       Class<?> type = field.getType();
-      return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class);
+      return type.equals(Tensor.class) //
+          || type.equals(Scalar.class) //
+          || type.equals(String.class) //
+          || type.equals(Boolean.class);
     }
     return false;
   }
