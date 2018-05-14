@@ -76,11 +76,11 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
     synchronized (collection) {
-      ColorDataIndexed colorDataIndexed = ColorDataLists._097;
-      final int size = colorDataIndexed.size();
+      // ColorDataIndexed colorDataIndexed = ColorDataLists._097.cyclic().deriveWithAlpha(64);
+      ColorDataIndexed colorDataPoints = ColorDataLists._250.cyclic().deriveWithAlpha(64);
       {
         for (ClusterDeque x : collection.getCollection()) {
-          graphics.setColor(colorDataIndexed.getColor(x.getID() % size));
+          graphics.setColor(colorDataPoints.getColor(x.getID()));
           Tensor hulls = Tensors.empty();
           for (Tensor y : x.getDeque()) {
             hulls.append(ConvexHull.of(y));
@@ -90,9 +90,8 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
             }
           }
           {
+            graphics.setColor(colorDataPoints.getColor(x.getID()));
             for (Tensor hull : hulls) {
-              // Color color = Colors.withAlpha(colorDataIndexed.getColor(x.getID() % size), 64);
-              // graphics.setColor(color);
               graphics.fill(geometricLayer.toPath2D(hull));
             }
           }

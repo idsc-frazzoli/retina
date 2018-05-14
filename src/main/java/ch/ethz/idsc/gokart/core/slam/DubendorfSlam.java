@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.qty.Degree;
 
 /** the maximum turning rate that was observed is 180[deg/s]. the lidar has
  * a rate of 20[Hz] which means a maximum rotation of 180/20[deg] == 9[deg].

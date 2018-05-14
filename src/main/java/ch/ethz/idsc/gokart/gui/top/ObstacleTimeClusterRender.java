@@ -107,12 +107,11 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
     }
     if (Objects.nonNull(pi)) {
       Tensor _pi = pi;
-      ColorDataIndexed colorDataIndexed = ColorDataLists._097;
-      final int size = colorDataIndexed.size();
+      ColorDataIndexed colorDataIndexed = ColorDataLists._097.cyclic();
       {
         int i = 0;
         for (Tensor x : _pi) {
-          graphics.setColor(colorDataIndexed.getColor(i % size));
+          graphics.setColor(colorDataIndexed.getColor(i));
           Tensor hulls = Tensors.empty();
           for (Tensor y : x) {
             if (!Tensors.isEmpty(y)) {
@@ -127,7 +126,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
           {
             // int i = 0;
             for (Tensor hull : hulls) {
-              Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
+              Color color = Colors.withAlpha(colorDataIndexed.getColor(i), 64);
               graphics.setColor(color);
               graphics.fill(geometricLayer.toPath2D(hull));
               // ++i;

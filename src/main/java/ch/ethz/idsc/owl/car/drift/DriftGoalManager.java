@@ -4,7 +4,6 @@ package ch.ethz.idsc.owl.car.drift;
 import java.util.List;
 
 import ch.ethz.idsc.owl.glc.adapter.StateTimeTrajectories;
-import ch.ethz.idsc.owl.glc.adapter.VoidStateTimeRegionMembers;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -23,7 +22,7 @@ public class DriftGoalManager extends StandardTrajectoryRegionQuery implements G
 
   // ---
   private DriftGoalManager(Region<Tensor> region) {
-    super(new TimeInvariantRegion(region), VoidStateTimeRegionMembers.INSTANCE);
+    super(new TimeInvariantRegion(region));
   }
 
   @Override
