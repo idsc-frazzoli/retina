@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
@@ -74,6 +75,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //
       FigureOvalModule.class, //
+      FigureDucttapeModule.class, //
       GokartTrajectoryModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
