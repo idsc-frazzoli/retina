@@ -206,7 +206,12 @@ public class HandLabeler {
     jFrame.setVisible(true);
   }
 
-  // scale image for better visualization - static because it is used by all visualization tools
+  /**
+   * 
+   * @param unscaled original bufferedImage
+   * @param scale scaling factor
+   * @return scaled bufferedImage
+   */
   public static BufferedImage scaleImage(BufferedImage unscaled, float scale) {
     int newWidth = (int) (unscaled.getWidth() * scale);
     int newHeight = (int) (unscaled.getHeight() * scale);

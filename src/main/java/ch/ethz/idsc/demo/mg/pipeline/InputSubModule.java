@@ -27,14 +27,15 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final EventFiltering eventFiltering;
   private final BlobTracking tracking;
   private final ImageBlobSelector blobSelector;
-  private final BlobTransform transformer;
-  private TrackingEvaluator evaluator = null; // default initialization if unused
+  private BlobTransform transformer = null; // default initialization if unused
+  private TrackingEvaluator evaluator = null;
   // visualization
   private boolean visualizePipeline;
   private PipelineVisualization visualizer = null;
   private AccumulatedEventFrame[] eventFrames = null;
   private PhysicalBlobFrame[] physicalFrames = null;
   // pipeline configuration
+  private boolean calibrationAvailable;
   private boolean evaluatePerformance;
   private int visualizationInterval;
   private int imageCount = 0;
@@ -57,9 +58,12 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     eventFiltering = new EventFiltering(pipelineConfig);
     tracking = new BlobTracking(pipelineConfig);
     blobSelector = new ImageBlobSelector(pipelineConfig);
-    transformer = new BlobTransform();
-    // TODO inelegant
-    TransformUtil.initialize(pipelineConfig);
+    // calibration required for transformation to physical space
+    if (calibrationAvailable) {
+      transformer = new BlobTransform();
+      // TODO inelegant
+      TransformUtil.initialize(pipelineConfig);
+    }
     // optional evaluation
     if (evaluatePerformance) {
       evaluator = new TrackingEvaluator(pipelineConfig);
@@ -68,12 +72,14 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if (visualizePipeline) {
       visualizer = new PipelineVisualization();
       eventFrames = new AccumulatedEventFrame[3];
-      physicalFrames = new PhysicalBlobFrame[3];
       for (int i = 0; i < eventFrames.length; i++) {
-        eventFrames[i] = new AccumulatedEventFrame();
+        eventFrames[i] = new AccumulatedEventFrame(pipelineConfig);
       }
-      for (int i = 0; i < physicalFrames.length; i++) {
-        physicalFrames[i] = new PhysicalBlobFrame();
+      if (calibrationAvailable) {
+        physicalFrames = new PhysicalBlobFrame[3];
+        for (int i = 0; i < physicalFrames.length; i++) {
+          physicalFrames[i] = new PhysicalBlobFrame(pipelineConfig);
+        }
       }
     }
     // initialize listener
@@ -83,6 +89,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private void setParameters(PipelineConfig pipelineConfig) {
     saveImages = pipelineConfig.saveImages;
     visualizePipeline = pipelineConfig.visualizePipeline;
+    calibrationAvailable = pipelineConfig.calibrationAvailable;
     evaluatePerformance = pipelineConfig.evaluatePerformance;
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
@@ -121,7 +128,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       // control pipeline
       tracking.receiveEvent(davisDvsEvent);
       blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
-      transformer.transformSelectedBlobs(blobSelector.getSelectedBlobs());
+      if (calibrationAvailable) {
+        transformer.transformSelectedBlobs(blobSelector.getSelectedBlobs());
+      }
       // visualization
       if (visualizePipeline) {
         eventFrames[1].receiveEvent(davisDvsEvent);
@@ -159,9 +168,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     combinedFrames[0] = eventFrames[0].getAccumulatedEvents();
     combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs());
     combinedFrames[2] = eventFrames[2].overlayHiddenBlobs((tracking.getHiddenBlobs()));
-    combinedFrames[3] = physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs()));
-    combinedFrames[4] = physicalFrames[1].getFrame();
-    combinedFrames[5] = physicalFrames[2].getFrame();
+    if (calibrationAvailable) {
+      combinedFrames[3] = physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs()));
+      combinedFrames[4] = physicalFrames[1].getFrame();
+      combinedFrames[5] = physicalFrames[2].getFrame();
+    }
     return combinedFrames;
   }
 
@@ -170,9 +181,6 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     for (int i = 0; i < eventFrames.length; i++) {
       eventFrames[i].clearImage();
     }
-    for (int i = 0; i < physicalFrames.length; i++) {
-      // physicalFrames[i].clearImage();
-    }
   }
 
   // for image saving
@@ -180,7 +188,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs()), "png", new File(parentFilePath, fileName));
+      ImageIO.write(eventFrames[0].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
       // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));

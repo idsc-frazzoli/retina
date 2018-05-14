@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
 
@@ -19,18 +20,24 @@ import ch.ethz.idsc.retina.util.img.ImageRotate;
 public class AccumulatedEventFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
-  // ---
-  private final BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_INDEXED);
-  private final Graphics2D graphics = bufferedImage.createGraphics();
+  private static int width;
+  private static int height;
+  private final BufferedImage bufferedImage;
+  private final Graphics2D graphics;
   private final byte[] bytes;
 
-  public AccumulatedEventFrame() {
+  public AccumulatedEventFrame(PipelineConfig pipelineConfig) {
+    width = pipelineConfig.width.number().intValue();
+    height = pipelineConfig.height.number().intValue();
+    bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
+    graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     clearImage();
   }
 
   public BufferedImage getAccumulatedEvents() {
+//     return bufferedImage;
     return ImageRotate._180deg(bufferedImage);
   }
 
@@ -38,11 +45,12 @@ public class AccumulatedEventFrame {
   public BufferedImage overlayActiveBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getIsRecognized()) {
-        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
+        drawImageBlob(graphics, blobs.get(i), Color.GREEN);
       } else {
-        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
+        drawImageBlob(graphics, blobs.get(i), Color.RED);
       }
     }
+    // return bufferedImage;
     return ImageRotate._180deg(bufferedImage);
   }
 
@@ -55,7 +63,7 @@ public class AccumulatedEventFrame {
 
   // marks the event in the image plane as a dark or light pixel
   public void receiveEvent(DavisDvsEvent davisDvsEvent) {
-    int index = davisDvsEvent.x + davisDvsEvent.y * 240;
+    int index = davisDvsEvent.x + davisDvsEvent.y * width;
     bytes[index] = VALUE[davisDvsEvent.i];
   }
 

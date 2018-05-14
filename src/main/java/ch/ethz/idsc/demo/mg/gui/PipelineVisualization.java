@@ -23,11 +23,11 @@ public class PipelineVisualization {
       graphics.drawString("Filtered event stream with hidden blobs", 50, 613);
       graphics.drawImage(HandLabeler.scaleImage(bufferedImage[2], scaling), 50, 620, null);
       graphics.drawString("Raw features in physical space", 460, 13);
-      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[3], scaling), 460, 20, null);
-      graphics.drawString("Estimated features in physical space", 460, 313);
-      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[4], scaling), 460, 320, null);
-      graphics.drawString("Maybe here show the planned trajectory?", 460, 613);
-      graphics.drawImage(HandLabeler.scaleImage(bufferedImage[5], scaling), 460, 620, null);
+      graphics.drawImage(bufferedImage[3], 460, 20, null);
+      // graphics.drawString("Estimated features in physical space", 460, 313);
+      // graphics.drawImage(HandLabeler.scaleImage(bufferedImage[4], scaling), 460, 320, null);
+      // graphics.drawString("Maybe here show the planned trajectory?", 460, 613);
+      // graphics.drawImage(HandLabeler.scaleImage(bufferedImage[5], scaling), 460, 620, null);
     }
   };
 
@@ -41,7 +41,7 @@ public class PipelineVisualization {
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
-    jFrame.setBounds(100, 100, 850, 950);
+    jFrame.setBounds(100, 100, 1050, 950);
     jFrame.setVisible(true);
   }
 

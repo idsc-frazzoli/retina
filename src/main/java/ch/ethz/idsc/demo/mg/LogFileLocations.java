@@ -78,6 +78,15 @@ public enum LogFileLocations {
   DUBI13b("logs/20180507T143002_588d4c6Extracted2.lcm"), //
   /** slow driving in 8 shape, cones and duct tape markings */
   DUBI13c("logs/20180507T143002_588d4c6Extracted3.lcm"), //
+  ///// testinggggggg
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI14("logs/20180507T152619_8d5acc24.lcm.00"), //
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI15("logs/20180507T153455_8d5acc24.lcm.00"), //
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI16("logs/20180507T160755_8d5acc24.lcm.00"), //
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI17("logs/20180507T161322_8d5acc24.lcm.00"), //
   ;
   // ---
   private final File file;
