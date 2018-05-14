@@ -21,7 +21,6 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.util.gui.Colors;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
@@ -30,8 +29,7 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** used in {@link PresenterLcmModule} */
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
-  private static final boolean ENABLED = UserHome.file("").getName().equals("vc"); // TODO VC username
-  // ---
+  private static final boolean ENABLED = UserHome.file("").getName().equals("valentinacavinato");
   final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
   private ClusterCollection collection = new ClusterCollection();
@@ -81,9 +79,8 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       ColorDataIndexed colorDataIndexed = ColorDataLists._097;
       final int size = colorDataIndexed.size();
       {
-        int i = 0;
-        for (ClusterDeque x : collection.collection) {
-          graphics.setColor(colorDataIndexed.getColor(i % size));
+        for (ClusterDeque x : collection.getCollection()) {
+          graphics.setColor(colorDataIndexed.getColor(x.getID() % size));
           Tensor hulls = Tensors.empty();
           for (Tensor y : x.getDeque()) {
             hulls.append(ConvexHull.of(y));
@@ -93,12 +90,10 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
             }
           }
           {
-            // int i = 0;
             for (Tensor hull : hulls) {
-              Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
-              graphics.setColor(color);
+              // Color color = Colors.withAlpha(colorDataIndexed.getColor(x.getID() % size), 64);
+              // graphics.setColor(color);
               graphics.fill(geometricLayer.toPath2D(hull));
-              // ++i;
             }
           }
           {
@@ -107,7 +102,6 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
             Path2D path2d = geometricLayer.toPath2D(nonEmptyMeans);
             graphics.draw(path2d);
           }
-          ++i;
         }
       }
     }

@@ -31,7 +31,7 @@ class Handler {
   LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
     @Override
     public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-      System.out.println("we have clusters" + collection.collection.size());
+      System.out.println("we have clusters" + collection.getCollection().size());
       final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
       final int position = floatBuffer.position();
       Tensor points = Tensors.empty();

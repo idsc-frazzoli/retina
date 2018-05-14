@@ -26,14 +26,15 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum ClustersTracking {
   ;
+  // private static int i;
   /** @param matrix
    * @return tensor of clusters */
   // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
   public static void elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
     Tensor scans = oldClusters.toMatrices().append(newScan);
-    oldClusters.collection.forEach(ClusterDeque::appendEmpty);
-    int sizeCollection = oldClusters.collection.size();
+    oldClusters.getCollection().forEach(ClusterDeque::appendEmpty);
+    int sizeCollection = oldClusters.getCollection().size();
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
     TreeMap<Integer, Integer> origin = new TreeMap<>();
     int sum = 0;
@@ -66,18 +67,16 @@ public enum ClustersTracking {
           int offset = id.getOffset(iter);
           set.add(origin.floorEntry(offset).getValue());
           Entry<Integer, Tensor> floorEntry = map.floorEntry(offset);
-          // floorEntry.
           floorEntry.getValue().append(matrix.get(offset));
         }
         if (set.equals(Collections.singleton(sizeCollection))) {
-          oldClusters.collection.add(new ClusterDeque(map.lastEntry().getValue()));
+          oldClusters.addToCollection(new ClusterDeque(oldClusters.getIDCount(), map.lastEntry().getValue()));
+          oldClusters.incrementIDCount();
         } else if (set.size() == 2 && set.contains(sizeCollection)) {
           Tensor points = map.lastEntry().getValue();
-          ClusterDeque next = oldClusters.collection.get(set.iterator().next());
+          ClusterDeque next = oldClusters.getCollection().get(set.iterator().next());
           next.replaceLast(points);
         }
-        // System.out.println(set);
-        // Tensor of = Tensor.of(map.values().stream());
       }
     oldClusters.maintainUntil(sizeCollection);
   }
