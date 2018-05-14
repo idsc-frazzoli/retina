@@ -12,7 +12,6 @@ import ch.ethz.idsc.owl.car.model.CarStateSpaceModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
-import ch.ethz.idsc.owl.gui.ani.PlannerType;
 import ch.ethz.idsc.owl.gui.ani.TrajectoryEntity;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.flow.Integrator;
@@ -34,11 +33,10 @@ import ch.ethz.idsc.tensor.Tensor;
     // new StateTime(carState.asVector(), RealScalar.ZERO), //
     // MAX_TIME_STEP));
   }
-
-  @Override
-  public PlannerType getPlannerType() {
-    return PlannerType.STANDARD;
-  }
+  // @Override
+  // public PlannerType getPlannerType() {
+  // return PlannerType.STANDARD;
+  // }
 
   // @Override
   // protected Scalar distance(Tensor x, Tensor y) {

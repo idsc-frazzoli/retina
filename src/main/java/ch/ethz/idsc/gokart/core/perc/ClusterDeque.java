@@ -1,3 +1,4 @@
+// code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
 import java.util.ArrayDeque;
@@ -15,9 +16,9 @@ public class ClusterDeque {
   private final Deque<Tensor> means = new ArrayDeque<>();
   private final int id;
 
-  public ClusterDeque(int i, Tensor value) {
+  public ClusterDeque(int id, Tensor value) {
     deque.add(value);
-    id = i;
+    this.id = id;
   }
 
   public Stream<Tensor> vertexStream() {
@@ -39,7 +40,7 @@ public class ClusterDeque {
   }
 
   public Tensor getNonEmptyMeans() {
-    return Tensor.of(means.stream().filter(m -> !Tensors.isEmpty(m)));
+    return Tensor.of(means.stream().filter(Tensors::nonEmpty));
   }
 
   public void replaceLast(Tensor points) {

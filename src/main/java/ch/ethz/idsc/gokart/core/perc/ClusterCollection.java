@@ -1,3 +1,4 @@
+// code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
 import java.util.ArrayList;
@@ -20,19 +21,12 @@ public class ClusterCollection {
     collection = collection.stream().filter(ClusterDeque::nonEmpty).collect(Collectors.toList());
   }
 
+  public void addToCollection(Tensor value) {
+    collection.add(new ClusterDeque(i, value));
+    ++i;
+  }
+
   public List<ClusterDeque> getCollection() {
     return Collections.unmodifiableList(collection);
-  }
-
-  public void addToCollection(ClusterDeque clusterDeque) {
-    collection.add(clusterDeque);
-  }
-
-  public void incrementIDCount() {
-    i++;
-  }
-
-  public int getIDCount() {
-    return i;
   }
 }

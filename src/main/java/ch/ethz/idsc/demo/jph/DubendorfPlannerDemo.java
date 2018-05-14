@@ -19,7 +19,6 @@ import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.gui.ani.GlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
-import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
@@ -31,6 +30,7 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.img.MeanFilter;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
+import ch.ethz.idsc.tensor.qty.Degree;
 
 public class DubendorfPlannerDemo {
   public final OwlyAnimationFrame start() {
