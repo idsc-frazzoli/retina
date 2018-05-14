@@ -30,7 +30,7 @@ public class RimoThrustJoystickModuleTest extends TestCase {
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(.1, .5), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0, .5), false);
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
@@ -52,7 +52,7 @@ public class RimoThrustJoystickModuleTest extends TestCase {
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(1), Tensors.vector(1, 1), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(1), Tensors.vector(0, 1), false);
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
@@ -66,6 +66,28 @@ public class RimoThrustJoystickModuleTest extends TestCase {
     assertTrue(rptL_raw < 0);
     assertEquals(rptL_raw, -rptR_raw);
     int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue();
+    assertEquals(rptR_raw, expected);
+  }
+
+  public void testFullReverse() {
+    RimoThrustJoystickModule rtjm = new RimoThrustJoystickModule();
+    SteerColumnInterface steerColumnInterface = //
+        new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
+    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(1), Tensors.vector(1, 0), false);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    assertTrue(optional.isPresent());
+    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    // ---
+    short rptL_raw = rptL.getTorqueRaw();
+    short rptR_raw = rptR.getTorqueRaw();
+    assertTrue(rptL_raw > 0);
+    assertEquals(rptL_raw, -rptR_raw);
+    int expected = -JoystickConfig.GLOBAL.torqueLimit.number().intValue();
     assertEquals(rptR_raw, expected);
   }
 
@@ -94,7 +116,7 @@ public class RimoThrustJoystickModuleTest extends TestCase {
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(1, 1), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(0, 1), false);
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
