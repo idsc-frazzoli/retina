@@ -14,6 +14,7 @@ public enum DubendorfCurve {
   ;
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
   public static final Tensor HYPERLOOP_OVAL = hyperloop_oval();
+  public static final Tensor HYPERLOOP_DUCTTAPE = hyperloop_ducttape();
   // ---
   public static final Tensor DEMODAY_EIGHT = eight_demoday();
   public static final Tensor DEMODAY_OVAL = oval_demoday();
@@ -89,5 +90,11 @@ public enum DubendorfCurve {
     Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180502oval.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
+  }
+
+  private static Tensor hyperloop_ducttape() {
+    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180514ducttape.csv");
+    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
+    return Nest.of(unaryOperator, poly, 5).unmodifiable();
   }
 }

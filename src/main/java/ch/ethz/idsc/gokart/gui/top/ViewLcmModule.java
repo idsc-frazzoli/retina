@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -117,7 +118,7 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     { // TODO not generic
-      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      CurveRender curveRender = new CurveRender(FigureDucttapeModule.CURVE);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {
