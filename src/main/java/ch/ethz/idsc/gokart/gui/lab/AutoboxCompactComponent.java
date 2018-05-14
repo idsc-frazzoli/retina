@@ -2,16 +2,20 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -25,9 +29,14 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable, DavisImuFrameListener {
@@ -49,7 +58,9 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   private final JTextField jTF_joystick;
   private final JTextField jTF_davis240c;
   private final JTextField jTF_localPose;
+  private final JButton jButtonAppend;
   private final JTextField jTF_localQual;
+  private final Tensor poseList = Tensors.empty();
 
   public AutoboxCompactComponent() {
     {
@@ -69,6 +80,27 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     jTF_joystick = createReading("Joystick");
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
+    {
+      JToolBar jToolBar = createRow("store");
+      jButtonAppend = new JButton("pose append");
+      jButtonAppend.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (Objects.nonNull(gokartPoseEvent)) {
+            Tensor state = gokartPoseEvent.getPose();
+            state = GokartPoseHelper.toUnitless(state);
+            poseList.append(state);
+            try {
+              Put.of(UserHome.file("track.mathematica"), poseList);
+              Export.of(UserHome.file("track.csv"), poseList);
+            } catch (Exception exception) {
+              exception.printStackTrace();
+            }
+          }
+        }
+      });
+      jToolBar.add(jButtonAppend);
+    }
   }
 
   @Override // from StartAndStoppable
