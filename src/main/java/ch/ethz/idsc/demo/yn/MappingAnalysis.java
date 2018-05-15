@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.yn;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +27,7 @@ import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -45,7 +45,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -78,6 +77,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   // private final Tensor gridRange = PredefinedMap.DUBENDORF_HANGAR_20180506.range();
   // private final Tensor imageRange = GRID2IMAGE.dot(gridRange);
   private final Tensor lbounds;
+  private boolean flag = false;
 
   public MappingAnalysis() {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(15000, 3);
@@ -90,9 +90,9 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     // ---
-    lbounds = Tensors.vector(10, 20);
+    lbounds = Tensors.vector(0, 0);
     grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.1));
-    grid.setObstacleRadius(DoubleScalar.of(0.8));
+    grid.setObstacleRadius(DoubleScalar.of(0.2));
   }
 
   // ---
@@ -101,6 +101,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
       grid.setPose(gpe.getPose());
+      System.out.println(time);
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -116,22 +117,15 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       grid.render(gl, graphics);
       gr.render(gl, graphics);
-      double rangex = gridRange.Get(0).number().doubleValue();
-      double rangey = gridRange.Get(1).number().doubleValue();
-      double cx = lbounds.Get(0).number().doubleValue();
-      double cy = lbounds.Get(1).number().doubleValue();
-      Rectangle2D mappingFrame = new Rectangle2D.Double(7.5 * cx, image.getHeight() - 7.5 * (cy + rangey), //
-          7.5 * rangex, 7.5 * rangey);
-      graphics.setStroke(new BasicStroke(3));
-      graphics.setColor(Color.CYAN);
-      graphics.draw(mappingFrame);
-      if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)))
-        grid.setGridCenter(Tensors.vector(50, 50));
+      if (Scalars.lessEquals(RealScalar.of(6), Magnitude.SECOND.apply(time)) && flag == false) {
+        grid.setNewlBound(Tensors.vector(20, 20));
+        flag = true;
+      }
       // ---
       try {
         grid.genObstacleMap();
         ImageIO.write(image, "png", UserHome.Pictures("/log/" + Magnitude.SECOND.apply(time).toString() + ".png"));
-        System.out.println("writing img: " + counter++);
+        // System.out.println("writing img: " + counter++);
       } catch (IOException e) {
         e.printStackTrace();
       }
