@@ -25,9 +25,26 @@ import ch.ethz.idsc.tensor.sca.Chop;
 /* package */ class SideGokartRender extends AbstractGokartRender {
   private static final Scalar RAY_CUTOFF = RealScalar.of(40);
   private static final Tensor CIRCLE = CirclePoints.of(20);
+  private final Tensor polygon;
 
   public SideGokartRender() {
     super(GokartPoseLocal.INSTANCE);
+    // ---
+    Scalar min = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.min()).get().Get(0);
+    Scalar max = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.max()).get().Get(0);
+    Scalar groundClearance = Magnitude.METER.apply(ChassisGeometry.GLOBAL.groundClearance);
+    polygon = Tensors.of( //
+        Tensors.of(min, groundClearance), //
+        Tensors.of(max, groundClearance), //
+        Tensors.of(max, RealScalar.of(0.24)), //
+        Tensors.vectorDouble(+1.19 - 0.17, 0.59), //
+        Tensors.vectorDouble(+0.15, 0.59), //
+        Tensors.vectorDouble(+0.15, 1.112), //
+        Tensors.vectorDouble(+0.00, 1.112), //
+        Tensors.vectorDouble(-0.18, 1.04), // height of box
+        Tensors.vectorDouble(-0.18, 0.38), // height of box
+        Tensors.of(min, RealScalar.of(0.38)) //
+    );
   }
 
   @Override
@@ -63,15 +80,6 @@ import ch.ethz.idsc.tensor.sca.Chop;
       geometricLayer.popMatrix();
     }
     { // draw lateral shape of the go-kart
-      Scalar min = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.min()).get().Get(0);
-      Scalar max = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.max()).get().Get(0);
-      // TODO DUBENDORF obtain side profile
-      Tensor polygon = Tensors.of( //
-          Tensors.of(min, RealScalar.of(0.02)), //
-          Tensors.of(max, RealScalar.of(0.02)), //
-          Tensors.of(max, RealScalar.of(0.3)), //
-          Tensors.of(min, RealScalar.of(0.9)) //
-      );
       graphics.setColor(new Color(128, 128, 128, 128));
       graphics.fill(geometricLayer.toPath2D(polygon));
     }

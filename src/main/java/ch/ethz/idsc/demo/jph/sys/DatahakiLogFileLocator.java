@@ -22,7 +22,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
         return file;
     }
     {
-      File file = new File(new File(ALT_ROOT, date), title + ".lcm.00");
+      File file = new File(new File(ALT_ROOT, date), title);
       if (file.isFile())
         return file;
     }

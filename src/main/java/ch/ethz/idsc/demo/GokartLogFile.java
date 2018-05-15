@@ -240,6 +240,25 @@ public enum GokartLogFile implements LogFile {
   _20180507T160755_8d5acc24, //
   /** driving by joystick fast */
   _20180507T161322_8d5acc24, //
+  /***************************************************/
+  /* 2018-05-09 */
+  /** joystick driving */
+  _20180509T120343_8d5acc24, //
+  /***************************************************/
+  /* 2018-05-14 */
+  /** slow joystick driving to establish
+   * min torque to set gokart in motion */
+  _20180514T101430_3a743349, //
+  /** slow joystick driving to establish
+   * min torque to set gokart in motion */
+  _20180514T105947_eda6fc3d, //
+  /** record waypoints for duct-tape track */
+  _20180514T151138_767e5417, //
+  /** pure pursuit of duct-tape track */
+  _20180514T153139_767e5417, //
+  /** pure pursuit of duct-tape track
+   * second half includes pedestrians */
+  _20180514T155248_767e5417, //
   ;
   @Override
   public String getFilename() {
