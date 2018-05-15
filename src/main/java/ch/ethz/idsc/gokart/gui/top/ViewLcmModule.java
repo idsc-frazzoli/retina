@@ -8,7 +8,6 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
-import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;

@@ -133,7 +133,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     double lboundX = lbounds.Get(0).number().doubleValue();
     double lboundY = lbounds.Get(1).number().doubleValue();
     grid2cell = Tensors.matrixDouble(new double[][] { { cellDimInvD, 0, 0 }, { 0, cellDimInvD, 0 }, { 0, 0, 1 } });
-    world2grid = Tensors.matrixDouble(new double[][] { { 1, 0, lboundX }, { 0, 1, lboundY }, { 0, 0, 1 } });
+    world2grid = Tensors.matrixDouble(new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
     //  ---
     geometricLayer = GeometricLayer.of(grid2cell); // grid 2 cell
     geometricLayer.pushMatrix(world2grid); // world to grid
@@ -185,7 +185,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     graphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
     graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
     for (Tensor cell : hset) {
-      drawSphere(toPos(cell), obsDilationRadius, MASK_OCCUPIED);
+      drawSphere(cell, obsDilationRadius, MASK_OCCUPIED);
       // drawCell(cell, MASK_OCCUPIED);
     }
     System.out.println(hset.size());
@@ -229,7 +229,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   private Tensor toPos(Tensor cell) {
     // return cell.multiply(cellDim).add(lbounds).add(cellDimHalfVec);
-    return cell.multiply(cellDim).add(lbounds).add(cellDimHalfVec);
+    return cell.multiply(cellDim).add(cellDimHalfVec);
   }
 
   private int cellToIdx(Tensor cell) {
@@ -246,11 +246,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
       imagePixels[idx] = (byte) (grayScale & 0xFF);
   }
 
-  private void drawSphere(Tensor pos, Scalar radius, short grayScale) {
+  private void drawSphere(Tensor cell, Scalar radius, short grayScale) {
     if (Scalars.lessEquals(obsDilationRadius, cellDim)) {
-      drawCell(toCell(pos), grayScale);
+      drawCell(cell, grayScale);
       return;
     }
+    Tensor pos = toPos(cell);
     Scalar radiusScaled = radius.multiply(cellDimInv);
     double dim = radiusScaled.number().doubleValue();
     Ellipse2D sphere = new Ellipse2D.Double( //
@@ -281,8 +282,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor model2pixel = geometricLayer.getMatrix();
     Tensor translate = IdentityMatrix.of(3);
-    // translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
-    // translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
+    translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
+    translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
     graphics.drawImage(bufferedImage, AffineTransforms.toAffineTransform(matrix), null);
   }
