@@ -1,8 +1,6 @@
 // code by ynager
 package ch.ethz.idsc.demo.yn;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -38,15 +36,14 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.app.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -74,15 +71,13 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private int counter = 0;
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart();
   private final Tensor gridRange = Tensors.vector(60, 60);
-  // private final Tensor gridRange = PredefinedMap.DUBENDORF_HANGAR_20180506.range();
-  // private final Tensor imageRange = GRID2IMAGE.dot(gridRange);
   private final Tensor lbounds;
   private boolean flag = false;
 
   public MappingAnalysis() {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(15000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SpacialProvider(offset);
+    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, 1);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
@@ -91,7 +86,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     lidarAngularFiringCollector.addListener(this);
     // ---
     lbounds = Tensors.vector(0, 0);
-    grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.1));
+    grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.2));
     grid.setObstacleRadius(DoubleScalar.of(0.2));
   }
 
@@ -100,8 +95,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
-      grid.setPose(gpe.getPose());
-      System.out.println(time);
+      grid.setPose(gpe.getPose(), gpe.getQuality());
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -117,15 +111,15 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       grid.render(gl, graphics);
       gr.render(gl, graphics);
-      if (Scalars.lessEquals(RealScalar.of(6), Magnitude.SECOND.apply(time)) && flag == false) {
-        grid.setNewlBound(Tensors.vector(20, 20));
-        flag = true;
-      }
+      // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
+      // grid.setNewlBound(Tensors.vector(20, 20));
+      // flag = true;
+      // }
       // ---
       try {
         grid.genObstacleMap();
         ImageIO.write(image, "png", UserHome.Pictures("/log/" + Magnitude.SECOND.apply(time).toString() + ".png"));
-        // System.out.println("writing img: " + counter++);
+        System.out.println("writing img: " + counter++);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -149,15 +143,11 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
           double x = floatBuffer.get();
           double y = floatBuffer.get();
           double z = floatBuffer.get();
-          // // no filter based on height
-          if (z <= 0.1) {
-            boolean isObstacle = predicate.isObstacle(x, z);
-            Tensor planarPoint = Tensors.vectorDouble(x, y, 1); // TODO insert lidar transform
-            // Tensor gokartPoint = lidar2gokart.dot(planarPoint);
-            // Tensor worldPoint = lidar2world.dot(planarPoint);
-            int type = isObstacle ? 1 : 0;
-            grid.processObservation(planarPoint, type);
-          }
+          //
+          boolean isObstacle = predicate.isObstacle(x, z);
+          Tensor planarPoint = Tensors.vectorDouble(x, y, 1);
+          int type = isObstacle ? 1 : 0;
+          grid.processObservation(planarPoint, type);
         }
   }
 }
