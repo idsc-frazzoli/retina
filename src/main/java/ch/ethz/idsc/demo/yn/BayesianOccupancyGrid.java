@@ -12,6 +12,7 @@ import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import ch.ethz.idsc.gokart.core.map.OccGridConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.subare.util.GlobalAssert;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -30,23 +30,21 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.sca.Ceiling;
 import ch.ethz.idsc.tensor.sca.Floor;
-import ch.ethz.idsc.tensor.sca.Log;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** all pixels have the same amount of weight or clearance radius attached */
 public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   // private static final Set<Byte> VALUES = new HashSet<>();
   private static final short MASK_OCCUPIED = 0x00;
-  private static final short MASK_EMPTY = 0xFF;
   private static final short MASK_UNKNOWN = 0xDD;
-  private static final Color COLOR_OCCUPIED = new Color(MASK_OCCUPIED, MASK_OCCUPIED, MASK_OCCUPIED);
+  @SuppressWarnings("unused")
+  private static final short MASK_EMPTY = 0xFF;
   // ---
   private Tensor lbounds;
   private final Scalar cellDim; // [m] per cell
   private final Tensor cellDimHalfVec;
   private final Scalar cellDimInv; // cells per [m]
   private final Tensor gridSize; // grid size in pixels
-  private final Tensor gridRange;
   private final int dimx;
   private final int dimy;
   // ---
@@ -56,26 +54,30 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private Tensor gokart2world = IdentityMatrix.of(3); // from gokart frame to world frame
   private final static Tensor LIDAR2GOKART = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
   private final GeometricLayer geometricLayer;
-  private Scalar poseQuality;
+  @SuppressWarnings("unused")
+  private double poseQuality;
   // ---
-  private double[] logOdds; // array of current log odd of each cell
-  private BufferedImage obstacleImage; // maximum likelihood obstacle map
-  private byte[] imagePixels;
+  /** array containing current log odds of each cell */
+  private double[] logOdds;
+  /** maximum likelihood obstacle map */
+  private final BufferedImage obstacleImage;
+  private final byte[] imagePixels;
   private final Graphics2D imageGraphics;
-  private HashSet<Tensor> hset = new HashSet<>();
+  /** set of occupied cells */
+  private final HashSet<Tensor> hset = new HashSet<>();
   // ---
-  private static final Scalar P_M = DoubleScalar.of(0.5); // prior
-  private static final Scalar P_M_HIT = DoubleScalar.of(0.85); // inv sensor model p(m|z)
-  private static final Scalar priorInvLogOdd = pToLogOdd(RealScalar.ONE.subtract(P_M));
-  private static final Scalar probThreshold = DoubleScalar.of(0.5); // cells with p(m|z_1:t) > probThreshold are considered occupied
-  private final Scalar lThreshold;
-  // ---
-  public static final int TYPE_HIT_FLOOR = 0; // TODO define somewhere in lidar module
-  public static final int TYPE_HIT_OBSTACLE = 1;
+  /** prior */
+  private static final double P_M = OccGridConfig.GLOBAL.P_M; // prior
+  private static final double L_M_INV = pToLogOdd(1 - P_M);
+  /** inv sensor model p(m|z) */
+  private static final double P_M_HIT = OccGridConfig.GLOBAL.P_M_HIT;
+  /** cells with p(m|z_1:t) > probThreshold are considered occupied */
+  private static final double P_THRESH = OccGridConfig.GLOBAL.P_THRESH;
+  private static final double L_THRESH = pToLogOdd(P_THRESH);
   // ---
   private Scalar obsDilationRadius;
   private final Tensor scaling;
-  private final Scalar[] PREDEFINED_P;
+  private final double[] PREDEFINED_P;
 
   /** Returns an instance of BayesianOccupancyGrid whose grid dimensions are ceiled to
    * fit a whole number of cells per dimension
@@ -93,49 +95,46 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * @param range effective size of grid in coordinate space
    * @param size size of grid in cell space */
   public BayesianOccupancyGrid(Tensor lbounds, Tensor range, Tensor size) {
-    GlobalAssert.that(VectorQ.ofLength(lbounds, 2));
-    GlobalAssert.that(VectorQ.ofLength(range, 2));
-    GlobalAssert.that(VectorQ.ofLength(size, 2));
+    VectorQ.requireLength(lbounds, 2);
+    VectorQ.requireLength(range, 2);
+    VectorQ.requireLength(size, 2);
     System.out.print("Grid range: " + range + "\n");
     System.out.print("Grid size: " + size + "\n");
-    PREDEFINED_P = new Scalar[] { //
-        RealScalar.ONE.subtract(P_M_HIT), P_M_HIT };
     this.lbounds = lbounds;
-    this.gridRange = range;
-    this.gridSize = size;
-    this.dimx = size.Get(0).number().intValue();
-    this.dimy = size.Get(1).number().intValue();
-    this.cellDim = range.Get(0).divide(gridSize.Get(0)); // TODO just 1st dim is checked
+    gridSize = size;
+    dimx = size.Get(0).number().intValue();
+    dimy = size.Get(1).number().intValue();
+    cellDim = range.Get(0).divide(gridSize.Get(0));
     cellDimInv = cellDim.reciprocal();
+    cellDimHalfVec = Tensors.of(cellDim.divide(RealScalar.of(2)), //
+        cellDim.divide(RealScalar.of(2)));
+    scaling = DiagonalMatrix.of( //
+        cellDim.number().doubleValue(), //
+        cellDim.number().doubleValue(), 1);
+    // ---
     obstacleImage = new BufferedImage( //
         gridSize.Get(0).number().intValue(), //
         gridSize.Get(1).number().intValue(), //
         BufferedImage.TYPE_BYTE_GRAY);
-    cellDimHalfVec = Tensors.of(cellDim.divide(RealScalar.of(2)), cellDim.divide(RealScalar.of(2)));
     WritableRaster writableRaster = obstacleImage.getRaster();
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     imagePixels = dataBufferByte.getData();
-    // ---
     imageGraphics = obstacleImage.createGraphics();
+    imageGraphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
+    imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     obsDilationRadius = cellDim.divide(RealScalar.of(2));
     // ---
+    PREDEFINED_P = new double[] { 1 - P_M_HIT, P_M_HIT };
     logOdds = new double[dimx * dimy];
-    Arrays.fill(logOdds, pToLogOdd(P_M).number().doubleValue());
-    lThreshold = pToLogOdd(probThreshold); // convert prob threshold to logOdd threshold
+    Arrays.fill(logOdds, pToLogOdd(P_M));
     // ---
-    Graphics graphics = obstacleImage.getGraphics();
-    graphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
-    graphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
-    // ---
-    scaling = DiagonalMatrix.of( //
-        cellDim.number().doubleValue(), //
-        cellDim.number().doubleValue(), 1);
-    // Transformation Matrices
     double cellDimInvD = cellDimInv.number().doubleValue();
     double lboundX = lbounds.Get(0).number().doubleValue();
     double lboundY = lbounds.Get(1).number().doubleValue();
-    grid2cell = Tensors.matrixDouble(new double[][] { { cellDimInvD, 0, 0 }, { 0, cellDimInvD, 0 }, { 0, 0, 1 } });
-    world2grid = Tensors.matrixDouble(new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
+    grid2cell = Tensors.matrixDouble( //
+        new double[][] { { cellDimInvD, 0, 0 }, { 0, cellDimInvD, 0 }, { 0, 0, 1 } });
+    world2grid = Tensors.matrixDouble( //
+        new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
     //  ---
     geometricLayer = GeometricLayer.of(grid2cell); // grid 2 cell
     geometricLayer.pushMatrix(world2grid); // world to grid
@@ -147,36 +146,28 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * @param pos 2D position of new lidar observation in gokart coordinates
    * @param type of observation */
   public void processObservation(Tensor pos, int type) {
-    if (pos.length() != 2)
-      pos = pos.extract(0, 2);
     Tensor cell = toCell(pos);
     int pix = cell.Get(0).number().intValue();
     if (0 <= pix && pix < dimx) {
       int piy = cell.Get(1).number().intValue();
       if (0 <= piy && piy < dimy) {
-        Scalar p_m_z = PREDEFINED_P[type];
-        Scalar logOddPrev = DoubleScalar.of(logOdds[piy * dimx + pix]);
-        // Scalar logOddPrev = DoubleScalar.of(logOdds2d[pix][piy]);
+        double p_m_z = PREDEFINED_P[type];
+        double logOddPrev = logOdds[piy * dimx + pix];
         updateCellLogOdd(pix, piy, p_m_z);
-        // Scalar logOdd = DoubleScalar.of(logOdds2d[pix][piy]);
-        Scalar logOdd = DoubleScalar.of(logOdds[piy * dimx + pix]);
+        double logOdd = logOdds[piy * dimx + pix];
         // Max likelihood estimation
-        if (Scalars.lessThan(lThreshold, logOdd) && Scalars.lessEquals(logOddPrev, lThreshold))
+        if ((L_THRESH < logOdd) && (logOddPrev <= L_THRESH))
           hset.add(cell);
-        // drawSphere(pos, obsDilationRadius, MASK_OCCUPIED);
-        else if (Scalars.lessThan(logOdd, lThreshold) && Scalars.lessEquals(lThreshold, logOddPrev))
+        else if ((logOdd < L_THRESH) && (L_THRESH <= logOddPrev))
           hset.remove(cell);
-        // drawCell(cell, MASK_EMPTY);
-        // else if (Scalars.isZero(logOdd.subtract(lThreshold)))
-        // drawCell(cell, MASK_UNKNOWN);
       }
     }
   }
 
   /** set vehicle pose w.r.t world frame */
   public void setPose(Tensor pose, Scalar quality) {
-    GlobalAssert.that(pose.length() == 3);
-    this.poseQuality = quality;
+    VectorQ.requireLength(pose, 3);
+    poseQuality = quality.number().doubleValue();
     gokart2world = GokartPoseHelper.toSE2Matrix(pose);
     geometricLayer.popMatrix();
     geometricLayer.popMatrix();
@@ -190,7 +181,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     graphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     for (Tensor cell : hset) {
       drawSphere(cell, obsDilationRadius, MASK_OCCUPIED);
-      // drawCell(cell, MASK_OCCUPIED);
     }
   }
 
@@ -202,7 +192,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   }
 
   /** Updates the grid center. Grid range and size remain unchanged.
-   * Overlapping segments remain unchanged.
+   * Overlapping segment is copied.
    * 
    * @param state center of new grid */
   public void setNewlBound(Tensor lbounds) {
@@ -217,8 +207,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     geometricLayer.popMatrix();
     geometricLayer.pushMatrix(world2grid); // updated world to grid
     double[] logOddsNew = new double[dimx * dimy];
-    Arrays.fill(logOddsNew, pToLogOdd(P_M).number().doubleValue());
-    double threshold = lThreshold.number().doubleValue();
+    Arrays.fill(logOddsNew, pToLogOdd(P_M));
+    double threshold = L_THRESH;
     Tensor trans = toCell(toPos(Tensors.vector(0, 0))); // calculate translation
     for (int i = 0; i < dimx; i++)
       for (int j = 0; j < dimy; j++) {
@@ -242,16 +232,17 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * l_t = l_{t-1} + log[ p(m|z_t) / (1 - p(m|z_t)) ] + log[ (1-p(m)) / p(m) ]
    * @param idx of cell to be updated
    * @param p_m_z probability in [0,1] that Cell is occupied given the current observation z */
-  private void updateCellLogOdd(int pix, int piy, Scalar p_m_z) {
-    Scalar logOddDelta = pToLogOdd(p_m_z).add(priorInvLogOdd);
+  private void updateCellLogOdd(int pix, int piy, double p_m_z) {
+    double logOddDelta = pToLogOdd(p_m_z) + L_M_INV;
     int idx = piy * dimx + pix;
-    logOdds[idx] += logOddDelta.number().doubleValue();
+    logOdds[idx] += logOddDelta;
     if (Double.isInfinite(logOdds[idx]))
       throw new ArithmeticException("Overflow");
   }
 
-  private static Scalar pToLogOdd(Scalar p) {
-    return Log.FUNCTION.apply(p.divide(RealScalar.ONE.subtract(p)));
+  private static double pToLogOdd(double p) {
+    GlobalAssert.that((1 - p) > 0);
+    return Math.log(p / (1 - p));
   }
 
   private Tensor toCell(Tensor pos) {
@@ -292,14 +283,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   @Override // from Region<Tensor>
   public boolean isMember(Tensor state) {
-    if (state.length() != 2)
-      state = state.extract(0, 2);
     Tensor cell = toCell(state);
     int pix = cell.Get(0).number().intValue();
     if (0 <= pix && pix < dimx) {
       int piy = cell.Get(1).number().intValue();
       if (0 <= piy && piy < dimy) {
-        byte gs = imagePixels[cellToIdx(toCell(state))];
+        byte gs = imagePixels[cellToIdx(cell)];
         return gs == MASK_OCCUPIED;
       }
     }

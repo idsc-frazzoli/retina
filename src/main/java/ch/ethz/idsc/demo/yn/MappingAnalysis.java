@@ -49,6 +49,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -58,7 +59,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private Scalar delta = Quantity.of(0.1, SI.SECOND);
+  private Scalar delta = Quantity.of(0.2, SI.SECOND);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private SpacialXZObstaclePredicate predicate = new SimpleSpacialObstaclePredicate( //
       Quantity.of(-0.9, SI.METER), //
@@ -68,16 +69,16 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final BayesianOccupancyGrid grid;
-  private int counter = 0;
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart();
-  private final Tensor gridRange = Tensors.vector(60, 60);
+  private final Tensor gridRange = Tensors.vector(85, 85);
   private final Tensor lbounds;
   private boolean flag = false;
 
   public MappingAnalysis() {
-    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(15000, 3);
+    LidarAngularFiringCollector lidarAngularFiringCollector = //
+        new LidarAngularFiringCollector(10000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, 1);
+    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
@@ -87,7 +88,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     // ---
     lbounds = Tensors.vector(0, 0);
     grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.2));
-    grid.setObstacleRadius(DoubleScalar.of(0.2));
+    grid.setObstacleRadius(DoubleScalar.of(0.4));
   }
 
   // ---
@@ -101,7 +102,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     }
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe)) {
       time_next = time.add(delta);
-      // System.out.print("Extracting log at " + time.map(Round._2) + "\n");
+      System.out.print("Extracting log at " + time.map(Round._2) + "\n");
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage image = scatterImage.getImage();
@@ -116,10 +117,11 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       // flag = true;
       // }
       // ---
+      // grid.genObstacleMap();
+      // System.out.println(time);
       try {
         grid.genObstacleMap();
         ImageIO.write(image, "png", UserHome.Pictures("/log/" + Magnitude.SECOND.apply(time).toString() + ".png"));
-        System.out.println("writing img: " + counter++);
       } catch (IOException e) {
         e.printStackTrace();
       }
