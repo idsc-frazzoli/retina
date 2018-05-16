@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -87,6 +88,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private Collection<CostFunction> costCollection = new LinkedList<>();
   final PurePursuitModule purePursuitModule = new PurePursuitModule();
+  final GokartMappingModule gokartMappingModule = new GokartMappingModule();
+  private Region<Tensor> fixedRegion;
+  private Region<Tensor> polygonRegion;
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   Tensor obstacleMap;
@@ -117,12 +121,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     Tensor range = Tensors.vector(Dimensions.of(tensor)).divide(scale);
     ImageRegion imageRegion = new ImageRegion(tensor, range, false);
     // TODO obtain magic const from footprint
-    Region<Tensor> region = Se2PointsVsRegions.line(Tensors.vector(-0.3, 0.8, 1.77), imageRegion);
-    Region<Tensor> polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
-    unionRegion = RegionUnion.wrap(Arrays.asList(region, polygonRegion));
+    fixedRegion = Se2PointsVsRegions.line(Tensors.vector(-0.3, 0.8, 1.77), imageRegion);
+    polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
     // ---
     waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
-    plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
+    //plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO));
     costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
     // ---
@@ -139,6 +142,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
+    gokartMappingModule.prepareMap();
+    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, polygonRegion, gokartMappingModule));
+    plannerConstraint = RegionConstraints.timeInvariant(gokartMappingModule);
     Scalar tangentSpeed_ = tangentSpeed;
     if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {
       System.out.println("setup planner");
