@@ -1,5 +1,5 @@
 // code by ynager
-package ch.ethz.idsc.demo.yn;
+package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +12,6 @@ import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import ch.ethz.idsc.gokart.core.map.OccGridConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -48,12 +47,13 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final int dimx;
   private final int dimy;
   // ---
-  // lidar2grid = gworld2gpix * world2gworld * gokart2world * lidar2gokart
+  // lidar2cell = gworld2gcell * world2gworld * gokart2world * lidar2gokart
   private final Tensor grid2cell; // from grid frame to grid cell
   private Tensor world2grid = IdentityMatrix.of(3); // from world frame to grid frame
   private Tensor gokart2world = IdentityMatrix.of(3); // from gokart frame to world frame
   private final static Tensor LIDAR2GOKART = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
-  private final GeometricLayer geometricLayer;
+  private final GeometricLayer lidar2cellLayer;
+  private final GeometricLayer world2cellLayer;
   @SuppressWarnings("unused")
   private double poseQuality;
   // ---
@@ -67,12 +67,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final HashSet<Tensor> hset = new HashSet<>();
   // ---
   /** prior */
-  private static final double P_M = OccGridConfig.GLOBAL.P_M; // prior
+  private static final double P_M = MappingConfig.GLOBAL.P_M; // prior
   private static final double L_M_INV = pToLogOdd(1 - P_M);
   /** inv sensor model p(m|z) */
-  private static final double P_M_HIT = OccGridConfig.GLOBAL.P_M_HIT;
+  private static final double P_M_HIT = MappingConfig.GLOBAL.P_M_HIT;
   /** cells with p(m|z_1:t) > probThreshold are considered occupied */
-  private static final double P_THRESH = OccGridConfig.GLOBAL.P_THRESH;
+  private static final double P_THRESH = MappingConfig.GLOBAL.P_THRESH;
   private static final double L_THRESH = pToLogOdd(P_THRESH);
   // ---
   private Scalar obsDilationRadius;
@@ -136,17 +136,19 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     world2grid = Tensors.matrixDouble( //
         new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
     //  ---
-    geometricLayer = GeometricLayer.of(grid2cell); // grid 2 cell
-    geometricLayer.pushMatrix(world2grid); // world to grid
-    geometricLayer.pushMatrix(gokart2world); // gokart to world
-    geometricLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
+    lidar2cellLayer = GeometricLayer.of(grid2cell); // grid 2 cell
+    lidar2cellLayer.pushMatrix(world2grid); // world to grid
+    lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
+    lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
+    world2cellLayer = GeometricLayer.of(grid2cell);
+    world2cellLayer.pushMatrix(world2grid);
   }
 
   /** process a new lidar observation and update the occupancy map
    * @param pos 2D position of new lidar observation in gokart coordinates
    * @param type of observation */
   public void processObservation(Tensor pos, int type) {
-    Tensor cell = toCell(pos);
+    Tensor cell = lidarToCell(pos);
     int pix = cell.Get(0).number().intValue();
     if (0 <= pix && pix < dimx) {
       int piy = cell.Get(1).number().intValue();
@@ -169,10 +171,10 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     VectorQ.requireLength(pose, 3);
     poseQuality = quality.number().doubleValue();
     gokart2world = GokartPoseHelper.toSE2Matrix(pose);
-    geometricLayer.popMatrix();
-    geometricLayer.popMatrix();
-    geometricLayer.pushMatrix(gokart2world);
-    geometricLayer.pushMatrix(LIDAR2GOKART);
+    lidar2cellLayer.popMatrix();
+    lidar2cellLayer.popMatrix();
+    lidar2cellLayer.pushMatrix(gokart2world);
+    lidar2cellLayer.pushMatrix(LIDAR2GOKART);
   }
 
   public void genObstacleMap() {
@@ -202,14 +204,14 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     world2grid = Tensors.matrixDouble(new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
     // ---
     hset.clear();
-    geometricLayer.popMatrix();
-    geometricLayer.popMatrix();
-    geometricLayer.popMatrix();
-    geometricLayer.pushMatrix(world2grid); // updated world to grid
+    lidar2cellLayer.popMatrix();
+    lidar2cellLayer.popMatrix();
+    lidar2cellLayer.popMatrix();
+    lidar2cellLayer.pushMatrix(world2grid); // updated world to grid
     double[] logOddsNew = new double[dimx * dimy];
     Arrays.fill(logOddsNew, pToLogOdd(P_M));
     double threshold = L_THRESH;
-    Tensor trans = toCell(toPos(Tensors.vector(0, 0))); // calculate translation
+    Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
     for (int i = 0; i < dimx; i++)
       for (int j = 0; j < dimy; j++) {
         double logOdd = logOdds[j * dimx + i];
@@ -224,8 +226,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
         }
       }
     logOdds = logOddsNew;
-    geometricLayer.pushMatrix(gokart2world); // gokart to world
-    geometricLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
+    lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
+    lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
   }
 
   /** Update the log odds of a cell using the probability of occupation given a new observation.
@@ -245,8 +247,14 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     return Math.log(p / (1 - p));
   }
 
-  private Tensor toCell(Tensor pos) {
-    Point2D point2D = geometricLayer.toPoint2D(pos);
+  private Tensor lidarToCell(Tensor pos) {
+    Point2D point2D = lidar2cellLayer.toPoint2D(pos);
+    Tensor point = Tensors.vector(point2D.getX(), point2D.getY());
+    return Floor.of(point);
+  }
+  
+  private Tensor worldToCell(Tensor pos) {
+    Point2D point2D = world2cellLayer.toPoint2D(pos);
     Tensor point = Tensors.vector(point2D.getX(), point2D.getY());
     return Floor.of(point);
   }
@@ -283,7 +291,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   @Override // from Region<Tensor>
   public boolean isMember(Tensor state) {
-    Tensor cell = toCell(state);
+    Tensor cell = worldToCell(state);
     int pix = cell.Get(0).number().intValue();
     if (0 <= pix && pix < dimx) {
       int piy = cell.Get(1).number().intValue();
