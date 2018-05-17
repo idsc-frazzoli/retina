@@ -56,7 +56,7 @@ enum RunTabbedTaskGui {
       LoggerModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
-      Vlp16PassiveSlowing.class, //
+//      Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       JoystickResetModule.class //
   );
