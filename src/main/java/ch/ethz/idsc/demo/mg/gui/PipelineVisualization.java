@@ -53,7 +53,7 @@ public class PipelineVisualization {
     jComponent.repaint();
   }
 
-  // for visualization
+  // for saving of whole GUI frame
   public BufferedImage getGUIFrame() {
     return new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
   }

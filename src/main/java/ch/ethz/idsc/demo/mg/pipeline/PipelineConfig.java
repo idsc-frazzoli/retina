@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI13c"; // must match name in LogFileLocations and be an extract of a recording 
-  public final Scalar maxDuration = RealScalar.of(20000); // [ms]
+  public String logFileName = "DUBI14a"; // must match name in LogFileLocations and be an extract of a recording 
+  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);

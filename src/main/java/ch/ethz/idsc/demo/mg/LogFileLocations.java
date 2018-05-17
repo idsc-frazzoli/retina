@@ -6,8 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.subare.util.UserHome;
 
 public enum LogFileLocations {
-  /** driving around in the 8 track */
-  DUBI4("logs/20180307T154859_0cd18c6b.lcm.00"), //
   /** extracted part of DUBI4 log file */
   DUBI4a("logs/20180307T154859_0cd18c6bExtracted.lcm"), //
   /** 22sec, only noise */
@@ -24,9 +22,8 @@ public enum LogFileLocations {
   DUBI8d("logs/20180412T114245_7e5b46c2Extracted4.lcm"), //
   /** extracted ale's fast double round of DUBI8 */
   DUBI8e("logs/20180412T114245_7e5b46c2Extracted5.lcm"), //
-  /** manual driving with cones, zoomed out camera --> helmet blocking corner of image */
-  DUBI9("logs/20180412T143634_7e5b46c2.lcm.00"), //
-  /** extracted slow round of DUBI9 */
+  /** manual driving with cones, zoomed out camera --> helmet blocking corner of image
+   * extracted slow round of DUBI9 */
   DUBI9a("logs/20180412T143634_7e5b46c2Extracted1.lcm"), //
   /** extracted another slow round of DUBI9 */
   DUBI9b("logs/20180412T143634_7e5b46c2Extracted2.lcm"), //
@@ -78,16 +75,24 @@ public enum LogFileLocations {
   DUBI13b("logs/20180507T143002_588d4c6Extracted2.lcm"), //
   /** slow driving in 8 shape, cones and duct tape markings */
   DUBI13c("logs/20180507T143002_588d4c6Extracted3.lcm"), //
-  ///// testinggggggg
-  /** slow driving in 8 shape, cones and duct tape markings */
-  DUBI14("logs/20180507T152619_8d5acc24.lcm.00"), //
-  /** slow driving in 8 shape, cones and duct tape markings */
-  DUBI15("logs/20180507T153455_8d5acc24.lcm.00"), //
-  /** slow driving in 8 shape, cones and duct tape markings */
-  DUBI16("logs/20180507T160755_8d5acc24.lcm.00"), //
-  /** slow driving in 8 shape, cones and duct tape markings */
-  DUBI17("logs/20180507T161322_8d5acc24.lcm.00"), //
-  ;
+  /** only ducttape markings, calibration available */
+  DUBI14("logs/20180514T153139_767e5417.lcm.00"), //
+  // ** extracted single round */
+  DUBI14a("logs/20180514T153139_767e5417Extracted1.lcm"),
+  // ** extracted double round */
+  DUBI14b("logs/20180514T153139_767e5417Extracted2.lcm"),
+  /** ducttape markings and cones on outer side, calibration available */
+  DUBI15("logs/20180514T155248_767e5417.lcm.00"),
+  /** extracted double round */
+  DUBI15a("logs/20180514T155248_767e5417Extracted1.lcm"),
+  /** extracted double round */
+  DUBI15b("logs/20180514T155248_767e5417Extracted2.lcm"),
+  /** slow double round, additional cones */
+  DUBI15c("logs/20180514T155248_767e5417Extracted3.lcm"),
+  /** extracted double round, additional cones */
+  DUBI15d("logs/20180514T155248_767e5417Extracted4.lcm"),
+  /** short file, duckie thrown in front of gokart */
+  DUBI15e("logs/20180514T155248_767e5417Extracted5.lcm"),;
   // ---
   private final File file;
 

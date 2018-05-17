@@ -13,7 +13,6 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.util.img.ImageRotate;
 
 // provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
 // also contains static methods to be used by other visualization tools
@@ -37,8 +36,8 @@ public class AccumulatedEventFrame {
   }
 
   public BufferedImage getAccumulatedEvents() {
-//     return bufferedImage;
-    return ImageRotate._180deg(bufferedImage);
+    return bufferedImage;
+//     return ImageRotate._180deg(bufferedImage);
   }
 
   // overlays blobs and sets color according to ImageBlobSelector module
@@ -50,15 +49,16 @@ public class AccumulatedEventFrame {
         drawImageBlob(graphics, blobs.get(i), Color.RED);
       }
     }
-    // return bufferedImage;
-    return ImageRotate._180deg(bufferedImage);
+    return bufferedImage;
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       drawImageBlob(graphics, blobs.get(i), Color.GRAY);
     }
-    return ImageRotate._180deg(bufferedImage);
+    return bufferedImage;
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   // marks the event in the image plane as a dark or light pixel
