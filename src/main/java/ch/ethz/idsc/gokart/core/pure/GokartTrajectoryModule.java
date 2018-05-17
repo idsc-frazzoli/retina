@@ -125,7 +125,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
     // ---
     waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
-    //plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
+    // plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     costCollection.add(ImageCostFunction.of(tensor, range, RealScalar.ZERO));
     costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
     // ---
@@ -143,7 +143,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     gokartMappingModule.prepareMap();
-    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, polygonRegion, gokartMappingModule));
+    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule));
     plannerConstraint = RegionConstraints.timeInvariant(gokartMappingModule);
     Scalar tangentSpeed_ = tangentSpeed;
     if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {

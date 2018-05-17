@@ -21,6 +21,8 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.app.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -28,12 +30,11 @@ import ch.ethz.idsc.tensor.Tensors;
 public class GokartMappingModule implements Region<Tensor>, LidarRayBlockListener, GokartPoseListener, RenderInterface {
   final BayesianOccupancyGrid grid;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
+  private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
   private final Tensor gridRange = Tensors.vector(85, 85);
   private final Tensor lbounds = Tensors.vector(0, 0);
-  
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-
 
   public GokartMappingModule() {
     LidarAngularFiringCollector lidarAngularFiringCollector = //
@@ -47,10 +48,13 @@ public class GokartMappingModule implements Region<Tensor>, LidarRayBlockListene
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     gokartPoseLcmClient.addListener(this);
+    vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
+    vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
+    vlp16LcmHandler.startSubscriptions();
     gokartPoseLcmClient.startSubscriptions();
     // ---
     grid = BayesianOccupancyGrid.of(lbounds, gridRange, DoubleScalar.of(0.2));
-    grid.setObstacleRadius(DoubleScalar.of(0.4));
+    grid.setObstacleRadius(Magnitude.METER.apply(MappingConfig.GLOBAL.obsRadius));
   }
 
   public void prepareMap() {
@@ -74,12 +78,12 @@ public class GokartMappingModule implements Region<Tensor>, LidarRayBlockListene
         }
   }
 
-  @Override // from RenderInterface
+  @Override //  from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     grid.render(geometricLayer, graphics);
   }
 
-  @Override  // from Region
+  @Override // from Region
   public boolean isMember(Tensor element) {
     return grid.isMember(element);
   }

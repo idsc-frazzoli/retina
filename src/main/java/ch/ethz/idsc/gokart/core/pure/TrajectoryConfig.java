@@ -9,11 +9,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** parameters for PID controller of steering
- * 
- * there are 2 special units related to the manufacturer of the steering column:
- * "SCE" steer-column encoder
- * "SCT" steer-column torque */
+/** 
+ * */
 public class TrajectoryConfig implements Serializable {
   public static final TrajectoryConfig GLOBAL = AppResources.load(new TrajectoryConfig());
   /***************************************************/

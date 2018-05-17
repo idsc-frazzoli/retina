@@ -67,12 +67,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final HashSet<Tensor> hset = new HashSet<>();
   // ---
   /** prior */
-  private static final double P_M = MappingConfig.GLOBAL.P_M; // prior
+  private static final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
   private static final double L_M_INV = pToLogOdd(1 - P_M);
   /** inv sensor model p(m|z) */
-  private static final double P_M_HIT = MappingConfig.GLOBAL.P_M_HIT;
+  private static final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
   /** cells with p(m|z_1:t) > probThreshold are considered occupied */
-  private static final double P_THRESH = MappingConfig.GLOBAL.P_THRESH;
+  private static final double P_THRESH = MappingConfig.GLOBAL.getP_M_HIT();
   private static final double L_THRESH = pToLogOdd(P_THRESH);
   // ---
   private Scalar obsDilationRadius;
@@ -158,10 +158,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
         updateCellLogOdd(pix, piy, p_m_z);
         double logOdd = logOdds[piy * dimx + pix];
         // Max likelihood estimation
-        if ((L_THRESH < logOdd) && (logOddPrev <= L_THRESH))
-          hset.add(cell);
-        else if ((logOdd < L_THRESH) && (L_THRESH <= logOddPrev))
-          hset.remove(cell);
+        synchronized (hset) {
+          if ((L_THRESH < logOdd) && (logOddPrev <= L_THRESH))
+            hset.add(cell);
+          else if ((logOdd < L_THRESH) && (L_THRESH <= logOddPrev))
+            hset.remove(cell);
+        }
       }
     }
   }
@@ -181,8 +183,10 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     Graphics graphics = obstacleImage.getGraphics();
     graphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
     graphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
-    for (Tensor cell : hset) {
-      drawSphere(cell, obsDilationRadius, MASK_OCCUPIED);
+    synchronized (hset) {
+      for (Tensor cell : hset) {
+        drawSphere(cell, obsDilationRadius, MASK_OCCUPIED);
+      }
     }
   }
 
@@ -190,6 +194,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * If not set or below cellDim, only the occupied cell is labeled as an obstacle
    * @param radius */
   public void setObstacleRadius(Scalar radius) {
+    System.out.println("Radius: " + radius);
     obsDilationRadius = radius;
   }
 
@@ -252,7 +257,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     Tensor point = Tensors.vector(point2D.getX(), point2D.getY());
     return Floor.of(point);
   }
-  
+
   private Tensor worldToCell(Tensor pos) {
     Point2D point2D = world2cellLayer.toPoint2D(pos);
     Tensor point = Tensors.vector(point2D.getX(), point2D.getY());
