@@ -144,7 +144,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     gokartMappingModule.prepareMap();
-    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule));
+    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule, polygonRegion));
     plannerConstraint = RegionConstraints.timeInvariant(gokartMappingModule);
     Scalar tangentSpeed_ = tangentSpeed;
     if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {

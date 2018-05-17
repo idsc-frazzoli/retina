@@ -52,11 +52,12 @@ public class GokartMappingModule implements Region<Tensor>, LidarRayBlockListene
     gokartPoseLcmClient.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    vlp16LcmHandler.startSubscriptions();
-    gokartPoseLcmClient.startSubscriptions();
     // ---
     grid = BayesianOccupancyGrid.of(lbounds, gridRange, DoubleScalar.of(0.2));
     grid.setObstacleRadius(Magnitude.METER.apply(MappingConfig.GLOBAL.obsRadius));
+    // ---
+    vlp16LcmHandler.startSubscriptions();
+    gokartPoseLcmClient.startSubscriptions();
   }
 
   public void prepareMap() {
