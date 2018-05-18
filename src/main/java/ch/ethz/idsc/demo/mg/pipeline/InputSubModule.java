@@ -160,6 +160,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * filteredEventCount / eventCount));
+    if(evaluatePerformance) {
+      evaluator.summarizeResults();
+    }
   }
 
   // for visualization

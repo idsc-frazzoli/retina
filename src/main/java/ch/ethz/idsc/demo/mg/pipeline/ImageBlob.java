@@ -50,10 +50,34 @@ public class ImageBlob implements Serializable {
     return eigenVectors;
   }
 
-  // rotates the covariance matrix
-  // TODO implement for the handlabeler
-  public void setRotAngle(float rotAngle) {
-    // ...
+  // returns the angle between the eigenvector belonging to the first eigenvalue and the x-axis
+  public double getRotAngle() {
+    float[][] eigenVec = getEigenVectors();
+    return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
+  }
+
+  public float getDistanceTo(ImageBlob blob) {
+    return (float) Math.sqrt((pos[0] - blob.getPos()[0]) * (pos[0] - blob.getPos()[0]) + (pos[1] - blob.getPos()[1]) * (pos[1] - blob.getPos()[1]));
+  }
+
+  public float[] getPos() {
+    return pos;
+  }
+
+  public double[][] getCovariance() {
+    return covariance;
+  }
+
+  public boolean getIsRecognized() {
+    return isRecognized;
+  }
+
+  public boolean getIsHidden() {
+    return isHidden;
+  }
+
+  public int getTimeStamp() {
+    return timeStamp;
   }
 
   // scales the eigenvalues of the covariance matrix
@@ -62,24 +86,16 @@ public class ImageBlob implements Serializable {
     // ...
   }
 
-  // returns the angle between the eigenvector belonging to the first eigenvalue and the x-axis
-  public double getRotAngle() {
-    float[][] eigenVec = getEigenVectors();
-    return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
-  }
-
-  public float[] getPos() {
-    return pos;
+  // rotates the covariance matrix
+  // TODO implement for the handlabeler
+  public void setRotAngle(float rotAngle) {
+    // ...
   }
 
   // required for handlabeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
     this.pos[1] = pos[1];
-  }
-
-  public double[][] getCovariance() {
-    return covariance;
   }
 
   // required for handlabeling
@@ -90,19 +106,7 @@ public class ImageBlob implements Serializable {
     this.covariance[1][1] = covariance[1][1];
   }
 
-  public int getTimeStamp() {
-    return timeStamp;
-  }
-
   public void setIsRecognized(boolean isRecognized) {
     this.isRecognized = isRecognized;
-  }
-
-  public boolean getIsRecognized() {
-    return isRecognized;
-  }
-
-  public boolean getIsHidden() {
-    return isHidden;
   }
 }

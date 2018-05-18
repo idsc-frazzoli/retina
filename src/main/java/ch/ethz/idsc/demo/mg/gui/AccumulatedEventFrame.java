@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.img.ImageRotate;
 
 // provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
 // also contains static methods to be used by other visualization tools
@@ -37,7 +38,7 @@ public class AccumulatedEventFrame {
 
   public BufferedImage getAccumulatedEvents() {
     return bufferedImage;
-//     return ImageRotate._180deg(bufferedImage);
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   // overlays blobs and sets color according to ImageBlobSelector module

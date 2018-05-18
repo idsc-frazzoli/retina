@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
 // the .CSV file is formatted as follows:
 // timestamp , pos[0], pos[1], covariance[0][0], covariance[1][1], covariance[0][1]
 // TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
-// TODO image is set twice somehow
+// TODO should be possible to move blobs around with keyboard
 public class HandLabeler {
   private static String COMMA_DELIMITER;
   private static String NEW_LINE;
@@ -108,7 +108,7 @@ public class HandLabeler {
     imagePrefix = pipelineConfig.logFileName.toString();
     numberOfFiles = HandLabelFileLocations.images(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
-    initXAxis = pipelineConfig.initXAxis.number().intValue();
+    initXAxis = pipelineConfig.initAxis.number().intValue();
     initYAxis = initXAxis;
     firstAxis = initXAxis;
     secondAxis = initXAxis;

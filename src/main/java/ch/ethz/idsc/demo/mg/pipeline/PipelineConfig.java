@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI14a"; // must match name in LogFileLocations and be an extract of a recording 
-  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
+  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
+  public final Scalar maxDuration = RealScalar.of(5000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -42,23 +42,27 @@ public class PipelineConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(height.number());
   // TransformUtil
-  public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length()-1) + ".csv"; // relative to main/resources/
+  public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv"; // relative to main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Boolean saveImages = false;
   public final Scalar savingInterval = RealScalar.of(300); // [ms]
-  public final String handLabelFileName = logFileName + "_labeledFeatures.csv";
   // performance evaluation
-  public final Boolean evaluatePerformance = false;
+  public final Boolean evaluatePerformance = true;
+  public final Boolean saveEvaluationFrame = true;
+  public final String handLabelFileName = logFileName + "_labeledFeatures.csv"; // file must be present to evaluate performance
+  // performance evaluation instant
+  public final Scalar maxDistance = width.add(height); // [pixel] upper bound for distance between features
+  public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = true;
   public final Scalar visualizationInterval = RealScalar.of(50); // [ms]
-  public final Scalar frameWidth = RealScalar.of(400); // [pixel]
-  public final Scalar frameHeight = RealScalar.of(400); // [pixel]
+  public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame
+  public final Scalar frameHeight = RealScalar.of(400); // [pixel] for physical frame
   // handlabeling tool
   public final String comma_delimiter = ",";
   public final String new_line = "\n";
-  public final Scalar initXAxis = RealScalar.of(400);
+  public final Scalar initAxis = RealScalar.of(400);
 
   /***************************************************/
   public File getLogFile() {
