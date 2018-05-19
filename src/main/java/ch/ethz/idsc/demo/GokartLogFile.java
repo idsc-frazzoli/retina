@@ -259,6 +259,29 @@ public enum GokartLogFile implements LogFile {
   /** pure pursuit of duct-tape track
    * second half includes pedestrians */
   _20180514T155248_767e5417, //
+  /***************************************************/
+  /* 2018-05-17 */
+  /** joystick driving up to 5[m/s]
+   * with consistent localization */
+  _20180517T152605_c1876fc4, //
+  /** figure eight up to 3[m/s] */
+  _20180517T153517_c1876fc4, //
+  /** path planning with static obstacles */
+  _20180517T161015_294bf075, //
+  /** path planning with static obstacles */
+  _20180517T161714_294bf075, //
+  /** path planning with static obstacles, several pure pursuit
+   * failures due to large curvature */
+  _20180517T162431_294bf075, //
+  /** path planning with static obstacles, several failures
+   * because gokart reaches end of trajectory before replanning */
+  _20180517T163528_294bf075, //
+  /** path planning with static obstacles, several pure pursuit
+   * failures due to large curvature, gokart cuts through center */
+  _20180517T172517_a7130894, //
+  /** path planning with static obstacles
+   * start from point away from waypoints */
+  _20180517T174022_a7130894, //
   ;
   @Override
   public String getFilename() {

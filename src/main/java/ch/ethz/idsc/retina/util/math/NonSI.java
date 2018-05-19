@@ -5,6 +5,5 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
 public enum NonSI {
   ;
-  // ---
   public static final Unit DEGREE_ANGLE = Unit.of("deg");
 }

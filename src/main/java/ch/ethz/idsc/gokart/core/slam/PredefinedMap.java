@@ -36,6 +36,7 @@ public enum PredefinedMap implements LocalizationImage {
   /** assume void, i.e. no obstacle, in area outside of image */
   private static final int RGBA_VOID = 0;
   // ---
+  /** meter to pixel */
   private final Scalar scale;
   private final BufferedImage bufferedImage;
   /** size == width == height of square bufferedImage */
@@ -111,5 +112,10 @@ public enum PredefinedMap implements LocalizationImage {
   @Override
   public Tensor getModel2Pixel() {
     return model2pixel;
+  }
+
+  /** @return meter to pixel */
+  public Scalar scale() {
+    return scale;
   }
 }
