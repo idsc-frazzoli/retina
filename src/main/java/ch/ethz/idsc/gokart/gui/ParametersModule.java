@@ -7,6 +7,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
@@ -45,6 +46,7 @@ public class ParametersModule extends AbstractModule {
     addTab(PursuitConfig.GLOBAL);
     addTab(ClusterConfig.GLOBAL);
     addTab(TrajectoryConfig.GLOBAL);
+    addTab(MappingConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
