@@ -16,5 +16,9 @@ public class TrajectoryConfig implements Serializable {
   /***************************************************/
   public Scalar planningPeriod = Quantity.of(1, SI.SECOND); // 1[s] == 1[Hz]
   public Scalar horizonDistance = RealScalar.of(10);
+  /** rotation per meter driven is at least 23[deg/m]
+   * 20180429_minimum_turning_radius.pdf
+   * 20180517 reduced value to 20[deg/m] to be more conservative and avoid extreme steering */
+  public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
   /***************************************************/
 }

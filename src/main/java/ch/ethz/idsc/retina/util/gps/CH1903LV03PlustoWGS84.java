@@ -21,7 +21,7 @@
 package ch.ethz.idsc.retina.util.gps;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -57,7 +57,7 @@ public enum CH1903LV03PlustoWGS84 {
         - 0.0447 * Math.pow(yNorm, 2) * xNorm //
         - 0.0140 * Math.pow(xNorm, 3);
     return Tensors.of( //
-        Quantity.of(longitude10000Sec * 100.0 / 36.0, SI.DEGREE_ANGLE), //
-        Quantity.of(latitude10000Sec * 100.0 / 36.0, SI.DEGREE_ANGLE));
+        Quantity.of(longitude10000Sec * 100.0 / 36.0, NonSI.DEGREE_ANGLE), //
+        Quantity.of(latitude10000Sec * 100.0 / 36.0, NonSI.DEGREE_ANGLE));
   }
 }

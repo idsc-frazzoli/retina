@@ -77,14 +77,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   private static final Scalar SPEED = RealScalar.of(2.5);
   private static final Tensor VIRTUAL = Tensors.fromString("{{38, 39}, {42, 47}, {51, 52}, {46, 43}}");
-  /** rotation per meter driven is at least 23[deg/m]
-   * 20180429_minimum_turning_radius.pdf
-   * 20180517 reduced radius from 23 to 20 to be more conservative and avoid extreme steering */
-  static final CarFlows CARFLOWS = new CarForwardFlows(SPEED, Degree.of(20));
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = // node interval == 2/5
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
+  final CarFlows carFlows = new CarForwardFlows( //
+      SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private Collection<CostFunction> costCollection = new LinkedList<>();
@@ -173,8 +171,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
           goal = waypoints.get(wpIdx);
         }
         System.out.format("goal index = " + wpIdx + ",  distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
-        Collection<Flow> controls = CARFLOWS.getFlows(9); // TODO magic const
+        Collection<Flow> controls = carFlows.getFlows(9); // TODO magic const
         // Se2ComboRegion se2ComboRegion = Se2ComboRegion.spherical(goal, goalRadius);
+        // TODO magic const
         Se2ComboRegion se2ComboRegion = Se2ComboRegion.cone(goal, RealScalar.of(Math.PI / 10), goalRadius.Get(2));
         GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
         GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);

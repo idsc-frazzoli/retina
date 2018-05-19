@@ -22,6 +22,7 @@ public class SteerConfig implements Serializable {
   public Scalar voltageLo = Quantity.of(10.8, SI.VOLT); // 10.8[V] for 1[s] confirmed with mac
   public Scalar voltageHi = Quantity.of(13.0, SI.VOLT);
   // ---
+  /** amplitude of signal during calibration procedure */
   public Scalar calibration = Quantity.of(1.5, "SCT");
   public Scalar Ki = Quantity.of(1.95, "SCE^-1*SCT*s^-1");
   public Scalar Kp = Quantity.of(3.53, "SCE^-1*SCT");
@@ -30,8 +31,10 @@ public class SteerConfig implements Serializable {
   // ---
   /** maximum steer column value commanded by joystick or autonomous drive
    * originally, the value was close to the max possible: 0.6743167638778687[SCE]
-   * but this choice put unnecessary stress on the hardware. */
-  public Scalar columnMax = Quantity.of(0.6, SteerPutEvent.UNIT_ENCODER);
+   * but this choice put unnecessary stress on the hardware.
+   * 
+   * 20180517 the */
+  public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
   /** 0.5 corresponds to 50% of torque limit */
