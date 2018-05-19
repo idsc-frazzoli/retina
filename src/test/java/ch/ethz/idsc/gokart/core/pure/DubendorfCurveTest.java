@@ -16,9 +16,10 @@ import junit.framework.TestCase;
 
 public class DubendorfCurveTest extends TestCase {
   public void testDistances() {
-    List<Integer> list = Dimensions.of(FigureEightModule.CURVE);
+    Tensor CURVE = DubendorfCurve.HYPERLOOP_EIGHT;
+    List<Integer> list = Dimensions.of(CURVE);
     assertEquals((int) list.get(1), 2);
-    DoubleSummaryStatistics dss = Differences.of(FigureEightModule.CURVE).stream() //
+    DoubleSummaryStatistics dss = Differences.of(CURVE).stream() //
         .map(Norm._2::ofVector) //
         .map(Scalar::number) //
         .mapToDouble(Number::doubleValue).summaryStatistics();

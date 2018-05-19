@@ -1,10 +1,9 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -28,9 +27,10 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 
 public enum ClustersTracking {
   ;
-  /** @param matrix
-   * @return tensor of clusters */
-  // TODO remove print outs. provide timing and properties in separate class if necessary
+  /** @param oldClusters
+   * @param newScan latest lidar points
+   * @param eps parameter for DBSCAN
+   * @param minPoints parameter for DBSCAN */
   // TODO also handle empty input
   public static void elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
     Tensor scans = oldClusters.toMatrices().append(newScan);
@@ -39,36 +39,43 @@ public enum ClustersTracking {
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
     NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
-    Database database = Clusters.sample(matrix);
+    Database database = StaticHelper.database(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
-    Clustering<Model> result = dbscan.run(database);
+    Clustering<Model> clustering = dbscan.run(database);
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
-    List<Cluster<Model>> allClusters = result.getAllClusters();
-    for (Cluster<Model> cluster : allClusters)
+    for (Cluster<Model> cluster : clustering.getAllClusters())
       if (!cluster.isNoise()) {
-        NavigableMap<Integer, Tensor> map = partitionMap(array, i -> Tensors.empty());
+        NavigableMap<Integer, Tensor> navigableMap = partitionMap(array, i -> Tensors.empty());
         DBIDs ids = cluster.getIDs();
-        Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
-        DBIDRange id = (DBIDRange) rel.getDBIDs();
-        TreeSet<Integer> set = new TreeSet<>();
+        Relation<NumberVector> relation = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
+        DBIDRange idRange = (DBIDRange) relation.getDBIDs();
+        NavigableSet<Integer> navigableSet = new TreeSet<>();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
-          int offset = id.getOffset(iter);
-          set.add(origin.floorEntry(offset).getValue());
-          Entry<Integer, Tensor> floorEntry = map.floorEntry(offset);
+          int offset = idRange.getOffset(iter);
+          navigableSet.add(origin.floorEntry(offset).getValue());
+          Entry<Integer, Tensor> floorEntry = navigableMap.floorEntry(offset);
           floorEntry.getValue().append(matrix.get(offset));
         }
-        if (set.equals(Collections.singleton(sizeCollection))) {
-          oldClusters.addToCollection(map.lastEntry().getValue());
-        } else if (set.size() == 2 && set.contains(sizeCollection)) {
-          Tensor points = map.lastEntry().getValue();
-          ClusterDeque next = oldClusters.getCollection().get(set.iterator().next());
-          next.replaceLast(points);
-        } else if (set.size() == 3 && set.contains(sizeCollection)) {
-          oldClusters.addToCollection(map.lastEntry().getValue());
-          System.out.println("case 3");
+        if (navigableSet.contains(sizeCollection))
+          switch (navigableSet.size()) {
+          case 1:
+            oldClusters.addToCollection(navigableMap.lastEntry().getValue());
+            break;
+          case 2:
+            Tensor points = navigableMap.lastEntry().getValue();
+            ClusterDeque next = oldClusters.getCollection().get(navigableSet.iterator().next());
+            next.replaceLast(points);
+            break;
+          default:
+            oldClusters.addToCollection(navigableMap.lastEntry().getValue());
+            System.out.println("case " + navigableSet.size());
+            break;
+          }
+        else {
+          // TODO comment on this case, unhandled?
         }
       }
     oldClusters.maintainUntil(sizeCollection);

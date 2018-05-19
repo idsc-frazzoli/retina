@@ -18,6 +18,12 @@ See [development_guidelines](doc/development_guidelines.md)
 
 [Trajectory pursuit](https://www.youtube.com/watch?v=XgmS8CP6gqw)
 
+<td>
+
+![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
+
+[Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
+
 </tr>
 </table>
 
@@ -173,7 +179,7 @@ Events only
 
 
 
-.aedat files
+AEDAT 2.0, and AEDAT 3.1
 
 * parsing and visualization
 * conversion to text+png format as used by the Robotics and Perception Group at UZH

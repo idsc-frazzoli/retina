@@ -25,7 +25,7 @@ public class PursuitConfig implements Serializable {
    * 20180304: changed from 3.5[m] to 3.9[m] to match with value used many times before */
   public Scalar lookAhead = Quantity.of(3.9, SI.METER);
   /** gokart velocity speed for curve follower module */
-  public Scalar rateFollower = Quantity.of(20.0, "rad*s^-1");
+  public Scalar rateFollower = Quantity.of(40.0, "rad*s^-1");
   public Scalar poseQualityMin = RealScalar.of(0.5);
 
   /***************************************************/

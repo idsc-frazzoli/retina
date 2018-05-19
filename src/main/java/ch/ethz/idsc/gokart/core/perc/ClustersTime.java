@@ -39,7 +39,7 @@ public enum ClustersTime {
       origin.put(sum, index);
       sum = sum + array[index];
     }
-    Database database = Clusters.sample(matrix);
+    Database database = StaticHelper.database(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);

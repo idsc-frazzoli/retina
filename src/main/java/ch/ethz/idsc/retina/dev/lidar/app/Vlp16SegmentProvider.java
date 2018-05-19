@@ -10,13 +10,14 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** converts firing data to spacial events with time, 3d-coordinates and
  * intensity. Only rays with an altitude angle of <= max_alt [deg] are processed. */
 public class Vlp16SegmentProvider implements LidarSpacialProvider {
-  private static int NUM_LASERS;
-  private final List<Integer> laserList = new ArrayList<Integer>();
+  private final List<Integer> laserList = new ArrayList<>();
+  private final int NUM_LASERS;
   //  ---
   private final AngleVectorLookupFloat lookup;
   private final float[] IR;
@@ -28,7 +29,7 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
 
   public Vlp16SegmentProvider(double angle_offset, int max_alt) {
     for (int i = 0; i < 16; i++)
-      if (degree(i) <= max_alt)
+      if (Vlp16SpacialProvider.degree(i) <= max_alt)
         laserList.add(i);
     NUM_LASERS = laserList.size();
     IR = new float[NUM_LASERS];
@@ -37,8 +38,8 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
     System.out.println("Rays processed at theta = ");
     for (int i = 0; i < NUM_LASERS; i++) {
       int laser = laserList.get(i);
-      double theta = degree(laser) * Math.PI / 180;
-      System.out.print(degree(laser) + "°,");
+      double theta = Vlp16SpacialProvider.degree(laser) * Math.PI / 180;
+      System.out.print(Vlp16SpacialProvider.degree(laser) + "°,");
       IR[i] = (float) Math.cos(theta);
       IZ[i] = (float) Math.sin(theta);
     }
@@ -70,7 +71,7 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
     float dx = lookup.dx(azimuth);
     float dy = lookup.dy(azimuth);
     float[] coords = new float[3];
-    for (int i = 0; i < NUM_LASERS; i++) {
+    for (int i = 0; i < NUM_LASERS; ++i) {
       byteBuffer.position(bufferPos + laserList.get(i) * 3);
       int distance = byteBuffer.getShort() & 0xffff;
       int intensity = byteBuffer.get() & 0xff;
@@ -84,13 +85,5 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
         listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }
-  }
-
-  /* package */ static int degree(int laserId) {
-    if (laserId < 0)
-      throw new RuntimeException();
-    if (laserId == 15)
-      return 15;
-    return -15 + laserId * 16 % 30;
   }
 }
