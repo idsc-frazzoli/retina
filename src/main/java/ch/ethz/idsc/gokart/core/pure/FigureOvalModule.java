@@ -1,12 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.Optional;
-
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.tensor.Tensor;
-
-public class FigureOvalModule extends AbstractModule {
+public class FigureOvalModule extends FigureBaseModule {
   /** until 20180226 the curve for trajectory pursuit was
    * DubendorfCurve.OVAL
    * 
@@ -16,18 +11,7 @@ public class FigureOvalModule extends AbstractModule {
    * 
    * then the hyperloop project was introduced to the hanger which further reduced
    * the operating domain for the gokart. */
-  public static final Tensor CURVE = DubendorfCurve.HYPERLOOP_OVAL;
-  // ---
-  private final PurePursuitModule purePursuitModule = new PurePursuitModule();
-
-  @Override // from AbstractModule
-  protected void first() throws Exception {
-    purePursuitModule.setCurve(Optional.of(CURVE));
-    purePursuitModule.launch();
-  }
-
-  @Override // from AbstractModule
-  protected void last() {
-    purePursuitModule.terminate();
+  protected FigureOvalModule() {
+    super(DubendorfCurve.HYPERLOOP_OVAL);
   }
 }

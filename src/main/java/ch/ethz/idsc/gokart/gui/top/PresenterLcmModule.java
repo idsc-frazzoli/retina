@@ -9,7 +9,7 @@ import java.io.File;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -90,7 +90,7 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.jToolBar.add(obstacleTimeClusterRender.jToggleButton);
     }
     {
-      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      CurveRender curveRender = new CurveRender(DubendorfCurve.HYPERLOOP_DUCTTAPE);
       timerFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {

@@ -6,7 +6,6 @@ import java.util.List;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.Primitives;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -14,13 +13,10 @@ import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.Model;
 import de.lmu.ifi.dbs.elki.data.type.TypeUtil;
 import de.lmu.ifi.dbs.elki.database.Database;
-import de.lmu.ifi.dbs.elki.database.StaticArrayDatabase;
 import de.lmu.ifi.dbs.elki.database.ids.DBIDIter;
 import de.lmu.ifi.dbs.elki.database.ids.DBIDRange;
 import de.lmu.ifi.dbs.elki.database.ids.DBIDs;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
-import de.lmu.ifi.dbs.elki.datasource.ArrayAdapterDatabaseConnection;
-import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
 public enum Clusters {
@@ -30,7 +26,7 @@ public enum Clusters {
   // TODO VC remove print outs. provide timing and properties in separate class if necessary
   // TODO VC also handle empty input
   public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
-    Database database = Clusters.sample(matrix);
+    Database database = StaticHelper.database(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
@@ -58,13 +54,5 @@ public enum Clusters {
       }
     // System.out.println("end");
     return pi;
-  }
-
-  static Database sample(Tensor matrix) {
-    double[][] data = Primitives.toDoubleArray2D(matrix);
-    DatabaseConnection databaseConnection = new ArrayAdapterDatabaseConnection(data);
-    Database database = new StaticArrayDatabase(databaseConnection, null);
-    database.initialize();
-    return database;
   }
 }
