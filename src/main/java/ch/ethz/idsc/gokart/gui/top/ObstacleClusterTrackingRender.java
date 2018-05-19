@@ -43,10 +43,8 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       // ---
       Tensor points = _points;
       UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
-      Tensor state = gokartPoseInterface.getPose(); // units
-                                                    // {x[m],
-                                                    // y[m],
-                                                    // angle[]}
+      // state if of the form {x[m], y[m], angle[]}
+      Tensor state = gokartPoseInterface.getPose();
       unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //

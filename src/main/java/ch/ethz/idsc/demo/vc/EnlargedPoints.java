@@ -1,3 +1,4 @@
+// code by vc
 package ch.ethz.idsc.demo.vc;
 
 import java.awt.geom.Area;

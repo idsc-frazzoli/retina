@@ -1,4 +1,4 @@
-// code by jph
+// code by vc
 package ch.ethz.idsc.demo.vc;
 
 import java.awt.geom.Area;
@@ -118,6 +118,7 @@ class Handler {
   }
 }
 
+// TODO rename class
 enum GokartRayLogExport {
   ;
   public static void main(String[] args) throws IOException {

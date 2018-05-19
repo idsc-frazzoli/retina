@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.perc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ public enum ClustersTracking {
     oldClusters.getCollection().forEach(ClusterDeque::appendEmpty);
     int sizeCollection = oldClusters.getCollection().size();
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
-    TreeMap<Integer, Integer> origin = partitionMap(array, Function.identity());
+    NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
@@ -48,7 +49,7 @@ public enum ClustersTracking {
     List<Cluster<Model>> allClusters = result.getAllClusters();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
-        TreeMap<Integer, Tensor> map = partitionMap(array, i -> Tensors.empty());
+        NavigableMap<Integer, Tensor> map = partitionMap(array, i -> Tensors.empty());
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
@@ -73,13 +74,13 @@ public enum ClustersTracking {
     oldClusters.maintainUntil(sizeCollection);
   }
 
-  private static <T> TreeMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {
-    TreeMap<Integer, T> origin = new TreeMap<>();
+  private static <T> NavigableMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {
+    NavigableMap<Integer, T> navigableMap = new TreeMap<>();
     int sum = 0;
-    for (int index = 0; index < array.length; index++) {
-      origin.put(sum, function.apply(index));
-      sum = sum + array[index];
+    for (int index = 0; index < array.length; ++index) {
+      navigableMap.put(sum, function.apply(index));
+      sum += array[index];
     }
-    return origin;
+    return navigableMap;
   }
 }
