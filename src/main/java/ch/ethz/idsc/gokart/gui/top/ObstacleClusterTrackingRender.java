@@ -14,6 +14,7 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
+import ch.ethz.idsc.gokart.core.perc.DequeCloud;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -25,7 +26,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
-import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** used in {@link PresenterLcmModule} */
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
@@ -43,7 +43,8 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       // ---
       Tensor points = _points;
       UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
-      Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
+      // state if of the form {x[m], y[m], angle[]}
+      Tensor state = gokartPoseInterface.getPose();
       unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
@@ -81,18 +82,17 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       {
         for (ClusterDeque x : collection.getCollection()) {
           graphics.setColor(colorDataPoints.getColor(x.getID()));
-          Tensor hulls = Tensors.empty();
-          for (Tensor y : x.getDeque()) {
-            hulls.append(ConvexHull.of(y));
-            for (Tensor z : y) {
-              Point2D point2D = geometricLayer.toPoint2D(z);
-              graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
+          for (DequeCloud y : x.getDeque()) {
+            if (Tensors.nonEmpty(y.hull())) {
+              Path2D path2d = geometricLayer.toPath2D(y.hull());
+              path2d.closePath();
+              graphics.draw(path2d);
             }
           }
-          {
-            graphics.setColor(colorDataPoints.getColor(x.getID()));
-            for (Tensor hull : hulls) {
-              graphics.fill(geometricLayer.toPath2D(hull));
+          for (DequeCloud y : x.getDeque()) {
+            for (Tensor z : y.points()) {
+              Point2D point2D = geometricLayer.toPoint2D(z);
+              graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
           }
           {

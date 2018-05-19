@@ -7,22 +7,23 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class ClusterDeque {
-  private final Deque<Tensor> deque = new ArrayDeque<>();
+  private final Deque<DequeCloud> deque = new ArrayDeque<>();
   private final Deque<Tensor> means = new ArrayDeque<>();
   private final int id;
 
   public ClusterDeque(int id, Tensor value) {
-    deque.add(value);
+    deque.add(new DequeCloud(value));
     this.id = id;
   }
 
   public Stream<Tensor> vertexStream() {
-    return deque.stream().flatMap(Tensor::stream);
+    return deque.stream().map(DequeCloud::points).flatMap(Tensor::stream);
   }
 
   public void removeFirst() { // TODO change it to parameter
@@ -31,7 +32,7 @@ public class ClusterDeque {
   }
 
   public void appendEmpty() {
-    deque.add(Tensors.empty());
+    deque.add(new DequeCloud(Tensors.empty()));
     means.add(Tensors.empty());
   }
 
@@ -46,11 +47,16 @@ public class ClusterDeque {
   public void replaceLast(Tensor points) {
     deque.removeLast();
     means.removeLast();
-    deque.add(points);
+    deque.add(new DequeCloud(points));
     means.add(Tensors.isEmpty(points) ? Tensors.empty() : Mean.of(points));
   }
 
-  public Collection<Tensor> getDeque() {
+  public boolean isInside(Tensor point) {
+    Tensor hull = deque.getLast().hull();
+    return Polygons.isInside(hull, point);
+  }
+
+  public Collection<DequeCloud> getDeque() {
     return Collections.unmodifiableCollection(deque);
   }
 

@@ -1,6 +1,7 @@
-// code by jph
+// code by vc
 package ch.ethz.idsc.demo.vc;
 
+import java.awt.geom.Area;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,11 +9,16 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
+import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
@@ -27,6 +33,8 @@ import ch.ethz.idsc.tensor.Tensors;
 class Handler {
   UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private ClusterCollection collection = new ClusterCollection();
+  PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+  GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
   /** LidarRayBlockListener to be subscribed after LidarRender */
   LidarRayBlockListener lidarRayBlockListener = new LidarRayBlockListener() {
     @Override
@@ -44,21 +52,73 @@ class Handler {
       }
       floatBuffer.position(position);
       // ---
-      // Tensor state = Tensors.fromString("{46.965741254102845[m], 48.42802931327099[m], 1.1587704741034797}");
-      // unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
       if (!Tensors.isEmpty(newScan)) {
         synchronized (collection) {
           ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
+          Tensor test = Tensors.empty();
+          double evaluatePerformance = evaluatePerformance(test);
+          System.out.println("recall=" + evaluatePerformance);
         }
       } else
         System.err.println("scan is empty");
     }
   };
+
+  // basic performance measure: compute the fraction of predicted centres of clusters that are in the convexHull
+  // of the new lidar scan clusters
+  public double evaluatePerformance(Tensor predictedMeans) { // Map
+    int count = 0;
+    Tensor hulls = Tensors.empty();
+    for (ClusterDeque x : collection.getCollection()) {
+      // int k = x.getDeque().size();
+      // int i = 0;
+      // for (Tensor y : x.getDeque()) {
+      // if (k == (i + 1))
+      // hulls.append(ConvexHull.of(y));
+      // ++i;
+      // }
+      Tensor nm = x.getNonEmptyMeans(); // just to test
+      if (!Tensors.isEmpty(nm)) {
+        Tensor predictedMean = (nm.get(nm.length() - 1));
+        boolean inside = x.isInside(predictedMean);
+        System.out.println(inside);
+      }
+    }
+    for (Tensor z : predictedMeans) {
+      for (Tensor hull : hulls) {
+        int i = Polygons.isInside(hull, z) ? 1 : 0;
+        if (i == 0)
+          // System.out.println(Pretty.of(hull.map(Round._3)));
+          // System.out.println("z"+ z);
+          // int i = geometricLayer.toPath2D(hull).contains(z.Get(0).number().doubleValue(), z.Get(1).number().doubleValue()) ? 1 : 0;
+          count = count + i;
+      }
+      System.out.println(count);
+    }
+    if (!Tensors.isEmpty(predictedMeans))
+      return count / predictedMeans.length();
+    return 0;
+  }
+
+  public double computeRecall(Tensor predictedMeans, Tensor newScan) {
+    EnlargedPoints enlargedMeans = new EnlargedPoints(predictedMeans);
+    EnlargedPoints enlargedPoints = new EnlargedPoints(newScan);
+    for (Area y : enlargedPoints.collectionOfAreas) {
+      for (Area x : enlargedMeans.collectionOfAreas) {
+        if (x.intersects(y.getBounds2D())) {
+          x.intersect(y);
+          // to be continued
+        }
+      }
+    }
+    return 0;
+  }
 }
 
+// TODO rename class
 enum GokartRayLogExport {
   ;
   public static void main(String[] args) throws IOException {
@@ -83,7 +143,7 @@ enum GokartRayLogExport {
         }
       }
     };
-    File file = UserHome.file("Desktop/ETHZ/log/20180412T163855_7e5b46c2.lcm.00");
+    File file = UserHome.file("/Desktop/ETHZ/log/pedestrian/20180412T163855/log.lcm");
     OfflineLogPlayer.process(file, offlineLogListener);
   }
 }

@@ -4,8 +4,10 @@ package ch.ethz.idsc.gokart.core.perc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Function;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
@@ -35,12 +37,7 @@ public enum ClustersTracking {
     oldClusters.getCollection().forEach(ClusterDeque::appendEmpty);
     int sizeCollection = oldClusters.getCollection().size();
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
-    TreeMap<Integer, Integer> origin = new TreeMap<>();
-    int sum = 0;
-    for (int index = 0; index < array.length; index++) {
-      origin.put(sum, index);
-      sum = sum + array[index];
-    }
+    NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
     Database database = Clusters.sample(matrix);
     Stopwatch stopwatch = Stopwatch.started();
@@ -52,12 +49,7 @@ public enum ClustersTracking {
     List<Cluster<Model>> allClusters = result.getAllClusters();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
-        TreeMap<Integer, Tensor> map = new TreeMap<>();
-        sum = 0;
-        for (int index = 0; index < array.length; index++) {
-          map.put(sum, Tensors.empty());
-          sum = sum + array[index];
-        }
+        NavigableMap<Integer, Tensor> map = partitionMap(array, i -> Tensors.empty());
         DBIDs ids = cluster.getIDs();
         Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
         DBIDRange id = (DBIDRange) rel.getDBIDs();
@@ -74,8 +66,21 @@ public enum ClustersTracking {
           Tensor points = map.lastEntry().getValue();
           ClusterDeque next = oldClusters.getCollection().get(set.iterator().next());
           next.replaceLast(points);
+        } else if (set.size() == 3 && set.contains(sizeCollection)) {
+          oldClusters.addToCollection(map.lastEntry().getValue());
+          System.out.println("case 3");
         }
       }
     oldClusters.maintainUntil(sizeCollection);
+  }
+
+  private static <T> NavigableMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {
+    NavigableMap<Integer, T> navigableMap = new TreeMap<>();
+    int sum = 0;
+    for (int index = 0; index < array.length; ++index) {
+      navigableMap.put(sum, function.apply(index));
+      sum += array[index];
+    }
+    return navigableMap;
   }
 }
