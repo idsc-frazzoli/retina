@@ -24,6 +24,8 @@ public class TransformUtil {
   private static boolean isInitialized;
 
   // TODO inelegant
+  // suggestion: the conventional way would be to make all members and functions non-static
+  // initialize would become the constructor of an instance of TransformUtil
   public static void initialize(PipelineConfig pipelineConfig) {
     Tensor inputTensor = ResourceData.of(pipelineConfig.calibrationFileName.toString());
     transformationMatrix = inputTensor.extract(0, 3);
@@ -34,12 +36,9 @@ public class TransformUtil {
     isInitialized = true;
   }
 
-  /**
-   * 
-   * @param imagePosX [pixel]
+  /** @param imagePosX [pixel]
    * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in gokart reference frame 
-   */
+   * @return physicalCoordinates [m] in gokart reference frame */
   public static double[] imageToWorld(float imagePosX, float imagePosY) {
     if (!isInitialized)
       System.out.println("Uninitialized transformation!");

@@ -56,13 +56,12 @@ public class PhysicalBlobFrame {
   public BufferedImage overlayPhysicalBlobs(List<PhysicalBlob> physicalBlobs) {
     if (physicalBlobs.size() == 0) {
       return bufferedImage;
-    } else {
-      setBackground();
-      for (int i = 0; i < physicalBlobs.size(); i++) {
-        drawPhysicalBlob(graphics, physicalBlobs.get(i).getPos(), Color.WHITE);
-      }
-      return bufferedImage;
     }
+    setBackground();
+    for (int i = 0; i < physicalBlobs.size(); i++) {
+      drawPhysicalBlob(graphics, physicalBlobs.get(i).getPos(), Color.WHITE);
+    }
+    return bufferedImage;
   }
 
   /** background with trapezoid */
@@ -81,6 +80,8 @@ public class PhysicalBlobFrame {
     Double[] lowerLeft = worldToViz(fieldOfView[2]);
     Double[] lowerRight = worldToViz(fieldOfView[3]);
     graphics.setColor(Color.RED);
+    // suggestion: create Path2D, for instance see GeometricLayer::toPath2D
+    // ... then use path2d.closePath() to draw trapezoid
     graphics.drawLine(upperLeft[0].intValue(), upperLeft[1].intValue(), upperRight[0].intValue(), upperRight[1].intValue());
     graphics.drawLine(upperLeft[0].intValue(), upperLeft[1].intValue(), lowerLeft[0].intValue(), lowerLeft[1].intValue());
     graphics.drawLine(lowerLeft[0].intValue(), lowerLeft[1].intValue(), lowerRight[0].intValue(), lowerRight[1].intValue());
@@ -104,9 +105,9 @@ public class PhysicalBlobFrame {
    * @return */
   private Double[] worldToViz(double[] physicalPos) {
     // TODO make sure both axes use same scale
-    Double[] imageCoord = new Double[2];
-    imageCoord[1] = frameHeight - (frameHeight * (physicalPos[0] - physicalBoarders[0]) / physicalBoarders[2]);
-    imageCoord[0] = frameWidth - (frameWidth * (physicalPos[1] - physicalBoarders[1]) / physicalBoarders[3]);
-    return imageCoord;
+    return new Double[] { //
+        frameWidth - (frameWidth * (physicalPos[1] - physicalBoarders[1]) / physicalBoarders[3]), //
+        frameHeight - (frameHeight * (physicalPos[0] - physicalBoarders[0]) / physicalBoarders[2]) //
+    };
   }
 }

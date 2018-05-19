@@ -96,7 +96,7 @@ public class TrackingEvaluator {
     }
     // save image
     try {
-      String toBeSaved = String.format("%s_%04d_%d.png", imagePrefix, currentLabelInstant+1, timeStamps[currentLabelInstant]);
+      String toBeSaved = String.format("%s_%04d_%d.png", imagePrefix, currentLabelInstant + 1, timeStamps[currentLabelInstant]);
       ImageIO.write(bufferedImage, "png", new File(evaluationFilePath, toBeSaved));
       System.out.printf("Evaluation frame saved as %s\n", fileName);
     } catch (IOException e) {
@@ -127,33 +127,31 @@ public class TrackingEvaluator {
     }
     this.timeStamps = timeStamps;
   }
-  
+
   // fct to be called to collect results from tracking evaluation
   public TrackingEvaluatorInstant[] getEvaluationInstants() {
     return evaluationInstants;
   }
-  
+
   // for testing
   public void summarizeResults() {
-    System.out.println("The average recall is"+100*getAverageRecall()+"%");
-    System.out.println("The average precision is"+100*getAveragePrecision()+"%");
+    System.out.println("The average recall is" + 100 * getAverageRecall() + "%");
+    System.out.println("The average precision is" + 100 * getAveragePrecision() + "%");
   }
-  
+
   private float getAverageRecall() {
     float averageRecall = 0;
-    for(int i=0;i<numberOfLabelInstants;i++) {
-      averageRecall += evaluationInstants[i].getRecall()/numberOfLabelInstants;
+    for (int i = 0; i < numberOfLabelInstants; i++) {
+      averageRecall += evaluationInstants[i].getRecall() / numberOfLabelInstants;
     }
     return averageRecall;
   }
-  
+
   private float getAveragePrecision() {
     float averagePrecision = 0;
-    for(int i=0;i<numberOfLabelInstants;i++) {
-      averagePrecision += evaluationInstants[i].getPrecision()/numberOfLabelInstants;
+    for (int i = 0; i < numberOfLabelInstants; i++) {
+      averagePrecision += evaluationInstants[i].getPrecision() / numberOfLabelInstants;
     }
     return averagePrecision;
   }
-  
-  
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Transformation of ImageBlobs to PhysicalBlobs.
-
 public class BlobTransform {
   private List<PhysicalBlob> physicalBlobs;
 
