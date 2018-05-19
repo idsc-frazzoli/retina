@@ -30,6 +30,8 @@ import ch.ethz.idsc.tensor.img.ColorDataLists;
 /** used in {@link PresenterLcmModule} */
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
   private static final boolean ENABLED = UserHome.file("").getName().equals("valentinacavinato");
+  private static final Color COLOR_TRACE = new Color(255, 0, 0, 128);
+  // ---
   final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
   private ClusterCollection collection = new ClusterCollection();
@@ -56,6 +58,7 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       }
     }
   };
+  final ColorDataIndexed colorDataIndexed = ColorDataLists._250.cyclic().deriveWithAlpha(64);
 
   public ObstacleClusterTrackingRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -77,30 +80,24 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
     synchronized (collection) {
-      // ColorDataIndexed colorDataIndexed = ColorDataLists._097.cyclic().deriveWithAlpha(64);
-      ColorDataIndexed colorDataPoints = ColorDataLists._250.cyclic().deriveWithAlpha(64);
-      {
-        for (ClusterDeque x : collection.getCollection()) {
-          graphics.setColor(colorDataPoints.getColor(x.getID()));
-          for (DequeCloud y : x.getDeque()) {
-            if (Tensors.nonEmpty(y.hull())) {
-              Path2D path2d = geometricLayer.toPath2D(y.hull());
-              path2d.closePath();
-              graphics.draw(path2d);
-            }
-          }
-          for (DequeCloud y : x.getDeque()) {
-            for (Tensor z : y.points()) {
-              Point2D point2D = geometricLayer.toPoint2D(z);
-              graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
-            }
-          }
-          {
-            graphics.setColor(new Color(255, 0, 0, 128));
-            Tensor nonEmptyMeans = x.getNonEmptyMeans();
-            Path2D path2d = geometricLayer.toPath2D(nonEmptyMeans);
+      for (ClusterDeque clusterDeque : collection.getCollection()) {
+        graphics.setColor(colorDataIndexed.getColor(clusterDeque.getID()));
+        for (DequeCloud dequeCloud : clusterDeque.getDeque())
+          if (Tensors.nonEmpty(dequeCloud.hull())) {
+            Path2D path2d = geometricLayer.toPath2D(dequeCloud.hull());
+            path2d.closePath();
             graphics.draw(path2d);
           }
+        for (DequeCloud dequeCloud : clusterDeque.getDeque())
+          for (Tensor point : dequeCloud.points()) {
+            Point2D point2D = geometricLayer.toPoint2D(point);
+            graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
+          }
+        {
+          graphics.setColor(COLOR_TRACE);
+          Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
+          Path2D path2d = geometricLayer.toPath2D(nonEmptyMeans);
+          graphics.draw(path2d);
         }
       }
     }

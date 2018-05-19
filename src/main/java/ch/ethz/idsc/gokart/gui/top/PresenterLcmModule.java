@@ -30,7 +30,6 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 
-// TODO visualize traj in presenter module
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
