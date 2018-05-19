@@ -11,7 +11,7 @@ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = LogFileLocations.DUBI14.getFile().toString();
+    cfg.logFile = LogFileLocations.DUBI15.getFile().toString();
     LogPlayer.create(cfg);
     try {
       DavisDetailModule.standalone();

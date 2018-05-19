@@ -5,13 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides a bufferedImage with the accumulated events and overlaid features drawn as ellipses.
@@ -19,59 +19,57 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 public class AccumulatedEventFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
-  // ---
-  private final BufferedImage bufferedImage = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_INDEXED);
-  private final Graphics2D graphics = bufferedImage.createGraphics();
+  private static int width;
+  private static int height;
+  private final BufferedImage bufferedImage;
+  private final Graphics2D graphics;
   private final byte[] bytes;
 
-  public AccumulatedEventFrame() {
+  public AccumulatedEventFrame(PipelineConfig pipelineConfig) {
+    width = pipelineConfig.width.number().intValue();
+    height = pipelineConfig.height.number().intValue();
+    bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
+    graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     clearImage();
   }
 
   public BufferedImage getAccumulatedEvents() {
-    return rotate180Degrees(bufferedImage);
+    return bufferedImage;
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   // overlays blobs and sets color according to ImageBlobSelector module
   public BufferedImage overlayActiveBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getIsRecognized()) {
-        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
+        drawImageBlob(graphics, blobs.get(i), Color.GREEN);
       } else {
-        drawImageBlob(graphics, blobs.get(i), Color.YELLOW);
+        drawImageBlob(graphics, blobs.get(i), Color.RED);
       }
     }
-    return rotate180Degrees(bufferedImage);
+    return bufferedImage;
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++) {
       drawImageBlob(graphics, blobs.get(i), Color.GRAY);
     }
-    return rotate180Degrees(bufferedImage);
+    return bufferedImage;
+    // return ImageRotate._180deg(bufferedImage);
   }
 
   // marks the event in the image plane as a dark or light pixel
   public void receiveEvent(DavisDvsEvent davisDvsEvent) {
-    int index = davisDvsEvent.x + davisDvsEvent.y * 240;
+    int index = davisDvsEvent.x + davisDvsEvent.y * width;
     bytes[index] = VALUE[davisDvsEvent.i];
   }
 
   // resets all pixel to grey
   public void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
-  }
-
-  // TODO will be replaced by ImageRotate.rotate180Degrees(BufferedImage bufferedImage)
-  // rotates BufferedImage by 180 degrees
-  private static BufferedImage rotate180Degrees(BufferedImage bufferedImage) {
-    AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
-    tx.translate(-bufferedImage.getWidth(), -bufferedImage.getHeight());
-    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    bufferedImage = op.filter(bufferedImage, null);
-    return bufferedImage;
   }
 
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object

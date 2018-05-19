@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class ImageToWorldTransformTest extends TestCase {
   public void testSimple() {
-    Tensor inputTensor = ResourceData.of("/demo/mg/test.csv");
+    Tensor inputTensor = ResourceData.of("/demo/mg/DUBI12.csv");
     assertNotNull(inputTensor);
   }
 }

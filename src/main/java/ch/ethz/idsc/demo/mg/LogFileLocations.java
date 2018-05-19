@@ -6,8 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.subare.util.UserHome;
 
 public enum LogFileLocations {
-  /** driving around in the 8 track */
-  DUBI4("logs/20180307T154859_0cd18c6b.lcm.00"), //
   /** extracted part of DUBI4 log file */
   DUBI4a("logs/20180307T154859_0cd18c6bExtracted.lcm"), //
   /** 22sec, only noise */
@@ -24,9 +22,8 @@ public enum LogFileLocations {
   DUBI8d("logs/20180412T114245_7e5b46c2Extracted4.lcm"), //
   /** extracted ale's fast double round of DUBI8 */
   DUBI8e("logs/20180412T114245_7e5b46c2Extracted5.lcm"), //
-  /** manual driving with cones, zoomed out camera --> helmet blocking corner of image */
-  DUBI9("logs/20180412T143634_7e5b46c2.lcm.00"), //
-  /** extracted slow round of DUBI9 */
+  /** manual driving with cones, zoomed out camera --> helmet blocking corner of image
+   * extracted slow round of DUBI9 */
   DUBI9a("logs/20180412T143634_7e5b46c2Extracted1.lcm"), //
   /** extracted another slow round of DUBI9 */
   DUBI9b("logs/20180412T143634_7e5b46c2Extracted2.lcm"), //
@@ -58,7 +55,7 @@ public enum LogFileLocations {
   DUBI11c("logs/20180412T164740_7e5b46c2Extracted3.lcm"), //
   /** extracted fast round of DUBI11, Jan driving */
   DUBI11d("logs/20180412T164740_7e5b46c2Extracted4.lcm"), //
-  /** new camera pose, calibration images under "Dubi first try". Corresponding transform is dubi0008.csv */
+  /** new camera pose, calibration images under "Dubi first try". camera calibration available */
   DUBI12("logs/20180430T164704_0e959fc6.lcm.00"), //
   /** extracted slow round of DUBI12, camera zoomed and looking down. */
   DUBI12a("logs/20180430T164704_0e959fc6Extracted1.lcm"), //
@@ -71,10 +68,31 @@ public enum LogFileLocations {
   /** extracted fast & chaotic round of DUBI12, camera zoomed and looking down. */
   DUBI12e("logs/20180430T164704_0e959fc6Extracted5.lcm"), //
   /** log with new optimized camera pose */
-  DUBI13("logs/20180507T135949_588d4c6c.lcm.00"), //
-  /** log with new optimized camera pose */
-  DUBI14("logs/20180507T143002_588d4c6c.lcm.00"), //
-  ;
+  DUBI13("logs/20180507T143002_588d4c6c.lcm.00"), //
+  /** driving in 8 shape, cones and duct tape markings */
+  DUBI13a("logs/20180507T143002_588d4c6Extracted1.lcm"), //
+  /** driving in 8 shape, cones and duct tape markings */
+  DUBI13b("logs/20180507T143002_588d4c6Extracted2.lcm"), //
+  /** slow driving in 8 shape, cones and duct tape markings */
+  DUBI13c("logs/20180507T143002_588d4c6Extracted3.lcm"), //
+  /** only ducttape markings, calibration available */
+  DUBI14("logs/20180514T153139_767e5417.lcm.00"), //
+  // ** extracted single round */
+  DUBI14a("logs/20180514T153139_767e5417Extracted1.lcm"),
+  // ** extracted double round */
+  DUBI14b("logs/20180514T153139_767e5417Extracted2.lcm"),
+  /** ducttape markings and cones on outer side, calibration available */
+  DUBI15("logs/20180514T155248_767e5417.lcm.00"),
+  /** extracted double round */
+  DUBI15a("logs/20180514T155248_767e5417Extracted1.lcm"),
+  /** extracted double round */
+  DUBI15b("logs/20180514T155248_767e5417Extracted2.lcm"),
+  /** slow double round, additional cones */
+  DUBI15c("logs/20180514T155248_767e5417Extracted3.lcm"),
+  /** extracted double round, additional cones */
+  DUBI15d("logs/20180514T155248_767e5417Extracted4.lcm"),
+  /** short file, duckie thrown in front of gokart */
+  DUBI15e("logs/20180514T155248_767e5417Extracted5.lcm"),;
   // ---
   private final File file;
 
