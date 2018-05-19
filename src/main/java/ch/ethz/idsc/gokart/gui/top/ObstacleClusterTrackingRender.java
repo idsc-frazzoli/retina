@@ -14,6 +14,7 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
+import ch.ethz.idsc.gokart.core.perc.DequeCloud;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -21,17 +22,14 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.util.gui.Colors;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
-import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** used in {@link PresenterLcmModule} */
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
-  private static final boolean ENABLED = UserHome.file("").getName().equals("vc"); // TODO VC username
-  // ---
+  private static final boolean ENABLED = UserHome.file("").getName().equals("valentinacavinato");
   final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
   private ClusterCollection collection = new ClusterCollection();
@@ -45,7 +43,8 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       // ---
       Tensor points = _points;
       UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
-      Tensor state = gokartPoseInterface.getPose(); // units {x[m], y[m], angle[]}
+      // state if of the form {x[m], y[m], angle[]}
+      Tensor state = gokartPoseInterface.getPose();
       unknownObstaclePredicate.setPose(state);
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
@@ -78,27 +77,22 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
     synchronized (collection) {
-      ColorDataIndexed colorDataIndexed = ColorDataLists._097;
-      final int size = colorDataIndexed.size();
+      // ColorDataIndexed colorDataIndexed = ColorDataLists._097.cyclic().deriveWithAlpha(64);
+      ColorDataIndexed colorDataPoints = ColorDataLists._250.cyclic().deriveWithAlpha(64);
       {
-        int i = 0;
-        for (ClusterDeque x : collection.collection) {
-          graphics.setColor(colorDataIndexed.getColor(i % size));
-          Tensor hulls = Tensors.empty();
-          for (Tensor y : x.getDeque()) {
-            hulls.append(ConvexHull.of(y));
-            for (Tensor z : y) {
-              Point2D point2D = geometricLayer.toPoint2D(z);
-              graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
+        for (ClusterDeque x : collection.getCollection()) {
+          graphics.setColor(colorDataPoints.getColor(x.getID()));
+          for (DequeCloud y : x.getDeque()) {
+            if (Tensors.nonEmpty(y.hull())) {
+              Path2D path2d = geometricLayer.toPath2D(y.hull());
+              path2d.closePath();
+              graphics.draw(path2d);
             }
           }
-          {
-            // int i = 0;
-            for (Tensor hull : hulls) {
-              Color color = Colors.withAlpha(colorDataIndexed.getColor(i % size), 64);
-              graphics.setColor(color);
-              graphics.fill(geometricLayer.toPath2D(hull));
-              // ++i;
+          for (DequeCloud y : x.getDeque()) {
+            for (Tensor z : y.points()) {
+              Point2D point2D = geometricLayer.toPoint2D(z);
+              graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
             }
           }
           {
@@ -107,7 +101,6 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
             Path2D path2d = geometricLayer.toPath2D(nonEmptyMeans);
             graphics.draw(path2d);
           }
-          ++i;
         }
       }
     }

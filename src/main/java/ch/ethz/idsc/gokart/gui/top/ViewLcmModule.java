@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -115,10 +115,9 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
-      davisImuLcmClient.addListener(resampledLidarRender.lidarGyroLocalization);
     }
     { // TODO not generic
-      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      CurveRender curveRender = new CurveRender(FigureDucttapeModule.CURVE);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {

@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class SensorsConfig implements Serializable {
   public static final SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
@@ -50,12 +51,16 @@ public class SensorsConfig implements Serializable {
   public Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
   /** number of rotations per second */
   public Scalar vlp16_rate = Quantity.of(20, "s^-1");
+  public Scalar davis_imu_rate = Quantity.of(1000, "s^-1");
+  // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
    * the imuY measurement may have to be scaled.
    * until 20180507 the factor was 1 because the davis camera
-   * was upside down at almost no inclination */
-  // TODO create a conversion formula from inclination to scaling factor (will have singularity)
-  public Scalar davis_imuY_scale = RealScalar.of(1.0);
+   * was upside down at almost no inclination.
+   * on 20180514 the jaer-core was retired in favor of jAER1.5
+   * the camera is in upright position and therefore
+   * the scaling was set to -1.0 */
+  public Scalar davis_imuY_scale = RealScalar.of(-1.0);
   /** shift from center of VLP16 to DAVIS */
   public Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);
@@ -96,5 +101,9 @@ public class SensorsConfig implements Serializable {
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */
   public Tensor vlp16Gokart() {
     return Se2Utils.toSE2Matrix(vlp16).unmodifiable();
+  }
+
+  public int imuSamplesPerLidarScan() {
+    return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
   }
 }

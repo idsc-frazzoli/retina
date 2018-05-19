@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class SteerColumnTrackerTest extends TestCase {
@@ -22,7 +23,8 @@ public class SteerColumnTrackerTest extends TestCase {
   }
 
   public void testMaxRange() {
-    assertEquals(SteerConfig.GLOBAL.columnMax.toString(), "0.6[SCE]");
+    Clip clip = Clip.function(Quantity.of(0.6, "SCE"), Quantity.of(0.7, "SCE"));
+    clip.requireInside(SteerConfig.GLOBAL.columnMax);
   }
 
   public void testFeed() {

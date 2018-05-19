@@ -7,7 +7,6 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
-import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -29,6 +28,7 @@ import ch.ethz.idsc.tensor.sca.N;
  * the matching qualities are 51255, 43605, 44115 */
 public class GyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+  private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
@@ -51,7 +51,7 @@ public class GyroOfflineLocalize extends OfflineLocalize {
         .apply(points).getPointsSpin(rate);
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
-    if (LidarGyroLocalization.MIN_POINTS < sum) {
+    if (MIN_POINTS < sum) {
       GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
       Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);

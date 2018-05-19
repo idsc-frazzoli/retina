@@ -1,15 +1,15 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.demo.yn;
 
 import java.io.File;
 
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
-public enum DatahakiLogFileLocator implements LogFileLocator {
+public enum YnLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
-  private static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
+  private static final File LOG_ROOT = new File("/home/ynager/gokart/logs");
   private static final File ALT_ROOT = new File("/media/datahaki/backup/gokartlogs");
 
   @Override
@@ -22,7 +22,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
         return file;
     }
     {
-      File file = new File(new File(ALT_ROOT, date), title);
+      File file = new File(new File(ALT_ROOT, date), title + ".lcm.00");
       if (file.isFile())
         return file;
     }
