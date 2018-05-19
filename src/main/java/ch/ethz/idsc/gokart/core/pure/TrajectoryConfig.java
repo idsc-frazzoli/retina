@@ -9,15 +9,16 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** parameters for PID controller of steering
- * 
- * there are 2 special units related to the manufacturer of the steering column:
- * "SCE" steer-column encoder
- * "SCT" steer-column torque */
+/** 
+ * */
 public class TrajectoryConfig implements Serializable {
   public static final TrajectoryConfig GLOBAL = AppResources.load(new TrajectoryConfig());
   /***************************************************/
   public Scalar planningPeriod = Quantity.of(1, SI.SECOND); // 1[s] == 1[Hz]
   public Scalar horizonDistance = RealScalar.of(10);
+  /** rotation per meter driven is at least 23[deg/m]
+   * 20180429_minimum_turning_radius.pdf
+   * 20180517 reduced value to 20[deg/m] to be more conservative and avoid extreme steering */
+  public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
   /***************************************************/
 }

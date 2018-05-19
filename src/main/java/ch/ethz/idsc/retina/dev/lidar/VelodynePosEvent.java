@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.lidar;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -86,7 +86,7 @@ public class VelodynePosEvent {
    * @return */
   public Scalar gpsX() {
     double value = Double.parseDouble(nmea.substring(28, 28 + 10)) * TO_DEGREE_ANGLE;
-    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
+    Scalar scalar = Quantity.of(value, NonSI.DEGREE_ANGLE);
     char id = nmea.charAt(39);
     return id == 'E' ? scalar : scalar.negate();
   }
@@ -96,7 +96,7 @@ public class VelodynePosEvent {
    * @return */
   public Scalar gpsY() {
     double value = Double.parseDouble(nmea.substring(16, 16 + 9)) * TO_DEGREE_ANGLE;
-    Scalar scalar = Quantity.of(value, SI.DEGREE_ANGLE);
+    Scalar scalar = Quantity.of(value, NonSI.DEGREE_ANGLE);
     char id = nmea.charAt(25 + 1);
     return id == 'N' ? scalar : scalar.negate();
   }
