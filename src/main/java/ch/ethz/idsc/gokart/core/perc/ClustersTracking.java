@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
@@ -40,12 +39,12 @@ public enum ClustersTracking {
     NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
     Database database = Clusters.sample(matrix);
-    Stopwatch stopwatch = Stopwatch.started();
+    // Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
     Clustering<Model> result = dbscan.run(database);
-    long ns = stopwatch.display_nanoSeconds();
-    System.out.println((ns * 1e-6) + "ms");
+    // long ns = stopwatch.display_nanoSeconds();
+    // System.out.println((ns * 1e-6) + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
@@ -68,7 +67,6 @@ public enum ClustersTracking {
           next.replaceLast(points);
         } else if (set.size() == 3 && set.contains(sizeCollection)) {
           oldClusters.addToCollection(map.lastEntry().getValue());
-          System.out.println("case 3");
         }
       }
     oldClusters.maintainUntil(sizeCollection);
