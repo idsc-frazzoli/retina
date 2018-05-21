@@ -33,7 +33,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /** all pixels have the same amount of weight or clearance radius attached */
 public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
-  // private static final Set<Byte> VALUES = new HashSet<>();
   private static final short MASK_OCCUPIED = 0x00;
   private static final short MASK_UNKNOWN = 0xDD;
   @SuppressWarnings("unused")
@@ -208,7 +207,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     double lboundY = lbounds.Get(1).number().doubleValue();
     world2grid = Tensors.matrixDouble(new double[][] { { 1, 0, -lboundX }, { 0, 1, -lboundY }, { 0, 0, 1 } });
     // ---
-    hset.clear();
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
@@ -216,20 +214,23 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     double[] logOddsNew = new double[dimx * dimy];
     Arrays.fill(logOddsNew, pToLogOdd(P_M));
     double threshold = L_THRESH;
-    Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
-    for (int i = 0; i < dimx; i++)
-      for (int j = 0; j < dimy; j++) {
-        double logOdd = logOdds[j * dimx + i];
-        int pix = i + trans.Get(0).number().intValue();
-        if (0 <= pix && pix < dimx) {
-          int piy = j + trans.Get(1).number().intValue();
-          if (0 <= piy && piy < dimy) {
-            logOddsNew[piy * dimx + pix] = logOdd;
-            if (logOdd > threshold)
-              hset.add(Tensors.vector(pix, piy));
+    synchronized (hset) {
+      hset.clear();
+      Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
+      for (int i = 0; i < dimx; i++)
+        for (int j = 0; j < dimy; j++) {
+          double logOdd = logOdds[j * dimx + i];
+          int pix = i + trans.Get(0).number().intValue();
+          if (0 <= pix && pix < dimx) {
+            int piy = j + trans.Get(1).number().intValue();
+            if (0 <= piy && piy < dimy) {
+              logOddsNew[piy * dimx + pix] = logOdd;
+              if (logOdd > threshold)
+                hset.add(Tensors.vector(pix, piy));
+            }
           }
         }
-      }
+    }
     logOdds = logOddsNew;
     lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
     lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
@@ -272,26 +273,26 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     return cell.Get(1).multiply(gridSize.Get(0)).add(cell.Get(0)).number().intValue();
   }
 
-  private void drawCell(Tensor cell, short grayScale) {
+  private void drawCell(Tensor cell, byte grayScale) {
     int idx = cellToIdx(cell);
     if (idx < imagePixels.length)
-      imagePixels[idx] = (byte) (grayScale & 0xFF);
+      imagePixels[idx] = grayScale;
   }
 
   private void drawSphere(Tensor cell, Scalar radius, short grayScale) {
-    if (Scalars.lessEquals(obsDilationRadius, cellDim)) {
-      drawCell(cell, grayScale);
-      return;
+    if (Scalars.lessEquals(obsDilationRadius, cellDim))
+      drawCell(cell, (byte) grayScale);
+    else {
+      Tensor pos = toPos(cell);
+      Scalar radiusScaled = radius.multiply(cellDimInv);
+      double dim = radiusScaled.number().doubleValue();
+      Ellipse2D sphere = new Ellipse2D.Double( //
+          pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+          pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+          2 * dim, 2 * dim);
+      imageGraphics.setColor(new Color(grayScale, grayScale, grayScale));
+      imageGraphics.fill(sphere);
     }
-    Tensor pos = toPos(cell);
-    Scalar radiusScaled = radius.multiply(cellDimInv);
-    double dim = radiusScaled.number().doubleValue();
-    Ellipse2D sphere = new Ellipse2D.Double( //
-        pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-        pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-        2 * dim, 2 * dim);
-    imageGraphics.setColor(new Color(grayScale, grayScale, grayScale));
-    imageGraphics.fill(sphere);
   }
 
   @Override // from Region<Tensor>
@@ -308,7 +309,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     return true;
   }
 
-  @Override // from Renderinterface
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor model2pixel = geometricLayer.getMatrix();
     Tensor translate = IdentityMatrix.of(3);

@@ -132,6 +132,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void first() throws Exception {
+    gokartMappingModule.start();
+    // ---
     gokartPoseLcmClient.addListener(this);
     rimoGetLcmClient.addListener(rimoGetListener);
     // ---
@@ -145,6 +147,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   protected void last() {
     purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
+    // ---
+    gokartMappingModule.stop();
   }
 
   @Override // from AbstractClockedModule
