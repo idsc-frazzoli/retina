@@ -28,7 +28,7 @@ import ch.ethz.idsc.owl.bot.se2.Se2MinTimeGoalManager;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
-import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
+import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
@@ -83,7 +83,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   private static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
   // ---
-  final CarFlows carFlows = new CarForwardFlows( //
+  final FlowsInterface carFlows = CarFlows.forward( //
       SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();

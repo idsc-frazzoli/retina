@@ -21,7 +21,7 @@ public class CarDemo {
     CarState carState = CarStatic.x0_demo1(vehicleModel);
     CarEntity carEntity = new CarEntity(carStateSpaceModel, carState);
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
-    owlyAnimationFrame.set(carEntity);
+    owlyAnimationFrame.add(carEntity);
     Region<Tensor> region = new R2NoiseRegion(RealScalar.of(0.2));
     // FIXME
     // owlyAnimationFrame.setObstacleQuery(SimpleTrajectoryRegionQuery.timeInvariant(region));
