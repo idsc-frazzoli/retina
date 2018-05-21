@@ -5,14 +5,15 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class EnlargedPoints {
-  public List<Area> collectionOfAreas = new ArrayList<>(); // TODO
-  double totalArea = 0;
+  private final List<Area> collectionOfAreas = new ArrayList<>();
+  private double totalArea;
 
   public EnlargedPoints(Tensor points, double w) {
     totalArea = points.length() * w * w;
@@ -44,5 +45,13 @@ public class EnlargedPoints {
     double width = area.getBounds2D().getWidth();
     double height = area.getBounds2D().getHeight();
     return height * width;
+  }
+
+  public List<Area> getAreas() {
+    return Collections.unmodifiableList(collectionOfAreas);
+  }
+
+  public double getTotalArea() {
+    return totalArea;
   }
 }

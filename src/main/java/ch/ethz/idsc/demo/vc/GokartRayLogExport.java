@@ -67,10 +67,10 @@ class Handler {
           }
           if (predictedMeans.length() > 0) {
             double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
-             System.out.println("performance=" + evaluatePerformance);
+            System.out.println("performance=" + evaluatePerformance);
           }
-          double computeRecall = computeRecall(predictedHulls, newScan);
-          System.out.println("recall=" + computeRecall);
+          PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
+          System.out.println("recall=" + measures.recall + '\n' + "precision=" + measures.precision);
         }
       } else
         System.err.println("scan is empty");
@@ -91,27 +91,25 @@ class Handler {
     return count / (double) predictedMeans.length();
   }
 
-  public double computeRecall(Tensor predictedShapes, Tensor newScan) {
+  public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
     EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
-    // EnlargedPoints enlargedMeans = new EnlargedPoints(predictedHulls, 20);
     EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
-    for (Area x : predictedAreas.collectionOfAreas) {
+    for (Area x : predictedAreas.getAreas()) {
       Rectangle2D bounds2d = x.getBounds2D();
-      for (Area y : enlargedPoints.collectionOfAreas) {
+      for (Area y : enlargedPoints.getAreas()) {
         if (y.intersects(bounds2d)) {
           y.intersect(x);
         }
       }
     }
     double area = 0;
-    for (Area y : enlargedPoints.collectionOfAreas) {
+    for (Area y : enlargedPoints.getAreas()) {
       double computeArea = enlargedPoints.computeArea(y);
       if (computeArea != (side * side)) {
         area = area + computeArea;
       }
     }
-    System.out.println("precision=" + area / predictedAreas.totalArea);
-    return area / enlargedPoints.totalArea;
+    return new PerformanceMeasures(area / enlargedPoints.getTotalArea(), area / predictedAreas.getTotalArea());
   }
 }
 
