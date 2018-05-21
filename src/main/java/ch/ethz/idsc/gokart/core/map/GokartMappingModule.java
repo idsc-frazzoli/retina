@@ -28,6 +28,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** class interprets sensor data from lidar information */
+// TODO since this class does not (yet) extend from AbstractModule, the class name is not good
 public class GokartMappingModule implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, RenderInterface {
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
@@ -38,8 +40,8 @@ public class GokartMappingModule implements //
   private final BayesianOccupancyGrid grid;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
-  private final Tensor gridRange = Tensors.vector(85, 85);
+  private final SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
+  private final Tensor gridRange = Tensors.vector(85, 85); // TODO comment on magic const 640/7.5
   private final Tensor lbounds = Tensors.vector(0, 0);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
@@ -56,7 +58,7 @@ public class GokartMappingModule implements //
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    grid = BayesianOccupancyGrid.of(lbounds, gridRange, DoubleScalar.of(0.2));
+    grid = BayesianOccupancyGrid.of(lbounds, gridRange, DoubleScalar.of(0.2)); // TODO comment on 0.2
     grid.setObstacleRadius(obstacleRadius);
   }
 
@@ -87,15 +89,10 @@ public class GokartMappingModule implements //
       double z = floatBuffer.get();
       //
       boolean isObstacle = predicate.isObstacle(x, z);
-      Tensor planarPoint = Tensors.vectorDouble(x, y, 1);
-      int type = isObstacle ? 1 : 0;
-      grid.processObservation(planarPoint, type);
+      grid.processObservation( //
+          Tensors.vectorDouble(x, y), // planar point
+          isObstacle ? 1 : 0);
     }
-  }
-
-  @Override //  from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    grid.render(geometricLayer, graphics);
   }
 
   @Override // from Region
@@ -106,5 +103,10 @@ public class GokartMappingModule implements //
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent getEvent) {
     grid.setPose(getEvent.getPose(), getEvent.getQuality());
+  }
+
+  @Override //  from RenderInterface
+  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    grid.render(geometricLayer, graphics);
   }
 }

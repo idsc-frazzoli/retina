@@ -94,7 +94,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private final Region<Tensor> polygonRegion;
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
-  final Tensor obstacleMap;
+  public final Tensor obstacleMap;
   final Tensor waypoints;
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
