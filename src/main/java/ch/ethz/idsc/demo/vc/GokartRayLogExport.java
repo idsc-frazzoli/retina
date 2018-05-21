@@ -67,15 +67,16 @@ class Handler {
           }
           if (predictedMeans.length() > 0) {
             double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
-            System.out.println("recall=" + evaluatePerformance);
+             System.out.println("performance=" + evaluatePerformance);
           }
           double computeRecall = computeRecall(predictedHulls, newScan);
-          System.out.println(computeRecall);
+          System.out.println("recall=" + computeRecall);
         }
       } else
         System.err.println("scan is empty");
     }
   };
+  private double side = 0.2;
 
   // basic performance measure: compute the fraction of predicted centres of clusters that are in the convexHull
   // of the new lidar scan clusters
@@ -90,11 +91,11 @@ class Handler {
     return count / (double) predictedMeans.length();
   }
 
-  public double computeRecall(Tensor predictedHulls, Tensor newScan) {
-    EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, 3);
-    EnlargedPoints enlargedMeans = new EnlargedPoints(predictedHulls, 20);
-    // EnlargedPoints enlargedHulls = new EnlargedPoints(predictedHulls);
-    for (Area x : enlargedMeans.collectionOfAreas) {
+  public double computeRecall(Tensor predictedShapes, Tensor newScan) {
+    EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
+    // EnlargedPoints enlargedMeans = new EnlargedPoints(predictedHulls, 20);
+    EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
+    for (Area x : predictedAreas.collectionOfAreas) {
       Rectangle2D bounds2d = x.getBounds2D();
       for (Area y : enlargedPoints.collectionOfAreas) {
         if (y.intersects(bounds2d)) {
@@ -105,10 +106,11 @@ class Handler {
     double area = 0;
     for (Area y : enlargedPoints.collectionOfAreas) {
       double computeArea = enlargedPoints.computeArea(y);
-      if (computeArea != (3 * 3)) {
+      if (computeArea != (side * side)) {
         area = area + computeArea;
       }
     }
+    System.out.println("precision=" + area / predictedAreas.totalArea);
     return area / enlargedPoints.totalArea;
   }
 }
