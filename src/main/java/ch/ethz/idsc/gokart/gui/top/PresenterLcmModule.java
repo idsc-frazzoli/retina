@@ -9,7 +9,7 @@ import java.io.File;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -30,7 +30,6 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 
-// TODO visualize traj in presenter module
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
@@ -90,7 +89,7 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.jToolBar.add(obstacleTimeClusterRender.jToggleButton);
     }
     {
-      CurveRender curveRender = new CurveRender(FigureEightModule.CURVE);
+      CurveRender curveRender = new CurveRender(DubendorfCurve.HYPERLOOP_DUCTTAPE);
       timerFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {

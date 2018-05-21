@@ -8,14 +8,14 @@ import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.Region;
-import ch.ethz.idsc.owl.math.state.StandardTrajectoryRegionQuery;
+import ch.ethz.idsc.owl.math.state.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TimeInvariantRegion;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class DriftGoalManager extends StandardTrajectoryRegionQuery implements GoalInterface {
+public class DriftGoalManager extends SimpleTrajectoryRegionQuery implements GoalInterface {
   public static GoalInterface createStandard(Tensor goalState, Tensor tolerance) {
     return new DriftGoalManager(new DriftGoalRegion(goalState, tolerance));
   }

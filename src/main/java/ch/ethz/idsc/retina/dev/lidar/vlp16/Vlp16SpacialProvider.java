@@ -72,7 +72,9 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
     }
   }
 
-  /* package */ static int degree(int laserId) {
+  /** @param laserId from the range {0, 1, 2, ..., 15}
+   * @return */
+  public static int degree(int laserId) {
     if (laserId < 0)
       throw new RuntimeException();
     if (laserId == 15)

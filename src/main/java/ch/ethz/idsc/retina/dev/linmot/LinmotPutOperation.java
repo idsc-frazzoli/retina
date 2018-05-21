@@ -51,7 +51,7 @@ public enum LinmotPutOperation {
   public LinmotPutEvent toRelativePosition(Scalar value) {
     return toPosition( //
         LinmotPutHelper.CMD_OPERATION, //
-        INTERPOLATION_POSITION.Get(Tensors.of(value)).number().shortValue());
+        INTERPOLATION_POSITION.At(value).number().shortValue());
   }
 
   /** @return command that sets the brake to home position */

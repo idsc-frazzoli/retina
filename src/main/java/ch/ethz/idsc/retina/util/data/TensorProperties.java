@@ -58,25 +58,32 @@ public enum TensorProperties {
     for (Field field : object.getClass().getFields())
       if (isTracked(field))
         try {
-          Class<?> type = field.getType();
-          final String string = properties.getProperty(field.getName());
-          if (Objects.nonNull(string)) {
-            if (type.equals(Tensor.class))
-              field.set(object, Tensors.fromString(string));
-            else //
-            if (type.equals(Scalar.class))
-              field.set(object, Scalars.fromString(string));
-            else //
-            if (type.equals(String.class))
-              field.set(object, string);
-            else //
-            if (type.equals(Boolean.class))
-              field.set(object, StaticHelper.booleanOrNull(string));
-          }
+          String string = properties.getProperty(field.getName());
+          if (Objects.nonNull(string))
+            field.set(object, parse(field, string));
         } catch (Exception exception) {
           exception.printStackTrace();
         }
     return object;
+  }
+
+  /** @param field
+   * @param string
+   * @return */
+  public static Object parse(Field field, String string) {
+    Class<?> type = field.getType();
+    if (type.equals(Tensor.class))
+      return Tensors.fromString(string);
+    else //
+    if (type.equals(Scalar.class))
+      return Scalars.fromString(string);
+    else //
+    if (type.equals(String.class))
+      return string;
+    else //
+    if (type.equals(Boolean.class))
+      return BooleanParser.orNull(string);
+    return null;
   }
 
   public static <T> T newInstance(Properties properties, Class<T> cls) //

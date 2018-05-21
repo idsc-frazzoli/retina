@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -19,8 +20,7 @@ import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.StringScalar;
+import ch.ethz.idsc.tensor.io.StringScalarQ;
 
 /** component that generically inspects a given object for fields of type
  * {@link Tensor} and {@link Scalar}. For each such field, a text field
@@ -95,13 +95,14 @@ class ParametersComponent extends ToolbarsComponent {
   }
 
   private void updateBackground(JTextField jTextField, Field field) {
-    boolean isOk = isOk(jTextField.getText());
+    String string = jTextField.getText();
+    boolean isOk = isOk(field, string);
     jTextField.setBackground(isOk ? Color.WHITE : FAIL);
     if (isOk)
       try {
         Object compare = field.get(reference);
-        boolean equals = compare.equals(getValue(jTextField.getText()));
-        if (!equals)
+        Object object = TensorProperties.parse(field, string);
+        if (!compare.equals(object))
           jTextField.setBackground(SYNC);
       } catch (Exception exception) {
         exception.printStackTrace();
@@ -110,20 +111,19 @@ class ParametersComponent extends ToolbarsComponent {
 
   private boolean checkFields() {
     boolean status = true;
-    for (Entry<Field, JTextField> entry : map.entrySet())
-      status &= isOk(entry.getValue().getText());
+    for (Entry<Field, JTextField> entry : map.entrySet()) {
+      Field field = entry.getKey();
+      status &= isOk(field, entry.getValue().getText());
+    }
     jButtonUpdate.setEnabled(status);
     jButtonSave.setEnabled(status);
     return status;
   }
 
-  private static Tensor getValue(String string) {
-    return Tensors.fromString(string);
-  }
-
-  private static boolean isOk(String string) {
-    Tensor tensor = getValue(string);
-    return !tensor.flatten(-1) //
-        .anyMatch(scalar -> scalar instanceof StringScalar);
+  private static boolean isOk(Field field, String string) {
+    Object object = TensorProperties.parse(field, string);
+    if (object instanceof Tensor)
+      return !StringScalarQ.any((Tensor) object);
+    return Objects.nonNull(object);
   }
 }

@@ -14,8 +14,4 @@ public class StaticHelperTest extends TestCase {
     assertEquals(Boolean.TRUE.toString(), "true");
     assertEquals(Boolean.FALSE.toString(), "false");
   }
-
-  public void testCase() {
-    assertNull(StaticHelper.booleanOrNull("False"));
-  }
 }

@@ -43,14 +43,14 @@ public class InterpolatedFrameDvsEventSupplier implements FrameDvsEventSupplier 
         while (Scalars.lessThan(sbuf.Get(x, y).add(theta), ins.Get(x, y))) {
           Scalar inx = sbuf.Get(x, y).add(theta);
           Scalar rat = inx.subtract(ins0.get(x, y)).divide(idif.Get(x, y));
-          Scalar time = interpolation.Get(Tensors.of(rat));
+          Scalar time = interpolation.At(rat);
           queue.add(new DvsEvent(time.number().longValue(), x, y, 1));
           sbuf.set(inx, x, y);
         }
         while (Scalars.lessThan(ins.Get(x, y), sbuf.Get(x, y).subtract(theta))) {
           Scalar inx = sbuf.Get(x, y).subtract(theta);
           Scalar rat = inx.subtract(ins0.get(x, y)).divide(idif.Get(x, y));
-          Scalar time = interpolation.Get(Tensors.of(rat));
+          Scalar time = interpolation.At(rat);
           queue.add(new DvsEvent(time.number().longValue(), x, y, 0));
           sbuf.set(inx, x, y);
         }
