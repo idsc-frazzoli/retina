@@ -3,7 +3,6 @@ package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
 import ch.ethz.idsc.tensor.sca.Mod;
@@ -23,6 +22,6 @@ public class VectorSignal implements ScalarUnaryOperator {
 
   @Override // from ScalarUnaryOperator
   public Scalar apply(Scalar scalar) {
-    return interpolation.get(Tensors.of(scalar)).Get();
+    return interpolation.At(scalar);
   }
 }

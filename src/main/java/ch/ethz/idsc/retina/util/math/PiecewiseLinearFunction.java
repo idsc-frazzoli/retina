@@ -43,6 +43,6 @@ public class PiecewiseLinearFunction implements ScalarTensorFunction {
     Clip clip = Clip.function(floor.getKey(), ceiling.getKey());
     Scalar lambda = clip.rescale(scalar);
     Interpolation interpolation = LinearInterpolation.of(Tensors.of(floor.getValue(), ceiling.getValue()));
-    return interpolation.get(Tensors.of(lambda));
+    return interpolation.at(lambda);
   }
 }
