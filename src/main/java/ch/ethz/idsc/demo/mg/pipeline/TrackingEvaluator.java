@@ -11,7 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
-import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
+import ch.ethz.idsc.demo.mg.gui.VisualizationUtil;
 import ch.ethz.idsc.demo.mg.gui.HandLabeler;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
@@ -88,11 +88,11 @@ public class TrackingEvaluator {
     }
     // overlay groundtruthFeatures
     for (int i = 0; i < groundTruthFeatures.size(); i++) {
-      AccumulatedEventFrame.drawImageBlob(bufferedImage.createGraphics(), groundTruthFeatures.get(i), Color.GREEN);
+      VisualizationUtil.drawImageBlob(bufferedImage.createGraphics(), groundTruthFeatures.get(i), Color.GREEN);
     }
     // overlay estimatedFeatures
     for (int i = 0; i < estimatedFeatures.size(); i++) {
-      AccumulatedEventFrame.drawImageBlob(bufferedImage.createGraphics(), estimatedFeatures.get(i), Color.RED);
+      VisualizationUtil.drawImageBlob(bufferedImage.createGraphics(), estimatedFeatures.get(i), Color.RED);
     }
     // save image
     try {

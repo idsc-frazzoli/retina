@@ -22,8 +22,6 @@ public class PipelineSetup {
       System.out.println("****new Iteration ****");
       pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
       InputSubModule inputSubModule = runPipeline();
-      // somehow collect results here
-      // TODO the collection of results should happen in a separate class
     }
   }
 

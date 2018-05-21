@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
+  public String logFileName = "DUBI14a"; // must match name in LogFileLocations and be an extract of a recording
   public final Scalar maxDuration = RealScalar.of(5000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
@@ -48,7 +48,7 @@ public class PipelineConfig {
   public final Boolean saveImages = false;
   public final Scalar savingInterval = RealScalar.of(300); // [ms]
   // performance evaluation
-  public final Boolean evaluatePerformance = true;
+  public final Boolean evaluatePerformance = false;
   public final Boolean saveEvaluationFrame = true;
   public final String handLabelFileName = logFileName + "_labeledFeatures.csv"; // file must be present to evaluate performance
   // performance evaluation instant
@@ -56,6 +56,7 @@ public class PipelineConfig {
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = true;
+  public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
   public final Scalar visualizationInterval = RealScalar.of(50); // [ms]
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame
   public final Scalar frameHeight = RealScalar.of(400); // [pixel] for physical frame

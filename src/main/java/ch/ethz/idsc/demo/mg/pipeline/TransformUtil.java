@@ -16,32 +16,25 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 // 5th line represents radial distortion coefficients [-]
 // 6th line represents focal lengths [mm]
 public class TransformUtil {
-  private static Scalar unitConversion;
-  private static Tensor principalPoint; // [pixel]
-  private static Tensor radDistortion; // [-] radial distortion with two coefficients is assumed
-  private static Tensor focalLength; // [mm]
-  private static Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
-  private static boolean isInitialized;
+  private final Scalar unitConversion;
+  private final Tensor principalPoint; // [pixel]
+  private final Tensor radDistortion; // [-] radial distortion with two coefficients is assumed
+  private final Tensor focalLength; // [mm]
+  private final Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
 
-  // TODO inelegant
-  // suggestion: the conventional way would be to make all members and functions non-static
-  // initialize would become the constructor of an instance of TransformUtil
-  public static void initialize(PipelineConfig pipelineConfig) {
+  public TransformUtil(PipelineConfig pipelineConfig) {
     Tensor inputTensor = ResourceData.of(pipelineConfig.calibrationFileName.toString());
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.extract(3, 4);
     radDistortion = inputTensor.extract(4, 5);
     focalLength = inputTensor.extract(5, 6);
     unitConversion = pipelineConfig.unitConversion;
-    isInitialized = true;
   }
 
   /** @param imagePosX [pixel]
    * @param imagePosY [pixel]
    * @return physicalCoordinates [m] in gokart reference frame */
-  public static double[] imageToWorld(float imagePosX, float imagePosY) {
-    if (!isInitialized)
-      System.out.println("Uninitialized transformation!");
+  public double[] imageToWorld(float imagePosX, float imagePosY) {
     Tensor normalizedImgCoord;
     Tensor undistortedImgCoord;
     Tensor physicalCoord;
@@ -73,5 +66,12 @@ public class TransformUtil {
     // note: x/y axis are inverse between gokart reference system and calibration reference system
     double[] physicalPos = { physicalCoord.get(0).Get(1).number().doubleValue(), physicalCoord.get(0).Get(0).number().doubleValue() };
     return physicalPos;
+  }
+  
+  // for testing
+  public static void main(String[] args) {
+    TransformUtil test = new TransformUtil(new PipelineConfig());
+    double[] physicalPos = test.imageToWorld(170, 100);
+    System.out.println(physicalPos[0] + "/" + physicalPos[1]);
   }
 }

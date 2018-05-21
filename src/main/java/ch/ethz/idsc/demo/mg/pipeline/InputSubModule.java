@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
-// TODO if we just wanna evaluate tracking performance, no need to incorporate blobTransform
 // TODO collectResults fct once evaluator is implemented
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -60,9 +60,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     blobSelector = new ImageBlobSelector(pipelineConfig);
     // calibration required for transformation to physical space
     if (calibrationAvailable) {
-      transformer = new BlobTransform();
-      // TODO inelegant
-      TransformUtil.initialize(pipelineConfig);
+      transformer = new BlobTransform(pipelineConfig);
     }
     // optional evaluation
     if (evaluatePerformance) {
@@ -169,10 +167,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
     combinedFrames[0] = eventFrames[0].getAccumulatedEvents();
-    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs());
-    combinedFrames[2] = eventFrames[2].overlayHiddenBlobs((tracking.getHiddenBlobs()));
+    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED);
+    combinedFrames[2] = eventFrames[2].overlayHiddenBlobs(tracking.getHiddenBlobs(), Color.GRAY);
     if (calibrationAvailable) {
       combinedFrames[3] = physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs()));
+      // currently unused
       combinedFrames[4] = physicalFrames[1].getFrame();
       combinedFrames[5] = physicalFrames[2].getFrame();
     }

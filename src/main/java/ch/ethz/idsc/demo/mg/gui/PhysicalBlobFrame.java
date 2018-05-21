@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.gui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.List;
@@ -21,6 +22,7 @@ public class PhysicalBlobFrame {
   private final Graphics2D graphics;
   private final byte[] bytes;
   // world coord to visualization mapping
+  private TransformUtil transformUtil;
   private final double[][] fieldOfView; // defines trapezoid in physical space that is mapped onto image plane
   private final double[] physicalBoarders; // lower right point and dimensions of rectangle that confines fieldOfView
 
@@ -31,11 +33,12 @@ public class PhysicalBlobFrame {
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
+    transformUtil = new TransformUtil(pipelineConfig);
     // TODO fieldOfView and physicalBoarders could be saved in .csv calibration file and loaded from there
-    double[] upperLeft = TransformUtil.imageToWorld(10, 10);
-    double[] upperRight = TransformUtil.imageToWorld(230, 10);
-    double[] lowerLeft = TransformUtil.imageToWorld(10, 170);
-    double[] lowerRight = TransformUtil.imageToWorld(230, 170);
+    double[] upperLeft = transformUtil.imageToWorld(10, 10);
+    double[] upperRight = transformUtil.imageToWorld(230, 10);
+    double[] lowerLeft = transformUtil.imageToWorld(10, 170);
+    double[] lowerRight = transformUtil.imageToWorld(230, 170);
     fieldOfView = new double[][] { upperLeft, upperRight, lowerLeft, lowerRight };
     // add padding for visualization
     physicalBoarders = new double[] { lowerLeft[0] - 2, upperRight[1] - 1, upperLeft[0] - lowerLeft[0] + 3, upperLeft[1] - upperRight[1] + 2 };
@@ -52,21 +55,24 @@ public class PhysicalBlobFrame {
   /** paint physical Blobs
    * 
    * @param physicalBlobs
-   * @return */
+   * @return BufferedImage for visualization */
   public BufferedImage overlayPhysicalBlobs(List<PhysicalBlob> physicalBlobs) {
     if (physicalBlobs.size() == 0) {
       return bufferedImage;
     }
     setBackground();
     for (int i = 0; i < physicalBlobs.size(); i++) {
-      drawPhysicalBlob(graphics, physicalBlobs.get(i).getPos(), Color.WHITE);
+      // TODO only temporary
+      double[] imageCoord = new double[] {worldToViz(physicalBlobs.get(i).getPos())[0], worldToViz(physicalBlobs.get(i).getPos())[1]};
+      physicalBlobs.get(i).setImageCoord(imageCoord);
+      drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.WHITE);
     }
     return bufferedImage;
   }
 
   /** background with trapezoid */
   public void setBackground() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    clearImage();
     // draw (0,0) position to show gokart
     int shapeSize = 20;
     Double[] origin = worldToViz(new double[] { 0, 0 });
@@ -75,6 +81,7 @@ public class PhysicalBlobFrame {
     graphics.setColor(Color.BLACK);
     graphics.fillRect(xCoord, yCoord, shapeSize, shapeSize);
     // draw red tapezoid based on fieldOfView
+    // TODO store as final Path2D field
     Double[] upperLeft = worldToViz(fieldOfView[0]);
     Double[] upperRight = worldToViz(fieldOfView[1]);
     Double[] lowerLeft = worldToViz(fieldOfView[2]);
@@ -88,23 +95,31 @@ public class PhysicalBlobFrame {
     graphics.drawLine(lowerRight[0].intValue(), lowerRight[1].intValue(), upperRight[0].intValue(), upperRight[1].intValue());
   }
 
+  // resets all pixel to grey
+  public void clearImage() {
+    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+  }
+
   /** draws an ellipse representing a PhysicalBlob object onto a Graphics2D object
    * 
    * @param graphics
    * @param blob
-   * @param color */
-  private void drawPhysicalBlob(Graphics2D graphics, double[] pos, Color color) {
-    Double[] imageCoord = worldToViz(pos);
+   * @param color desired color */
+  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color) {
+    double circleSize = 20;
+    double leftCornerX = physicalBlob.getImageCoord()[0] - circleSize / 2;
+    double leftCornerY = physicalBlob.getImageCoord()[1] - circleSize / 2;
+    Ellipse2D ellipse = new Ellipse2D.Double(leftCornerX, leftCornerY, circleSize, circleSize);
     graphics.setColor(color);
-    graphics.fillOval(imageCoord[0].intValue(), imageCoord[1].intValue(), 20, 20);
+    graphics.fill(ellipse);
   }
 
   /** this defines which part of the physical world is shown in the image
    * 
    * @param physicalPos
    * @return */
+  // TODO make sure both axes use same scale
   private Double[] worldToViz(double[] physicalPos) {
-    // TODO make sure both axes use same scale
     return new Double[] { //
         frameWidth - (frameWidth * (physicalPos[1] - physicalBoarders[1]) / physicalBoarders[3]), //
         frameHeight - (frameHeight * (physicalPos[0] - physicalBoarders[0]) / physicalBoarders[2]) //

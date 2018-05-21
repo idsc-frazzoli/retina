@@ -72,7 +72,7 @@ public class HandLabeler {
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
       drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
-      graphics.drawImage(scaleImage(bufferedImage, scaling), 0, 0, null);
+      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
   };
@@ -206,19 +206,6 @@ public class HandLabeler {
     jFrame.setVisible(true);
   }
 
-  /** @param unscaled original bufferedImage
-   * @param scale scaling factor
-   * @return scaled bufferedImage */
-  public static BufferedImage scaleImage(BufferedImage unscaled, float scale) {
-    int newWidth = (int) (unscaled.getWidth() * scale);
-    int newHeight = (int) (unscaled.getHeight() * scale);
-    BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale, scale);
-    AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    scaleOp.filter(unscaled, scaled);
-    return scaled;
-  }
-
   // set the bufferedImage field according to the currentImgNumber
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
@@ -232,9 +219,9 @@ public class HandLabeler {
   }
 
   // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
+  private void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
     for (int i = 0; i < blobs.size(); i++)
-      AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
+      VisualizationUtil.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
   }
 
   // goes through all files in the directory an extracts the timestamps
