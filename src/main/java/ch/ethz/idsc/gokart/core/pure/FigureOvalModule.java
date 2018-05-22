@@ -11,7 +11,7 @@ public class FigureOvalModule extends FigureBaseModule {
    * 
    * then the hyperloop project was introduced to the hanger which further reduced
    * the operating domain for the gokart. */
-  protected FigureOvalModule() {
+  public FigureOvalModule() {
     super(DubendorfCurve.HYPERLOOP_OVAL);
   }
 }
