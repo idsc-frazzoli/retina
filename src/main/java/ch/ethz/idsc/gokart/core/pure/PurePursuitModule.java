@@ -94,9 +94,11 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
                 GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
                 return gokartJoystickInterface.isAutonomousPressed();
               }
-            }
+            } else
+              System.err.println("beacon outside steering range");
           }
-        }
+        } else
+          System.err.println("pose quality insufficient");
       } else {
         System.err.println("no curve in pure pursuit");
       }
