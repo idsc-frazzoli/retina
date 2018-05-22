@@ -56,7 +56,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private static final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
   private static final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT };
   /** forgetting factor for previous classifications */
-  private static final double lambda = MappingConfig.GLOBAL.getLambda();
+  private static final double lambda = 0.5;
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
@@ -160,10 +160,10 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
           double logOdd = logOdds[piy * dimx + pix];
           // Max likelihood estimation
           synchronized (hset) {
-            if (L_THRESH < logOdd && logOddPrev <= L_THRESH)
+            if (L_THRESH < logOdd)
               hset.add(cell);
             else //
-            if (logOdd < L_THRESH && L_THRESH <= logOddPrev)
+            if (logOdd < L_THRESH)
               hset.remove(cell);
           }
         }
