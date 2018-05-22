@@ -5,9 +5,11 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
@@ -51,6 +53,10 @@ public class PresenterLcmModule extends AbstractModule {
     {
       ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180506.getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
+    }
+    {
+      if (Objects.nonNull(GokartMappingModule.grid))
+        timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.grid);
     }
     {
       PathRender pathRender = new PathRender(gokartPoseInterface);
