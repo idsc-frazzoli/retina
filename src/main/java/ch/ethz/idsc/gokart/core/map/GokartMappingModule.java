@@ -58,7 +58,7 @@ public class GokartMappingModule implements //
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    grid = BayesianOccupancyGrid.of(lbounds, gridRange, DoubleScalar.of(0.2)); // TODO comment on 0.2
+    grid = BayesianOccupancyGrid.of(lbounds, gridRange, MappingConfig.GLOBAL.cellDim);
     grid.setObstacleRadius(obstacleRadius);
   }
 

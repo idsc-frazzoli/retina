@@ -12,6 +12,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -51,9 +52,11 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   /** inv sensor model p(m|z) */
   private static final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
   /** cells with p(m|z_1:t) > probThreshold are considered occupied */
-  private static final double P_THRESH = MappingConfig.GLOBAL.getP_M_HIT();
+  private static final double P_THRESH = MappingConfig.GLOBAL.getP_THRESH();
   private static final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
   private static final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT };
+  /** forgetting factor for previous classifications */
+  private static final double lambda = MappingConfig.GLOBAL.getLambda();
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
@@ -76,10 +79,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final int dimx;
   private final int dimy;
   // ---
-  // TODO gokart2world is initially wrong...
-  // ... somehow ensure that map is not provided unless matrix is correct
   /** from gokart frame to world frame */
-  private Tensor gokart2world = IdentityMatrix.of(3);
+  private Tensor gokart2world = null;
   private final GeometricLayer lidar2cellLayer;
   private final GeometricLayer world2cellLayer;
   @SuppressWarnings("unused")
@@ -130,7 +131,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     //  ---
     lidar2cellLayer = GeometricLayer.of(grid2cell); // grid 2 cell
     lidar2cellLayer.pushMatrix(world2grid); // world to grid
-    lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
+    lidar2cellLayer.pushMatrix(IdentityMatrix.of(3)); // placeholder gokart2world
     lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
     // ---
     world2cellLayer = GeometricLayer.of(grid2cell);
@@ -147,24 +148,28 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * @param pos 2D position of new lidar observation in gokart coordinates
    * @param type of observation either 0, or 1 */
   public void processObservation(Tensor pos, int type) {
-    Tensor cell = lidarToCell(pos);
-    int pix = cell.Get(0).number().intValue();
-    if (0 <= pix && pix < dimx) {
-      int piy = cell.Get(1).number().intValue();
-      if (0 <= piy && piy < dimy) {
-        double p_m_z = PREDEFINED_P[type];
-        double logOddPrev = logOdds[piy * dimx + pix];
-        updateCellLogOdd(pix, piy, p_m_z);
-        double logOdd = logOdds[piy * dimx + pix];
-        // Max likelihood estimation
-        synchronized (hset) {
-          if (L_THRESH < logOdd && logOddPrev <= L_THRESH)
-            hset.add(cell);
-          else //
-          if (logOdd < L_THRESH && L_THRESH <= logOddPrev)
-            hset.remove(cell);
+    if (Objects.nonNull(gokart2world)) {
+      Tensor cell = lidarToCell(pos);
+      int pix = cell.Get(0).number().intValue();
+      if (0 <= pix && pix < dimx) {
+        int piy = cell.Get(1).number().intValue();
+        if (0 <= piy && piy < dimy) {
+          double p_m_z = PREDEFINED_P[type];
+          double logOddPrev = logOdds[piy * dimx + pix];
+          updateCellLogOdd(pix, piy, p_m_z);
+          double logOdd = logOdds[piy * dimx + pix];
+          // Max likelihood estimation
+          synchronized (hset) {
+            if (L_THRESH < logOdd && logOddPrev <= L_THRESH)
+              hset.add(cell);
+            else //
+            if (logOdd < L_THRESH && L_THRESH <= logOddPrev)
+              hset.remove(cell);
+          }
         }
       }
+    } else {
+      System.err.println("Observation not processed - no pose received");
     }
   }
 
@@ -204,38 +209,40 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * 
    * @param lbounds */
   public void setNewlBound(Tensor lbounds) {
-    this.lbounds = VectorQ.requireLength(lbounds, 2);
-    // ---
-    lidar2cellLayer.popMatrix();
-    lidar2cellLayer.popMatrix();
-    lidar2cellLayer.popMatrix();
-    lidar2cellLayer.pushMatrix(getWorld2grid()); // updated world to grid
-    double[] logOddsNew = new double[dimx * dimy];
-    Arrays.fill(logOddsNew, StaticHelper.pToLogOdd(P_M));
-    double threshold = L_THRESH;
-    synchronized (hset) {
-      hset.clear();
-      Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
-      final int ofsx = trans.Get(0).number().intValue();
-      final int ofsy = trans.Get(1).number().intValue();
+    if (Objects.nonNull(gokart2world)) {
+      this.lbounds = VectorQ.requireLength(lbounds, 2);
       // ---
-      for (int i = 0; i < dimx; i++)
-        for (int j = 0; j < dimy; j++) {
-          double logOdd = logOdds[j * dimx + i];
-          int pix = i + ofsx;
-          if (0 <= pix && pix < dimx) {
-            int piy = j + ofsy;
-            if (0 <= piy && piy < dimy) {
-              logOddsNew[piy * dimx + pix] = logOdd;
-              if (logOdd > threshold)
-                hset.add(Tensors.vector(pix, piy));
+      lidar2cellLayer.popMatrix();
+      lidar2cellLayer.popMatrix();
+      lidar2cellLayer.popMatrix();
+      lidar2cellLayer.pushMatrix(getWorld2grid()); // updated world to grid
+      double[] logOddsNew = new double[dimx * dimy];
+      Arrays.fill(logOddsNew, StaticHelper.pToLogOdd(P_M));
+      double threshold = L_THRESH;
+      synchronized (hset) {
+        hset.clear();
+        Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
+        final int ofsx = trans.Get(0).number().intValue();
+        final int ofsy = trans.Get(1).number().intValue();
+        // ---
+        for (int i = 0; i < dimx; i++)
+          for (int j = 0; j < dimy; j++) {
+            double logOdd = logOdds[j * dimx + i];
+            int pix = i + ofsx;
+            if (0 <= pix && pix < dimx) {
+              int piy = j + ofsy;
+              if (0 <= piy && piy < dimy) {
+                logOddsNew[piy * dimx + pix] = logOdd;
+                if (logOdd > threshold)
+                  hset.add(Tensors.vector(pix, piy));
+              }
             }
           }
-        }
+      }
+      logOdds = logOddsNew;
+      lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
+      lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
     }
-    logOdds = logOddsNew;
-    lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
-    lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
   }
 
   /** Update the log odds of a cell using the probability of occupation given a new observation.
@@ -245,7 +252,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private void updateCellLogOdd(int pix, int piy, double p_m_z) {
     int idx = piy * dimx + pix;
     double logOddDelta = StaticHelper.pToLogOdd(p_m_z) + L_M_INV;
-    logOdds[idx] += logOddDelta;
+    logOdds[idx] = lambda * logOdds[idx] + logOddDelta;
     if (Double.isInfinite(logOdds[idx]))
       throw new ArithmeticException("Overflow");
   }
@@ -281,9 +288,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   }
 
   private void drawCell(Tensor cell, byte grayScale) {
-    int idx = cellToIdx(cell);
-    if (idx < imagePixels.length) // TODO is this check mathematically necessary?
-      imagePixels[idx] = grayScale;
+    imagePixels[cellToIdx(cell)] = grayScale;
   }
 
   private void drawSphere(Tensor cell, Scalar radius, short grayScale) {
@@ -309,7 +314,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     if (0 <= pix && pix < dimx) {
       int piy = cell.y;
       if (0 <= piy && piy < dimy)
-        return imagePixels[piy * dimx + piy] == MASK_OCCUPIED;
+        return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;
     }
     return true;
   }
