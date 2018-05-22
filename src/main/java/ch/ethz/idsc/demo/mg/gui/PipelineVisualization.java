@@ -8,6 +8,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
+
 // provides a visualization of the complete pipeline
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();

@@ -1,6 +1,7 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.util;
 
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -56,11 +57,9 @@ public class TransformUtil {
     physicalCoord = undistortedImgCoord.dot(transformationMatrix);
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
-    // Transform to gokart front axle. NOTE unit is mm
-    // TODO standardize calibration setup such that values are constant and load them through pipelineConfig
+    // Transform to gokart rear axle. NOTE unit is mm
+    // TODO these are magic constants but will not change often
     physicalCoord = physicalCoord.add(Tensors.fromString("{{-370 , 1000, 0}}"));
-    // TODO Transformation to gokart rear axle
-    // ..
     // convert from [mm] to [m]
     physicalCoord = physicalCoord.divide(unitConversion);
     // note: x/y axis are inverse between gokart reference system and calibration reference system

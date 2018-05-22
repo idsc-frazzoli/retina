@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.gui;
+package ch.ethz.idsc.demo.mg.util;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -29,8 +29,8 @@ public class VisualizationUtil {
 
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object
    * 
-   * @param graphics
-   * @param blob
+   * @param graphics object to be drawn onto
+   * @param blob ImageBlob to be drawn
    * @param color desired color */
   public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();

@@ -1,11 +1,11 @@
 // code by mg
-package ch.ethz.idsc.demo.mg;
+package ch.ethz.idsc.demo.mg.eval;
 
 import java.io.File;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 
-public enum HandLabelFileLocations {
+public enum EvaluationFileLocations {
   ;
   private static final File HANDLABEL_IMAGES = UserHome.Pictures("handlabelimages");
   private static final File EVALUATED_IMAGES = UserHome.Pictures("evaluatedimages");
@@ -25,9 +25,17 @@ public enum HandLabelFileLocations {
   }
 
   /** @param filename
-   * @return file in directory containing the labels */
-  public static File labels(String filename) {
+   * @return file in directory containing the handlabels */
+  public static File handlabels(String filename) {
+    filename = filename +".csv";
     return new File(warningIfNotDirectory(UserHome.Pictures("handlabels")), filename);
+  }
+  
+  /** @param filename
+   * @return file in directory containing the estimatedlabels */
+  public static File estimatedlabels(String filename) {
+    filename = filename+".csv";
+    return new File(warningIfNotDirectory(UserHome.Pictures("estimatedlabels")), filename);
   }
 
   /** @return directory for the GUI screenshots */

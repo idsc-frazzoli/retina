@@ -5,27 +5,31 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.demo.mg.eval.TrackingEvaluator;
 
 /** pipeline setup for single/multirun */
 public class PipelineSetup {
   private PipelineConfig pipelineConfig;
+  private TrackingEvaluator evaluator;
+  private int iterationLength;
 
   PipelineSetup(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
+    iterationLength = pipelineConfig.iterationLength.number().intValue();
   }
 
   private void iterate() {
     // no visualization for multirun
-    pipelineConfig.visualizePipeline = false;
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < iterationLength; i++) {
       System.out.println("****new Iteration ****");
-      pipelineConfig.aUp = RealScalar.of(0.1 + i * 0.03);
-      InputSubModule inputSubModule = runPipeline();
+      // modify CSV file name where estimated features are saved for each iteration
+      // for evaluation, use TrackingEvaluator as standalone application
+      pipelineConfig.estimatedLabelFileName = pipelineConfig.logFileName.toString() + "_run_" + i;
+      runPipeline();
     }
   }
 
-  private InputSubModule runPipeline() {
+  private void runPipeline() {
     // get logFile
     File logFile = pipelineConfig.getLogFile();
     try {
@@ -36,11 +40,9 @@ public class PipelineSetup {
           pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
       // show summary
       inputSubModule.summarizeLog();
-      return inputSubModule;
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return null;
   }
 
   public static void main(String[] args) {
@@ -49,7 +51,7 @@ public class PipelineSetup {
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);
     // multirun for tracking evaluation
-    if (pipelineConfig.evaluatePerformance) {
+    if (pipelineConfig.collectEstimatedFeatures) {
       pipelineSetup.iterate();
     } else {
       pipelineSetup.runPipeline();

@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;

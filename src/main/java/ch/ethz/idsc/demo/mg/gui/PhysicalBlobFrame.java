@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.pipeline.TransformUtil;
+import ch.ethz.idsc.demo.mg.util.TransformUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
 public class PhysicalBlobFrame {
