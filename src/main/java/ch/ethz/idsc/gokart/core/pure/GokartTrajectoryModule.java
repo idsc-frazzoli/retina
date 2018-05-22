@@ -94,7 +94,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private final Region<Tensor> polygonRegion;
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
-  final Tensor obstacleMap;
+  public final Tensor obstacleMap;
   final Tensor waypoints;
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
@@ -132,6 +132,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void first() throws Exception {
+    gokartMappingModule.start();
+    // ---
     gokartPoseLcmClient.addListener(this);
     rimoGetLcmClient.addListener(rimoGetListener);
     // ---
@@ -145,6 +147,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   protected void last() {
     purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
+    // ---
+    gokartMappingModule.stop();
   }
 
   @Override // from AbstractClockedModule
