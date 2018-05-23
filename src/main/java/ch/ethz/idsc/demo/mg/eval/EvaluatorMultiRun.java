@@ -23,7 +23,7 @@ public class EvaluatorMultiRun {
     for (int i = 0; i < iterationLength; i++) {
       // to initialize singleRun, only the estimatedLabelFileName needs to be changed
       // TODO this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
-      int newTau = 1000 + 1000*i;
+      int newTau = 1000 + 1000 * i;
       String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
       pipelineConfig.estimatedLabelFileName = newEstimatedLabelFileName;
       // initialize singleRun object and run evaluation
@@ -34,11 +34,11 @@ public class EvaluatorMultiRun {
       collectedResults.add(singleRun.getResults());
     }
   }
-  
+
   private void summarizeResults() {
-    for (int i =0;i<iterationLength;i++) {
-      System.out.println("average recall is "+collectedResults.get(i)[0]);
-      System.out.println("average precision is "+collectedResults.get(i)[1]);
+    for (int i = 0; i < iterationLength; i++) {
+      System.out.println("average recall is " + collectedResults.get(i)[0]);
+      System.out.println("average precision is " + collectedResults.get(i)[1]);
     }
   }
 

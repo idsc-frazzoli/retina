@@ -66,7 +66,7 @@ public class TransformUtil {
     double[] physicalPos = { physicalCoord.get(0).Get(1).number().doubleValue(), physicalCoord.get(0).Get(0).number().doubleValue() };
     return physicalPos;
   }
-  
+
   // for testing
   public static void main(String[] args) {
     TransformUtil test = new TransformUtil(new PipelineConfig());

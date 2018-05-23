@@ -19,7 +19,7 @@ public class PipelineSetup {
 
   private void iterate() {
     for (int i = 0; i < iterationLength; i++) {
-      System.out.println("******** Iteration nr "+(i+1));
+      System.out.println("******** Iteration nr " + (i + 1));
       int newTau = 1000 + i * 1000;
       String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
       pipelineConfig.tau = RealScalar.of(newTau);
@@ -41,7 +41,7 @@ public class PipelineSetup {
       e.printStackTrace();
     }
   }
-  
+
   public static void main(String[] args) {
     // initialize config -- could also load existing config
     PipelineConfig pipelineConfig = new PipelineConfig();

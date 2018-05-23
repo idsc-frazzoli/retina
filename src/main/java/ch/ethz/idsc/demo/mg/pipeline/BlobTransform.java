@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.util.TransformUtil;
 // Transformation of ImageBlobs to PhysicalBlobs.
 public class BlobTransform {
   private List<PhysicalBlob> physicalBlobs;
-  private TransformUtil transformUtil;
+  private final TransformUtil transformUtil;
 
   BlobTransform(PipelineConfig pipelineConfig) {
     physicalBlobs = new ArrayList<>();

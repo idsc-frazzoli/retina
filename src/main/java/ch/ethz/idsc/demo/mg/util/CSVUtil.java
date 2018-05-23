@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
 
 // provides static functions to work with CSV files
 public class CSVUtil {
-  private static String COMMA_DELIMITER = ",";
-  private static String NEW_LINE = "\n";;
+  private static final String COMMA_DELIMITER = ",";
+  private static final String NEW_LINE = "\n";
 
   /** saves a List<List<ImageBlob>> object to a CSV file.
    * 
@@ -56,10 +56,10 @@ public class CSVUtil {
   }
 
   /** loads an object from CSV file that was previously saved with saveToCSV fct. Returns null in case of
-   *  IOException.
+   * IOException.
    * 
    * @param file object is loaded from that file
-   * @return List<List<ImageBlob>> object*/
+   * @return List<List<ImageBlob>> object */
   public static List<List<ImageBlob>> loadFromCSV(File file) {
     // extract timestamps first
     int[] timeStamps = getTimestampsFromCSV(file);
@@ -87,7 +87,7 @@ public class CSVUtil {
   }
 
   /** load the timestamps from a CSV file previously saved with saveToCSV fct. Returns null in case of
-   *  IOException.
+   * IOException.
    * 
    * @param file timestamps are read from that file
    * @return timestamps object indicating when features are available */

@@ -40,7 +40,7 @@ public class PhysicalBlobFrame {
     bytes = dataBufferByte.getData();
     transformUtil = new TransformUtil(pipelineConfig);
     scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
-    originPos = new int[] {pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue()};
+    originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();
     gokartSize = pipelineConfig.gokartSize.number().intValue();
     // TODO physical boarder points could be loaded from .csv
@@ -91,7 +91,7 @@ public class PhysicalBlobFrame {
     clearImage();
     graphics.setColor(Color.BLACK);
     // line that is 1m long
-    graphics.drawLine(10, frameHeight-10, (int) (10+scaleFactor*1), frameHeight-10);
+    graphics.drawLine(10, frameHeight - 10, (int) (10 + scaleFactor * 1), frameHeight - 10);
     graphics.fillRect(originPos[0] - gokartSize / 2, originPos[1] - gokartSize / 2, gokartSize, gokartSize);
     graphics.setColor(Color.RED);
     graphics.draw(trapezoid);
@@ -102,8 +102,7 @@ public class PhysicalBlobFrame {
    * @param graphics
    * @param physicalBlob
    * @param color
-   * @param size
-   */
+   * @param size */
   private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
     double leftCornerX = physicalBlob.getImageCoord()[0] - size / 2;
     double leftCornerY = physicalBlob.getImageCoord()[1] - size / 2;

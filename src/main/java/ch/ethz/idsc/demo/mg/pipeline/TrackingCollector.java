@@ -44,13 +44,13 @@ public class TrackingCollector {
   }
 
   public void setEstimatedFeatures(List<ImageBlob> estimatedFeaturesInstant) {
-    System.out.println("Estimated features are collected. Instant nr "+(currentLabelInstant+1));
+    System.out.println("Estimated features are collected. Instant nr " + (currentLabelInstant + 1));
     estimatedFeatures.set(currentLabelInstant, estimatedFeaturesInstant);
     // counter
     currentLabelInstant++;
     if (currentLabelInstant == numberOfLabelInstants) {
       CSVUtil.saveToCSV(estimatedLabelFile, estimatedFeatures, timeStamps);
-      System.out.println("Estimated labels saved to "+estimatedLabelFileName);
+      System.out.println("Estimated labels saved to " + estimatedLabelFileName);
     }
   }
 }

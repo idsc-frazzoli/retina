@@ -27,14 +27,14 @@ public enum EvaluationFileLocations {
   /** @param filename without .csv extension
    * @return file in directory containing the handlabels */
   public static File handlabels(String filename) {
-    filename = filename +".csv";
+    filename = filename + ".csv";
     return new File(warningIfNotDirectory(UserHome.Pictures("handlabels")), filename);
   }
-  
+
   /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File estimatedlabels(String filename) {
-    filename = filename+".csv";
+    filename = filename + ".csv";
     return new File(warningIfNotDirectory(UserHome.Pictures("estimatedlabels")), filename);
   }
 
