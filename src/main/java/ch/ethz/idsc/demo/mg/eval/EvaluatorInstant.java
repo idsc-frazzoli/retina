@@ -6,7 +6,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
-public class TrackingEvaluatorInstant {
+public class EvaluatorInstant {
   private final List<ImageBlob> groundTruthInstant;
   private final List<ImageBlob> estimatedInstant;
   private final boolean[] assignedEstimatedFeatures;
@@ -19,7 +19,7 @@ public class TrackingEvaluatorInstant {
   private float recall; // parameter to quantify performance
   private float precision; // parameter to quantify performance
 
-  TrackingEvaluatorInstant(PipelineConfig pipelineConfig, List<ImageBlob> groundTruth, List<ImageBlob> estimated) {
+  EvaluatorInstant(PipelineConfig pipelineConfig, List<ImageBlob> groundTruth, List<ImageBlob> estimated) {
     groundTruthInstant = groundTruth;
     estimatedInstant = estimated;
     distToClosestEstimate = new float[groundTruthInstant.size()][2];
@@ -47,8 +47,8 @@ public class TrackingEvaluatorInstant {
       precision = truePositiveCount / denominator;
     }
     // System.out.println("TP/FN/FP: "+truePositiveCount+"/"+falseNegativeCount+"/"+falsePositiveCount);
-    System.out.println("Recall is " + recall);
-    System.out.println("Precision is " + precision);
+    // System.out.println("Recall is " + recall);
+    // System.out.println("Precision is " + precision);
   }
 
   private void computeDistances() {

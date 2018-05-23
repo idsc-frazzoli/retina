@@ -59,7 +59,7 @@ public class TransformUtil {
     physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
     // Transform to gokart rear axle. NOTE unit is mm
     // TODO these are magic constants but will not change often
-    physicalCoord = physicalCoord.add(Tensors.fromString("{{-370 , 1000, 0}}"));
+    physicalCoord = physicalCoord.add(Tensors.fromString("{{-420 , 2200, 0}}"));
     // convert from [mm] to [m]
     physicalCoord = physicalCoord.divide(unitConversion);
     // note: x/y axis are inverse between gokart reference system and calibration reference system

@@ -18,33 +18,35 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
  * is compared in a TrackingEvaluatorInstant object. */
-public class TrackingEvaluator {
+public class EvaluatorSingleRun {
+  private final List<List<ImageBlob>> groundTruthFeatures;
+  private final List<List<ImageBlob>> estimatedFeatures;
+  private final EvaluatorInstant[] evaluatorInstants;
   private final String logFileName;
   private final File evaluationFilePath;
   private final File handLabelFile;
   private final File estimatedLabelFile;
-  private final List<List<ImageBlob>> groundTruthFeatures;
-  private final List<List<ImageBlob>> estimatedFeatures;
   private final int[] groundTruthTimeStamps;
   private final int[] estimatedTimeStamps;
-  private final TrackingEvaluatorInstant[] evaluatorInstants;
   private final boolean saveEvaluationFrame;
   private final int numberOfLabelInstants;
-  private int currentLabelInstant = 0;
+  private String estimatedLabelFileName;
   private float averageRecall;
   private float averagePrecision;
+  private int currentLabelInstant = 0;
 
-  TrackingEvaluator(PipelineConfig pipelineConfig) {
+  EvaluatorSingleRun(PipelineConfig pipelineConfig) {
     logFileName = pipelineConfig.logFileName.toString();
     evaluationFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
     groundTruthTimeStamps = CSVUtil.getTimestampsFromCSV(handLabelFile);
     groundTruthFeatures = CSVUtil.loadFromCSV(handLabelFile);
     numberOfLabelInstants = groundTruthFeatures.size();
-    estimatedLabelFile = EvaluationFileLocations.estimatedlabels(pipelineConfig.estimatedLabelFileName.toString());
+    estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
+    estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
     estimatedTimeStamps = CSVUtil.getTimestampsFromCSV(estimatedLabelFile);
     estimatedFeatures = CSVUtil.loadFromCSV(estimatedLabelFile);
-    evaluatorInstants = new TrackingEvaluatorInstant[numberOfLabelInstants];
+    evaluatorInstants = new EvaluatorInstant[numberOfLabelInstants];
     saveEvaluationFrame = pipelineConfig.saveEvaluationFrame;
     // initialize evaluatorInstants
     for (int i = 0; i < numberOfLabelInstants; i++) {
@@ -53,7 +55,7 @@ public class TrackingEvaluator {
         List<ImageBlob> emptyList = new ArrayList<>();
         estimatedFeatures.add(i, emptyList);
       }
-      evaluatorInstants[i] = new TrackingEvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
+      evaluatorInstants[i] = new EvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
     }
   }
 
@@ -66,7 +68,6 @@ public class TrackingEvaluator {
       }
     }
     computePerformance();
-    summarizeResults();
   }
 
   // accumulatedEventFrame with estimated and ground truth features
@@ -115,21 +116,18 @@ public class TrackingEvaluator {
     }
   }
 
-  private void summarizeResults() {
-    System.out.println("Average recall: " + averageRecall);
-    System.out.println("Average precision: " + averagePrecision);
-  }
-
-  // TODO get names of CSV files as saved in PipelineSetup and then multirun the evaluation
-  public void multiRun() {
-    // ..
+  // TODO provide all essential results of the evaluation run to other objects through this fct
+  public double[] getResults() {
+    double[] results = new double[2];
+    results[0] = averageRecall;
+    results[1] = averagePrecision;
+    return results;
   }
 
   // standalone application
   public static void main(String[] args) {
     PipelineConfig pipelineConfig = new PipelineConfig();
-    pipelineConfig.saveEvaluationFrame = false;
-    TrackingEvaluator test = new TrackingEvaluator(pipelineConfig);
+    EvaluatorSingleRun test = new EvaluatorSingleRun(pipelineConfig);
     test.runEvaluation();
   }
 }

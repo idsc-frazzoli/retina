@@ -15,7 +15,6 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.TransformUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
-// TODO load params through pipelineConfig
 public class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static int frameWidth;
@@ -26,11 +25,11 @@ public class PhysicalBlobFrame {
   // world coord to visualization mapping
   private TransformUtil transformUtil;
   private final double[][] fieldOfView; // contains image plane coordinates of trapezoid defining field of view
-  private final int gokartSize = 30; // [pixel]
-  private final double objectSize = 20; // size of physicalBlobs
-  private final double scaleFactor = 25; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
-  private final int[] originPos = new int[] { 200, 400 }; // [pixel] image plane location of physical world origin
-  private final Path2D trapezoid;
+  private final double scaleFactor; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
+  private final int gokartSize; // [pixel]
+  private final double objectSize; // size of physicalBlobs
+  private final int[] originPos; // [pixel] image plane location of physical world origin
+  private final Path2D trapezoid; // describes the field of view in physical space
 
   public PhysicalBlobFrame(PipelineConfig pipelineConfig) {
     frameWidth = pipelineConfig.frameWidth.number().intValue();
@@ -40,12 +39,18 @@ public class PhysicalBlobFrame {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     transformUtil = new TransformUtil(pipelineConfig);
+    scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
+    originPos = new int[] {pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue()};
+    objectSize = pipelineConfig.objectSize.number().doubleValue();
+    gokartSize = pipelineConfig.gokartSize.number().intValue();
     // TODO physical boarder points could be loaded from .csv
     fieldOfView = new double[4][2];
+    // upper corners
     fieldOfView[0] = worldToImgPlane(transformUtil.imageToWorld(10, 10));
     fieldOfView[1] = worldToImgPlane(transformUtil.imageToWorld(230, 10));
-    fieldOfView[2] = worldToImgPlane(transformUtil.imageToWorld(230, 170));
-    fieldOfView[3] = worldToImgPlane(transformUtil.imageToWorld(10, 170));
+    // lower corners
+    fieldOfView[2] = worldToImgPlane(transformUtil.imageToWorld(230, 180));
+    fieldOfView[3] = worldToImgPlane(transformUtil.imageToWorld(10, 180));
     // generate path
     trapezoid = new Path2D.Double();
     trapezoid.moveTo(fieldOfView[0][0], fieldOfView[0][1]);
@@ -69,13 +74,12 @@ public class PhysicalBlobFrame {
    * @return BufferedImage for visualization */
   public BufferedImage overlayPhysicalBlobs(List<PhysicalBlob> physicalBlobs) {
     // if no physicalBlobs are present, return old BufferedImage
-    if (physicalBlobs.size() == 0) {
-      return bufferedImage;
-    }
+    // if (physicalBlobs.size() == 0) {
+    // return bufferedImage;
+    // }
     setBackground();
     for (int i = 0; i < physicalBlobs.size(); i++) {
-      // TODO only temporary
-      double[] imageCoord = new double[] { worldToImgPlane(physicalBlobs.get(i).getPos())[0], worldToImgPlane(physicalBlobs.get(i).getPos())[1] };
+      double[] imageCoord = worldToImgPlane(physicalBlobs.get(i).getPos());
       physicalBlobs.get(i).setImageCoord(imageCoord);
       drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.WHITE, objectSize);
     }
@@ -86,6 +90,8 @@ public class PhysicalBlobFrame {
   public void setBackground() {
     clearImage();
     graphics.setColor(Color.BLACK);
+    // line that is 1m long
+    graphics.drawLine(10, frameHeight-10, (int) (10+scaleFactor*1), frameHeight-10);
     graphics.fillRect(originPos[0] - gokartSize / 2, originPos[1] - gokartSize / 2, gokartSize, gokartSize);
     graphics.setColor(Color.RED);
     graphics.draw(trapezoid);
@@ -119,6 +125,7 @@ public class PhysicalBlobFrame {
     // unit conversion from [m] to [pixel]
     double[] physicalPosPixel = new double[] { physicalPos[0] * scaleFactor, physicalPos[1] * scaleFactor };
     // shift origin from gokart to upper left corner and transform coordinate axes: x --> -y and y --> -x
+    // TODO the coordinate transformation is hardcoded
     double[] imagePlaneCoord = new double[] { originPos[0] - physicalPosPixel[1], originPos[1] - physicalPosPixel[0] };
     return imagePlaneCoord;
   }

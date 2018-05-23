@@ -20,7 +20,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
-// TODO collectResults fct once evaluator is implemented
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   // pipeline modules
@@ -191,7 +190,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      String secondFileName = String.format("%s_%04d_%d_%s.png", imagePrefix, imageCount, timeStamp, "physical");
+      String secondFileName = String.format("%s_%s_%04d_%d.png", "physical", imagePrefix, imageCount, timeStamp);
       ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED), "png", new File(parentFilePath, fileName));
       ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
       // possibility to save whole GUI
