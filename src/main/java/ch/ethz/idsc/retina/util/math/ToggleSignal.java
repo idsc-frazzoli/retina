@@ -38,6 +38,6 @@ public class ToggleSignal implements ScalarUnaryOperator {
 
   @Override // from ScalarUnaryOperator
   public Scalar apply(Scalar scalar) {
-    return interpolation.get(Tensors.of(scalar)).Get();
+    return interpolation.At(scalar);
   }
 }

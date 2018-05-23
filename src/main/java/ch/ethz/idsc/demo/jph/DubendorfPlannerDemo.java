@@ -10,17 +10,17 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.CarEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
-import ch.ethz.idsc.owl.bot.se2.glc.CarForwardFlows;
+import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
-import ch.ethz.idsc.owl.glc.adapter.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.gui.ani.GlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
+import ch.ethz.idsc.owl.math.state.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -48,7 +48,7 @@ public class DubendorfPlannerDemo {
   }
 
   void configure(OwlyAnimationFrame owlyAnimationFrame) {
-    CarFlows carFlows = new CarForwardFlows(RealScalar.of(3.0), Degree.of(25));
+    FlowsInterface carFlows = CarFlows.forward(RealScalar.of(3.0), Degree.of(25));
     CarEntity carEntity = null; // FIXME
     // new CarEntity( //
     // new StateTime(Tensors.vector(35.600, 42.933, 0.942), RealScalar.ZERO), //
@@ -64,7 +64,7 @@ public class DubendorfPlannerDemo {
     ImageRegion imageRegion = new ImageRegion(tensor, range, true);
     TrajectoryRegionQuery trq = createCarQuery(imageRegion);
     // carEntity.obstacleQuery = trq;
-    owlyAnimationFrame.set(carEntity);
+    owlyAnimationFrame.add(carEntity);
     // owlyAnimationFrame.setObstacleQuery(trq);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(predefinedMap.getModel2Pixel());

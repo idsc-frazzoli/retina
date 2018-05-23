@@ -15,13 +15,13 @@ public enum SysidSignals implements Supplier<ScalarUnaryOperator> {
   PRBS7_SIGNED_FAST() {
     @Override
     public ScalarUnaryOperator get() {
-      return new PRBS7SignedSignal(DoubleScalar.of(0.2));
+      return PRBS7SignedSignal.of(DoubleScalar.of(0.2));
     }
   }, //
   PRBS7_SIGNED_SLOW() {
     @Override
     public ScalarUnaryOperator get() {
-      return new PRBS7SignedSignal(DoubleScalar.of(0.5));
+      return PRBS7SignedSignal.of(DoubleScalar.of(0.5));
     }
   }, //
   CHIRP_FAST() {

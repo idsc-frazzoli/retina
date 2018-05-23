@@ -6,9 +6,10 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** the purpose of the class is to carry out the math for the simple obstacle
- * check method. */
-// the class name is preliminary
+/** class interprets raw lidar points in 3D and corrects for an inclination of the lidar.
+ * the implementation makes use of the approximation sin(incline) ~ incline for small incline
+ * 
+ * the purpose of the class is to carry out the math for the simple obstacle check method */
 public class SimpleSpacialObstaclePredicate implements SpacialXZObstaclePredicate {
   /** convenient way for the application layer to obtain an instance
    * without having to specify the geometric configuration
@@ -26,7 +27,7 @@ public class SimpleSpacialObstaclePredicate implements SpacialXZObstaclePredicat
   private final double hi;
   private final double inc;
 
-  public SimpleSpacialObstaclePredicate(Scalar vlp16_ZLo, Scalar vlp16_ZHi, Scalar incline) {
+  private SimpleSpacialObstaclePredicate(Scalar vlp16_ZLo, Scalar vlp16_ZHi, Scalar incline) {
     lo = vlp16_ZLo.number().doubleValue();
     hi = vlp16_ZHi.number().doubleValue();
     inc = incline.number().doubleValue();

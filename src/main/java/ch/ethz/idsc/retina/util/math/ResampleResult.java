@@ -22,7 +22,6 @@ public class ResampleResult {
     interpolation = LinearInterpolation.of(points);
     this.list = list;
     this.numel = points.length();
-    // Tensor last = Last.of(list.get(list.size() - 1));
   }
 
   public List<Tensor> getParameters() {
@@ -30,13 +29,7 @@ public class ResampleResult {
   }
 
   public List<Tensor> getPoints() {
-    return list.stream() //
-        .map(vector -> Tensor.of(vector.stream().map(Tensors::of).map(interpolation::get))) //
-        .collect(Collectors.toList());
-  }
-
-  public int count() {
-    return list.stream().mapToInt(Tensor::length).sum();
+    return list.stream().map(vector -> vector.map(interpolation::at)).collect(Collectors.toList());
   }
 
   public List<Tensor> getPointsSpin(Scalar rate) {
@@ -45,9 +38,9 @@ public class ResampleResult {
     for (Tensor vector : list) {
       Tensor entry = Tensors.empty();
       for (Tensor _param : vector) {
-        final Scalar param = (Scalar) _param;
-        clip.requireInside(param);
-        Tensor point = interpolation.get(Tensors.of(param));
+        Scalar param = clip.requireInside((Scalar) _param);
+        Tensor point = interpolation.at(param);
+        // TODO error is introduced here
         Scalar angle = clip.rescale(param).multiply(rate);
         Tensor matrix = RotationMatrix.of(angle);
         entry.append(matrix.dot(point));

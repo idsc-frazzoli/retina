@@ -282,6 +282,22 @@ public enum GokartLogFile implements LogFile {
   /** path planning with static obstacles
    * start from point away from waypoints */
   _20180517T174022_a7130894, //
+  /***************************************************/
+  /* 2018-05-22 */
+  /** pure pursuit figure 8 with speeds up to 6[m/s] */
+  _20180522T111414_6806b8fd, //
+  /** oval pure pursuit slow */
+  _20180522T114650_6806b8fd, //
+  /** trajectory planning with moving obstacles */
+  _20180522T135700_2da7e1f5, //
+  /** trajectory planning with moving obstacles */
+  _20180522T140901_2da7e1f5, //
+  /** joystick driving with 1000[ARMS] */
+  _20180522T144106_2da7e1f5, //
+  /** trajectory planning */
+  _20180522T145910_2da7e1f5, //
+  /** trajectory planning with moving obstacles */
+  _20180522T150418_2da7e1f5, //
   ;
   @Override
   public String getFilename() {
