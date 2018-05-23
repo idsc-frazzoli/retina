@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mg.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.List;
@@ -14,6 +15,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.TransformUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
+// TODO load params through pipelineConfig
 public class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static int frameWidth;
@@ -23,8 +25,12 @@ public class PhysicalBlobFrame {
   private final byte[] bytes;
   // world coord to visualization mapping
   private TransformUtil transformUtil;
-  private final double[][] fieldOfView; // defines trapezoid in physical space that is mapped onto image plane
-  private final double[] physicalBoarders; // lower right point and dimensions of rectangle that confines fieldOfView
+  private final double[][] fieldOfView; // contains image plane coordinates of trapezoid defining field of view
+  private final int gokartSize = 30; // [pixel]
+  private final double objectSize = 20; // size of physicalBlobs
+  private final double scaleFactor = 25; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
+  private final int[] originPos = new int[] { 200, 400 }; // [pixel] image plane location of physical world origin
+  private final Path2D trapezoid;
 
   public PhysicalBlobFrame(PipelineConfig pipelineConfig) {
     frameWidth = pipelineConfig.frameWidth.number().intValue();
@@ -34,14 +40,19 @@ public class PhysicalBlobFrame {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     transformUtil = new TransformUtil(pipelineConfig);
-    // TODO fieldOfView and physicalBoarders could be saved in .csv calibration file and loaded from there
-    double[] upperLeft = transformUtil.imageToWorld(10, 10);
-    double[] upperRight = transformUtil.imageToWorld(230, 10);
-    double[] lowerLeft = transformUtil.imageToWorld(10, 170);
-    double[] lowerRight = transformUtil.imageToWorld(230, 170);
-    fieldOfView = new double[][] { upperLeft, upperRight, lowerLeft, lowerRight };
-    // add padding for visualization
-    physicalBoarders = new double[] { lowerLeft[0] - 2, upperRight[1] - 1, upperLeft[0] - lowerLeft[0] + 3, upperLeft[1] - upperRight[1] + 2 };
+    // TODO physical boarder points could be loaded from .csv
+    fieldOfView = new double[4][2];
+    fieldOfView[0] = worldToImgPlane(transformUtil.imageToWorld(10, 10));
+    fieldOfView[1] = worldToImgPlane(transformUtil.imageToWorld(230, 10));
+    fieldOfView[2] = worldToImgPlane(transformUtil.imageToWorld(230, 170));
+    fieldOfView[3] = worldToImgPlane(transformUtil.imageToWorld(10, 170));
+    // generate path
+    trapezoid = new Path2D.Double();
+    trapezoid.moveTo(fieldOfView[0][0], fieldOfView[0][1]);
+    trapezoid.lineTo(fieldOfView[1][0], fieldOfView[1][1]);
+    trapezoid.lineTo(fieldOfView[2][0], fieldOfView[2][1]);
+    trapezoid.lineTo(fieldOfView[3][0], fieldOfView[3][1]);
+    trapezoid.closePath();
     setBackground();
   }
 
@@ -52,77 +63,63 @@ public class PhysicalBlobFrame {
     return bufferedImage;
   }
 
-  /** paint physical Blobs
+  /** paint list of physicalBlob objects
    * 
-   * @param physicalBlobs
+   * @param physicalBlobs List of physicalBlob objects
    * @return BufferedImage for visualization */
   public BufferedImage overlayPhysicalBlobs(List<PhysicalBlob> physicalBlobs) {
+    // if no physicalBlobs are present, return old BufferedImage
     if (physicalBlobs.size() == 0) {
       return bufferedImage;
     }
     setBackground();
     for (int i = 0; i < physicalBlobs.size(); i++) {
       // TODO only temporary
-      double[] imageCoord = new double[] {worldToViz(physicalBlobs.get(i).getPos())[0], worldToViz(physicalBlobs.get(i).getPos())[1]};
+      double[] imageCoord = new double[] { worldToImgPlane(physicalBlobs.get(i).getPos())[0], worldToImgPlane(physicalBlobs.get(i).getPos())[1] };
       physicalBlobs.get(i).setImageCoord(imageCoord);
-      drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.WHITE);
+      drawPhysicalBlob(graphics, physicalBlobs.get(i), Color.WHITE, objectSize);
     }
     return bufferedImage;
   }
 
-  /** background with trapezoid */
+  /** draws rectangle at origin representing the gokart and a trapezoid representing the field of view */
   public void setBackground() {
     clearImage();
-    // draw (0,0) position to show gokart
-    int shapeSize = 20;
-    Double[] origin = worldToViz(new double[] { 0, 0 });
-    int xCoord = origin[0].intValue() - shapeSize / 2;
-    int yCoord = origin[1].intValue() - shapeSize / 2;
     graphics.setColor(Color.BLACK);
-    graphics.fillRect(xCoord, yCoord, shapeSize, shapeSize);
-    // draw red tapezoid based on fieldOfView
-    // TODO store as final Path2D field
-    Double[] upperLeft = worldToViz(fieldOfView[0]);
-    Double[] upperRight = worldToViz(fieldOfView[1]);
-    Double[] lowerLeft = worldToViz(fieldOfView[2]);
-    Double[] lowerRight = worldToViz(fieldOfView[3]);
+    graphics.fillRect(originPos[0] - gokartSize / 2, originPos[1] - gokartSize / 2, gokartSize, gokartSize);
     graphics.setColor(Color.RED);
-    // suggestion: create Path2D, for instance see GeometricLayer::toPath2D
-    // ... then use path2d.closePath() to draw trapezoid
-    graphics.drawLine(upperLeft[0].intValue(), upperLeft[1].intValue(), upperRight[0].intValue(), upperRight[1].intValue());
-    graphics.drawLine(upperLeft[0].intValue(), upperLeft[1].intValue(), lowerLeft[0].intValue(), lowerLeft[1].intValue());
-    graphics.drawLine(lowerLeft[0].intValue(), lowerLeft[1].intValue(), lowerRight[0].intValue(), lowerRight[1].intValue());
-    graphics.drawLine(lowerRight[0].intValue(), lowerRight[1].intValue(), upperRight[0].intValue(), upperRight[1].intValue());
+    graphics.draw(trapezoid);
   }
 
-  // resets all pixel to grey
-  public void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
-  }
-
-  /** draws an ellipse representing a PhysicalBlob object onto a Graphics2D object
+  /** draws a PhysicalBlob onto the provided Graphics2D object
    * 
    * @param graphics
-   * @param blob
-   * @param color desired color */
-  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color) {
-    double circleSize = 20;
-    double leftCornerX = physicalBlob.getImageCoord()[0] - circleSize / 2;
-    double leftCornerY = physicalBlob.getImageCoord()[1] - circleSize / 2;
-    Ellipse2D ellipse = new Ellipse2D.Double(leftCornerX, leftCornerY, circleSize, circleSize);
+   * @param physicalBlob
+   * @param color
+   * @param size
+   */
+  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
+    double leftCornerX = physicalBlob.getImageCoord()[0] - size / 2;
+    double leftCornerY = physicalBlob.getImageCoord()[1] - size / 2;
+    Ellipse2D ellipse = new Ellipse2D.Double(leftCornerX, leftCornerY, size, size);
     graphics.setColor(color);
     graphics.fill(ellipse);
   }
 
-  /** this defines which part of the physical world is shown in the image
+  // resets all pixel to grey
+  private void clearImage() {
+    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+  }
+
+  /** transforms physical coordinates in gokart reference frame to image plane coordinates
    * 
-   * @param physicalPos
-   * @return */
-  // TODO make sure both axes use same scale
-  private Double[] worldToViz(double[] physicalPos) {
-    return new Double[] { //
-        frameWidth - (frameWidth * (physicalPos[1] - physicalBoarders[1]) / physicalBoarders[3]), //
-        frameHeight - (frameHeight * (physicalPos[0] - physicalBoarders[0]) / physicalBoarders[2]) //
-    };
+   * @param physicalPos [m] gokart reference frame
+   * @return imagePlaneCoord [pixel] image plane coordinates */
+  private double[] worldToImgPlane(double[] physicalPos) {
+    // unit conversion from [m] to [pixel]
+    double[] physicalPosPixel = new double[] { physicalPos[0] * scaleFactor, physicalPos[1] * scaleFactor };
+    // shift origin from gokart to upper left corner and transform coordinate axes: x --> -y and y --> -x
+    double[] imagePlaneCoord = new double[] { originPos[0] - physicalPosPixel[1], originPos[1] - physicalPosPixel[0] };
+    return imagePlaneCoord;
   }
 }

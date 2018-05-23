@@ -45,13 +45,13 @@ public class PipelineConfig {
   public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv"; // relative to main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
-  public final Boolean saveImages = false;
+  public final Scalar saveImagesConfig = RealScalar.of(1); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   public final Scalar savingInterval = RealScalar.of(300); // [ms]
   // handlabeling tool
   public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to evaluate performance
   public final Scalar initAxis = RealScalar.of(400);
   // tracking collector
-  public final Boolean collectEstimatedFeatures = true;
+  public final Boolean collectEstimatedFeatures = false;
   public Boolean saveEvaluationFrame = true;
   public final Scalar iterationLength = RealScalar.of(1);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures"; // TODO will be varied for evaluation of different param
@@ -63,7 +63,7 @@ public class PipelineConfig {
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
   public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame
-  public final Scalar frameHeight = RealScalar.of(400); // [pixel] for physical frame
+  public final Scalar frameHeight = RealScalar.of(450); // [pixel] for physical frame
 
   /***************************************************/
   public File getLogFile() {

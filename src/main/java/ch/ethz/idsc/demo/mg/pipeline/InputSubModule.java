@@ -40,7 +40,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private int visualizationInterval;
   private int imageCount = 0;
   // image saving
-  private boolean saveImages;
+  private int saveImagesConfig;
   private String imagePrefix;
   private File parentFilePath;
   private int savingInterval;
@@ -85,13 +85,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   private void setParameters(PipelineConfig pipelineConfig) {
-    saveImages = pipelineConfig.saveImages;
+    saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
     visualizePipeline = pipelineConfig.visualizePipeline;
     calibrationAvailable = pipelineConfig.calibrationAvailable;
     collectEstimatedFeatures = pipelineConfig.collectEstimatedFeatures;
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
-    parentFilePath = EvaluationFileLocations.images(imagePrefix);
+    if (saveImagesConfig == 1) {
+      parentFilePath = EvaluationFileLocations.testing();
+    } else {
+      parentFilePath = EvaluationFileLocations.images(imagePrefix);
+    }
     savingInterval = pipelineConfig.savingInterval.number().intValue();
   }
 
@@ -136,7 +140,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       }
     }
     // save frames
-    if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
+    if ((saveImagesConfig != 0) && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
       saveFrame(parentFilePath, imagePrefix, davisDvsEvent.time);
       lastSavingTimestamp = davisDvsEvent.time;
     }
@@ -144,7 +148,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if (visualizePipeline && (davisDvsEvent.time - lastImagingTimestamp) > visualizationInterval * 1000) {
       // visualization repaint
       visualizer.setFrames(constructFrames());
-      clearAllFrames();
+      resetAllFrames();
       lastImagingTimestamp = davisDvsEvent.time;
     }
     lastTimestamp = davisDvsEvent.time;
@@ -176,7 +180,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   // for visualization
-  private void clearAllFrames() {
+  private void resetAllFrames() {
     for (int i = 0; i < eventFrames.length; i++) {
       eventFrames[i].clearImage();
     }
@@ -187,7 +191,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(eventFrames[0].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
+      String secondFileName = String.format("%s_%04d_%d_%s.png", imagePrefix, imageCount, timeStamp, "physical");
+      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED), "png", new File(parentFilePath, fileName));
+      ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
       // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));

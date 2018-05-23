@@ -24,14 +24,14 @@ public enum EvaluationFileLocations {
     return warningIfNotDirectory(new File(EVALUATED_IMAGES, subfolder));
   }
 
-  /** @param filename
+  /** @param filename without .csv extension
    * @return file in directory containing the handlabels */
   public static File handlabels(String filename) {
     filename = filename +".csv";
     return new File(warningIfNotDirectory(UserHome.Pictures("handlabels")), filename);
   }
   
-  /** @param filename
+  /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File estimatedlabels(String filename) {
     filename = filename+".csv";
@@ -39,8 +39,8 @@ public enum EvaluationFileLocations {
   }
 
   /** @return directory for the GUI screenshots */
-  public static File GUIVisualization() {
-    return warningIfNotDirectory(UserHome.Pictures("dvs"));
+  public static File testing() {
+    return warningIfNotDirectory(UserHome.Pictures("testImages"));
   }
 
   private static File warningIfNotDirectory(File directory) {

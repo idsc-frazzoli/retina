@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.eval.TrackingEvaluator;
 
 /** pipeline setup for single/multirun */
 public class PipelineSetup {
   private PipelineConfig pipelineConfig;
-  private TrackingEvaluator evaluator;
   private int iterationLength;
 
   PipelineSetup(PipelineConfig pipelineConfig) {
