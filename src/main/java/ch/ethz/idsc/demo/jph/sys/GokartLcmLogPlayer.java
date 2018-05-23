@@ -14,18 +14,8 @@ enum GokartLcmLogPlayer {
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    file = UserHome.file("gokart/pursuit/20180112T154355/log.lcm");
-    file = UserHome.file("gokart/manual/20180226T150533/log.lcm");
-    file = UserHome.file("gokartlogs/20180419/20180419T150253_7373f83e.lcm.00");
-    file = new File("/media/datahaki/backup/gokartlogs/20180418", "20180418T132333_bca165ae.lcm.00");
-    file = UserHome.file("gokart/pursuit/20180419T124700/log.lcm");
-    file = UserHome.file("20180412T163855_7e5b46c2_predestrians.lcm");
-    file = UserHome.file("20180419T124700_7373f83e_fast.lcm");
-    file = new File("/media/datahaki/media/ethz/gokartlogs", "20180427/20180427T155709_987cb124.lcm.00");
     file = UserHome.file("gokart/manual/20180427T105421_circle/log.lcm");
-    file = new File("/media/datahaki/backup/gokartlogs/20180226", "20180226T164802_ed1c7f0a.lcm.00");
-    file = UserHome.file("gokart/pedestrian/20180412T163855/log.lcm");
-    file = DatahakiLogFileLocator.file(GokartLogFile._20180517T174022_a7130894);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180522T111414_6806b8fd);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;
