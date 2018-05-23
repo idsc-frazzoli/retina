@@ -23,7 +23,6 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
