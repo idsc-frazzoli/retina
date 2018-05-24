@@ -31,13 +31,9 @@ public class ImageBlob implements Serializable {
 
   // returns the square roots of the eigenvalues of the covariance matrix
   public float[] getStandardDeviation() {
-    // float[] standardDeviation = new float[2];
     Tensor covarianceMatrix = Tensors.matrixDouble(getCovariance());
     Tensor stD = Sqrt.of(Eigensystem.ofSymmetric(covarianceMatrix).values());
     return Primitives.toFloatArray(stD);
-    // standardDeviation[0] = stD.Get(0).number().floatValue();
-    // standardDeviation[1] = stD.Get(1).number().floatValue();
-    // return standardDeviation;
   }
 
   // returns the eigenvectors of the covariance matrix - not necessarily scaled to unit length
@@ -86,24 +82,24 @@ public class ImageBlob implements Serializable {
   }
 
   // scales the eigenvalues of the covariance matrix
-  // TODO implement for the handlabeler
+  // TODO implement for the hand-labeler
   public void setEigenValues(float first, float second) {
     // ...
   }
 
   // rotates the covariance matrix
-  // TODO implement for the handlabeler
+  // TODO implement for the hand-labeler
   public void setRotAngle(float rotAngle) {
     // ...
   }
 
-  // required for handlabeling
+  // required for hand-labeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
     this.pos[1] = pos[1];
   }
 
-  // required for handlabeling
+  // required for hand-labeling
   public void setCovariance(double[][] covariance) {
     this.covariance[0][0] = covariance[0][0];
     this.covariance[0][1] = covariance[0][1];

@@ -11,25 +11,24 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
 /* package */ class BlobTracking {
-  // TODO consider to make all fields of class non-static
   // camera parameters
   private static int width;
   private static int height;
   // tracker initialization parameters
-  private static int initNumberOfBlobs;
-  private static int numberRows; // on how many rows are the blobs initially distributed
-  private static int initVariance;
+  private final int initNumberOfBlobs;
+  private final int numberRows; // on how many rows are the blobs initially distributed
+  private final int initVariance;
   // algorithm parameters
-  private static float aUp; // if activity is higher, blob is in active layer
-  private static float aDown; // if activity is lower, active blob gets deleted
-  private static float scoreThreshold; // score threshold for active blobs
-  private static float alphaOne; // for blob position update
-  private static float alphaTwo; // for blob covariance update
-  private static float alphaAttr; // attraction parameter - large value pulls blobs more towards initPos
-  private static float dAttr; // [pixel] hidden blobs attraction
-  private static float dMerge; // [pixel] if blobs closer than that, they merge
-  private static int boundaryDistance; // [pixel] for out of bounds calculation
-  private static int tau; // [us] tunes activity update
+  private final float aUp; // if activity is higher, blob is in active layer
+  private final float aDown; // if activity is lower, active blob gets deleted
+  private final float scoreThreshold; // score threshold for active blobs
+  private final float alphaOne; // for blob position update
+  private final float alphaTwo; // for blob covariance update
+  private final float alphaAttr; // attraction parameter - large value pulls blobs more towards initPos
+  private final float dAttr; // [pixel] hidden blobs attraction
+  private final float dMerge; // [pixel] if blobs closer than that, they merge
+  private final int boundaryDistance; // [pixel] for out of bounds calculation
+  private final int tau; // [us] tunes activity update
   // fields
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
@@ -38,23 +37,6 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   public float hitthreshold = 0;
 
   BlobTracking(PipelineConfig pipelineConfig) {
-    // set parameters with config
-    setParameters(pipelineConfig);
-    // set static parameters for blob objects
-    BlobTrackObj.setParams(pipelineConfig);
-    // initialize the tracker with all blobs uniformly distributed
-    blobs = new ArrayList<>(initNumberOfBlobs);
-    int columnSpacing = width / numberRows;
-    int rowSpacing = height / (initNumberOfBlobs / numberRows);
-    for (int i = 0; i < initNumberOfBlobs; i++) {
-      int column = (i % numberRows);
-      int row = i / numberRows; // use integer division
-      BlobTrackObj blobTrackObj = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
-      blobs.add(blobTrackObj);
-    }
-  }
-
-  private void setParameters(PipelineConfig pipelineConfig) {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
     initNumberOfBlobs = pipelineConfig.initNumberOfBlobs.number().intValue();
@@ -70,6 +52,18 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     dMerge = pipelineConfig.dMerge.number().floatValue();
     boundaryDistance = pipelineConfig.boundaryDistance.number().intValue();
     tau = pipelineConfig.tau.number().intValue();
+    // set static parameters for blob objects
+    BlobTrackObj.setParams(pipelineConfig);
+    // initialize the tracker with all blobs uniformly distributed
+    blobs = new ArrayList<>(initNumberOfBlobs);
+    int columnSpacing = width / numberRows;
+    int rowSpacing = height / (initNumberOfBlobs / numberRows);
+    for (int i = 0; i < initNumberOfBlobs; i++) {
+      int column = (i % numberRows);
+      int row = i / numberRows; // use integer division
+      BlobTrackObj blobTrackObj = new BlobTrackObj((0.5f + column) * columnSpacing, (0.5f + row) * rowSpacing, initVariance);
+      blobs.add(blobTrackObj);
+    }
   }
 
   // general todo list
@@ -196,10 +190,9 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
   // apply attraction equation
   private void hiddenBlobAttraction() {
-    boolean isReset;
     for (int i = 0; i < blobs.size(); i++) {
       if (!blobs.get(i).getLayerID()) {
-        isReset = blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
+        blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
       }
     }
   }
@@ -236,30 +229,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
       for (int i = 0; i < blobs.size(); i++) {
         System.out.println("Blob #" + i + " with pos " + blobs.get(i).getPos()[0] + "/" + blobs.get(i).getPos()[1] + " and ID " + blobs.get(i).getLayerID());
       }
-      // System.out.println(blobs.get(matchingBlob).getActivity() + " activity of matching blob # " + matchingBlob);
-      // System.out.println(blobs.get(matchingBlob).getScore() + " score of matching blob");
-      // System.out.printf("Updated blob position: %.2f/%.2f\n", blobs.get(matchingBlob).getPos()[0], blobs.get(matchingBlob).getPos()[1]);
-      // System.out.println("Event params (x/y/p): " + davisDvsEvent.x + "/" + davisDvsEvent.y + "/" + davisDvsEvent.i);
-      // System.out.println("Current timestamp: " + davisDvsEvent.time);
-      // System.out.println("*********************************************************************");
     }
-  }
-
-  // return list of blobs for visualization and feature filtering
-  // layerId=0: hidden blobs, layerId=1: active blobs
-  public List<ImageBlob> getBlobList(int layerId) {
-    List<ImageBlob> blobList = new ArrayList<>();
-    for (int i = 0; i < blobs.size(); i++) {
-      if (layerId == 1 && blobs.get(i).getLayerID()) {
-        ImageBlob trackedBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
-        blobList.add(trackedBlob);
-      }
-      if (layerId == 0 && !blobs.get(i).getLayerID()) {
-        ImageBlob trackedBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
-        blobList.add(trackedBlob);
-      }
-    }
-    return blobList;
   }
 
   public List<ImageBlob> getActiveBlobs() {
