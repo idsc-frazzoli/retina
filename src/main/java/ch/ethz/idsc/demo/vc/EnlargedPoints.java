@@ -32,9 +32,7 @@ public class EnlargedPoints {
         path2d.closePath();
         Area area = new Area(path2d);
         collectionOfAreas.add(area);
-        // TODO would it be beneficial to compute the exact volume of the hull (instead of that of the bounding box)?
-        // https://www.mathopenref.com/coordpolygonarea.html
-        totalArea = totalArea + computeArea(area);
+        totalArea = totalArea + computeBetterArea(hull);
       }
     }
   }
@@ -46,9 +44,21 @@ public class EnlargedPoints {
         point.Get(1).number().doubleValue() - w / 2, w, w)));
   }
 
-  public double computeArea(Area area) {
+  public double computeArea(Area area) { // TODO: compute the exact surface of an area
     Rectangle2D rectangle2d = area.getBounds2D();
     return rectangle2d.getWidth() * rectangle2d.getHeight();
+  }
+
+  public double computeBetterArea(Tensor hull) {
+    double intermediate = 0;
+    int l = hull.length();
+    for (int i = 0; i < l - 1; i++) {
+      intermediate += hull.get(i).Get(0).number().doubleValue() * hull.get(i + 1).Get(1).number().doubleValue()
+          - hull.get(i).Get(1).number().doubleValue() * hull.get(i + 1).Get(0).number().doubleValue();
+    }
+    intermediate += hull.get(l - 1).Get(0).number().doubleValue() * hull.get(0).Get(1).number().doubleValue()
+        - hull.get(0).Get(1).number().doubleValue() * hull.get(l - 1).Get(0).number().doubleValue();
+    return Math.abs(intermediate) / 2;
   }
 
   public List<Area> getAreas() {
