@@ -14,7 +14,6 @@ public enum GokartLcmChannel {
   /** current trajectory infos from GokartTrajectoryModule
    * message is self contained: state, time, flow */
   public static final String TRAJECTORY_STATETIME = "gokart.trajectory.xyat";
-  // public static final String TRAJECTORY_FLOW = "gokart.planner.trajectory.flow"; // <- not necessary
   // ---
   /** for debugging of rimo rate controller */
   public static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";

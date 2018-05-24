@@ -306,6 +306,6 @@ public enum GokartLogFile implements LogFile {
 
   @Override
   public String getTitle() {
-    return name().substring(1, 13);
+    return name().substring(1, 16);
   }
 }
