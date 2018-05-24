@@ -6,7 +6,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
-import ch.ethz.idsc.tensor.mat.IdentityMatrix;
+import ch.ethz.idsc.tensor.alg.Multinomial;
+import ch.ethz.idsc.tensor.io.Pretty;
+import ch.ethz.idsc.tensor.red.Norm2Squared;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Transformation between image and physical space. For documentation, see MATLAB single camera calibration.
  * The CSV file must have the structure as below. Also important, exponential format must use capitalized E ("%E" in MATLAB).
@@ -15,7 +18,8 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
 public class TransformUtil {
-  private static final Tensor OFFSET = Tensors.fromString("{{-420 , 2200, 0}}");
+  // TODO these are magic constants but will not change often
+  private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
    * @param unitConversion */
@@ -25,18 +29,25 @@ public class TransformUtil {
 
   // ---
   private final Scalar unitConversion;
+  /** transforms homogeneous image coordinates into homogeneous physical coordinates */
+  private final Tensor transformationMatrix;
   private final Tensor principalPoint; // [pixel]
-  private final Tensor radDistortion; // [-] radial distortion with two coefficients is assumed
+  /** [-]radial distortion with two coefficients is assumed
+   * but we build the coefficients to evaluate as quadratic polynomial of the form
+   * {1, rd0, rd1}
+   * for ordering of coefficient see {@link Multinomial#horner(Tensor, Scalar)} */
+  private final ScalarUnaryOperator radDistortionPoly; //
   private final Tensor focalLength; // [mm]
-  private final Tensor transformationMatrix; // transforms homogeneous image coordinates into homogeneous physical coordinates
+  private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
   private TransformUtil(Tensor inputTensor, Scalar unitConversion) {
     this.unitConversion = unitConversion;
     transformationMatrix = inputTensor.extract(0, 3);
-    principalPoint = inputTensor.extract(3, 4);
-    radDistortion = inputTensor.extract(4, 5);
-    focalLength = inputTensor.extract(5, 6);
+    principalPoint = inputTensor.get(3); // vector of length 2
+    radDistortionPoly = new HornerScheme(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
+    focalLength = inputTensor.get(5);
+    focalLengthInv = focalLength.map(Scalar::reciprocal);
   }
 
   /** @param imagePosX [pixel]
@@ -44,33 +55,33 @@ public class TransformUtil {
    * @return physicalCoordinates [m] in gokart reference frame */
   public double[] imageToWorld(float imagePosX, float imagePosY) {
     // normalize image coordinates
-    Tensor normalizedImgCoord = //
-        Tensors.matrixDouble(new double[][] { { imagePosX, imagePosY } }).subtract(principalPoint).pmul(focalLength.map(Scalar::reciprocal));
+    Tensor normalizedImgCoord = Tensors.vector(imagePosX, imagePosY).subtract(principalPoint).pmul(focalLengthInv);
     // calculate squared radial distance
-    // Norm2Squared.ofVector(vector)
-    Scalar radDistSqr = //
-        normalizedImgCoord.Get(0, 0).multiply(normalizedImgCoord.Get(0, 0)).add( //
-            normalizedImgCoord.Get(0, 1).multiply(normalizedImgCoord.Get(0, 1)));
+    Scalar radDistSqr = Norm2Squared.ofVector(normalizedImgCoord);
     // remove image distortion
-    Scalar denominator = RealScalar.ONE
-        .add(radDistSqr.multiply(radDistortion.Get(0, 0)).add(radDistSqr.multiply(radDistSqr).multiply(radDistortion.Get(0, 1))));
+    Scalar denominator = radDistortionPoly.apply(radDistSqr);
     normalizedImgCoord = normalizedImgCoord.divide(denominator);
-    // revert normalization
-    Tensor undistortedImgCoord = normalizedImgCoord.pmul(focalLength).add(principalPoint);
-    // form homogeneous coordinates
-    undistortedImgCoord = Join.of(1, undistortedImgCoord, IdentityMatrix.of(1));
+    // revert normalization and form homogeneous coordinates
+    Tensor undistortedImgCoord = //
+        normalizedImgCoord.pmul(focalLength).add(principalPoint).append(RealScalar.ONE);
     // apply transformation
     Tensor physicalCoord = undistortedImgCoord.dot(transformationMatrix);
     // enforce homogeneous coordinates
-    physicalCoord = physicalCoord.divide(physicalCoord.get(0).Get(2));
+    physicalCoord = physicalCoord.divide(physicalCoord.Get(2));
     // Transform to gokart rear axle. NOTE unit is mm
-    // TODO these are magic constants but will not change often
     physicalCoord = physicalCoord.add(OFFSET);
     // convert from [mm] to [m]
     physicalCoord = physicalCoord.divide(unitConversion);
     // note: x/y axis are inverse between gokart reference system and calibration reference system
-    double[] physicalPos = { physicalCoord.get(0).Get(1).number().doubleValue(), physicalCoord.get(0).Get(0).number().doubleValue() };
-    return physicalPos;
+    return new double[] { //
+        physicalCoord.Get(1).number().doubleValue(), //
+        physicalCoord.Get(0).number().doubleValue() };
+  }
+
+  public void printInfo() {
+    System.out.println("transformationMatrix=" + Pretty.of(transformationMatrix));
+    System.out.println("principalPoint=" + principalPoint);
+    System.out.println("focalLength=" + focalLength);
   }
   // main function moved to TransformUtilDemo (put cursor on TransformUtilDemo then press F3 to navigate there)
 }
