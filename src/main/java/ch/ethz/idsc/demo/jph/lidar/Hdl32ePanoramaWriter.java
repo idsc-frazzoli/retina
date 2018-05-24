@@ -26,7 +26,7 @@ class Hdl32ePanoramaWriter implements LidarPanoramaListener, AutoCloseable {
     if (60 < frames && frames < 240) // magic const for one-time use
       try {
         BufferedImage subImage = lidarPanorama.distances();
-        image.getGraphics().drawImage(subImage, 0, 0, width, 64, null);
+        image.createGraphics().drawImage(subImage, 0, 0, width, 64, null);
         animationWriter.append(image);
       } catch (Exception exception) {
         exception.printStackTrace();

@@ -10,6 +10,7 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
 
@@ -28,18 +29,20 @@ public class CSVUtil {
     try {
       writer = new FileWriter(file);
       for (int i = 0; i < featureList.size(); i++) {
+        final List<ImageBlob> blobs = featureList.get(i);
         for (int j = 0; j < featureList.get(i).size(); j++) {
+          final ImageBlob imageBlob = blobs.get(j);
           writer.append(String.valueOf(timeStamps[i]));
           writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(featureList.get(i).get(j).getPos()[0]));
+          writer.append(String.valueOf(imageBlob.getPos()[0]));
           writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(featureList.get(i).get(j).getPos()[1]));
+          writer.append(String.valueOf(imageBlob.getPos()[1]));
           writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(featureList.get(i).get(j).getCovariance()[0][0]));
+          writer.append(String.valueOf(imageBlob.getCovariance()[0][0]));
           writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(featureList.get(i).get(j).getCovariance()[1][1]));
+          writer.append(String.valueOf(imageBlob.getCovariance()[1][1]));
           writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(featureList.get(i).get(j).getCovariance()[1][0]));
+          writer.append(String.valueOf(imageBlob.getCovariance()[1][0]));
           writer.append(NEW_LINE);
         }
       }
@@ -75,7 +78,8 @@ public class CSVUtil {
         int timestamp = row.Get(0).number().intValue();
         int index = Arrays.binarySearch(timeStamps, timestamp);
         float[] pos = Primitives.toFloatArray(row.extract(1, 3));
-        double[][] cov = new double[][] { { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
+        double[][] cov = new double[][] { //
+            { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
             { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
         extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true));
       }
@@ -96,12 +100,14 @@ public class CSVUtil {
     List<Integer> timestampList = new ArrayList<>();
     try {
       Tensor inputTensor = Import.of(file);
+      if (Tensors.isEmpty(inputTensor))
+        return new int[] {};
       // initialize extractedTimestamps
-      timestampList.add(inputTensor.get(0).Get(0).number().intValue());
+      timestampList.add(inputTensor.Get(0, 0).number().intValue());
       for (int i = 1; i < inputTensor.length(); i++) {
-        if (inputTensor.get(i).Get(0).number().intValue() != timestampList.get(timestampList.size() - 1)) {
-          timestampList.add(inputTensor.get(i).Get(0).number().intValue());
-        }
+        int value = inputTensor.Get(i, 0).number().intValue();
+        if (value != timestampList.get(timestampList.size() - 1))
+          timestampList.add(value);
       }
       // convert list to array
       int[] timeStamps = new int[timestampList.size()];
@@ -113,5 +119,13 @@ public class CSVUtil {
       e.printStackTrace();
       return null;
     }
+  }
+
+  // TODO check if this function is an alternative
+  public static int[] getTimestampsFromCSV_alt(File file) throws IOException {
+    return Import.of(file).stream() //
+        .mapToInt(row -> row.Get(0).number().intValue()) //
+        .distinct() // <- doesn't allow any duplicates (globally, not just based on predecessor)
+        .toArray();
   }
 }

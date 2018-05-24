@@ -2,12 +2,10 @@
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.demo.mg.util.TransformUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -72,6 +70,7 @@ public class PipelineConfig {
   public final Scalar gokartSize = RealScalar.of(35); // [pixel]
 
   /***************************************************/
+  /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
     LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
     if (Objects.isNull(logFileLocations))
@@ -79,10 +78,8 @@ public class PipelineConfig {
     return logFileLocations.getFile();
   }
 
-  // for testing
-  public static void main(String[] args) throws IOException {
-    PipelineConfig test = new PipelineConfig();
-    TensorProperties.manifest(UserHome.file("config2.properties"), test);
-    // private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
+  /** @return new instance of {@link TransformUtil} derived from parameters in pipeline config */
+  public TransformUtil createTransformUtil() {
+    return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
 }

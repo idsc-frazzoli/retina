@@ -2,16 +2,15 @@
 package ch.ethz.idsc.demo.mg.eval;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
@@ -68,7 +67,7 @@ public class HandLabeler {
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
+      VisualizationUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
@@ -97,10 +96,11 @@ public class HandLabeler {
       jComponent.repaint();
     }
   };
-  private final KeyListener kl = new KeyListener() {
+  private final KeyListener keyListener = new KeyAdapter() {
     @Override
     public void keyTyped(KeyEvent e) {
       if (e.getKeyChar() == 'w') {
+        // TODO use function shiftFeature, also for cases below
         float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
         currentPos[1] -= positionDifference;
         labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
@@ -126,14 +126,12 @@ public class HandLabeler {
       }
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-      // ---
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-      // ---
+    private void shiftFeature(float d0, float d1) {
+      float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+      currentPos[0] += d0;
+      currentPos[1] += d1;
+      labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+      jComponent.repaint();
     }
   };
 
@@ -195,16 +193,11 @@ public class HandLabeler {
           jComponent.repaint();
         }
       });
-      jSlider.addKeyListener(kl);
+      jSlider.addKeyListener(keyListener);
       jPanelTop.add("Center", jSlider);
       jPanelMain.add("North", jPanelTop);
     }
-    jComponent.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        // ---
-      }
-
+    jComponent.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
         // add labels with left click
@@ -221,29 +214,14 @@ public class HandLabeler {
         }
         jComponent.repaint();
       }
-
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        // ---
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-        // ---
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-        // ---
-      }
     });
     jComponent.addMouseWheelListener(mwl);
     jPanelMain.add("Center", jComponent);
-    jFrame.addKeyListener(kl);
+    jFrame.addKeyListener(keyListener);
     jFrame.setContentPane(jPanelMain);
     jFrame.setBounds(100, 100, 480, 440);
-    jFrame.setVisible(true);
     jFrame.setFocusable(true);
+    jFrame.setVisible(true);
   }
 
   // set the bufferedImage field according to the currentImgNumber
@@ -256,12 +234,6 @@ public class HandLabeler {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  // draw ellipses for image based on list of blobs for the image.
-  private void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
-    for (int i = 0; i < blobs.size(); i++)
-      VisualizationUtil.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
   }
 
   // goes through all files in the directory an extracts the timestamps

@@ -152,7 +152,7 @@ public class DavisViewerFrame implements TimedImageListener {
       ImageCopy imageCopy = new ImageCopy();
       imageCopy.update(timedImageEvent.bufferedImage);
       BufferedImage bufferedImage = imageCopy.get();
-      Graphics graphics = bufferedImage.getGraphics();
+      Graphics graphics = bufferedImage.createGraphics();
       graphics.setColor(Color.WHITE);
       graphics.drawString("" + timedImageEvent.time, 0, 10);
       try {

@@ -18,7 +18,7 @@ public class ImageCopy {
           bufferedImage.getWidth(), //
           bufferedImage.getHeight(), //
           bufferedImage.getType());
-    copy.getGraphics().drawImage(bufferedImage, 0, 0, null);
+    copy.createGraphics().drawImage(bufferedImage, 0, 0, null);
   }
 
   public boolean hasValue() {

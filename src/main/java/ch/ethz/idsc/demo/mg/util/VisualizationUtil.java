@@ -7,6 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 
@@ -45,5 +46,15 @@ public class VisualizationUtil {
     graphics.setColor(color);
     graphics.draw(ellipse);
     graphics.setTransform(old);
+  }
+
+  /** draw ellipses for image based on list of blobs for the image.
+   * 
+   * @param graphics
+   * @param blobs */
+  public static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
+    // for (int i = 0; i < blobs.size(); i++)
+    // drawImageBlob(graphics, blobs.get(i), Color.WHITE);
+    blobs.forEach(blob -> drawImageBlob(graphics, blob, Color.WHITE)); // <- this syntax is less error prone (?)
   }
 }

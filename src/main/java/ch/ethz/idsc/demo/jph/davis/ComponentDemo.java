@@ -37,7 +37,7 @@ enum ComponentDemo {
     Tensor palette = //
         Tensors.vector(i -> Constant.GOLDEN_ANGLE.value.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
+    Graphics2D graphics = bufferedImage.createGraphics();
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     final int rate_us = 30_000;

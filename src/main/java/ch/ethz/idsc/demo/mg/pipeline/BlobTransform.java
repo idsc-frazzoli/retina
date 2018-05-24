@@ -13,7 +13,7 @@ public class BlobTransform {
 
   BlobTransform(PipelineConfig pipelineConfig) {
     physicalBlobs = new ArrayList<>();
-    transformUtil = new TransformUtil(pipelineConfig);
+    transformUtil = pipelineConfig.createTransformUtil();
   }
 
   public void transformSelectedBlobs(List<ImageBlob> blobs) {

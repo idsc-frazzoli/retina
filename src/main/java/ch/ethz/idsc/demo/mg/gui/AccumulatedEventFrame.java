@@ -15,12 +15,13 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
 
-// provides BufferedImage with accumulated events and overlaid ImageBlobs
+/** provides BufferedImage with accumulated events and overlaid ImageBlobs */
 public class AccumulatedEventFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
-  private static int width;
-  private static int height;
+  // ---
+  private final int width;
+  private final int height;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final byte[] bytes;
@@ -88,11 +89,9 @@ public class AccumulatedEventFrame {
 
   // depending on whether frame is rotated or not
   private BufferedImage getFrame() {
-    if (rotateFrame) {
+    if (rotateFrame)
       return ImageRotate._180deg(bufferedImage);
-    } else {
-      imageCopy.update(bufferedImage);
-      return imageCopy.get();
-    }
+    imageCopy.update(bufferedImage);
+    return imageCopy.get();
   }
 }
