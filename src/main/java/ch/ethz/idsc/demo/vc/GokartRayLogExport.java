@@ -92,19 +92,19 @@ class Handler {
   }
 
   public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
-    EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
-    EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
-    for (Area x : predictedAreas.getAreas()) {
-      Rectangle2D bounds2d = x.getBounds2D();
-      for (Area y : enlargedPoints.getAreas()) {
-        if (y.intersects(bounds2d)) {
-          y.intersect(x);
-        }
+    Tensor results=Tensors.empty();
+    FatPoints enlargedPoints = new FatPoints(newScan, side);
+    FatPoints predictedAreas = new FatPoints(predictedShapes);
+    for (Tensor x : predictedAreas.getAreas()) {
+      System.out.println(x);
+      for (Tensor y : enlargedPoints.getAreas()) {
+        System.out.println(y);
+       results.append(PolygonIntersecter.PolygonIntersect(x, y));
       }
     }
     double area = 0;
-    for (Area y : enlargedPoints.getAreas()) {
-      double computeArea = enlargedPoints.computeArea(y);
+    for (Tensor y : results) {
+      double computeArea = enlargedPoints.computeBetterArea(y);
       if (computeArea != side * side) // to count only the surface of the enlarged points
         // that have a non empty intersection with the predicted shapes
         area += computeArea;
