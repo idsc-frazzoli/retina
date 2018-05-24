@@ -78,7 +78,7 @@ class PlannerAnalysis implements OfflineLogListener {
       // ---
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       BufferedImage image = scatterImage.getImage();
-      Graphics2D graphics = (Graphics2D) image.getGraphics();
+      Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       tr.render(gl, graphics);

@@ -1,34 +1,35 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.eval;
 
 import java.util.List;
 
-/** provides an object to save all properties of an tracking evaluation instant. TrackingEvaluator contains
- * an array of such objects. Functions are provided to compare ground truth features with the estimated features */
-public class TrackingEvaluatorInstant {
-  private final List<ImageBlob> groundTruthFeatures;
-  private final List<ImageBlob> estimatedFeatures;
-  private final float[][] distToClosestEstimate;
+import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+
+/* package */ class EvaluatorInstant {
+  private final List<ImageBlob> groundTruthInstant;
+  private final List<ImageBlob> estimatedInstant;
   private final boolean[] assignedEstimatedFeatures;
+  private final float[][] distToClosestEstimate;
   private final float maxDistance;
   private final float truePositiveThreshold;
   private float truePositiveCount;
   private float falsePositiveCount;
   private float falseNegativeCount;
-  private float recall; // important parameter to quantify performance
-  private float precision; // important parameter to quantify performance
+  private float recall; // parameter to quantify performance
+  private float precision; // parameter to quantify performance
 
-  TrackingEvaluatorInstant(PipelineConfig pipelineConfig, List<ImageBlob> groundTruthFeatures, List<ImageBlob> estimatedFeatures) {
-    this.groundTruthFeatures = groundTruthFeatures;
-    this.estimatedFeatures = estimatedFeatures;
-    distToClosestEstimate = new float[this.groundTruthFeatures.size()][2];
-    assignedEstimatedFeatures = new boolean[this.estimatedFeatures.size()];
+  EvaluatorInstant(PipelineConfig pipelineConfig, List<ImageBlob> groundTruth, List<ImageBlob> estimated) {
+    groundTruthInstant = groundTruth;
+    estimatedInstant = estimated;
+    distToClosestEstimate = new float[groundTruthInstant.size()][2];
+    assignedEstimatedFeatures = new boolean[estimatedInstant.size()];
     maxDistance = pipelineConfig.maxDistance.number().floatValue();
     truePositiveThreshold = pipelineConfig.truePositiveThreshold.number().floatValue();
     // initialize distToClosestEstimate
-    for (int i = 0; i < this.groundTruthFeatures.size(); i++) {
+    for (int i = 0; i < groundTruthInstant.size(); i++) {
       distToClosestEstimate[i][0] = maxDistance;
-      distToClosestEstimate[i][1] = this.estimatedFeatures.size();
+      distToClosestEstimate[i][1] = estimatedInstant.size();
     }
   }
 
@@ -38,14 +39,23 @@ public class TrackingEvaluatorInstant {
     evaluationLogic();
     // compute recall and precision
     recall = truePositiveCount / (truePositiveCount + falseNegativeCount);
-    precision = truePositiveCount / (truePositiveCount + falsePositiveCount);
+    // avoid division by zero
+    float denominator = truePositiveCount + falsePositiveCount;
+    if (denominator == 0) {
+      precision = 0;
+    } else {
+      precision = truePositiveCount / denominator;
+    }
+    // System.out.println("TP/FN/FP: "+truePositiveCount+"/"+falseNegativeCount+"/"+falsePositiveCount);
+    // System.out.println("Recall is " + recall);
+    // System.out.println("Precision is " + precision);
   }
 
   private void computeDistances() {
     // iterate through all combinations
-    for (int i = 0; i < groundTruthFeatures.size(); i++) {
-      for (int j = 0; j < estimatedFeatures.size(); j++) {
-        float currentDist = groundTruthFeatures.get(i).getDistanceTo(estimatedFeatures.get(j));
+    for (int i = 0; i < groundTruthInstant.size(); i++) {
+      for (int j = 0; j < estimatedInstant.size(); j++) {
+        float currentDist = groundTruthInstant.get(i).getDistanceTo(estimatedInstant.get(j));
         if (currentDist < distToClosestEstimate[i][0]) {
           distToClosestEstimate[i][0] = currentDist;
           distToClosestEstimate[i][1] = j;
@@ -60,7 +70,7 @@ public class TrackingEvaluatorInstant {
     // if distToClosestEstimate[i][0] is smaller than threshold, we have a Tp
     // if distToClosestEstimate[i][0] is larger than threshold, we have a Fn
     // all estimatedFeatures that are not assigned Tp are therefore Fp
-    for (int i = 0; i < groundTruthFeatures.size(); i++) {
+    for (int i = 0; i < groundTruthInstant.size(); i++) {
       if (distToClosestEstimate[i][0] < truePositiveThreshold) {
         truePositiveCount++;
         int assignedEstimatedFeature = (int) distToClosestEstimate[i][1];
@@ -69,19 +79,11 @@ public class TrackingEvaluatorInstant {
         falseNegativeCount++;
       }
     }
-    for (int i = 0; i < estimatedFeatures.size(); i++) {
+    for (int i = 0; i < estimatedInstant.size(); i++) {
       if (!assignedEstimatedFeatures[i]) {
         falsePositiveCount++;
       }
     }
-  }
-
-  public List<ImageBlob> getGroundTruthFeatures() {
-    return groundTruthFeatures;
-  }
-
-  public List<ImageBlob> getEstimatedFeatures() {
-    return estimatedFeatures;
   }
 
   public float getRecall() {

@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.dev.lidar.urg04lx.app;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -27,7 +26,7 @@ public class Urg04lxAnimationWriter implements Urg04lxRangeListener {
   @Override
   public void urg04lxRange(Urg04lxRangeEvent urg04lxEvent) {
     urg04lxRender.setEvent(urg04lxEvent);
-    urg04lxRender.render((Graphics2D) image.getGraphics(), dimension);
+    urg04lxRender.render(image.createGraphics(), dimension);
     try {
       animationWriter.append(image);
     } catch (Exception exception) {

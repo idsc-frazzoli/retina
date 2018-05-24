@@ -6,10 +6,15 @@ public class PhysicalBlob {
   // fields
   private double[] pos; // [m] in gokart reference frame
   private double[] vel;
+  private double[] imageCoord; // [pixel] position in visualization
 
   PhysicalBlob(double[] pos) {
     this.pos = pos;
     vel = new double[] { 0, 0 };
+  }
+
+  public void setImageCoord(double[] imageCoord) {
+    this.imageCoord = imageCoord;
   }
 
   public double[] getPos() {
@@ -18,5 +23,9 @@ public class PhysicalBlob {
 
   public double[] getVel() {
     return vel;
+  }
+
+  public double[] getImageCoord() {
+    return imageCoord;
   }
 }

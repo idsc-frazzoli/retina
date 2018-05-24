@@ -1,22 +1,20 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.gui;
+package ch.ethz.idsc.demo.mg.eval;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,34 +30,32 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.Import;
-import ch.ethz.idsc.tensor.io.Primitives;
+import ch.ethz.idsc.demo.mg.util.CSVUtil;
+import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
- * scrolling while holding ctrl/shift changes x/y-axis length.
+ * scrolling while holding ctrl/shift changes x/y-axis length. Feature positoin can be adjusted with wasd keys.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
 // the .CSV file is formatted as follows:
 // timestamp , pos[0], pos[1], covariance[0][0], covariance[1][1], covariance[0][1]
 // TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
-// TODO should be possible to move blobs around with keyboard
-public class HandLabeler {
-  private static String COMMA_DELIMITER;
-  private static String NEW_LINE;
+/* package */ class HandLabeler {
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
   private int firstAxis;
   private int secondAxis;
   private final float scaling = 2; // original images are tiny
   private float rotAngle = 0;
+  private final int positionDifference = 3; // TODO magic constant
+  private final int sizeMultiplier = 20; // TODO magic constant
   // handling of .csv file
   private String imagePrefix;
   private final int numberOfFiles;
   private String fileName;
+  private int saveCount = 1;
   // fields for labels
   private int[] timeStamps; // stores timestamp of each image
   private List<List<ImageBlob>> labeledFeatures; // main field of the class
@@ -71,8 +67,8 @@ public class HandLabeler {
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
-      graphics.drawImage(scaleImage(bufferedImage, scaling), 0, 0, null);
+      VisualizationUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
+      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
   };
@@ -80,13 +76,13 @@ public class HandLabeler {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
       if (e.isControlDown()) {
-        firstAxis += 20 * e.getWheelRotation();
+        firstAxis += sizeMultiplier * e.getWheelRotation();
         if (firstAxis < 0) {
           firstAxis = 0;
         }
       }
       if (e.isShiftDown()) {
-        secondAxis += 20 * e.getWheelRotation();
+        secondAxis += sizeMultiplier * e.getWheelRotation();
         if (secondAxis < 0) {
           secondAxis = 0;
         }
@@ -100,13 +96,49 @@ public class HandLabeler {
       jComponent.repaint();
     }
   };
+  private final KeyListener keyListener = new KeyAdapter() {
+    @Override
+    public void keyTyped(KeyEvent e) {
+      if (e.getKeyChar() == 'w') {
+        // TODO use function shiftFeature, also for cases below
+        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+        currentPos[1] -= positionDifference;
+        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+        jComponent.repaint();
+      }
+      if (e.getKeyChar() == 's') {
+        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+        currentPos[1] += positionDifference;
+        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+        jComponent.repaint();
+      }
+      if (e.getKeyChar() == 'a') {
+        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+        currentPos[0] -= positionDifference;
+        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+        jComponent.repaint();
+      }
+      if (e.getKeyChar() == 'd') {
+        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+        currentPos[0] += positionDifference;
+        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+        jComponent.repaint();
+      }
+    }
+
+    private void shiftFeature(float d0, float d1) {
+      float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
+      currentPos[0] += d0;
+      currentPos[1] += d1;
+      labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
+      jComponent.repaint();
+    }
+  };
 
   public HandLabeler(PipelineConfig pipelineConfig) {
     // set parameters
-    COMMA_DELIMITER = pipelineConfig.comma_delimiter.toString();
-    NEW_LINE = pipelineConfig.new_line.toString();
     imagePrefix = pipelineConfig.logFileName.toString();
-    numberOfFiles = HandLabelFileLocations.images(imagePrefix).list().length;
+    numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
     initXAxis = pipelineConfig.initAxis.number().intValue();
     initYAxis = initXAxis;
@@ -128,15 +160,18 @@ public class HandLabeler {
       saveButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          saveToCSV(HandLabelFileLocations.labels(fileName), labeledFeatures);
-          System.out.println("Successfully saved to file " + fileName);
+          // should avoid overwriting old labeled features TODO should be improved
+          String currentFileName = fileName + saveCount;
+          CSVUtil.saveToCSV(EvaluationFileLocations.handlabels(currentFileName), labeledFeatures, timeStamps);
+          System.out.println("Successfully saved to file " + currentFileName + ".csv");
+          saveCount++;
         }
       });
       loadButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          labeledFeatures = loadFromCSV(HandLabelFileLocations.labels(fileName), timeStamps);
-          System.out.println("Successfully loaded from file " + fileName);
+          labeledFeatures = CSVUtil.loadFromCSV(EvaluationFileLocations.handlabels(fileName));
+          System.out.println("Successfully loaded from file " + fileName + ".csv");
           // repaint such that saved blobs of current image are displayed
           jComponent.repaint();
         }
@@ -158,15 +193,11 @@ public class HandLabeler {
           jComponent.repaint();
         }
       });
+      jSlider.addKeyListener(keyListener);
       jPanelTop.add("Center", jSlider);
       jPanelMain.add("North", jPanelTop);
     }
-    jComponent.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        // ---
-      }
-
+    jComponent.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
         // add labels with left click
@@ -183,47 +214,21 @@ public class HandLabeler {
         }
         jComponent.repaint();
       }
-
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        // ---
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-        // ---
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-        // ---
-      }
     });
     jComponent.addMouseWheelListener(mwl);
     jPanelMain.add("Center", jComponent);
+    jFrame.addKeyListener(keyListener);
     jFrame.setContentPane(jPanelMain);
     jFrame.setBounds(100, 100, 480, 440);
+    jFrame.setFocusable(true);
     jFrame.setVisible(true);
-  }
-
-  /** @param unscaled original bufferedImage
-   * @param scale scaling factor
-   * @return scaled bufferedImage */
-  public static BufferedImage scaleImage(BufferedImage unscaled, float scale) {
-    int newWidth = (int) (unscaled.getWidth() * scale);
-    int newHeight = (int) (unscaled.getHeight() * scale);
-    BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale, scale);
-    AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    scaleOp.filter(unscaled, scaled);
-    return scaled;
   }
 
   // set the bufferedImage field according to the currentImgNumber
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
-    File pathToFile = new File(HandLabelFileLocations.images(imagePrefix), fileName);
+    File pathToFile = new File(EvaluationFileLocations.images(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
@@ -231,16 +236,10 @@ public class HandLabeler {
     }
   }
 
-  // draw ellipses for image based on list of blobs for the image.
-  private static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
-    for (int i = 0; i < blobs.size(); i++)
-      AccumulatedEventFrame.drawImageBlob(graphics, blobs.get(i), Color.WHITE);
-  }
-
   // goes through all files in the directory an extracts the timestamps
   private void extractImageTimestamps() {
     // get all filenames and sort
-    String[] fileNames = HandLabelFileLocations.images(imagePrefix).list();
+    String[] fileNames = EvaluationFileLocations.images(imagePrefix).list();
     Arrays.sort(fileNames);
     for (int i = 0; i < numberOfFiles; i++) {
       String fileName = fileNames[i];
@@ -251,63 +250,7 @@ public class HandLabeler {
     }
   }
 
-  // saves labeledFeatures in a .CSV file
-  private void saveToCSV(File file, List<List<ImageBlob>> labeledFeatures) {
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(file);
-      for (int i = 0; i < labeledFeatures.size(); i++) {
-        for (int j = 0; j < labeledFeatures.get(i).size(); j++) {
-          writer.append(String.valueOf(timeStamps[i]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getPos()[0]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getPos()[1]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[0][0]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[1][1]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(labeledFeatures.get(i).get(j).getCovariance()[1][0]));
-          writer.append(NEW_LINE);
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        writer.flush();
-        writer.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  // loads labeledFeatures from .CSV file
-  public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
-    // set up empty list
-    List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
-    for (int i = 0; i < timeStamps.length; i++) {
-      List<ImageBlob> emptyList = new ArrayList<>();
-      extractedFeatures.add(emptyList);
-    }
-    try {
-      Tensor inputTensor = Import.of(file);
-      for (Tensor row : inputTensor) {
-        int timestamp = row.Get(0).number().intValue();
-        int index = Arrays.binarySearch(timeStamps, timestamp);
-        float[] pos = Primitives.toFloatArray(row.extract(1, 3));
-        double[][] cov = new double[][] { { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
-            { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
-        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return extractedFeatures;
-  }
-
+  // standalone application
   public static void main(String[] args) {
     PipelineConfig pipelineConfig = new PipelineConfig();
     HandLabeler handlabeler = new HandLabeler(pipelineConfig);

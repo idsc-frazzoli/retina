@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.mg.HandLabelFileLocations;
+import ch.ethz.idsc.demo.mg.eval.EvaluationFileLocations;
 import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
 import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
@@ -19,8 +20,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 // this module distributes the event stream to the visualization and control pipeline
-// TODO if we just wanna evaluate tracking performance, no need to incorporate blobTransform
-// TODO collectResults fct once evaluator is implemented
 public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   // pipeline modules
@@ -28,7 +27,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private final BlobTracking tracking;
   private final ImageBlobSelector blobSelector;
   private BlobTransform transformer = null; // default initialization if unused
-  private TrackingEvaluator evaluator = null;
+  private TrackingCollector collector = null;
   // visualization
   private boolean visualizePipeline;
   private PipelineVisualization visualizer = null;
@@ -36,11 +35,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   private PhysicalBlobFrame[] physicalFrames = null;
   // pipeline configuration
   private boolean calibrationAvailable;
-  private boolean evaluatePerformance;
+  private boolean collectEstimatedFeatures;
   private int visualizationInterval;
   private int imageCount = 0;
   // image saving
-  private boolean saveImages;
+  private int saveImagesConfig;
   private String imagePrefix;
   private File parentFilePath;
   private int savingInterval;
@@ -60,13 +59,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     blobSelector = new ImageBlobSelector(pipelineConfig);
     // calibration required for transformation to physical space
     if (calibrationAvailable) {
-      transformer = new BlobTransform();
-      // TODO inelegant
-      TransformUtil.initialize(pipelineConfig);
+      transformer = new BlobTransform(pipelineConfig);
     }
     // optional evaluation
-    if (evaluatePerformance) {
-      evaluator = new TrackingEvaluator(pipelineConfig);
+    if (collectEstimatedFeatures) {
+      collector = new TrackingCollector(pipelineConfig);
     }
     // optional visualization
     if (visualizePipeline) {
@@ -87,13 +84,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   private void setParameters(PipelineConfig pipelineConfig) {
-    saveImages = pipelineConfig.saveImages;
+    saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
     visualizePipeline = pipelineConfig.visualizePipeline;
     calibrationAvailable = pipelineConfig.calibrationAvailable;
-    evaluatePerformance = pipelineConfig.evaluatePerformance;
+    collectEstimatedFeatures = pipelineConfig.collectEstimatedFeatures;
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     imagePrefix = pipelineConfig.logFileName.toString();
-    parentFilePath = HandLabelFileLocations.images(imagePrefix);
+    if (saveImagesConfig == 1) {
+      parentFilePath = EvaluationFileLocations.testing();
+    } else {
+      parentFilePath = EvaluationFileLocations.images(imagePrefix);
+    }
     savingInterval = pipelineConfig.savingInterval.number().intValue();
   }
 
@@ -119,8 +120,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       eventFrames[0].receiveEvent(davisDvsEvent);
     }
     // evaluation tool
-    if (evaluatePerformance && evaluator.isGroundTruthAvailable(davisDvsEvent)) {
-      evaluator.evaluatePerformance(blobSelector.getSelectedBlobs());
+    if (collectEstimatedFeatures && collector.isGroundTruthAvailable(davisDvsEvent)) {
+      collector.setEstimatedFeatures(blobSelector.getSelectedBlobs());
     }
     // filtering returns a boolean
     if (eventFiltering.filterPipeline(davisDvsEvent)) {
@@ -138,7 +139,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       }
     }
     // save frames
-    if (saveImages && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
+    if ((saveImagesConfig != 0) && (davisDvsEvent.time - lastSavingTimestamp) > savingInterval * 1000) {
       saveFrame(parentFilePath, imagePrefix, davisDvsEvent.time);
       lastSavingTimestamp = davisDvsEvent.time;
     }
@@ -146,7 +147,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     if (visualizePipeline && (davisDvsEvent.time - lastImagingTimestamp) > visualizationInterval * 1000) {
       // visualization repaint
       visualizer.setFrames(constructFrames());
-      clearAllFrames();
+      resetAllFrames();
       lastImagingTimestamp = davisDvsEvent.time;
     }
     lastTimestamp = davisDvsEvent.time;
@@ -160,19 +161,17 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * filteredEventCount / eventCount));
-    if (evaluatePerformance) {
-      evaluator.summarizeResults();
-    }
   }
 
   // for visualization
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
     combinedFrames[0] = eventFrames[0].getAccumulatedEvents();
-    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs());
-    combinedFrames[2] = eventFrames[2].overlayHiddenBlobs((tracking.getHiddenBlobs()));
+    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED);
+    combinedFrames[2] = eventFrames[2].overlayHiddenBlobs(tracking.getHiddenBlobs(), Color.GRAY);
     if (calibrationAvailable) {
       combinedFrames[3] = physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs()));
+      // currently unused
       combinedFrames[4] = physicalFrames[1].getFrame();
       combinedFrames[5] = physicalFrames[2].getFrame();
     }
@@ -180,7 +179,7 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   }
 
   // for visualization
-  private void clearAllFrames() {
+  private void resetAllFrames() {
     for (int i = 0; i < eventFrames.length; i++) {
       eventFrames[i].clearImage();
     }
@@ -191,7 +190,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     try {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(eventFrames[0].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
+      String secondFileName = String.format("%s_%s_%04d_%d.png", "physical", imagePrefix, imageCount, timeStamp);
+      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED), "png", new File(parentFilePath, fileName));
+      ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
       // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));

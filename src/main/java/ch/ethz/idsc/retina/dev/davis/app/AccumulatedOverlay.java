@@ -44,7 +44,7 @@ public class AccumulatedOverlay implements DavisDvsListener {
     @Override
     public void columnTimedImage(ColumnTimedImage columnTimedImage) {
       BufferedImage modif = new BufferedImage(240, 180, BufferedImage.TYPE_BYTE_GRAY);
-      Graphics graphics = modif.getGraphics();
+      Graphics graphics = modif.createGraphics();
       graphics.drawImage(columnTimedImage.bufferedImage, 0, 0, null);
       background = ImageFormat.from(modif);
     }

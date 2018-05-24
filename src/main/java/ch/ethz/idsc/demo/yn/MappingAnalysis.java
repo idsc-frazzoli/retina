@@ -103,7 +103,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage image = scatterImage.getImage();
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
-      Graphics2D graphics = (Graphics2D) image.getGraphics();
+      Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       grid.render(gl, graphics);
