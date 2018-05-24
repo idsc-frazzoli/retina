@@ -1,4 +1,8 @@
+// code by vc
 package ch.ethz.idsc.demo.vc;
+
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 public class PerformanceMeasures {
   public final double precision;
@@ -7,5 +11,9 @@ public class PerformanceMeasures {
   public PerformanceMeasures(double recall, double precision) {
     this.precision = precision;
     this.recall = recall;
+  }
+
+  public Tensor toTensor() {
+    return Tensors.vector(precision, recall);
   }
 }

@@ -65,7 +65,7 @@ class Handler {
               predictedHulls.append(predictedHull);
             }
           }
-          if (predictedMeans.length() > 0) {
+          if (0 < predictedMeans.length()) {
             double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
             System.out.println("performance=" + evaluatePerformance);
           }
@@ -85,7 +85,7 @@ class Handler {
     for (Tensor z : predictedMeans) {
       for (Tensor hull : hulls) {
         int i = Polygons.isInside(hull, z) ? 1 : 0;
-        count = count + i;
+        count += i;
       }
     }
     return count / (double) predictedMeans.length();
@@ -105,11 +105,12 @@ class Handler {
     double area = 0;
     for (Area y : enlargedPoints.getAreas()) {
       double computeArea = enlargedPoints.computeArea(y);
-      if (computeArea != (side * side)) {
-        area = area + computeArea;
-      }
+      if (computeArea != side * side) // TODO what is this filter for?
+        area += computeArea;
     }
-    return new PerformanceMeasures(area / enlargedPoints.getTotalArea(), area / predictedAreas.getTotalArea());
+    return new PerformanceMeasures( //
+        area / enlargedPoints.getTotalArea(), //
+        area / predictedAreas.getTotalArea());
   }
 }
 
