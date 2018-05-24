@@ -30,6 +30,9 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
     throw new RuntimeException("not found: " + title);
   }
 
+  /** @param logFile
+   * @return
+   * @throws Exception if file cannot be located */
   public static File file(LogFile logFile) {
     return INSTANCE.getAbsoluteFile(logFile);
   }
