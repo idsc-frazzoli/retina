@@ -6,7 +6,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
-public class EvaluatorInstant {
+/* package */ class EvaluatorInstant {
   private final List<ImageBlob> groundTruthInstant;
   private final List<ImageBlob> estimatedInstant;
   private final boolean[] assignedEstimatedFeatures;

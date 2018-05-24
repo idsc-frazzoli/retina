@@ -21,7 +21,8 @@ public class PipelineConfig {
   public final Scalar unitConversion = RealScalar.of(1000);
   /** filterConfig can currently be 0 or 1 */
   public final Scalar filterConfig = RealScalar.of(0);
-  public final Scalar boarder = RealScalar.of(4);
+  // jan renamed parameter border since field is final and therefore not tracked by TensorProperties
+  public final Scalar border = RealScalar.of(4);
   public Scalar filterConstant = RealScalar.of(500); // [us]
   // feature tracking
   public Scalar initNumberOfBlobs = RealScalar.of(24);

@@ -8,7 +8,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
 /** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
  * estimated run. */
-public class EvaluatorMultiRun {
+/* package */ class EvaluatorMultiRun {
   private final List<double[]> collectedResults;
   private final int iterationLength;
   private PipelineConfig pipelineConfig;

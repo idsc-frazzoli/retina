@@ -12,6 +12,8 @@ public class ImageBlobSelector {
   // fields
   private List<ImageBlob> imageBlobs;
 
+  // TODO consider making function pipelineConfig.createImageBlobSelector(); to avoid making
+  // ... imageBlobSelector dependent on PipelineConfig
   ImageBlobSelector(PipelineConfig pipelineConfig) {
     upperBoarder = pipelineConfig.upperBoarder.number().intValue();
     imageBlobs = new ArrayList<>();

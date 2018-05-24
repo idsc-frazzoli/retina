@@ -42,7 +42,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 // the .CSV file is formatted as follows:
 // timestamp , pos[0], pos[1], covariance[0][0], covariance[1][1], covariance[0][1]
 // TODO implement ability to rotate ellipse (method stub set up in ImageBlob)
-public class HandLabeler {
+/* package */ class HandLabeler {
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
   private int firstAxis;

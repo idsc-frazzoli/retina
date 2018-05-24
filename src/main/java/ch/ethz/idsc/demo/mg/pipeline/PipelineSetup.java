@@ -8,7 +8,7 @@ import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /** pipeline setup for single/multirun */
-public class PipelineSetup {
+/* package */ class PipelineSetup {
   private PipelineConfig pipelineConfig;
   private final int iterationLength;
 

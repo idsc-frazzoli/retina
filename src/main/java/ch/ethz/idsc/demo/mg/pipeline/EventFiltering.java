@@ -13,7 +13,8 @@ public class EventFiltering {
   private int[][] timestamps;
   private double filterConstant;
   // for corner detector
-  private int boarder; // events too close to image boarder are neglected
+  // TODO consider using the term "margin" instead of border
+  private int border; // events too close to image border are neglected
   private int[][][] SAE; // surface of active events for each polarity
   // hard coded circle parameters for corner detector
   private final int[][] circle3 = { //
@@ -26,6 +27,8 @@ public class EventFiltering {
       { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
+  // TODO create function in PipelineConfig createEventFiltering() that calls
+  // ... constructor EventFiltering(width, height, filterConfig, filterConstant, border)
   public EventFiltering(PipelineConfig pipelineConfig) {
     setParameters(pipelineConfig);
   }
@@ -34,9 +37,10 @@ public class EventFiltering {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
     filterConfig = pipelineConfig.filterConfig.number().intValue();
-    timestamps = new int[width][height];
     filterConstant = pipelineConfig.filterConstant.number().doubleValue();
-    boarder = pipelineConfig.boarder.number().intValue();
+    border = pipelineConfig.border.number().intValue();
+    // ---
+    timestamps = new int[width][height];
     SAE = new int[width][height][2];
   }
 
@@ -80,7 +84,7 @@ public class EventFiltering {
     int pol = e.i;
     SAE[e.x][e.y][pol] = e.time;
     // check if not too close to boarder
-    if (e.x < boarder || e.x > width - boarder - 1 || e.y < boarder || e.y > height - boarder - 1) {
+    if (e.x < border || e.x > width - border - 1 || e.y < border || e.y > height - border - 1) {
       return false;
     }
     boolean found_streak = false;

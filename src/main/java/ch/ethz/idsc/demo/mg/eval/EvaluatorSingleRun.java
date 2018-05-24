@@ -18,7 +18,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
  * is compared in a TrackingEvaluatorInstant object. */
-public class EvaluatorSingleRun {
+/* package */ class EvaluatorSingleRun {
   private final List<List<ImageBlob>> groundTruthFeatures;
   private final List<List<ImageBlob>> estimatedFeatures;
   private final EvaluatorInstant[] evaluatorInstants;

@@ -19,6 +19,7 @@ public class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static int frameWidth;
   private static int frameHeight;
+  // ---
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final byte[] bytes;
