@@ -60,6 +60,10 @@ public class ClusterDeque {
     return Collections.unmodifiableCollection(deque);
   }
 
+  public DequeCloud getLast() {
+    return deque.peekLast();
+  }
+
   public int getID() {
     return id;
   }
