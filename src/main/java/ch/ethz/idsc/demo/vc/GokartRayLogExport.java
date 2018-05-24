@@ -78,9 +78,9 @@ class Handler {
   };
   private double side = 0.2;
 
-  // basic performance measure: compute the fraction of predicted centres of clusters that are in the convexHull
-  // of the new lidar scan clusters
-  public double evaluatePerformance(Tensor predictedMeans, Tensor hulls) { // Map
+  // basic performance measure: compute the fraction of predicted centres of clusters that are
+  // in the convexHull of the new lidar scan clusters
+  public double evaluatePerformance(Tensor predictedMeans, Tensor hulls) {
     int count = 0;
     for (Tensor z : predictedMeans) {
       for (Tensor hull : hulls) {
@@ -105,7 +105,8 @@ class Handler {
     double area = 0;
     for (Area y : enlargedPoints.getAreas()) {
       double computeArea = enlargedPoints.computeArea(y);
-      if (computeArea != side * side) // TODO what is this filter for?
+      if (computeArea != side * side) // to count only the surface of the enlarged points
+        // that have a non empty intersection with the predicted shapes
         area += computeArea;
     }
     return new PerformanceMeasures( //

@@ -30,11 +30,6 @@ public class EnlargedPoints {
       if (Tensors.nonEmpty(hull)) {
         Path2D path2d = IDENTITY_LAYER.toPath2D(hull);
         path2d.closePath();
-        // new Path2D.Double();
-        // path2d.moveTo(hull.get(0).Get(1).number().doubleValue(), hull.get(0).Get(1).number().doubleValue());
-        // for (Tensor point : hull) {
-        // path2d.lineTo(point.Get(0).number().doubleValue(), point.Get(1).number().doubleValue());
-        // }
         Area area = new Area(path2d);
         collectionOfAreas.add(area);
         // TODO would it be beneficial to compute the exact volume of the hull (instead of that of the bounding box)?
