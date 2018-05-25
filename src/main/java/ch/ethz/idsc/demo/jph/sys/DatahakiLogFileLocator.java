@@ -2,8 +2,9 @@
 package ch.ethz.idsc.demo.jph.sys;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
+import ch.ethz.idsc.demo.GokartLogFiles;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
@@ -37,7 +38,8 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
     return INSTANCE.getAbsoluteFile(logFile);
   }
 
-  public static List<LogFile> retrieve() {
-    return null; // TODO
+  /** @return */
+  public static Collection<LogFile> all() {
+    return GokartLogFiles.all(ALT_ROOT);
   }
 }
