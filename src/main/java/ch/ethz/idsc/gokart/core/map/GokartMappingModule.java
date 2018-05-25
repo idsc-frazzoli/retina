@@ -40,8 +40,8 @@ public class GokartMappingModule implements //
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
-  private final Tensor gridRange = Tensors.vector(85, 85); // TODO comment on magic const 640/7.5
-  private final Tensor lbounds = Tensors.vector(0, 0);
+  private final Tensor gridRange = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
+  private final Tensor lbounds = Tensors.vector(30, 30);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
   public GokartMappingModule() {

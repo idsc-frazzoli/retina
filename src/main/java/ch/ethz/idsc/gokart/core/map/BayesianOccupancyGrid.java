@@ -12,6 +12,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.region.Region;
+import ch.ethz.idsc.retina.util.math.Bresenham;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -51,12 +54,13 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private static final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);
   /** inv sensor model p(m|z) */
   private static final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
+  private static final double P_M_PASS = MappingConfig.GLOBAL.getP_M_PASS();
   /** cells with p(m|z_1:t) > probThreshold are considered occupied */
   private static final double P_THRESH = MappingConfig.GLOBAL.getP_THRESH();
   private static final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
-  private static final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT };
+  private static final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT, P_M_PASS };
   /** forgetting factor for previous classifications */
-  private static final double lambda = 0.5;
+  private static final double lambda = MappingConfig.GLOBAL.getLambda();
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
@@ -97,6 +101,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   // ---
   private Scalar obsDilationRadius;
   private final Tensor scaling;
+  private final double lFactor;
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space of the form {value, value}
@@ -121,6 +126,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     imageGraphics = obstacleImage.createGraphics();
     genObstacleMap();
     obsDilationRadius = cellDim.divide(RealScalar.of(2));
+    Scalar ratio = MappingConfig.GLOBAL.minObsHeight.divide(SensorsConfig.GLOBAL.vlp16Height);
+    lFactor = RealScalar.ONE.subtract(ratio).number().doubleValue();
     // ---
     // PREDEFINED_P
     logOdds = new double[dimx * dimy];
@@ -154,17 +161,41 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
       if (0 <= pix && pix < dimx) {
         int piy = cell.Get(1).number().intValue();
         if (0 <= piy && piy < dimy) {
-          double p_m_z = PREDEFINED_P[type];
-          double logOddPrev = logOdds[piy * dimx + pix];
-          updateCellLogOdd(pix, piy, p_m_z);
-          double logOdd = logOdds[piy * dimx + pix];
+          int idx = piy * dimx + pix;
+          double logOddPrev = logOdds[idx];
+          updateCellLogOdd(pix, piy, PREDEFINED_P[type]);
+          double logOdd = logOdds[idx];
           // Max likelihood estimation
           synchronized (hset) {
-            if (L_THRESH < logOdd)
+            if (L_THRESH < logOdd && logOddPrev <= L_THRESH)
               hset.add(cell);
             else //
-            if (logOdd < L_THRESH)
+            if (logOdd < L_THRESH && L_THRESH <= logOddPrev)
               hset.remove(cell);
+          }
+          // ---
+          if (type == 0 && lFactor != 1.0) {
+            Tensor pos0 = pos.multiply(DoubleScalar.of(lFactor));
+            Tensor cell0 = lidarToCell(pos0);
+            List<Point> line = Bresenham.getLine( //
+                cell0.Get(0).number().intValue(), //
+                cell0.Get(1).number().intValue(), //
+                pix, piy);
+            line.remove(line.size() - 1);
+            for (Point p : line) {
+              idx = p.y * dimx + p.x;
+              logOddPrev = logOdds[idx];
+              updateCellLogOdd(p.x, p.y, PREDEFINED_P[2]);
+              logOdd = logOdds[idx];
+              // Max likelihood estimation
+              synchronized (hset) {
+                if (L_THRESH < logOdd && logOddPrev <= L_THRESH)
+                  hset.add(cell);
+                else //
+                if (logOdd < L_THRESH && L_THRESH <= logOddPrev)
+                  hset.remove(cell);
+              }
+            }
           }
         }
       }
