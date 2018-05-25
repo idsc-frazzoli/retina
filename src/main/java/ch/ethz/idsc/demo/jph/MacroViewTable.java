@@ -24,18 +24,22 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-class MacroViewTable implements OfflineTableSupplier {
+/* package */ class MacroViewTable implements OfflineTableSupplier {
+  static final File ROOT = UserHome.file("gokartproc");
   private static final String JOYSTICK = "joystick.generic_xbox_pad";
   private static final int START_8AM = 480;
-  private static final int LENGTH = 600;
+  static final int LENGTH = 660;
   private static final UnaryOperator<Scalar> MAX = Max.function(RealScalar.ONE);
   private static final ScalarUnaryOperator SEC2MIN = QuantityMagnitude.SI().in("min");
   private static final int INDEX_LOGE = 0;
@@ -50,7 +54,7 @@ class MacroViewTable implements OfflineTableSupplier {
     this.offset = offset;
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     int index = getMinute(time);
     if (0 <= index && index < LENGTH) {
@@ -79,22 +83,28 @@ class MacroViewTable implements OfflineTableSupplier {
     return SEC2MIN.apply(offset.add(time)).number().intValue() - START_8AM;
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return table;
   }
 
   public static void main(String[] args) throws Exception {
-    File root = UserHome.file("gokartproc");
-    root.mkdir();
+    ROOT.mkdir();
     for (LogFile logFile : DatahakiLogFileLocator.all()) {
       String date = logFile.getTitle().substring(0, 8);
-      File dirday = new File(root, date);
+      File dirday = new File(ROOT, date);
       dirday.mkdir();
       File file = DatahakiLogFileLocator.file(logFile);
       if (file.isFile()) {
-        File csv = new File(dirday, logFile.getTitle() + ".csv");
-        if (!csv.exists()) {
+        final File csv = new File(dirday, logFile.getTitle() + ".csv");
+        if (csv.exists()) {
+          Tensor table = Import.of(csv);
+          if (table.length() < LENGTH) {
+            table = Join.of(table, Array.zeros(LENGTH - table.length(), 4));
+            Export.of(csv, table);
+            System.out.println(csv + " " + Dimensions.of(table));
+          }
+        } else {
           System.out.println(logFile.getTitle());
           String hhmmss = logFile.getTitle().substring(9);
           Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
@@ -104,9 +114,7 @@ class MacroViewTable implements OfflineTableSupplier {
           Scalar offset = Quantity.of(Total.of(timestamp).Get(), "s");
           OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
           OfflineLogPlayer.process(file, offlineTableSupplier);
-          Export.of( //
-              csv, //
-              offlineTableSupplier.getTable().map(CsvFormat.strict()));
+          Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));
         }
       }
     }
