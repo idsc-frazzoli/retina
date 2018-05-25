@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
@@ -13,8 +14,8 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
   private final float[] pos;
-  private final double[][] covariance;
   private final int timeStamp; //
+  private double[][] covariance;
   private boolean isRecognized;
   private boolean isHidden;
 
@@ -49,7 +50,7 @@ public class ImageBlob implements Serializable {
   }
 
   // returns the angle between the eigenvector belonging to the first eigenvalue and the x-axis
-  // TODO calling this function is inefficient if eigendecomp has already been carried out
+  // eigendecomp needs to be carried out every time because covariance matrix will change between visualization instants
   public double getRotAngle() {
     float[][] eigenVec = getEigenVectors();
     return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
@@ -81,18 +82,6 @@ public class ImageBlob implements Serializable {
     return timeStamp;
   }
 
-  // scales the eigenvalues of the covariance matrix
-  // TODO implement for the hand-labeler
-  public void setEigenValues(float first, float second) {
-    // ...
-  }
-
-  // rotates the covariance matrix
-  // TODO implement for the hand-labeler
-  public void setRotAngle(float rotAngle) {
-    // ...
-  }
-
   // required for hand-labeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
@@ -100,11 +89,15 @@ public class ImageBlob implements Serializable {
   }
 
   // required for hand-labeling
-  public void setCovariance(double[][] covariance) {
-    this.covariance[0][0] = covariance[0][0];
-    this.covariance[0][1] = covariance[0][1];
-    this.covariance[1][0] = covariance[1][0];
-    this.covariance[1][1] = covariance[1][1];
+  public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
+    Tensor notRotated = Tensors.matrixDouble(new double[][] { { firstAxis, 0 }, { 0, secondAxis } });
+    double cosine = Math.cos(rotAngle);
+    double sine = Math.sin(rotAngle);
+    Tensor rotMatrix = Tensors.matrixDouble(new double[][] { { cosine, -sine }, { sine, cosine } });
+    Tensor rotated = rotMatrix.dot(notRotated).dot(Transpose.of(rotMatrix));
+    covariance = Primitives.toDoubleArray2D(rotated);
+    // ensure matrix remains symmetric
+    covariance[1][0] = covariance[0][1];
   }
 
   public void setIsRecognized(boolean isRecognized) {

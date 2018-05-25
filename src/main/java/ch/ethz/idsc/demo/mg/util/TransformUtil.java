@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.alg.Multinomial;
 import ch.ethz.idsc.tensor.io.Pretty;
+import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -54,6 +55,13 @@ public class TransformUtil {
    * @param imagePosY [pixel]
    * @return physicalCoordinates [m] in gokart reference frame */
   public double[] imageToWorld(float imagePosX, float imagePosY) {
+    return Primitives.toDoubleArray(imageToWorldTensor(imagePosX, imagePosY));
+  }
+
+  /** @param imagePosX [pixel]
+   * @param imagePosY [pixel]
+   * @return physicalCoordinates [m] in gokart reference frame */
+  public Tensor imageToWorldTensor(float imagePosX, float imagePosY) {
     // normalize image coordinates
     Tensor normalizedImgCoord = Tensors.vector(imagePosX, imagePosY).subtract(principalPoint).pmul(focalLengthInv);
     // calculate squared radial distance
@@ -73,9 +81,7 @@ public class TransformUtil {
     // convert from [mm] to [m]
     physicalCoord = physicalCoord.divide(unitConversion);
     // note: x/y axis are inverse between gokart reference system and calibration reference system
-    return new double[] { //
-        physicalCoord.Get(1).number().doubleValue(), //
-        physicalCoord.Get(0).number().doubleValue() };
+    return Tensors.of(physicalCoord.Get(1), physicalCoord.Get(0));
   }
 
   public void printInfo() {

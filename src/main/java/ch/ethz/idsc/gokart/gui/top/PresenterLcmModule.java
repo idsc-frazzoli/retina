@@ -24,6 +24,7 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
@@ -46,6 +47,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
+  private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -126,6 +128,12 @@ public class PresenterLcmModule extends AbstractModule {
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
+      AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
+      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
+      timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
+      timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
+    }
+    {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
       trajectoryLcmClient.addListener(trajectoryRender);
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
@@ -145,6 +153,7 @@ public class PresenterLcmModule extends AbstractModule {
     joystickLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     trajectoryLcmClient.startSubscriptions();
+    davisLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
@@ -183,6 +192,7 @@ public class PresenterLcmModule extends AbstractModule {
     joystickLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClient.stopSubscriptions();
+    davisLcmClient.stopSubscriptions();
   }
 
   public static void main(String[] args) throws Exception {
