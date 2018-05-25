@@ -5,11 +5,11 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.function.UnaryOperator;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -87,30 +87,28 @@ class MacroViewTable implements OfflineTableSupplier {
   public static void main(String[] args) throws Exception {
     File root = UserHome.file("gokartproc");
     root.mkdir();
-    final int start = -1; // GokartLogFile._20171213T161500_55710a6b.ordinal();
-    for (GokartLogFile logFile : GokartLogFile.values())
-      if (start <= logFile.ordinal()) {
-        String date = logFile.getTitle().substring(0, 8);
-        File dirday = new File(root, date);
-        dirday.mkdir();
-        File file = DatahakiLogFileLocator.file(logFile);
-        if (file.isFile()) {
-          File csv = new File(dirday, logFile.getTitle() + ".csv");
-          if (!csv.exists()) {
-            System.out.println(logFile.getTitle());
-            String hhmmss = logFile.getTitle().substring(9);
-            Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
-                hhmmss.substring(0, 2), //
-                hhmmss.substring(2, 4), //
-                hhmmss.substring(4, 6))).map(Magnitude.SECOND);
-            Scalar offset = Quantity.of(Total.of(timestamp).Get(), "s");
-            OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
-            OfflineLogPlayer.process(file, offlineTableSupplier);
-            Export.of( //
-                csv, //
-                offlineTableSupplier.getTable().map(CsvFormat.strict()));
-          }
+    for (LogFile logFile : DatahakiLogFileLocator.all()) {
+      String date = logFile.getTitle().substring(0, 8);
+      File dirday = new File(root, date);
+      dirday.mkdir();
+      File file = DatahakiLogFileLocator.file(logFile);
+      if (file.isFile()) {
+        File csv = new File(dirday, logFile.getTitle() + ".csv");
+        if (!csv.exists()) {
+          System.out.println(logFile.getTitle());
+          String hhmmss = logFile.getTitle().substring(9);
+          Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
+              hhmmss.substring(0, 2), //
+              hhmmss.substring(2, 4), //
+              hhmmss.substring(4, 6))).map(Magnitude.SECOND);
+          Scalar offset = Quantity.of(Total.of(timestamp).Get(), "s");
+          OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
+          OfflineLogPlayer.process(file, offlineTableSupplier);
+          Export.of( //
+              csv, //
+              offlineTableSupplier.getTable().map(CsvFormat.strict()));
         }
       }
+    }
   }
 }
