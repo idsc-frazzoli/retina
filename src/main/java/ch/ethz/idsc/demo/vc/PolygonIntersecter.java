@@ -5,13 +5,13 @@ import javax.swing.JPanel;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** The purpose of this class is to find, if any, the polygon that results from the intersection
+ * of two polygons specified as Tensors that contain the polygon's vertices coordinates. */
 class PolygonIntersecter extends JPanel {
   public static Tensor PolygonIntersect(Tensor clip, Tensor subj) {
-    Tensor clip1 = reverse(clip); // to handle clockwise inputs
-    Tensor subj1 = reverse(subj);
-    System.out.println(clip);
-    System.out.println(subj);
-    Tensor result = clipPolygon(subj1, clip1);
+    // Tensor clip1 = reverse(clip);
+    Tensor subj1 = reverse(subj);// to handle clockwise inputs
+    Tensor result = clipPolygon(subj1, clip);
     return result;
   }
 
@@ -27,7 +27,6 @@ class PolygonIntersecter extends JPanel {
     int len = clipper.length();
     Tensor res = subject;
     for (int i = 0; i < len; i++) {
-      
       Tensor A = clipper.get((i + len - 1) % len);
       Tensor B = clipper.get(i);
       Tensor input = res;
@@ -36,7 +35,6 @@ class PolygonIntersecter extends JPanel {
       for (int j = 0; j < len2; j++) {
         Tensor P = input.get((j + len2 - 1) % len2);
         Tensor Q = input.get(j);
-        System.out.println("1");
         if (isInside(A, B, Q)) {
           if (!isInside(A, B, P))
             res.append(intersection(A, B, P, Q));
@@ -69,6 +67,6 @@ class PolygonIntersecter extends JPanel {
     double det = A1 * B2 - A2 * B1;
     double x = (B2 * C1 - B1 * C2) / det;
     double y = (A1 * C2 - A2 * C1) / det;
-    return Tensors.vector(x, y);
+    return Tensors.vectorDouble(x, y);
   }
 }

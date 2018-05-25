@@ -57,7 +57,7 @@ public class EnlargedPoints {
           - hull.get(i).Get(1).number().doubleValue() * hull.get(i + 1).Get(0).number().doubleValue();
     }
     intermediate += hull.get(l - 1).Get(0).number().doubleValue() * hull.get(0).Get(1).number().doubleValue()
-        - hull.get(0).Get(1).number().doubleValue() * hull.get(l - 1).Get(0).number().doubleValue();
+        - hull.get(0).Get(0).number().doubleValue() * hull.get(l - 1).Get(1).number().doubleValue();
     return Math.abs(intermediate) / 2;
   }
 

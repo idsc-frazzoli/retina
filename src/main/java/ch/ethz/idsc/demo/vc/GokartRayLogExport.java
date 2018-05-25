@@ -1,8 +1,6 @@
 // code by vc
 package ch.ethz.idsc.demo.vc;
 
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -76,7 +74,7 @@ class Handler {
         System.err.println("scan is empty");
     }
   };
-  private double side = 0.2;
+  private double side = 0.03;
 
   // basic performance measure: compute the fraction of predicted centres of clusters that are
   // in the convexHull of the new lidar scan clusters
@@ -92,23 +90,21 @@ class Handler {
   }
 
   public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
-    Tensor results=Tensors.empty();
-    FatPoints enlargedPoints = new FatPoints(newScan, side);
-    FatPoints predictedAreas = new FatPoints(predictedShapes);
+    Tensor results = Tensors.empty();
+    Enlarger enlargedPoints = new Enlarger(newScan, side);
+    System.out.println("Area of points" + enlargedPoints.getTotalArea());
+    Enlarger predictedAreas = new Enlarger(predictedShapes);
+    System.out.println("Area of hulls" + predictedAreas.getTotalArea());
     for (Tensor x : predictedAreas.getAreas()) {
-      System.out.println(x);
       for (Tensor y : enlargedPoints.getAreas()) {
-        System.out.println(y);
-       results.append(PolygonIntersecter.PolygonIntersect(x, y));
+        if (Tensors.nonEmpty(PolygonIntersecter.PolygonIntersect(x, y))) {
+          results.append(PolygonIntersecter.PolygonIntersect(x, y));
+        }
       }
     }
-    double area = 0;
-    for (Tensor y : results) {
-      double computeArea = enlargedPoints.computeBetterArea(y);
-      if (computeArea != side * side) // to count only the surface of the enlarged points
-        // that have a non empty intersection with the predicted shapes
-        area += computeArea;
-    }
+    Enlarger res = new Enlarger(results);
+    double area = res.getTotalArea();
+    System.out.println("Area of intersection" + area);
     return new PerformanceMeasures( //
         area / enlargedPoints.getTotalArea(), //
         area / predictedAreas.getTotalArea());
