@@ -107,19 +107,15 @@ public class BlobTrackObj {
     return (float) distance;
   }
 
-  public boolean updateAttractionEquation(float alphaAttr, float dRep) {
-    boolean reset;
+  public void updateAttractionEquation(float alphaAttr, float dRep) {
     float posDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
     if (posDiff > dRep) {
       pos[0] = initPos[0];
       pos[1] = initPos[1];
-      reset = true;
     } else {
       pos[0] = pos[0] + alphaAttr * (initPos[0] - pos[0]);
       pos[1] = pos[1] + alphaAttr * (initPos[1] - pos[1]);
-      reset = false;
     }
-    return reset;
   }
 
   // required for merging

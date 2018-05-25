@@ -100,29 +100,16 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     @Override
     public void keyTyped(KeyEvent e) {
       if (e.getKeyChar() == 'w') {
-        // TODO use function shiftFeature, also for cases below
-        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
-        currentPos[1] -= positionDifference;
-        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
-        jComponent.repaint();
+        shiftFeature(0, -positionDifference);
       }
       if (e.getKeyChar() == 's') {
-        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
-        currentPos[1] += positionDifference;
-        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
-        jComponent.repaint();
+        shiftFeature(0, positionDifference);
       }
       if (e.getKeyChar() == 'a') {
-        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
-        currentPos[0] -= positionDifference;
-        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
-        jComponent.repaint();
+        shiftFeature(-positionDifference, 0);
       }
       if (e.getKeyChar() == 'd') {
-        float[] currentPos = labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).getPos();
-        currentPos[0] += positionDifference;
-        labeledFeatures.get(currentImgNumber - 1).get(labeledFeatures.get(currentImgNumber - 1).size() - 1).setPos(currentPos);
-        jComponent.repaint();
+        shiftFeature(positionDifference, 0);
       }
     }
 

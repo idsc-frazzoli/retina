@@ -54,9 +54,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
   public InputSubModule(PipelineConfig pipelineConfig) {
     setParameters(pipelineConfig);
     // initialize pipeline modules
-    eventFiltering = new EventFiltering(pipelineConfig);
+    eventFiltering = pipelineConfig.createEventFiltering();
     tracking = new BlobTracking(pipelineConfig);
-    blobSelector = new ImageBlobSelector(pipelineConfig);
+    blobSelector = pipelineConfig.createImageBlobSelector();
     // calibration required for transformation to physical space
     if (calibrationAvailable) {
       transformer = new BlobTransform(pipelineConfig);

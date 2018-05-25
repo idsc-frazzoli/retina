@@ -4,18 +4,18 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.tensor.Scalar;
+
 // this class incorporates prior knowledge to recognize the features we want to track.
 // filter has no memory --> a further filtering step is conducted by the estimation algorithm in physical space.
 public class ImageBlobSelector {
   // parameters
-  private static int upperBoarder; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
+  private final int upperBoarder; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
   // fields
   private List<ImageBlob> imageBlobs;
 
-  // TODO consider making function pipelineConfig.createImageBlobSelector(); to avoid making
-  // ... imageBlobSelector dependent on PipelineConfig
-  ImageBlobSelector(PipelineConfig pipelineConfig) {
-    upperBoarder = pipelineConfig.upperBoarder.number().intValue();
+  ImageBlobSelector(Scalar upperBoarder) {
+    this.upperBoarder = upperBoarder.number().intValue();
     imageBlobs = new ArrayList<>();
   }
 

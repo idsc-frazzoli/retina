@@ -22,7 +22,7 @@ public class PipelineConfig {
   /** filterConfig can currently be 0 or 1 */
   public final Scalar filterConfig = RealScalar.of(0);
   // jan renamed parameter border since field is final and therefore not tracked by TensorProperties
-  public final Scalar border = RealScalar.of(4);
+  public final Scalar margin = RealScalar.of(4);
   public Scalar filterConstant = RealScalar.of(500); // [us]
   // feature tracking
   public Scalar initNumberOfBlobs = RealScalar.of(24);
@@ -46,15 +46,16 @@ public class PipelineConfig {
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   public final Scalar savingInterval = RealScalar.of(50); // [ms]
-  // handlabeling tool
-  public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to evaluate performance
+  // hand-labeling tool
+  public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
   // tracking collector
   public final Boolean collectEstimatedFeatures = true;
   public final Scalar iterationLength = RealScalar.of(22);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
-  public Boolean saveEvaluationFrame = false;
+  public final Boolean saveEvaluationFrame = false;
+  public final String evaluationResultFileName = "evaluationResults";
   public final Scalar maxDistance = width.add(height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
@@ -79,8 +80,19 @@ public class PipelineConfig {
     return logFileLocations.getFile();
   }
 
-  /** @return new instance of {@link TransformUtil} derived from parameters in pipeline config */
+  /** @return new instance of {@link TransformUtil} derived from parameters in pipelineConfig */
   public TransformUtil createTransformUtil() {
     return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  }
+  
+  /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig*/
+  public ImageBlobSelector createImageBlobSelector() {
+    return new ImageBlobSelector(upperBoarder);
+  }
+  
+  /** @return new instance of {@link EventFiltering} derived from parameters in pipelineConfig*/
+  public EventFiltering createEventFiltering() {
+    EventFiltering.setParams(width, height);
+    return new EventFiltering(filterConfig, filterConstant, margin);
   }
 }

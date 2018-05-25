@@ -51,10 +51,8 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     // initialize evaluatorInstants
     for (int i = 0; i < numberOfLabelInstants; i++) {
       // if groundTruthtimeStamp[i] is not available in estimatedTimeStamps, we insert an empty list in the estimatedFeatures at that index
-      if (Arrays.binarySearch(estimatedTimeStamps, groundTruthTimeStamps[i]) < 0) {
-        List<ImageBlob> emptyList = new ArrayList<>();
-        estimatedFeatures.add(i, emptyList);
-      }
+      if (Arrays.binarySearch(estimatedTimeStamps, groundTruthTimeStamps[i]) < 0)
+        estimatedFeatures.add(i, new ArrayList<>());
       evaluatorInstants[i] = new EvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
     }
   }
@@ -116,7 +114,6 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     }
   }
 
-  // TODO provide all essential results of the evaluation run to other objects through this fct
   public double[] getResults() {
     double[] results = new double[2];
     results[0] = averageRecall;
