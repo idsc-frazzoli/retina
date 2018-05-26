@@ -14,14 +14,13 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public class PipelineConfig {
   // log file parameters
   public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(5000); // [ms]
+  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
   /** filterConfig can currently be 0 or 1 */
   public final Scalar filterConfig = RealScalar.of(0);
-  // jan renamed parameter border since field is final and therefore not tracked by TensorProperties
   public final Scalar margin = RealScalar.of(4);
   public Scalar filterConstant = RealScalar.of(500); // [us]
   // feature tracking
@@ -37,20 +36,22 @@ public class PipelineConfig {
   public Scalar dAttr = RealScalar.of(50);
   public Scalar dMerge = RealScalar.of(20);
   public Scalar boundaryDistance = RealScalar.of(1);
-  public Scalar tau = RealScalar.of(40000); // [us]
+  public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
-  public Scalar upperBoarder = RealScalar.of(height.number());
+  public Scalar upperBoarder = RealScalar.of(height.number()); // with this number, all features are selected
   // TransformUtil
   public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv"; // relative to main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
-  public final Scalar savingInterval = RealScalar.of(50); // [ms]
+  public final Scalar savingInterval = RealScalar.of(200); // [ms]
   // hand-labeling tool
   public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
+  public final Scalar positionDifference = RealScalar.of(2); // [pixel]
+  public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
   // tracking collector
-  public final Boolean collectEstimatedFeatures = true;
+  public final Boolean collectEstimatedFeatures = false;
   public final Scalar iterationLength = RealScalar.of(22);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
@@ -84,13 +85,13 @@ public class PipelineConfig {
   public TransformUtil createTransformUtil() {
     return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
-  
-  /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig*/
+
+  /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */
   public ImageBlobSelector createImageBlobSelector() {
     return new ImageBlobSelector(upperBoarder);
   }
-  
-  /** @return new instance of {@link EventFiltering} derived from parameters in pipelineConfig*/
+
+  /** @return new instance of {@link EventFiltering} derived from parameters in pipelineConfig */
   public EventFiltering createEventFiltering() {
     EventFiltering.setParams(width, height);
     return new EventFiltering(filterConfig, filterConstant, margin);

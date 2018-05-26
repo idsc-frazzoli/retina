@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -163,6 +164,11 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * filteredEventCount / eventCount));
   }
 
+  // for visualization in PresenterLcmModule
+  public List<PhysicalBlob> getProcessedblobs() {
+    return transformer.getPhysicalBlobs();
+  }
+
   // for visualization
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
@@ -191,8 +197,8 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
       String secondFileName = String.format("%s_%s_%04d_%d.png", "physical", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(eventFrames[1].overlayActiveBlobs(blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED), "png", new File(parentFilePath, fileName));
-      ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
+      ImageIO.write(eventFrames[1].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
+      // ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
       // ImageIO.write(wholeGUI, "png", new File(parentFilePath, fileName));

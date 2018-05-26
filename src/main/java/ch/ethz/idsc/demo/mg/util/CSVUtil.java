@@ -56,24 +56,23 @@ public class CSVUtil {
       }
     }
   }
-  
+
   /** saves a List<double[]> object to a CSV file.
    * 
    * @param file object is saved to that file
-   * @param collectedResults
-   */
+   * @param collectedResults */
   public static void saveToCSV(File file, List<double[]> collectedResults) {
     FileWriter writer = null;
     try {
       writer = new FileWriter(file);
       for (int i = 0; i < collectedResults.size(); i++) {
         final double[] singleResult = collectedResults.get(i);
-          writer.append(String.valueOf(singleResult[0]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(singleResult[1]));
-          writer.append(COMMA_DELIMITER);
-          writer.append(String.valueOf(singleResult[2]));
-          writer.append(NEW_LINE);
+        writer.append(String.valueOf(singleResult[0]));
+        writer.append(COMMA_DELIMITER);
+        writer.append(String.valueOf(singleResult[1]));
+        writer.append(COMMA_DELIMITER);
+        writer.append(String.valueOf(singleResult[2]));
+        writer.append(NEW_LINE);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -88,20 +87,17 @@ public class CSVUtil {
   }
 
   /** loads an object from CSV file that was previously saved with saveToCSV fct. Returns null in case of
-   * IOException.
+   * IOException. The ground truth timestamps need to be provided as well.
    * 
    * @param file object is loaded from that file
+   * @param timeStamps timestamps of ground truth
    * @return List<List<ImageBlob>> object */
-  public static List<List<ImageBlob>> loadFromCSV(File file) {
+  public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
+    // set up empty list
+    List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
+    for (int i = 0; i < timeStamps.length; i++)
+      extractedFeatures.add(new ArrayList<>());
     try {
-      // extract timestamps first
-      int[] timeStamps = getTimestampsFromCSV(file);
-      // set up empty list
-      List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
-      for (int i = 0; i < timeStamps.length; i++) {
-        List<ImageBlob> emptyList = new ArrayList<>();
-        extractedFeatures.add(emptyList);
-      }
       Tensor inputTensor = Import.of(file);
       for (Tensor row : inputTensor) {
         int timestamp = row.Get(0).number().intValue();
@@ -120,11 +116,11 @@ public class CSVUtil {
   }
 
   /** load the timestamps from a CSV file previously saved with saveToCSV fct. Returns null in case of
-   * IOException.
+   * IOException. Should only be used to load ground truth timestamps
    * 
    * @param file timestamps are read from that file
    * @return timestamps object indicating when features are available */
-  public static int[] getTimestampsFromCSV(File file){
+  public static int[] getTimestampsFromCSV(File file) {
     try {
       return Import.of(file).stream().mapToInt(row -> row.Get(0).number().intValue()).distinct().toArray();
     } catch (IOException e) {

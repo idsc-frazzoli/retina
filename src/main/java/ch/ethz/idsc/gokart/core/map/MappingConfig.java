@@ -44,7 +44,7 @@ public class MappingConfig implements Serializable {
   public double getP_M_HIT() {
     return P_M_HIT.number().doubleValue();
   }
-  
+
   public double getP_M_PASS() {
     return P_M_PASS.number().doubleValue();
   }
@@ -56,5 +56,4 @@ public class MappingConfig implements Serializable {
   public double getLambda() {
     return lambda.number().doubleValue();
   }
-
 }

@@ -41,7 +41,7 @@ public enum EvaluationFileLocations {
     filename = filename + ".csv";
     return new File(warningIfNotDirectory(ESTIMATED_CSV), filename);
   }
-  
+
   /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File evalResults(String filename) {
