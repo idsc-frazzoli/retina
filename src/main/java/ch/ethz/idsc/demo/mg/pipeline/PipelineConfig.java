@@ -85,13 +85,13 @@ public class PipelineConfig {
   public TransformUtil createTransformUtil() {
     return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
-  
-  /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig*/
+
+  /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */
   public ImageBlobSelector createImageBlobSelector() {
     return new ImageBlobSelector(upperBoarder);
   }
-  
-  /** @return new instance of {@link EventFiltering} derived from parameters in pipelineConfig*/
+
+  /** @return new instance of {@link EventFiltering} derived from parameters in pipelineConfig */
   public EventFiltering createEventFiltering() {
     EventFiltering.setParams(width, height);
     return new EventFiltering(filterConfig, filterConstant, margin);

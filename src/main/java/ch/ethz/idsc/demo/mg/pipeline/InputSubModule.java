@@ -163,9 +163,9 @@ public class InputSubModule implements OfflineLogListener, DavisDvsListener {
     System.out.println("Computation time: " + elapsedTime + "[ms]");
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * filteredEventCount / eventCount));
   }
-  
+
   // for visualization in PresenterLcmModule
-  public List<PhysicalBlob> getProcessedblobs(){
+  public List<PhysicalBlob> getProcessedblobs() {
     return transformer.getPhysicalBlobs();
   }
 

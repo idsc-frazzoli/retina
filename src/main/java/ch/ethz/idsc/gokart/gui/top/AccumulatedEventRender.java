@@ -8,12 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.List;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.pipeline.InputSubModule;
-import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.TransformUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -26,17 +23,15 @@ import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
 public class AccumulatedEventRender extends AbstractGokartRender implements TimedImageListener, ActionListener {
   private final DavisDevice davisDevice = Davis240c.INSTANCE;
   private final ImageCopy imageCopy;
   private final TransformUtil transformUtil;
   public final AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
-  public final InputSubModule inputSubModule = new InputSubModule(new PipelineConfig());
   // ..
   final JToggleButton jToggleButton = new JToggleButton("events");
-  private boolean isMapping = false;
+  private boolean isSelected = false;
   private final double mapAheadDistance = 7; // [m]
 
   public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {
@@ -45,13 +40,13 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     abstractAccumulatedImage.addListener(this);
     transformUtil = new PipelineConfig().createTransformUtil();
     imageCopy = new ImageCopy();
-    jToggleButton.setSelected(isMapping);
+    jToggleButton.setSelected(isSelected);
     jToggleButton.addActionListener(this);
   }
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (!isMapping)
+    if (!isSelected)
       return;
     // visualize events
     BufferedImage bufferedImage = imageCopy.get(); // TODO may need to make another copy
@@ -70,21 +65,9 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
               graphics.fillRect((int) point.getX(), (int) point.getY(), 1, 1);
             }
           }
-          index++;
+          ++index;
         }
       }
-    }
-    // visualize detected features
-    List<PhysicalBlob> features = inputSubModule.getProcessedblobs();
-    features.forEach(blob -> drawBlob(geometricLayer, graphics, blob));
-  }
-
-  private void drawBlob(GeometricLayer geometricLayer, Graphics2D graphics, PhysicalBlob blob) {
-    Tensor mappedFeature = Tensors.vector(blob.getPos()[0], blob.getPos()[1]);
-    if (mappedFeature.Get(0).number().doubleValue() < mapAheadDistance) {
-      Point2D point = geometricLayer.toPoint2D(mappedFeature);
-      graphics.setColor(Color.BLACK);
-      graphics.drawOval((int) point.getX(), (int) point.getY(), 10, 10);
     }
   }
 
@@ -95,6 +78,6 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    isMapping = jToggleButton.isSelected();
+    isSelected = jToggleButton.isSelected();
   }
 }

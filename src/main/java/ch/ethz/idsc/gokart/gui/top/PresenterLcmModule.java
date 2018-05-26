@@ -134,6 +134,12 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
     }
     {
+      DavisPipelineRender accumulatedEventRender = new DavisPipelineRender(gokartPoseInterface);
+      // TODO add pipeline as dvs listener
+      timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
+      timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
+    }
+    {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
       trajectoryLcmClient.addListener(trajectoryRender);
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);

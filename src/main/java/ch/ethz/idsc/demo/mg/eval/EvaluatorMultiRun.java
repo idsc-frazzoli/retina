@@ -31,12 +31,12 @@ import ch.ethz.idsc.demo.mg.util.CSVUtil;
       // TODO this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
       int newTau = 1000 + 1000 * i;
       String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
-      pipelineConfig.estimatedLabelFileName = "Dubi15a_tau/"+newEstimatedLabelFileName;
+      pipelineConfig.estimatedLabelFileName = "Dubi15a_tau/" + newEstimatedLabelFileName;
       // initialize singleRun object and run evaluation
       EvaluatorSingleRun singleRun = new EvaluatorSingleRun(pipelineConfig);
       singleRun.runEvaluation();
       // collect results
-      double[] results = new double[] {newTau, singleRun.getResults()[0], singleRun.getResults()[1]};
+      double[] results = new double[] { newTau, singleRun.getResults()[0], singleRun.getResults()[1] };
       collectedResults.add(results);
     }
     // TODO probably also save pipelineConfig that was used?

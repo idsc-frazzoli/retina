@@ -3,10 +3,13 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.Primitives;
+import ch.ethz.idsc.tensor.lie.RotationMatrix;
+import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
@@ -90,14 +93,16 @@ public class ImageBlob implements Serializable {
 
   // required for hand-labeling
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
-    Tensor notRotated = Tensors.matrixDouble(new double[][] { { firstAxis, 0 }, { 0, secondAxis } });
-    double cosine = Math.cos(rotAngle);
-    double sine = Math.sin(rotAngle);
-    Tensor rotMatrix = Tensors.matrixDouble(new double[][] { { cosine, -sine }, { sine, cosine } });
+    Tensor notRotated = DiagonalMatrix.of(firstAxis, secondAxis);
+    // Tensors.matrixDouble(new double[][] { { firstAxis, 0 }, { 0, secondAxis } });
+    // double cosine = Math.cos(rotAngle);
+    // double sine = Math.sin(rotAngle);
+    Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));
+    // Tensors.matrixDouble(new double[][] { { cosine, -sine }, { sine, cosine } });
     Tensor rotated = rotMatrix.dot(notRotated).dot(Transpose.of(rotMatrix));
     covariance = Primitives.toDoubleArray2D(rotated);
     // ensure matrix remains symmetric
-    covariance[1][0] = covariance[0][1];
+    covariance[1][0] = covariance[0][1]; // TODO this should not be necessary
   }
 
   public void setIsRecognized(boolean isRecognized) {
