@@ -23,12 +23,14 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.red.Min;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
 public class AccumulatedOverlay implements DavisDvsListener {
   private static final Scalar ALPHA = RealScalar.of(255);
+  private static final ScalarUnaryOperator BOUND_ALPHA = Min.function(ALPHA);
   // ---
   private final List<TimedImageListener> listeners = new CopyOnWriteArrayList<>();
   private Tensor background;
@@ -75,8 +77,8 @@ public class AccumulatedOverlay implements DavisDvsListener {
       while (interval + postpone < dvsDavisEvent.time - last) {
         if (Objects.nonNull(background)) {
           Tensor image = Tensors.of( //
-              background.add(collect_N).map(Min.function(ALPHA)), //
-              background.add(collect_P).map(Min.function(ALPHA)), //
+              background.add(collect_N).map(BOUND_ALPHA), //
+              background.add(collect_P).map(BOUND_ALPHA), //
               background, //
               alphamask);
           image = Transpose.of(image, 2, 0, 1);
