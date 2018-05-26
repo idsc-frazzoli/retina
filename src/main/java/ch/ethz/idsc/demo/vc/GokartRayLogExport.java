@@ -1,8 +1,6 @@
 // code by vc
 package ch.ethz.idsc.demo.vc;
 
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,7 +50,7 @@ class Handler {
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
-      if (!Tensors.isEmpty(newScan)) {
+      if (Tensors.nonEmpty(newScan)) {
         synchronized (collection) {
           ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
           Tensor predictedHulls = Tensors.empty();
@@ -76,7 +74,7 @@ class Handler {
         System.err.println("scan is empty");
     }
   };
-  private double side = 0.2;
+  private double side = 0.03;
 
   // basic performance measure: compute the fraction of predicted centres of clusters that are
   // in the convexHull of the new lidar scan clusters
@@ -92,23 +90,21 @@ class Handler {
   }
 
   public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
-    EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
-    EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
-    for (Area x : predictedAreas.getAreas()) {
-      Rectangle2D bounds2d = x.getBounds2D();
-      for (Area y : enlargedPoints.getAreas()) {
-        if (y.intersects(bounds2d)) {
-          y.intersect(x);
+    Tensor results = Tensors.empty();
+    Enlarger enlargedPoints = new Enlarger(newScan, side);
+    System.out.println("Area of points" + enlargedPoints.getTotalArea());
+    Enlarger predictedAreas = new Enlarger(predictedShapes);
+    System.out.println("Area of hulls" + predictedAreas.getTotalArea());
+    for (Tensor x : predictedAreas.getAreas()) {
+      for (Tensor y : enlargedPoints.getAreas()) {
+        if (Tensors.nonEmpty(PolygonIntersector.polygonIntersect(x, y))) {
+          results.append(PolygonIntersector.polygonIntersect(x, y));
         }
       }
     }
-    double area = 0;
-    for (Area y : enlargedPoints.getAreas()) {
-      double computeArea = enlargedPoints.computeArea(y);
-      if (computeArea != side * side) // to count only the surface of the enlarged points
-        // that have a non empty intersection with the predicted shapes
-        area += computeArea;
-    }
+    Enlarger res = new Enlarger(results);
+    double area = res.getTotalArea();
+    System.out.println("Area of intersection" + area);
     return new PerformanceMeasures( //
         area / enlargedPoints.getTotalArea(), //
         area / predictedAreas.getTotalArea());
