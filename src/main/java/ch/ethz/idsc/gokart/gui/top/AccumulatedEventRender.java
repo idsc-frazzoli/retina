@@ -31,7 +31,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   public final AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
   // ..
   final JToggleButton jToggleButton = new JToggleButton("events");
-  private boolean isSelected = false;
+  public boolean isSelected = false;
   private final double mapAheadDistance = 7; // [m]
 
   public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {
