@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -27,7 +25,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private final File handLabelFile;
   private final File estimatedLabelFile;
   private final int[] groundTruthTimeStamps;
-  private final int[] estimatedTimeStamps;
+  // private final int[] estimatedTimeStamps;
   private final boolean saveEvaluationFrame;
   private final int numberOfLabelInstants;
   private String estimatedLabelFileName;
@@ -40,23 +38,15 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     evaluationFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
     groundTruthTimeStamps = CSVUtil.getTimestampsFromCSV(handLabelFile);
-    groundTruthFeatures = CSVUtil.loadFromCSV(handLabelFile);
+    groundTruthFeatures = CSVUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
     numberOfLabelInstants = groundTruthFeatures.size();
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
-    estimatedTimeStamps = CSVUtil.getTimestampsFromCSV(estimatedLabelFile);
-    estimatedFeatures = CSVUtil.loadFromCSV(estimatedLabelFile);
+    estimatedFeatures = CSVUtil.loadFromCSV(estimatedLabelFile, groundTruthTimeStamps);
     evaluatorInstants = new EvaluatorInstant[numberOfLabelInstants];
-    saveEvaluationFrame = pipelineConfig.saveEvaluationFrame;
-    // initialize evaluatorInstants
-    for (int i = 0; i < numberOfLabelInstants; i++) {
-      // if groundTruthtimeStamp[i] is not available in estimatedTimeStamps, we insert an empty list in the estimatedFeatures at that index
-      if (Arrays.binarySearch(estimatedTimeStamps, groundTruthTimeStamps[i]) < 0) {
-        List<ImageBlob> emptyList = new ArrayList<>();
-        estimatedFeatures.add(i, emptyList);
-      }
+    for (int i = 0; i < numberOfLabelInstants; i++)
       evaluatorInstants[i] = new EvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
-    }
+    saveEvaluationFrame = pipelineConfig.saveEvaluationFrame;
   }
 
   public void runEvaluation() {
@@ -116,7 +106,6 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     }
   }
 
-  // TODO provide all essential results of the evaluation run to other objects through this fct
   public double[] getResults() {
     double[] results = new double[2];
     results[0] = averageRecall;

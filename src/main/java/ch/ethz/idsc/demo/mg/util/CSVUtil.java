@@ -10,7 +10,6 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
 
@@ -58,21 +57,47 @@ public class CSVUtil {
     }
   }
 
+  /** saves a List<double[]> object to a CSV file.
+   * 
+   * @param file object is saved to that file
+   * @param collectedResults */
+  public static void saveToCSV(File file, List<double[]> collectedResults) {
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(file);
+      for (int i = 0; i < collectedResults.size(); i++) {
+        final double[] singleResult = collectedResults.get(i);
+        writer.append(String.valueOf(singleResult[0]));
+        writer.append(COMMA_DELIMITER);
+        writer.append(String.valueOf(singleResult[1]));
+        writer.append(COMMA_DELIMITER);
+        writer.append(String.valueOf(singleResult[2]));
+        writer.append(NEW_LINE);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        writer.flush();
+        writer.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   /** loads an object from CSV file that was previously saved with saveToCSV fct. Returns null in case of
-   * IOException.
+   * IOException. The ground truth timestamps need to be provided as well.
    * 
    * @param file object is loaded from that file
+   * @param timeStamps timestamps of ground truth
    * @return List<List<ImageBlob>> object */
-  public static List<List<ImageBlob>> loadFromCSV(File file) {
-    // extract timestamps first
-    int[] timeStamps = getTimestampsFromCSV(file);
+  public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
+    // set up empty list
+    List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
+    for (int i = 0; i < timeStamps.length; i++)
+      extractedFeatures.add(new ArrayList<>());
     try {
-      // set up empty list
-      List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
-      for (int i = 0; i < timeStamps.length; i++) {
-        List<ImageBlob> emptyList = new ArrayList<>();
-        extractedFeatures.add(emptyList);
-      }
       Tensor inputTensor = Import.of(file);
       for (Tensor row : inputTensor) {
         int timestamp = row.Get(0).number().intValue();
@@ -91,41 +116,16 @@ public class CSVUtil {
   }
 
   /** load the timestamps from a CSV file previously saved with saveToCSV fct. Returns null in case of
-   * IOException.
+   * IOException. Should only be used to load ground truth timestamps
    * 
    * @param file timestamps are read from that file
    * @return timestamps object indicating when features are available */
   public static int[] getTimestampsFromCSV(File file) {
-    // use list because length is unknown
-    List<Integer> timestampList = new ArrayList<>();
     try {
-      Tensor inputTensor = Import.of(file);
-      if (Tensors.isEmpty(inputTensor))
-        return new int[] {};
-      // initialize extractedTimestamps
-      timestampList.add(inputTensor.Get(0, 0).number().intValue());
-      for (int i = 1; i < inputTensor.length(); i++) {
-        int value = inputTensor.Get(i, 0).number().intValue();
-        if (value != timestampList.get(timestampList.size() - 1))
-          timestampList.add(value);
-      }
-      // convert list to array
-      int[] timeStamps = new int[timestampList.size()];
-      for (int i = 0; i < timestampList.size(); i++) {
-        timeStamps[i] = timestampList.get(i);
-      }
-      return timeStamps;
+      return Import.of(file).stream().mapToInt(row -> row.Get(0).number().intValue()).distinct().toArray();
     } catch (IOException e) {
       e.printStackTrace();
       return null;
     }
-  }
-
-  // TODO check if this function is an alternative
-  public static int[] getTimestampsFromCSV_alt(File file) throws IOException {
-    return Import.of(file).stream() //
-        .mapToInt(row -> row.Get(0).number().intValue()) //
-        .distinct() // <- doesn't allow any duplicates (globally, not just based on predecessor)
-        .toArray();
   }
 }

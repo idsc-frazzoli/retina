@@ -30,4 +30,9 @@ public class GokartLogFileTest extends TestCase {
           System.out.println(exception.getMessage());
         }
   }
+
+  public void testTitle() {
+    assertEquals(/**/ "20180522T135700", //
+        GokartLogFile._20180522T135700_2da7e1f5.getTitle());
+  }
 }

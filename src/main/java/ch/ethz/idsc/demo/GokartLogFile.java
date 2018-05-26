@@ -5,8 +5,22 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
 
 public enum GokartLogFile implements LogFile {
   /* 2017-12-07 */
+  /** joystick driving */
+  _20171207T105632_59f9bc78, //
+  /** joystick driving with 1[m/s] */
+  _20171207T121043_59f9bc78, //
+  /** joystick driving with up to 6[m/s] */
+  _20171207T133222_59f9bc78, //
+  /** joystick driving with up to 6[m/s] */
+  _20171207T134930_59f9bc78, //
   /***************************************************/
   /* 2017-12-08 */
+  /** joystick driving */
+  _20171208T102427_a03fba2d, //
+  /** joystick driving with up to 4[m/s] */
+  _20171208T110839_a03fba2d, //
+  /** joystick driving */
+  _20171208T115237_a03fba2d, //
   /***************************************************/
   /* 2017-12-13 */
   /** lot's of braking */
@@ -16,6 +30,14 @@ public enum GokartLogFile implements LogFile {
   /***************************************************/
   /* 2017-12-18 */
   // gokart.pose.lidar does not contain quality field
+  /** moving gokart */
+  _20171218T121006_9b56b71b, //
+  /** pure pursuit oval up to 2[m/s] */
+  _20171218T130515_4794c081, //
+  /** pure pursuit oval */
+  _20171218T133833_2eb2bfb0, //
+  /** pure pursuit oval up to 2[m/s] */
+  _20171218T135141_2eb2bfb0, //
   /***************************************************/
   /* 2018-01-08 */
   /** no movement at all
@@ -298,6 +320,22 @@ public enum GokartLogFile implements LogFile {
   _20180522T145910_2da7e1f5, //
   /** trajectory planning with moving obstacles */
   _20180522T150418_2da7e1f5, //
+  /***************************************************/
+  /* 2018-05-24 */
+  /** different rimo P/PI controller values
+   * pure pursuit figure 8 */
+  _20180524T142610_0c5750cc, //
+  /** trajectory planning, pure pursuit figure 8 */
+  _20180524T163738_65ff8506, //
+  /** pure pursuit figure 8
+   * involves localization failure */
+  _20180524T164438_65ff8506, //
+  /** trajectory planning oval waypoints, no obstacles */
+  _20180524T165519_65ff8506, //
+  /** trajectory planning oval waypoints, no obstacles */
+  _20180524T165934_65ff8506, //
+  /** trajectory planning oval waypoints, shifting obstacles */
+  _20180524T175331_f5b40700, //
   ;
   @Override
   public String getFilename() {
@@ -306,6 +344,6 @@ public enum GokartLogFile implements LogFile {
 
   @Override
   public String getTitle() {
-    return name().substring(1, 13);
+    return name().substring(1, 16);
   }
 }

@@ -2,7 +2,9 @@
 package ch.ethz.idsc.demo.jph.sys;
 
 import java.io.File;
+import java.util.Collection;
 
+import ch.ethz.idsc.demo.GokartLogFiles;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
@@ -29,7 +31,15 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
     throw new RuntimeException("not found: " + title);
   }
 
+  /** @param logFile
+   * @return
+   * @throws Exception if file cannot be located */
   public static File file(LogFile logFile) {
     return INSTANCE.getAbsoluteFile(logFile);
+  }
+
+  /** @return */
+  public static Collection<LogFile> all() {
+    return GokartLogFiles.all(ALT_ROOT);
   }
 }

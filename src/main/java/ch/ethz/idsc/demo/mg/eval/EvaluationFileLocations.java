@@ -9,6 +9,10 @@ public enum EvaluationFileLocations {
   ;
   private static final File HANDLABEL_IMAGES = UserHome.Pictures("handlabelimages");
   private static final File EVALUATED_IMAGES = UserHome.Pictures("evaluatedimages");
+  private static final File HANDLABEL_CSV = UserHome.Pictures("handlabels");
+  private static final File ESTIMATED_CSV = UserHome.Pictures("estimatedlabels");
+  private static final File EVALRESULTS = UserHome.Pictures("evalResults");
+  private static final File TESTING = UserHome.Pictures("testImages");
 
   /** @param subfolder name
    * @return directory of the images to be labeled. NOTE: only the images should be in that directory */
@@ -28,19 +32,26 @@ public enum EvaluationFileLocations {
    * @return file in directory containing the handlabels */
   public static File handlabels(String filename) {
     filename = filename + ".csv";
-    return new File(warningIfNotDirectory(UserHome.Pictures("handlabels")), filename);
+    return new File(warningIfNotDirectory(HANDLABEL_CSV), filename);
   }
 
   /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File estimatedlabels(String filename) {
     filename = filename + ".csv";
-    return new File(warningIfNotDirectory(UserHome.Pictures("estimatedlabels")), filename);
+    return new File(warningIfNotDirectory(ESTIMATED_CSV), filename);
+  }
+
+  /** @param filename without .csv extension
+   * @return file in directory containing the estimatedlabels */
+  public static File evalResults(String filename) {
+    filename = filename + ".csv";
+    return new File(warningIfNotDirectory(EVALRESULTS), filename);
   }
 
   /** @return directory for the GUI screenshots */
   public static File testing() {
-    return warningIfNotDirectory(UserHome.Pictures("testImages"));
+    return warningIfNotDirectory(TESTING);
   }
 
   private static File warningIfNotDirectory(File directory) {

@@ -60,13 +60,13 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private Scalar delta = Quantity.of(0.2, SI.SECOND);
+  private Scalar delta = Quantity.of(0.1, SI.SECOND);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final BayesianOccupancyGrid grid;
-  private final Tensor gridRange = Tensors.vector(85, 85);
+  private final Tensor gridRange = Tensors.vector(40, 40);
   private final Tensor lbounds;
   private boolean flag = false;
 
@@ -82,7 +82,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     // ---
-    lbounds = Tensors.vector(0, 0);
+    lbounds = Tensors.vector(30, 30);
     grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.2));
     grid.setObstacleRadius(DoubleScalar.of(0.4));
   }
@@ -117,7 +117,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       // System.out.println(time);
       try {
         grid.genObstacleMap();
-        ImageIO.write(image, "png", UserHome.Pictures("/log/" + Magnitude.SECOND.apply(time).toString() + ".png"));
+        ImageIO.write(image, "png", UserHome.Pictures("/log/mapper/" + Magnitude.SECOND.apply(time).toString() + ".png"));
       } catch (IOException e) {
         e.printStackTrace();
       }

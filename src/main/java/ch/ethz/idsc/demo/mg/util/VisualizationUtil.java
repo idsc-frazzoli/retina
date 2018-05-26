@@ -53,8 +53,6 @@ public class VisualizationUtil {
    * @param graphics
    * @param blobs */
   public static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
-    // for (int i = 0; i < blobs.size(); i++)
-    // drawImageBlob(graphics, blobs.get(i), Color.WHITE);
-    blobs.forEach(blob -> drawImageBlob(graphics, blob, Color.WHITE)); // <- this syntax is less error prone (?)
+    blobs.forEach(blob -> drawImageBlob(graphics, blob, Color.WHITE));
   }
 }

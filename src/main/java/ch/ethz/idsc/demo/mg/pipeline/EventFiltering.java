@@ -2,19 +2,18 @@
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.tensor.Scalar;
 
 // provides event filters
 public class EventFiltering {
   private static int width;
   private static int height;
-  // filter choice
   private int filterConfig;
   // for background activity filter
   private int[][] timestamps;
   private double filterConstant;
   // for corner detector
-  // TODO consider using the term "margin" instead of border
-  private int border; // events too close to image border are neglected
+  private int margin; // events too close to image border are neglected
   private int[][][] SAE; // surface of active events for each polarity
   // hard coded circle parameters for corner detector
   private final int[][] circle3 = { //
@@ -27,21 +26,18 @@ public class EventFiltering {
       { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
-  // TODO create function in PipelineConfig createEventFiltering() that calls
-  // ... constructor EventFiltering(width, height, filterConfig, filterConstant, border)
-  public EventFiltering(PipelineConfig pipelineConfig) {
-    setParameters(pipelineConfig);
-  }
-
-  private void setParameters(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
-    filterConfig = pipelineConfig.filterConfig.number().intValue();
-    filterConstant = pipelineConfig.filterConstant.number().doubleValue();
-    border = pipelineConfig.border.number().intValue();
+  public EventFiltering(Scalar filterConfig, Scalar filterConstant, Scalar margin) {
+    this.filterConfig = filterConfig.number().intValue();
+    this.filterConstant = filterConstant.number().doubleValue();
+    this.margin = margin.number().intValue();
     // ---
     timestamps = new int[width][height];
     SAE = new int[width][height][2];
+  }
+
+  public static void setParams(Scalar widthInput, Scalar heightInput) {
+    width = widthInput.number().intValue();
+    height = heightInput.number().intValue();
   }
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
@@ -84,7 +80,7 @@ public class EventFiltering {
     int pol = e.i;
     SAE[e.x][e.y][pol] = e.time;
     // check if not too close to boarder
-    if (e.x < border || e.x > width - border - 1 || e.y < border || e.y > height - border - 1) {
+    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1) {
       return false;
     }
     boolean found_streak = false;

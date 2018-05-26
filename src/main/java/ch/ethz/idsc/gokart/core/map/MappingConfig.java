@@ -16,8 +16,11 @@ public class MappingConfig implements Serializable {
   /** Prior on occupancy probability of a single cell in grid */
   public Scalar P_M = DoubleScalar.of(0.5);
   /** Probability that a cell is occupied given that
-   * the lidar has observed an obstacle in that cell. */
+   * the LIDAR has observed an obstacle in that cell. */
   public Scalar P_M_HIT = DoubleScalar.of(0.85);
+  /** Probability that a cell is occupied given that
+   * the LIDAR ray has passed through it and was below minObsHeight. */
+  public Scalar P_M_PASS = DoubleScalar.of(0.2);
   /** Probability threshold for occupancy threshold. Grid cells
    * with occupancy probability larger than P_THRESH are classified
    * as occupied */
@@ -30,6 +33,8 @@ public class MappingConfig implements Serializable {
   public Scalar obsRadius = Quantity.of(1.5, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public Scalar cellDim = Quantity.of(0.2, SI.METER);
+  /** Minimal obstacle height. Used for inverse sensor model */
+  public Scalar minObsHeight = Quantity.of(0, SI.METER);
 
   /***************************************************/
   public double getP_M() {
@@ -38,6 +43,10 @@ public class MappingConfig implements Serializable {
 
   public double getP_M_HIT() {
     return P_M_HIT.number().doubleValue();
+  }
+
+  public double getP_M_PASS() {
+    return P_M_PASS.number().doubleValue();
   }
 
   public double getP_THRESH() {
