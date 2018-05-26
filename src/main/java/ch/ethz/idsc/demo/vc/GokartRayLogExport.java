@@ -50,7 +50,7 @@ class Handler {
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
-      if (!Tensors.isEmpty(newScan)) {
+      if (Tensors.nonEmpty(newScan)) {
         synchronized (collection) {
           ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
           Tensor predictedHulls = Tensors.empty();
@@ -97,8 +97,8 @@ class Handler {
     System.out.println("Area of hulls" + predictedAreas.getTotalArea());
     for (Tensor x : predictedAreas.getAreas()) {
       for (Tensor y : enlargedPoints.getAreas()) {
-        if (Tensors.nonEmpty(PolygonIntersecter.PolygonIntersect(x, y))) {
-          results.append(PolygonIntersecter.PolygonIntersect(x, y));
+        if (Tensors.nonEmpty(PolygonIntersector.polygonIntersect(x, y))) {
+          results.append(PolygonIntersector.polygonIntersect(x, y));
         }
       }
     }

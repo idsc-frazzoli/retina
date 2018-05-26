@@ -1,28 +1,29 @@
+// code by vc
 package ch.ethz.idsc.demo.vc;
 
-import javax.swing.JPanel;
-
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Reverse;
 
 /** The purpose of this class is to find, if any, the polygon that results from the intersection
  * of two polygons specified as Tensors that contain the polygon's vertices coordinates. */
-class PolygonIntersecter extends JPanel {
-  public static Tensor PolygonIntersect(Tensor clip, Tensor subj) {
+enum PolygonIntersector {
+  ;
+  public static Tensor polygonIntersect(Tensor clip, Tensor subj) {
     // Tensor clip1 = reverse(clip);
-    Tensor subj1 = reverse(subj);// to handle clockwise inputs
+    Tensor subj1 = Reverse.of(subj); // to handle clockwise inputs
     Tensor result = clipPolygon(subj1, clip);
     return result;
   }
 
-  private static Tensor reverse(Tensor x) {
-    Tensor s = Tensors.empty();
-    for (int i = x.length() - 1; i >= 0; i--) {
-      s.append(x.get(i));
-    }
-    return s;
-  }
-
+  // private static Tensor reverse(Tensor x) {
+  // Tensor s = Tensors.empty();
+  // for (int i = x.length() - 1; i >= 0; i--) {
+  // s.append(x.get(i));
+  // }
+  // return s;
+  // }
   private static Tensor clipPolygon(Tensor subject, Tensor clipper) {
     int len = clipper.length();
     Tensor res = subject;
@@ -39,7 +40,8 @@ class PolygonIntersecter extends JPanel {
           if (!isInside(A, B, P))
             res.append(intersection(A, B, P, Q));
           res.append(Q);
-        } else if (isInside(A, B, P)) {
+        } else //
+        if (isInside(A, B, P)) {
           res.append(intersection(A, B, P, Q));
         }
       }
@@ -47,10 +49,18 @@ class PolygonIntersecter extends JPanel {
     return res;
   }
 
+  // sign of signed area of triangle spanned by a, b, c
   private static boolean isInside(Tensor a, Tensor b, Tensor c) {
-    return (a.Get(0).number().doubleValue() - c.Get(0).number().doubleValue())
-        * (b.Get(1).number().doubleValue() - c.Get(1).number().doubleValue()) > (a.Get(1).number().doubleValue() - c.Get(1).number().doubleValue())
-            * (b.Get(0).number().doubleValue() - c.Get(0).number().doubleValue());
+    Tensor ac = a.subtract(c);
+    Tensor bc = b.subtract(c);
+    return Scalars.lessThan( //
+        ac.Get(1).multiply(bc.Get(0)), //
+        ac.Get(0).multiply(bc.Get(1)) //
+    );
+    // return (a.Get(0).number().doubleValue() - c.Get(0).number().doubleValue()) //
+    // * (b.Get(1).number().doubleValue() - c.Get(1).number().doubleValue()) //
+    // > (a.Get(1).number().doubleValue() - c.Get(1).number().doubleValue()) //
+    // * (b.Get(0).number().doubleValue() - c.Get(0).number().doubleValue());
   }
 
   private static Tensor intersection(Tensor a, Tensor b, Tensor p, Tensor q) {

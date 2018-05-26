@@ -46,15 +46,8 @@ public class Enlarger {
     return rectangle2d.getWidth() * rectangle2d.getHeight();
   }
 
-  public double computeBetterArea(Tensor hull) { // inspired of https://www.mathopenref.com/coordpolygonarea.html
-    int l = hull.length();
-    double intermediate = hull.get(l - 1).Get(0).number().doubleValue() * hull.get(0).Get(1).number().doubleValue()
-        - hull.get(0).Get(0).number().doubleValue() * hull.get(l - 1).Get(1).number().doubleValue();
-    for (int i = 0; i < (l - 1); i++) {
-      intermediate += hull.get(i).Get(0).number().doubleValue() * hull.get(i + 1).Get(1).number().doubleValue()
-          - hull.get(i).Get(1).number().doubleValue() * hull.get(i + 1).Get(0).number().doubleValue();
-    }
-    return Math.abs(intermediate) / 2;
+  public static double computeBetterArea(Tensor polygon) {
+    return Math.abs(PolygonArea.signed(polygon));
   }
 
   public List<Tensor> getAreas() {
