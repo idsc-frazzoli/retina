@@ -49,6 +49,7 @@ public class TransformUtil {
     radDistortionPoly = new HornerScheme(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
     focalLength = inputTensor.get(5);
     focalLengthInv = focalLength.map(Scalar::reciprocal);
+    // TODO precompute transformation
   }
 
   /** @param imagePosX [pixel]

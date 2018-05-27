@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
+import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /** pipeline setup for single/multirun */
 /* package */ class PipelineSetup {
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private PipelineConfig pipelineConfig;
   private final int iterationLength;
 
@@ -33,6 +35,7 @@ import ch.ethz.idsc.tensor.RealScalar;
     try {
       // initialize inputSubModule with current config and run logplayer
       InputSubModule inputSubModule = new InputSubModule(pipelineConfig);
+      davisDvsDatagramDecoder.addDvsListener(inputSubModule);
       BoundedOfflineLogPlayer.process(logFile, //
           pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
       // show summary

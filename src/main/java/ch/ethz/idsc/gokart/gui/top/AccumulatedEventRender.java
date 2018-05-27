@@ -34,6 +34,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   private boolean isSelected = false;
   private final double mapAheadDistance = 7; // [m]
 
+  // TODO maybe we need a pipelineConfig field?
   public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
     abstractAccumulatedImage.setInterval(25_000);

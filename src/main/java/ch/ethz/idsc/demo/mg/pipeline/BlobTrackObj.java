@@ -15,7 +15,8 @@ public class BlobTrackObj {
   private float activity;
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;
-
+  
+  // TODO introduce blob ID to track blobs trough time
   // initialize with position and covariance
   BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };

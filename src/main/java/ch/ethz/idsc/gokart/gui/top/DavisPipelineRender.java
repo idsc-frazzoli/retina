@@ -43,6 +43,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
   private void drawBlob(GeometricLayer geometricLayer, Graphics2D graphics, PhysicalBlob blob) {
     Tensor mappedFeature = Tensors.vectorDouble(blob.getPos());
     if (mappedFeature.Get(0).number().doubleValue() < mapAheadDistance) {
+      // TODO store location of all features
       Point2D point2D = geometricLayer.toPoint2D(mappedFeature);
       graphics.setColor(Color.BLACK);
       graphics.drawOval((int) point2D.getX(), (int) point2D.getY(), 10, 10);

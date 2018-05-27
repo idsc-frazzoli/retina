@@ -94,15 +94,11 @@ public class ImageBlob implements Serializable {
   // required for hand-labeling
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
     Tensor notRotated = DiagonalMatrix.of(firstAxis, secondAxis);
-    // Tensors.matrixDouble(new double[][] { { firstAxis, 0 }, { 0, secondAxis } });
-    // double cosine = Math.cos(rotAngle);
-    // double sine = Math.sin(rotAngle);
     Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));
-    // Tensors.matrixDouble(new double[][] { { cosine, -sine }, { sine, cosine } });
     Tensor rotated = rotMatrix.dot(notRotated).dot(Transpose.of(rotMatrix));
     covariance = Primitives.toDoubleArray2D(rotated);
     // ensure matrix remains symmetric
-    covariance[1][0] = covariance[0][1]; // TODO this should not be necessary
+     covariance[1][0] = covariance[0][1]; // TODO this should not be necessary --> need further investigation
   }
 
   public void setIsRecognized(boolean isRecognized) {
