@@ -13,7 +13,8 @@ import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 
-class Aedat31PolarityImage implements Aedat31PolarityListener {
+// class is used in outside project for rendering
+public class Aedat31PolarityImage implements Aedat31PolarityListener {
   private static final Color[] COLORS = new Color[] { new Color(255, 0, 255), Color.GREEN };
   // ---
   private int time = 0;

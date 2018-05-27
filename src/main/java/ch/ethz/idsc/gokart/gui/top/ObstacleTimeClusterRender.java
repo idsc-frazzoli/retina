@@ -53,7 +53,7 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
       i++;
-      if (!Tensors.isEmpty(p)) {
+      if (Tensors.nonEmpty(p)) {
         p1.append(p);
         int scanCount = ClusterConfig.GLOBAL.getScanCount();
         if (p1.length() > scanCount) {
@@ -65,10 +65,10 @@ class ObstacleTimeClusterRender extends LidarRender implements ActionListener {
             Tensor meanFour = Tensors.empty();
             Tensor _pi = pi;
             for (Tensor x : _pi) {
-              if (!Tensors.isEmpty(x)) {
+              if (Tensors.nonEmpty(x)) {
                 Tensor mean = Tensors.empty();
                 for (Tensor y : x) {
-                  if (!Tensors.isEmpty(y)) {
+                  if (Tensors.nonEmpty(y)) {
                     mean.append(Mean.of(y));
                   }
                 }
