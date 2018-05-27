@@ -39,7 +39,7 @@ public enum ClustersTracking {
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
     NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
-    Database database = StaticHelper.database(matrix);
+    Database database = ElkiDatabase.from(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);

@@ -1,11 +1,10 @@
 // code by vc
 package ch.ethz.idsc.demo.vc;
 
-import ch.ethz.idsc.gokart.core.perc.Clusters;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum ElkiTest {
+/* package */ enum ElkiTest {
   ;
   public static void main(String[] args) {
     double[][] data = new double[4][2];
