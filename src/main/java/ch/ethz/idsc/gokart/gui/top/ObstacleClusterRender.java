@@ -50,7 +50,7 @@ class ObstacleClusterRender extends LidarRender implements ActionListener {
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
       oldMean = mean;
-      if (!Tensors.isEmpty(p)) {
+      if (Tensors.nonEmpty(p)) {
         System.out.println("Size of p:" + p.length());
         pi = ClusterConfig.GLOBAL.elkiDBSCAN(p);
         System.out.println("#clusters: " + pi.length());
