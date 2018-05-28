@@ -135,7 +135,7 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseInterface);
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisPipelineRenderRender.inputSubModule);
+      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisPipelineRenderRender.pipelineProvider);
       timerFrame.geometricComponent.addRenderInterface(davisPipelineRenderRender);
       timerFrame.jToolBar.add(davisPipelineRenderRender.jToggleButton);
     }

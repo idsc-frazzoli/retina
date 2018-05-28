@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
   private final float[] pos;
-  private final int timeStamp; //
+  private final int timeStamp;
+  private final int blobID; // == 0 for hidden blobs
   private double[][] covariance;
   private boolean isRecognized;
   private boolean isHidden;
@@ -26,10 +27,11 @@ public class ImageBlob implements Serializable {
    * @param covariance array of size 2 x 2
    * @param timeStamp
    * @param isHidden */
-  public ImageBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
+  public ImageBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden, int blobID) {
     this.pos = pos;
     this.covariance = covariance;
     this.timeStamp = timeStamp;
+    this.blobID = blobID;
     this.isHidden = isHidden;
   }
 
@@ -83,6 +85,10 @@ public class ImageBlob implements Serializable {
 
   public int getTimeStamp() {
     return timeStamp;
+  }
+  
+  public int getBlobID() {
+    return blobID;
   }
 
   // required for hand-labeling

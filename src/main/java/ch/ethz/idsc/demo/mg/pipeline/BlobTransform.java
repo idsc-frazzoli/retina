@@ -20,7 +20,7 @@ public class BlobTransform {
     List<PhysicalBlob> physicalBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       double[] physicalPos = transformUtil.imageToWorld(blobs.get(i).getPos()[0], blobs.get(i).getPos()[1]);
-      PhysicalBlob singlePhysicalBlob = new PhysicalBlob(physicalPos);
+      PhysicalBlob singlePhysicalBlob = new PhysicalBlob(physicalPos, blobs.get(i).getBlobID());
       physicalBlobs.add(singlePhysicalBlob);
     }
     this.physicalBlobs = physicalBlobs;

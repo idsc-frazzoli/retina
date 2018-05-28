@@ -10,7 +10,8 @@ import java.util.List;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.pipeline.InputSubModule;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineProvider;
+import ch.ethz.idsc.demo.mg.gui.AccumulatedFeaturePoints;
 import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -19,7 +20,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class DavisPipelineRender extends AbstractGokartRender implements ActionListener {
-  public final InputSubModule inputSubModule = new InputSubModule(new PipelineConfig());
+  private AccumulatedFeaturePoints accumulatedFeaturePoints;
+  public final PipelineProvider pipelineProvider = new PipelineProvider(new PipelineConfig());
   // ..
   final JToggleButton jToggleButton = new JToggleButton("pipeline");
   private boolean isSelected = false;
@@ -29,6 +31,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     super(gokartPoseInterface);
     jToggleButton.setSelected(isSelected);
     jToggleButton.addActionListener(this);
+    accumulatedFeaturePoints = new AccumulatedFeaturePoints();
   }
 
   @Override
@@ -36,17 +39,31 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     if (!isSelected)
       return;
     // visualize detected features
-    List<PhysicalBlob> features = inputSubModule.getProcessedblobs();
+    List<PhysicalBlob> features = pipelineProvider.getProcessedblobs();
     features.forEach(blob -> drawBlob(geometricLayer, graphics, blob));
+    features.forEach(blob -> accumulateBlobs(geometricLayer, graphics, blob));
+    for (int i = 0; i < accumulatedFeaturePoints.getAccumulatedPoints().size(); i++) {
+      int blobID = accumulatedFeaturePoints.getBlobIDList().get(i);
+      graphics.setColor(Color.BLACK);
+      Point2D point = accumulatedFeaturePoints.getAccumulatedPoints().get(i);
+      graphics.drawOval((int) point.getX(), (int) point.getY(), 10, 10);
+    }
   }
 
   private void drawBlob(GeometricLayer geometricLayer, Graphics2D graphics, PhysicalBlob blob) {
     Tensor mappedFeature = Tensors.vectorDouble(blob.getPos());
     if (mappedFeature.Get(0).number().doubleValue() < mapAheadDistance) {
-      // TODO store location of all features
-      Point2D point2D = geometricLayer.toPoint2D(mappedFeature);
+      Point2D point = geometricLayer.toPoint2D(mappedFeature);
       graphics.setColor(Color.BLACK);
-      graphics.drawOval((int) point2D.getX(), (int) point2D.getY(), 10, 10);
+      graphics.drawOval((int) point.getX(), (int) point.getY(), 10, 10);
+    }
+  }
+
+  private void accumulateBlobs(GeometricLayer geometricLayer, Graphics2D graphics, PhysicalBlob blob) {
+    Tensor mappedFeature = Tensors.vectorDouble(blob.getPos());
+    if (mappedFeature.Get(0).number().doubleValue() < mapAheadDistance) {
+      Point2D point2D = geometricLayer.toPoint2D(mappedFeature);
+      accumulatedFeaturePoints.addFeaturePoint(point2D, blob.getblobID());
     }
   }
 

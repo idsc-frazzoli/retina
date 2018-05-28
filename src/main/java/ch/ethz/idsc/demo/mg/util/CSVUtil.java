@@ -106,7 +106,7 @@ public class CSVUtil {
         double[][] cov = new double[][] { //
             { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
             { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
-        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true));
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, 0)); // TODO default blobID == 0
       }
       return extractedFeatures;
     } catch (IOException e) {

@@ -9,14 +9,14 @@ public class BlobTrackObj {
   private static int width;
   private static int height;
   // blob parameters
+  private final double[][] covariance;
   private final float[] initPos;
   private final float[] pos;
-  private final double[][] covariance;
-  private float activity;
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;
-  
-  // TODO introduce blob ID to track blobs trough time
+  private float activity;
+  private int blobID; // initially = 0, set different once blob is promoted to active layer
+
   // initialize with position and covariance
   BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
@@ -101,15 +101,14 @@ public class BlobTrackObj {
     return currentScore;
   }
 
-  // maybe use also Manhattan distance?
-  public float geometricBlobScore(DavisDvsEvent davisDvsEvent) {
-    double distance = Math.sqrt((davisDvsEvent.x - pos[0]) * (davisDvsEvent.x - pos[0]) + (davisDvsEvent.y - pos[1]) * (davisDvsEvent.y - pos[1]));
-    // somehow normalize the distance
-    return (float) distance;
-  }
-
+  // // maybe use also Manhattan distance?
+  // public double geometricBlobScore(DavisDvsEvent davisDvsEvent) {
+  // double distance = Math.sqrt((davisDvsEvent.x - pos[0]) * (davisDvsEvent.x - pos[0]) + (davisDvsEvent.y - pos[1]) * (davisDvsEvent.y - pos[1]));
+  // // somehow normalize the distance
+  // return distance;
+  // }
   public void updateAttractionEquation(float alphaAttr, float dRep) {
-    float posDiff = (float) Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
+    double posDiff = Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
     if (posDiff > dRep) {
       pos[0] = initPos[0];
       pos[1] = initPos[1];
@@ -120,10 +119,10 @@ public class BlobTrackObj {
   }
 
   // required for merging
-  public float getDistanceTo(BlobTrackObj otherBlob) {
+  public double getDistanceTo(BlobTrackObj otherBlob) {
     double distance = Math
         .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
-    return (float) distance;
+    return distance;
   }
 
   // merge blobs by using activity-weighted average
@@ -137,13 +136,8 @@ public class BlobTrackObj {
     covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
     covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);
     covariance[1][1] = 0.5 * (covariance[1][1] + otherBlob.getCovariance()[1][1]);
-    // acitivty merge... TODO is it reasonable?
+    // acitivity merge... TODO is it reasonable?
     activity = totActivity;
-  }
-
-  public boolean blobPromotion(float aUp) {
-    layerID = activity > aUp;
-    return layerID;
   }
 
   // if blob is too close to boundary, return true
@@ -155,20 +149,9 @@ public class BlobTrackObj {
     return boundPointLeft < 0 || boundPointRight > (width - 1) || boundPointUp < 0 || boundPointDown > height;
   }
 
-  public void increaseBlobSize(float enlargement) {
-    covariance[0][0] *= enlargement;
-    covariance[0][1] *= enlargement;
-    covariance[1][0] *= enlargement;
-    covariance[1][1] *= enlargement;
-  }
-
-  // return a size metric, currently trace of matrix
-  public double getSizeMetric() {
-    return covariance[0][0] + covariance[1][1];
-  }
-
-  public void setLayerID(boolean layerID) {
-    this.layerID = layerID;
+  public void setToActiveLayer(int blobID) {
+    this.blobID = blobID;
+    this.layerID = true;
   }
 
   public boolean getLayerID() {
@@ -191,7 +174,7 @@ public class BlobTrackObj {
     return covariance;
   }
 
-  public float getScore() {
-    return currentScore;
+  public int getBlobID() {
+    return blobID;
   }
 }

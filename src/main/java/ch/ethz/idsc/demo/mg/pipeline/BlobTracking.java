@@ -33,6 +33,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   private final List<BlobTrackObj> blobs;
   private int matchingBlob;
   private int lastEventTimestamp;
+  // ID
+  private int IDCount = 1;
   // testing
   public float hitthreshold = 0;
 
@@ -152,7 +154,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   private void upgradeBlob() {
     // put element at the end of the list and promote it to active layer
     blobs.add(blobs.get(matchingBlob));
-    blobs.get(blobs.size() - 1).setLayerID(true);
+    blobs.get(blobs.size() - 1).setToActiveLayer(IDCount);
+    IDCount++;
     // replace the promoted blob with a new initial blob
     float[] oldInitPos = blobs.get(matchingBlob).getInitPos();
     BlobTrackObj newInitBlob = new BlobTrackObj(oldInitPos[0], oldInitPos[1], initVariance);
@@ -199,13 +202,13 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
   // merge closest pair of active blobs if distance is less than dMerge
   private void mergeBlobs(float dMerge) {
-    float minDistance = dMerge;
+    double minDistance = dMerge;
     int firstBlob = 0; // no active blob at 0 so its safe to assign 0
     int secondBlob = 0;
     // find pair of active blobs that is closest to each other
     for (int i = initNumberOfBlobs; i < (blobs.size() - 1); i++) {
       for (int j = i + 1; j < blobs.size(); j++) {
-        float distance = blobs.get(i).getDistanceTo(blobs.get(j));
+        double distance = blobs.get(i).getDistanceTo(blobs.get(j));
         if (distance < minDistance) {
           firstBlob = i;
           secondBlob = j;
@@ -236,7 +239,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     List<ImageBlob> activeBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       if (blobs.get(i).getLayerID()) {
-        ImageBlob activeBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false);
+        ImageBlob activeBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false, blobs.get(i).getBlobID());
         activeBlobs.add(activeBlob);
       }
     }
@@ -247,7 +250,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     List<ImageBlob> hiddenBlobs = new ArrayList<>();
     for (int i = 0; i < blobs.size(); i++) {
       if (!blobs.get(i).getLayerID()) {
-        ImageBlob hiddenBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true);
+        ImageBlob hiddenBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true, 0); // TODO default blobID == 0
         hiddenBlobs.add(hiddenBlob);
       }
     }

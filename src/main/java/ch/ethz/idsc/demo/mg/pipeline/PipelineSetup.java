@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.tensor.RealScalar;
 
-/** pipeline setup for single/multirun */
+/** pipeline setup for single/multirun of logfiles */
 /* package */ class PipelineSetup {
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private PipelineConfig pipelineConfig;
   private final int iterationLength;
 
@@ -33,20 +31,19 @@ import ch.ethz.idsc.tensor.RealScalar;
   private void runPipeline() {
     File logFile = pipelineConfig.getLogFile();
     try {
-      // initialize inputSubModule with current config and run logplayer
-      InputSubModule inputSubModule = new InputSubModule(pipelineConfig);
-      davisDvsDatagramDecoder.addDvsListener(inputSubModule);
+      // initialize offlinePipelineWrap with current pipelineConfig
+      OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);
       BoundedOfflineLogPlayer.process(logFile, //
-          pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
+          pipelineConfig.maxDuration.number().longValue() * 1000, offlinePipelineWrap);
       // show summary
-      inputSubModule.summarizeLog();
+      offlinePipelineWrap.summarizeLog();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public static void main(String[] args) {
-    // initialize config -- could also load existing config
+    // initialize pipelineConfig -- could also load existing pipelineConfig
     PipelineConfig pipelineConfig = new PipelineConfig();
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);

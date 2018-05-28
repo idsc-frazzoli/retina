@@ -121,7 +121,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
         Point p = e.getPoint();
         // point coordinates need to be scaled back since we click on a scaled image
         ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
-            timeStamps[currentImgNumber - 1], true);
+            timeStamps[currentImgNumber - 1], true, 0); // TODO default blobID
         labeledFeatures.get(currentImgNumber - 1).add(blob);
       }
       // remove last added label with right click

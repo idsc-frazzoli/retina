@@ -42,14 +42,13 @@ public class TransformUtil {
   private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
-  private TransformUtil(Tensor inputTensor, Scalar unitConversion) {
+  /* package */ TransformUtil(Tensor inputTensor, Scalar unitConversion) {
     this.unitConversion = unitConversion;
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2
     radDistortionPoly = new HornerScheme(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
     focalLength = inputTensor.get(5);
     focalLengthInv = focalLength.map(Scalar::reciprocal);
-    // TODO precompute transformation
   }
 
   /** @param imagePosX [pixel]
@@ -90,5 +89,4 @@ public class TransformUtil {
     System.out.println("principalPoint=" + principalPoint);
     System.out.println("focalLength=" + focalLength);
   }
-  // main function moved to TransformUtilDemo (put cursor on TransformUtilDemo then press F3 to navigate there)
 }
