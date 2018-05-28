@@ -97,9 +97,9 @@ class Handler {
     System.out.println("Area of hulls" + predictedAreas.getTotalArea());
     for (Tensor x : predictedAreas.getAreas()) {
       for (Tensor y : enlargedPoints.getAreas()) {
-        if (Tensors.nonEmpty(PolygonIntersector.polygonIntersect(x, y))) {
-          results.append(PolygonIntersector.polygonIntersect(x, y));
-        }
+        Tensor polygonIntersect = PolygonIntersector.polygonIntersect(x, y);
+        if (Tensors.nonEmpty(polygonIntersect))
+          results.append(polygonIntersect);
       }
     }
     Enlarger res = new Enlarger(results);

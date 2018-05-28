@@ -35,9 +35,9 @@ public class Enlarger {
     double yCenter = point.Get(1).number().doubleValue();
     Tensor s = Tensors.empty();
     s.append(Tensors.vectorDouble(xCenter - (w / 2), yCenter - (w / 2)));
-    s.append(Tensors.vectorDouble(xCenter - (w / 2), yCenter + (w / 2)));
-    s.append(Tensors.vectorDouble(xCenter + (w / 2), yCenter + (w / 2)));
     s.append(Tensors.vectorDouble(xCenter + (w / 2), yCenter - (w / 2)));
+    s.append(Tensors.vectorDouble(xCenter + (w / 2), yCenter + (w / 2)));
+    s.append(Tensors.vectorDouble(xCenter - (w / 2), yCenter + (w / 2)));
     collectionOfAreas.add(s);
     return computeBetterArea(s);
   }
