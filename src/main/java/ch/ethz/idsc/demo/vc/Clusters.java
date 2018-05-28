@@ -1,8 +1,9 @@
 // code by vc
-package ch.ethz.idsc.gokart.core.perc;
+package ch.ethz.idsc.demo.vc;
 
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.perc.ElkiDatabase;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -19,14 +20,13 @@ import de.lmu.ifi.dbs.elki.database.ids.DBIDs;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
-public enum Clusters {
+/** initial draft for testing of elki library and DBScan algorithm */
+/* package */ enum Clusters {
   ;
   /** @param matrix
    * @return tensor of clusters */
-  // TODO VC remove print outs. provide timing and properties in separate class if necessary
-  // TODO VC also handle empty input
   public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
-    Database database = StaticHelper.database(matrix);
+    Database database = ElkiDatabase.from(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
@@ -34,11 +34,8 @@ public enum Clusters {
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
     List<Cluster<Model>> allClusters = result.getAllClusters();
-    // System.out.println("Number of clusters: " + allClusters.size());
     Tensor pi = Tensors.empty();
     for (Cluster<Model> cluster : allClusters)
-      // System.out.println("Cluster size:" + cluster.size());
-      // System.out.println("Is noise:" + cluster.isNoise());
       if (!cluster.isNoise()) {
         Tensor pr = Tensors.empty();
         DBIDs ids = cluster.getIDs();
@@ -46,13 +43,10 @@ public enum Clusters {
         DBIDRange id = (DBIDRange) rel.getDBIDs();
         for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
           int offset = id.getOffset(iter);
-          // System.out.println("offset:" + offset);
-          // System.out.println(p.get(offset));
           pr.append(matrix.get(offset));
         }
         pi.append(pr);
       }
-    // System.out.println("end");
     return pi;
   }
 }
