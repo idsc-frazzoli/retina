@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.eval.EvaluationFileLocations;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
 
 // provides static functions to work with CSV files
-public class CSVUtil {
+public class EvalUtil {
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
+  private static final int defaultBlobID = 0;
 
   /** saves a List<List<ImageBlob>> object to a CSV file.
    * 
@@ -106,7 +108,7 @@ public class CSVUtil {
         double[][] cov = new double[][] { //
             { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
             { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
-        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, 0)); // TODO default blobID == 0
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, defaultBlobID));
       }
       return extractedFeatures;
     } catch (IOException e) {
@@ -115,17 +117,23 @@ public class CSVUtil {
     }
   }
 
-  /** load the timestamps from a CSV file previously saved with saveToCSV fct. Returns null in case of
-   * IOException. Should only be used to load ground truth timestamps
+  /** load the timestamps from the hand-labeled images.
    * 
-   * @param file timestamps are read from that file
-   * @return timestamps object indicating when features are available */
-  public static int[] getTimestampsFromCSV(File file) {
-    try {
-      return Import.of(file).stream().mapToInt(row -> row.Get(0).number().intValue()).distinct().toArray();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return null;
+   * @param numberOfFiles number of hand-labeled images available
+   * @param imagePrefix specifies hand-labeled folder location
+   * @return timeStamps array with extracted timestamps */
+  public static int[] getTimestampsFromImages(int numberOfFiles, String imagePrefix) {
+    int[] timeStamps = new int[numberOfFiles];
+    // get all filenames and sort
+    String[] fileNames = EvaluationFileLocations.images(imagePrefix).list();
+    Arrays.sort(fileNames);
+    for (int i = 0; i < numberOfFiles; i++) {
+      String fileName = fileNames[i];
+      // remove file extension
+      fileName = fileName.substring(0, fileName.lastIndexOf("."));
+      String splitFileName[] = fileName.split("_");
+      timeStamps[i] = Integer.parseInt(splitFileName[2]);
     }
+    return timeStamps;
   }
 }

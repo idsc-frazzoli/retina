@@ -86,7 +86,7 @@ public class ImageBlob implements Serializable {
   public int getTimeStamp() {
     return timeStamp;
   }
-  
+
   public int getBlobID() {
     return blobID;
   }
@@ -103,8 +103,7 @@ public class ImageBlob implements Serializable {
     Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));
     Tensor rotated = rotMatrix.dot(notRotated).dot(Transpose.of(rotMatrix));
     covariance = Primitives.toDoubleArray2D(rotated);
-    // ensure matrix remains symmetric
-     covariance[1][0] = covariance[0][1]; // TODO this should not be necessary --> need further investigation
+    covariance[1][0] = covariance[0][1]; // necessary because EigenSystem.ofSymmetric(..) requires a symmetric matrix
   }
 
   public void setIsRecognized(boolean isRecognized) {

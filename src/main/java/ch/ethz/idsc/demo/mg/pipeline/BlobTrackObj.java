@@ -8,6 +8,7 @@ public class BlobTrackObj {
   // camera parameters
   private static int width;
   private static int height;
+  private static int defaultBlobID;
   // blob parameters
   private final double[][] covariance;
   private final float[] initPos;
@@ -15,7 +16,7 @@ public class BlobTrackObj {
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;
   private float activity;
-  private int blobID; // initially = 0, set different once blob is promoted to active layer
+  private int blobID;
 
   // initialize with position and covariance
   BlobTrackObj(float initialX, float initialY, float initVariance) {
@@ -23,14 +24,16 @@ public class BlobTrackObj {
     pos = new float[] { initialX, initialY };
     covariance = new double[][] { { initVariance, 0 }, { 0, initVariance } };
     layerID = false;
-    activity = 0.0f;
     currentScore = 0.0f;
+    activity = 0.0f;
+    blobID = defaultBlobID;
   }
 
   // set static parameters of class
   public static void setParams(PipelineConfig pipelineConfig) {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
+    defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
   }
 
   // updates the activity of a blob
@@ -136,7 +139,6 @@ public class BlobTrackObj {
     covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
     covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);
     covariance[1][1] = 0.5 * (covariance[1][1] + otherBlob.getCovariance()[1][1]);
-    // acitivity merge... TODO is it reasonable?
     activity = totActivity;
   }
 

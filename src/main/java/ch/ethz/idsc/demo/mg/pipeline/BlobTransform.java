@@ -7,6 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.util.TransformUtil;
 
 // Transformation of ImageBlobs to PhysicalBlobs.
+// TODO switch to TransformUtilLookup, maybe use interpolation?
 public class BlobTransform {
   private List<PhysicalBlob> physicalBlobs;
   private final TransformUtil transformUtil;

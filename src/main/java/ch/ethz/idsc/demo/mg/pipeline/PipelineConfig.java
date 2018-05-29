@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(2000); // [ms]
+  public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
+  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -51,17 +51,18 @@ public class PipelineConfig {
   public final Scalar initAxis = RealScalar.of(400);
   public final Scalar positionDifference = RealScalar.of(2); // [pixel]
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
+  public final Scalar defaultBlobID = RealScalar.of(0);
   // tracking collector
-  public final Boolean collectEstimatedFeatures = false;
-  public final Scalar iterationLength = RealScalar.of(22);
+  public final Boolean collectEstimatedFeatures = true;
+  public final Scalar iterationLength = RealScalar.of(10);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
-  public final String evaluationResultFileName = "evaluationResults";
+  public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
   public final Scalar maxDistance = width.add(height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
-  public Boolean visualizePipeline = true;
+  public Boolean visualizePipeline = false;
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
   public final Scalar visualizationInterval = RealScalar.of(50); // [ms]
   // physical world visualization

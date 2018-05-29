@@ -6,7 +6,7 @@ public class PhysicalBlob {
   // fields
   private double[] pos; // [m] in gokart reference frame
   private double[] vel;
-  private double[] imageCoord; // [pixel] position in visualization
+  private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
   private final int blobID; // default blobID == 0
 
   PhysicalBlob(double[] pos, int blobID) {

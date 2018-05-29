@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -32,31 +31,33 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.CSVUtil;
+import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length. Feature position can be adjusted with wasd keys.
  * Features can be rotated with scrolling while holding alt key.
  * Labels can be loaded/saved to a file
- * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
+ * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
+ * TODO would be more convenient if slider can be moved with left hand, e.g. y and x keys */
 /* package */ class HandLabeler {
   private final float scaling = 2; // original images are tiny
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
   private final int positionDifference;
   private final int sizeMultiplier;
+  private final int defaultBlobID;
   private double rotAngle = 0;
   private double firstAxis;
   private double secondAxis;
   // handling of .csv file
-  private String imagePrefix;
+  private final String imagePrefix;
   private final int numberOfFiles;
-  private String fileName;
+  private final String fileName;
   private int saveCount = 1;
   // fields for labels
-  private int[] timeStamps; // stores timestamp of each image
   private List<List<ImageBlob>> labeledFeatures; // main field of the class
+  private int[] timeStamps; // stores timestamp of each image
   private int currentImgNumber;
   // visualization
   private final JFrame jFrame = new JFrame();
@@ -121,7 +122,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
         Point p = e.getPoint();
         // point coordinates need to be scaled back since we click on a scaled image
         ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
-            timeStamps[currentImgNumber - 1], true, 0); // TODO default blobID
+            timeStamps[currentImgNumber - 1], true, defaultBlobID);
         labeledFeatures.get(currentImgNumber - 1).add(blob);
       }
       // remove last added label with right click
@@ -134,7 +135,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private final ActionListener loadListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      labeledFeatures = CSVUtil.loadFromCSV(EvaluationFileLocations.handlabels(fileName), timeStamps);
+      labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.handlabels(fileName), timeStamps);
       System.out.println("Successfully loaded from file " + fileName + ".csv");
       // repaint such that saved blobs of current image are displayed
       jComponent.repaint();
@@ -143,9 +144,9 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private final ActionListener saveListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      // should avoid overwriting old labeled features TODO should be improved
+      // avoid overwriting the original labeledFeatures csv
       String currentFileName = fileName + saveCount;
-      CSVUtil.saveToCSV(EvaluationFileLocations.handlabels(currentFileName), labeledFeatures, timeStamps);
+      EvalUtil.saveToCSV(EvaluationFileLocations.handlabels(currentFileName), labeledFeatures, timeStamps);
       System.out.println("Successfully saved to file " + currentFileName + ".csv");
       saveCount++;
     }
@@ -158,13 +159,12 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     fileName = pipelineConfig.handLabelFileName.toString();
     positionDifference = pipelineConfig.positionDifference.number().intValue();
     sizeMultiplier = pipelineConfig.sizeMultiplier.number().intValue();
+    defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
     initXAxis = pipelineConfig.initAxis.number().intValue();
     initYAxis = initXAxis;
     firstAxis = initXAxis;
     secondAxis = initXAxis;
-    timeStamps = new int[numberOfFiles];
-    // extract all timestamps
-    extractImageTimestamps();
+    timeStamps = EvalUtil.getTimestampsFromImages(numberOfFiles, imagePrefix);
     labeledFeatures = new ArrayList<>(numberOfFiles);
     // set up empty list of lists
     for (int i = 0; i < numberOfFiles; i++)
@@ -215,20 +215,6 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
       e.printStackTrace();
-    }
-  }
-
-  // goes through all files in the directory an extracts the timestamps
-  private void extractImageTimestamps() {
-    // get all filenames and sort
-    String[] fileNames = EvaluationFileLocations.images(imagePrefix).list();
-    Arrays.sort(fileNames);
-    for (int i = 0; i < numberOfFiles; i++) {
-      String fileName = fileNames[i];
-      // remove file extension
-      fileName = fileName.substring(0, fileName.lastIndexOf("."));
-      String splitFileName[] = fileName.split("_");
-      timeStamps[i] = Integer.parseInt(splitFileName[2]);
     }
   }
 

@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.CSVUtil;
+import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
@@ -21,13 +21,12 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private final List<List<ImageBlob>> estimatedFeatures;
   private final EvaluatorInstant[] evaluatorInstants;
   private final String logFileName;
-  private final File evaluationFilePath;
+  private final File evaluationImagesFilePath;
   private final File handLabelFile;
   private final File estimatedLabelFile;
   private final int[] groundTruthTimeStamps;
-  // private final int[] estimatedTimeStamps;
   private final boolean saveEvaluationFrame;
-  private final int numberOfLabelInstants;
+  private final int numberOfFiles;
   private String estimatedLabelFileName;
   private float averageRecall;
   private float averagePrecision;
@@ -35,22 +34,22 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
   EvaluatorSingleRun(PipelineConfig pipelineConfig) {
     logFileName = pipelineConfig.logFileName.toString();
-    evaluationFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
+    numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
+    evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
-    groundTruthTimeStamps = CSVUtil.getTimestampsFromCSV(handLabelFile);
-    groundTruthFeatures = CSVUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
-    numberOfLabelInstants = groundTruthFeatures.size();
+    groundTruthTimeStamps = EvalUtil.getTimestampsFromImages(numberOfFiles, logFileName);
+    groundTruthFeatures = EvalUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
-    estimatedFeatures = CSVUtil.loadFromCSV(estimatedLabelFile, groundTruthTimeStamps);
-    evaluatorInstants = new EvaluatorInstant[numberOfLabelInstants];
-    for (int i = 0; i < numberOfLabelInstants; i++)
+    estimatedFeatures = EvalUtil.loadFromCSV(estimatedLabelFile, groundTruthTimeStamps);
+    evaluatorInstants = new EvaluatorInstant[numberOfFiles];
+    for (int i = 0; i < numberOfFiles; i++)
       evaluatorInstants[i] = new EvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
     saveEvaluationFrame = pipelineConfig.saveEvaluationFrame;
   }
 
   public void runEvaluation() {
-    for (int i = 0; i < numberOfLabelInstants; i++) {
+    for (int i = 0; i < numberOfFiles; i++) {
       currentLabelInstant = i;
       evaluatorInstants[i].compareFeatures();
       if (saveEvaluationFrame) {
@@ -74,7 +73,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
     saveImage(rawEventsFrame);
   }
 
-  // load handlabelImage of the current evaluation instant
+  // load hand-labeled image of the current evaluation instant
   private BufferedImage loadImage() {
     BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     // load matching accumulatedEventFrame (very similar as in HandLabeler)
@@ -92,7 +91,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private void saveImage(BufferedImage bufferedImage) {
     String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
     try {
-      ImageIO.write(bufferedImage, "png", new File(evaluationFilePath, toBeSaved));
+      ImageIO.write(bufferedImage, "png", new File(evaluationImagesFilePath, toBeSaved));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -100,17 +99,14 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   }
 
   private void computePerformance() {
-    for (int i = 0; i < numberOfLabelInstants; i++) {
-      averageRecall += evaluatorInstants[i].getRecall() / numberOfLabelInstants;
-      averagePrecision += evaluatorInstants[i].getPrecision() / numberOfLabelInstants;
+    for (int i = 0; i < numberOfFiles; i++) {
+      averageRecall += evaluatorInstants[i].getRecall() / numberOfFiles;
+      averagePrecision += evaluatorInstants[i].getPrecision() / numberOfFiles;
     }
   }
 
   public double[] getResults() {
-    double[] results = new double[2];
-    results[0] = averageRecall;
-    results[1] = averagePrecision;
-    return results;
+    return new double[] {averageRecall, averagePrecision};
   }
 
   // standalone application

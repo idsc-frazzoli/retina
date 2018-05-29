@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.eval.TrackingCollector;
 import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
 import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
