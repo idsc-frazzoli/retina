@@ -6,6 +6,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 // stores the varying names and pipelineConfigs for the tracking algorithm evaluation
 // TODO load and store from file --> can be done elegant since we save Strings easily and
 // PipelineConfigs through TensorProperties
+// TODO use in pipelineSetup to save and EvaluatorMultiRun to load from
 public class CollectedFeaturesNameContainer {
   String[] estimatedLabelFileNames;
   PipelineConfig[] pipelineConfigs;
