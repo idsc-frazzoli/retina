@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
   private final float[] pos;
-  private final int timeStamp; //
+  private final int timeStamp;
+  private final int blobID; // == 0 for hidden blobs
   private double[][] covariance;
   private boolean isRecognized;
   private boolean isHidden;
@@ -26,10 +27,11 @@ public class ImageBlob implements Serializable {
    * @param covariance array of size 2 x 2
    * @param timeStamp
    * @param isHidden */
-  public ImageBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden) {
+  public ImageBlob(float[] pos, double[][] covariance, int timeStamp, boolean isHidden, int blobID) {
     this.pos = pos;
     this.covariance = covariance;
     this.timeStamp = timeStamp;
+    this.blobID = blobID;
     this.isHidden = isHidden;
   }
 
@@ -85,6 +87,10 @@ public class ImageBlob implements Serializable {
     return timeStamp;
   }
 
+  public int getBlobID() {
+    return blobID;
+  }
+
   // required for hand-labeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
@@ -94,15 +100,10 @@ public class ImageBlob implements Serializable {
   // required for hand-labeling
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
     Tensor notRotated = DiagonalMatrix.of(firstAxis, secondAxis);
-    // Tensors.matrixDouble(new double[][] { { firstAxis, 0 }, { 0, secondAxis } });
-    // double cosine = Math.cos(rotAngle);
-    // double sine = Math.sin(rotAngle);
     Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));
-    // Tensors.matrixDouble(new double[][] { { cosine, -sine }, { sine, cosine } });
     Tensor rotated = rotMatrix.dot(notRotated).dot(Transpose.of(rotMatrix));
     covariance = Primitives.toDoubleArray2D(rotated);
-    // ensure matrix remains symmetric
-    covariance[1][0] = covariance[0][1]; // TODO this should not be necessary
+    covariance[1][0] = covariance[0][1]; // necessary because EigenSystem.ofSymmetric(..) requires a symmetric matrix
   }
 
   public void setIsRecognized(boolean isRecognized) {

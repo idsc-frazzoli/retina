@@ -12,7 +12,8 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 
 // provides static functions for visualization
-public class VisualizationUtil {
+public enum VisualizationUtil {
+  ;
   /** scales a bufferedImage
    * 
    * @param unscaled original bufferedImage

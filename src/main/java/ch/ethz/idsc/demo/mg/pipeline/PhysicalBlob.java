@@ -6,10 +6,12 @@ public class PhysicalBlob {
   // fields
   private double[] pos; // [m] in gokart reference frame
   private double[] vel;
-  private double[] imageCoord; // [pixel] position in visualization
+  private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
+  private final int blobID; // default blobID == 0
 
-  PhysicalBlob(double[] pos) {
+  PhysicalBlob(double[] pos, int blobID) {
     this.pos = pos;
+    this.blobID = blobID;
     vel = new double[] { 0, 0 };
   }
 
@@ -23,6 +25,10 @@ public class PhysicalBlob {
 
   public double[] getVel() {
     return vel;
+  }
+
+  public int getblobID() {
+    return blobID;
   }
 
   public double[] getImageCoord() {

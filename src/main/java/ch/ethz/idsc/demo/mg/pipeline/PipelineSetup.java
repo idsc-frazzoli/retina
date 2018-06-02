@@ -7,7 +7,7 @@ import java.io.IOException;
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.tensor.RealScalar;
 
-/** pipeline setup for single/multirun */
+/** pipeline setup for single/multirun of logfiles */
 /* package */ class PipelineSetup {
   private PipelineConfig pipelineConfig;
   private final int iterationLength;
@@ -20,9 +20,9 @@ import ch.ethz.idsc.tensor.RealScalar;
   private void iterate() {
     for (int i = 0; i < iterationLength; i++) {
       System.out.println("******** Iteration nr " + (i + 1));
-      int newTau = 1000 + i * 1000;
-      String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
-      pipelineConfig.tau = RealScalar.of(newTau);
+      double aUp = 0.08 + i * 0.01;
+      String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_aUp_" + aUp;
+      pipelineConfig.aUp = RealScalar.of(aUp);
       pipelineConfig.estimatedLabelFileName = newEstimatedLabelFileName;
       runPipeline();
     }
@@ -31,19 +31,19 @@ import ch.ethz.idsc.tensor.RealScalar;
   private void runPipeline() {
     File logFile = pipelineConfig.getLogFile();
     try {
-      // initialize inputSubModule with current config and run logplayer
-      InputSubModule inputSubModule = new InputSubModule(pipelineConfig);
-      BoundedOfflineLogPlayer.process(logFile, //
-          pipelineConfig.maxDuration.number().longValue() * 1000, inputSubModule);
+      // initialize offlinePipelineWrap with current pipelineConfig
+      OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);
+      Long logFileDuration = pipelineConfig.maxDuration.number().longValue() * 1000;
+      BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlinePipelineWrap);
       // show summary
-      inputSubModule.summarizeLog();
+      offlinePipelineWrap.summarizeLog();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public static void main(String[] args) {
-    // initialize config -- could also load existing config
+    // initialize pipelineConfig -- could also load existing pipelineConfig
     PipelineConfig pipelineConfig = new PipelineConfig();
     // pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
     PipelineSetup pipelineSetup = new PipelineSetup(pipelineConfig);

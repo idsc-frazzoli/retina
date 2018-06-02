@@ -1,31 +1,33 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.eval;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.eval.EvaluationFileLocations;
-import ch.ethz.idsc.demo.mg.util.CSVUtil;
+import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves
 // finally to a CSV file for further analysis with TrackingEvaluator
-/* package */ class TrackingCollector {
+// TODO if no features are hand-labeled at a certain instant, we do not collect the estimatedFeatures at that instant.
+public class TrackingCollector {
+  private final String imagePrefix;
   private final String estimatedLabelFileName;
-  private final File handLabelFile;
   private final File estimatedLabelFile;
   private final List<List<ImageBlob>> estimatedFeatures;
   private final int numberOfLabelInstants;
   private int[] timeStamps; // timestamps for which hand-labeled features are available
   private int currentLabelInstant = 0;
 
-  TrackingCollector(PipelineConfig pipelineConfig) {
-    handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
+  public TrackingCollector(PipelineConfig pipelineConfig) {
+    imagePrefix = pipelineConfig.logFileName.toString();
+    numberOfLabelInstants = EvaluationFileLocations.images(imagePrefix).list().length;
+    timeStamps = EvalUtil.getTimestampsFromImages(numberOfLabelInstants, imagePrefix);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
-    timeStamps = CSVUtil.getTimestampsFromCSV(handLabelFile);
-    numberOfLabelInstants = timeStamps.length;
     // set up empty list of estimated features
     estimatedFeatures = new ArrayList<>(numberOfLabelInstants);
     for (int i = 0; i < timeStamps.length; i++)
@@ -43,7 +45,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     // counter
     currentLabelInstant++;
     if (currentLabelInstant == numberOfLabelInstants) {
-      CSVUtil.saveToCSV(estimatedLabelFile, estimatedFeatures, timeStamps);
+      EvalUtil.saveToCSV(estimatedLabelFile, estimatedFeatures, timeStamps);
       System.out.println("Estimated labels saved to " + estimatedLabelFileName);
     }
   }
