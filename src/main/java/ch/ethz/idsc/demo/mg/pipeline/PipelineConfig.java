@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
 import ch.ethz.idsc.demo.mg.util.TransformUtil;
+import ch.ethz.idsc.demo.mg.util.TransformUtilLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -13,7 +14,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
+  public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
   public final Scalar maxDuration = RealScalar.of(10000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
@@ -44,19 +45,20 @@ public class PipelineConfig {
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
-  public final Scalar savingInterval = RealScalar.of(200); // [ms]
+  public final Scalar savingInterval = RealScalar.of(500); // [ms]
   // hand-labeling tool
   public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
   public final Scalar positionDifference = RealScalar.of(2); // [pixel]
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
+  public final Scalar defaultBlobID = RealScalar.of(0);
   // tracking collector
-  public final Boolean collectEstimatedFeatures = false;
-  public final Scalar iterationLength = RealScalar.of(22);
+  public final Boolean collectEstimatedFeatures = true;
+  public final Scalar iterationLength = RealScalar.of(10);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
-  public final String evaluationResultFileName = "evaluationResults";
+  public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
   public final Scalar maxDistance = width.add(height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
@@ -84,6 +86,11 @@ public class PipelineConfig {
   /** @return new instance of {@link TransformUtil} derived from parameters in pipelineConfig */
   public TransformUtil createTransformUtil() {
     return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  }
+
+  /** @return new instance of {@link TransformUtilLookup} derived from parameters in pipelineConfig */
+  public TransformUtilLookup createTransformUtilLookup() {
+    return TransformUtilLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

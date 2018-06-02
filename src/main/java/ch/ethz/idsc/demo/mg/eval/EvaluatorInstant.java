@@ -41,14 +41,10 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
     recall = truePositiveCount / (truePositiveCount + falseNegativeCount);
     // avoid division by zero
     float denominator = truePositiveCount + falsePositiveCount;
-    if (denominator == 0) {
+    if (denominator == 0)
       precision = 0;
-    } else {
+    else
       precision = truePositiveCount / denominator;
-    }
-    // System.out.println("TP/FN/FP: "+truePositiveCount+"/"+falseNegativeCount+"/"+falsePositiveCount);
-    // System.out.println("Recall is " + recall);
-    // System.out.println("Precision is " + precision);
   }
 
   private void computeDistances() {

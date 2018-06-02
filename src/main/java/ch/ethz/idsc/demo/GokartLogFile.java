@@ -336,6 +336,39 @@ public enum GokartLogFile implements LogFile {
   _20180524T165934_65ff8506, //
   /** trajectory planning oval waypoints, shifting obstacles */
   _20180524T175331_f5b40700, //
+  /***************************************************/
+  /* 2018-05-28 */
+  /** joystick driving and parking */
+  _20180528T092757_3d02888c, //
+  /** slow figure eight */
+  _20180528T114144_3d02888c, //
+  /** slow joystick driving */
+  _20180528T115153_3d02888c, //
+  /** joystick driving on wet surface */
+  _20180528T130940_3d02888c, //
+  /** joystick driving */
+  _20180528T160809_3d02888c, //
+  /** joystick driving */
+  _20180528T161753_bb8cdede, //
+  /** autonomous figure eight with tent at side */
+  _20180528T163638_bb8cdede, //
+  /***************************************************/
+  /* 2018-05-29 */
+  /** joystick driving
+   * autonomous figure eight */
+  _20180529T113303_bb8cdede, //
+  /** trajectory planning with changing obstacle locations */
+  _20180529T121927_701d9748, //
+  /***************************************************/
+  /* 2018-05-31 */
+  /** autonomous figure eight */
+  _20180531T144153_701d9748, //
+  /** joystick driving with stops for map building
+   * with two large tents and bus tent in place */
+  _20180531T162851_701d9748, //
+  /** joystick driving with stops for map building
+   * with two large tents and bus tent in place */
+  _20180531T171521_701d9748, //
   ;
   @Override
   public String getFilename() {
