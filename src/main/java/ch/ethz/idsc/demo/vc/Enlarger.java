@@ -16,9 +16,8 @@ public class Enlarger {
   private double totalArea;
 
   public Enlarger(Tensor points, double w) {
-    for (Tensor x : points) {
+    for (Tensor x : points)
       totalArea = totalArea + addToCollection(x, w);
-    }
   }
 
   public Enlarger(Tensor hulls) {
@@ -48,7 +47,7 @@ public class Enlarger {
   }
 
   public static double computeBetterArea(Tensor polygon) {
-    return Math.abs(PolygonArea.FUNCTION.apply(polygon).number().doubleValue());
+    return PolygonArea.FUNCTION.apply(polygon).abs().number().doubleValue();
   }
 
   public List<Tensor> getAreas() {
