@@ -87,7 +87,7 @@ public class PipelineConfig {
   public TransformUtil createTransformUtil() {
     return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
-  
+
   /** @return new instance of {@link TransformUtilLookup} derived from parameters in pipelineConfig */
   public TransformUtilLookup createTransformUtilLookup() {
     return TransformUtilLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);

@@ -106,7 +106,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   }
 
   public double[] getResults() {
-    return new double[] {averageRecall, averagePrecision};
+    return new double[] { averageRecall, averagePrecision };
   }
 
   // standalone application

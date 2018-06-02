@@ -84,7 +84,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
       lastTimestamp = timeInst;
     }
   }
-  
+
   public void summarizeLog() {
     endTime = System.currentTimeMillis();
     int diff = lastTimestamp - firstTimestamp;
@@ -111,14 +111,14 @@ public class OfflinePipelineWrap implements OfflineLogListener {
       e.printStackTrace();
     }
   }
-  
+
   // for visualization
   private void resetAllFrames() {
     for (int i = 0; i < pipelineProvider.eventFrames.length; i++) {
       pipelineProvider.eventFrames[i].clearImage();
     }
   }
-  
+
   // for visualization
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];

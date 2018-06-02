@@ -22,6 +22,7 @@ import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class AccumulatedEventRender extends AbstractGokartRender implements TimedImageListener, ActionListener {
@@ -35,7 +36,8 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   // ..
   final JToggleButton jToggleButton = new JToggleButton("events");
   public boolean isSelected = false;
-  private final double mapAheadDistance = 7; // [m]
+  // TODO make this configurable in SensorsConfig
+  // private final double mapAheadDistance = 7; // [m]
 
   public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -60,10 +62,12 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     byte[] bytes = dataBufferByte.getData();
     int index = 0;
     if (bytes.length == width * height) {
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+      final double mapAheadDistance = //
+          Magnitude.METER.apply(SensorsConfig.GLOBAL.davis_frustum.Get(1)).number().doubleValue();
+      for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
           if (bytes[index] == 0 || bytes[index] == (byte) 255) {
-            Tensor mappedEvent = transformUtilLookup.imageToWorldTensor(x, y);
+            Tensor mappedEvent = transformUtilLookup.pixelToPlaneTensor(index);
             if (mappedEvent.Get(0).number().doubleValue() < mapAheadDistance) {
               Point2D point = geometricLayer.toPoint2D(mappedEvent);
               Color eventColor = (bytes[index] == 0) ? Color.GREEN : Color.RED;
@@ -74,7 +78,8 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
           ++index;
         }
       }
-    }
+    } else
+      System.err.println("unexpected image dimensions");
   }
 
   @Override

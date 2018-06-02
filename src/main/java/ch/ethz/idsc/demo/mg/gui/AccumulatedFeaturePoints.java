@@ -24,8 +24,8 @@ public class AccumulatedFeaturePoints {
   public List<Point2D> getAccumulatedPoints() {
     return accumulatedPoints;
   }
-  
-  public List<Integer> getBlobIDList(){
+
+  public List<Integer> getBlobIDList() {
     return blobIDList;
   }
 }

@@ -26,7 +26,7 @@ public class WheelOdometryDemo implements OfflineLogListener {
     gokartPoseInterface.gokartPoseLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rge = new RimoGetEvent(byteBuffer);

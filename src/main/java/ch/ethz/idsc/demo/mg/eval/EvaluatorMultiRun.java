@@ -31,6 +31,7 @@ import ch.ethz.idsc.demo.mg.util.EvalUtil;
       // TODO this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
       int newTau = 1000 + 1000 * i;
       String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
+      // TODO filename not generic. perhaps pass in "Dubi15a_tau" as argument?
       pipelineConfig.estimatedLabelFileName = "Dubi15a_tau/" + newEstimatedLabelFileName;
       // initialize singleRun object and run evaluation
       EvaluatorSingleRun singleRun = new EvaluatorSingleRun(pipelineConfig);
