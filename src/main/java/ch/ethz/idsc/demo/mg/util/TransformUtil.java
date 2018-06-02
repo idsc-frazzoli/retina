@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
-import ch.ethz.idsc.tensor.alg.Multinomial;
+import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
@@ -46,7 +46,7 @@ public class TransformUtil {
     this.unitConversion = unitConversion;
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2
-    radDistortionPoly = new HornerScheme(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
+    radDistortionPoly = Series.of(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
     focalLength = inputTensor.get(5);
     focalLengthInv = focalLength.map(Scalar::reciprocal);
   }

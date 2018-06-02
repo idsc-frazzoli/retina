@@ -1,5 +1,5 @@
 // code by vc
-package ch.ethz.idsc.gokart.core.perc;
+package ch.ethz.idsc.demo.vc;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import ch.ethz.idsc.gokart.core.perc.ElkiDatabase;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -24,11 +25,9 @@ import de.lmu.ifi.dbs.elki.database.ids.DBIDs;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
-public enum ClustersTime {
+/** initial draft for testing of elki library and DBScan algorithm */
+/* package */ enum ClustersTime {
   ;
-  /** @param matrix
-   * @return tensor of clusters */
-  // TODO remove print outs. provide timing and properties in separate class if necessary
   // TODO also handle empty input
   public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
     Tensor matrix = Flatten.of(scans, 1);
@@ -39,7 +38,7 @@ public enum ClustersTime {
       origin.put(sum, index);
       sum = sum + array[index];
     }
-    Database database = StaticHelper.database(matrix);
+    Database database = ElkiDatabase.from(matrix);
     Stopwatch stopwatch = Stopwatch.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);

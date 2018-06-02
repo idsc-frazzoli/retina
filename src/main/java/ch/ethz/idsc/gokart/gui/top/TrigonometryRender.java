@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** renders point of rotation as small dot in plane */
-class TrigonometryRender extends AbstractGokartRender {
+public class TrigonometryRender extends AbstractGokartRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 

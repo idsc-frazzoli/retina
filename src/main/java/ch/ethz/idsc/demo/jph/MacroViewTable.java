@@ -3,7 +3,6 @@ package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.function.UnaryOperator;
 
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -32,6 +31,7 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   private static final String JOYSTICK = "joystick.generic_xbox_pad";
   private static final int START_8AM = 480;
   static final int LENGTH = 660;
-  private static final UnaryOperator<Scalar> MAX = Max.function(RealScalar.ONE);
+  private static final ScalarUnaryOperator MAX = Max.function(RealScalar.ONE);
   private static final ScalarUnaryOperator SEC2MIN = QuantityMagnitude.SI().in("min");
   private static final int INDEX_LOGE = 0;
   private static final int INDEX_RATE = 1;
@@ -56,6 +56,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+    Min.function(null);
     int index = getMinute(time);
     if (0 <= index && index < LENGTH) {
       table.set(MAX, index, INDEX_LOGE);

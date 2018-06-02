@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.ethz.idsc.owl.math.planar.PolygonArea;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -47,7 +48,7 @@ public class Enlarger {
   }
 
   public static double computeBetterArea(Tensor polygon) {
-    return Math.abs(PolygonArea.signed(polygon));
+    return Math.abs(PolygonArea.FUNCTION.apply(polygon).number().doubleValue());
   }
 
   public List<Tensor> getAreas() {

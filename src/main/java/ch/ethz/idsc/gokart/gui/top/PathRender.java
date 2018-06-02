@@ -27,7 +27,8 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart */
-class PathRender extends AbstractGokartRender {
+public class PathRender extends AbstractGokartRender {
+  public Color color = new Color(0, 0, 255, 128);
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
@@ -66,7 +67,7 @@ class PathRender extends AbstractGokartRender {
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
-        graphics.setColor(new Color(0, 0, 255, 128));
+        graphics.setColor(color);
         graphics.draw(geometricLayer.toPath2D(w1));
         graphics.draw(geometricLayer.toPath2D(w2));
       }
@@ -81,7 +82,7 @@ class PathRender extends AbstractGokartRender {
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
-        graphics.setColor(new Color(0, 0, 255, 128));
+        graphics.setColor(color);
         graphics.draw(geometricLayer.toPath2D(w1));
         graphics.draw(geometricLayer.toPath2D(w2));
       }
