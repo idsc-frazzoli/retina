@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class LocalizationConfig implements Serializable {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
+  public Scalar bitShift = RealScalar.of(0);
   /** inclination of rays to create cross section
    * a positive value means upwards */
   public Scalar horizon = Quantity.of(1, NonSI.DEGREE_ANGLE);
@@ -36,10 +37,11 @@ public class LocalizationConfig implements Serializable {
    * at the best approximation of given horizon level */
   public LidarSpacialProvider planarEmulatorVlp16() {
     SensorsConfig sensorsConfig = SensorsConfig.GLOBAL;
+    int bits = bitShift.number().intValue();
     double angle_offset = sensorsConfig.vlp16_twist.number().doubleValue();
     double tiltY = sensorsConfig.vlp16_incline.number().doubleValue();
     double emulation_deg = Magnitude.DEGREE_ANGLE.apply(horizon).number().doubleValue();
-    return new TiltedVelodynePlanarEmulator(1, angle_offset, tiltY, emulation_deg);
+    return new TiltedVelodynePlanarEmulator(bits, angle_offset, tiltY, emulation_deg);
   }
 
   public ParametricResample getUniformResample() {
