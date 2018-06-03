@@ -81,7 +81,7 @@ public enum DubendorfCurve {
   }
 
   private static Tensor hyperloop_eight() {
-    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180424eight.csv");
+    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180603eight.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }

@@ -78,11 +78,11 @@ abstract class ViewLcmModule extends AbstractModule {
     // ---
     {
       ResampledLidarRender resampledLidarRender = new ResampledLidarRender(mappedPoseInterface);
-      resampledLidarRender.updatedMap.setCrop(CROP_REGION);
+      // resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
-      viewLcmFrame.jButtonMapUpdate.setEnabled(true);
+      viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
       viewLcmFrame.jButtonSnap.addActionListener(resampledLidarRender.action_snap);
       // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
@@ -101,8 +101,8 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     { // TODO not generic
-      Tensor curve = DubendorfCurve.HYPERLOOP_DUCTTAPE;
-      curve = CROP_REGION;
+      Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT;
+      // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }

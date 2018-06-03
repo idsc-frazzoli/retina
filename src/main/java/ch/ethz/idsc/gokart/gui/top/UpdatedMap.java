@@ -72,4 +72,8 @@ public class UpdatedMap {
       }
     };
   }
+
+  public boolean nonEmpty() {
+    return Tensors.nonEmpty(polygon);
+  }
 }
