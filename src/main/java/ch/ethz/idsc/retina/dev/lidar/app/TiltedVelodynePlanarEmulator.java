@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
 /** extracts points at horizontal level, or arbitrary inclination for Velodyne VLP-16 */
-// TODO make more general: enable emulation of any angle (not just +1[deg])
 public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
