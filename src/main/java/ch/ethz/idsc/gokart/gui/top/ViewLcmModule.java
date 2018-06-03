@@ -35,6 +35,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  private static final Tensor CROP_REGION = //
+      // ResourceData.of("/map/dubendorf/hangar/20180531polygon.csv");
+      ResourceData.of("/map/dubendorf/hangar/20180603aerotain.csv");
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -75,10 +78,11 @@ abstract class ViewLcmModule extends AbstractModule {
     // ---
     {
       ResampledLidarRender resampledLidarRender = new ResampledLidarRender(mappedPoseInterface);
+      resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
-      viewLcmFrame.jButtonMapUpdate.setEnabled(false);
+      viewLcmFrame.jButtonMapUpdate.setEnabled(true);
       viewLcmFrame.jButtonSnap.addActionListener(resampledLidarRender.action_snap);
       // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
@@ -98,7 +102,7 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     { // TODO not generic
       Tensor curve = DubendorfCurve.HYPERLOOP_DUCTTAPE;
-      curve = ResourceData.of("/map/dubendorf/hangar/20180531polygon.csv");
+      curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }

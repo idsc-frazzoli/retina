@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
+  public final UpdatedMap updatedMap = new UpdatedMap();
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -43,8 +44,8 @@ public class ResampledLidarRender extends LidarRender {
       graphics.setColor(new Color(0, 128, 0, 128));
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
+    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     {
-      final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
       graphics.setColor(color);
       for (Tensor pnts : list) {
         for (Tensor x : pnts) {
@@ -72,8 +73,8 @@ public class ResampledLidarRender extends LidarRender {
     }
     if (flagMapUpdate) {
       flagMapUpdate = false;
-      System.err.println("action not supported");
-      // StoreMapUtil.updateMap(geometricLayer, list, map_image);
+      updatedMap.intake(geometricLayer.getMatrix(), list);
+      updatedMap.store();
     }
     geometricLayer.popMatrix();
   }
