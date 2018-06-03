@@ -6,8 +6,6 @@ import java.io.Serializable;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.AppResources;
@@ -52,6 +50,7 @@ public class SensorsConfig implements Serializable {
   /** number of rotations per second */
   public Scalar vlp16_rate = Quantity.of(20, "s^-1");
   public Scalar davis_imu_rate = Quantity.of(1000, "s^-1");
+  // TODO the location of the frustum is not final
   public Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
   // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
@@ -71,27 +70,6 @@ public class SensorsConfig implements Serializable {
   public Vlp16LcmHandler vlp16LcmHandler() {
     double angle_offset = vlp16_twist.number().doubleValue();
     return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
-  }
-
-  /** the VLP-16 on the is tilted by 0.04[rad] round the y-axis.
-   * 
-   * @return lidar spacial provider that approximates measurements
-   * at the best approximation of zero inclination == horizon level */
-  public LidarSpacialProvider horizontalEmulatorVlp16() {
-    double angle_offset = vlp16_twist.number().doubleValue();
-    // double tiltY = vlp16_incline.number().doubleValue();
-    // return new TiltedVelodynePlanarEmulator(angle_offset, tiltY, 0.0);
-    // TODO optimize TiltedVelodynePlanarEmulator and test offline
-    // return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
-    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
-  }
-
-  @Deprecated
-  public LidarSpacialProvider planarEmulatorVlp16_p01deg() {
-    double angle_offset = vlp16_twist.number().doubleValue();
-    // TODO optimize TiltedVelodynePlanarEmulator and test offline
-    // return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
-    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
   }
 
   public Vlp16SpacialLcmHandler vlp16SpacialLcmHandler() {

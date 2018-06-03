@@ -26,11 +26,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class SlamDunkTest extends TestCase {
-  public void testSimple() throws Exception {
+  private static void _checkSimple(LidarSpacialProvider lidarSpacialProvider) throws Exception {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
-    // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.tiltedEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
@@ -64,5 +62,16 @@ public class SlamDunkTest extends TestCase {
     System.out.println(table);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));
     // assertTrue(offlineLocalize.getTable().get(Tensor.ALL, 7).stream().map(Scalar.class::cast).allMatch(clip::isInside));
+  }
+
+  public void testSimple() throws Exception {
+    _checkSimple(LocalizationConfig.GLOBAL.planarEmulatorVlp16());
+  }
+
+  public void testBlub() throws Exception {
+    double angle_offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
+    LidarSpacialProvider lidarSpacialProvider = //
+        VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+    _checkSimple(lidarSpacialProvider);
   }
 }

@@ -100,14 +100,14 @@ enum RunTabbedTaskGui {
 
   public static void main(String[] args) {
     WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
-    TabbedTaskGui taskTabGui = new TabbedTaskGui(PROPERTIES);
-    taskTabGui.tab("dev", MODULES_DEV);
-    taskTabGui.tab("cfg", MODULES_CFG);
-    taskTabGui.tab("joy", MODULES_JOY);
-    taskTabGui.tab("aut", MODULES_AUT);
-    taskTabGui.tab("fuse", MODULES_FUSE);
-    taskTabGui.tab("lab", MODULES_LAB);
-    wc.attach(RunTabbedTaskGui.class, taskTabGui.jFrame);
-    taskTabGui.jFrame.setVisible(true);
+    TabbedTaskGui tabbedTaskGui = new TabbedTaskGui(PROPERTIES);
+    tabbedTaskGui.tab("dev", MODULES_DEV);
+    tabbedTaskGui.tab("cfg", MODULES_CFG);
+    tabbedTaskGui.tab("joy", MODULES_JOY);
+    tabbedTaskGui.tab("aut", MODULES_AUT);
+    tabbedTaskGui.tab("fuse", MODULES_FUSE);
+    tabbedTaskGui.tab("lab", MODULES_LAB);
+    wc.attach(RunTabbedTaskGui.class, tabbedTaskGui.jFrame);
+    tabbedTaskGui.jFrame.setVisible(true);
   }
 }

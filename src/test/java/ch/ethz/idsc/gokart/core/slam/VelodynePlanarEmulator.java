@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.app;
+package ch.ethz.idsc.gokart.core.slam;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -11,8 +11,10 @@ import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
-/** extracts points at horizontal level for velodyne */
-public class VelodynePlanarEmulator implements LidarSpacialProvider {
+/** CLASS IS NOT IN USE ANYMORE, INSTEAD USE TiltedVelodynePlanarEmulator
+ * 
+ * extracts points at horizontal level for velodyne */
+/* package */ class VelodynePlanarEmulator implements LidarSpacialProvider {
   public static VelodynePlanarEmulator hdl32e(double angle_offset) {
     return new VelodynePlanarEmulator(angle_offset, 15); // index of horizontal beam == 15
   }
