@@ -14,14 +14,14 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
   /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
-  private int usec;
   private final VelodyneRayLookup velodyneRayLookup;
+  private int usec;
 
   /** @param angle_offset
    * @param tiltY
    * @param emulation_deg */
-  public TiltedVelodynePlanarEmulator(double angle_offset, double tiltY, double emulation_deg) {
-    velodyneRayLookup = new VelodyneRayLookup(1, true, angle_offset, tiltY, emulation_deg);
+  public TiltedVelodynePlanarEmulator(int bits, double angle_offset, double tiltY, double emulation_deg) {
+    velodyneRayLookup = new VelodyneRayLookup(bits, true, angle_offset, tiltY, emulation_deg);
   }
 
   @Override // from LidarSpacialProvider
