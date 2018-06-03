@@ -14,7 +14,6 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
@@ -24,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
-  private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+  public final UpdatedMap updatedMap = new UpdatedMap();
 
   public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
     super(mappedPoseInterface);
@@ -32,7 +31,6 @@ public class ResampledLidarRender extends LidarRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.drawImage(predefinedMap.getImage(), 0, 0, null);
     if (Objects.isNull(_points))
       return;
     final Tensor points = _points;
@@ -46,8 +44,8 @@ public class ResampledLidarRender extends LidarRender {
       graphics.setColor(new Color(0, 128, 0, 128));
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
+    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
     {
-      final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
       graphics.setColor(color);
       for (Tensor pnts : list) {
         for (Tensor x : pnts) {
@@ -75,8 +73,8 @@ public class ResampledLidarRender extends LidarRender {
     }
     if (flagMapUpdate) {
       flagMapUpdate = false;
-      System.err.println("action not supported");
-      // StoreMapUtil.updateMap(geometricLayer, list, map_image);
+      updatedMap.intake(geometricLayer.getMatrix(), list);
+      updatedMap.store();
     }
     geometricLayer.popMatrix();
   }
