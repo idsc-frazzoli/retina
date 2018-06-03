@@ -177,7 +177,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
           if (type == 0 && lFactor != 1.0) {
             Tensor pos0 = pos.multiply(DoubleScalar.of(lFactor));
             Tensor cell0 = lidarToCell(pos0);
-            List<Point> line = Bresenham.getLine( //
+            List<Point> line = Bresenham.line( //
                 cell0.Get(0).number().intValue(), //
                 cell0.Get(1).number().intValue(), //
                 pix, piy);
