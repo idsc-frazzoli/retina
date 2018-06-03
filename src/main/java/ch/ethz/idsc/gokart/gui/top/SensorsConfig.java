@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.app.TiltedVelodynePlanarEmulator;
 import ch.ethz.idsc.retina.dev.lidar.app.VelodynePlanarEmulator;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
@@ -73,17 +74,15 @@ public class SensorsConfig implements Serializable {
     return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
   }
 
-  /** the VLP-16 on the is tilted by 0.04[rad] round the y-axis.
+  /** the VLP-16 is tilted by 0.04[rad] around the y-axis.
    * 
    * @return lidar spacial provider that approximates measurements
    * at the best approximation of zero inclination == horizon level */
-  public LidarSpacialProvider horizontalEmulatorVlp16() {
+  public LidarSpacialProvider planarEmulatorVlp16() {
     double angle_offset = vlp16_twist.number().doubleValue();
-    // double tiltY = vlp16_incline.number().doubleValue();
-    // return new TiltedVelodynePlanarEmulator(angle_offset, tiltY, 0.0);
-    // TODO optimize TiltedVelodynePlanarEmulator and test offline
-    // return TiltedVelodynePlanarEmulator.vlp16_p01deg(angle_offset);
-    return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
+    double tiltY = vlp16_incline.number().doubleValue();
+    return new TiltedVelodynePlanarEmulator(angle_offset, tiltY, 1.0);
+    // return VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
   }
 
   @Deprecated
