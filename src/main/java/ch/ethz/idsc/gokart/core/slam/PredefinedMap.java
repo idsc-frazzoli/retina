@@ -22,19 +22,15 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public enum PredefinedMap implements LocalizationImage {
   /** dubendorf hangar map version 20180122 */
   DUBENDORF_HANGAR_20180122(7.5), //
-  /** dubendorf hangar map version 20180423
-   * features the outside fence visible when the hangar doors are open */
-  @Deprecated // superseded by DUBENDORF_HANGAR_20180506
-  DUBENDORF_HANGAR_20180423(7.5), //
   /** image of known static obstacles */
   DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
   /** image */
   DUBENDORF_HANGAR_20180506(7.5), //
-  /** image with tents */
+  /** image with central tents, bus tent, and aerotain */
   DUBENDORF_HANGAR_20180603(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
-  public static final int TTL = 3;
+  private static final int TTL = 3;
   /** assume void, i.e. no obstacle, in area outside of image */
   private static final int RGBA_VOID = 0;
   // ---

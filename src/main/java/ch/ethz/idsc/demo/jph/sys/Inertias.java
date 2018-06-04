@@ -24,7 +24,7 @@ enum Inertias {
    * @param m
    * @param r vector of length 3
    * @return */
-  private static Tensor shift3(Tensor I, Scalar m, Tensor r) {
+  static Tensor shift3(Tensor I, Scalar m, Tensor r) {
     Tensor R = Cross.of(r);
     return I.subtract(R.dot(R).multiply(m));
   }

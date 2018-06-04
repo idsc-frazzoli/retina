@@ -89,6 +89,9 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           if (Objects.nonNull(gokartPoseEvent)) {
             Tensor state = gokartPoseEvent.getPose();
             state = GokartPoseHelper.toUnitless(state);
+            state.set(Round._2, 0);
+            state.set(Round._2, 1);
+            state.set(Round._6, 2);
             poseList.append(state);
             try {
               Put.of(UserHome.file("track.mathematica"), poseList);
