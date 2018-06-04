@@ -13,20 +13,23 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public enum CurveUtils {
   ;
-  public static final int NO_MATCH = -1;
-  /** 28 is half of 42 therefore this is the answer */
+  private static final int NO_MATCH = -1;
+  /** 28 is half of 42 therefore this is the answer (joke) */
   private static final Scalar ANGLE_LIMIT = Degree.of(28);
 
-  /* package */ static int closestCloserThan(Tensor curve_local, Scalar dist) {
-    int best = NO_MATCH;
-    for (int index = 0; index < curve_local.length(); ++index) {
-      Scalar norm = Norm._2.of(curve_local.get(index)); // vector in local coordinates
-      if (Scalars.lessThan(norm, dist)) {
-        dist = norm;
-        best = index;
-      }
+  /** @param curve_local with or without intersections
+   * @param dist
+   * @return TODO documentation */
+  public static Optional<Tensor> getAheadTrail(Tensor curve_local, Scalar dist) {
+    int index = closestParallelThan(curve_local, dist);
+    if (index != NO_MATCH) {
+      int length = curve_local.length();
+      return Optional.of(Tensor.of( //
+          IntStream.range(index, index + length / 2) // at most half of the curve
+              .map(i -> i % length) //
+              .mapToObj(curve_local::get)));
     }
-    return best;
+    return Optional.empty();
   }
 
   /** @param curve_local in robot coordinates
@@ -52,16 +55,20 @@ public enum CurveUtils {
     return best;
   }
 
-  public static Optional<Tensor> getAheadTrail(Tensor curve_local, Scalar dist) {
-    // int index = closestCloserThan(tensor, dist);
-    int index = closestParallelThan(curve_local, dist);
-    if (index != NO_MATCH) {
-      int length = curve_local.length();
-      return Optional.of(Tensor.of( //
-          IntStream.range(index, index + length / 2) // at most half of the curve
-              .map(i -> i % length) //
-              .mapToObj(curve_local::get)));
+  /** FUNCTION IS NOT IN USE
+   * 
+   * @param curve_local without any intersections
+   * @param dist
+   * @return */
+  /* package */ static int closestCloserThan(Tensor curve_local, Scalar dist) {
+    int best = NO_MATCH;
+    for (int index = 0; index < curve_local.length(); ++index) {
+      Scalar norm = Norm._2.of(curve_local.get(index)); // vector in local coordinates
+      if (Scalars.lessThan(norm, dist)) {
+        dist = norm;
+        best = index;
+      }
     }
-    return Optional.empty();
+    return best;
   }
 }
