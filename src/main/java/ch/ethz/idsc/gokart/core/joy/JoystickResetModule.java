@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
+import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -28,12 +29,14 @@ public class JoystickResetModule extends AbstractModule implements JoystickListe
   public void joystick(JoystickEvent joystickEvent) {
     GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
     if (gokartJoystickInterface.isResetPressed()) {
-      // reset misc comm
       if (MiscIgnitionProvider.INSTANCE.isScheduleSuggested())
-        MiscIgnitionProvider.INSTANCE.schedule();
-      // calibate linmot
+        MiscIgnitionProvider.INSTANCE.schedule(); // reset misc comm
+      // ---
       if (LinmotCalibrationProvider.INSTANCE.isScheduleSuggested())
-        LinmotCalibrationProvider.INSTANCE.schedule();
+        LinmotCalibrationProvider.INSTANCE.schedule(); // calibrate linmot
+      // ---
+      if (SteerCalibrationProvider.INSTANCE.isScheduleSuggested())
+        SteerCalibrationProvider.INSTANCE.schedule(); // calibrate steering 20180604
     }
   }
 }

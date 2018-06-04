@@ -19,9 +19,9 @@ import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Ramp;
 
 public final class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
   private final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
@@ -68,8 +68,11 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-      Scalar ratio = Ramp.FUNCTION.apply(gokartJoystickInterface.getAheadAverage());
-      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(ratio));
+      // ante 20180604: the ahead average was used
+      // Scalar ratio = Ramp.FUNCTION.apply(gokartJoystickInterface.getAheadAverage());
+      // post 20180604: the forward command is provided by right slider
+      Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0);
+      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(pair));
     }
     purePursuitRimo.setOperational(status);
   }

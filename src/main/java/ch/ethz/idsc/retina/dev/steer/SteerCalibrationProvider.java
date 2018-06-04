@@ -37,6 +37,6 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
 
   @Override // from AutoboxCalibrationProvider
   protected boolean hintScheduleRequired() {
-    return false;
+    return !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated();
   }
 }
