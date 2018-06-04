@@ -102,7 +102,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   public final Tensor obstacleMap;
-  final Tensor waypoints;
+  final Tensor waypoints = TrajectoryConfig.GLOBAL.getWaypoints();
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
@@ -127,7 +127,6 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
     polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
     // ---
-    waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
     unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule, polygonRegion));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     costCollection.add(ImageCostFunction.of(tensor, predefinedMap.range(), RealScalar.ZERO));

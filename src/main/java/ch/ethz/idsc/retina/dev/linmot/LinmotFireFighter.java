@@ -18,6 +18,7 @@ public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
   INSTANCE;
   // ---
   private final PenaltyCards penaltyCards = new PenaltyCards();
+  private final LinmotPutEvent offMode = LinmotPutOperation.INSTANCE.offMode();
 
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
@@ -35,6 +36,6 @@ public enum LinmotFireFighter implements LinmotGetListener, LinmotPutProvider {
 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.ofNullable(penaltyCards.isPenalty() ? LinmotPutOperation.INSTANCE.fallback() : null);
+    return Optional.ofNullable(penaltyCards.isPenalty() ? offMode : null);
   }
 }

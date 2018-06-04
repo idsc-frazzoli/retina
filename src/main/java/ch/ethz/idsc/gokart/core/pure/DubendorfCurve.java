@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 public enum DubendorfCurve {
   ;
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
+  public static final Tensor HYPERLOOP_EIGHT_REVERSE = Reverse.of(HYPERLOOP_EIGHT);
   public static final Tensor HYPERLOOP_OVAL = hyperloop_oval();
   public static final Tensor HYPERLOOP_DUCTTAPE = hyperloop_ducttape();
   // ---
