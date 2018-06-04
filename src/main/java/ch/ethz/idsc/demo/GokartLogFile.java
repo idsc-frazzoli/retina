@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo;
 
 import ch.ethz.idsc.gokart.offline.api.LogFile;
+import ch.ethz.idsc.retina.dev.linmot.LinmotFireFighter;
 
 public enum GokartLogFile implements LogFile {
   /* 2017-12-07 */
@@ -369,6 +370,35 @@ public enum GokartLogFile implements LogFile {
   /** joystick driving with stops for map building
    * with two large tents and bus tent in place */
   _20180531T171521_701d9748, //
+  /***************************************************/
+  /* 2018-06-04 */
+  /** autonomous driving figure eight with tents */
+  _20180604T092030_270dd1ab, //
+  /** collecting waypoints */
+  _20180604T100452_a2e94332, //
+  /** waypoint following */
+  _20180604T102303_a2e94332, //
+  /** joystick driving fast and slow */
+  _20180604T104509_a2e94332, //
+  /** joystick driving as car in a city */
+  _20180604T105353_a2e94332, //
+  /** pedestrians walking with stationary gokart */
+  _20180604T120216_a2e94332, //
+  /** pure pursuit figure eight reverse */
+  _20180604T122138_d2234286, //
+  /** pure pursuit figure eight reverse
+   * localization issues at certain configuration */
+  _20180604T132432_d2234286, //
+  /** testing brake and linmot with stationary gokart */
+  _20180604T140448_d2234286, //
+  /** testing brake and linmot with stationary gokart
+   * {@link LinmotFireFighter} switches off linmot */
+  _20180604T142924_77ab1670, //
+  /** pure pursuit figure eight slow driving
+   * with pedestriants around */
+  _20180604T150508_15e65bba, //
+  /** pure pursuit figure eight */
+  _20180604T153602_15e65bba, //
   ;
   @Override
   public String getFilename() {

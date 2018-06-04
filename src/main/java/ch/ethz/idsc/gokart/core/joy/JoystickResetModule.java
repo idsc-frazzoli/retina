@@ -11,6 +11,10 @@ import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
+/** the module monitors the reset button of the joystick.
+ * when the button is presses by the operator, the module schedules
+ * the calibration procedure for the devices that are not calibrated.
+ * the devices are: misc, linmot, and steer. */
 public class JoystickResetModule extends AbstractModule implements JoystickListener {
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
 
@@ -36,7 +40,7 @@ public class JoystickResetModule extends AbstractModule implements JoystickListe
         LinmotCalibrationProvider.INSTANCE.schedule(); // calibrate linmot
       // ---
       if (SteerCalibrationProvider.INSTANCE.isScheduleSuggested())
-        SteerCalibrationProvider.INSTANCE.schedule(); // calibrate steering 20180604
+        SteerCalibrationProvider.INSTANCE.schedule(); // calibrate steering
     }
   }
 }

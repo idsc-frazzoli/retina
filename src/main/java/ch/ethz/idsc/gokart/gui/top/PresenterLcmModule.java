@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -40,6 +41,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  // TODO not generic
+  private static final boolean SHOW_DAVIS = UserHome.file("").getName().equals("mario");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -139,17 +142,19 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
-    {
-      AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
-      timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
-      timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
-    }
-    {
-      DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseInterface);
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisPipelineRenderRender.pipelineProvider);
-      timerFrame.geometricComponent.addRenderInterface(davisPipelineRenderRender);
-      timerFrame.jToolBar.add(davisPipelineRenderRender.jToggleButton);
+    if (SHOW_DAVIS) {
+      {
+        AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
+        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
+        timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
+        timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
+      }
+      {
+        DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseInterface);
+        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisPipelineRenderRender.pipelineProvider);
+        timerFrame.geometricComponent.addRenderInterface(davisPipelineRenderRender);
+        timerFrame.jToolBar.add(davisPipelineRenderRender.jToggleButton);
+      }
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
