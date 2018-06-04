@@ -7,6 +7,8 @@ import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -25,6 +27,7 @@ public class TrajectoryConfig implements Serializable {
   public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
+  // public static final Tensor WAYPOINTS = //
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -33,5 +36,10 @@ public class TrajectoryConfig implements Serializable {
     return Ramp.FUNCTION.apply(tangentSpeed) //
         .multiply(planningPeriod) // for instance 1[s]
         .add(planningOffset); // for instance 2.5[m]
+  }
+
+  public Tensor getWaypoints() {
+    // ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv").unmodifiable();
+    return ResourceData.of("/map/dubendorf/hangar/20180604waypoints.csv").unmodifiable();
   }
 }

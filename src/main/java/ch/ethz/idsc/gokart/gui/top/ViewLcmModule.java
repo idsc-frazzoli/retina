@@ -10,6 +10,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -64,7 +65,7 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
-      final Tensor waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
+      final Tensor waypoints = TrajectoryConfig.GLOBAL.getWaypoints();
       final Tensor ARROWHEAD = Tensors.matrixDouble( //
           new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));

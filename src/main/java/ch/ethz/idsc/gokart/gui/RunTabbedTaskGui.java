@@ -22,6 +22,7 @@ import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
+import ch.ethz.idsc.gokart.core.pure.FigureEightReverseModule;
 import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -67,13 +68,13 @@ enum RunTabbedTaskGui {
       ParametersModule.class // configure parameters
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
-      //
       JoystickGroupModule.class, //
       SysidSignalsModule.class, //
       RimoThrustJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //
+      FigureEightReverseModule.class, //
       FigureOvalModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class //
