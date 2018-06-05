@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.vc;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.retina.util.math.Clusters;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;

@@ -1,17 +1,21 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
+import ch.ethz.idsc.tensor.alg.Join;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -46,6 +50,7 @@ public enum ClustersTracking {
     Clustering<Model> clustering = dbscan.run(database);
     long ns = stopwatch.display_nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
+    Set<Integer> removeIndex = new HashSet<>();
     for (Cluster<Model> cluster : clustering.getAllClusters())
       if (!cluster.isNoise()) {
         NavigableMap<Integer, Tensor> navigableMap = partitionMap(array, i -> Tensors.empty());
@@ -61,24 +66,33 @@ public enum ClustersTracking {
         }
         if (navigableSet.contains(sizeCollection))
           switch (navigableSet.size()) {
-          case 1:
+          case 1: // new points to one new cluster
             oldClusters.addToCollection(navigableMap.lastEntry().getValue());
             break;
-          case 2:
+          case 2: // join new points to one old cluster
             Tensor points = navigableMap.lastEntry().getValue();
             ClusterDeque next = oldClusters.getCollection().get(navigableSet.iterator().next());
             next.replaceLast(points);
             break;
-          default:
-            oldClusters.addToCollection(navigableMap.lastEntry().getValue());
+          default: // form one big cluster and remove old ones
+            Tensor vertices = Tensor.of(navigableSet.subSet(0, sizeCollection).stream()//
+                .map(index -> oldClusters.getCollection().get(index))//
+                .flatMap(ClusterDeque::vertexStream));
+            for (Integer index : navigableSet.subSet(0, sizeCollection)) {
+              removeIndex.add(index);
+            }
+            Tensor join = Join.of(vertices, navigableMap.lastEntry().getValue());
+            oldClusters.addToCollection(join);
             System.out.println("case " + navigableSet.size());
             break;
           }
         else {
-          // TODO comment on this case, unhandled?
+          System.out.println("only old clusters");// TODO comment on this case, unhandled?
         }
       }
-    oldClusters.maintainUntil(sizeCollection);
+    oldClusters.removeDeques(removeIndex);
+    System.out.println(removeIndex);
+    oldClusters.maintainUntil(sizeCollection - removeIndex.size());
   }
 
   private static <T> NavigableMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {

@@ -64,7 +64,6 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
-      System.out.println(newScan.length());
       if (!Tensors.isEmpty(newScan)) {
         synchronized (collection) {
           ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);

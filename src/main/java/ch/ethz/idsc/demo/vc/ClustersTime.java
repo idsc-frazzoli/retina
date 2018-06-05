@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import ch.ethz.idsc.gokart.core.perc.ElkiDatabase;
 import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
