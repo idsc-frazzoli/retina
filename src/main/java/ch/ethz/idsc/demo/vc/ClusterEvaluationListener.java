@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.util.math.PolygonIntersection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -36,7 +37,7 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
     // ---
     Tensor newScan = Tensor.of(points.stream() //
         .filter(unknownObstaclePredicate::isObstacle) //
-        .map(point -> point.extract(0, 2))); // only x,y matter
+        .map(point -> point.extract(0, 2))); // only x,y matterx
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
         ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
@@ -55,13 +56,13 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
           System.out.println("performance=" + evaluatePerformance);
         }
         PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
-        System.out.println("recall=" + measures.recall + '\n' + "precision=" + measures.precision);
+        System.out.println(measures.toString());
       }
     } else
       System.err.println("scan is empty");
   }
 
-  private double side = 0.03;
+  private double side = 0.1;
 
   // basic performance measure: compute the fraction of predicted centres of clusters that are
   // in the convexHull of the new lidar scan clusters

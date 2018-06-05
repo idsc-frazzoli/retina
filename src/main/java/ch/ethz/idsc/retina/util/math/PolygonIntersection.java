@@ -1,5 +1,6 @@
 // code by vc
-package ch.ethz.idsc.demo.vc;
+// inspired by https://rosettacode.org/wiki/Sutherland-Hodgman_polygon_clipping#Java
+package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.owl.math.planar.Cross2D;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,13 +14,12 @@ import ch.ethz.idsc.tensor.sca.Chop;
 /** The purpose of this class is to find, if any, the polygon that results from the intersection
  * of two polygons specified as Tensors that contain the polygon's vertices coordinates in
  * counter clock-wise order. */
-enum PolygonIntersection {
+public enum PolygonIntersection {
   ;
+  /** @param clipper, has to be convex, vertices ordered ccw
+   * @param subject with vertices ordered ccw
+   * @return */
   public static Tensor of(Tensor clipper, Tensor subject) {
-    return clipPolygon(subject, clipper);
-  }
-
-  private static Tensor clipPolygon(Tensor subject, Tensor clipper) {
     int len = clipper.length();
     Tensor tensor = subject.copy();
     for (int i = 0; i < len; ++i) {
@@ -61,7 +61,7 @@ enum PolygonIntersection {
     Tensor ab = a.subtract(b);
     Tensor pq = p.subtract(q);
     Scalar denom = det(ab, pq);
-    if (Chop._14.allZero(denom))
+    if (Chop._40.allZero(denom))
       throw TensorRuntimeException.of(a, b, p, q);
     return pq.multiply(det(ab, a)).subtract(ab.multiply(det(pq, p))).divide(denom);
   }

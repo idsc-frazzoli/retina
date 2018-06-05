@@ -15,8 +15,13 @@ import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.DequeCloud;
-import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.UnknownObstacleGlobalPredicate;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -27,7 +32,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 
-/** used in {@link PresenterLcmModule} */
+/** used in {@link PresenterLcmModule} */ // TODO: do not extend from lidarRender
 class ObstacleClusterTrackingRender extends LidarRender implements ActionListener {
   private static final boolean ENABLED = UserHome.file("").getName().equals("valentinacavinato");
   private static final Color COLOR_TRACE = new Color(255, 0, 0, 128);
@@ -44,10 +49,18 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
         return;
       // ---
       Tensor points = _points;
-      UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
       // state if of the form {x[m], y[m], angle[]}
       Tensor state = gokartPoseInterface.getPose();
-      unknownObstaclePredicate.setPose(state);
+      Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
+      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+      GeometricLayer geometricLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(state));
+      geometricLayer.pushMatrix(LIDAR);
+      UnknownObstacleGlobalPredicate unknownObstaclePredicate = new UnknownObstacleGlobalPredicate(predefinedMap);
+      SpacialObstaclePredicate floorPredicate = SimpleSpacialObstaclePredicate.createVlp16();
+      points = Tensor.of(points.stream() //
+          .filter(floorPredicate::isObstacle)//
+          .map(geometricLayer::toPoint2D)//
+          .map(p -> Tensors.vectorDouble(p.getX(), p.getY())));
       Tensor newScan = Tensor.of(points.stream() //
           .filter(unknownObstaclePredicate::isObstacle) //
           .map(point -> point.extract(0, 2))); // only x,y matter
@@ -71,7 +84,7 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
     if (!isClustering)
       return;
     // ---
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
+    geometricLayer.popMatrix();
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
       Point2D width = geometricLayer.toPoint2D(Tensors.vector(0.1, 0));
@@ -101,7 +114,7 @@ class ObstacleClusterTrackingRender extends LidarRender implements ActionListene
         }
       }
     }
-    geometricLayer.popMatrix();
+    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
   }
 
   @Override // from ActionListener

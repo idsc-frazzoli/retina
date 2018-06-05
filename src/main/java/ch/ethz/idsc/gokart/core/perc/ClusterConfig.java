@@ -34,5 +34,6 @@ public class ClusterConfig implements Serializable {
 
   public void elkiDBSCANTracking(ClusterCollection collection, Tensor matrix) {
     ClustersTracking.elkiDBSCAN(collection, matrix, getEpsilon(), getMinPoints());
+    collection.decompose();
   }
 }
