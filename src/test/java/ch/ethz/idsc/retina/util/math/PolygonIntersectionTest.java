@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.vc;
+package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.owl.math.planar.PolygonArea;
 import ch.ethz.idsc.tensor.ExactScalarQ;

@@ -17,7 +17,7 @@ public class Enlarger {
 
   public Enlarger(Tensor points, double w) {
     for (Tensor x : points)
-      totalArea = totalArea + addToCollection(x, w);
+      addToCollection(x, w);
   }
 
   public Enlarger(Tensor hulls) {
@@ -29,7 +29,7 @@ public class Enlarger {
     }
   }
 
-  private double addToCollection(Tensor point, double w) {
+  private void addToCollection(Tensor point, double w) {
     double xCenter = point.Get(0).number().doubleValue();
     double yCenter = point.Get(1).number().doubleValue();
     Tensor s = Tensors.empty();
@@ -38,7 +38,7 @@ public class Enlarger {
     s.append(Tensors.vectorDouble(xCenter + (w / 2), yCenter + (w / 2)));
     s.append(Tensors.vectorDouble(xCenter - (w / 2), yCenter + (w / 2)));
     collectionOfAreas.add(s);
-    return computeBetterArea(s);
+    totalArea += computeBetterArea(s);
   }
 
   public double computeArea(Area area) {

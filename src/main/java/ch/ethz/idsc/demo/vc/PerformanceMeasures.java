@@ -16,4 +16,8 @@ public class PerformanceMeasures {
   public Tensor toTensor() {
     return Tensors.vector(precision, recall);
   }
+
+  public String toString() {
+    return String.format("recall   =%6.3f\nprecision=%6.3f", recall, precision);
+  }
 }
