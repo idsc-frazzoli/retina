@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
@@ -28,8 +27,7 @@ import ch.ethz.idsc.tensor.Tensors;
 class Vlp16ClearanceRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
-      = SimpleSpacialObstaclePredicate.createVlp16();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
 
   public Vlp16ClearanceRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -46,7 +44,7 @@ class Vlp16ClearanceRender extends LidarRender {
         CircleClearanceTracker clearanceTracker = //
             new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16, SafetyConfig.GLOBAL.getClearanceClip());
         points.stream() //
-            .filter(spacialXZObstaclePredicate::isObstacle) //
+            .filter(predicate::isObstacle) //
             .forEach(clearanceTracker::feed);
         for (Tensor point : clearanceTracker.getPointsInViolation()) {
           Point2D point2D = geometricLayer.toPoint2D(point); // can also visualize v here

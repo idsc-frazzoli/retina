@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -60,5 +62,14 @@ public class SafetyConfig implements Serializable {
       return new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
     }
     return EmptyClearanceTracker.INSTANCE;
+  }
+
+  /** convenient way for the application layer to obtain an instance
+   * without having to specify the geometric configuration
+   * 
+   * @return */
+  public SpacialXZObstaclePredicate createVlp16() {
+    return new SimpleSpacialObstaclePredicate( //
+        vlp16_ZLo, vlp16_ZHi, SensorsConfig.GLOBAL.vlp16_incline);
   }
 }

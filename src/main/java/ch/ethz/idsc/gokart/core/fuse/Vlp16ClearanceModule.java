@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
@@ -32,7 +31,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
-      = SimpleSpacialObstaclePredicate.createVlp16();
+      = SafetyConfig.GLOBAL.createVlp16();
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
   /** clearanceTracker is always non-null */
   private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
