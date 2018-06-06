@@ -63,7 +63,7 @@ public enum LinmotPutOperation {
 
   /** @param pos
    * @return */
-  private LinmotPutEvent toPosition(Word control, short pos) {
+  private synchronized LinmotPutEvent toPosition(Word control, short pos) {
     if (pos_last != pos) {
       pos_last = pos;
       ++count;
