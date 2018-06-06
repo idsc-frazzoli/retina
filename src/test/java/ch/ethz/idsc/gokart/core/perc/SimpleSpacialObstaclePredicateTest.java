@@ -1,8 +1,6 @@
 // code by vc, jph
-package ch.ethz.idsc.gokart.core.fuse.perc;
+package ch.ethz.idsc.gokart.core.perc;
 
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
-import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;

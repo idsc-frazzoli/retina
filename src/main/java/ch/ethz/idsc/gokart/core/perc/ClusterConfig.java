@@ -32,7 +32,7 @@ public class ClusterConfig implements Serializable {
     return scanCount.number().intValue();
   }
 
-  public void elkiDBSCANTracking(ClusterCollection collection, Tensor matrix) {
+  public void dbscanTracking(ClusterCollection collection, Tensor matrix) {
     ClustersTracking.elkiDBSCAN(collection, matrix, getEpsilon(), getMinPoints());
     collection.decompose();
   }

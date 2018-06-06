@@ -21,7 +21,7 @@ public class ClustersTest extends TestCase {
     data[3][0] = 0.98;
     data[3][1] = 0.1;
     Tensor p = Tensors.matrixDouble(data);
-    Tensor clusters = Clusters.elkiDBSCAN(p, 0.2, 2);
+    Tensor clusters = Clusters.dbscan(p, 0.2, 2);
     assertEquals(clusters.length(), 2);
     Set<Tensor> set = clusters.stream().collect(Collectors.toSet());
     assertTrue(set.contains(Tensors.fromString("{{2.1, 3.98}, {2.16, 3.99}}")));

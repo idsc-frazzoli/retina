@@ -10,7 +10,7 @@ import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 
 public enum ElkiDatabase {
   ;
-  /** @param matrix with dimension n x 2
+  /** @param matrix with dimension n x d
    * @return database backed by the entries of given matrix */
   public static Database from(Tensor matrix) {
     double[][] data = Primitives.toDoubleArray2D(matrix);
