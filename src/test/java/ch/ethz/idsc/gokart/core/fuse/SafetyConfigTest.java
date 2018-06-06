@@ -10,8 +10,9 @@ import junit.framework.TestCase;
 
 public class SafetyConfigTest extends TestCase {
   public void testVlp16Lo() {
-    Clip.function(-1, -0.5).requireInside(SafetyConfig.GLOBAL.vlp16_ZLoMeter());
-    Clip.function(0, 0.3).requireInside(SafetyConfig.GLOBAL.vlp16_ZHiMeter());
+    Clip clip = SafetyConfig.GLOBAL.vlp16_ZClip();
+    Clip.function(-1, -0.5).requireInside(clip.min());
+    Clip.function(0, 0.3).requireInside(clip.max());
   }
 
   public void testCircleClearanceTracker() {
@@ -22,5 +23,11 @@ public class SafetyConfigTest extends TestCase {
   public void testEmptyClearanceTracker() {
     ClearanceTracker clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(new GokartStatusEvent(Float.NaN));
     assertTrue(clearanceTracker instanceof EmptyClearanceTracker);
+  }
+
+  public void testClearance() {
+    Clip clip = SafetyConfig.GLOBAL.getClearanceClip();
+    Clip.function(0.1, 0.3).requireInside(clip.min());
+    Clip.function(3.0, 7.0).requireInside(clip.max());
   }
 }

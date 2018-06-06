@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.red.Mean;
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements DavisImuFrameListener {
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   /** 3x3 transformation matrix of lidar to center of rear axle */
@@ -70,7 +71,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       // Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+      SlamResult slamResult = SlamDunk.of(SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
       // double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
