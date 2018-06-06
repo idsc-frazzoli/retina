@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.function.Supplier;
 
 import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
 import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
@@ -54,12 +55,12 @@ public abstract class AutoboxScheduledProvider<PE extends DataEvent> implements 
   }
 
   /** @param time_ms until given putEvent should be provided by calibration procedure
-   * @param putEvent */
-  protected synchronized final void eventUntil(long time_ms, PE putEvent) {
+   * @param supplier */
+  protected synchronized final void eventUntil(long time_ms, Supplier<PE> supplier) {
     long now = now_ms();
     /** event is between now and 10[s] into the future */
     if (now < time_ms && time_ms < now + MAX_FUTURE_MS)
-      queue.add(new TimedPutEvent<>(time_ms, putEvent));
+      queue.add(new TimedPutEvent<>(time_ms, supplier));
     else
       System.err.println("event is outside permitted time window");
   }

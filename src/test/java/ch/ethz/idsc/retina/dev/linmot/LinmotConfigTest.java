@@ -9,13 +9,17 @@ import junit.framework.TestCase;
 /** values inspired by 20180217_emergency_braking.pdf */
 public class LinmotConfigTest extends TestCase {
   private static void _check(Number v, Number duration, Number distance) {
-    EmergencyBrakeManeuver brakeDistance = LinmotConfig.GLOBAL.brakeDistance(Quantity.of(v, SI.VELOCITY));
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        LinmotConfig.GLOBAL.brakeDistance(Quantity.of(v, SI.VELOCITY));
     assertEquals( //
-        brakeDistance.duration, //
+        emergencyBrakeManeuver.duration, //
         Quantity.of(duration, SI.SECOND));
     assertEquals( //
-        brakeDistance.distance, //
+        emergencyBrakeManeuver.distance, //
         Quantity.of(distance, SI.METER));
+    long du = emergencyBrakeManeuver.getDuration_ms();
+    du -= duration.doubleValue() * 1000;
+    assertEquals(du, 0);
   }
 
   public void testSimple() {

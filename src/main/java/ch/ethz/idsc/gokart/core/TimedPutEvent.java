@@ -1,18 +1,20 @@
 // code by nisaak and jph
 package ch.ethz.idsc.gokart.core;
 
+import java.util.function.Supplier;
+
 /** message in schedule of calibration procedure */
 /* package */ final class TimedPutEvent<T> implements Comparable<TimedPutEvent<T>> {
   private final long time_ms;
-  private final T putEvent;
+  private final Supplier<T> supplier;
 
   /** time_ms is typically obtained by {@link System#currentTimeMillis()}
    * 
    * @param time_ms absolute time stamp until when to execute given putEvent.
-   * @param putEvent */
-  public TimedPutEvent(long time_ms, T putEvent) {
+   * @param supplier */
+  public TimedPutEvent(long time_ms, Supplier<T> supplier) {
     this.time_ms = time_ms;
-    this.putEvent = putEvent;
+    this.supplier = supplier;
   }
 
   @Override // from Comparable
@@ -28,6 +30,6 @@ package ch.ethz.idsc.gokart.core;
 
   /** @return calibration command */
   public T putEvent() {
-    return putEvent;
+    return supplier.get();
   }
 }

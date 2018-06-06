@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Times;
 
 public class EmergencyBrakeManeuver {
@@ -17,5 +18,9 @@ public class EmergencyBrakeManeuver {
     Scalar d1 = Times.of(RationalScalar.HALF.negate(), maxDeceleration, bt, bt);
     duration = responseTime.add(bt);
     distance = d0.add(d1);
+  }
+
+  public long getDuration_ms() {
+    return QuantityMagnitude.SI().in("ms").apply(duration).number().longValue();
   }
 }

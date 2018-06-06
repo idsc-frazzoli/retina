@@ -20,7 +20,7 @@ public class MiscIgnitionProvider extends AutoboxCalibrationProvider<MiscPutEven
 
   @Override // from AutoboxCalibrationProvider
   protected void protected_schedule() {
-    eventUntil(now_ms() + DURATION_MS, MiscPutEvent.RESETCON);
+    eventUntil(now_ms() + DURATION_MS, ()->MiscPutEvent.RESETCON);
   }
 
   @Override // from AutoboxCalibrationProvider
