@@ -25,10 +25,8 @@ import de.lmu.ifi.dbs.elki.database.ids.DBIDs;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
-/** initial draft for testing of elki library and DBScan algorithm */
 /* package */ enum ClustersTime {
   ;
-  // TODO also handle empty input
   public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
     Tensor matrix = Flatten.of(scans, 1);
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();

@@ -39,12 +39,13 @@ public class ClusterCollection {
     while (iterator.hasNext()) {
       ClusterDeque x = iterator.next();
       Tensor vertices = Tensor.of(x.vertexStream());
-      Tensor elkiDBSCAN = Clusters.elkiDBSCAN(vertices, 0.03, 6);
+      Tensor elkiDBSCAN = Clusters.dbscan(vertices, 0.03, 6);
       switch (elkiDBSCAN.length()) {
       case 0:
-        System.out.println("cluster is all noise");
+        // System.out.println("cluster is all noise");
         break;
       case 1:
+        // original cluster
         break;
       default:
         iterator.remove();

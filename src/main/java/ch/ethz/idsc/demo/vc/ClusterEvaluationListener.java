@@ -40,7 +40,7 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
         .map(point -> point.extract(0, 2))); // only x,y matterx
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
-        ClusterConfig.GLOBAL.elkiDBSCANTracking(collection, newScan);
+        ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
         Tensor predictedHulls = Tensors.empty();
         Tensor predictedMeans = Tensors.empty();
         for (ClusterDeque x : collection.getCollection()) {

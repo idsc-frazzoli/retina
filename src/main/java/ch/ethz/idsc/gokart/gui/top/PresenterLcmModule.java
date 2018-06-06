@@ -78,31 +78,16 @@ public class PresenterLcmModule extends AbstractModule {
       ParallelLidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
-      lidarRender.pointSize = 2;
+      lidarRender.pointSize = 1;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
-    // {
-    // ObstacleClusterRender obstacleClusterRender = //
-    // new ObstacleClusterRender(gokartPoseInterface);
-    // obstacleClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
-    // obstacleClusterRender.setColor(new Color(255, 0, 0, 128));
-    // obstacleClusterRender.pointSize = 4;
-    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender);
-    // vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterRender.lidarRayBlockListener);
-    // timerFrame.geometricComponent.addRenderInterface(obstacleClusterRender);
-    // timerFrame.jToolBar.add(obstacleClusterRender.jToggleButton);
-    // }
     {
-      ObstacleClusterTrackingRender obstacleTimeClusterRender = //
+      ObstacleClusterTrackingRender obstacleClusterTrackingRender = //
           new ObstacleClusterTrackingRender(gokartPoseInterface);
-      obstacleTimeClusterRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
-      obstacleTimeClusterRender.setColor(new Color(255, 0, 0, 128));
-      obstacleTimeClusterRender.pointSize = 4;
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender); // TODO
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleTimeClusterRender.lidarRayBlockListener);
-      timerFrame.geometricComponent.addRenderInterface(obstacleTimeClusterRender);
-      timerFrame.jToolBar.add(obstacleTimeClusterRender.jToggleButton);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterTrackingRender);
+      timerFrame.geometricComponent.addRenderInterface(obstacleClusterTrackingRender);
+      timerFrame.jToolBar.add(obstacleClusterTrackingRender.jToggleButton);
     }
     // {
     // CurveRender curveRender = new CurveRender(DubendorfCurve.HYPERLOOP_DUCTTAPE);

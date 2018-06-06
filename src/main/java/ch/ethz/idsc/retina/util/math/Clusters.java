@@ -1,8 +1,6 @@
 // code by vc
 package ch.ethz.idsc.retina.util.math;
 
-import java.util.List;
-
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
@@ -21,30 +19,27 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
 /** initial draft for testing of elki library and DBScan algorithm */
 public enum Clusters {
   ;
-  /** @param matrix
-   * @return tensor of clusters */
-  public static Tensor elkiDBSCAN(Tensor matrix, double eps, int minPoints) {
+  /** @param matrix of points
+   * @param eps
+   * @param minPoints
+   * @return tensor of clusters of points */
+  public static Tensor dbscan(Tensor matrix, double eps, int minPoints) {
     Database database = ElkiDatabase.from(matrix);
-    // Stopwatch stopwatch = Stopwatch.started();
-    DBSCAN<NumberVector> dbscan = //
-        new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
-    Clustering<Model> result = dbscan.run(database);
-    // long ns = stopwatch.display_nanoSeconds();
-    // System.out.println((ns * 1e-6) + "ms");
-    List<Cluster<Model>> allClusters = result.getAllClusters();
-    Tensor pi = Tensors.empty();
-    for (Cluster<Model> cluster : allClusters)
+    DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
+    Clustering<Model> clustering = dbscan.run(database);
+    Tensor collection = Tensors.empty();
+    for (Cluster<Model> cluster : clustering.getAllClusters())
       if (!cluster.isNoise()) {
-        Tensor pr = Tensors.empty();
-        DBIDs ids = cluster.getIDs();
-        Relation<NumberVector> rel = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
-        DBIDRange id = (DBIDRange) rel.getDBIDs();
-        for (DBIDIter iter = ids.iter(); iter.valid(); iter.advance()) {
-          int offset = id.getOffset(iter);
-          pr.append(matrix.get(offset));
+        DBIDs dbids = cluster.getIDs();
+        Relation<NumberVector> relation = database.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
+        DBIDRange dbidRange = (DBIDRange) relation.getDBIDs();
+        Tensor entry = Tensors.empty();
+        for (DBIDIter iter = dbids.iter(); iter.valid(); iter.advance()) {
+          int offset = dbidRange.getOffset(iter);
+          entry.append(matrix.get(offset));
         }
-        pi.append(pr);
+        collection.append(entry);
       }
-    return pi;
+    return collection;
   }
 }

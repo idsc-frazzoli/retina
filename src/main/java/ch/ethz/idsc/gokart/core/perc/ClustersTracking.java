@@ -87,7 +87,7 @@ public enum ClustersTracking {
             break;
           }
         else {
-          System.out.println("only old clusters");// TODO comment on this case, unhandled?
+          System.out.println("only old clusters"); // TODO comment on this case, unhandled?
         }
       }
     oldClusters.removeDeques(removeIndex);
