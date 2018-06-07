@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.app.TiltedVelodynePlanarEmulator;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -20,6 +22,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class LocalizationConfig implements Serializable {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
+  public Scalar gridShift = Quantity.of(0.5, SI.METER);
+  public Scalar gridAngle = Quantity.of(1.5, NonSI.DEGREE_ANGLE);
+  public Scalar gridFan = RealScalar.of(1);
+  public Scalar gridLevels = RealScalar.of(4);
   /** positive integer 0, 1, 2, 4
    * smaller means better precision but larger memory footprint
    * value 1 is sufficient */
@@ -34,6 +40,17 @@ public class LocalizationConfig implements Serializable {
   public Scalar resampleDs = RealScalar.of(0.4);
 
   /***************************************************/
+  /**
+   * 
+   */
+  public Se2MultiresGrids createSe2MultiresGrids() {
+    return new Se2MultiresGrids( //
+        Magnitude.METER.apply(gridShift), //
+        Magnitude.ONE.apply(gridAngle), //
+        gridFan.number().intValue(), //
+        gridLevels.number().intValue());
+  }
+
   /** the VLP-16 is tilted by 0.04[rad] around the y-axis.
    * 
    * @return lidar spacial provider that approximates measurements

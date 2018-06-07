@@ -22,19 +22,19 @@ public class LinmotCalibrationProvider extends AutoboxCalibrationProvider<Linmot
   protected void protected_schedule() {
     long timestamp = now_ms();
     eventUntil(timestamp += 200, //
-        LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
+        () -> LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_ERR_ACK, LinmotPutHelper.MC_ZEROS));
     // ---
-    eventUntil(timestamp += 200, LinmotPutOperation.INSTANCE.offMode());
+    eventUntil(timestamp += 200, () -> LinmotPutOperation.INSTANCE.offMode());
     // ---
     eventUntil(timestamp += 4000, //
-        LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
+        () -> LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_HOME, LinmotPutHelper.MC_ZEROS));
     // ---
     eventUntil(timestamp += 200, //
-        LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
+        () -> LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_ZEROS));
     // ---
     /** the last "position" command with all ratings == 0 is required */
     eventUntil(timestamp += 200, //
-        LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
+        () -> LinmotPutOperation.INSTANCE.configuration(LinmotPutHelper.CMD_OPERATION, LinmotPutHelper.MC_POSITION));
   }
 
   @Override // from AutoboxCalibrationProvider

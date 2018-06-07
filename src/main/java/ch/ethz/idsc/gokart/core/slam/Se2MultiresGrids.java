@@ -8,13 +8,14 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** j2b2 project */
-/* package */ class Se2MultiresGrids {
+public class Se2MultiresGrids {
   private static final Scalar DECR = DoubleScalar.of(0.6);
   // ---
   private final List<Se2Grid> list = new ArrayList<>();
 
   /** @param shift may be in physical space or pixel space
    * @param angle in radians
+   * @param fan
    * @param levels */
   public Se2MultiresGrids(Scalar shift, Scalar angle, final int fan, int levels) {
     for (int iterate = 0; iterate < levels; ++iterate) {

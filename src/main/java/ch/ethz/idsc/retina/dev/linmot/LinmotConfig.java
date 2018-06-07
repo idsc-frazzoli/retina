@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeManeuver;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -20,6 +21,9 @@ public class LinmotConfig implements Serializable {
   public Scalar windingTempCold = Quantity.of(5, SI.DEGREE_CELSIUS);
   public Scalar windingTempGlow = Quantity.of(85, SI.DEGREE_CELSIUS);
   public Scalar windingTempFire = Quantity.of(110, SI.DEGREE_CELSIUS);
+  // ---
+  public Scalar responseTime = Quantity.of(0.15, SI.SECOND);
+  public Scalar maxDeceleration = Quantity.of(-4.5, SI.ACCELERATION);
 
   /***************************************************/
   public Clip temperatureOperationClip() {
@@ -36,6 +40,12 @@ public class LinmotConfig implements Serializable {
 
   public boolean isTemperatureHardwareSafe(Scalar temperature) {
     return temperatureHardwareClip().isInside(temperature);
+  }
+
+  /** @param velocity
+   * @return conservative estimation of brake distance */
+  public EmergencyBrakeManeuver brakeDistance(Scalar velocity) {
+    return new EmergencyBrakeManeuver(responseTime, maxDeceleration, velocity);
   }
 
   /** bounds established using experimentation */

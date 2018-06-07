@@ -12,8 +12,8 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
@@ -62,7 +62,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
+  private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final BayesianOccupancyGrid grid;
@@ -138,9 +138,9 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     if (Objects.nonNull(grid))
       if (lidarRayBlockEvent.dimensions == 3)
         while (floatBuffer.hasRemaining()) {
-          double x = floatBuffer.get();
-          double y = floatBuffer.get();
-          double z = floatBuffer.get();
+          float x = floatBuffer.get();
+          float y = floatBuffer.get();
+          float z = floatBuffer.get();
           //
           boolean isObstacle = predicate.isObstacle(x, z);
           Tensor planarPoint = Tensors.vectorDouble(x, y, 1);

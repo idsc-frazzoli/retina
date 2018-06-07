@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.Graphics2D;
 import java.nio.FloatBuffer;
 
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -39,7 +39,7 @@ public class GokartMappingModule implements //
   public static BayesianOccupancyGrid grid;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = SimpleSpacialObstaclePredicate.createVlp16();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
   private final Tensor gridRange = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
   private final Tensor lbounds = Tensors.vector(30, 30);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -83,9 +83,9 @@ public class GokartMappingModule implements //
     if (lidarRayBlockEvent.dimensions != 3)
       throw new RuntimeException("dim=" + lidarRayBlockEvent.dimensions);
     while (floatBuffer.hasRemaining()) {
-      double x = floatBuffer.get();
-      double y = floatBuffer.get();
-      double z = floatBuffer.get();
+      float x = floatBuffer.get();
+      float y = floatBuffer.get();
+      float z = floatBuffer.get();
       //
       boolean isObstacle = predicate.isObstacle(x, z);
       grid.processObservation( //

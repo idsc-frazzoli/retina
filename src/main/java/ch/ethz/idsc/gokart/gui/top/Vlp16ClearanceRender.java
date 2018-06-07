@@ -10,12 +10,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
+import ch.ethz.idsc.owl.car.math.CircleClearanceCollector;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -28,8 +27,7 @@ import ch.ethz.idsc.tensor.Tensors;
 class Vlp16ClearanceRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
-      = SimpleSpacialObstaclePredicate.createVlp16();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
 
   public Vlp16ClearanceRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -43,17 +41,17 @@ class Vlp16ClearanceRender extends LidarRender {
         Tensor points = _points; // in reference frame of lidar
         // ---
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-        CircleClearanceTracker clearanceTracker = //
-            new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16, SafetyConfig.GLOBAL.getClearanceClip());
+        CircleClearanceCollector circleClearanceCollector = //
+            new CircleClearanceCollector(half, angle, SensorsConfig.GLOBAL.vlp16, SafetyConfig.GLOBAL.getClearanceClip());
         points.stream() //
-            .filter(spacialXZObstaclePredicate::isObstacle) //
-            .forEach(clearanceTracker::feed);
-        for (Tensor point : clearanceTracker.getPointsInViolation()) {
+            .filter(predicate::isObstacle) //
+            .forEach(circleClearanceCollector::feed);
+        for (Tensor point : circleClearanceCollector.getPointsInViolation()) {
           Point2D point2D = geometricLayer.toPoint2D(point); // can also visualize v here
           graphics.setColor(Color.RED);
           graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
         }
-        Optional<Tensor> optional = clearanceTracker.violation();
+        Optional<Tensor> optional = circleClearanceCollector.violation();
         if (optional.isPresent()) {
           Tensor m = Se2Utils.toSE2Matrix(optional.get());
           geometricLayer.pushMatrix(m);

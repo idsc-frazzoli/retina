@@ -11,11 +11,11 @@ import java.nio.FloatBuffer;
 
 import javax.swing.JToggleButton;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.DequeCloud;
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstacleGlobalPredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -38,6 +38,7 @@ class ObstacleClusterTrackingRender implements LidarRayBlockListener, RenderInte
   private static final Color COLOR_TRACE = new Color(255, 0, 0, 128);
   // ---
   private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+  private final SpacialXZObstaclePredicate nonFloorPredicate = SafetyConfig.GLOBAL.createVlp16();
   private final UnknownObstacleGlobalPredicate unknownObstacleGlobalPredicate = //
       new UnknownObstacleGlobalPredicate(predefinedMap);
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart().unmodifiable();
@@ -63,14 +64,13 @@ class ObstacleClusterTrackingRender implements LidarRayBlockListener, RenderInte
     final FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     final int position = floatBuffer.position();
     Tensor points = Tensors.empty();
-    SpacialXZObstaclePredicate nonFloorPredicate = SimpleSpacialObstaclePredicate.createVlp16();
     Tensor state = gokartPoseInterface.getPose(); // state if of the form {x[m], y[m], angle[]}
     GeometricLayer geometricLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(state));
     geometricLayer.pushMatrix(lidar);
     while (floatBuffer.hasRemaining()) {
-      double x = floatBuffer.get();
-      double y = floatBuffer.get();
-      double z = floatBuffer.get();
+      float x = floatBuffer.get();
+      float y = floatBuffer.get();
+      float z = floatBuffer.get();
       if (nonFloorPredicate.isObstacle(x, z)) { // filter based on height
         Tensor local = Tensors.vectorDouble(x, y); // z is dropped
         Point2D pnt = geometricLayer.toPoint2D(local);

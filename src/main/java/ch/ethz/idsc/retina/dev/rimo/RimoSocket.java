@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.AutoboxDevice;
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
+import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeProvider;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -24,6 +25,8 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
 
   private RimoSocket() {
     super(RimoGetEvent.LENGTH, LOCAL_PORT);
+    // ---
+    addGetListener(EmergencyBrakeProvider.INSTANCE);
     // ---
     addPutProvider(RimoPutFallback.INSTANCE);
   }

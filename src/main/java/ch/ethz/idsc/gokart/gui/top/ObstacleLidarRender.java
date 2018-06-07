@@ -7,7 +7,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -33,7 +33,7 @@ class ObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      SpacialObstaclePredicate spacialObstaclePredicate = SimpleSpacialObstaclePredicate.createVlp16();
+      SpacialObstaclePredicate spacialObstaclePredicate = SafetyConfig.GLOBAL.createVlp16();
       for (Tensor point : points) {
         if (spacialObstaclePredicate.isObstacle(point)) {
           Point2D point2D = geometricLayer.toPoint2D(point);

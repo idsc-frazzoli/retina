@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.slam.DubendorfSlam;
+import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -24,6 +24,8 @@ import ch.ethz.idsc.tensor.sca.N;
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class SlamOfflineLocalize extends OfflineLocalize {
+  private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
@@ -48,7 +50,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Stopwatch stopwatch = Stopwatch.started();
-      SlamResult slamResult = SlamDunk.of(DubendorfSlam.SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+      SlamResult slamResult = SlamDunk.of(SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
       double duration = stopwatch.display_seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));

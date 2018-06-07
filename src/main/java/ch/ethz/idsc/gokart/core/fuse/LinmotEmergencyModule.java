@@ -27,6 +27,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
  * braking by joystick may not be operational. Deceleration can still be accomplished by
  * 1) applying opposite motor torque, and
  * 2) pressing the brake by foot */
+// TODO class name not intuitive
 public final class LinmotEmergencyModule extends EmergencyModule<RimoPutEvent> implements LinmotGetListener {
   /** the micro-autobox sends messages at 250[Hz], i.e. at intervals of 4[ms] */
   private static final long TIMEOUT_MS = 50;
