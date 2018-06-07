@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.red.Min;
 
 /** Important: the module requires the steering to be calibrated.
  * 
@@ -78,16 +79,20 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
 
   @Override // from GokartStatusListener
   public final void getEvent(GokartStatusEvent gokartStatusEvent) {
-    contact = clearanceTracker.contact(); // FIXME safety critical implementation flaw
+    Optional<Scalar> touching = clearanceTracker.contact();
+    if (touching.isPresent())
+      contact = contact.isPresent() //
+          ? Optional.of(Min.of(contact.get(), touching.get())) //
+          : touching;
     clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider
   public final Optional<RimoPutEvent> putEvent() {
-    if (contact.isPresent())
+    if (contact.isPresent()) {
       EmergencyBrakeProvider.INSTANCE.consider(contact.get());
-    // else
-    // System.out.println("not present");
+      contact = Optional.empty();
+    }
     return Optional.ofNullable(penaltyTimeout.isPenalty() ? penaltyAction() : null);
   }
 

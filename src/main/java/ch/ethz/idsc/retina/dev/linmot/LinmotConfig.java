@@ -20,6 +20,7 @@ public class LinmotConfig implements Serializable {
   public Scalar windingTempGlow = Quantity.of(85, SI.DEGREE_CELSIUS);
   public Scalar windingTempFire = Quantity.of(110, SI.DEGREE_CELSIUS);
   // ---
+  public Scalar minVelocity = Quantity.of(0.3, SI.VELOCITY);
   /** the response time is computed with the following rational
    * the lidar takes 0.05[s] == 20[Hz^-1] max to detect an obstacle
    * the brake requires 0.05[s] to move from home position to max press

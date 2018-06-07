@@ -18,11 +18,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
+  // TODO magic const to prevent from slip
   private static final Clip CLIP = Clip.function(Quantity.of(0, SI.VELOCITY), Quantity.of(6, SI.VELOCITY));
-  private static final Scalar MIN_VELOCITY = Quantity.of(0.2, SI.VELOCITY); // TODO magic const
   // ---
   public static final EmergencyBrakeProvider INSTANCE = new EmergencyBrakeProvider();
   // ---
+  private final Scalar minVelocity = LinmotConfig.GLOBAL.minVelocity;
   private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16.Get(0));
   private Scalar velocity = Quantity.of(0.0, SI.METER);
 
@@ -52,17 +53,10 @@ public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEv
 
   /** @param min without unit but with interpretation in meter from lidar */
   public void consider(Scalar min) {
-    // System.out.println("consider " + min + " at " + velocity);
-    if (Scalars.lessEquals(MIN_VELOCITY, velocity) && isIdle()) {
+    if (Scalars.lessEquals(minVelocity, velocity) && isIdle()) {
       EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
-      // System.out.println(emergencyBrakeManeuver.toInfoString());
-      if (emergencyBrakeManeuver.isRequired(Quantity.of(min.subtract(margin), SI.METER))) {
+      if (emergencyBrakeManeuver.isRequired(Quantity.of(min.subtract(margin), SI.METER)))
         schedule();
-        // System.out.println("req");
-      }
-      // else {
-      // System.out.println("not req");
-      // }
     }
   }
 
