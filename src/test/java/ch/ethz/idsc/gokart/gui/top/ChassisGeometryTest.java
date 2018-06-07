@@ -5,6 +5,7 @@ import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -29,6 +30,11 @@ public class ChassisGeometryTest extends TestCase {
     Scalar xAxleDistance = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
     Clip.function(1.1, 1.25).requireInside(xAxleDistance);
     ChassisGeometry.GLOBAL.yTireFrontMeter();
+  }
+
+  public void testxTipMeter() {
+    Scalar xTipMeter = ChassisGeometry.GLOBAL.xTipMeter();
+    assertEquals(xTipMeter, DoubleScalar.of(1.75));
   }
 
   public void testyHalfWidthMeter() {

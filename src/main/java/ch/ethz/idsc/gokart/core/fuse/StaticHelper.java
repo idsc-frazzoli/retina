@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.Tensors;
     for (int index = 0; index < size; ++index) {
       float px = floatBuffer.get();
       float py = floatBuffer.get();
-      clearanceTracker.feed(Tensors.vector(px, py));
+      clearanceTracker.isObstructed(Tensors.vector(px, py));
     }
     floatBuffer.position(position);
     return clearanceTracker.violation().isPresent();
