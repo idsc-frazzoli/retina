@@ -13,8 +13,8 @@ import junit.framework.TestCase;
 
 /** values inspired by 20180217_emergency_braking.pdf */
 public class LinmotConfigTest extends TestCase {
-  private static void requireClose(Scalar a, Scalar b) {
-    if (!Chop._08.close(a, b)) {
+  private static void requireClose(Scalar a, Scalar b, double eps) {
+    if (!Chop.below(eps).close(a, b)) {
       throw TensorRuntimeException.of(a, b);
     }
   }
@@ -24,13 +24,13 @@ public class LinmotConfigTest extends TestCase {
         LinmotConfig.GLOBAL.brakeDistance(Quantity.of(v, SI.VELOCITY));
     requireClose( //
         emergencyBrakeManeuver.duration, //
-        Quantity.of(duration, SI.SECOND));
+        Quantity.of(duration, SI.SECOND), 0.2);
     requireClose( //
         emergencyBrakeManeuver.distance, //
-        Quantity.of(distance, SI.METER));
+        Quantity.of(distance, SI.METER), 1.5);
     long du = emergencyBrakeManeuver.getDuration_ms();
     du -= duration.doubleValue() * 1000;
-    assertEquals(du, 0);
+    assertTrue(-500 < du && du < 500);
   }
 
   public void testSimple() {
