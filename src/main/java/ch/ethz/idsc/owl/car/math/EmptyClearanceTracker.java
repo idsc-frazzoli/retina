@@ -3,6 +3,7 @@ package ch.ethz.idsc.owl.car.math;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 public enum EmptyClearanceTracker implements ClearanceTracker {
@@ -14,7 +15,7 @@ public enum EmptyClearanceTracker implements ClearanceTracker {
   }
 
   @Override // from ClearanceTracker
-  public Optional<Tensor> violation() {
+  public Optional<Scalar> contact() {
     return Optional.empty();
   }
 }

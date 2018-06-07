@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
+import ch.ethz.idsc.tensor.Scalar;
 
 /** Important: the module requires the steering to be calibrated.
  * 
@@ -80,6 +81,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
 
   @Override // from RimoPutProvider
   public final Optional<RimoPutEvent> putEvent() {
+    Optional<Scalar> contact = clearanceTracker.contact();
+    if (contact.isPresent())
+      EmergencyBrakeProvider.INSTANCE.consider(contact.get());
     return Optional.ofNullable(penaltyTimeout.isPenalty() ? penaltyAction() : null);
   }
 

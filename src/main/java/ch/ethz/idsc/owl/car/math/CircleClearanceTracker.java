@@ -68,10 +68,16 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
     return clip_Y.isInside(v.Get(1)) && clip_X.isInside(t);
   }
 
-  @Override
   public Optional<Tensor> violation() {
     if (Scalars.lessThan(min, clip_X.max())) // strictly less than
       return Optional.of(Se2Utils.integrate_g0(u.multiply(min)));
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Scalar> contact() {
+    if (Scalars.lessThan(min, clip_X.max())) // strictly less than
+      return Optional.of(min);
     return Optional.empty();
   }
 }

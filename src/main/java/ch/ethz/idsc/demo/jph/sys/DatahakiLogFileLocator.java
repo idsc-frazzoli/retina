@@ -28,7 +28,8 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
       if (file.isFile())
         return file;
     }
-    throw new RuntimeException("not found: " + title);
+    System.err.println("not found: " + title);
+    return null;
   }
 
   /** @param logFile
