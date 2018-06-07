@@ -45,23 +45,9 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
     Tensor point = se2ForwardAction.apply(local);
     Scalar t = Se2AxisYProject.of(u, point);
     boolean status = private_probe(point, t);
-    if (status) // TODO redundancy kills!
+    if (status)
       min = Min.of(min, t);
     return status;
-  }
-
-  /** @param local coordinates of obstacle in sensor reference frame */
-  public void feed(Tensor local) {
-    Tensor point = se2ForwardAction.apply(local);
-    Scalar t = Se2AxisYProject.of(u, point);
-    if (private_probe(point, t)) {
-      min = Min.of(min, t); // negate t again
-      notifyHit(point);
-    }
-  }
-
-  protected void notifyHit(Tensor point) {
-    // ---
   }
 
   private boolean private_probe(Tensor point, Scalar t) {

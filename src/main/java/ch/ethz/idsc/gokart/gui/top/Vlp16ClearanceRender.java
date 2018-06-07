@@ -14,10 +14,9 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.owl.car.math.CircleClearanceCollector;
+import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -36,17 +35,17 @@ class Vlp16ClearanceRender extends LidarRender {
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      // final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Objects.nonNull(_points)) {
         Tensor points = _points; // in reference frame of lidar
         // ---
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-        CircleClearanceCollector circleClearanceCollector = //
-            new CircleClearanceCollector(half, angle, SensorsConfig.GLOBAL.vlp16, SafetyConfig.GLOBAL.getClearanceClip());
-        points.stream() //
+        CircleClearanceTracker circleClearanceCollector = //
+            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
+        Tensor locals = Tensor.of(points.stream() //
             .filter(predicate::isObstacle) //
-            .forEach(circleClearanceCollector::feed);
-        for (Tensor point : circleClearanceCollector.getPointsInViolation()) {
+            .filter(circleClearanceCollector::isObstructed));
+        for (Tensor point : locals) {
           Point2D point2D = geometricLayer.toPoint2D(point); // can also visualize v here
           graphics.setColor(Color.RED);
           graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);

@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.core.AutoboxScheduledProvider;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
@@ -10,7 +11,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -23,6 +23,7 @@ public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEv
   // ---
   public static final EmergencyBrakeProvider INSTANCE = new EmergencyBrakeProvider();
   // ---
+  private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16.Get(0));
   private Scalar velocity = Quantity.of(0.0, SI.METER);
 
   private EmergencyBrakeProvider() {
@@ -51,17 +52,21 @@ public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEv
 
   /** @param min without unit but with interpretation in meter from lidar */
   public void consider(Scalar min) {
-    System.out.println("consider " + min + " at " + velocity);
+    // System.out.println("consider " + min + " at " + velocity);
     if (Scalars.lessEquals(MIN_VELOCITY, velocity) && isIdle()) {
       EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
-      System.out.println(emergencyBrakeManeuver.toInfoString());
-      Scalar margin = DoubleScalar.of(1.9); // TODO magic const
+      // System.out.println(emergencyBrakeManeuver.toInfoString());
       if (emergencyBrakeManeuver.isRequired(Quantity.of(min.subtract(margin), SI.METER))) {
         schedule();
-        System.out.println("req");
-      } else {
-        System.out.println("not req");
+        // System.out.println("req");
       }
+      // else {
+      // System.out.println("not req");
+      // }
     }
+  }
+
+  Scalar margin() {
+    return margin;
   }
 }
