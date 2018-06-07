@@ -64,6 +64,8 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   /***************************************************/
+  Optional<Scalar> contact = Optional.empty();
+
   @Override // from LidarSpacialListener
   public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     ClearanceTracker _clearanceTracker = clearanceTracker;
@@ -76,14 +78,16 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
 
   @Override // from GokartStatusListener
   public final void getEvent(GokartStatusEvent gokartStatusEvent) {
+    contact = clearanceTracker.contact(); // FIXME safety critical implementation flaw
     clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider
   public final Optional<RimoPutEvent> putEvent() {
-    Optional<Scalar> contact = clearanceTracker.contact();
     if (contact.isPresent())
       EmergencyBrakeProvider.INSTANCE.consider(contact.get());
+    // else
+    // System.out.println("not present");
     return Optional.ofNullable(penaltyTimeout.isPenalty() ? penaltyAction() : null);
   }
 

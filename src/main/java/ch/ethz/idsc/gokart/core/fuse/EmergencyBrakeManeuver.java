@@ -28,4 +28,8 @@ public class EmergencyBrakeManeuver {
   public boolean isRequired(Scalar contact) {
     return Scalars.lessThan(contact, distance);
   }
+
+  public String toInfoString() {
+    return "brake: " + duration + " " + distance;
+  }
 }
