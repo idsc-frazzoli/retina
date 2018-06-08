@@ -6,13 +6,19 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Times;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class EmergencyBrakeManeuver {
+  private static final ScalarUnaryOperator IN_MILLIS = QuantityMagnitude.SI().in("ms");
+  // ---
   /** duration to full stop with unit "s" */
   public final Scalar duration;
   /** distance to full stop with unit "m" */
   public final Scalar distance;
 
+  /** @param responseTime with unit "s"
+   * @param maxDeceleration with unit "m*s^-2"
+   * @param velocity with unit "m*s^-1" */
   public EmergencyBrakeManeuver(Scalar responseTime, Scalar maxDeceleration, Scalar velocity) {
     Scalar d0 = velocity.multiply(responseTime);
     Scalar bt = velocity.divide(maxDeceleration).negate();
@@ -22,9 +28,11 @@ public class EmergencyBrakeManeuver {
   }
 
   public long getDuration_ms() {
-    return QuantityMagnitude.SI().in("ms").apply(duration).number().longValue();
+    return IN_MILLIS.apply(duration).number().longValue();
   }
 
+  /** @param contact with unit "m"
+   * @return true if the distance to contact is less than the distance estimated for braking */
   public boolean isRequired(Scalar contact) {
     return Scalars.lessThan(contact, distance);
   }

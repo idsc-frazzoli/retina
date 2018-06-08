@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,9 +18,20 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
-  // TODO magic const to prevent from slip
-  private static final Clip CLIP = Clip.function(Quantity.of(0, SI.VELOCITY), Quantity.of(6, SI.VELOCITY));
+/** module controls the brake with rank {@link ProviderRank#EMERGENCY}
+ * 
+ * the module
+ * <ul>
+ * <li>tracks the tangent speed of the vehicle from the wheel odometry
+ * <li>receives the distance to an obstacle along the x-axis
+ * <li>schedules the press of the brake for the estimated duration that is required to stop the vehicle
+ * </ul> */
+@SafetyCritical
+public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
+  // TODO magic const to filter slip
+  private static final Clip CLIP = Clip.function( //
+      Quantity.of(0, SI.VELOCITY), //
+      Quantity.of(6, SI.VELOCITY));
   // ---
   public static final EmergencyBrakeProvider INSTANCE = new EmergencyBrakeProvider();
   // ---
@@ -31,19 +43,8 @@ public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEv
   }
 
   @Override // from PutProvider
-  public final ProviderRank getProviderRank() {
+  public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
-  }
-
-  @Override // from AutoboxScheduledProvider
-  protected void protected_schedule() {
-    long timestamp = now_ms();
-    EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
-    long duration_ms = emergencyBrakeManeuver.getDuration_ms();
-    System.out.println("brake duration=" + duration_ms);
-    eventUntil( //
-        timestamp += duration_ms, //
-        () -> LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ONE));
   }
 
   @Override // from RimoGetListener
@@ -60,6 +61,17 @@ public class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEv
     }
   }
 
+  @Override // from AutoboxScheduledProvider
+  protected void protected_schedule() {
+    EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
+    long timestamp = now_ms();
+    long duration_ms = emergencyBrakeManeuver.getDuration_ms();
+    eventUntil( //
+        timestamp += duration_ms, //
+        () -> LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ONE));
+  }
+
+  /** @return distance from lidar to front bumper of gokart along x-axis */
   Scalar margin() {
     return margin;
   }
