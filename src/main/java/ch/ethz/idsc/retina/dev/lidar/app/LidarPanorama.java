@@ -16,7 +16,7 @@ public interface LidarPanorama {
    * @param piy indexed from top to bottom
    * @param distance in meter
    * @param intensity */
-  void setReading(int piy, float distance, byte intensity);
+  void setReading(int piy, int distance, byte intensity);
 
   /** @return */
   BufferedImage distances();

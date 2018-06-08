@@ -6,7 +6,7 @@ import java.awt.image.DataBufferByte;
 import java.util.stream.IntStream;
 
 /** grayscale images visualizing distance and intensity */
-public class GrayscaleLidarPanorama implements LidarPanorama {
+public class SuperGrayscaleLidarPanorama implements LidarPanorama {
   private final int cutoff;
   private final int[] offset;
   private final BufferedImage distancesImage;
@@ -16,7 +16,7 @@ public class GrayscaleLidarPanorama implements LidarPanorama {
   // ---
   private int width = -1;
 
-  public GrayscaleLidarPanorama(int max_width, int height) {
+  public SuperGrayscaleLidarPanorama(int max_width, int height, int history) {
     cutoff = max_width - 1;
     offset = new int[height];
     IntStream.range(0, height).forEach(i -> offset[i] = i * max_width);
@@ -26,8 +26,14 @@ public class GrayscaleLidarPanorama implements LidarPanorama {
     intensity = ((DataBufferByte) intensityImage.getRaster().getDataBuffer()).getData();
   }
 
+  int rotational_last;
+
   @Override // from LidarPanorama
   public void setRotational(int rotational) {
+    if (rotational < rotational_last) {
+    }
+    rotational_last = rotational;
+    System.out.println(rotational);
     ++width;
     width = Math.min(width, cutoff);
   }
@@ -35,7 +41,7 @@ public class GrayscaleLidarPanorama implements LidarPanorama {
   @Override // from LidarPanorama
   public void setReading(int piy, int distance, byte ivalue) {
     int address = offset[piy];
-    distances[width + address] = (byte) (distance >> 5); // loss of least significant bits
+    distances[width + address] = (byte) (distance >> 8); // loss of least significant bits
     intensity[width + address] = ivalue; // confirmed for vlp16
   }
 
