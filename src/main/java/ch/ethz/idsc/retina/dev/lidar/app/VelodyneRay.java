@@ -4,12 +4,13 @@ package ch.ethz.idsc.retina.dev.lidar.app;
 public class VelodyneRay {
   private final float dx;
   private final float dy;
-  public final int index;
+  /** position offset in sensing data array */
+  public final int offset;
 
-  public VelodyneRay(float dx, float dy, int index) {
+  public VelodyneRay(float dx, float dy, int offset) {
     this.dx = dx;
     this.dy = dy;
-    this.index = index;
+    this.offset = offset;
   }
 
   public float[] getCoord(float distance) {
