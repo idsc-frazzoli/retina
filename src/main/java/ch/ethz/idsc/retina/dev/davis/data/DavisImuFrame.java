@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.davis.data;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -114,6 +115,6 @@ public class DavisImuFrame extends DataEvent {
 
   /** @return temperature in degC */
   public Scalar temperature() {
-    return Quantity.of(temperature * TEMPERATURE_SCALE + TEMPERATURE_OFFSET, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature * TEMPERATURE_SCALE + TEMPERATURE_OFFSET, NonSI.DEGREE_CELSIUS);
   }
 }

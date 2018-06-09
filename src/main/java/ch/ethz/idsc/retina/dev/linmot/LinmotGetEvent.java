@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -48,12 +49,12 @@ public class LinmotGetEvent extends DataEvent {
 
   /** @return temperature of winding 1 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature1() {
-    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
+    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
   /** @return temperature of winding 2 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature2() {
-    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
+    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
   public Scalar getWindingTemperatureMax() {
