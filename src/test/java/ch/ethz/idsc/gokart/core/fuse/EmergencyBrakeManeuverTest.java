@@ -4,20 +4,45 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class EmergencyBrakeManeuverTest extends TestCase {
   public void testSimple() {
-    EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(Quantity.of(6, SI.VELOCITY));
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        LinmotConfig.GLOBAL.brakeDistance(Quantity.of(6, SI.VELOCITY));
     assertTrue(emergencyBrakeManeuver.isRequired(Quantity.of(3, SI.METER)));
     assertFalse(emergencyBrakeManeuver.isRequired(Quantity.of(8, SI.METER)));
   }
 
   public void testMore() {
-    EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(Quantity.of(4, SI.VELOCITY));
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        LinmotConfig.GLOBAL.brakeDistance(Quantity.of(4, SI.VELOCITY));
     assertTrue(emergencyBrakeManeuver.isRequired(Quantity.of(2, SI.METER)));
     assertFalse(emergencyBrakeManeuver.isRequired(Quantity.of(4, SI.METER)));
+  }
+
+  public void testZero() {
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        LinmotConfig.GLOBAL.brakeDistance(Quantity.of(0, SI.VELOCITY));
+    assertTrue(Scalars.isZero(emergencyBrakeManeuver.distance));
+    Sign.requirePositiveOrZero(emergencyBrakeManeuver.duration);
+  }
+
+  public void testPositive() {
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        new EmergencyBrakeManeuver(Quantity.of(1, "s"), Quantity.of(-4, SI.ACCELERATION), Quantity.of(2, SI.VELOCITY));
+    assertEquals(emergencyBrakeManeuver.distance, Scalars.fromString("5/2[m]"));
+    assertEquals(emergencyBrakeManeuver.duration, Scalars.fromString("3/2[s]"));
+  }
+
+  public void testNegative() {
+    EmergencyBrakeManeuver emergencyBrakeManeuver = //
+        new EmergencyBrakeManeuver(Quantity.of(1, "s"), Quantity.of(4, SI.ACCELERATION), Quantity.of(-2, SI.VELOCITY));
+    assertEquals(emergencyBrakeManeuver.distance, Scalars.fromString("-5/2[m]"));
+    assertEquals(emergencyBrakeManeuver.duration, Scalars.fromString("3/2[s]"));
   }
 
   public void testSpecs() {

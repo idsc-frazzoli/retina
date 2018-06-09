@@ -35,12 +35,12 @@ public class PanoramaViewModule extends AbstractModule {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");
     FullGrayscaleLidarPanorama gfp = new FullGrayscaleLidarPanorama(16);
-    SuperGrayscaleLidarPanorama sgp = new SuperGrayscaleLidarPanorama(2304, 16, 2);
+    SuperGrayscaleLidarPanorama sgp = new SuperGrayscaleLidarPanorama(2304, 16, 3);
     Supplier<LidarPanorama> supplier1 = () -> gfp;
     Supplier<LidarPanorama> supplier2 = () -> new GrayscaleLidarPanorama(2304, 16);
     Supplier<LidarPanorama> supplier3 = () -> new HueLidarPanorama(2304, 16);
     Supplier<LidarPanorama> supplier4 = () -> sgp;
-    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider(supplier2);
+    LidarPanoramaProvider lidarPanoramaProvider = new Vlp16PanoramaProvider(supplier4);
     // ---
     lidarPanoramaFrame = VelodyneUtils.panorama(velodyneDecoder, lidarPanoramaProvider);
     windowConfiguration.attach(getClass(), lidarPanoramaFrame.jFrame);
