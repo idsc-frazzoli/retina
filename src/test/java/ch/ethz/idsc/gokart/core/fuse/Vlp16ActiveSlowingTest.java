@@ -29,38 +29,38 @@ public class Vlp16ActiveSlowingTest extends TestCase {
     coords[0] = 0;
     coords[1] = 0;
     coords[2] = 0;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertFalse(vcm.putEvent().isPresent());
     // ---
     coords[0] = 0;
     coords[1] = 1;
     coords[2] = 0;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertFalse(vcm.putEvent().isPresent());
     // ---
     coords[0] = 1;
     coords[1] = 1;
     coords[2] = 0;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertFalse(vcm.putEvent().isPresent());
     // ---
     coords[0] = -1; // 1[m] along x axis in the back of the sensor
     coords[1] = 0;
     coords[2] = 0;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertFalse(vcm.putEvent().isPresent());
     // ---
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0;
     coords[2] = 0;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertTrue(vcm.putEvent().isPresent());
     Thread.sleep(510);
     assertFalse(vcm.putEvent().isPresent());
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0.2f;
     coords[2] = (float) -0.8;
-    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, 12));
+    vcm.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
     assertTrue(vcm.putEvent().isPresent());
     Thread.sleep(510);
     assertFalse(vcm.putEvent().isPresent());

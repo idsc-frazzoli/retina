@@ -74,7 +74,7 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
     for (int laser = 0; laser < NUM_LASERS; ++laser) {
       byteBuffer.position(bufferPos + laserList.get(laser) * 3); // TODO pre-multiply
       int distance = byteBuffer.getShort() & 0xffff;
-      int intensity = byteBuffer.get() & 0xff;
+      byte intensity = byteBuffer.get();
       if (limit_lo <= distance) {
         float radius = IR[laser] * distance;
         coords[0] = radius * dx;

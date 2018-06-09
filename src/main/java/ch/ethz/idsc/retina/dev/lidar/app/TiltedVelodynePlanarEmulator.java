@@ -52,7 +52,7 @@ public class TiltedVelodynePlanarEmulator implements LidarSpacialProvider {
     // "report distance to the nearest 0.2 cm" => 2 mm
     int distance = byteBuffer.getShort() & 0xffff;
     if (limit_lo <= distance) {
-      int intensity = byteBuffer.get() & 0xff;
+      byte intensity = byteBuffer.get();
       LidarSpacialEvent lidarSpacialEvent = //
           new LidarSpacialEvent(usec, velodyneRay.getCoord(distance), intensity);
       listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
