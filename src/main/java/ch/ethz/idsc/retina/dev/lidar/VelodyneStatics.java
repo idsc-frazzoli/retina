@@ -18,11 +18,9 @@ public enum VelodyneStatics {
   public static final int RAY_DEFAULT_PORT = 2368;
   /** default port on which vlp16/hdl32e publishes positioning data */
   public static final int POS_DEFAULT_PORT = 8308;
-  // /** default local address */
-  // public static final String DEFAULT_LADDR = "192.168.1.1";
-  /**
-   * 
-   */
+  // ---
+  // PROTOCOL CONSTANTS
+  /** "report distance to the nearest 0.2 cm" => 2 mm */
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
   /** TODO choose reasonable value */
