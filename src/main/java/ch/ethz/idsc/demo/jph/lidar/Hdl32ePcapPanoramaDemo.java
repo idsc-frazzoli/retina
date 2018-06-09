@@ -15,7 +15,6 @@ enum Hdl32ePcapPanoramaDemo {
     hdl32ePanoramaCollector.addListener(hdl32ePanoramaFrame);
     VelodynePcapPacketListener velodynePcapPacketListener = VelodynePcapPacketListener.hdl32e();
     velodynePcapPacketListener.velodyneDecoder.addRayListener(hdl32ePanoramaCollector);
-    velodynePcapPacketListener.velodyneDecoder.addPosListener(hdl32ePanoramaFrame);
     PcapParse.of(Hdl32ePcap.HIGHWAY.file, new PcapRealtimePlayback(1), velodynePcapPacketListener); // blocking
   }
 }

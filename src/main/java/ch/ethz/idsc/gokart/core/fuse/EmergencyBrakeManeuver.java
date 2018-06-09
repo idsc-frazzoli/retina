@@ -1,19 +1,16 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Times;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** the current implementation works with
  * maxDeceleration <= 0, velocity >= 0
  * maxDeceleration >= 0, velocity <= 0 */
 public class EmergencyBrakeManeuver {
-  private static final ScalarUnaryOperator IN_MILLIS = QuantityMagnitude.SI().in("ms");
-  // ---
   /** duration to full stop with unit "s" */
   public final Scalar duration;
   /** distance to full stop with unit "m" */
@@ -31,7 +28,7 @@ public class EmergencyBrakeManeuver {
   }
 
   public long getDuration_ms() {
-    return IN_MILLIS.apply(duration).number().longValue();
+    return Magnitude.MILLI_SECOND.apply(duration).number().longValue();
   }
 
   /** @param contact with unit "m"

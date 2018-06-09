@@ -19,10 +19,12 @@ public enum Magnitude implements ScalarUnaryOperator {
   ACCELERATION(SI.ACCELERATION), //
   ANGULAR_RATE(SI.ANGULAR_RATE), //
   // ---
-  DEGREE_CELSIUS(SI.DEGREE_CELSIUS), //
-  // ---
   /** conversion to non-SI magnitude may be necessary
    * when interfacing with 3rd party code that requires input along that scale */
+  MILLI_SECOND(NonSI.MILLI_SECOND), //
+  // ---
+  DEGREE_CELSIUS(NonSI.DEGREE_CELSIUS), //
+  // ---
   DEGREE_ANGLE(NonSI.DEGREE_ANGLE), //
   ;
   // ---

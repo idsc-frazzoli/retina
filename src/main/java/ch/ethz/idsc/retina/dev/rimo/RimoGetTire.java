@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -97,12 +98,12 @@ public class RimoGetTire implements Serializable {
 
   /** @return 0[degC] */
   public Scalar getTemperatureMotor() {
-    return Quantity.of(temperature_motor, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature_motor, NonSI.DEGREE_CELSIUS);
   }
 
   /** @return 0[degC] */
   public Scalar getTemperatureHeatsink() {
-    return Quantity.of(temperature_heatsink, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature_heatsink, NonSI.DEGREE_CELSIUS);
   }
 
   public Optional<RimoEmergencyError> getEmergencyError() {

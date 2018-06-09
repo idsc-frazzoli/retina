@@ -72,10 +72,10 @@ public class Vlp16SegmentProvider implements LidarSpacialProvider {
     float dy = lookup.dy(azimuth);
     float[] coords = new float[3];
     for (int i = 0; i < NUM_LASERS; ++i) {
-      byteBuffer.position(bufferPos + laserList.get(i) * 3);
+      byteBuffer.position(bufferPos + laserList.get(i) * 3); // TODO can pre-multiply
       int distance = byteBuffer.getShort() & 0xffff;
-      int intensity = byteBuffer.get() & 0xff;
       if (limit_lo <= distance) {
+        byte intensity = byteBuffer.get();
         // "report distance to the nearest 0.2 cm" => 2 mm
         float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
         coords[0] = IR[i] * range * dx;

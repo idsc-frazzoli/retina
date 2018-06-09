@@ -50,8 +50,8 @@ public class Hdl32eSpacialProvider implements LidarSpacialProvider {
     float[] coords = new float[3];
     for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
-      int intensity = byteBuffer.get() & 0xff;
       if (limit_lo <= distance) {
+        byte intensity = byteBuffer.get();
         // "report distance to the nearest 0.2 cm" => 2 mm
         float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
         coords[0] = Hdl32eDevice.INSTANCE.IR[laser] * range * dx;

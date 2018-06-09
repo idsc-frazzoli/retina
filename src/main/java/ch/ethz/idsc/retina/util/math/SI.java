@@ -17,6 +17,4 @@ public enum SI {
   public static final Unit VELOCITY = Unit.of("m*s^-1");
   public static final Unit ACCELERATION = Unit.of("m*s^-2");
   public static final Unit ANGULAR_RATE = Unit.of("s^-1");
-  // ---
-  public static final Unit DEGREE_CELSIUS = Unit.of("degC");
 }

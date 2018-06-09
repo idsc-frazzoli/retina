@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -54,6 +54,6 @@ public class Aedat31Imu6Event {
   }
 
   public Scalar getTemperature() {
-    return Quantity.of(temperature, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature, NonSI.DEGREE_CELSIUS);
   }
 }
