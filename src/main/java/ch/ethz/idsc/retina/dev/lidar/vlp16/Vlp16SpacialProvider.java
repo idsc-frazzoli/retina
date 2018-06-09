@@ -28,8 +28,8 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
     lookup = new AngleVectorLookupFloat(36000, true, angle_offset);
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = degree(laser) * Math.PI / 180;
-      IR[laser] = (float) Math.cos(theta);
-      IZ[laser] = (float) Math.sin(theta);
+      IR[laser] = (float) (Math.cos(theta) * VelodyneStatics.TO_METER);
+      IZ[laser] = (float) (Math.sin(theta) * VelodyneStatics.TO_METER);
     }
   }
 
@@ -59,13 +59,12 @@ public class Vlp16SpacialProvider implements LidarSpacialProvider {
     float[] coords = new float[3];
     for (int laser = 0; laser < LASERS; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
-      int intensity = byteBuffer.get() & 0xff;
+      byte intensity = byteBuffer.get();
       if (limit_lo <= distance) {
-        // "report distance to the nearest 0.2 cm" => 2 mm
-        float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
-        coords[0] = IR[laser] * range * dx;
-        coords[1] = IR[laser] * range * dy;
-        coords[2] = IZ[laser] * range;
+        float radius = IR[laser] * distance;
+        coords[0] = radius * dx;
+        coords[1] = radius * dy;
+        coords[2] = IZ[laser] * distance;
         LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
         listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }

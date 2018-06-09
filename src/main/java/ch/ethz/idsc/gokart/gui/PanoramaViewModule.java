@@ -24,8 +24,8 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 /** and zoom into sectors */
 public class PanoramaViewModule extends AbstractModule {
-  VelodyneLcmClient velodyneLcmClient;
-  LidarPanoramaFrame lidarPanoramaFrame;
+  private VelodyneLcmClient velodyneLcmClient;
+  private LidarPanoramaFrame lidarPanoramaFrame;
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
@@ -35,7 +35,7 @@ public class PanoramaViewModule extends AbstractModule {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");
     FullGrayscaleLidarPanorama gfp = new FullGrayscaleLidarPanorama(16);
-    SuperGrayscaleLidarPanorama sgp = new SuperGrayscaleLidarPanorama(2304, 16, 3);
+    SuperGrayscaleLidarPanorama sgp = new SuperGrayscaleLidarPanorama(16, 4);
     Supplier<LidarPanorama> supplier1 = () -> gfp;
     Supplier<LidarPanorama> supplier2 = () -> new GrayscaleLidarPanorama(2304, 16);
     Supplier<LidarPanorama> supplier3 = () -> new HueLidarPanorama(2304, 16);

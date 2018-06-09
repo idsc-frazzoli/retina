@@ -3,14 +3,9 @@ package ch.ethz.idsc.retina.dev.lidar.app;
 
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.ArcTan;
-import ch.ethz.idsc.tensor.sca.Log;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-public class VelodyneRayLookup {
-  public static final ScalarUnaryOperator LOG2 = Log.base(RealScalar.of(2));
-  // ---
+public class Vlp16RayLookup {
   private final int bits;
   private final double emulation_deg;
   private final VelodyneRay[] velodyneRays;
@@ -20,7 +15,7 @@ public class VelodyneRayLookup {
    * @param angle_offset
    * @param tiltY in radians
    * @param emulation_deg in degree */
-  public VelodyneRayLookup(int bits, boolean flip, double angle_offset, double tiltY, double emulation_deg) {
+  public Vlp16RayLookup(int bits, boolean flip, double angle_offset, double tiltY, double emulation_deg) {
     this.bits = bits;
     int length = 36000 / (1 << bits);
     AngleVectorLookupFloat angleVectorLookupFloat = //

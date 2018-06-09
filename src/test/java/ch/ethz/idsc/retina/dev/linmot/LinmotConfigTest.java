@@ -2,19 +2,25 @@
 package ch.ethz.idsc.retina.dev.linmot;
 
 import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeManeuver;
-import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 /** values inspired by 20180217_emergency_braking.pdf */
 public class LinmotConfigTest extends TestCase {
+  public void testTempClip() {
+    Clip clip = LinmotConfig.GLOBAL.temperatureHardwareClip();
+    Clip maxrange = Clip.function(Quantity.of(90, NonSI.DEGREE_CELSIUS), Quantity.of(120, NonSI.DEGREE_CELSIUS));
+    maxrange.requireInside(clip.max());
+  }
+
   private static void requireClose(Scalar a, Scalar b) {
     if (!Chop._06.close(a, b)) {
       throw TensorRuntimeException.of(a, b);
@@ -40,17 +46,19 @@ public class LinmotConfigTest extends TestCase {
   }
 
   public void testMinVel() {
-    Scalar minVel = Magnitude.VELOCITY.apply(LinmotConfig.GLOBAL.minVelocity);
-    Sign.requirePositive(minVel);
+    Scalar minVel = UnitSystem.SI().apply(LinmotConfig.GLOBAL.minVelocity);
+    Clip clip = Clip.function(Quantity.of(0.2, SI.VELOCITY), Quantity.of(0.4, SI.VELOCITY));
+    clip.requireInside(minVel);
+    // Sign.requirePositive(minVel);
   }
 
   public void testRangeResponseTime() {
     Clip clip = Clip.function(Quantity.of(0.1, SI.SECOND), Quantity.of(0.3, SI.SECOND));
-    clip.requireInside(LinmotConfig.GLOBAL.responseTime);
+    clip.requireInside(UnitSystem.SI().apply(LinmotConfig.GLOBAL.responseTime));
   }
 
   public void testRangeMaxDecl() {
     Clip clip = Clip.function(Quantity.of(-5, SI.ACCELERATION), Quantity.of(-3.5, SI.ACCELERATION));
-    clip.requireInside(LinmotConfig.GLOBAL.maxDeceleration);
+    clip.requireInside(UnitSystem.SI().apply(LinmotConfig.GLOBAL.maxDeceleration));
   }
 }

@@ -12,9 +12,9 @@ public class LidarSpacialEvent {
    * when coords.length == 2 then coordinates are x,y */
   public final float[] coords;
   /** intensity of reflection [0, 1, ..., 255] 255 == most intensive return */
-  public final int intensity;
+  public final byte intensity;
 
-  public LidarSpacialEvent(int usec, float[] coords, int intensity) {
+  public LidarSpacialEvent(int usec, float[] coords, byte intensity) {
     this.usec = usec;
     this.coords = coords;
     this.intensity = intensity;

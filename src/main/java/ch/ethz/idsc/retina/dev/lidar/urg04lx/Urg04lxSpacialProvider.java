@@ -65,7 +65,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
         float dist_m = distance * TO_METER_FLOAT;
         coords[0] = dirx[index] * dist_m;
         coords[1] = diry[index] * dist_m;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 255);
+        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, (byte) 255);
         listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }

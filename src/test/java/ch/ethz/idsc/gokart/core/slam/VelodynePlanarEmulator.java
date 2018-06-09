@@ -71,7 +71,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
     final float[] coords = new float[2];
     byteBuffer.position(byteBuffer.position() + index * 3);
     int distance = byteBuffer.getShort() & 0xffff;
-    int intensity = byteBuffer.get() & 0xff;
+    byte intensity = byteBuffer.get();
     if (limit_lo <= distance) {
       // "report distance to the nearest 0.2 cm" => 2 mm
       float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
