@@ -21,17 +21,14 @@ import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class SteerComponent extends //
-    AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> implements //
-    StartAndStoppable {
-  public static final int RESOLUTION = 1000;
+/* package */ class SteerComponent extends AutoboxTestingComponent<SteerGetEvent, SteerPutEvent> {
+  private static final int RESOLUTION = 1000;
   // ---
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
@@ -116,6 +113,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from GetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
+    steerInitButton.updateEnabled();
     final boolean isCalibrated = steerColumnTracker.isSteerColumnCalibrated();
     final boolean isHealthy = steerColumnTracker.isCalibratedAndHealthy();
     jToggleController.setEnabled(isCalibrated);

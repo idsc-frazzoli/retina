@@ -13,10 +13,10 @@ public interface LidarPanorama {
    * distance == 50000 corresponds to 100[m] distance == 0 -> no return within
    * 100[m] distance == 256 corresponds to 0.512[m]
    * 
-   * @param piy indexed from top to bottom
+   * @param index from top to bottom
    * @param distance in meter
    * @param intensity */
-  void setReading(int piy, float distance, byte intensity);
+  void setReading(int index, int distance, byte intensity);
 
   /** @return */
   BufferedImage distances();

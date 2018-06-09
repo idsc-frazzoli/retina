@@ -7,8 +7,6 @@ import java.util.stream.IntStream;
 
 /** grayscale images visualizing distance and intensity */
 public class GrayscaleLidarPanorama implements LidarPanorama {
-  private static final double DISTANCE_WRAP = 25.6; // wrap every 10[m] and multiply by 256
-  // ---
   private final int cutoff;
   private final int[] offset;
   private final BufferedImage distancesImage;
@@ -35,9 +33,9 @@ public class GrayscaleLidarPanorama implements LidarPanorama {
   }
 
   @Override // from LidarPanorama
-  public void setReading(int piy, float distance, byte ivalue) {
+  public void setReading(int piy, int distance, byte ivalue) {
     int address = offset[piy];
-    distances[width + address] = (byte) (distance * DISTANCE_WRAP); // loss of least significant bits
+    distances[width + address] = (byte) (distance >> 5); // loss of least significant bits
     intensity[width + address] = ivalue; // confirmed for vlp16
   }
 

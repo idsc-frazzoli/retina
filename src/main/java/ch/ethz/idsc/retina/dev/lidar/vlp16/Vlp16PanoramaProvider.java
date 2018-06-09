@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.lidar.vlp16;
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 
@@ -27,10 +26,10 @@ public class Vlp16PanoramaProvider extends LidarPanoramaProvider {
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     lidarPanorama.setRotational(rotational);
-    for (int laser = 0; laser < 16; ++laser) {
-      int distance = byteBuffer.getShort() & 0xffff;
-      byte intensity = byteBuffer.get(); // 255 == most intensive return
-      lidarPanorama.setReading(INDEX[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
-    }
+    for (int index : INDEX)
+      lidarPanorama.setReading( //
+          index, //
+          byteBuffer.getShort() & 0xffff, //
+          byteBuffer.get()); // 255 == most intensive return
   }
 }

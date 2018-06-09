@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.lidar.mark8;
 import java.nio.ByteBuffer;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 
@@ -26,7 +25,7 @@ public class Mark8PanoramaProvider extends LidarPanoramaProvider {
     for (int laser = 0; laser < 8; ++laser) {
       int distance = byteBuffer.getShort() & 0xffff;
       byte intensity = byteBuffer.get(); // 255 == most intensive return
-      lidarPanorama.setReading(index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
+      lidarPanorama.setReading(index[laser], distance, intensity);
     }
   }
 }

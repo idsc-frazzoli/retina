@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.lidar.hdl32e;
 import java.nio.ByteBuffer;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.app.GrayscaleLidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
 
@@ -13,7 +12,7 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
    * ~1083 */
   private static final int MAX_WIDTH = 2304;
   /** constructor multiplies index values with image width */
-  private final int[] index = new int[] { //
+  private final int[] INDEX = new int[] { //
       31, 15, //
       30, 14, //
       29, 13, //
@@ -34,16 +33,16 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
   // ---
   public Hdl32ePanoramaProvider() {
     super(() -> new GrayscaleLidarPanorama(MAX_WIDTH, Hdl32eDevice.INSTANCE.LASERS));
-    IntStream.range(0, index.length).forEach(i -> index[i] *= MAX_WIDTH);
+    IntStream.range(0, INDEX.length).forEach(i -> INDEX[i] *= MAX_WIDTH);
   }
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     lidarPanorama.setRotational(rotational);
-    for (int laser = 0; laser < Hdl32eDevice.INSTANCE.LASERS; ++laser) {
-      int distance = byteBuffer.getShort() & 0xffff;
-      byte intensity = byteBuffer.get(); // 255 == most intensive return
-      lidarPanorama.setReading(index[laser], distance * VelodyneStatics.TO_METER_FLOAT, intensity);
-    }
+    for (int index : INDEX)
+      lidarPanorama.setReading( //
+          index, //
+          byteBuffer.getShort() & 0xffff, //
+          byteBuffer.get()); // 255 == most intensive return
   }
 }

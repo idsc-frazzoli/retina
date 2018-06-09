@@ -5,12 +5,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.tensor.img.Hue;
 
 /** [2304 x 32] hue color images visualizing distance and intensity with better
  * contrast than {@link GrayscaleLidarPanorama} */
 public class HueLidarPanorama implements LidarPanorama {
-  private static final double DISTANCE_WRAP = 0.1; // wrap every 10[m]
+  private static final double DISTANCE_WRAP = VelodyneStatics.TO_METER * 0.1; // wrap every 10[m]
   private static final double INTENSITY_WRAP = 0.00976563;
   // ---
   private final int cutoff;
@@ -42,7 +43,7 @@ public class HueLidarPanorama implements LidarPanorama {
    * @param y_abs
    * @param distance 256 == 0.512[m] */
   @Override // from LidarPanorama
-  public void setReading(int piy, float distance, byte _intensity) {
+  public void setReading(int piy, int distance, byte _intensity) {
     int address = offset[piy];
     // Hue is sufficiently fast, but could use lookup table
     distances[width + address] = Hue.of(distance * DISTANCE_WRAP, 1, 1, 1).getRGB();
