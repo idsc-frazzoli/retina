@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 public class Urg04lxSpacialProvider implements LidarSpacialProvider {
+  private static final byte INTENSITY = -1;
   /* package */ static final double TO_METER = 0.001; // [mm] to [m]
   private static final float TO_METER_FLOAT = (float) TO_METER;
   /** recommended threshold points closer than 2[cm] == 0.02[m] are discarded */
@@ -65,7 +66,7 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
         float dist_m = distance * TO_METER_FLOAT;
         coords[0] = dirx[index] * dist_m;
         coords[1] = diry[index] * dist_m;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, 255);
+        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, INTENSITY);
         listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
       }
     }

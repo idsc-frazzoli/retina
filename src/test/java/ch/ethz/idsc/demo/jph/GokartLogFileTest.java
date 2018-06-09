@@ -27,7 +27,7 @@ public class GokartLogFileTest extends TestCase {
           }
         } catch (Exception exception) {
           // exception.printStackTrace();
-          System.out.println(exception.getMessage());
+          // System.out.println(exception.getMessage());
         }
   }
 
