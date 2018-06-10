@@ -11,5 +11,6 @@ public interface ClearanceTracker {
    * @return whether given point is an obstruction */
   boolean isObstructed(Tensor local);
 
+  /** @return distance to nearest tracked obstacle */
   Optional<Scalar> contact();
 }

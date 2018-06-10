@@ -14,7 +14,8 @@ public enum Se2AxisYProject {
   ;
   /** @param x == {vx, 0, rate} with units {[m*s^-1], ?, [rad*s^-1]}
    * @param p == {px, py} with units {[m], [m]}
-   * @return time to arrival of a point on the y axis that is subject to flow x to reach p */
+   * @return time to arrival of a point on the y axis that is subject to flow x to reach p.
+   * negative return values are also possible. */
   public static Scalar of(Tensor x, Tensor p) {
     Scalar vx = x.Get(0);
     Scalar be = x.Get(2);

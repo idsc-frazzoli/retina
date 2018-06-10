@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.sample.CircleRandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSample;
@@ -27,6 +28,16 @@ public class Se2AxisYProjectTest extends TestCase {
     assertTrue(Chop._12.close(t, RealScalar.of(5.124917769722165)));
   }
 
+  public void testEx2Neg() {
+    Tensor u = Tensors.vector(1, 0, 0.3);
+    Tensor p = Tensors.vector(-10, 3);
+    Scalar t = Se2AxisYProject.of(u, p);
+    assertTrue(Chop._12.close(t, RealScalar.of(-5.124917769722165)));
+    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t.negate())));
+    Tensor v = se2ForwardAction.apply(p);
+    assertTrue(Chop._13.close(v, Tensors.fromString("{0, -6.672220679869088}")));
+  }
+
   public void testEx3() {
     Scalar t = Se2AxisYProject.of(Tensors.vector(1, 0, 0.0), Tensors.vector(10, 3));
     assertTrue(Chop._12.close(t, RealScalar.of(10)));
@@ -35,6 +46,16 @@ public class Se2AxisYProjectTest extends TestCase {
   public void testEx4() {
     Scalar t = Se2AxisYProject.of(Tensors.vector(2, 0, 0.0), Tensors.vector(10, 3));
     assertTrue(Chop._12.close(t, RealScalar.of(5)));
+  }
+
+  public void testEx4Neg() {
+    Tensor u = Tensors.vector(2, 0, 0);
+    Tensor p = Tensors.vector(-10, 3);
+    Scalar t = Se2AxisYProject.of(u, p);
+    assertTrue(Chop._12.close(t, RealScalar.of(-5)));
+    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t.negate())));
+    Tensor v = se2ForwardAction.apply(p);
+    assertEquals(v, Tensors.vector(0, 3));
   }
 
   public void testEps1() {
@@ -104,6 +125,8 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor u = Tensors.fromString("{1.1[m*s^-1],0,1.3[s^-1]}"); // SI
     Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
     Scalar t = Se2AxisYProject.of(u, p);
+    Scalar magnitude = Magnitude.SECOND.apply(t);
+    assertTrue(Chop._10.close(magnitude, DoubleScalar.of(1.154854847741819)));
     assertEquals(Units.of(t), Unit.of("s"));
     assertTrue(Scalars.nonZero(t));
   }
