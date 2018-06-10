@@ -59,7 +59,7 @@ public class EmergencyBrakeManeuverTest extends TestCase {
   }
 
   public void testFail() {
-    Scalar responseTime = Quantity.of(1, "s");
+    Scalar responseTime = Quantity.of(1, SI.SECOND);
     Scalar maxDeceleration = Quantity.of(-2, "m*s^-2");
     Scalar velocity = Quantity.of(10, "m*s");
     try {

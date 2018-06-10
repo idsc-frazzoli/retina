@@ -145,7 +145,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor u = Tensors.fromString("{0.0[m*s^-1],0,0[s^-1]}"); // SI
     Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
     Scalar t = Se2AxisYProject.of(u, p);
-    assertEquals(Units.of(t), Unit.of("s"));
+    assertEquals(Units.of(t), SI.SECOND);
     assertTrue(Scalars.nonZero(t));
   }
 

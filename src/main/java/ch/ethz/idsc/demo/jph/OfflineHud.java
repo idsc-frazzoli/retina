@@ -94,7 +94,7 @@ public class OfflineHud implements OfflineLogListener {
     }
     // ---
     if (Scalars.lessThan(time_next, time)
-    // && Scalars.lessThan(time, Quantity.of(5, "s"))
+    // && Scalars.lessThan(time, Quantity.of(5, SI.SECOND))
     ) {
       // System.out.println(time_next);
       if (Objects.nonNull(rimoGetEvent) && //
@@ -155,7 +155,7 @@ public class OfflineHud implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    OfflineHud offlineHud = new OfflineHud(Quantity.of(RationalScalar.of(1, 30), "s"));
+    OfflineHud offlineHud = new OfflineHud(Quantity.of(RationalScalar.of(1, 30), SI.SECOND));
     OfflineLogPlayer.process(UserHome.file("20180522T111414.lcm"), offlineHud);
   }
 }

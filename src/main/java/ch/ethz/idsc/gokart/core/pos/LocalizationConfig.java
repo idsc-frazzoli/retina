@@ -71,7 +71,7 @@ public class LocalizationConfig implements Serializable {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBENDORF_HANGAR_20180603;
+    return PredefinedMap.DUBENDORF_HANGAR_20180610;
   }
 
   /** @return new instance of LidarGyroLocalization method */
