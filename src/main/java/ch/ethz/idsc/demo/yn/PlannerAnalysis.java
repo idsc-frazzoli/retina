@@ -68,7 +68,7 @@ class PlannerAnalysis implements OfflineLogListener {
       gpe = new GokartPoseEvent(byteBuffer);
     } else if (channel.equals(GokartLcmChannel.TRAJECTORY_STATETIME)) {
       Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);
-      tr.setTrajectory(PlannerPublish.getTrajectory(trajTensor));
+      tr.trajectory(PlannerPublish.getTrajectory(trajTensor));
     }
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe) && Objects.nonNull(tr)) {
       time_next = time.add(delta);

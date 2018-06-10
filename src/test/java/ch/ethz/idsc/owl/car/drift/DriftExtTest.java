@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.glc.adapter.Expand;
+import ch.ethz.idsc.owl.glc.adapter.GlcExpand;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
@@ -52,7 +52,9 @@ public class DriftExtTest extends TestCase {
     trajectoryPlanner.represent = x -> x.state().extract(3, 6); // consider only (beta,r,Ux)
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 0, 0, 0, 1), RealScalar.ZERO));
-    int iters = Expand.maxSteps(trajectoryPlanner, 2000);
+    GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
+    glcExpand.findAny(2000);
+    int iters = glcExpand.getExpandCount();
     System.out.println("drift iterations:" + iters);
     // assertTrue(iters < 1900);
     Optional<GlcNode> optional = trajectoryPlanner.getBest();

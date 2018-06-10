@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.data.tree.Nodes;
-import ch.ethz.idsc.owl.glc.adapter.Expand;
+import ch.ethz.idsc.owl.glc.adapter.GlcExpand;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
@@ -44,7 +44,10 @@ enum DriftDemo {
         eta, stateIntegrator, controls, plannerConstraint, goalInterface);
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 4), RealScalar.ZERO));
-    int iters = Expand.maxSteps(trajectoryPlanner, 5000);
+    GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
+    glcExpand.findAny(5000);
+    int iters = glcExpand.getExpandCount();
+    // Expand.maxSteps(trajectoryPlanner, 5000);
     System.out.println(iters);
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) {

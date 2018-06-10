@@ -59,7 +59,6 @@ public class PresenterLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    vlp16LcmHandler.lidarSpacialProvider.addListener(new LidarSpaceTimeListener());
     {
       ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180506.getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));

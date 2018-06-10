@@ -47,7 +47,7 @@ import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.owl.math.region.PolygonRegion;
+import ch.ethz.idsc.owl.math.region.PolygonRegions;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
@@ -125,11 +125,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     ImageRegion imageRegion = predefinedMap.getImageRegion();
     Tensor x_samples = Subdivide.of(min.get(0), max.get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
-    polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
+    polygonRegion = PolygonRegions.numeric(VIRTUAL); // virtual obstacle in middle
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule, polygonRegion));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
-    costCollection.add(ImageCostFunction.of(tensor, predefinedMap.range(), RealScalar.ZERO));
+    costCollection.add(new ImageCostFunction(tensor, predefinedMap.range(), RealScalar.ZERO));
     costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));

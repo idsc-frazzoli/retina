@@ -8,12 +8,13 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
+import ch.ethz.idsc.owl.math.planar.PolygonClip;
 import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.util.math.PolygonIntersection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public class ClusterEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
@@ -84,8 +85,9 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
     Enlarger predictedAreas = new Enlarger(predictedShapes);
     System.out.println("Area of hulls" + predictedAreas.getTotalArea());
     for (Tensor x : predictedAreas.getAreas()) {
+      TensorUnaryOperator clip = PolygonClip.of(x);
       for (Tensor y : enlargedPoints.getAreas()) {
-        Tensor polygonIntersect = PolygonIntersection.of(x, y);
+        Tensor polygonIntersect = clip.apply(y); // PolygonIntersection.of(x, y);
         if (Tensors.nonEmpty(polygonIntersect))
           results.append(polygonIntersect);
       }

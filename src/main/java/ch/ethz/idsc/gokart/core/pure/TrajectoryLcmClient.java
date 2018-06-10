@@ -17,7 +17,7 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
   protected void messageReceived(ByteBuffer byteBuffer) {
     Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
     List<TrajectorySample> trajectory = PlannerPublish.getTrajectory(tensor);
-    listeners.forEach(listener -> listener.setTrajectory(trajectory));
+    listeners.forEach(listener -> listener.trajectory(trajectory));
   }
 
   @Override // from BinaryLcmClient

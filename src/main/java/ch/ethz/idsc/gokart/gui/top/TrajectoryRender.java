@@ -73,7 +73,7 @@ public class TrajectoryRender implements RenderInterface, TrajectoryListener {
   }
 
   @Override // from TrajectoryListener
-  public void setTrajectory(List<TrajectorySample> trajectory) {
+  public void trajectory(List<TrajectorySample> trajectory) {
     _trajectory = trajectory;
   }
 }
