@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -115,8 +116,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   };
 
   public GokartTrajectoryModule() {
-    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
-    obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
+    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180610obstacles.png"));
     Tensor hull = STANDARD.footprint();
     Tensor min = hull.stream().reduce(Entrywise.min()).get(); // {-0.295, -0.725, -0.25}
     Tensor max = hull.stream().reduce(Entrywise.max()).get(); // {1.765, 0.725, -0.25}

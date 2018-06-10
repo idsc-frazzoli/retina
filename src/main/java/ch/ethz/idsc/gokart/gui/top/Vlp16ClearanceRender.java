@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.Tensors;
 class Vlp16ClearanceRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
 
   public Vlp16ClearanceRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);

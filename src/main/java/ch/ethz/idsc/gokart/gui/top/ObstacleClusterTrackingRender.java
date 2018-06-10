@@ -38,7 +38,7 @@ class ObstacleClusterTrackingRender implements LidarRayBlockListener, RenderInte
   private static final Color COLOR_TRACE = new Color(255, 0, 0, 128);
   // ---
   private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
-  private final SpacialXZObstaclePredicate nonFloorPredicate = SafetyConfig.GLOBAL.createVlp16();
+  private final SpacialXZObstaclePredicate nonFloorPredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final UnknownObstacleGlobalPredicate unknownObstacleGlobalPredicate = //
       new UnknownObstacleGlobalPredicate(predefinedMap);
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart().unmodifiable();
@@ -72,9 +72,7 @@ class ObstacleClusterTrackingRender implements LidarRayBlockListener, RenderInte
       float y = floatBuffer.get();
       float z = floatBuffer.get();
       if (nonFloorPredicate.isObstacle(x, z)) { // filter based on height
-        Tensor local = Tensors.vectorDouble(x, y); // z is dropped
-        Point2D pnt = geometricLayer.toPoint2D(local);
-        Tensor global = Tensors.vectorDouble(pnt.getX(), pnt.getY());
+        Tensor global = geometricLayer.toVector(x, y); // z is dropped
         if (unknownObstacleGlobalPredicate.isObstacle(global))
           points.append(global);
       }

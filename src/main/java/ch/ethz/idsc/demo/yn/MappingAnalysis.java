@@ -62,7 +62,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
+  private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final BayesianOccupancyGrid grid;

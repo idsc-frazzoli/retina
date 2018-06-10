@@ -33,7 +33,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
-      = SafetyConfig.GLOBAL.createVlp16();
+      = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
   /** clearanceTracker is always non-null */
   private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;

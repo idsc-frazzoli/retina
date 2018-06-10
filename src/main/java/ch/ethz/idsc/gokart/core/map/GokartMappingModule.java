@@ -39,7 +39,7 @@ public class GokartMappingModule implements //
   public static BayesianOccupancyGrid grid;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createVlp16();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Tensor gridRange = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
   private final Tensor lbounds = Tensors.vector(30, 30);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

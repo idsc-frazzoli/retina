@@ -18,7 +18,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private static final int NON_BLACK_MASK = 0xff00;
   private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   // ---
-  private final SpacialObstaclePredicate floorPredicate = SafetyConfig.GLOBAL.createVlp16();
+  private final SpacialObstaclePredicate floorPredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final PredefinedMap predefinedMap;
   private GeometricLayer geometricLayer;
 

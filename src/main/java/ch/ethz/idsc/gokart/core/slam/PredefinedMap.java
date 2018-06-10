@@ -32,6 +32,9 @@ public enum PredefinedMap implements LocalizationImage {
   DUBENDORF_HANGAR_20180603(7.5),
   /** image with central tents, bus tent, and aerotain */
   DUBENDORF_HANGAR_20180610(7.5), //
+  /** image of known static obstacles
+   * image with central tents, bus tent, and aerotain */
+  DUBENDORF_HANGAR_20180610OBSTACLES(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
