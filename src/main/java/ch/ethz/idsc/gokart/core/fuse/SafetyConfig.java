@@ -64,8 +64,7 @@ public class SafetyConfig implements Serializable {
    * without having to specify the geometric configuration
    * 
    * @return */
-  public SpacialXZObstaclePredicate createVlp16() {
-    return new SimpleSpacialObstaclePredicate( //
-        vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
+  public SpacialXZObstaclePredicate createSpacialXZObstaclePredicate() {
+    return new SimpleSpacialObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }
 }

@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class SimpleSpacialObstaclePredicateTest extends TestCase {
   public void testSimple() {
-    SpacialObstaclePredicate sop = SafetyConfig.GLOBAL.createVlp16();
+    SpacialObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     Tensor lidar_p1 = Tensors.vector(3.0, -1.2, -0.2); // coordinates in lidar frame
     assertTrue(sop.isObstacle(lidar_p1)); // lidar_p1 should classify as obstacle, etc.
     Tensor lidar_p2 = Tensors.vector(3.0, -1.2, 0.3); // coordinates in lidar frame
@@ -18,7 +18,7 @@ public class SimpleSpacialObstaclePredicateTest extends TestCase {
   }
 
   public void testSimpleXZNear() {
-    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createVlp16();
+    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     assertTrue(sop.isObstacle(0, 0));
     assertFalse(sop.isObstacle(0, 1));
     assertFalse(sop.isObstacle(0, 2));
@@ -27,7 +27,7 @@ public class SimpleSpacialObstaclePredicateTest extends TestCase {
   }
 
   public void testSimpleXZFarFront() {
-    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createVlp16();
+    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
     assertTrue(sop.isObstacle(100, 100 * 0.04f));
     assertFalse(sop.isObstacle(100, 100 * 0.04f + 1));
@@ -35,7 +35,7 @@ public class SimpleSpacialObstaclePredicateTest extends TestCase {
   }
 
   public void testSimpleXZFarBack() {
-    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createVlp16();
+    SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
     assertTrue(sop.isObstacle(-100, -100 * 0.04f));
     assertFalse(sop.isObstacle(-100, -100 * 0.04f + 1));

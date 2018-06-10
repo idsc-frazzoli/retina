@@ -33,7 +33,7 @@ class ObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      SpacialObstaclePredicate spacialObstaclePredicate = SafetyConfig.GLOBAL.createVlp16();
+      SpacialObstaclePredicate spacialObstaclePredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
       for (Tensor point : points) {
         if (spacialObstaclePredicate.isObstacle(point)) {
           Point2D point2D = geometricLayer.toPoint2D(point);

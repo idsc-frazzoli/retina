@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateJoystickTable;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -23,7 +24,7 @@ enum RimoRateAnalysis {
     // File file = DatahakiLogFileLocator.file(GokartLogFile._20180307T154859_0cd18c6b);
     // file = UserHome.file("gokart/pursuit/20180307T154859/log.lcm");
     // file = UserHome.file("datasets/gokart_logs/20180423T181849_633cc6e6.lcm.00");
-    RimoRateJoystickTable rimoRateTable = new RimoRateJoystickTable(Quantity.of(0.01, "s"), ByteOrder.BIG_ENDIAN);
+    RimoRateJoystickTable rimoRateTable = new RimoRateJoystickTable(Quantity.of(0.01, SI.SECOND), ByteOrder.BIG_ENDIAN);
     LogFile logFile = GokartLogFile._20180427T121545_22662115;
     File file = AleLogFileLocator.file(logFile);
     OfflineLogPlayer.process(file, rimoRateTable);

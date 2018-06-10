@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -47,7 +48,7 @@ import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.owl.math.region.PolygonRegion;
+import ch.ethz.idsc.owl.math.region.PolygonRegions;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
@@ -115,8 +116,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   };
 
   public GokartTrajectoryModule() {
-    PredefinedMap predefinedMap = PredefinedMap.DUBENDORF_HANGAR_20180423OBSTACLES;
-    obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180423obstacles.png"));
+    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180610obstacles.png"));
     Tensor hull = STANDARD.footprint();
     Tensor min = hull.stream().reduce(Entrywise.min()).get(); // {-0.295, -0.725, -0.25}
     Tensor max = hull.stream().reduce(Entrywise.max()).get(); // {1.765, 0.725, -0.25}
@@ -125,11 +126,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     ImageRegion imageRegion = predefinedMap.getImageRegion();
     Tensor x_samples = Subdivide.of(min.get(0), max.get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
-    polygonRegion = PolygonRegion.of(VIRTUAL); // virtual obstacle in middle
+    polygonRegion = PolygonRegions.numeric(VIRTUAL); // virtual obstacle in middle
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule, polygonRegion));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
-    costCollection.add(ImageCostFunction.of(tensor, predefinedMap.range(), RealScalar.ZERO));
+    costCollection.add(new ImageCostFunction(tensor, predefinedMap.range(), RealScalar.ZERO));
     costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));

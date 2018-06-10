@@ -8,7 +8,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.perc.SpacialObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -17,6 +17,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 class SideObstacleLidarRender extends LidarRender {
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+
+  // TODO pose interface not needed
   public SideObstacleLidarRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
   }
@@ -41,11 +44,11 @@ class SideObstacleLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      SpacialObstaclePredicate spacialObstaclePredicate = SafetyConfig.GLOBAL.createVlp16();
       for (Tensor point : points) {
-        if (spacialObstaclePredicate.isObstacle(point)) {
-          Tensor v = Tensors.of(point.Get(0), point.Get(2));
-          Point2D point2D = geometricLayer.toPoint2D(v);
+        if (spacialXZObstaclePredicate.isObstacle(point)) {
+          double x = point.Get(0).number().doubleValue();
+          double z = point.Get(2).number().doubleValue();
+          Point2D point2D = geometricLayer.toPoint2D(x, z);
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), pointSize, pointSize);
         }
       }

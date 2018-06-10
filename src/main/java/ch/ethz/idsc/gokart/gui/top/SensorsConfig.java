@@ -6,6 +6,8 @@ import java.io.Serializable;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.AppResources;
@@ -75,6 +77,11 @@ public class SensorsConfig implements Serializable {
   public Vlp16SpacialLcmHandler vlp16SpacialLcmHandler() {
     double angle_offset = vlp16_twist.number().doubleValue();
     return new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
+  }
+
+  public LidarSpacialProvider vlp16SpacialProvider() {
+    double angle_offset = vlp16_twist.number().doubleValue();
+    return new Vlp16SpacialProvider(angle_offset);
   }
 
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */

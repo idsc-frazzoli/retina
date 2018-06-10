@@ -11,8 +11,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -59,9 +59,8 @@ public class PresenterLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    vlp16LcmHandler.lidarSpacialProvider.addListener(new LidarSpaceTimeListener());
     {
-      ImageRegion imageRegion = PredefinedMap.DUBENDORF_HANGAR_20180506.getImageRegion();
+      ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
     {

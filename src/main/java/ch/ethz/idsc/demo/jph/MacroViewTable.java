@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -112,7 +113,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
               hhmmss.substring(0, 2), //
               hhmmss.substring(2, 4), //
               hhmmss.substring(4, 6))).map(Magnitude.SECOND);
-          Scalar offset = Quantity.of(Total.of(timestamp).Get(), "s");
+          Scalar offset = Quantity.of(Total.of(timestamp).Get(), SI.SECOND);
           OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
           OfflineLogPlayer.process(file, offlineTableSupplier);
           Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));

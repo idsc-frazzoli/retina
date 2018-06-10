@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 
+// TODO class should be superfluous
 public class Vlp16SpacialLcmHandler implements LcmClientInterface {
   private final VelodyneLcmClient velodyneLcmClient;
   public final LidarSpacialProvider lidarSpacialProvider;

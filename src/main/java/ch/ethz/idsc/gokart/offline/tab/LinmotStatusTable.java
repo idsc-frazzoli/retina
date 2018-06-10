@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStateVariable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -28,7 +29,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
   private Integer failure_index = null;
 
   public LinmotStatusTable(Scalar offset) {
-    range = Clip.function(offset, offset.add(Quantity.of(0.2, "s")));
+    range = Clip.function(offset, offset.add(Quantity.of(0.2, SI.SECOND)));
   }
 
   @Override
