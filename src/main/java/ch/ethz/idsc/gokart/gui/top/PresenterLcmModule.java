@@ -12,6 +12,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -37,7 +38,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
-import ch.ethz.idsc.tensor.io.ResourceData;
 
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -93,7 +93,7 @@ public class PresenterLcmModule extends AbstractModule {
     // timerFrame.geometricComponent.addRenderInterface(curveRender);
     // }
     {
-      final Tensor waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
+      final Tensor waypoints = TrajectoryConfig.getWaypoints();
       final Tensor ARROWHEAD = Tensors.matrixDouble( //
           new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(2));
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 128));

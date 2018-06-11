@@ -38,8 +38,8 @@ public class TrajectoryConfig implements Serializable {
         .add(planningOffset); // for instance 2.5[m]
   }
 
-  public Tensor getWaypoints() {
+  public static Tensor getWaypoints() {
     // ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv").unmodifiable();
-    return ResourceData.of("/map/dubendorf/hangar/20180604waypoints.csv").unmodifiable();
+    return ResourceData.of("/dubilab/waypoints/20180610.csv").unmodifiable();
   }
 }

@@ -2,15 +2,19 @@
 package ch.ethz.idsc.owl.car.demo;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Optional;
 
 import ch.ethz.idsc.owl.bot.se2.glc.GlcWaypointFollowing;
 import ch.ethz.idsc.owl.bot.se2.glc.GokartVecEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.HelperHangarMap;
+import ch.ethz.idsc.owl.bot.se2.glc.WaypointDistanceCost;
 import ch.ethz.idsc.owl.bot.util.DemoInterface;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
+import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.SimpleGlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -35,17 +39,22 @@ public class GokartWaypoint3Demo implements DemoInterface {
   public OwlyAnimationFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     final StateTime initial = new StateTime(Tensors.vector(33.6, 41.5, 0.6), RealScalar.ZERO);
+    final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180610.csv");
+    final CostFunction waypointCost = new WaypointDistanceCost(waypoints, Tensors.vector(85.33, 85.33), 10.0f, new Dimension(640, 640));
     GokartVecEntity gokartEntity = new GokartVecEntity(initial) {
       @Override
       public RegionWithDistance<Tensor> getGoalRegionWithDistance(Tensor goal) {
         return new ConeRegion(goal, RealScalar.of(Math.PI / 10));
       }
+
+      @Override
+      public Optional<CostFunction> getPrimaryCost() {
+        return Optional.of(waypointCost);
+      }
     };
-    gokartEntity.radius = 2;
     // ---
-    HelperHangarMap hangarMap = new HelperHangarMap("/map/dubendorf/hangar/20180610obstacles.png", gokartEntity);
+    HelperHangarMap hangarMap = new HelperHangarMap("/dubilab/obstacles/20180610.png", gokartEntity);
     // ---
-    Tensor waypoints = ResourceData.of("/map/dubendorf/hangar/20180610waypoints.csv");
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(hangarMap.region);
     // ---
     owlyAnimationFrame.add(gokartEntity);
