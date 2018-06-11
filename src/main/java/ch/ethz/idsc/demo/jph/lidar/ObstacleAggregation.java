@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 /* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
-  private static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBENDORF_HANGAR_20180610;
+  private static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBILAB_LOCALIZATION_20180610;
   private static final Tensor MODEL2PIXEL = PREDEFINED_MAP.getModel2Pixel();
   private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final String CHANNEL_LIDAR = //

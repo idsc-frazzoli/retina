@@ -82,19 +82,19 @@ public enum DubendorfCurve {
   }
 
   private static Tensor hyperloop_eight() {
-    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180603eight.csv");
+    Tensor poly = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 
   private static Tensor hyperloop_oval() {
-    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180502oval.csv");
+    Tensor poly = ResourceData.of("/dubilab/controlpoints/oval/20180502.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 
   private static Tensor hyperloop_ducttape() {
-    Tensor poly = ResourceData.of("/map/dubendorf/hangar/20180514ducttape.csv");
+    Tensor poly = ResourceData.of("/dubilab/controlpoints/ducttape/20180514.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
     return Nest.of(unaryOperator, poly, 5).unmodifiable();
   }

@@ -19,22 +19,19 @@ import ch.ethz.idsc.tensor.io.ResourceData;
  * name refers to png-file in repository, do not rename!
  * 
  * the predefined geometry is crucial for lidar-based localization */
+// TODO not necessary to mix localization and obstacles, for instance extrusion only required in one case
 public enum PredefinedMap implements LocalizationImage {
-  /** dubendorf hangar map version 20180122 */
-  DUBENDORF_HANGAR_20180122(7.5), //
-  /** image of known static obstacles */
-  DUBENDORF_HANGAR_20180423OBSTACLES(7.5), //
   /** image */
-  DUBENDORF_HANGAR_20180506(7.5), //
-  /** image with central tents, bus tent, and aerotain
-   * trouble with localization near charger */
-  @Deprecated
-  DUBENDORF_HANGAR_20180603(7.5),
+  DUBILAB_LOCALIZATION_20180122(7.5), //
+  /** image of known static obstacles */
+  DUBILAB_OBSTACLES_20180423(7.5), //
+  /** image */
+  DUBILAB_LOCALIZATION_20180506(7.5), //
   /** image with central tents, bus tent, and aerotain */
-  DUBENDORF_HANGAR_20180610(7.5), //
+  DUBILAB_LOCALIZATION_20180610(7.5), //
   /** image of known static obstacles
    * image with central tents, bus tent, and aerotain */
-  DUBENDORF_HANGAR_20180610OBSTACLES(7.5), //
+  DUBILAB_OBSTACLES_20180610(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -53,7 +50,7 @@ public enum PredefinedMap implements LocalizationImage {
   /** @param meter_to_pixel for instance 1[m] may correspond to 7.5 pixel */
   private PredefinedMap(double meter_to_pixel) {
     this.scale = DoubleScalar.of(meter_to_pixel);
-    String string = String.format("/map/%s.png", name().replace('_', File.separatorChar).toLowerCase());
+    String string = String.format("/%s.png", name().replace('_', File.separatorChar).toLowerCase());
     Tensor tensor = ImageRegions.grayscale(ResourceData.of(string));
     bufferedImage = ImageFormat.of(tensor);
     this.size = bufferedImage.getWidth();

@@ -22,8 +22,6 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** demo to simulate dubendorf hangar */
 public class GokartManualDemo implements DemoInterface {
-  private static final Tensor ARROWHEAD = Tensors.matrixDouble( //
-      new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(2));
   private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
 
   @Override
@@ -37,9 +35,8 @@ public class GokartManualDemo implements DemoInterface {
       }
     };
     // ---
-    HelperHangarMap hangarMap = new HelperHangarMap("/map/dubendorf/hangar/20180610obstacles.png", gokartEntity);
+    HelperHangarMap hangarMap = new HelperHangarMap("/dubilab/obstacles/20180610.png", gokartEntity);
     // ---
-    // Tensor waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(hangarMap.region);
     MouseGoal.simple(owlyAnimationFrame, gokartEntity, plannerConstraint);
     // ---
@@ -47,11 +44,6 @@ public class GokartManualDemo implements DemoInterface {
     owlyAnimationFrame.addBackground(RegionRenders.create(hangarMap.imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     // ---
-    {
-      // RenderInterface renderInterface = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 64));
-      // owlyAnimationFrame.addBackground(renderInterface);
-    }
-    // GlcPlannerCallback glcPlannerCallback = new SimpleGlcPlannerCallback(gokartEntity);
     {
       RenderInterface renderInterface = new MouseShapeRender( //
           SimpleTrajectoryRegionQuery.timeInvariant(hangarMap.region), //
