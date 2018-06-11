@@ -1,6 +1,7 @@
 // code by ynager and jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,19 +27,20 @@ import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2ComboRegion;
-import ch.ethz.idsc.owl.bot.se2.Se2MinTimeGoalManager;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
+import ch.ethz.idsc.owl.bot.se2.Se2TimeCost;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
+import ch.ethz.idsc.owl.bot.se2.glc.WaypointDistanceCost;
 import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
-import ch.ethz.idsc.owl.glc.adapter.MultiCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
+import ch.ethz.idsc.owl.glc.adapter.VectorCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
@@ -108,6 +110,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
   private Scalar tangentSpeed = null;
+  private final CostFunction waypointCost = //
+      new WaypointDistanceCost(waypoints, Tensors.vector(85.33, 85.33), 8.0f, new Dimension(640, 640));
   private RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
@@ -117,7 +121,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
 
   public GokartTrajectoryModule() {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
-    obstacleMap = ImageRegions.grayscale(ResourceData.of("/map/dubendorf/hangar/20180610obstacles.png"));
+    obstacleMap = ImageRegions.grayscale(ResourceData.of("/dubilab/obstacles/20180610.png"));
     Tensor hull = STANDARD.footprint();
     Tensor min = hull.stream().reduce(Entrywise.min()).get(); // {-0.295, -0.725, -0.25}
     Tensor max = hull.stream().reduce(Entrywise.max()).get(); // {1.765, 0.725, -0.25}
@@ -193,8 +197,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         Collection<Flow> controls = carFlows.getFlows(resolution);
         Se2ComboRegion se2ComboRegion = //
             Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
-        GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
-        GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
+        // ---
+        // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
+        // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
+        List<CostFunction> costs = new ArrayList<>();
+        costs.add(waypointCost);
+        costs.add(Se2TimeCost.of(se2ComboRegion, controls));
+        GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion, controls);
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);

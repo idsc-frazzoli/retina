@@ -51,7 +51,7 @@ class PlannerAnalysis implements OfflineLogListener {
   private static final Tensor ARROWHEAD = Tensors.matrixDouble( //
       new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
   // ---
-  private final Tensor waypoints = ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv");
+  private final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180425.csv");
   private RenderInterface wr = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));
   private TrajectoryRender tr = new TrajectoryRender();
   private GokartPoseEvent gpe;
