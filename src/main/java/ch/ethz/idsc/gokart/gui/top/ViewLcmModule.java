@@ -37,8 +37,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 abstract class ViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor CROP_REGION = //
-      // ResourceData.of("/map/dubendorf/hangar/20180531polygon.csv");
-      ResourceData.of("/map/dubendorf/hangar/20180603aerotain.csv");
+      ResourceData.of("/dubilab/polygonregion/aerotain/20180603.csv");
   // ---
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
