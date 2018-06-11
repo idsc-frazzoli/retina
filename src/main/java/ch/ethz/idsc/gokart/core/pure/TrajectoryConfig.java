@@ -40,6 +40,6 @@ public class TrajectoryConfig implements Serializable {
 
   public Tensor getWaypoints() {
     // ResourceData.of("/demo/dubendorf/hangar/20180425waypoints.csv").unmodifiable();
-    return ResourceData.of("/map/dubendorf/hangar/20180604waypoints.csv").unmodifiable();
+    return ResourceData.of("/map/dubendorf/hangar/20180610waypoints.csv").unmodifiable();
   }
 }

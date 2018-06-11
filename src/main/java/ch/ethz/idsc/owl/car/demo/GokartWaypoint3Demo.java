@@ -41,7 +41,7 @@ public class GokartWaypoint3Demo implements DemoInterface {
         return new ConeRegion(goal, RealScalar.of(Math.PI / 10));
       }
     };
-    gokartEntity.radius = 2;
+    gokartEntity.radius = 7;
     // ---
     HelperHangarMap hangarMap = new HelperHangarMap("/map/dubendorf/hangar/20180610obstacles.png", gokartEntity);
     // ---
