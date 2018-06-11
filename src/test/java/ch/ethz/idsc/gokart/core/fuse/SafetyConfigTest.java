@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -16,12 +17,12 @@ public class SafetyConfigTest extends TestCase {
   }
 
   public void testCircleClearanceTracker() {
-    ClearanceTracker clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(new GokartStatusEvent(0.2f));
+    ClearanceTracker clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(+1), new GokartStatusEvent(0.2f));
     assertTrue(clearanceTracker instanceof CircleClearanceTracker);
   }
 
   public void testEmptyClearanceTracker() {
-    ClearanceTracker clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(new GokartStatusEvent(Float.NaN));
+    ClearanceTracker clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(+1), new GokartStatusEvent(Float.NaN));
     assertTrue(clearanceTracker instanceof EmptyClearanceTracker);
   }
 

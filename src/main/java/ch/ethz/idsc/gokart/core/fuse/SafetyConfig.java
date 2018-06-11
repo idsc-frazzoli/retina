@@ -49,13 +49,14 @@ public class SafetyConfig implements Serializable {
         Magnitude.METER.apply(clearance_XHi));
   }
 
-  /** @param gokartStatusEvent non-null
+  /** @param speed
+   * @param gokartStatusEvent non-null
    * @return */
-  public ClearanceTracker getClearanceTracker(GokartStatusEvent gokartStatusEvent) {
+  public ClearanceTracker getClearanceTracker(Scalar speed, GokartStatusEvent gokartStatusEvent) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      return new CircleClearanceTracker(half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
+      return new CircleClearanceTracker(speed, half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
     }
     return EmptyClearanceTracker.INSTANCE;
   }

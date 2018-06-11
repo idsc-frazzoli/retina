@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.red.Min;
 
@@ -84,7 +85,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       contact = contact.isPresent() //
           ? Optional.of(Min.of(contact.get(), touching.get())) //
           : touching;
-    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
+    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(1), gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider
