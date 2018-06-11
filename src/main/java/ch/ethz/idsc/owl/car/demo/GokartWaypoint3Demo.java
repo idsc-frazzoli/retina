@@ -39,7 +39,7 @@ public class GokartWaypoint3Demo implements DemoInterface {
   public OwlyAnimationFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     final StateTime initial = new StateTime(Tensors.vector(33.6, 41.5, 0.6), RealScalar.ZERO);
-    final Tensor waypoints = ResourceData.of("/map/dubendorf/hangar/20180610waypoints.csv");
+    final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180610.csv");
     final CostFunction waypointCost = new WaypointDistanceCost(waypoints, Tensors.vector(85.33, 85.33), 10.0f, new Dimension(640, 640));
     GokartVecEntity gokartEntity = new GokartVecEntity(initial) {
       @Override
@@ -53,7 +53,7 @@ public class GokartWaypoint3Demo implements DemoInterface {
       }
     };
     // ---
-    HelperHangarMap hangarMap = new HelperHangarMap("/map/dubendorf/hangar/20180610obstacles.png", gokartEntity);
+    HelperHangarMap hangarMap = new HelperHangarMap("/dubilab/obstacles/20180610.png", gokartEntity);
     // ---
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(hangarMap.region);
     // ---

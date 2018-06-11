@@ -45,6 +45,7 @@ import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
+import ch.ethz.idsc.owl.glc.std.LexicographicGlcRelabelDecision;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
@@ -207,6 +208,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);
+        trajectoryPlanner.relabelDecision = new LexicographicGlcRelabelDecision(Tensors.vector(0, 0));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);
