@@ -51,7 +51,6 @@ import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.owl.math.region.PolygonRegions;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
@@ -87,7 +86,6 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   private static final Scalar SPEED = RealScalar.of(2.5);
-  private static final Tensor VIRTUAL = Tensors.fromString("{{38, 39}, {42, 47}, {51, 52}, {46, 43}}");
   private static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = // node interval == 2/5
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   private static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
@@ -102,11 +100,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   final PurePursuitModule purePursuitModule = new PurePursuitModule();
   private final GokartMappingModule gokartMappingModule = new GokartMappingModule();
   private final Region<Tensor> fixedRegion;
-  private final Region<Tensor> polygonRegion;
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   public final Tensor obstacleMap;
-  final Tensor waypoints = TrajectoryConfig.GLOBAL.getWaypoints();
+  final Tensor waypoints = TrajectoryConfig.getWaypoints();
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
@@ -131,9 +128,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     ImageRegion imageRegion = predefinedMap.getImageRegion();
     Tensor x_samples = Subdivide.of(min.get(0), max.get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
-    polygonRegion = PolygonRegions.numeric(VIRTUAL); // virtual obstacle in middle
     // ---
-    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule, polygonRegion));
+    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     costCollection.add(new ImageCostFunction(tensor, predefinedMap.range(), RealScalar.ZERO));
     costCollection.add(new Se2LateralAcceleration(RealScalar.of(2)));
