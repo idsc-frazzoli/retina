@@ -22,7 +22,7 @@ enum ClusterEvaluation {
 
   public static void main(String[] args) throws IOException {
     Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-    ClusterEvaluationListener clusterEvaluationListener = new ClusterEvaluationListener();
+    ClusterAreaEvaluationListener clusterEvaluationListener = new ClusterAreaEvaluationListener();
     vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
