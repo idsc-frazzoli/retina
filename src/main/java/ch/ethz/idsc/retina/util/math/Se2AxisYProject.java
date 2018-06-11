@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.ArcTan;
-import ch.ethz.idsc.tensor.sca.Ramp;
+import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.SignInterface;
 
 class MapSingular implements TensorScalarFunction {
@@ -32,43 +32,7 @@ class MapSingular implements TensorScalarFunction {
   }
 }
 
-class MapPositive implements TensorScalarFunction {
-  private final Scalar vx;
-  private final Scalar be;
-
-  MapPositive(Scalar vx, Scalar be) {
-    this.vx = vx;
-    this.be = be;
-  }
-
-  @Override
-  public Scalar apply(Tensor p) {
-    Scalar px = p.Get(0);
-    Scalar py = p.Get(1);
-    return ArcTan.of(vx.subtract(py.multiply(be)), px.multiply(be)).divide(be);
-  }
-}
-
-class MapNegative implements TensorScalarFunction {
-  private final Scalar vx;
-  private final Scalar be;
-
-  MapNegative(Scalar vx, Scalar be) {
-    this.vx = vx;
-    this.be = be;
-  }
-
-  @Override
-  public Scalar apply(Tensor p) {
-    Scalar px = p.Get(0).negate();
-    Scalar py = p.Get(1);
-    return ArcTan.of(vx.subtract(py.multiply(be)), px.multiply(be)).divide(be);
-  }
-}
-
-// TODO not quite entirely unlike the last implementation
-public enum Se2AxisYProject {
-  ;
+public class Se2AxisYProject implements TensorScalarFunction {
   /** @param u == {vx, 0, rate} with units {[m*s^-1], ?, [rad*s^-1]}
    * @param p == {px, py} with units {[m], [m]}
    * @return time to arrival of a point on the y axis that is subject to flow x to reach p.
@@ -81,8 +45,24 @@ public enum Se2AxisYProject {
         return new MapSingular(Units.of(be).negate());
       return p -> p.Get(0).divide(vx);
     }
-    return Ramp.of(vx).equals(vx) //
-        ? new MapPositive(vx, be)
-        : new MapNegative(vx.negate(), be.negate());
+    return new Se2AxisYProject(vx, be);
+  }
+  // ---
+
+  private final Scalar vx;
+  private final Scalar be;
+  private final Scalar se;
+
+  private Se2AxisYProject(Scalar vx, Scalar be) {
+    this.vx = vx.abs();
+    this.be = be;
+    se = be.multiply(Sign.of(vx));
+  }
+
+  @Override
+  public Scalar apply(Tensor p) {
+    Scalar px = p.Get(0);
+    Scalar py = p.Get(1);
+    return ArcTan.of(vx.subtract(py.multiply(se)), px.multiply(se)).divide(be);
   }
 }
