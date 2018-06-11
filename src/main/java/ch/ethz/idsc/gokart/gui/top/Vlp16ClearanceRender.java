@@ -17,12 +17,14 @@ import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** renders point of rotation as small dot in plane */
+// TODO class could be improved a lot: filter points in listener
 class Vlp16ClearanceRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
@@ -37,33 +39,35 @@ class Vlp16ClearanceRender extends LidarRender {
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Objects.nonNull(_points)) {
-        Tensor points = _points; // in reference frame of lidar
+        Tensor points = Tensor.of(_points.stream().filter(predicate::isObstacle)); // in reference frame of lidar
         // ---
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-        CircleClearanceTracker circleClearanceCollector = //
-            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(gokartStatusEvent);
-        Tensor locals = Tensor.of(points.stream() //
-            .filter(predicate::isObstacle) //
-            .filter(circleClearanceCollector::isObstructed));
-        for (Tensor point : locals) {
-          Point2D point2D = geometricLayer.toPoint2D(point); // can also visualize v here
-          graphics.setColor(Color.RED);
-          graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
-        }
-        Optional<Tensor> optional = circleClearanceCollector.violation();
-        if (optional.isPresent()) {
-          Tensor m = Se2Utils.toSE2Matrix(optional.get());
-          geometricLayer.pushMatrix(m);
-          graphics.setStroke(new BasicStroke(3));
-          {
-            Path2D path2D = geometricLayer.toPath2D(Tensors.of( //
-                Tensors.of(RealScalar.ZERO, half.negate()), //
-                Tensors.of(RealScalar.ZERO, half)));
-            graphics.setColor(Color.RED);
-            graphics.draw(path2D);
+        CircleClearanceTracker[] circleClearanceCollectors = new CircleClearanceTracker[] { //
+            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(+1), gokartStatusEvent), //
+            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(-1), gokartStatusEvent) //
+        };
+        Color[] colors = new Color[] { Color.RED, Color.ORANGE };
+        for (int count = 0; count < colors.length; ++count) {
+          CircleClearanceTracker circleClearanceCollector = circleClearanceCollectors[count];
+          graphics.setColor(colors[count]);
+          points.stream().filter(circleClearanceCollector::isObstructed).forEach(point -> {
+            Point2D point2D = geometricLayer.toPoint2D(point); // can also visualize v here
+            graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
+          });
+          Optional<Tensor> optional = circleClearanceCollector.violation();
+          if (optional.isPresent()) {
+            Tensor m = Se2Utils.toSE2Matrix(optional.get());
+            geometricLayer.pushMatrix(m);
+            graphics.setStroke(new BasicStroke(3));
+            {
+              Path2D path2D = geometricLayer.toPath2D(Tensors.of( //
+                  Tensors.of(RealScalar.ZERO, half.negate()), //
+                  Tensors.of(RealScalar.ZERO, half)));
+              graphics.draw(path2D);
+            }
+            graphics.setStroke(new BasicStroke(1));
+            geometricLayer.popMatrix();
           }
-          graphics.setStroke(new BasicStroke(1));
-          geometricLayer.popMatrix();
         }
       }
     }
