@@ -20,6 +20,8 @@
 * [20180317_silicon_eye_evaluation.pdf](https://github.com/idsc-frazzoli/retina/files/1821357/20180317_silicon_eye_evaluation.pdf)
 * [20180428_steering_unit_range.pdf](https://github.com/idsc-frazzoli/retina/files/1958519/20180428_steering_unit_range.pdf)
 * [20180429_minimum_turning_radius.pdf](https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf)
+* [20180607_gps_inside_hangar.pdf](https://github.com/idsc-frazzoli/retina/files/2101276/20180607_gps_inside_hangar.pdf)
+
 
 ## Bug Reports
 
