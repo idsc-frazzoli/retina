@@ -1,16 +1,32 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import java.util.Objects;
 
-// TODO DUBILAB OWLY3D migration
-public class GenericXboxPadLcmServerModule extends AbstractJoystickLcmServerModule {
+import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.sys.AbstractModule;
+
+public class GenericXboxPadLcmServerModule extends AbstractModule {
+  /** refresh period in [ms] for joystick events */
+  public static final int PERIOD_MS = 20;
+  // ---
+  private JoystickLcmServer joystickLcmServer;
+
   @Override
-  public JoystickType getJoystickType() {
-    return JoystickType.GENERIC_XBOX_PAD;
+  protected final void first() throws Exception {
+    joystickLcmServer = new JoystickLcmServer(getJoystickType(), PERIOD_MS);
+    joystickLcmServer.start();
   }
 
-  public static void main(String[] args) throws Exception {
-    new GenericXboxPadLcmServerModule().first();
+  @Override
+  protected final void last() {
+    if (Objects.nonNull(joystickLcmServer)) {
+      joystickLcmServer.stop();
+      joystickLcmServer = null;
+    }
+  }
+
+  public JoystickType getJoystickType() {
+    return JoystickType.GENERIC_XBOX_PAD;
   }
 }

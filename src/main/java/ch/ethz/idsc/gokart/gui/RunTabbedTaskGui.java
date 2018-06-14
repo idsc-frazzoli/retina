@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.DeadManSwitchModule;
+import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
@@ -55,6 +56,7 @@ enum RunTabbedTaskGui {
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, // publishes pose
       LoggerModule.class, //
+      GenericXboxPadLcmServerModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class, //

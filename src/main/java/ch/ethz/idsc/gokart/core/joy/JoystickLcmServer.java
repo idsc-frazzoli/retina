@@ -16,9 +16,7 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-// TODO DUBILAB OWLY3D migration
 public class JoystickLcmServer implements StartAndStoppable {
-  // TODO redundant to JoystickInspector
   private static String formatName(String string) {
     return string.replace(' ', '_').replaceAll("\\W", "").toLowerCase();
   }
