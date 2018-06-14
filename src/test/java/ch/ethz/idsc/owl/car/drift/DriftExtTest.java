@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import ch.ethz.idsc.owl.glc.adapter.EtaRaster;
 import ch.ethz.idsc.owl.glc.adapter.GlcExpand;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
+import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
@@ -47,17 +49,21 @@ public class DriftExtTest extends TestCase {
     ));
     // ---
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(region);
+    StateTimeRaster stateTimeRaster = new EtaRaster(eta, x -> x.state().extract(3, 6)); // consider only (beta,r,Ux)
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-        eta, stateIntegrator, controls, plannerConstraint, goalInterface);
-    trajectoryPlanner.represent = x -> x.state().extract(3, 6); // consider only (beta,r,Ux)
+        stateTimeRaster, stateIntegrator, controls, plannerConstraint, goalInterface);
+    // trajectoryPlanner.represent = x -> x.state().extract(3, 6);
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 0, 0, 0, 1), RealScalar.ZERO));
     GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
     glcExpand.findAny(2000);
+    // System.out.println("any=" + glcExpand.getExpandCount());
     int iters = glcExpand.getExpandCount();
     System.out.println("drift iterations:" + iters);
-    // assertTrue(iters < 1900);
+    assertTrue(iters < 3000);
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     assertTrue(optional.isPresent());
+    glcExpand.untilOptimal(2000);
+    System.out.println("opt=" + glcExpand.getExpandCount());
   }
 }

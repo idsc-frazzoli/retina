@@ -36,6 +36,7 @@ import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
+import ch.ethz.idsc.owl.glc.adapter.EtaRaster;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
@@ -44,10 +45,12 @@ import ch.ethz.idsc.owl.glc.adapter.VectorCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
+import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.glc.std.LexicographicGlcRelabelDecision;
+import ch.ethz.idsc.owl.glc.std.LexicographicRelabelDecision;
 import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
+import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
@@ -74,21 +77,22 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
-import ch.ethz.idsc.tensor.red.Entrywise;
 import ch.ethz.idsc.tensor.sca.Ceiling;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
+// TODO make configurable as parameter
 public class GokartTrajectoryModule extends AbstractClockedModule implements GokartPoseListener, JoystickListener {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
-  // TODO make configurable as parameter
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   private static final Scalar SPEED = RealScalar.of(2.5);
-  private static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = // node interval == 2/5
+  private static final FixedStateIntegrator FIXED_STATE_INTEGRATOR = //
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   private static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
+  private static final StateTimeRaster STATE_TIME_RASTER = //
+      new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(SE2WRAP::represent));
   // ---
   final FlowsInterface carFlows = CarFlows.forward( //
       SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
@@ -120,13 +124,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   public GokartTrajectoryModule() {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
     obstacleMap = ImageRegions.grayscale(ResourceData.of("/dubilab/obstacles/20180610.png"));
-    Tensor hull = STANDARD.footprint();
-    Tensor min = hull.stream().reduce(Entrywise.min()).get(); // {-0.295, -0.725, -0.25}
-    Tensor max = hull.stream().reduce(Entrywise.max()).get(); // {1.765, 0.725, -0.25}
-    int ttl = Ceiling.of(max.Get(1).multiply(predefinedMap.scale())).number().intValue(); // == 0.73 * 7.5 == 5.475 => 6
+    MinMax minMax = MinMax.of(STANDARD.footprint());
+    int ttl = Ceiling.of(minMax.max().Get(1).multiply(predefinedMap.scale())).number().intValue(); // == 0.73 * 7.5 == 5.475 => 6
     Tensor tensor = ImageEdges.extrusion(obstacleMap, ttl);
     ImageRegion imageRegion = predefinedMap.getImageRegion();
-    Tensor x_samples = Subdivide.of(min.get(0), max.get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
+    Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule));
@@ -202,9 +204,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         costs.add(Se2TimeCost.of(se2ComboRegion, controls));
         GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion, controls);
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-            PARTITIONSCALE, FIXEDSTATEINTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
-        trajectoryPlanner.represent = StateTimeTensorFunction.state(SE2WRAP::represent);
-        trajectoryPlanner.relabelDecision = new LexicographicGlcRelabelDecision(Tensors.vector(0, 0));
+            STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
+        ((StandardTrajectoryPlanner) trajectoryPlanner).relabelDecision = //
+            new LexicographicRelabelDecision(Tensors.vector(0, 0));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);

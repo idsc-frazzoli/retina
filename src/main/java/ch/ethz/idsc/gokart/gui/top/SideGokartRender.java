@@ -9,6 +9,7 @@ import java.awt.geom.Path2D;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.CopySign;
-import ch.ethz.idsc.tensor.red.Entrywise;
 import ch.ethz.idsc.tensor.sca.Chop;
 
 /* package */ class SideGokartRender extends AbstractGokartRender {
@@ -30,8 +30,9 @@ import ch.ethz.idsc.tensor.sca.Chop;
   public SideGokartRender() {
     super(GokartPoseLocal.INSTANCE);
     // ---
-    Scalar min = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.min()).get().Get(0);
-    Scalar max = RimoSinusIonModel.standard().footprint().stream().reduce(Entrywise.max()).get().Get(0);
+    MinMax minMax = MinMax.of(RimoSinusIonModel.standard().footprint());
+    Scalar min = minMax.min().Get(0);
+    Scalar max = minMax.max().Get(0);
     Scalar groundClearance = Magnitude.METER.apply(ChassisGeometry.GLOBAL.groundClearance);
     polygon = Tensors.of( //
         Tensors.of(min, groundClearance), //

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.data.tree.Nodes;
+import ch.ethz.idsc.owl.glc.adapter.EtaRaster;
 import ch.ethz.idsc.owl.glc.adapter.GlcExpand;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
@@ -41,7 +42,7 @@ enum DriftDemo {
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(region);
     // ---
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-        eta, stateIntegrator, controls, plannerConstraint, goalInterface);
+        EtaRaster.state(eta), stateIntegrator, controls, plannerConstraint, goalInterface);
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 4), RealScalar.ZERO));
     GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
