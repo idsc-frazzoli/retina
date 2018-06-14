@@ -2,16 +2,27 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 // provides a single particle for the SLAM algorithm
 // TODO Is this the correct interface
-public class SlamParticle implements GokartPoseInterface{
-  /* required fields:
-   * position
-   * orientation */
+public class SlamParticle implements GokartPoseInterface {
+  private double x;
+  private double y;
+  private double angle;
+  private double particleLikelihood;
+
   SlamParticle() {
-    // initialize particle with lidar pose
+    setInitialPose();
+  }
+
+  // somehow set the initial pose from LIDAR
+  private void setInitialPose() {
+    // ..
   }
 
   // ideally, we want to use wheel odometry to propagate the state
@@ -19,14 +30,12 @@ public class SlamParticle implements GokartPoseInterface{
     // ..
   }
 
-  // this method needs the likelihood map
-  public void propagateStateLikelihoods() {
-    // ..
+  @Override // from GokartPoseInterface
+  public Tensor getPose() {
+    return Tensors.of(Quantity.of(x, SI.METER), Quantity.of(y, SI.METER), DoubleScalar.of(angle));
   }
 
-  @Override
-  public Tensor getPose() {
-    // ..
-    return null;
+  public double getParticleLikelihood() {
+    return particleLikelihood;
   }
 }

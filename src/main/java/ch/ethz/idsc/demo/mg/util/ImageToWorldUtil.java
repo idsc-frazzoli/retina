@@ -18,14 +18,14 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * 4th line represents image coordinates of principal point [pixel]
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
-public class TransformUtil {
+public class ImageToWorldUtil {
   // TODO these are magic constants but will not change often
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
    * @param unitConversion */
-  public static TransformUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
-    return new TransformUtil(inputTensor, unitConversion);
+  public static ImageToWorldUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
+    return new ImageToWorldUtil(inputTensor, unitConversion);
   }
 
   // ---
@@ -42,7 +42,7 @@ public class TransformUtil {
   private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
-  /* package */ TransformUtil(Tensor inputTensor, Scalar unitConversion) {
+  /* package */ ImageToWorldUtil(Tensor inputTensor, Scalar unitConversion) {
     this.unitConversion = unitConversion;
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2

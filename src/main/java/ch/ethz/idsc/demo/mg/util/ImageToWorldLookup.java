@@ -7,18 +7,17 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** precomputes the TransformUtil for integer values of x, y.
  * TODO how to proceed for float values of x,y? maybe interpolate */
-public class TransformUtilLookup implements ImageToPlaneInterface {
-  public static TransformUtilLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
-    return new TransformUtilLookup(new TransformUtil(inputTensor, unitConversion), width, height);
+public class ImageToWorldLookup implements ImageToWorldInterface {
+  public static ImageToWorldLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
+    return new ImageToWorldLookup(new ImageToWorldUtil(inputTensor, unitConversion), width, height);
   }
 
-  // ---
-  private final TransformUtil transformUtil;
+  private final ImageToWorldUtil transformUtil;
   private final double[] lookupArray;
   private final int width;
   private final int height;
 
-  private TransformUtilLookup(TransformUtil transformUtil, Scalar widthInput, Scalar heightInput) {
+  private ImageToWorldLookup(ImageToWorldUtil transformUtil, Scalar widthInput, Scalar heightInput) {
     width = widthInput.number().intValue();
     height = heightInput.number().intValue();
     lookupArray = new double[2 * width * height];

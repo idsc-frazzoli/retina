@@ -3,15 +3,15 @@ package ch.ethz.idsc.demo.mg.util;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
-enum TransformUtilDemo {
+enum ImageToWorldUtilDemo {
   ;
   /** for testing
    * 
    * prints for x=170, y=110
    * 3.4386292832405725/-0.4673008409796591 */
   public static void main(String[] args) {
-    TransformUtil test = new PipelineConfig().createTransformUtil();
-    TransformUtilLookup anotherTest = new PipelineConfig().createTransformUtilLookup();
+    ImageToWorldUtil test = new PipelineConfig().createTransformUtil();
+    ImageToWorldLookup anotherTest = new PipelineConfig().createTransformUtilLookup();
     test.printInfo();
     System.out.println("---");
     int x = 170;

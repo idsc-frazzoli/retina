@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.demo.mg.util.TransformUtil;
-import ch.ethz.idsc.demo.mg.util.TransformUtilLookup;
+import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
+import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -73,6 +73,10 @@ public class PipelineConfig {
   public final Scalar originPosY = RealScalar.of(400); // [pixel]
   public final Scalar objectSize = RealScalar.of(30); // [pixel]
   public final Scalar gokartSize = RealScalar.of(35); // [pixel]
+  /***************************************************/
+  // SLAM algorithm parameters
+  public final Scalar alpha = RealScalar.of(0.8);
+  public final Scalar numberOfParticles = RealScalar.of(10);
 
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */
@@ -83,14 +87,14 @@ public class PipelineConfig {
     return logFileLocations.getFile();
   }
 
-  /** @return new instance of {@link TransformUtil} derived from parameters in pipelineConfig */
-  public TransformUtil createTransformUtil() {
-    return TransformUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  /** @return new instance of {@link ImageToWorldUtil} derived from parameters in pipelineConfig */
+  public ImageToWorldUtil createTransformUtil() {
+    return ImageToWorldUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
 
-  /** @return new instance of {@link TransformUtilLookup} derived from parameters in pipelineConfig */
-  public TransformUtilLookup createTransformUtilLookup() {
-    return TransformUtilLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
+  /** @return new instance of {@link ImageToWorldLookup} derived from parameters in pipelineConfig */
+  public ImageToWorldLookup createTransformUtilLookup() {
+    return ImageToWorldLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

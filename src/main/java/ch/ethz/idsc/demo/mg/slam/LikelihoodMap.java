@@ -4,12 +4,14 @@ package ch.ethz.idsc.demo.mg.slam;
 // provides likelihood map
 public class LikelihoodMap {
   // fields: array that represents discretized map
-  
-  LikelihoodMap(){
+  LikelihoodMap() {
     // initialize array to zero
   }
-  // simple division of occurrence map by normalization map
-  public void update() {
-    // ..
+
+  //
+  public void update(OccurrenceMap occurrenceMap, NormalizationMap normalizationMap) {
+    // apply simple division of occurrenceMap by normalizationMap
+    // If normalizationmap is zero, then occurrenceMap (likely) zero as well and likelihoodMap is zero at that position
+    // iterate through all map locations
   }
 }
