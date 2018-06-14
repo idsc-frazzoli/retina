@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
+import java.util.Objects;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
@@ -27,7 +28,9 @@ public class GokartLogFileTest extends TestCase {
           }
         } catch (Exception exception) {
           // exception.printStackTrace();
-          System.out.println(exception.getMessage());
+          String string = exception.getMessage();
+          if (Objects.nonNull(string))
+            System.out.println(exception.getMessage());
         }
   }
 
