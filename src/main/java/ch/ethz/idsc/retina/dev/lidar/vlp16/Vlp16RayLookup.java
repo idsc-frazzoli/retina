@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.dev.lidar.app.VelodyneRay;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
-public class Vlp16RayLookup {
+/* package */ class Vlp16RayLookup {
   private final int bits;
   private final double emulation_deg;
   private final VelodyneRay[] velodyneRays;

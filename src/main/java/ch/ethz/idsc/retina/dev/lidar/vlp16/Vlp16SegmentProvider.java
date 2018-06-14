@@ -3,11 +3,9 @@ package ch.ethz.idsc.retina.dev.lidar.vlp16;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -22,12 +20,10 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
   private final float[] IR;
   private final float[] IZ;
   // ---
-  private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  private int usec;
 
   public Vlp16SegmentProvider(double angle_offset, int max_alt) {
     for (int i = 0; i < 16; i++)
-      if (Vlp16SpacialProvider.degree(i) <= max_alt)
+      if (StaticHelper.degree(i) <= max_alt)
         laserList.add(i);
     NUM_LASERS = laserList.size();
     IR = new float[NUM_LASERS];
@@ -36,22 +32,12 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
     System.out.println("Rays processed at theta = ");
     for (int i = 0; i < NUM_LASERS; i++) {
       int laser = laserList.get(i);
-      double theta = Vlp16SpacialProvider.degree(laser) * Math.PI / 180;
-      System.out.print(Vlp16SpacialProvider.degree(laser) + "°,");
+      double theta = StaticHelper.degree(laser) * Math.PI / 180;
+      System.out.print(StaticHelper.degree(laser) + "°,");
       IR[i] = (float) (Math.cos(theta) * VelodyneStatics.TO_METER);
       IZ[i] = (float) (Math.sin(theta) * VelodyneStatics.TO_METER);
     }
     System.out.println();
-  }
-
-  @Override // from LidarSpacialProvider
-  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
-    listeners.add(lidarSpacialEventListener);
-  }
-
-  @Override // from LidarRayDataListener
-  public void timestamp(int usec, int type) {
-    this.usec = usec;
   }
 
   @Override // from LidarRayDataListener

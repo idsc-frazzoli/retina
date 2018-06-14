@@ -2,11 +2,8 @@
 package ch.ethz.idsc.retina.dev.lidar.hdl32e;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-import java.util.List;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -18,18 +15,6 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 public class Hdl32eSpacialProvider extends VelodyneSpacialProvider {
   public static final AngleVectorLookupFloat TRIGONOMETRY = new AngleVectorLookupFloat(36000, true, 0);
   // ---
-  private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  private int usec;
-
-  @Override
-  public void addListener(LidarSpacialListener lidarSpacialEventListener) {
-    listeners.add(lidarSpacialEventListener);
-  }
-
-  @Override // from LidarRayDataListener
-  public void timestamp(int usec, int type) {
-    this.usec = usec;
-  }
 
   @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {

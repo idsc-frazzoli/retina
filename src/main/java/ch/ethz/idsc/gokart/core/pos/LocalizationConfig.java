@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.TiltedVlp16PlanarEmulator;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16TiltedPlanarEmulator;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -61,7 +61,7 @@ public class LocalizationConfig implements Serializable {
     double angle_offset = sensorsConfig.vlp16_twist.number().doubleValue();
     double tiltY = sensorsConfig.vlp16_incline.number().doubleValue();
     double emulation_deg = Magnitude.DEGREE_ANGLE.apply(horizon).number().doubleValue();
-    return new TiltedVlp16PlanarEmulator(bits, angle_offset, tiltY, emulation_deg);
+    return new Vlp16TiltedPlanarEmulator(bits, angle_offset, tiltY, emulation_deg);
   }
 
   public ParametricResample getUniformResample() {
