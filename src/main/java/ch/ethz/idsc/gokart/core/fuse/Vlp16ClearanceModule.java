@@ -34,6 +34,7 @@ import ch.ethz.idsc.tensor.red.Min;
 @SafetyCritical
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
+  private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final VelodyneLcmClient velodyneLcmClient;
@@ -80,7 +81,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   /***************************************************/
-  Optional<Scalar> contact = Optional.empty();
+  private Optional<Scalar> contact = Optional.empty();
 
   @Override // from LidarSpacialListener
   public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
@@ -99,7 +100,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       contact = contact.isPresent() //
           ? Optional.of(Min.of(contact.get(), touching.get())) //
           : touching;
-    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(1), gokartStatusEvent);
+    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(UNIT_SPEED, gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider

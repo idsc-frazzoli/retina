@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar.hdl32e;
+package ch.ethz.idsc.retina.dev.lidar;
 
+import ch.ethz.idsc.retina.dev.lidar.hdl32e.Hdl32eSpacialProvider;
 import junit.framework.TestCase;
 
 public class Hdl32eSpacialProviderTest extends TestCase {
