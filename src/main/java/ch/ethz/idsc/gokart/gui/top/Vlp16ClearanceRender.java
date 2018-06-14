@@ -36,6 +36,7 @@ class Vlp16ClearanceRender extends LidarRender {
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    final GokartStatusEvent gokartStatusEvent = this.gokartStatusEvent;
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Objects.nonNull(_points)) {

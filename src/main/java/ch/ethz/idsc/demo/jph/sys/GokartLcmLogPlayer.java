@@ -9,7 +9,7 @@ import ch.ethz.idsc.subare.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum GokartLcmLogPlayer {
+/* package */ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
@@ -18,6 +18,7 @@ enum GokartLcmLogPlayer {
     file = DatahakiLogFileLocator.file(GokartLogFile._20180430T104113_a5291af9);
     file = DatahakiLogFileLocator.file(GokartLogFile._20180604T150508_15e65bba);
     file = UserHome.file("gokart/pedestrian/20180604T150508/log.lcm");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180611T095800_851c404d);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;
