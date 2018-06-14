@@ -32,7 +32,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
     this.lidarId = lidarId;
   }
 
-  @Override
+  @Override // from LcmClientInterface
   public void startSubscriptions() {
     LCM lcm = LCM.getSingleton();
     if (velodyneDecoder.hasRayListeners())
@@ -65,7 +65,7 @@ public class VelodyneLcmClient implements LcmClientInterface {
       }));
   }
 
-  @Override
+  @Override // from LcmClientInterface
   public void stopSubscriptions() {
     LCM.getSingleton().unsubscribeAll(subscriptions);
     subscriptions.clear();

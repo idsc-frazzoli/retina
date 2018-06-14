@@ -9,7 +9,6 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -72,11 +71,6 @@ public class SensorsConfig implements Serializable {
   public Vlp16LcmHandler vlp16LcmHandler() {
     double angle_offset = vlp16_twist.number().doubleValue();
     return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
-  }
-
-  public Vlp16SpacialLcmHandler vlp16SpacialLcmHandler() {
-    double angle_offset = vlp16_twist.number().doubleValue();
-    return new Vlp16SpacialLcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
   }
 
   public LidarSpacialProvider vlp16SpacialProvider() {
