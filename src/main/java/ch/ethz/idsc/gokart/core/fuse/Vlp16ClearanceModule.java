@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -12,9 +13,14 @@ import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16SpacialLcmHandler;
+import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -28,9 +34,11 @@ import ch.ethz.idsc.tensor.red.Min;
 @SafetyCritical
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
+  private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
-  private final Vlp16SpacialLcmHandler vlp16SpacialLcmHandler = SensorsConfig.GLOBAL.vlp16SpacialLcmHandler();
+  private final VelodyneLcmClient velodyneLcmClient;
+  private final LidarSpacialProvider lidarSpacialProvider;
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
@@ -39,10 +47,17 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   /** clearanceTracker is always non-null */
   private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
 
+  public Vlp16ClearanceModule() {
+    VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
+    velodyneLcmClient = new VelodyneLcmClient(VelodyneModel.VLP16, velodyneDecoder, GokartLcmChannel.VLP16_CENTER);
+    lidarSpacialProvider = new Vlp16SpacialProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue());
+    velodyneDecoder.addRayListener(lidarSpacialProvider);
+  }
+
   @Override // from AbstractModule
   protected final void first() throws Exception {
-    vlp16SpacialLcmHandler.lidarSpacialProvider.addListener(this);
-    vlp16SpacialLcmHandler.startSubscriptions();
+    lidarSpacialProvider.addListener(this);
+    velodyneLcmClient.startSubscriptions();
     gokartStatusLcmClient.addListener(this);
     gokartStatusLcmClient.startSubscriptions();
     protected_first();
@@ -53,7 +68,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   protected final void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     protected_last();
-    vlp16SpacialLcmHandler.stopSubscriptions();
+    velodyneLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
   }
 
@@ -66,7 +81,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   /***************************************************/
-  Optional<Scalar> contact = Optional.empty();
+  private Optional<Scalar> contact = Optional.empty();
 
   @Override // from LidarSpacialListener
   public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
@@ -85,7 +100,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       contact = contact.isPresent() //
           ? Optional.of(Min.of(contact.get(), touching.get())) //
           : touching;
-    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(1), gokartStatusEvent);
+    clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(UNIT_SPEED, gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider

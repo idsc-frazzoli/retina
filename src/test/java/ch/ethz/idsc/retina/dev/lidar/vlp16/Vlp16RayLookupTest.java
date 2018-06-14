@@ -1,9 +1,9 @@
 // code by vc
-package ch.ethz.idsc.retina.dev.lidar.app;
+package ch.ethz.idsc.retina.dev.lidar.vlp16;
 
 import junit.framework.TestCase;
 
-public class VelodyneRayLookupTest extends TestCase {
+public class Vlp16RayLookupTest extends TestCase {
   public void test18000() {
     new Vlp16RayLookup(1, true, 0, -0.04, 0);
   }

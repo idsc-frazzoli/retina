@@ -34,16 +34,6 @@ run
 * wait for DAVIS-240c camera image to show
 * minimize but do not close AEViewer window
 
-## Joystick
-
-run
-
-    GenericXboxPadLcmServerModule.java
-
-Confirm: console printed
-
-    found joystick GENERIC XBOX PAD
-
 ## Gokart
 
 run
@@ -58,7 +48,7 @@ activate the modules by enabling the toggle-buttons
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
-press button `Init`, `Reset`, `Calibration`
+press button `Init`, `Reset`, `Calibration`. Alternatively, you can press the yellow `Y` Button on the joystick.
 
 Confirm: the brake makes some noise and the steering wheel moves
 
