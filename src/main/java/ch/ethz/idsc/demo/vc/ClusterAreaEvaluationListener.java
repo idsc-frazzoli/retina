@@ -79,11 +79,11 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
     EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
     Area ep = predictedAreas.getArea();
     ep.intersect(enlargedPoints.getArea());
-    double areaIntersection = EnlargedPoints.areaCalculator(ep);
+    double areaIntersection = AreaMeasure.of(ep);
     System.out.println(String.format("Area of hulls        =%6.3f\n" + //
         "Area of hulls approx =%6.3f\nArea of points       =%6.3f\n", //
         predictedAreas.getTotalArea(), //
-        EnlargedPoints.areaCalculator(predictedAreas.getArea()), //
+        AreaMeasure.of(predictedAreas.getArea()), //
         enlargedPoints.getTotalArea()));
     return new PerformanceMeasures( //
         areaIntersection / enlargedPoints.getTotalArea(), //

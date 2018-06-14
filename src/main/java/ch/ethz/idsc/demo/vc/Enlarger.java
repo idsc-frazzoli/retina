@@ -1,13 +1,10 @@
 // code by vc
 package ch.ethz.idsc.demo.vc;
 
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ch.ethz.idsc.owl.math.planar.PolygonArea;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -24,7 +21,7 @@ public class Enlarger {
     for (Tensor hull : hulls) {
       if (Tensors.nonEmpty(hull)) {
         collectionOfAreas.add(hull);
-        totalArea += computeBetterArea(hull);
+        totalArea += StaticHelper.computeBetterArea(hull);
       }
     }
   }
@@ -38,16 +35,7 @@ public class Enlarger {
     s.append(Tensors.vectorDouble(xCenter + (w / 2), yCenter + (w / 2)));
     s.append(Tensors.vectorDouble(xCenter - (w / 2), yCenter + (w / 2)));
     collectionOfAreas.add(s);
-    totalArea += computeBetterArea(s);
-  }
-
-  public double computeArea(Area area) {
-    Rectangle2D rectangle2d = area.getBounds2D();
-    return rectangle2d.getWidth() * rectangle2d.getHeight();
-  }
-
-  public static double computeBetterArea(Tensor polygon) {
-    return PolygonArea.FUNCTION.apply(polygon).abs().number().doubleValue();
+    totalArea += StaticHelper.computeBetterArea(s);
   }
 
   public List<Tensor> getAreas() {

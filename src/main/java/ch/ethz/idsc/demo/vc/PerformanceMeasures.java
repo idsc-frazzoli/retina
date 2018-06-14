@@ -17,6 +17,7 @@ public class PerformanceMeasures {
     return Tensors.vector(precision, recall);
   }
 
+  @Override
   public String toString() {
     return String.format("recall   =%6.3f\nprecision=%6.3f", recall, precision);
   }
