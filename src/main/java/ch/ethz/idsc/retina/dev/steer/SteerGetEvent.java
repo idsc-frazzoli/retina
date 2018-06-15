@@ -10,9 +10,12 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** information received from micro-autobox about steering
  * 
- * the manufacturer of the steering column does <em>not</em>
+ * <p>the manufacturer of the steering column does <em>not</em>
  * share details about the exact meaning of the values sent by
- * the device, therefore our documentation also lacks clues. */
+ * the device, therefore our documentation also lacks clues.
+ * 
+ * <p>the documentation in this file originates from the investigation
+ * of log files recorded over an extended period of operation. */
 public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
@@ -39,10 +42,15 @@ public class SteerGetEvent extends DataEvent {
   /** {@link SteerPutEvent} commands the steer actuator to be passive or active.
    * In passive mode, no torque is applied by the device.
    * 
+   * estMotTrq_Qual == 0.0 means the device was not in operation since power on,
+   * or has insufficient supply power, or has another issue.
+   * 
    * estMotTrq_Qual == 1.0 means the device is passive
-   * estMotTrq_Qual == 2.0 means the device is active
-   * and then the difference "refMotTrq_CANInput - estMotTrq_CANInput"
-   * should be small.
+   * 
+   * estMotTrq_Qual == 2.0 means the device is active, and then the difference
+   * "refMotTrq_CANInput - estMotTrq_CANInput" should be small.
+   * in autonomous mode, estMotTrq_Qual should always be 2.0
+   * TODO check the requirement during operation!
    * 
    * see {@link #isActive()} */
   private final float estMotTrq_Qual;
@@ -112,16 +120,17 @@ public class SteerGetEvent extends DataEvent {
   @OfflineUse
   public Tensor values_raw() {
     return Tensors.vector( //
-        motAsp_CANInput, //
-        motAsp_Qual, //
-        tsuTrq_CANInput, //
-        tsuTrq_Qual, //
-        refMotTrq_CANInput, //
-        estMotTrq_CANInput, //
-        estMotTrq_Qual, //
-        gcpRelRckPos, //
-        gcpRelRckQual, //
-        gearRat, //
-        halfRckPos);
+        motAsp_CANInput, // .. 0
+        motAsp_Qual, // ...... 1
+        tsuTrq_CANInput, // .. 2
+        tsuTrq_Qual, // ...... 3
+        refMotTrq_CANInput, // 4
+        estMotTrq_CANInput, // 5
+        estMotTrq_Qual, // ... 6
+        gcpRelRckPos, // ..... 7
+        gcpRelRckQual, // .... 8
+        gearRat, // .......... 9
+        halfRckPos // ....... 10
+    );
   }
 }

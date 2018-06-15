@@ -63,13 +63,13 @@ public class SteerPutEvent extends DataEvent {
     this.torque = torque;
   }
 
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(command);
     byteBuffer.putFloat(torque);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }
@@ -81,6 +81,9 @@ public class SteerPutEvent extends DataEvent {
   /** @return vector of length 2 */
   @OfflineUse
   public Tensor values_raw() {
-    return Tensors.vector(command & 0xff, torque);
+    return Tensors.vector( //
+        command & 0xff, // ... 0
+        torque // ............ 1
+    );
   }
 }

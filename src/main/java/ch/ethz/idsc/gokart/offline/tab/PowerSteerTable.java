@@ -31,31 +31,30 @@ public class PowerSteerTable implements OfflineTableSupplier {
     this.delta = delta;
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+    if (channel.equals(SteerLcmServer.CHANNEL_GET))
       sge = new SteerGetEvent(byteBuffer);
-    } else //
-    if (channel.equals(SteerLcmServer.CHANNEL_PUT)) {
+    else //
+    if (channel.equals(SteerLcmServer.CHANNEL_PUT))
       spe = SteerPutEvent.from(byteBuffer);
-    } else //
-    if (channel.equals(MiscLcmServer.CHANNEL_GET)) {
+    else //
+    if (channel.equals(MiscLcmServer.CHANNEL_GET))
       mge = new MiscGetEvent(byteBuffer);
-    }
-    if (Scalars.lessThan(time_next, time)) {
+    // ---
+    if (Scalars.lessThan(time_next, time))
       if (Objects.nonNull(sge) && Objects.nonNull(spe) && Objects.nonNull(mge)) {
         time_next = time.add(delta);
         tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND), //
-            sge.values_raw(), //
-            spe.values_raw(), //
-            mge.getSteerBatteryVoltage().map(Magnitude.VOLT) //
+            time.map(Magnitude.SECOND), // 0
+            sge.values_raw(), // [1 - 11]
+            spe.values_raw(), // [12 - 13]
+            mge.getSteerBatteryVoltage().map(Magnitude.VOLT) // [14]
         );
       }
-    }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }
