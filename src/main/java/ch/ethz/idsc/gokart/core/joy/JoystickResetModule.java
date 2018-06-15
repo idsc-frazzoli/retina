@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
  * the calibration procedure for the devices that are not calibrated.
  * the devices are: misc, linmot, and steer. */
 public class JoystickResetModule extends AbstractModule implements JoystickListener {
+  // TODO use JoystickLcmProvider ?
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
 
   @Override // from AbstractModule

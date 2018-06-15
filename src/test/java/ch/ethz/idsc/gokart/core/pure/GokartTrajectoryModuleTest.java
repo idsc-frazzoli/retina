@@ -30,7 +30,6 @@ public class GokartTrajectoryModuleTest extends TestCase {
   public void testSimple() throws Exception {
     GokartTrajectoryModule gtm = new GokartTrajectoryModule();
     gtm.first();
-    assertTrue(Objects.nonNull(gtm.obstacleMap));
     assertTrue(Objects.nonNull(gtm.waypoints));
     gtm.last();
   }
@@ -104,7 +103,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
 
   public void testFlows() {
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
-    Collection<Flow> collection = gokartTrajectoryModule.carFlows.getFlows(4);
+    Collection<Flow> collection = gokartTrajectoryModule.flowsInterface.getFlows(4);
+    assertEquals(collection.size(), 5);
     for (Flow flow : collection) {
       Tensor u = flow.getU();
       Sign.requirePositive(u.Get(0));

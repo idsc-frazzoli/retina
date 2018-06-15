@@ -10,7 +10,11 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 
-/** client to lcm channel with joystick information */
+/** client to lcm channel with joystick information
+ * 
+ * JoystickLcmClient is useful for offline processing
+ * 
+ * {@link JoystickLcmProvider} is suitable for modules that control live operations */
 public class JoystickLcmClient extends BinaryLcmClient {
   private final String pattern;
   private final List<JoystickListener> listeners = new LinkedList<>();
