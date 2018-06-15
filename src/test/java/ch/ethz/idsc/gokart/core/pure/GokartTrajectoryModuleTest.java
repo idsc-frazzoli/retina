@@ -30,7 +30,6 @@ public class GokartTrajectoryModuleTest extends TestCase {
   public void testSimple() throws Exception {
     GokartTrajectoryModule gtm = new GokartTrajectoryModule();
     gtm.first();
-    assertTrue(Objects.nonNull(gtm.obstacleMap));
     assertTrue(Objects.nonNull(gtm.waypoints));
     gtm.last();
   }

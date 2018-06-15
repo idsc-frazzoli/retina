@@ -50,6 +50,7 @@ public class JoystickConfig implements Serializable {
   }
 
   public JoystickLcmProvider createProvider() {
+    // only joystick events aged less equals 200[ms] are provided to the application layer
     return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 200);
   }
 }
