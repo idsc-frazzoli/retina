@@ -19,7 +19,8 @@ public class TrajectoryConfig implements Serializable {
   public Scalar planningOffset = Quantity.of(2.5, SI.METER);
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap */
   public Scalar horizonDistance = RealScalar.of(8);
-  /** number of different steering angles for path planning */
+  /** number of different steering angles for path planning
+   * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf
@@ -27,7 +28,6 @@ public class TrajectoryConfig implements Serializable {
   public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
-  // public static final Tensor WAYPOINTS = //
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -38,6 +38,8 @@ public class TrajectoryConfig implements Serializable {
         .add(planningOffset); // for instance 2.5[m]
   }
 
+  /** @return matrix with dimensions N x 3
+   * @throws Exception if waypoints cannot be retrieved from resources */
   public static Tensor getWaypoints() {
     return ResourceData.of("/dubilab/waypoints/20180610.csv").unmodifiable();
   }

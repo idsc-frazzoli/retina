@@ -103,7 +103,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
 
   public void testFlows() {
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
-    Collection<Flow> collection = gokartTrajectoryModule.carFlows.getFlows(4);
+    Collection<Flow> collection = gokartTrajectoryModule.flowsInterface.getFlows(4);
+    assertEquals(collection.size(), 5);
     for (Flow flow : collection) {
       Tensor u = flow.getU();
       Sign.requirePositive(u.Get(0));

@@ -33,17 +33,6 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   private Optional<Tensor> optionalCurve = Optional.empty();
   private GokartPoseEvent gokartPoseEvent = null;
 
-  /** function for trajectory planner
-   * 
-   * @param curve */
-  public void setCurve(Optional<Tensor> curve) {
-    optionalCurve = curve;
-  }
-
-  /* for tests */ Optional<Tensor> getCurve() {
-    return optionalCurve;
-  }
-
   @Override // from AbstractModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
@@ -78,8 +67,10 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   }
 
   private boolean isOperational() {
+    GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent; // copy reference instead of synchronize
     // System.err.println("check isOperational");
-    if (Objects.nonNull(gokartPoseEvent)) // is localization pose available?
+    if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
+      Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
       if (optionalCurve.isPresent()) {
         // System.out.println("curve is present");
         final Scalar quality = gokartPoseEvent.getQuality();
@@ -105,6 +96,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
       } else {
         System.err.println("no curve in pure pursuit");
       }
+    }
     return false; // autonomous operation denied
   }
 
@@ -129,5 +121,17 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) { // arrives at 50[Hz]
     this.gokartPoseEvent = gokartPoseEvent;
+  }
+
+  /** function for trajectory planner
+   * 
+   * @param curve */
+  public void setCurve(Optional<Tensor> curve) {
+    optionalCurve = curve;
+  }
+
+  /** @return curve */
+  /* for tests */ Optional<Tensor> getCurve() {
+    return optionalCurve;
   }
 }

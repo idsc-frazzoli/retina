@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.CarEntity;
-import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
+import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
 import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -48,7 +48,7 @@ public class DubendorfPlannerDemo {
   }
 
   void configure(OwlyAnimationFrame owlyAnimationFrame) {
-    FlowsInterface carFlows = CarFlows.forward(RealScalar.of(3.0), Degree.of(25));
+    FlowsInterface carFlows = Se2CarFlows.forward(RealScalar.of(3.0), Degree.of(25));
     CarEntity carEntity = null; // FIXME
     // new CarEntity( //
     // new StateTime(Tensors.vector(35.600, 42.933, 0.942), RealScalar.ZERO), //

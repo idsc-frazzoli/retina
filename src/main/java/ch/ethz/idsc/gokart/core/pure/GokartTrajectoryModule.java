@@ -26,7 +26,7 @@ import ch.ethz.idsc.owl.bot.se2.Se2ComboRegion;
 import ch.ethz.idsc.owl.bot.se2.Se2MinTimeGoalManager;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
-import ch.ethz.idsc.owl.bot.se2.glc.CarFlows;
+import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
 import ch.ethz.idsc.owl.bot.se2.glc.WaypointDistanceCost;
 import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
@@ -75,7 +75,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
-public class GokartTrajectoryModule extends AbstractClockedModule implements GokartPoseListener {
+public class GokartTrajectoryModule extends AbstractClockedModule {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
@@ -87,14 +87,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(SE2WRAP::represent));
   // ---
-  final FlowsInterface carFlows = CarFlows.forward( //
+  final FlowsInterface flowsInterface = Se2CarFlows.forward( //
       SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   final PurePursuitModule purePursuitModule = new PurePursuitModule();
   private final GokartMappingModule gokartMappingModule = new GokartMappingModule();
-  private final Region<Tensor> fixedRegion;
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   final Tensor waypoints = TrajectoryConfig.getWaypoints();
@@ -104,7 +103,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   private Scalar tangentSpeed = null;
   private final CostFunction waypointCost = // TODO magic const redundant
       WaypointDistanceCost.linear(waypoints, Tensors.vector(85.33, 85.33), 8.0f, new Dimension(640, 640));
-  private RimoGetListener rimoGetListener = new RimoGetListener() {
+  private final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
+    @Override
+    public void getEvent(GokartPoseEvent getEvent) { // arrives at 50[Hz]
+      gokartPoseEvent = getEvent;
+    }
+  };
+  private final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
@@ -112,13 +117,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   };
 
   public GokartTrajectoryModule() {
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
     MinMax minMax = MinMax.of(STANDARD.footprint());
-    ImageRegion imageRegion = predefinedMap.getImageRegion();
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
-    fixedRegion = Se2PointsVsRegions.line(x_samples, imageRegion);
+    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    ImageRegion imageRegion = predefinedMap.getImageRegion();
     // ---
-    unionRegion = RegionUnion.wrap(Arrays.asList(fixedRegion, gokartMappingModule));
+    unionRegion = RegionUnion.wrap(Arrays.asList( //
+        Se2PointsVsRegions.line(x_samples, imageRegion), gokartMappingModule));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
@@ -130,7 +135,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
   protected void first() throws Exception {
     gokartMappingModule.start();
     // ---
-    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.addListener(gokartPoseListener);
     rimoGetLcmClient.addListener(rimoGetListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
@@ -179,7 +184,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
         }
         // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
         int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();
-        Collection<Flow> controls = carFlows.getFlows(resolution);
+        Collection<Flow> controls = flowsInterface.getFlows(resolution);
         Se2ComboRegion se2ComboRegion = //
             Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
         // ---
@@ -228,18 +233,14 @@ public class GokartTrajectoryModule extends AbstractClockedModule implements Gok
     return TrajectoryConfig.GLOBAL.planningPeriod;
   }
 
-  @Override // from GokartPoseListener
-  public void getEvent(GokartPoseEvent gokartPoseEvent) { // arrives at 50[Hz]
-    this.gokartPoseEvent = gokartPoseEvent;
-  }
-
   public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) { // goal reached
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      Tensor curve = Tensor.of(trajectory.stream().map(ts -> ts.stateTime().state().extract(0, 2)));
+      Tensor curve = Tensor.of(trajectory.stream() //
+          .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2)));
       purePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(trajectory);
     } else {
