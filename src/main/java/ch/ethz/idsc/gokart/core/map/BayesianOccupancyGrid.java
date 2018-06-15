@@ -47,26 +47,11 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private static final short MASK_UNKNOWN = 0xDD;
   @SuppressWarnings("unused")
   private static final short MASK_EMPTY = 0xFF;
-  private static final Tensor LIDAR2GOKART = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
-  // ---
-  /** prior */
-  private static final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
-  private static final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);
-  /** inv sensor model p(m|z) */
-  private static final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
-  private static final double P_M_PASS = MappingConfig.GLOBAL.getP_M_PASS();
-  /** cells with p(m|z_1:t) > probThreshold are considered occupied */
-  private static final double P_THRESH = MappingConfig.GLOBAL.getP_THRESH();
-  private static final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
-  private static final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT, P_M_PASS };
-  /** forgetting factor for previous classifications */
-  private static final double lambda = MappingConfig.GLOBAL.getLambda();
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
    * @param cellDim non-negative dimension of cell in [m]
-   * @return instance of BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number
-   * of cells per dimension */
+   * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
   public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim) {
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
@@ -74,6 +59,20 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
         new Dimension(sizeCeil.Get(0).number().intValue(), sizeCeil.Get(1).number().intValue()));
   }
 
+  private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
+  // ---
+  /** prior */
+  private final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
+  private final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);
+  /** inv sensor model p(m|z) */
+  private final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
+  private final double P_M_PASS = MappingConfig.GLOBAL.getP_M_PASS();
+  /** cells with p(m|z_1:t) > probThreshold are considered occupied */
+  private final double P_THRESH = MappingConfig.GLOBAL.getP_THRESH();
+  private final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
+  private final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT, P_M_PASS };
+  /** forgetting factor for previous classifications */
+  private final double lambda = MappingConfig.GLOBAL.getLambda();
   // ---
   private Tensor lbounds;
   private final Scalar cellDim; // [m] per cell
@@ -139,7 +138,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     lidar2cellLayer = GeometricLayer.of(grid2cell); // grid 2 cell
     lidar2cellLayer.pushMatrix(world2grid); // world to grid
     lidar2cellLayer.pushMatrix(IdentityMatrix.of(3)); // placeholder gokart2world
-    lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
+    lidar2cellLayer.pushMatrix(lidar2gokart); // lidar to gokart
     // ---
     world2cellLayer = GeometricLayer.of(grid2cell);
     world2cellLayer.pushMatrix(world2grid);
@@ -214,7 +213,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.pushMatrix(gokart2world);
-    lidar2cellLayer.pushMatrix(LIDAR2GOKART);
+    lidar2cellLayer.pushMatrix(lidar2gokart);
   }
 
   /** clears current obstacle image and redraws all known obstacles */
@@ -272,7 +271,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
       }
       logOdds = logOddsNew;
       lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
-      lidar2cellLayer.pushMatrix(LIDAR2GOKART); // lidar to gokart
+      lidar2cellLayer.pushMatrix(lidar2gokart); // lidar to gokart
     }
   }
 
