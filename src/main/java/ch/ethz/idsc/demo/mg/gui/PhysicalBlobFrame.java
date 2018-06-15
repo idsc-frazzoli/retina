@@ -39,7 +39,7 @@ public class PhysicalBlobFrame {
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    transformUtil = pipelineConfig.createTransformUtil();
+    transformUtil = pipelineConfig.createImageToWorldUtil();
     scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();

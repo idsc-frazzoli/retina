@@ -19,7 +19,7 @@ public class SlamProvider {
   private int lastTimeStamp;
 
   SlamProvider(PipelineConfig pipelineConfig) {
-    imageToWorldLookup = pipelineConfig.createTransformUtilLookup();
+    imageToWorldLookup = pipelineConfig.createImageToWorldUtilLookup();
     occurrenceMap = new OccurrenceMap();
     normalizationMap = new NormalizationMap();
     likelihoodMap = new LikelihoodMap();

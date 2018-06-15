@@ -44,7 +44,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     abstractAccumulatedImage.setInterval(25_000);
     abstractAccumulatedImage.addListener(this);
     pipelineConfig = new PipelineConfig();
-    imageToWorldLookup = pipelineConfig.createTransformUtilLookup();
+    imageToWorldLookup = pipelineConfig.createImageToWorldUtilLookup();
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
     imageCopy = new ImageCopy();

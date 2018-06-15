@@ -7,11 +7,11 @@ enum ImageToWorldUtilDemo {
   ;
   /** for testing
    * 
-   * prints for x=170, y=110
+   * prints for x=170, y=100
    * 3.4386292832405725/-0.4673008409796591 */
   public static void main(String[] args) {
-    ImageToWorldUtil test = new PipelineConfig().createTransformUtil();
-    ImageToWorldLookup anotherTest = new PipelineConfig().createTransformUtilLookup();
+    ImageToWorldUtil test = new PipelineConfig().createImageToWorldUtil();
+    ImageToWorldLookup anotherTest = new PipelineConfig().createImageToWorldUtilLookup();
     test.printInfo();
     System.out.println("---");
     int x = 170;

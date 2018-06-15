@@ -14,7 +14,7 @@ public class BlobTransform {
 
   BlobTransform(PipelineConfig pipelineConfig) {
     physicalBlobs = new ArrayList<>();
-    imageToWorldUtil = pipelineConfig.createTransformUtil();
+    imageToWorldUtil = pipelineConfig.createImageToWorldUtil();
   }
 
   public void transformSelectedBlobs(List<ImageBlob> blobs) {

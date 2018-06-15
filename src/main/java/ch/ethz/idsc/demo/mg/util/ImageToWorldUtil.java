@@ -76,7 +76,7 @@ public class ImageToWorldUtil {
     Tensor physicalCoord = undistortedImgCoord.dot(transformationMatrix);
     // enforce homogeneous coordinates
     physicalCoord = physicalCoord.divide(physicalCoord.Get(2));
-    // Transform to gokart rear axle. NOTE unit is mm
+    // Transform to go kart rear axle. NOTE unit is mm
     physicalCoord = physicalCoord.add(OFFSET);
     // convert from [mm] to [m]
     physicalCoord = physicalCoord.divide(unitConversion);

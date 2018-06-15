@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
 import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
+import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
 import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -88,13 +89,18 @@ public class PipelineConfig {
   }
 
   /** @return new instance of {@link ImageToWorldUtil} derived from parameters in pipelineConfig */
-  public ImageToWorldUtil createTransformUtil() {
+  public ImageToWorldUtil createImageToWorldUtil() {
     return ImageToWorldUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
 
   /** @return new instance of {@link ImageToWorldLookup} derived from parameters in pipelineConfig */
-  public ImageToWorldLookup createTransformUtilLookup() {
+  public ImageToWorldLookup createImageToWorldUtilLookup() {
     return ImageToWorldLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
+  }
+  
+  /** @return new instance of {@link WorldToImageUtil} derived from parameters in pipelineConfig */
+  public WorldToImageUtil createWorldToImageUtil() {
+    return WorldToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */
