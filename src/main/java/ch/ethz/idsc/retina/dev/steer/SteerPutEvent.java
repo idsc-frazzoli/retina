@@ -27,7 +27,9 @@ public class SteerPutEvent extends DataEvent {
   public static final Word CMD_OFF = Word.createByte("OFF", (byte) 0);
   public static final Word CMD_ON = Word.createByte("ON", (byte) 1);
   public static final List<Word> COMMANDS = Arrays.asList(CMD_OFF, CMD_ON);
+  // TODO find better names
   public static final SteerPutEvent PASSIVE = new SteerPutEvent(SteerPutEvent.CMD_OFF, 0);
+  public static final SteerPutEvent PASSIVE_ON = new SteerPutEvent(SteerPutEvent.CMD_ON, 0);
 
   /** @param command
    * @param torque with unit "SCT"

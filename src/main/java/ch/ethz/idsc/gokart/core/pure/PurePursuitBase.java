@@ -39,14 +39,17 @@ abstract class PurePursuitBase<PE> implements StartAndStoppable, PutProvider<PE>
 
   // function non-private for testing only
   final Optional<PE> private_putEvent(SteerColumnInterface steerColumnInterface) {
-    if (private_isOperational() && steerColumnInterface.isSteerColumnCalibrated())
-      // rimo requires RimoGetEvent to return non-empty
-      // steer always returns non-empty at this point
-      return control(steerColumnInterface);
-    return Optional.empty();
+    return private_isOperational() && steerColumnInterface.isSteerColumnCalibrated() //
+        // rimo requires RimoGetEvent for velocity control to return non-empty
+        // steer always returns non-empty at this point
+        ? control(steerColumnInterface)
+        : fallback();
   }
 
   /** @param steerColumnInterface guaranteed to be calibrated
    * @return */
   abstract Optional<PE> control(SteerColumnInterface steerColumnInterface);
+
+  /** @return */
+  abstract Optional<PE> fallback();
 }

@@ -78,7 +78,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       Optional<SteerPutEvent> optional = gtm.purePursuitModule.purePursuitSteer.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
-      assertFalse(optional.isPresent());
+      PurePursuitModuleTest._checkFallback(optional);
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
