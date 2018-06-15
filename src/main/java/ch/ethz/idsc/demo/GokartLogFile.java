@@ -416,9 +416,22 @@ public enum GokartLogFile implements LogFile {
   _20180607T144545_e9d47681, //
   /** gokart investigation */
   _20180607T165530_e9d47681, //
-  /** pure pursuit figure 8 reverse
+  /** pure pursuit figure eight reverse
    * including emergency brake testing */
   _20180607T170837_e9d47681, //
+  /***************************************************/
+  /* 2018-06-11 */
+  /** autonomous figure eight */
+  _20180611T095800_851c404d, //
+  /** trajectory planning, but incomplete because of virtual obstacle
+   * pure pursuit figure eight including emergency stops,
+   * localization failure after emergency stop */
+  _20180611T101502_851c404d, //
+  /** trajectory planning, but incomplete because of virtual obstacle */
+  _20180611T143955_44b96dd6, //
+  /** trajectory planning successful: complete loop, proximity to waypoints
+   * aborted because of steering system failure */
+  _20180611T144759_44b96dd6, //
   ;
   @Override
   public String getFilename() {
