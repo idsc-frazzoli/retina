@@ -432,13 +432,17 @@ public enum GokartLogFile implements LogFile {
   /** trajectory planning successful: complete loop, proximity to waypoints
    * aborted because of steering system failure */
   _20180611T144759_44b96dd6, //
+  /***************************************************/
+  /* 2018-06-14 */
+  /** steer operation failure during calibration procedure */
+  _20180614T142228_6a2f62c6, //
   ;
-  @Override
+  @Override // from LogFile
   public String getFilename() {
     return name().substring(1) + ".lcm.00";
   }
 
-  @Override
+  @Override // from LogFile
   public String getTitle() {
     return name().substring(1, 16);
   }

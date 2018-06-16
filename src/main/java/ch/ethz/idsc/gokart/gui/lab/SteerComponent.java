@@ -103,7 +103,7 @@ import ch.ethz.idsc.tensor.Scalar;
       jTextField[3] = createReading("tsuTrq_Qual");
       jTextField[4] = createReading("refMotTrq_CANInput");
       jTextField[5] = createReading("estMotTrq_CANInput");
-      jTextField[6] = createReading("estMotTrq_Qual");
+      jTextField[6] = createReading("estMotTrq_Qual"); // operation state {0f, 1f, 2f}
       jTextField[7] = createReading("gcpRelRckPos");
       jTextField[8] = createReading("gcpRelRckQual");
       jTextField[9] = createReading("gearRat");
@@ -135,7 +135,7 @@ import ch.ethz.idsc.tensor.Scalar;
     jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     {
       boolean isActive = steerGetEvent.isActive();
-      jTextField[6].setText("" + isActive);
+      jTextField[6].setText(steerGetEvent.estMotTrq_Qual + " " + isActive);
       jTextField[6].setBackground(isActive ? Color.GREEN : Color.YELLOW);
     }
     jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos());

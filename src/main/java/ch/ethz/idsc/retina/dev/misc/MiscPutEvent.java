@@ -35,6 +35,10 @@ public class MiscPutEvent extends DataEvent {
     this.ledControl = ledControl;
   }
 
+  public MiscPutEvent(ByteBuffer byteBuffer) {
+    this(byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get());
+  }
+
   @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(resetConnection);

@@ -52,7 +52,7 @@ public class SteerGetEvent extends DataEvent {
    * TODO check the requirement during operation!
    * 
    * see {@link #isActive()} */
-  private final float estMotTrq_Qual;
+  public final float estMotTrq_Qual;
   // ---
   /** angular position relative to fixed but initially unknown offset */
   private final float gcpRelRckPos;

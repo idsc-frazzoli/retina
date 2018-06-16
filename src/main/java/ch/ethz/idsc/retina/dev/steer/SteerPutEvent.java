@@ -75,19 +75,12 @@ public class SteerPutEvent extends DataEvent {
     return LENGTH;
   }
 
+  /** @return torque with unit "SCT" */
   public Scalar getTorque() {
     return Quantity.of(torque, UNIT_RTORQUE);
   }
 
-  // /** @return vector of length 2 */
-  // @OfflineUse
-  // public Tensor values_raw() {
-  // return Tensors.vector( //
-  // command & 0xff, // ... 0
-  // torque // ............ 1
-  // );
-  // }
-  @Override
+  @Override // from OfflineVectorInterface
   public Tensor asVector() {
     return Tensors.vector( //
         command & 0xff, // ... 0

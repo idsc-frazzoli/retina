@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
-import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
+import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTable;
 import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTables;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -17,22 +18,33 @@ import ch.ethz.idsc.tensor.io.Export;
 
 enum ProduceReport {
   ;
+  // 5448, 5268
   public static void main(String[] args) throws IOException {
-    File folder = UserHome.file("gokart/linmot/20180412T164740");
+    // File folder = UserHome.file("gokart/linmot/20180412T164740");
+    // GokartLogInterface gli = GokartLogAdapter.of(folder);
     // ---
-    GokartLogInterface gli = GokartLogAdapter.of(folder);
+    LogFile logFile = GokartLogFile._20180614T142228_6a2f62c6;
+    File file = DatahakiLogFileLocator.file(logFile);
     // ---
-    List<OfflineTableSupplier> list = Arrays.asList( //
+    List<OfflineVectorTable> list = Arrays.asList( //
         OfflineVectorTables.linmotGet(), //
+        OfflineVectorTables.linmotPut(), //
+        OfflineVectorTables.miscGet(), //
+        OfflineVectorTables.miscPut(), //
+        OfflineVectorTables.steerGet(), //
+        OfflineVectorTables.steerPut(), //
         OfflineVectorTables.rimoGet(), //
         OfflineVectorTables.rimoPut() //
     );
-    OfflineLogPlayer.process(gli.file(), list);
+    long tic = System.currentTimeMillis();
+    OfflineLogPlayer.process(file, list);
+    System.out.println(System.currentTimeMillis() - tic);
     // ---
-    File dir = UserHome.file("export/" + folder.getName() + "/csv");
+    File dir = UserHome.file("export/" + logFile.getTitle());
     dir.mkdirs();
-    for (OfflineTableSupplier ots : list) {
-      Export.of(new File(dir, ots.getClass().getSimpleName() + ".csv"), ots.getTable().map(CsvFormat.strict()));
-    }
+    for (OfflineVectorTable offlineTableSupplier : list)
+      Export.of( //
+          new File(dir, offlineTableSupplier.channel() + ".csv"), //
+          offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

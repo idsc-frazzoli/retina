@@ -15,7 +15,6 @@ import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
-import ch.ethz.idsc.tensor.sca.Round;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
@@ -44,12 +43,11 @@ public enum OfflineLogPlayer {
           if (set.add(event.channel))
             System.err.println("not a binary blob: " + event.channel);
         }
-        if (binaryBlob != null)
-          for (OfflineLogListener offlineLogListener : offlineLogListeners) {
-            Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND)).map(Round._6).Get();
-            ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN);
-            offlineLogListener.event(time, event.channel, byteBuffer);
-          }
+        if (binaryBlob != null) {
+          Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND));
+          for (OfflineLogListener offlineLogListener : offlineLogListeners)
+            offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
+        }
       }
     } catch (Exception exception) {
       if (!END_OF_FILE.equals(exception.getMessage()))
