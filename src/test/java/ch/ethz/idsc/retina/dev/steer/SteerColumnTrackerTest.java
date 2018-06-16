@@ -29,7 +29,9 @@ public class SteerColumnTrackerTest extends TestCase {
 
   public void testFeed() {
     SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
+    assertFalse(steerColumnTracker.isSteerColumnCalibrated());
     steerColumnTracker.getEvent(SteerGetHelper.create(+0.75f));
+    assertFalse(steerColumnTracker.isSteerColumnCalibrated());
     steerColumnTracker.getEvent(SteerGetHelper.create(-0.75f));
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
     assertTrue(steerColumnTracker.isCalibratedAndHealthy());
@@ -40,6 +42,19 @@ public class SteerColumnTrackerTest extends TestCase {
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
     assertTrue(steerColumnTracker.isCalibratedAndHealthy());
     steerColumnTracker.getEvent(SteerGetHelper.create(-0.76f)); // >1.55
+    assertFalse(steerColumnTracker.isCalibratedAndHealthy());
+  }
+
+  public void testFeedRelRckQual() {
+    SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
+    assertFalse(steerColumnTracker.isSteerColumnCalibrated());
+    steerColumnTracker.getEvent(SteerGetHelper.create(+0.75f));
+    assertFalse(steerColumnTracker.isSteerColumnCalibrated());
+    steerColumnTracker.getEvent(SteerGetHelper.create(-0.75f));
+    assertTrue(steerColumnTracker.isSteerColumnCalibrated());
+    assertTrue(steerColumnTracker.isCalibratedAndHealthy());
+    steerColumnTracker.getEvent(SteerGetHelper.create(+0.79f, SteerGetStatus.DISABLED.value())); // 1.54
+    assertFalse(steerColumnTracker.isSteerColumnCalibrated());
     assertFalse(steerColumnTracker.isCalibratedAndHealthy());
   }
 }
