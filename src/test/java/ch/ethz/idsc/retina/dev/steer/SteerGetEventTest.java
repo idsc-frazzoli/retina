@@ -28,7 +28,7 @@ public class SteerGetEventTest extends TestCase {
     steerGetEvent.insert(byteBuffer);
     assertTrue(Arrays.equals(array, array2));
     assertEquals(steerGetEvent.length(), 44);
-    Tensor raw = steerGetEvent.values_raw();
+    Tensor raw = steerGetEvent.asVector();
     assertEquals(raw.length(), 11);
   }
 

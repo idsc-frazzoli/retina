@@ -2,13 +2,13 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
-import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.gokart.core.GetListener;
 import ch.ethz.idsc.gokart.core.PutListener;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 
 /* package */ abstract class AutoboxTestingComponent<GE extends DataEvent, PE extends DataEvent> //
     extends ToolbarsComponent //

@@ -14,6 +14,6 @@ public class RimoGetTireTest extends TestCase {
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(600, 300);
     assertTrue(Objects.nonNull(rimoGetEvent.getTireL.toInfoString()));
     assertEquals(rimoGetEvent.getTireL.getErrorCodeMasked() & 0xff000000, 0);
-    assertEquals(rimoGetEvent.getTireL.vector_raw().length(), 7);
+    assertEquals(rimoGetEvent.getTireL.asVector().length(), 7);
   }
 }

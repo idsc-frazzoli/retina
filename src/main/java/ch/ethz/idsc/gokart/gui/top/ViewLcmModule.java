@@ -64,7 +64,7 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
-      final Tensor waypoints = TrajectoryConfig.GLOBAL.getWaypoints();
+      final Tensor waypoints = TrajectoryConfig.getWaypoints();
       final Tensor ARROWHEAD = Tensors.matrixDouble( //
           new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));

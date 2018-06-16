@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
-import ch.ethz.idsc.retina.sys.OfflineUse;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -27,7 +26,9 @@ public class SteerPutEvent extends DataEvent {
   public static final Word CMD_OFF = Word.createByte("OFF", (byte) 0);
   public static final Word CMD_ON = Word.createByte("ON", (byte) 1);
   public static final List<Word> COMMANDS = Arrays.asList(CMD_OFF, CMD_ON);
+  // TODO find better names
   public static final SteerPutEvent PASSIVE = new SteerPutEvent(SteerPutEvent.CMD_OFF, 0);
+  public static final SteerPutEvent PASSIVE_ON = new SteerPutEvent(SteerPutEvent.CMD_ON, 0);
 
   /** @param command
    * @param torque with unit "SCT"
@@ -63,24 +64,27 @@ public class SteerPutEvent extends DataEvent {
     this.torque = torque;
   }
 
-  @Override
+  @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(command);
     byteBuffer.putFloat(torque);
   }
 
-  @Override
+  @Override // from DataEvent
   protected int length() {
     return LENGTH;
   }
 
+  /** @return torque with unit "SCT" */
   public Scalar getTorque() {
     return Quantity.of(torque, UNIT_RTORQUE);
   }
 
-  /** @return vector of length 2 */
-  @OfflineUse
-  public Tensor values_raw() {
-    return Tensors.vector(command & 0xff, torque);
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        command & 0xff, // ... 0
+        torque // ............ 1
+    );
   }
 }

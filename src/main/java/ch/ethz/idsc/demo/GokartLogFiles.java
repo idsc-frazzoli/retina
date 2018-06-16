@@ -17,6 +17,7 @@ public enum GokartLogFiles {
         .flatMap(directory -> Stream.of(directory.listFiles())) //
         .filter(File::isFile) //
         .filter(StaticHelper::hasLcmExtension) //
+        .sorted() //
         .map(LogFileAdapter::from) //
         .collect(Collectors.toList());
   }

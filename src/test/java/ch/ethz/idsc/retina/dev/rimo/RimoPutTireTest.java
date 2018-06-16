@@ -11,6 +11,6 @@ public class RimoPutTireTest extends TestCase {
     assertEquals(rimoPutTire.getRateRaw(), 1);
     assertEquals(rimoPutTire.getTorqueRaw(), 2);
     assertTrue(Objects.nonNull(rimoPutTire.toSDOHexString()));
-    assertEquals(rimoPutTire.vector_raw().length(), 8);
+    assertEquals(rimoPutTire.asVector().length(), 8);
   }
 }

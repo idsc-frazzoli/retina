@@ -49,7 +49,7 @@ public class LinmotPutEventTest extends TestCase {
     byteBuffer.position(0);
     LinmotPutEvent lpe2 = new LinmotPutEvent(byteBuffer);
     assertTrue(Arrays.equals(array, lpe2.asArray()));
-    assertEquals(linmotPutEvent.vector_raw().length(), 6);
-    assertEquals(linmotPutEvent.vector_raw(), lpe2.vector_raw());
+    assertEquals(linmotPutEvent.asVector().length(), 6);
+    assertEquals(linmotPutEvent.asVector(), lpe2.asVector());
   }
 }

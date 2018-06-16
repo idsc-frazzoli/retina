@@ -3,7 +3,9 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** misc information sent to micro-autobox */
 public class MiscPutEvent extends DataEvent {
@@ -33,6 +35,10 @@ public class MiscPutEvent extends DataEvent {
     this.ledControl = ledControl;
   }
 
+  public MiscPutEvent(ByteBuffer byteBuffer) {
+    this(byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get(), byteBuffer.get());
+  }
+
   @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(resetConnection);
@@ -46,5 +52,17 @@ public class MiscPutEvent extends DataEvent {
   @Override // from DataEvent
   protected int length() {
     return LENGTH;
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        resetConnection & 0xff, //
+        resetRimoL & 0xff, //
+        resetRimoR & 0xff, //
+        resetLinmot & 0xff, //
+        resetSteer & 0xff, //
+        ledControl & 0xff //
+    );
   }
 }

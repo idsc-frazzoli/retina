@@ -124,10 +124,10 @@ public class RimoGetTire implements Serializable {
     return error_code & 0x00ffffff;
   }
 
-  public Tensor vector_raw() {
+  /* package */ Tensor asVector() {
     return Tensors.vector( //
         status_word, //
-        actual_rate * sign, // Attention: sign correction instead of raw value
+        actual_rate * sign * MIN_TO_S, //
         rms_motor_current, //
         dc_bus_voltage, //
         error_code, //

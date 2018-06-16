@@ -76,6 +76,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       if (channel.equals(MiscLcmServer.CHANNEL_GET)) {
         MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
         Scalar volt = Magnitude.VOLT.apply(miscGetEvent.getSteerBatteryVoltage());
+        // TODO it does not make sense to track the maximum steering voltage but rather the minimum
         table.set(Max.function(volt), index, INDEX_VOLT);
       }
     }

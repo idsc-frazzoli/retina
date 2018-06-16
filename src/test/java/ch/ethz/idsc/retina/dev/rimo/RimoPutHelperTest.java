@@ -27,7 +27,7 @@ public class RimoPutHelperTest extends TestCase {
     rimoPutEvent.insert(byteBuffer);
     byteBuffer.flip();
     RimoPutEvent rimoPutEvent2 = RimoPutHelper.from(byteBuffer);
-    assertEquals(rimoPutEvent.putTireL.vector_raw(), rimoPutEvent2.putTireL.vector_raw());
-    assertEquals(rimoPutEvent.putTireR.vector_raw(), rimoPutEvent2.putTireR.vector_raw());
+    assertEquals(rimoPutEvent.putTireL.asVector(), rimoPutEvent2.putTireL.asVector());
+    assertEquals(rimoPutEvent.putTireR.asVector(), rimoPutEvent2.putTireR.asVector());
   }
 }

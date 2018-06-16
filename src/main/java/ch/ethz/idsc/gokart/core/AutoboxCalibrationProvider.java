@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 
 public abstract class AutoboxCalibrationProvider<PE extends DataEvent> extends AutoboxScheduledProvider<PE> {
   @Override // from PutProvider

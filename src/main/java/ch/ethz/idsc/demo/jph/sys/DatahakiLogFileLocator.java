@@ -23,6 +23,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
 
   @Override
   public File getAbsoluteFile(LogFile logFile) {
+    // TODO string input would be sufficient
     String title = logFile.getFilename();
     String date = title.substring(0, 8);
     for (File dir : LOG_ROOT) {
