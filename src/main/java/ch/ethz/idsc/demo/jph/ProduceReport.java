@@ -18,12 +18,7 @@ import ch.ethz.idsc.tensor.io.Export;
 
 enum ProduceReport {
   ;
-  // 5448, 5268
-  public static void main(String[] args) throws IOException {
-    // File folder = UserHome.file("gokart/linmot/20180412T164740");
-    // GokartLogInterface gli = GokartLogAdapter.of(folder);
-    // ---
-    LogFile logFile = GokartLogFile._20180614T142228_6a2f62c6;
+  public static void of(LogFile logFile) throws IOException {
     File file = DatahakiLogFileLocator.file(logFile);
     // ---
     List<OfflineVectorTable> list = Arrays.asList( //
@@ -46,5 +41,13 @@ enum ProduceReport {
       Export.of( //
           new File(dir, offlineTableSupplier.channel() + ".csv"), //
           offlineTableSupplier.getTable().map(CsvFormat.strict()));
+  }
+
+  // 5448, 5268
+  public static void main(String[] args) throws IOException {
+    // File folder = UserHome.file("gokart/linmot/20180412T164740");
+    // GokartLogInterface gli = GokartLogAdapter.of(folder);
+    // ---
+    of(GokartLogFile._20180614T142228_6a2f62c6);
   }
 }

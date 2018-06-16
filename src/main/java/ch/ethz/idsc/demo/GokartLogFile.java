@@ -407,17 +407,21 @@ public enum GokartLogFile implements LogFile {
   _20180607T122743_edd2e720, //
   /** emergency brake testing */
   _20180607T124405_edd2e720, //
-  /** gokart investigation */
+  /** gokart investigation
+   * steering failure 323.837875[s] */
   _20180607T140443_e9d47681, //
   /** gokart investigation */
   _20180607T142738_e9d47681, //
   /** current measurement of steering
-   * at the end, steering failure */
+   * steering failure at 561.786948[s] */
   _20180607T144545_e9d47681, //
+  /** steering failure at 29.085299[s] */
+  _20180607T165423_e9d47681, //
   /** gokart investigation */
   _20180607T165530_e9d47681, //
   /** pure pursuit figure eight reverse
-   * including emergency brake testing */
+   * including emergency brake testing
+   * steering failure at 556.908939[s] */
   _20180607T170837_e9d47681, //
   /***************************************************/
   /* 2018-06-11 */
@@ -425,16 +429,26 @@ public enum GokartLogFile implements LogFile {
   _20180611T095800_851c404d, //
   /** trajectory planning, but incomplete because of virtual obstacle
    * pure pursuit figure eight including emergency stops,
-   * localization failure after emergency stop */
+   * localization failure after emergency stop,
+   * steering failure at 553.125962[s] */
   _20180611T101502_851c404d, //
   /** trajectory planning, but incomplete because of virtual obstacle */
   _20180611T143955_44b96dd6, //
   /** trajectory planning successful: complete loop, proximity to waypoints
-   * aborted because of steering system failure */
+   * aborted because of steering system failure at 146.609942[s] */
   _20180611T144759_44b96dd6, //
+  /** steering failure at 8.32E-4[s] */
+  _20180611T150139_872fbbb8, //
   /***************************************************/
   /* 2018-06-14 */
-  /** steer operation failure during calibration procedure */
+  /** steering failure at 20.875161[s] */
+  _20180614T092856_7f9c94c9, //
+  /** steering failure at 0.00161[s] */
+  _20180614T092944_7f9c94c9, //
+  /** steering failure at 28.178607[s] */
+  _20180614T122925_1fe5ba47, //
+  /** steer operation failure at 57.514723[s]
+   * during calibration procedure */
   _20180614T142228_6a2f62c6, //
   ;
   @Override // from LogFile

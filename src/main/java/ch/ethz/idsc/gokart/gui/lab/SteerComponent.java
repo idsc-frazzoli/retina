@@ -37,7 +37,7 @@ import ch.ethz.idsc.tensor.Scalar;
   private final JTextField torquePut;
   private final JTextField rangeWidth;
   private final JTextField rangePos;
-  private final JTextField[] jTextField = new JTextField[11];
+  private final JTextField[] jTextFields = new JTextField[11];
   private final SteerPositionControl steerPositionControl = new SteerPositionControl();
   private final JButton stepLeft = new JButton("Left");
   private final JButton stepRight = new JButton("Right");
@@ -97,17 +97,17 @@ import ch.ethz.idsc.tensor.Scalar;
     }
     addSeparator();
     { // reception
-      jTextField[0] = createReading("motAsp_CANInput");
-      jTextField[1] = createReading("motAsp_Qual");
-      jTextField[2] = createReading("tsuTrq_CANInput");
-      jTextField[3] = createReading("tsuTrq_Qual");
-      jTextField[4] = createReading("refMotTrq_CANInput");
-      jTextField[5] = createReading("estMotTrq_CANInput");
-      jTextField[6] = createReading("estMotTrq_Qual"); // operation state {0f, 1f, 2f}
-      jTextField[7] = createReading("gcpRelRckPos");
-      jTextField[8] = createReading("gcpRelRckQual");
-      jTextField[9] = createReading("gearRat");
-      jTextField[10] = createReading("halfRckPos");
+      jTextFields[0] = createReading("motAsp_CANInput");
+      jTextFields[1] = createReading("motAsp_Qual");
+      jTextFields[2] = createReading("tsuTrq_CANInput");
+      jTextFields[3] = createReading("tsuTrq_Qual");
+      jTextFields[4] = createReading("refMotTrq_CANInput");
+      jTextFields[5] = createReading("estMotTrq_CANInput");
+      jTextFields[6] = createReading("estMotTrq_Qual"); // operation state {0f, 1f, 2f}
+      jTextFields[7] = createReading("gcpRelRckPos");
+      jTextFields[8] = createReading("gcpRelRckQual");
+      jTextFields[9] = createReading("gearRat");
+      jTextFields[10] = createReading("halfRckPos");
     }
   }
 
@@ -127,21 +127,27 @@ import ch.ethz.idsc.tensor.Scalar;
       rangePos.setText(angle);
     }
     // ---
-    jTextField[0].setText("" + steerGetEvent.motAsp_CANInput);
-    jTextField[1].setText("" + steerGetEvent.motAsp_Qual);
-    jTextField[2].setText("" + steerGetEvent.tsuTrq_CANInput);
-    jTextField[3].setText("" + steerGetEvent.tsuTrq_Qual);
-    jTextField[4].setText("" + steerGetEvent.refMotTrq_CANInput);
-    jTextField[5].setText("" + steerGetEvent.estMotTrq_CANInput);
+    jTextFields[0].setText("" + steerGetEvent.motAsp_CANInput);
+    jTextFields[1].setText("" + steerGetEvent.motAsp_Qual);
+    jTextFields[2].setText("" + steerGetEvent.tsuTrq_CANInput);
+    jTextFields[3].setText("" + steerGetEvent.tsuTrq_Qual);
+    jTextFields[4].setText("" + steerGetEvent.refMotTrq_CANInput);
+    jTextFields[5].setText("" + steerGetEvent.estMotTrq_CANInput);
     {
+      JTextField jTextField = jTextFields[6];
       boolean isActive = steerGetEvent.isActive();
-      jTextField[6].setText(steerGetEvent.estMotTrq_Qual + " " + isActive);
-      jTextField[6].setBackground(isActive ? Color.GREEN : Color.YELLOW);
+      jTextField.setText(steerGetEvent.estMotTrq_Qual + " " + isActive);
+      jTextField.setBackground(isActive ? Color.GREEN : Color.YELLOW);
     }
-    jTextField[7].setText("" + steerGetEvent.getGcpRelRckPos());
-    jTextField[8].setText("" + steerGetEvent.gcpRelRckQual);
-    jTextField[9].setText("" + steerGetEvent.gearRat);
-    jTextField[10].setText("" + steerGetEvent.halfRckPos);
+    jTextFields[7].setText("" + steerGetEvent.getGcpRelRckPos());
+    {
+      JTextField jTextField = jTextFields[8];
+      boolean status = steerGetEvent.isRelRckOk();
+      jTextField.setText(steerGetEvent.gcpRelRckQual + " " + status);
+      jTextField.setBackground(status ? Color.GREEN : Color.YELLOW);
+    }
+    jTextFields[9].setText("" + steerGetEvent.gearRat);
+    jTextFields[10].setText("" + steerGetEvent.halfRckPos);
   }
 
   @Override // from PutListener

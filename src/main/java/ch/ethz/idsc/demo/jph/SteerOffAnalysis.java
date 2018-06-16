@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** starting on 20180607 the steering system exhibited behavior out of the nominal range */
-enum SteerOffAnalysis {
+/* package */ enum SteerOffAnalysis {
   ;
   private static final File DIRECTORY = UserHome.file("powersteer");
 

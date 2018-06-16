@@ -20,11 +20,13 @@ public class SteerGetEvent extends DataEvent {
   // ---
   /** variable */
   public final float motAsp_CANInput;
-  /** constant 2.0 */
+  /** during nominal operation motAsp_Qual is constant 2f
+   * a value of 0f was observed briefly during failure instant */
   public final float motAsp_Qual;
   /** variable */
   public final float tsuTrq_CANInput;
-  /** constant 2.0 */
+  /** during nominal operation motAsp_Qual is constant 2f
+   * a value of 0f was observed briefly during failure instant */
   public final float tsuTrq_Qual;
   /** post processing of data has shown that refMotTrq_CANInput
    * allows the interpretation of reference motor torque.
@@ -56,11 +58,16 @@ public class SteerGetEvent extends DataEvent {
   // ---
   /** angular position relative to fixed but initially unknown offset */
   private final float gcpRelRckPos;
-  /** gcpRelRckQual is constant 2.0 */
+  /** gcpRelRckQual is constant 2f during nominal conditions
+   * when a failure occurs the value is constant 1f
+   * such an instance was first recorded on 20180607
+   * TODO check the requirement during operation! */
   public final float gcpRelRckQual;
-  /** gearRat is constant 22.0 */
+  /** gearRat is constant 22f
+   * a value of 0f was observed briefly during failure instant */
   public final float gearRat;
-  /** halfRckPos is constant 72.0 */
+  /** halfRckPos is constant 72f
+   * a value of 0f was observed briefly during failure instant */
   public final float halfRckPos;
 
   /** @param byteBuffer from which constructor reads 44 bytes */
@@ -112,7 +119,12 @@ public class SteerGetEvent extends DataEvent {
 
   /** @return true if the device is active and receives and follows torque commands */
   public boolean isActive() {
-    return estMotTrq_Qual == 2.0f;
+    return estMotTrq_Qual == 2f;
+  }
+
+  /** @return true if the device is operational */
+  public boolean isRelRckOk() {
+    return gcpRelRckQual == 2f;
   }
 
   /** @return vector of length 11 */
