@@ -44,8 +44,7 @@ public class PowerRimoAnalysis implements OfflineTableSupplier {
         time_next = time.add(delta);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rge.getTireL.vector_raw(), //
-            rge.getTireR.vector_raw(), //
+            rge.asVector(), //
             rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS) // ARMS
         );
       }

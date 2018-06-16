@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -50,5 +50,10 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
 
   public Scalar getQuality() {
     return DoubleScalar.of(quality);
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector(x, y, angle, quality);
   }
 }

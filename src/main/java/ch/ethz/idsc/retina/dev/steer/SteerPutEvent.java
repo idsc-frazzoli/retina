@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
-import ch.ethz.idsc.retina.sys.OfflineUse;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -80,9 +79,16 @@ public class SteerPutEvent extends DataEvent {
     return Quantity.of(torque, UNIT_RTORQUE);
   }
 
-  /** @return vector of length 2 */
-  @OfflineUse
-  public Tensor values_raw() {
+  // /** @return vector of length 2 */
+  // @OfflineUse
+  // public Tensor values_raw() {
+  // return Tensors.vector( //
+  // command & 0xff, // ... 0
+  // torque // ............ 1
+  // );
+  // }
+  @Override
+  public Tensor asVector() {
     return Tensors.vector( //
         command & 0xff, // ... 0
         torque // ............ 1

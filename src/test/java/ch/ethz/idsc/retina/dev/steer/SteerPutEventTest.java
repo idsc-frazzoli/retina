@@ -21,7 +21,7 @@ public class SteerPutEventTest extends TestCase {
     byteBuffer.position(0);
     SteerPutEvent spe2 = SteerPutEvent.from(byteBuffer);
     assertEquals(spe2.getTorque().number().floatValue(), torque.number().floatValue());
-    assertEquals(steerPutEvent.values_raw(), spe2.values_raw());
+    assertEquals(steerPutEvent.asVector(), spe2.asVector());
   }
 
   public void testCreate() {
@@ -32,6 +32,6 @@ public class SteerPutEventTest extends TestCase {
     steerPutEvent.insert(byteBuffer);
     assertEquals(byteBuffer.get(0), 0);
     assertEquals(byteBuffer.getFloat(1), -0.9f);
-    assertTrue(Scalars.isZero(steerPutEvent.values_raw().Get(0)));
+    assertTrue(Scalars.isZero(steerPutEvent.asVector().Get(0)));
   }
 }

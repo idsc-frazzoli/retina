@@ -3,9 +3,11 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MiscGetEvent extends DataEvent {
@@ -57,5 +59,13 @@ public class MiscGetEvent extends DataEvent {
   @Override // from DataEvent
   protected int length() {
     return LENGTH;
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        emergency & 0xff, //
+        batteryAdc * CONVERSION_V //
+    );
   }
 }

@@ -47,8 +47,8 @@ public class PowerSteerTable implements OfflineTableSupplier {
         time_next = time.add(delta);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), // 0
-            sge.values_raw(), // [1 - 11]
-            spe.values_raw(), // [12 - 13]
+            sge.asVector(), // [1 - 11]
+            spe.asVector(), // [12 - 13]
             mge.getSteerBatteryVoltage().map(Magnitude.VOLT) // [14]
         );
       }

@@ -3,9 +3,10 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Join;
 
 /** for post processing @see RimoPutHelper */
 public class RimoPutEvent extends DataEvent {
@@ -38,5 +39,12 @@ public class RimoPutEvent extends DataEvent {
     return Tensors.of( //
         putTireL.getTorque().negate(), //
         putTireR.getTorque());
+  }
+
+  @Override
+  public Tensor asVector() {
+    return Join.of( //
+        putTireL.asVector(), //
+        putTireR.asVector());
   }
 }

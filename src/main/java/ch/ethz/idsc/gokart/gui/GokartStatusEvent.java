@@ -3,10 +3,12 @@ package ch.ethz.idsc.gokart.gui;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** the capabilities of gokart status event include
@@ -45,5 +47,10 @@ public class GokartStatusEvent extends DataEvent implements SteerColumnInterface
     if (!isSteerColumnCalibrated())
       throw new RuntimeException();
     return Quantity.of(steerColumnEncoder, SteerPutEvent.UNIT_ENCODER);
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector(steerColumnEncoder);
   }
 }

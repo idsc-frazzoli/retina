@@ -9,9 +9,7 @@ import java.util.List;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.tab.LinmotGetTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoGetTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoPutTable;
+import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTables;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -25,9 +23,9 @@ enum ProduceReport {
     GokartLogInterface gli = GokartLogAdapter.of(folder);
     // ---
     List<OfflineTableSupplier> list = Arrays.asList( //
-        new LinmotGetTable(), //
-        new RimoPutTable(), //
-        new RimoGetTable() //
+        OfflineVectorTables.linmotGet(), //
+        OfflineVectorTables.rimoGet(), //
+        OfflineVectorTables.rimoPut() //
     );
     OfflineLogPlayer.process(gli.file(), list);
     // ---

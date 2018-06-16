@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.dev.linmot;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -87,11 +87,15 @@ public class LinmotPutEvent extends DataEvent {
     return (byte) (motion_cmd_hdr & 0xf);
   }
 
-  /** function only used in post-processing
-   * 
-   * @return */
-  public Tensor vector_raw() {
-    return Tensors.vector(control_word, motion_cmd_hdr, target_position, max_velocity, acceleration, deceleration);
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        control_word & 0xffff, //
+        motion_cmd_hdr & 0xffff, //
+        target_position, //
+        max_velocity, //
+        acceleration, //
+        deceleration);
   }
 
   public String toInfoString() {

@@ -3,8 +3,7 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
-import ch.ethz.idsc.retina.sys.OfflineUse;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -117,8 +116,8 @@ public class SteerGetEvent extends DataEvent {
   }
 
   /** @return vector of length 11 */
-  @OfflineUse
-  public Tensor values_raw() {
+  @Override
+  public Tensor asVector() {
     return Tensors.vector( //
         motAsp_CANInput, // .. 0
         motAsp_Qual, // ...... 1

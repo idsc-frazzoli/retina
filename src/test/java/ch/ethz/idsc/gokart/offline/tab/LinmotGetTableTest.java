@@ -17,10 +17,10 @@ public class LinmotGetTableTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = new LinmotGetTable();
+    OfflineTableSupplier offlineTableSupplier = OfflineVectorTables.linmotGet();
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     // System.out.println(Dimensions.of(tensor));
-    assertEquals(Dimensions.of(tensor), Arrays.asList(180, 9));
+    assertEquals(Dimensions.of(tensor), Arrays.asList(180, 7));
   }
 }
