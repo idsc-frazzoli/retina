@@ -15,7 +15,7 @@ public class SteerRelRckWatchdog implements OfflineLogListener {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-      if (!steerGetEvent.isRelRckOk() && fuse) {
+      if (!steerGetEvent.isRelRckQual() && fuse) {
         fuse = false;
         System.err.println(" \\--> " + time.number().doubleValue() + "[s]");
       }

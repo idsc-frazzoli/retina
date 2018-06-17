@@ -53,7 +53,8 @@ public class SteerGetEvent extends DataEvent {
    * in autonomous mode, estMotTrq_Qual should always be 2.0
    * TODO check the requirement during operation!
    * 
-   * see {@link #isActive()} */
+   * @see #isActive()
+   * @see SteerGetStatus */
   public final float estMotTrq_Qual;
   // ---
   /** angular position relative to fixed but initially unknown offset */
@@ -61,7 +62,8 @@ public class SteerGetEvent extends DataEvent {
   /** gcpRelRckQual is constant 2f during nominal conditions
    * when a failure occurs the value is constant 1f
    * such an instance was first recorded on 20180607
-   * TODO check the requirement during operation! */
+   * 
+   * @see SteerGetStatus */
   public final float gcpRelRckQual;
   /** gearRat is constant 22f
    * a value of 0f was observed briefly during failure instant */
@@ -119,12 +121,15 @@ public class SteerGetEvent extends DataEvent {
 
   /** @return true if the device is active and receives and follows torque commands */
   public boolean isActive() {
-    return estMotTrq_Qual == 2f;
+    return SteerGetStatus.OPERATIONAL.of(estMotTrq_Qual);
   }
 
-  /** @return true if the device is operational */
-  public boolean isRelRckOk() {
-    return gcpRelRckQual == 2f;
+  /** function introduced as a consequence of the report
+   * 20180616_power_steering_breakdown
+   * 
+   * @return true if the device is operational */
+  public boolean isRelRckQual() {
+    return SteerGetStatus.OPERATIONAL.of(gcpRelRckQual);
   }
 
   /** @return vector of length 11 */

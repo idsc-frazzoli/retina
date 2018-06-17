@@ -142,7 +142,7 @@ import ch.ethz.idsc.tensor.Scalar;
     jTextFields[7].setText("" + steerGetEvent.getGcpRelRckPos());
     {
       JTextField jTextField = jTextFields[8];
-      boolean status = steerGetEvent.isRelRckOk();
+      boolean status = steerGetEvent.isRelRckQual();
       jTextField.setText(steerGetEvent.gcpRelRckQual + " " + status);
       jTextField.setBackground(status ? Color.GREEN : Color.YELLOW);
     }
