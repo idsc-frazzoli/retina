@@ -29,9 +29,6 @@ class ImageDisplayFrame {
   public ImageDisplayFrame() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     JPanel jPanelMain = new JPanel(new BorderLayout());
-    {
-      JPanel jPanelTop = new JPanel(new BorderLayout());
-    }
     jPanelMain.add("Center", jComponent);
     jFrame.setContentPane(jPanelMain);
     jFrame.setBounds(100, 100, 400, 400);

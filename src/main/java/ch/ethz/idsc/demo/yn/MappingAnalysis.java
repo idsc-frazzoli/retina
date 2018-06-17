@@ -68,7 +68,7 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private final BayesianOccupancyGrid grid;
   private final Tensor gridRange = Tensors.vector(40, 40);
   private final Tensor lbounds;
-  private boolean flag = false;
+  // private boolean flag = false;
 
   public MappingAnalysis() {
     LidarAngularFiringCollector lidarAngularFiringCollector = //
