@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.TransformUtil;
+import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
 public class PhysicalBlobFrame {
@@ -24,7 +24,7 @@ public class PhysicalBlobFrame {
   private final Graphics2D graphics;
   private final byte[] bytes;
   // world coord to visualization mapping
-  private TransformUtil transformUtil;
+  private ImageToWorldUtil transformUtil;
   private final double[][] fieldOfView; // contains image plane coordinates of trapezoid defining field of view
   private final double scaleFactor; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
   private final int gokartSize; // [pixel]
@@ -39,7 +39,7 @@ public class PhysicalBlobFrame {
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    transformUtil = pipelineConfig.createTransformUtil();
+    transformUtil = pipelineConfig.createImageToWorldUtil();
     scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();
