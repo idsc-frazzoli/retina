@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.lcm.autobox;
+package ch.ethz.idsc.retina.lcm;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

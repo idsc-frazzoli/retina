@@ -1,11 +1,10 @@
 // code by jph
-package ch.ethz.idsc.gokart.lcm.autobox;
+package ch.ethz.idsc.retina.lcm;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;

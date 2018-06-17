@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.lcm.joystick;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
 /** client to lcm channel with joystick information */
 public final class JoystickLcmProvider extends BinaryLcmClient {
