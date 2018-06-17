@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
+import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
 /** client to lcm channel with joystick information
  * 

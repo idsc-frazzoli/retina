@@ -40,6 +40,7 @@ public class SlamParticleSet {
   public SlamParticle[] getParticles() {
     return slamParticleSet;
   }
+
   // expected state is a weighted mean of all particles
   public Tensor getExpectedState() {
     Tensor expectedState = null;

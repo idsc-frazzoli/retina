@@ -65,7 +65,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
     } else //
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
-      Tensor tensor = VectorFloatBlob.decode(byteBuffer); // TODO not used yet
+      VectorFloatBlob.decode(byteBuffer); // TODO not used yet
     }
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && //

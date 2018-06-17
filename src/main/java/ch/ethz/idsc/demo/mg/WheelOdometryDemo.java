@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
 // should provide a global pose estimate based on wheel odometry through forward integration.
 // idea: in SLAM applications, the estimate could then be fused with pose estimates from other sensors
 // TODO find formulas to forward integrate gokart pose
+// answer: Se2CarIntegrator.INSTANCE.spin(pose, {speed, 0, rate});
 public class WheelOdometryDemo implements OfflineLogListener {
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
   private Tensor estimatedPose; // pose estimated by wheel odometry

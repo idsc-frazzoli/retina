@@ -5,9 +5,9 @@ import java.io.File;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
 import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
 import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
-import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -97,7 +97,7 @@ public class PipelineConfig {
   public ImageToWorldLookup createImageToWorldUtilLookup() {
     return ImageToWorldLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
   }
-  
+
   /** @return new instance of {@link WorldToImageUtil} derived from parameters in pipelineConfig */
   public WorldToImageUtil createWorldToImageUtil() {
     return WorldToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);

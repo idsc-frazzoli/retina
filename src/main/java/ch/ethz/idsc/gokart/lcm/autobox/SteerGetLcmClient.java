@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
+import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 
 public class SteerGetLcmClient extends SimpleLcmClient<SteerGetListener> {
   @Override // from BinaryLcmClient

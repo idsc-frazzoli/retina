@@ -29,6 +29,7 @@ public class PanoramaViewModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
+  @SuppressWarnings("unused")
   @Override // from AbstractModule
   protected void first() throws Exception {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
