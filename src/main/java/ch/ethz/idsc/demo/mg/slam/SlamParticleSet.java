@@ -21,18 +21,18 @@ public class SlamParticleSet {
 
   // propagate each single particle using wheel odometry
   public void propagateStateEstimate() {
-    for (int i = 0; i < numberOfParticles; i++) {
+    for (int i = 0; i < numberOfParticles; i++)
       slamParticleSet[i].propagateStateEstimate();
-    }
   }
 
   // update the particle likelihooods
-  public void updateStateLikelihoods(double[] gokartCoordPos, LikelihoodMap likelihoodMap) {
+  public void updateStateLikelihoods(double[] gokartFramePos, MapProvider likelihoodMap) {
     for (int i = 0; i < numberOfParticles; i++) {
-      // first, we map go kart coordinates into world coordinates using the state estimate of the particle
-      Tensor pose = slamParticleSet[i].getPose();
-      // TODO there is already a function somewhere to easily switch between coordinate systems?
-      // second step, we get the likelihoodMap value of the computed world coordinate position and apply the actual update using alpha parameter
+      // map go kart coordinates into world coordinates using the state estimate of the particle
+      Tensor worldCoord = slamParticleSet[i].getWorldCoord(gokartFramePos);
+      // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
+      double updatedParticleLikelihood = slamParticleSet[i].getParticleLikelihood() + alpha * likelihoodMap.getValue(worldCoord);
+      slamParticleSet[i].setParticleLikelihood(updatedParticleLikelihood);
     }
   }
 
@@ -42,12 +42,18 @@ public class SlamParticleSet {
   }
 
   // expected state is a weighted mean of all particles
-  public Tensor getExpectedState() {
-    Tensor expectedState = null;
+  public Tensor getExpectedPose() {
+    Tensor expectedPose = null;
     for (int i = 0; i < numberOfParticles; i++) {
       Tensor pose = slamParticleSet[i].getPose();
       double likelihood = slamParticleSet[i].getParticleLikelihood();
     }
-    return expectedState;
+    return expectedPose;
+  }
+
+  // for testing
+  public void setPose(Tensor pose) {
+    for (int i = 0; i < numberOfParticles; i++)
+      slamParticleSet[i].setPose(pose);
   }
 }

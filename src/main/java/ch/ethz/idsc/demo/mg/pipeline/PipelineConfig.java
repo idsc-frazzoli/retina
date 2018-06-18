@@ -54,7 +54,7 @@ public class PipelineConfig {
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
   public final Scalar defaultBlobID = RealScalar.of(0);
   // tracking collector
-  public final Boolean collectEstimatedFeatures = true;
+  public final Boolean collectEstimatedFeatures = false;
   public final Scalar iterationLength = RealScalar.of(10);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
@@ -74,11 +74,16 @@ public class PipelineConfig {
   public final Scalar originPosY = RealScalar.of(400); // [pixel]
   public final Scalar objectSize = RealScalar.of(30); // [pixel]
   public final Scalar gokartSize = RealScalar.of(35); // [pixel]
+  //
   /***************************************************/
   // SLAM algorithm parameters
-  public final Scalar alpha = RealScalar.of(0.8);
+  public final Boolean useSlam = true;
+  public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(10);
-
+  public final Scalar cellDim = RealScalar.of(0.2); // [m] cell dimension for maps
+  public final Scalar dimX = RealScalar.of(50); // [m] x dimension of map
+  public final Scalar dimY = RealScalar.of(50); // [m] y dimension of map
+  
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {

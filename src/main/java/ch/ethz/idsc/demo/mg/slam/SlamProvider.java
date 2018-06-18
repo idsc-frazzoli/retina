@@ -3,49 +3,57 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
+import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
 // implements the slam algorithm "simultaneous localization and mapping for event-based vision systems"
-// TODO all three maps have the same domain: introduce a new generic map class? Probably already present somewhere
-public class SlamProvider {
+public class SlamProvider implements DavisDvsListener {
+  // camera utilities
   private final ImageToWorldLookup imageToWorldLookup;
-  private final OccurrenceMap occurrenceMap;
-  private final NormalizationMap normalizationMap;
-  private final LikelihoodMap likelihoodMap;
+  private final WorldToImageUtil worldToImageUtil;
+  // odometry
+  private GokartPoseOdometry gokartPoseOdometry;
+  // maps
+  private final EventMap eventMaps;
+  // particles
   private final SlamParticleSet slamParticleSet;
-  // --
-  private Tensor lastExpectedState;
+  // further fields
+  private Tensor lastExpectedPose;
   private int lastTimeStamp;
 
-  SlamProvider(PipelineConfig pipelineConfig) {
+  SlamProvider(PipelineConfig pipelineConfig, GokartPoseOdometry gokartPoseOdometry) {
     imageToWorldLookup = pipelineConfig.createImageToWorldUtilLookup();
-    occurrenceMap = new OccurrenceMap();
-    normalizationMap = new NormalizationMap();
-    likelihoodMap = new LikelihoodMap();
+    worldToImageUtil = pipelineConfig.createWorldToImageUtil();
+    this.gokartPoseOdometry = gokartPoseOdometry;
+    eventMaps = new EventMap(pipelineConfig);
+    // TODO initial lidar pose for initialization required
     slamParticleSet = new SlamParticleSet(pipelineConfig);
   }
 
-  public void receiveEvent(DavisDvsEvent davisDvsEvent) {
+  @Override
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
     // we map the event onto go kart coordinates since this is gonna be required multiple times
-    double[] gokartCoordPos = imageToWorldLookup.imageToWorld(davisDvsEvent.x, davisDvsEvent.y);
+    double[] eventGokartFrame = imageToWorldLookup.imageToWorld(davisDvsEvent.x, davisDvsEvent.y);
     // localization step:
     // state estimate propagation
-    slamParticleSet.propagateStateEstimate();
+    // slamParticleSet.propagateStateEstimate();
+    slamParticleSet.setPose(gokartPoseOdometry.getPose()); // for testing
     // state likelihoods update
-    slamParticleSet.updateStateLikelihoods(gokartCoordPos, likelihoodMap);
+    slamParticleSet.updateStateLikelihoods(eventGokartFrame, eventMaps.getLikelihoodMap());
     // mapping step:
     // occurrence map update
-    // TODO probably smarter to pass pose and likelihood of all particles instead of whole particle objects
-    occurrenceMap.update(gokartCoordPos, slamParticleSet.getParticles());
+    eventMaps.updateOccurrenceMap(eventGokartFrame, slamParticleSet.getParticles());
     // normalization map update
     // this does not need to be done for every event --> choose some threshold maybe 50ms
     if (davisDvsEvent.time - lastTimeStamp > 1000) {
-      normalizationMap.update(slamParticleSet.getExpectedState(), lastExpectedState);
-      lastExpectedState = slamParticleSet.getExpectedState();
+      eventMaps.updateNormalizationMap(slamParticleSet.getExpectedPose(), lastExpectedPose, imageToWorldLookup);
+      lastExpectedPose = slamParticleSet.getExpectedPose();
       lastTimeStamp = davisDvsEvent.time;
     }
     // likelihood update
-    likelihoodMap.update(occurrenceMap, normalizationMap);
+    eventMaps.updateLikelihoodMap();
   }
 }
