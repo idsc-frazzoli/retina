@@ -158,7 +158,7 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testSpecific() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
@@ -168,7 +168,7 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
@@ -178,13 +178,13 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
-    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL);
     assertFalse(optional.isPresent());
   }
 
   public void testLookAheadDistanceFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
-    Optional<Scalar> optional = PurePursuitModule.getLookAhead(pose, DubendorfCurve.OVAL);
+    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL);
     assertFalse(optional.isPresent());
   }
 }

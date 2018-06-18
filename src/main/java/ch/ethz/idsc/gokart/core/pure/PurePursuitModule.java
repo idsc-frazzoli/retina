@@ -77,10 +77,10 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
         if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
           Tensor pose = gokartPoseEvent.getPose(); // latest pose
           Tensor curve = optionalCurve.get();
-          Optional<Scalar> optional = getLookAhead(pose, curve);
+          Optional<Scalar> ratio = getRatio(pose, curve);
           // System.out.println("has lookahaed " + optional.isPresent());
-          if (optional.isPresent()) { // is look ahead beacon available?
-            Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(optional.get());
+          if (ratio.isPresent()) { // is look ahead beacon available?
+            Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
             if (angleClip.isInside(angle)) { // is look ahead beacon within steering range?
               purePursuitSteer.setHeading(angle);
               Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
@@ -100,10 +100,11 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     return false; // autonomous operation denied
   }
 
-  /* package */ static Optional<Scalar> getLookAhead(Tensor pose, Tensor curve) {
+  /* package */ static Optional<Scalar> getRatio(Tensor pose, Tensor curve) {
     Tensor poseNoUnits = pose.map(scalar -> RealScalar.of(scalar.number()));
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(poseNoUnits).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
+    // TODO if measured tangent speed is negative flip sign of X coord. of waypoints in tensor
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
