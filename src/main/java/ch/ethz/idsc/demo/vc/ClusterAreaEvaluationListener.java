@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
+import ch.ethz.idsc.gokart.core.perc.LinearPredictor;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.owl.math.planar.Polygons;
@@ -17,6 +18,8 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
+  private double step = 0.01; // length of the step from a scan to the other,
+  // 0 if we assume the clusters are not moving, TODO
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -36,9 +39,12 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
     // ---
     Tensor newScan = Tensor.of(points.stream() //
         .filter(unknownObstaclePredicate::isObstacle) //
-        .map(point -> point.extract(0, 2))); // only x,y matterx
+        .map(point -> point.extract(0, 2))); // only x,y matter
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
+        LinearPredictor lp = new LinearPredictor(collection, step);
+        Tensor hullLP = lp.getHullPredictions();
+        Tensor meanLP = lp.getMeanPredictions();
         ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
         Tensor predictedHulls = Tensors.empty();
         Tensor predictedMeans = Tensors.empty();
@@ -50,12 +56,17 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
             predictedHulls.append(predictedHull);
           }
         }
-        PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
-        System.out.println(measures.toString());
+        //
         if (0 < predictedMeans.length()) {
           double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
-          System.out.println(String.format("perf     =%6.3f\n", evaluatePerformance));
+          System.out.println(String.format("perf     =%6.3f", evaluatePerformance));
         }
+        double evaluatePerformanceLP = evaluatePerformance(meanLP, predictedHulls);
+        System.out.println(String.format("perf LP  =%6.3f\n", evaluatePerformanceLP));
+        PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
+        System.out.println(measures.toString());
+        PerformanceMeasures measuresLP = computeRecall(hullLP, newScan);
+        System.out.println("LP\n" + measuresLP.toString());
       }
     } else
       System.err.println("scan is empty");
@@ -80,11 +91,11 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
     Area ep = predictedAreas.getArea();
     ep.intersect(enlargedPoints.getArea());
     double areaIntersection = AreaMeasure.of(ep);
-    System.out.println(String.format("Area of hulls        =%6.3f\n" + //
-        "Area of hulls approx =%6.3f\nArea of points       =%6.3f\n", //
-        predictedAreas.getTotalArea(), //
-        AreaMeasure.of(predictedAreas.getArea()), //
-        enlargedPoints.getTotalArea()));
+    // System.out.println(String.format("Area of hulls =%6.3f\n" + //
+    // "Area of hulls approx =%6.3f\nArea of points =%6.3f\n", //
+    // predictedAreas.getTotalArea(), //
+    // AreaMeasure.of(predictedAreas.getArea()), //
+    // enlargedPoints.getTotalArea()));
     return new PerformanceMeasures( //
         areaIntersection / enlargedPoints.getTotalArea(), //
         areaIntersection / predictedAreas.getTotalArea());
