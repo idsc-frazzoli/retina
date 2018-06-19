@@ -13,6 +13,9 @@ import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
@@ -22,6 +25,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Sign;
 
 public final class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
   private final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
@@ -32,12 +36,22 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   // ---
   private Optional<Tensor> optionalCurve = Optional.empty();
   private GokartPoseEvent gokartPoseEvent = null;
+  private boolean isForward = true;
+  private final RimoGetListener rimoGetListener = new RimoGetListener() {
+    @Override
+    public void getEvent(RimoGetEvent rimoGetEvent) {
+      // TODO this is not yet covered by tests
+      Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+      isForward = Sign.isPositiveOrZero(speed);
+    }
+  };
 
   @Override // from AbstractModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     joystickLcmProvider.startSubscriptions();
+    RimoSocket.INSTANCE.addGetListener(rimoGetListener);
     purePursuitRimo.start();
     purePursuitSteer.start();
   }
@@ -46,6 +60,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   protected void last() {
     purePursuitRimo.stop();
     purePursuitSteer.stop();
+    RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     gokartPoseLcmClient.stopSubscriptions();
     joystickLcmProvider.stopSubscriptions();
   }
@@ -57,11 +72,13 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-      // ante 20180604: the ahead average was used
-      // Scalar ratio = Ramp.FUNCTION.apply(gokartJoystickInterface.getAheadAverage());
+      // ante 20180604: the ahead average was used in combination with Ramp
+      Scalar ratio = gokartJoystickInterface.getAheadAverage(); // in [-1, 1]
       // post 20180604: the forward command is provided by right slider
-      Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0);
-      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(pair));
+      Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
+      // post 20180619: allow reverse driving
+      Scalar speed = Clip.unit().apply(ratio.add(pair));
+      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(speed));
     }
     purePursuitRimo.setOperational(status);
   }
@@ -77,8 +94,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
         if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
           Tensor pose = gokartPoseEvent.getPose(); // latest pose
           Tensor curve = optionalCurve.get();
-          Optional<Scalar> ratio = getRatio(pose, curve);
-          // System.out.println("has lookahaed " + optional.isPresent());
+          Optional<Scalar> ratio = getRatio(pose, curve, isForward);
           if (ratio.isPresent()) { // is look ahead beacon available?
             Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
             if (angleClip.isInside(angle)) { // is look ahead beacon within steering range?
@@ -100,11 +116,13 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     return false; // autonomous operation denied
   }
 
-  /* package */ static Optional<Scalar> getRatio(Tensor pose, Tensor curve) {
+  /* package */ static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
     Tensor poseNoUnits = pose.map(scalar -> RealScalar.of(scalar.number()));
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(poseNoUnits).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
-    // TODO if measured tangent speed is negative flip sign of X coord. of waypoints in tensor
+    // if measured tangent speed is negative flip sign of X coord. of waypoints in tensor
+    if (!isForward)
+      tensor.set(Scalar::negate, Tensor.ALL, 0);
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {

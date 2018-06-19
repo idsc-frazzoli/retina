@@ -24,7 +24,7 @@ public class RimoThrustJoystickModule extends GuideJoystickModule<RimoPutEvent> 
   }
 
   /***************************************************/
-  @Override
+  @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);

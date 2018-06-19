@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public enum CurveUtils {
   ;
-  private static final int NO_MATCH = -1;
+  public static final int NO_MATCH = -1;
   /** 28 is half of 42 therefore this is the answer (joke) */
   private static final Scalar ANGLE_LIMIT = Degree.of(28);
 
@@ -50,23 +50,6 @@ public enum CurveUtils {
           dist = norm;
           best = index;
         }
-      }
-    }
-    return best;
-  }
-
-  /** FUNCTION IS NOT IN USE
-   * 
-   * @param curve_local without any intersections
-   * @param dist
-   * @return */
-  /* package */ static int closestCloserThan(Tensor curve_local, Scalar dist) {
-    int best = NO_MATCH;
-    for (int index = 0; index < curve_local.length(); ++index) {
-      Scalar norm = Norm._2.of(curve_local.get(index)); // vector in local coordinates
-      if (Scalars.lessThan(norm, dist)) {
-        dist = norm;
-        best = index;
       }
     }
     return best;

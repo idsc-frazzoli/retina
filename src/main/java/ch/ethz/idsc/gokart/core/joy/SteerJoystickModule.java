@@ -25,7 +25,7 @@ public class SteerJoystickModule extends GuideJoystickModule<SteerPutEvent> {
   }
 
   /***************************************************/
-  @Override
+  @Override // from GuideJoystickModule
   Optional<SteerPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();

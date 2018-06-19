@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 
 public enum DubendorfCurve {
   ;
+  /** used in tests */
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
   public static final Tensor HYPERLOOP_EIGHT_REVERSE = Reverse.of(HYPERLOOP_EIGHT);
   public static final Tensor HYPERLOOP_OVAL = hyperloop_oval();
@@ -81,6 +82,7 @@ public enum DubendorfCurve {
     return Nest.of(unaryOperator, poly, 6).unmodifiable();
   }
 
+  /** coordinates are used in tests */
   private static Tensor hyperloop_eight() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv");
     TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
