@@ -24,8 +24,10 @@ public class PursuitConfig implements Serializable {
    * 20171218: changed from 2.8[m] to 3.5[m] otherwise tracked angle is out of range too frequently
    * 20180304: changed from 3.5[m] to 3.9[m] to match with value used many times before */
   public Scalar lookAhead = Quantity.of(3.9, SI.METER);
-  /** gokart velocity speed for curve follower module */
-  public Scalar rateFollower = Quantity.of(20.0, "rad*s^-1");
+  /** gokart velocity speed for curve follower module
+   * 20180531 the rate was increased to 75[rad*s^-1]
+   * 20180604 the rate was decreased to 50[rad*s^-1] because of the presence of the tents */
+  public Scalar rateFollower = Quantity.of(50.0, "rad*s^-1");
   public Scalar poseQualityMin = RealScalar.of(0.5);
 
   /***************************************************/

@@ -57,7 +57,7 @@ public class TireForces {
           rotX_z.subtract(rotX_y), // no rotation around X
           rotY_z.subtract(rotY_x), // no rotation around Y
           SUM_ALL, // compensate g-force
-          WEIGHT_STD // weight transfer TODO geometry of COG?
+          WEIGHT_STD // weight transfer LONGTERM geometry of COG?
       );
       // System.out.println("det=" + Det.of(Lhs));
       Tensor rhs = Array.zeros(4);

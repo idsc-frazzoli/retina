@@ -53,7 +53,7 @@ public enum StoreMapUtil {
   }
 
   private static void updateImage(GeometricLayer geometricLayer, List<Tensor> list, BufferedImage bufferedImage) {
-    Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
+    Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);
     for (Tensor pnts : list)
       graphics.draw(geometricLayer.toPath2D(pnts));

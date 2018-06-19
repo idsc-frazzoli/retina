@@ -34,101 +34,44 @@ run
 * wait for DAVIS-240c camera image to show
 * minimize but do not close AEViewer window
 
-## Joystick
-
-run
-
-    RunTaskGui.java
-
-enable toggle-button "Generic Xbox Pad Lcm Server"
-
-Confirm: console printed
-
-    found joystick GENERIC XBOX PAD
-
 ## Gokart
 
 run
 
     QuickStartGui.java
 
-### in the tab "lab"
+### in the tab "cfg"
 
 activate the modules by enabling the toggle-buttons
 * Autobox Introspection
-* Autobox Testing
+* Autobox Compact
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
-### In the tab Testing::Linmot
+press button `Init`, `Reset`, `Calibration`. Alternatively, you can press the yellow `Y` Button on the joystick.
 
-press button "Init" and wait for 3 sec for the brake to calibrate.
-
-Confirm: the brake makes some noise
-
-Confirm: the status word field should be green
-
-### In the tab Testing::Misc
-
-If the Emergency field is "red" then press button "Reset".
-
-Confirm: the Emergency field is "white"
-
-Confirm: the steering battery voltage is above 11.7 V
-
-### In the tab Testing::Steer
-
-press button "Calibration"
-
-Confirm: the steering moves left and right
-
-Confirm: the RangePos field is green
-
-enable button "controller"
-
-Confirm: steering goes to center
-
-disable button "controller"
-
-### In the tab Testing::Rimo
+Confirm: the brake makes some noise and the steering wheel moves
 
 turn the emergency-off button to start engine
 
-manually roll the gokart forward and backward a bit and check if the actual speed values change accordingly   
+manually roll the gokart forward and backward a bit and check if the actual speed values change accordingly
 
----
+confirm that joystick and davis240c measurements are indicated in GUI   
 
-(back in the "lab" tab)
-
-deactivate toggle-button "Autobox Testing"
-
-Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
-
-activate 2 modules by enabling the toggle-buttons:
-* Davis Detail
-
-Confirm: sensors are running without delay by moving something in front of the sensors
-
-stop the module "Davis Detail" by disabling the toggle-buttons
-
-### in the tab "fuse"
-
-activate all (not always! here you are supposed to know what you are doing) modules from top to bottom
-
-Confirm: the console did not print anything in red
+deactivate toggle-button "Autobox Compact"
 
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
 ### in the tab "joy" (only if driving by joystick)
 
-activate all modules from top to bottom
+activate the module `JoystickGroupModule`
 
 Confirm: all the fields in the Introspection window are green except for "Misc"
 
 The gokart is now controllable by joystick.
 
 ## Autonomous mode (pure pursuit trajectory following)
-### in the tab "lab"
+### in the tab "cfg"
 
 activate
 * Global View Lcm
@@ -136,10 +79,10 @@ activate
 Drag and rotate the live-map to almost match the preloaded one 
 
 Once the the maps almost overlap, click in sequence:
-* set
-* snap
-* set (again)
-* track
+* 1 set
+* 2 snap
+* 3 set
+* 4 track
 
 Leave the `Global View Lcm` open during operations
 
@@ -206,7 +149,8 @@ Confirm: there are
 
     8 channels starting with autobox.* 
     4 channels starting with davis.*
-    1 channel starting with joystick
-    2 channels starting with vlp16
+    1 channel starting with joystick.*
+    2 channels starting with vlp16.*
+    1 channel starting with computer.*
 
 deactivate the toggle-button "Spy".

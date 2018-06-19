@@ -4,26 +4,21 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.DubendorfHangarLog;
+import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.subare.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum GokartLcmLogPlayer {
+/* package */ enum GokartLcmLogPlayer {
   ;
-  public static final File LOG_ROOT = new File("/media/datahaki/media/ethz/gokartlogs");
-
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    file = new File( //
-        "/home/datahaki/Projects/retina/src/test/resources/localization", //
-        "vlp16.center.ray_autobox.rimo.get.lcm");
-    file = UserHome.file("gokart/pursuit/20180112T154355/log.lcm");
-    file = UserHome.file("gokart/pursuit/20180108T165210/log.lcm");
-    file = new File("/media/datahaki/media/ethz/gokartlogs", "20180226T150533_ed1c7f0a.lcm.00");
-    file = UserHome.file("gokart/manual/20180226T150533/log.lcm");
-    file = DubendorfHangarLog._20180307T154859_0cd18c6b.file(LOG_ROOT);
+    file = UserHome.file("gokart/manual/20180427T105421_circle/log.lcm");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180430T104113_a5291af9);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180604T150508_15e65bba);
+    file = UserHome.file("gokart/pedestrian/20180604T150508/log.lcm");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180611T095800_851c404d);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;

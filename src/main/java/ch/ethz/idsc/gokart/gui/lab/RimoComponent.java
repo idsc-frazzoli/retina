@@ -8,9 +8,11 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 
 /* package */ class RimoComponent extends AutoboxTestingComponent<RimoGetEvent, RimoPutEvent> {
   private final RimoPutFields rimoPutFieldsL = new RimoPutFields();
@@ -103,12 +105,12 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
   public void putEvent(RimoPutEvent rimoPutEvent) {
     /** as long as there is only 1 valid command word,
      * there is no need to update the spinner label */
-    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putL);
-    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putR);
+    rimoPutFieldsL.updateGuiElements(rimoPutEvent.putTireL);
+    rimoPutFieldsR.updateGuiElements(rimoPutEvent.putTireR);
     // ---
     if (Objects.nonNull(rimoGetEvent)) { // may not be received yet
-      rimoGetFieldsL.updateRateColor(rimoPutEvent.putL, rimoGetEvent.getTireL);
-      rimoGetFieldsR.updateRateColor(rimoPutEvent.putR, rimoGetEvent.getTireR);
+      rimoGetFieldsL.updateRateColor(rimoGetEvent.getTireL);
+      rimoGetFieldsR.updateRateColor(rimoGetEvent.getTireR);
     }
   }
 
@@ -117,5 +119,10 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
     return Optional.of(new RimoPutEvent( //
         rimoPutFieldsL.getPutTire(), //
         rimoPutFieldsR.getPutTire()));
+  }
+
+  @Override
+  protected AutoboxSocket<RimoGetEvent, RimoPutEvent> getSocket() {
+    return RimoSocket.INSTANCE;
   }
 }

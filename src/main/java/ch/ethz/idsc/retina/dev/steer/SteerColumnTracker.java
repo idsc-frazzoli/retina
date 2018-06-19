@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import ch.ethz.idsc.gokart.core.fuse.SteerEmergencyModule;
+import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 import ch.ethz.idsc.tensor.Scalar;
@@ -22,23 +22,26 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
   private static final double SOFT = 1.45;
   /** upper bound on steer column interval width
    * in the lab, the max range measured: 1.538
-   * on test day 2017 12 07: HARD limit increase from 1.6 to 1.9
-   * on test day 2017 12 08: screw on steer column was tightened
-   * on test day 2017 12 13: calibration led to range = 1.6572
-   * as of now: testing with 1.75 */
-  private static final double HARD = 1.75;
+   * on test day 2017-12-07: HARD limit increase from 1.6 to 1.9
+   * on test day 2017-12-08: screw on steer column was tightened
+   * on test day 2017-12-13: calibration led to range = 1.6572
+   * until 2018-04-27: 1.75
+   * due to investigation: 20180428_steering_unit_range.pdf
+   * as of now: 1.55 */
+  private static final double HARD = 1.55;
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
+  private boolean isRelRckQual = true;
 
   @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
+    isRelRckQual &= steerGetEvent.isRelRckQual();
     intervalTracker.setValue(steerGetEvent.getGcpRelRckPos());
   }
 
   @Override // from SteerColumnInterface
   public boolean isSteerColumnCalibrated() {
-    double width = intervalTracker.getWidth();
-    return SOFT < width;
+    return isRelRckQual && SOFT < getIntervalWidth();
   }
 
   /** if {@link #isSteerColumnCalibrated()} returns true but {@link #isCalibratedAndHealthy()}
@@ -46,11 +49,12 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
    * should be stopped.
    * 
    * @return false if the interval tracker returns a value outside the nominal range
-   * @see SteerEmergencyModule */
+   * @see SteerCalibrationWatchdog */
   public boolean isCalibratedAndHealthy() {
-    return isSteerColumnCalibrated() && intervalTracker.getWidth() < HARD;
+    return isSteerColumnCalibrated() && getIntervalWidth() < HARD;
   }
 
+  /** @return */
   public double getIntervalWidth() {
     return intervalTracker.getWidth();
   }

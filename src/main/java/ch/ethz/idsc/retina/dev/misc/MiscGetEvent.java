@@ -3,14 +3,16 @@ package ch.ethz.idsc.retina.dev.misc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MiscGetEvent extends DataEvent {
   // maps the output of the ADC(0-1) to the real input voltage (0V-5V)
-  // 2.8 accounts for the resitance value of the voltage divider
+  // 2.8 accounts for the resistance value of the voltage divider
   private static final double CONVERSION_V = 5 * 2.8;
   /* package */ static final int LENGTH = 5;
   // ---
@@ -27,13 +29,14 @@ public class MiscGetEvent extends DataEvent {
     batteryAdc = byteBuffer.getFloat();
   }
 
+  /** @return true if software reset is required */
   public boolean isEmergency() {
     return emergency != 0;
   }
 
+  /** @return true if software reset is required */
   public boolean isCommTimeout() {
-    int mask = 1 << MiscEmergencyBit.COMM_TIMEOUT.ordinal();
-    return (emergency & mask) == mask;
+    return MiscEmergencyBit.COMM_TIMEOUT.isActive(emergency);
   }
 
   /** @return emergency status byte
@@ -56,5 +59,13 @@ public class MiscGetEvent extends DataEvent {
   @Override // from DataEvent
   protected int length() {
     return LENGTH;
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        emergency & 0xff, //
+        batteryAdc * CONVERSION_V //
+    );
   }
 }

@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -63,7 +64,7 @@ public class GokartPoseEventTest extends TestCase {
     assertEquals(suo.apply(RealScalar.of(123)), RealScalar.of(123));
     assertEquals(suo.apply(Quantity.of(2, "rad")), RealScalar.of(2));
     try {
-      suo.apply(Quantity.of(2, "s"));
+      suo.apply(Quantity.of(2, SI.SECOND));
       assertTrue(false);
     } catch (Exception exception) {
       // ---

@@ -10,9 +10,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
+import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public class ChassisGeometry implements Serializable {
@@ -20,6 +22,7 @@ public class ChassisGeometry implements Serializable {
   /***************************************************/
   /** distance from rear to front axle [m] */
   public Scalar xAxleRtoF = Quantity.of(+1.19, SI.METER);
+  public Scalar xAxleFtoTip = Quantity.of(+0.56, SI.METER);
   /** from center to outer protection boundary */
   public Scalar yHalfWidth = Quantity.of(0.7, SI.METER);
   /** distance from x-axis to front tire */
@@ -35,6 +38,8 @@ public class ChassisGeometry implements Serializable {
   /** rear tire half width */
   public Scalar tireHalfWidthRear = Quantity.of(0.0975, SI.METER);
   public Scalar tireHalfWidthContactRear = Quantity.of(0.0675, SI.METER);
+  /** approximation of ground clearance measured on 20180507 */
+  public Scalar groundClearance = Quantity.of(0.03, SI.METER);
 
   /***************************************************/
   public Scalar yHalfWidthMeter() {
@@ -44,6 +49,10 @@ public class ChassisGeometry implements Serializable {
   /** @return approximately 1.19 */
   public Scalar xAxleDistanceMeter() {
     return Magnitude.METER.apply(xAxleRtoF);
+  }
+
+  public Scalar xTipMeter() {
+    return Total.of(Tensors.of(xAxleRtoF, xAxleFtoTip).map(Magnitude.METER)).Get();
   }
 
   public Scalar yTireRearMeter() {

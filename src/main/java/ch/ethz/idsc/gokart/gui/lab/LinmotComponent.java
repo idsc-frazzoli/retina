@@ -10,10 +10,13 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
+import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
@@ -27,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class LinmotComponent extends AutoboxTestingComponent<LinmotGetEvent, LinmotPutEvent> {
-  public final LinmotInitButton linmotInitButton = new LinmotInitButton();
+  private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final SpinnerLabel<Word> spinnerLabelCtrl = new SpinnerLabel<>();
   private final SpinnerLabel<Word> spinnerLabelHdr = new SpinnerLabel<>();
   private final SliderExt sliderExtTPos;
@@ -111,6 +114,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from GetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
+    linmotInitButton.updateEnabled();
     jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
     jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
     for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values()) {
@@ -144,7 +148,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    return Optional.of(new LinmotPutEvent( //
+    return Optional.of(LinmotPutOperation.INSTANCE.generic( //
         spinnerLabelCtrl.getValue(), //
         spinnerLabelHdr.getValue(), //
         (short) sliderExtTPos.jSlider.getValue(), // position
@@ -158,10 +162,15 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (linmotPutEvent.isOperational())
       sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     spinnerLabelCtrl.setValue(LinmotPutHelper.findControlWord(linmotPutEvent.control_word));
-    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.motion_cmd_hdr));
+    spinnerLabelHdr.setValue(LinmotPutHelper.findHeaderWord(linmotPutEvent.getMotionCmdHeaderWithoutCounter()));
     // sliderExtTPos.jSlider.setValue(linmotPutEvent.target_position);
     // sliderExtMVel.jSlider.setValue(linmotPutEvent.max_velocity);
     // sliderExtAcc.jSlider.setValue(linmotPutEvent.acceleration);
     // sliderExtDec.jSlider.setValue(linmotPutEvent.deceleration);
+  }
+
+  @Override
+  protected AutoboxSocket<LinmotGetEvent, LinmotPutEvent> getSocket() {
+    return LinmotSocket.INSTANCE;
   }
 }

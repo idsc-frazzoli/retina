@@ -4,19 +4,18 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.EmergencyModule;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -41,7 +40,7 @@ class RimoDeadMan implements RimoPutProvider {
 // TODO no good: when joystick is missing, immediately brakes regardless of speed
 // TODO no good: when speed > threshold, only brakes once but whenever speed > threshold -> repeatedly
 public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements RimoGetListener {
-  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Watchdog watchdog_isPresent = new Watchdog(0.2);
   private final Watchdog watchdog_inControl = //
       new Watchdog(JoystickConfig.GLOBAL.deadManPeriodSeconds().number().doubleValue());
@@ -54,12 +53,12 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
     RimoSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(rimoDeadMan);
     LinmotSocket.INSTANCE.addPutProvider(this);
-    joystickLcmClient.startSubscriptions();
+    joystickLcmProvider.startSubscriptions();
   }
 
   @Override // from AbstractModule
   protected void last() {
-    joystickLcmClient.stopSubscriptions();
+    joystickLcmProvider.stopSubscriptions();
     RimoSocket.INSTANCE.removeGetListener(this);
     RimoSocket.INSTANCE.removePutProvider(rimoDeadMan);
     LinmotSocket.INSTANCE.removePutProvider(this);
@@ -68,7 +67,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   /***************************************************/
   @Override // from GetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
-    getEvent_process(rimoGetEvent, joystickLcmClient.getJoystick());
+    getEvent_process(rimoGetEvent, joystickLcmProvider.getJoystick());
   }
 
   /** @param rimoGetEvent
@@ -91,7 +90,7 @@ public class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> impleme
   @Override // from PutProvider
   public Optional<LinmotPutEvent> putEvent() {
     if (triggeredTimeInterval.isActive())
-      return Optional.of(LinmotPutHelper.operationToRelativePosition(RealScalar.ONE));
+      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ONE));
     return Optional.empty(); // allow other entity to control brake
   }
 }

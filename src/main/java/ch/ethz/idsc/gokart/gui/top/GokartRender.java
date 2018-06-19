@@ -15,6 +15,9 @@ import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -23,6 +26,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -43,6 +47,10 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  // ---
+  private JoystickEvent joystickEvent;
+  public final JoystickListener joystickListener = getEvent -> joystickEvent = getEvent;
+  // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
 
@@ -66,7 +74,13 @@ public class GokartRender extends AbstractGokartRender {
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     {
-      graphics.setColor(new Color(192, 192, 192, 64));
+      Color color = new Color(192, 192, 192, 64);
+      if (Objects.nonNull(joystickEvent)) {
+        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
+        if (gokartJoystickInterface.isAutonomousPressed())
+          color = new Color(255, 128, 128, 64);
+      }
+      graphics.setColor(color);
       graphics.fill(geometricLayer.toPath2D(vehicleModel.footprint()));
     }
     {
@@ -81,15 +95,10 @@ public class GokartRender extends AbstractGokartRender {
     }
     // rear wheels
     if (Objects.nonNull(rimoGetEvent)) {
-      Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair().unmodifiable();
-      // TODO
-      // graphics.setColor(Color.BLACK);
-      // graphics.drawString(rateY_pair.map(Round._2).toString(), 0, 40);
-      // ---
+      final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
-      // TODO use quantity
-      Tensor rateY_draw = rateY_pair.multiply(RealScalar.of(0.1));
+      Tensor rateY_draw = rateY_pair.map(Magnitude.ANGULAR_RATE).multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
           Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));
@@ -100,8 +109,8 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(rimoPutEvent)) {
       double factor = 5E-4;
-      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putL.getTorque()).number().doubleValue() * factor;
-      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putR.getTorque()).number().doubleValue() * factor;
+      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireL.getTorque()).number().doubleValue() * factor;
+      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireR.getTorque()).number().doubleValue() * factor;
       graphics.setColor(Color.BLUE);
       graphics.setStroke(new BasicStroke(2));
       graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));

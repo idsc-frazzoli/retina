@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
@@ -64,5 +63,11 @@ public class RimoRateJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.3), false);
     Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
     assertFalse(optional.isPresent());
+  }
+
+  public void testStartStop() {
+    RimoRateJoystickModule rtjm = new RimoRateJoystickModule();
+    rtjm.protected_first();
+    rtjm.protected_last();
   }
 }

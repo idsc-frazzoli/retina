@@ -53,7 +53,7 @@ class Aedat31TableExport implements Aedat31PolarityListener, Aedat31FrameListene
 
   public static void main(String[] args) throws Exception {
     Aedat31FileSupplier davisEventProvider = //
-        new Aedat31FileSupplier(Aedat.LOG_04.file);
+        new Aedat31FileSupplier(Aedat31.LOG_04.file);
     Aedat31TableExport aedat31TableExport = new Aedat31TableExport();
     davisEventProvider.aedat31PolarityListeners.add(aedat31TableExport);
     davisEventProvider.aedat31FrameListeners.add(aedat31TableExport);

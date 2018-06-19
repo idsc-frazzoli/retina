@@ -17,10 +17,11 @@ enum QuickStartGui {
     ModuleAuto.INSTANCE.runAll(RunTabbedTaskGui.MODULES_DEV);
     TabbedTaskGui taskTabGui = new TabbedTaskGui(RunTabbedTaskGui.PROPERTIES);
     // ---
-    taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
-    taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
+    taskTabGui.tab("cfg", RunTabbedTaskGui.MODULES_CFG);
     taskTabGui.tab("joy", RunTabbedTaskGui.MODULES_JOY);
     taskTabGui.tab("aut", RunTabbedTaskGui.MODULES_AUT);
+    taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
+    taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
     wc.attach(QuickStartGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }

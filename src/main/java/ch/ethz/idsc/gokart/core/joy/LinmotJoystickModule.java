@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 
 /** conversion of joystick event to brake command */
@@ -23,6 +23,6 @@ public class LinmotJoystickModule extends JoystickModule<LinmotPutEvent> {
   /***************************************************/
   @Override // from JoystickModule
   Optional<LinmotPutEvent> translate(GokartJoystickInterface joystick) {
-    return Optional.of(LinmotPutHelper.operationToRelativePosition(joystick.getBreakStrength()));
+    return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(joystick.getBreakStrength()));
   }
 }

@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
-import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.tab.LinmotGetTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoGetTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoPutTable;
+import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.offline.api.LogFile;
+import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTable;
+import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTables;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -19,36 +18,36 @@ import ch.ethz.idsc.tensor.io.Export;
 
 enum ProduceReport {
   ;
-  public static void main(String[] args) throws IOException {
-    File folder = UserHome.file("gokart/braking/20171213T162832_6");
+  public static void of(LogFile logFile) throws IOException {
+    File file = DatahakiLogFileLocator.file(logFile);
     // ---
-    GokartLogInterface gli = GokartLogAdapter.of(folder);
-    // ---
-    List<OfflineTableSupplier> list = Arrays.asList( //
-        new LinmotGetTable(), //
-        new RimoPutTable(), new RimoGetTable() //
+    List<OfflineVectorTable> list = Arrays.asList( //
+        OfflineVectorTables.linmotGet(), //
+        OfflineVectorTables.linmotPut(), //
+        OfflineVectorTables.miscGet(), //
+        OfflineVectorTables.miscPut(), //
+        OfflineVectorTables.steerGet(), //
+        OfflineVectorTables.steerPut(), //
+        OfflineVectorTables.rimoGet(), //
+        OfflineVectorTables.rimoPut() //
     );
-    OfflineLogPlayer.process(gli.file(), list);
+    long tic = System.currentTimeMillis();
+    OfflineLogPlayer.process(file, list);
+    System.out.println(System.currentTimeMillis() - tic);
     // ---
-    File dir = UserHome.file("export/" + folder.getName() + "/csv");
+    File dir = UserHome.file("export/" + logFile.getTitle());
     dir.mkdirs();
-    for (OfflineTableSupplier ots : list) {
-      Export.of(new File(dir, ots.getClass().getSimpleName() + ".csv"), ots.getTable().map(CsvFormat.strict()));
-    }
-    // System.out.println(Dimensions.of(tensor));
-    // {
-    // SeriesCollection seriesCollection = new SeriesCollection();
-    // seriesCollection.setTitle("brake position");
-    // Tensor tensor = lht.getTable();
-    // {
-    // SeriesContainer seriesContainer = seriesCollection.add(tensor.get(Tensor.ALL, 0), tensor.get(Tensor.ALL, 1));
-    // seriesContainer.setName("actual [m]");
-    // }
-    // {
-    // SeriesContainer seriesContainer = seriesCollection.add(tensor.get(Tensor.ALL, 0), tensor.get(Tensor.ALL, 2));
-    // seriesContainer.setName("demand [m]");
-    // }
-    // ListPlot.of(seriesCollection, new Dimension(600, 300), UserHome.Pictures("some.png"));
-    // }
+    for (OfflineVectorTable offlineTableSupplier : list)
+      Export.of( //
+          new File(dir, offlineTableSupplier.channel() + ".csv"), //
+          offlineTableSupplier.getTable().map(CsvFormat.strict()));
+  }
+
+  // 5448, 5268
+  public static void main(String[] args) throws IOException {
+    // File folder = UserHome.file("gokart/linmot/20180412T164740");
+    // GokartLogInterface gli = GokartLogAdapter.of(folder);
+    // ---
+    of(GokartLogFile._20180614T142228_6a2f62c6);
   }
 }

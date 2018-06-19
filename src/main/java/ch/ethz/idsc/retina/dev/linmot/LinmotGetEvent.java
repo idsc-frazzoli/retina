@@ -4,9 +4,12 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 import java.util.Set;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
@@ -46,15 +49,14 @@ public class LinmotGetEvent extends DataEvent {
     winding_temp2 = byteBuffer.getShort();
   }
 
-  /** @return temperature of winding 1 in degree Celsius */
+  /** @return temperature of winding 1 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature1() {
-    // TODO consider not losing precision
-    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
+    return Quantity.of(winding_temp1 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
-  /** @return temperature of winding 2 in degree Celsius */
+  /** @return temperature of winding 2 in degree Celsius with unit "degC" */
   public Scalar getWindingTemperature2() {
-    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, SI.DEGREE_CELSIUS);
+    return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
   public Scalar getWindingTemperatureMax() {
@@ -120,5 +122,17 @@ public class LinmotGetEvent extends DataEvent {
         status_word, state_variable, //
         actual_position, demand_position, //
         winding_temp1, winding_temp2);
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector( //
+        status_word & 0xffff, //
+        state_variable & 0xffff, //
+        actual_position * GET_POSITION_TO_METER, //
+        demand_position * GET_POSITION_TO_METER, //
+        winding_temp1 * TO_DEGREE_CELSIUS, //
+        winding_temp2 * TO_DEGREE_CELSIUS //
+    );
   }
 }

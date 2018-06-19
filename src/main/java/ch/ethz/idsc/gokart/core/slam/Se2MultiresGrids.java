@@ -15,6 +15,7 @@ public class Se2MultiresGrids {
 
   /** @param shift may be in physical space or pixel space
    * @param angle in radians
+   * @param fan
    * @param levels */
   public Se2MultiresGrids(Scalar shift, Scalar angle, final int fan, int levels) {
     for (int iterate = 0; iterate < levels; ++iterate) {

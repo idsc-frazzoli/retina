@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -18,10 +20,16 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** manages configurable parameters by introspection of a given instance
  * 
- * values of members of type {@link Tensor} or {@link Scalar} are stored in
- * and retrieved from files in the {@link Properties} format */
+ * values of non-final, non-static, non-transient but public members of type
+ * {@link Tensor}, {@link Scalar}, {@link String}, {@link Boolean}
+ * are stored in, and retrieved from files in the {@link Properties} format */
 public enum TensorProperties {
   ;
+  private static final int MASK_FILTER = Modifier.PUBLIC;
+  private static final int MASK_TESTED = //
+      Modifier.FINAL | Modifier.STATIC | Modifier.TRANSIENT | MASK_FILTER;
+  private static final Collector<CharSequence, ?, String> NEWLINE = Collectors.joining("\n");
+
   /** @param object
    * @return properties with fields of given object as keys mapping to values as string expression */
   public static Properties extract(Object object) {
@@ -41,28 +49,41 @@ public enum TensorProperties {
     return properties;
   }
 
+  /** @param properties
+   * @param object with fields to be assigned according to given properties
+   * @return given object */
   public static <T> T insert(Properties properties, T object) {
     if (Objects.isNull(properties))
       return object;
     for (Field field : object.getClass().getFields())
       if (isTracked(field))
         try {
-          Class<?> type = field.getType();
-          final String string = properties.getProperty(field.getName());
-          if (Objects.nonNull(string)) {
-            if (type.equals(Tensor.class))
-              field.set(object, Tensors.fromString(string));
-            else //
-            if (type.equals(Scalar.class))
-              field.set(object, Scalars.fromString(string));
-            else //
-            if (type.equals(String.class))
-              field.set(object, string);
-          }
+          String string = properties.getProperty(field.getName());
+          if (Objects.nonNull(string))
+            field.set(object, parse(field, string));
         } catch (Exception exception) {
           exception.printStackTrace();
         }
     return object;
+  }
+
+  /** @param field
+   * @param string
+   * @return */
+  public static Object parse(Field field, String string) {
+    Class<?> type = field.getType();
+    if (type.equals(Tensor.class))
+      return Tensors.fromString(string);
+    else //
+    if (type.equals(Scalar.class))
+      return Scalars.fromString(string);
+    else //
+    if (type.equals(String.class))
+      return string;
+    else //
+    if (type.equals(Boolean.class))
+      return BooleanParser.orNull(string);
+    return null;
   }
 
   public static <T> T newInstance(Properties properties, Class<T> cls) //
@@ -71,10 +92,12 @@ public enum TensorProperties {
   }
 
   public static boolean isTracked(Field field) {
-    int mod = field.getModifiers();
-    if (!Modifier.isFinal(mod) && !Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+    if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
       Class<?> type = field.getType();
-      return type.equals(Tensor.class) || type.equals(Scalar.class) || type.equals(String.class);
+      return type.equals(Tensor.class) //
+          || type.equals(Scalar.class) //
+          || type.equals(String.class) //
+          || type.equals(Boolean.class);
     }
     return false;
   }
@@ -88,11 +111,16 @@ public enum TensorProperties {
     return insert(StaticHelper.load(file), object);
   }
 
+  /** store tracked fields of given object in file
+   * 
+   * @param file
+   * @param object
+   * @throws IOException */
   public static void manifest(File file, Object object) throws IOException {
     Files.write(file.toPath(), (Iterable<String>) strings(object)::iterator);
   }
 
-  private static List<String> strings(Object object) {
+  /* package for testing */ static List<String> strings(Object object) {
     List<String> list = new LinkedList<>();
     Field[] fields = object.getClass().getFields();
     for (Field field : fields)
@@ -105,5 +133,9 @@ public enum TensorProperties {
           exception.printStackTrace();
         }
     return list;
+  }
+
+  /* package for testing */ static String toString(Object object) {
+    return strings(object).stream().collect(NEWLINE);
   }
 }

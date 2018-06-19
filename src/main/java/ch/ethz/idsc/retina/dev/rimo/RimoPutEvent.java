@@ -3,9 +3,10 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Join;
 
 /** for post processing @see RimoPutHelper */
 public class RimoPutEvent extends DataEvent {
@@ -14,18 +15,18 @@ public class RimoPutEvent extends DataEvent {
   public static final RimoPutEvent PASSIVE = //
       new RimoPutEvent(RimoPutTire.PASSIVE, RimoPutTire.PASSIVE);
   // ---
-  public final RimoPutTire putL;
-  public final RimoPutTire putR;
+  public final RimoPutTire putTireL;
+  public final RimoPutTire putTireR;
 
-  public RimoPutEvent(RimoPutTire putL, RimoPutTire putR) {
-    this.putL = putL;
-    this.putR = putR;
+  public RimoPutEvent(RimoPutTire putTireL, RimoPutTire putTireR) {
+    this.putTireL = putTireL;
+    this.putTireR = putTireR;
   }
 
   @Override // from DataEvent
   public void insert(ByteBuffer byteBuffer) {
-    putL.insert(byteBuffer);
-    putR.insert(byteBuffer);
+    putTireL.insert(byteBuffer);
+    putTireR.insert(byteBuffer);
   }
 
   @Override // from DataEvent
@@ -36,7 +37,14 @@ public class RimoPutEvent extends DataEvent {
   /** @return torque of left and right motor in unit "ARMS" with sign convention around Y-axis */
   public Tensor getTorque_Y_pair() {
     return Tensors.of( //
-        putL.getTorque().negate(), //
-        putR.getTorque());
+        putTireL.getTorque().negate(), //
+        putTireR.getTorque());
+  }
+
+  @Override
+  public Tensor asVector() {
+    return Join.of( //
+        putTireL.asVector(), //
+        putTireR.asVector());
   }
 }

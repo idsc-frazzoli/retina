@@ -4,10 +4,11 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.gokart.core.DataEvent;
 import ch.ethz.idsc.retina.sys.SafetyCritical;
+import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Join;
 
 /** Specifications about gokart battery
  * 
@@ -45,5 +46,12 @@ public class RimoGetEvent extends DataEvent {
     return Tensors.of( //
         getTireL.getAngularRate_Y(), //
         getTireR.getAngularRate_Y());
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Join.of( //
+        getTireL.asVector(), //
+        getTireR.asVector());
   }
 }

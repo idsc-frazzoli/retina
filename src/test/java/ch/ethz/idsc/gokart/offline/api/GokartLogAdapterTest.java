@@ -10,9 +10,16 @@ import junit.framework.TestCase;
 public class GokartLogAdapterTest extends TestCase {
   public static final GokartLogInterface SIMPLE = //
       GokartLogAdapter.of(new File("src/test/resources/localization/vlp16.center.ray_autobox.rimo.get"));
+  public static final GokartLogInterface FULL = //
+      GokartLogAdapter.of(new File("src/test/resources/offline/20180419T124700_fast"));
 
   public void testSimple() {
     assertTrue(SIMPLE.file().exists());
     assertEquals(Dimensions.of(SIMPLE.model()), Arrays.asList(3, 3));
+  }
+
+  public void testFull() {
+    assertTrue(FULL.file().exists());
+    assertEquals(Dimensions.of(FULL.model()), Arrays.asList(3, 3));
   }
 }

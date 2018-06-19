@@ -1,34 +1,25 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.lab;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
+import java.awt.event.ActionEvent;
 
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPutListener;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 
 /** gui element to initiate calibration procedure of steering wheel */
-/* package */ class SteerInitButton implements SteerPutListener {
-  private final JButton jButton = new JButton("Calibration");
-
+/* package */ class SteerInitButton extends AutoboxInitButton {
   public SteerInitButton() {
-    jButton.setEnabled(false);
-    jButton.addActionListener(event -> SteerCalibrationProvider.INSTANCE.schedule());
+    super("Calibration");
   }
 
-  @Override // from SteerPutListener
-  public void putEvent(SteerPutEvent putEvent) {
-    jButton.setEnabled(isEnabled());
+  @Override // from ActionListener
+  public void actionPerformed(ActionEvent actionEvent) {
+    SteerCalibrationProvider.INSTANCE.schedule();
   }
 
-  private static boolean isEnabled() {
+  @Override // from AutoboxInitButton
+  boolean isEnabled() {
     boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated();
-    return SteerCalibrationProvider.INSTANCE.isIdle() && nonCalibrated;
-  }
-
-  public JComponent getComponent() {
-    return jButton;
+    return nonCalibrated && SteerCalibrationProvider.INSTANCE.isIdle();
   }
 }

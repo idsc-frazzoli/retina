@@ -13,13 +13,82 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
+		<lwjgl.version>3.1.6</lwjgl.version>		
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<platform>windows</platform>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows-x86</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+					<arch>x86</arch>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>linux</id>
+			<activation>
+				<os>
+					<family>Linux</family>
+				</os>
+			</activation>
+			<properties>
+				<platform>linux</platform>
+			</properties>
+		</profile>
+		<profile>
+			<id>linux-x86</id>
+			<activation>
+				<os>
+					<family>Linux</family>
+					<arch>x86</arch>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>linux-amd64</id>
+			<activation>
+				<os>
+					<family>Linux</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>mac</id>
+			<activation>
+				<os>
+					<family>Mac</family>
+				</os>
+			</activation>
+			<properties>
+				<platform>macos</platform>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.5.1</version>
+			<version>0.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ethz.idsc</groupId>
+			<artifactId>ephemeral</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
@@ -29,8 +98,39 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.0.4</version>
+			<version>0.1.3</version>
 		</dependency>
+
+		<dependency>
+			<groupId>de.lmu.ifi.dbs.elki</groupId>
+			<artifactId>elki-bundle</artifactId>
+			<version>0.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -43,6 +143,14 @@
 		<repository>
 			<id>tensor-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/tensor/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ephemeral-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/ephemeral/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

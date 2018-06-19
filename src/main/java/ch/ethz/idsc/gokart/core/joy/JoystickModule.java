@@ -4,27 +4,26 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** abstract base class for modules that convert joystick events into actuation */
 /* package */ abstract class JoystickModule<PE> extends AbstractModule implements PutProvider<PE> {
-  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
-    joystickLcmClient.startSubscriptions();
+  public final void first() throws Exception {
+    joystickLcmProvider.startSubscriptions();
     protected_first();
   }
 
   @Override // from AbstractModule
-  protected final void last() {
+  public final void last() {
     protected_last();
-    joystickLcmClient.stopSubscriptions();
+    joystickLcmProvider.stopSubscriptions();
   }
 
   /** function invoked upon start of the module */
@@ -41,7 +40,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 
   @Override // from PutProvider
   public final Optional<PE> putEvent() {
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+    Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
     return optional.isPresent() //
         ? translate((GokartJoystickInterface) optional.get())
         : Optional.empty();

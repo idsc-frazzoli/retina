@@ -25,13 +25,22 @@ public class SteerCalibrationProvider extends AutoboxCalibrationProvider<SteerPu
     Tensor times = Subdivide.of(100, oneside_ms, resolution); // seconds
     Tensor sampl = Subdivide.of(0, Math.PI * 0.5, resolution); // seconds
     Tensor ampli = Sin.of(sampl).multiply(SteerConfig.GLOBAL.calibration);
-    for (int index = 0; index < times.length(); ++index)
+    for (int index = 0; index < times.length(); ++index) {
+      int _index = index;
       eventUntil( //
           timestamp + times.Get(index).number().intValue(), //
-          SteerPutEvent.createOn(ampli.Get(index)));
-    for (int index = 0; index < times.length(); ++index)
+          () -> SteerPutEvent.createOn(ampli.Get(_index)));
+    }
+    for (int index = 0; index < times.length(); ++index) {
+      int _index = index;
       eventUntil( //
           timestamp + times.Get(index).number().intValue() + oneside_ms, //
-          SteerPutEvent.createOn(ampli.Get(index).negate()));
+          () -> SteerPutEvent.createOn(ampli.Get(_index).negate()));
+    }
+  }
+
+  @Override // from AutoboxCalibrationProvider
+  protected boolean hintScheduleRequired() {
+    return !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated();
   }
 }

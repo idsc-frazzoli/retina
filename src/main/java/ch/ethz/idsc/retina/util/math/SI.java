@@ -11,10 +11,10 @@ public enum SI {
   public static final Unit SECOND = Unit.of("s");
   public static final Unit VOLT = Unit.of("V");
   // ---
+  /** per meter is used for instance when specifying max rotation per meter driven */
+  public static final Unit PER_METER = Unit.of("m^-1");
+  // ---
   public static final Unit VELOCITY = Unit.of("m*s^-1");
   public static final Unit ACCELERATION = Unit.of("m*s^-2");
   public static final Unit ANGULAR_RATE = Unit.of("s^-1");
-  // ---
-  public static final Unit DEGREE_ANGLE = Unit.of("deg");
-  public static final Unit DEGREE_CELSIUS = Unit.of("degC");
 }

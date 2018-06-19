@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.dev.lidar;
 import java.io.File;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -30,7 +30,8 @@ public class LidarAngularFiringCollectorTest extends TestCase {
     // ---
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+    // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
+    LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);

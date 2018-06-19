@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
@@ -35,8 +34,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -57,8 +56,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -79,8 +78,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -101,8 +100,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
-    RimoPutTire rptL = rimoPutEvent.putL;
-    RimoPutTire rptR = rimoPutEvent.putR;
+    RimoPutTire rptL = rimoPutEvent.putTireL;
+    RimoPutTire rptR = rimoPutEvent.putTireR;
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
     JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
@@ -120,5 +119,10 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.3), false);
     Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
     assertFalse(optional.isPresent());
+  }
+
+  public void testPublic() {
+    int modifs = RimoTorqueJoystickModule.class.getModifiers();
+    assertEquals(modifs & 1, 1);
   }
 }

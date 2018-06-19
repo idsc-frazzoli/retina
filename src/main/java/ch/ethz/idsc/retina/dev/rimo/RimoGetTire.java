@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -84,6 +85,9 @@ public class RimoGetTire implements Serializable {
     return Quantity.of(actual_rate * sign * MIN_TO_S, UNIT_RATE);
   }
 
+  /** the value of RmsMotorCurrent is not correlated to the expected motor current.
+   * 
+   * @return */
   public Scalar getRmsMotorCurrent() {
     return Quantity.of(rms_motor_current, ARMS);
   }
@@ -94,12 +98,12 @@ public class RimoGetTire implements Serializable {
 
   /** @return 0[degC] */
   public Scalar getTemperatureMotor() {
-    return Quantity.of(temperature_motor, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature_motor, NonSI.DEGREE_CELSIUS);
   }
 
   /** @return 0[degC] */
   public Scalar getTemperatureHeatsink() {
-    return Quantity.of(temperature_heatsink, SI.DEGREE_CELSIUS);
+    return Quantity.of(temperature_heatsink, NonSI.DEGREE_CELSIUS);
   }
 
   public Optional<RimoEmergencyError> getEmergencyError() {
@@ -120,10 +124,10 @@ public class RimoGetTire implements Serializable {
     return error_code & 0x00ffffff;
   }
 
-  public Tensor vector_raw() {
+  /* package */ Tensor asVector() {
     return Tensors.vector( //
         status_word, //
-        actual_rate * sign, // Attention: sign correction instead of raw value
+        actual_rate * sign * MIN_TO_S, //
         rms_motor_current, //
         dc_bus_voltage, //
         error_code, //

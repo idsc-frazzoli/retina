@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.AutoboxDevice;
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
+import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeProvider;
 
 /** communication socket to command the brake */
 public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> {
@@ -22,7 +23,12 @@ public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> 
     // ---
     addPutProvider(LinmotFireFighter.INSTANCE);
     addGetListener(LinmotFireFighter.INSTANCE);
+    // ---
+    addPutProvider(EmergencyBrakeProvider.INSTANCE);
+    // ---
     addPutProvider(LinmotCalibrationProvider.INSTANCE);
+    addGetListener(LinmotCalibrationProvider.INSTANCE);
+    // ---
     addPutProvider(LinmotPutFallback.INSTANCE);
   }
 

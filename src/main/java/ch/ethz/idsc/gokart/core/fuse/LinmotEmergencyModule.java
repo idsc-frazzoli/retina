@@ -27,15 +27,17 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
  * braking by joystick may not be operational. Deceleration can still be accomplished by
  * 1) applying opposite motor torque, and
  * 2) pressing the brake by foot */
+// TODO class name not intuitive
 public final class LinmotEmergencyModule extends EmergencyModule<RimoPutEvent> implements LinmotGetListener {
   /** the micro-autobox sends messages at 250[Hz], i.e. at intervals of 4[ms] */
-  private static final long LINMOT_TIMEOUT_MS = 40;
+  private static final long TIMEOUT_MS = 50;
   // ---
-  private final Watchdog watchdog = new Watchdog(LINMOT_TIMEOUT_MS * 1e-3);
+  private Watchdog watchdog;
   private boolean isBlown = false;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    watchdog = new Watchdog(TIMEOUT_MS * 1e-3);
     LinmotSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

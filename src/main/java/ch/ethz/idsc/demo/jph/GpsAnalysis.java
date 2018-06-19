@@ -15,6 +15,9 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** export to determine characteristics and accuracy of gps sensor
+ * 
+ * https://github.com/idsc-frazzoli/retina/issues/147 */
 enum GpsAnalysis {
   ;
   public static void main(String[] args) throws IOException {
@@ -22,7 +25,7 @@ enum GpsAnalysis {
       System.out.println(folder);
       GokartLogInterface olr = GokartLogAdapter.of(folder);
       // ---
-      LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND), false);
+      LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND), true);
       OfflineLogPlayer.process(olr.file(), localizationAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), localizationAnalysis.getTable().map(CsvFormat.strict()));
     }

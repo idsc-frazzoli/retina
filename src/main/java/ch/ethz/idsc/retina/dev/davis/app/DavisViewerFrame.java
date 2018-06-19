@@ -26,6 +26,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
+import ch.ethz.idsc.retina.sys.SystemTimestamp;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
@@ -53,6 +54,8 @@ public class DavisViewerFrame implements TimedImageListener {
           davisViewerComponent.davisTallyEvent = davisTallyEvent;
       });
   boolean recording = false;
+  private int counter = 0;
+  private final File directory = UserHome.Pictures(SystemTimestamp.file());
 
   public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
     Component component = jFrame.getContentPane();
@@ -66,7 +69,11 @@ public class DavisViewerFrame implements TimedImageListener {
         jButton.addActionListener(actionEvent -> {
           System.out.println("here");
           try {
-            ImageIO.write(davisViewerComponent.sigImage, "png", UserHome.Pictures("sigImage.png"));
+            directory.mkdir();
+            File file = new File(directory, String.format("dubi%04d.jpg", counter));
+            System.out.println(file);
+            ImageIO.write(davisViewerComponent.sigImage, "jpg", file);
+            counter++;
           } catch (Exception exception) {
             // ---
           }
@@ -102,6 +109,11 @@ public class DavisViewerFrame implements TimedImageListener {
         JToggleButton jToggleButton = new JToggleButton("record");
         jToggleButton.setToolTipText("record to SAE images to " + EXPORT_DIRECTORY.toString());
         jToggleButton.addActionListener(event -> recording = jToggleButton.isSelected());
+        jToolBar.add(jToggleButton);
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Rotate frame");
+        jToggleButton.addActionListener(event -> abstractAccumulatedImage.setRotated(jToggleButton.isSelected()));
         jToolBar.add(jToggleButton);
       }
       jPanel.add(jToolBar, BorderLayout.NORTH);
@@ -140,7 +152,7 @@ public class DavisViewerFrame implements TimedImageListener {
       ImageCopy imageCopy = new ImageCopy();
       imageCopy.update(timedImageEvent.bufferedImage);
       BufferedImage bufferedImage = imageCopy.get();
-      Graphics graphics = bufferedImage.getGraphics();
+      Graphics graphics = bufferedImage.createGraphics();
       graphics.setColor(Color.WHITE);
       graphics.drawString("" + timedImageEvent.time, 0, 10);
       try {

@@ -2,30 +2,26 @@
 package ch.ethz.idsc.retina.lcm.joystick;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.util.LinkedList;
+import java.util.List;
 
-import ch.ethz.idsc.gokart.lcm.autobox.BinaryLcmClient;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
+import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
-/** client to lcm channel with joystick information */
+/** client to lcm channel with joystick information
+ * 
+ * JoystickLcmClient is useful for offline processing
+ * 
+ * {@link JoystickLcmProvider} is suitable for modules that control live operations */
 public class JoystickLcmClient extends BinaryLcmClient {
-  /** maximum age of joystick information relayed to application layer */
-  private static final int TIMEOUT_MS = 200; // 200[ms]
-  // ---
   private final String pattern;
-  // ---
-  private long timeStamp = 0;
-  private JoystickEvent joystickEvent = null;
+  private final List<JoystickListener> listeners = new LinkedList<>();
 
   /** @param pattern for instance "generic_xbox_pad" */
   public JoystickLcmClient(String pattern) {
     this.pattern = pattern;
-  }
-
-  /** @return recent joystick readout, or empty */
-  public Optional<JoystickEvent> getJoystick() {
-    return Optional.ofNullable(now() < timeStamp + TIMEOUT_MS ? joystickEvent : null);
   }
 
   @Override // from LcmClientAdapter
@@ -34,13 +30,12 @@ public class JoystickLcmClient extends BinaryLcmClient {
   }
 
   @Override // from LcmClientAdapter
-  protected void messageReceived(ByteBuffer byteBuffer) {
-    joystickEvent = JoystickDecoder.decode(byteBuffer);
-    timeStamp = now();
+  protected final void messageReceived(ByteBuffer byteBuffer) {
+    JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
+    listeners.forEach(listener -> listener.joystick(joystickEvent));
   }
 
-  // helper function
-  private static long now() {
-    return System.currentTimeMillis();
+  public void addListener(JoystickListener joystickListener) {
+    listeners.add(joystickListener);
   }
 }

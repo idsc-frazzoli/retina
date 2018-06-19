@@ -16,7 +16,13 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![usecase_gokart](https://user-images.githubusercontent.com/4012178/35968269-a92a3b46-0cc3-11e8-8d5e-1276762cdc36.png)
 
-Trajectory pursuit
+[Trajectory pursuit](https://www.youtube.com/watch?v=XgmS8CP6gqw)
+
+<td>
+
+![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
+
+[Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
 
 </tr>
 </table>
@@ -37,9 +43,11 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
 
-![retina-repo](https://user-images.githubusercontent.com/4012178/36646636-5d8d2cec-1a7a-11e8-8164-95f256912c4e.png)
+![retina-repo](https://user-images.githubusercontent.com/4012178/39506091-ddca7cfe-4dd6-11e8-904b-b5ed1f267422.png)
 
 ## GOKART
+
+![gokart_operation](https://user-images.githubusercontent.com/4012178/41111341-fe99edea-6a7b-11e8-87a3-0b484d73240a.png)
 
 ### Actuation
 
@@ -52,6 +60,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Emergency<td>SteerEmergencyModule<td>no acceleration with uncalibrated steering<th>X<th><th><th></tr>
   <tr><td>Emergency<td>Vlp16ClearanceModule<td>no acceleration towards a close obstacle<th>X<th><th><th></tr>
   <tr><td>Emergency<td>LinmotEmergencyModule<td>no acceleration with brake disabled<th>X<th><th><th></tr>
+  <tr><td>Emergency<td>EmergencyBrakeProvider<td>brake maneuver based on obstacle in path<th><th><th>X<th></tr>
   <tr><td>Emergency<td>LinmotTakeoverModule<td>switch linmot to passive when driver pushes brake pedal<th><th><th>X<th></tr>
   <tr><td>Emergency<td>DeadManSwitchModule<td>brake if driver doesn't use joystick and gokart is above certain speed<th><th><th>X<th></tr>
   <tr><td>Calibration<td>SteerCalibrationProvider<td>execute steering calibration procedure, duration ~5[s]<th><th>X<th><th></tr>
@@ -173,7 +182,7 @@ Events only
 
 
 
-.aedat files
+AEDAT 2.0, and AEDAT 3.1
 
 * parsing and visualization
 * conversion to text+png format as used by the Robotics and Perception Group at UZH

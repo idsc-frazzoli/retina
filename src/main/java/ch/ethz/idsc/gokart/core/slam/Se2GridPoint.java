@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public class Se2GridPoint {
+/* package */ class Se2GridPoint {
   private final int x;
   private final int y;
   private final int t;

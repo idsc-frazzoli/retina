@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
@@ -15,6 +16,7 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 
 public class JoystickLcmClientTest extends TestCase {
+  /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
     BinaryBlobPublisher bbp = new BinaryBlobPublisher("joystick." + GokartLcmChannel.JOYSTICK);
     JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
@@ -36,7 +38,7 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.startSubscriptions();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
@@ -61,7 +63,7 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testAutonomous() {
-    JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.startSubscriptions();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
@@ -70,6 +72,7 @@ public class JoystickLcmClientTest extends TestCase {
     assertTrue(optional.isPresent());
     GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
+    // System.out.println(gokartJoystickInterface.getAheadAverage());
     joystickLcmClient.stopSubscriptions();
   }
 }

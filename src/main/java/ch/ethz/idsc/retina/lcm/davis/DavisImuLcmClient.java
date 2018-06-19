@@ -3,9 +3,9 @@ package ch.ethz.idsc.retina.lcm.davis;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.lcm.autobox.SimpleLcmClient;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 
 public class DavisImuLcmClient extends SimpleLcmClient<DavisImuFrameListener> {
   private final String cameraId;

@@ -3,25 +3,27 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.Degree;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.qty.Degree;
 import junit.framework.TestCase;
 
 public class CurveUtilsTest extends TestCase {
+  private static final int NO_MATCH = -1;
+
   public void testNoMatch() {
     int index = CurveUtils.closestCloserThan(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
-    assertEquals(index, CurveUtils.NO_MATCH);
+    assertEquals(index, NO_MATCH);
     Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
     assertFalse(optional.isPresent());
   }
 
   public void testEmpty() {
     int index = CurveUtils.closestCloserThan(Tensors.empty(), RealScalar.ONE);
-    assertEquals(index, CurveUtils.NO_MATCH);
+    assertEquals(index, NO_MATCH);
     Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.empty(), RealScalar.ONE);
     assertFalse(optional.isPresent());
   }

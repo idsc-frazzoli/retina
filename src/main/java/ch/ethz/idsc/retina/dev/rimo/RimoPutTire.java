@@ -89,12 +89,19 @@ public class RimoPutTire implements Serializable {
     byteBuffer.putInt(sdoData); // 11 ... total == 15
   }
 
-  // ONLY FOR POST-PROCESSING
-  public Tensor vector_raw() {
-    return Tensors.vector(command, rate, torque, trigger, sdoCommand, mainIndex, subIndex, sdoData);
-  }
-
   public String toSDOHexString() {
     return String.format("%02x %04x.%02x %08x", sdoCommand, mainIndex, subIndex, sdoData);
+  }
+
+  /* package */ Tensor asVector() {
+    return Tensors.vector( //
+        command, //
+        rate, //
+        torque, //
+        trigger & 0xff, //
+        sdoCommand & 0xff, //
+        mainIndex, //
+        subIndex & 0xff, //
+        sdoData);
   }
 }

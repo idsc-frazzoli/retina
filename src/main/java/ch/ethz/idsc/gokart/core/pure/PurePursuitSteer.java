@@ -12,6 +12,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
+  private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_ON);
+  // ---
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from StartAndStoppable
@@ -36,12 +38,17 @@ class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   }
 
   /***************************************************/
-  @Override
+  @Override // from PurePursuitBase
   Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);
     Scalar difference = desPos.subtract(currAngle);
     Scalar torqueCmd = steerPositionController.iterate(difference);
     return Optional.of(SteerPutEvent.createOn(torqueCmd));
+  }
+
+  @Override // from PurePursuitBase
+  Optional<SteerPutEvent> fallback() {
+    return FALLBACK; // TODO DUBILAB test
   }
 }

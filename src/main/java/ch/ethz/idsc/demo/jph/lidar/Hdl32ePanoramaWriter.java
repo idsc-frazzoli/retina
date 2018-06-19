@@ -8,7 +8,8 @@ import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaListener;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-public class Hdl32ePanoramaWriter implements LidarPanoramaListener {
+/** export of panorama to animated gif */
+class Hdl32ePanoramaWriter implements LidarPanoramaListener, AutoCloseable {
   private final AnimationWriter animationWriter;
   private final int width;
   private final BufferedImage image;
@@ -24,8 +25,8 @@ public class Hdl32ePanoramaWriter implements LidarPanoramaListener {
   public void lidarPanorama(LidarPanorama lidarPanorama) {
     if (60 < frames && frames < 240) // magic const for one-time use
       try {
-        BufferedImage subImage = lidarPanorama.distances().getSubimage(0, 0, lidarPanorama.getWidth(), 32);
-        image.getGraphics().drawImage(subImage, 0, 0, width, 64, null);
+        BufferedImage subImage = lidarPanorama.distances();
+        image.createGraphics().drawImage(subImage, 0, 0, width, 64, null);
         animationWriter.append(image);
       } catch (Exception exception) {
         exception.printStackTrace();

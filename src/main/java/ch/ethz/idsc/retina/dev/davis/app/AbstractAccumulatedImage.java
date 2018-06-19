@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -36,6 +35,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private int interval;
   private int max_gap;
   private Integer last = null;
+  private boolean rotated = false;
 
   protected AbstractAccumulatedImage(DavisDevice davisDevice) {
     setInterval(INTERVAL_DEFAULT_US);
@@ -44,7 +44,6 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    GlobalAssert.that(bytes.length == width * height);
     clearImage();
   }
 
@@ -61,21 +60,25 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     return interval;
   }
 
+  public void setRotated(boolean setValue) {
+    rotated = setValue;
+  }
+
   @Override // from DavisDvsListener
-  public final void davisDvs(DavisDvsEvent dvsDavisEvent) {
+  public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (Objects.isNull(last))
-      last = dvsDavisEvent.time;
-    final int delta = dvsDavisEvent.time - last;
+      last = davisDvsEvent.time;
+    final int delta = davisDvsEvent.time - last;
     if (0 <= delta && delta < interval) // nominal case
-      assign(delta, dvsDavisEvent);
+      assign(delta, davisDvsEvent);
     else //
     if (max_gap <= delta) {
-      System.err.println("dvs image clear due to forward timing");
+      System.err.println("dvs image clear due to forward timing: " + delta);
       clearImage();
-      last = dvsDavisEvent.time;
+      last = davisDvsEvent.time;
     } else //
     if (interval <= delta) {
-      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage);
+      TimedImageEvent timedImageEvent = new TimedImageEvent(last, bufferedImage, rotated);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));
       clearImage();
       last += interval;
@@ -83,11 +86,11 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
     if (delta < 0) { // this case happens during davis log playback when skipping to the front
       System.err.println("dvs image clear due to reverse timing");
       clearImage();
-      last = dvsDavisEvent.time;
+      last = davisDvsEvent.time;
     }
   }
 
-  protected abstract void assign(int delta, DavisDvsEvent dvsDavisEvent);
+  protected abstract void assign(int delta, DavisDvsEvent davisDvsEvent);
 
   private void clearImage() {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);

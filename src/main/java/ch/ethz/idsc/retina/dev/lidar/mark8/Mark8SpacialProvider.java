@@ -57,7 +57,7 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
       for (int laser = 0; laser < 8; ++laser) {
         // 0 indicates an invalid point
         int distance = byteBuffer.getShort() & 0xffff;
-        int intensity = byteBuffer.get() & 0xff;
+        byte intensity = byteBuffer.get();
         if (distance != 0) {
           float range = distance * TO_METER_FLOAT; // convert to [m]
           coords[0] = IR[laser] * range * dx;

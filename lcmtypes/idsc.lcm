@@ -6,10 +6,3 @@ struct BinaryBlob
   int8_t   data[data_length];
 }
 
-struct DavisImu
-{
-  int32_t  clock_usec;  // usec
-  float    accel[3];    // m/s^2
-  float    temperature; // deg C
-  float    gyro[3];     // rad/s
-}

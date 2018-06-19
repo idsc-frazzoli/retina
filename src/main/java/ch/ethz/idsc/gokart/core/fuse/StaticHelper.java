@@ -5,8 +5,10 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -28,12 +30,13 @@ import ch.ethz.idsc.tensor.Tensors;
     final int size = floatBuffer.limit() / 2; // dimensionality of point: planar lidar
     // ---
     Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-    ClearanceTracker clearanceTracker = new ClearanceTracker(half, angle, SensorsConfig.GLOBAL.urg04lx);
+    CircleClearanceTracker clearanceTracker = new CircleClearanceTracker( //
+        DoubleScalar.of(1), half, angle, SensorsConfig.GLOBAL.urg04lx, SafetyConfig.GLOBAL.getClearanceClip());
     // ---
     for (int index = 0; index < size; ++index) {
       float px = floatBuffer.get();
       float py = floatBuffer.get();
-      clearanceTracker.feed(Tensors.vector(px, py));
+      clearanceTracker.isObstructed(Tensors.vector(px, py));
     }
     floatBuffer.position(position);
     return clearanceTracker.violation().isPresent();
