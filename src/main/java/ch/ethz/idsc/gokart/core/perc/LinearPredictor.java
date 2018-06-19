@@ -1,9 +1,13 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.alg.Last;
+import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class LinearPredictor {
@@ -16,25 +20,27 @@ public class LinearPredictor {
     for (ClusterDeque clusterDeque : collection.getCollection()) {
       Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
       Tensor hull = clusterDeque.getLast().hull();
-      if (Tensors.nonEmpty(nonEmptyMeans)) {
-        Tensor predictNextMean = predictNextMean(nonEmptyMeans, step);
+      Tensor predictNextMean = predictNextMean(nonEmptyMeans, step);
+      if (Tensors.nonEmpty(predictNextMean))
         nextMean.append(predictNextMean);
-        if (Tensors.nonEmpty(hull))
-          nextHull.append(predictNextHull(hull));
-      }
+      if (Tensors.nonEmpty(hull) && Tensors.nonEmpty(nextMean))
+        nextHull.append(predictNextHull(hull));
     }
   }
 
   // linear prediction: linear regression in closed form, from the last mean take a step of length st.
   private Tensor predictNextMean(Tensor nonEmptyMeans, double st) {
-    Tensor x = Tensor.of(nonEmptyMeans.stream().map(tensor -> tensor.Get(0)));
+    Tensor x = Tensor.of(nonEmptyMeans.stream().map(tensor -> Tensors.of(tensor.Get(0), RealScalar.of(1))));// homogeneous coordinates
     Tensor y = Tensor.of(nonEmptyMeans.stream().map(tensor -> tensor.Get(1)));
     if (Tensors.nonEmpty(x)) {
-      Tensor b = Tensors.of((x.dot(y)), (x.dot(x))); // TODO
-      double beta = b.Get(0).number().doubleValue() / b.Get(1).number().doubleValue();
-      double nextX = Last.of(nonEmptyMeans).Get(0).number().doubleValue() + st * Math.cos(beta);
-      double nextY = Last.of(nonEmptyMeans).Get(1).number().doubleValue() + st * Math.sin(beta);
-      return Tensors.vectorDouble(nextX, nextY);
+      if (x.length() > 1) { // fit a line if more than one point
+        Tensor beta = Inverse.of(Transpose.of(x).dot(x)).dot(Transpose.of(x).dot(y));
+        double b = beta.Get(0).number().doubleValue();
+        double nextX = Last.of(nonEmptyMeans).Get(0).number().doubleValue() + st * Math.cos(b);
+        double nextY = Last.of(nonEmptyMeans).Get(1).number().doubleValue() + st * Math.sin(b);
+        return Tensors.vectorDouble(nextX, nextY);
+      } else
+        return Flatten.of(nonEmptyMeans); // if only one point assume it is not going to move
     }
     return Tensors.empty();
   }
@@ -50,7 +56,7 @@ public class LinearPredictor {
       }
       return next;
     }
-    return null;
+    return Tensors.empty();
   }
 
   public Tensor getMeanPredictions() {

@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
-import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.LinearPredictor;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
@@ -43,29 +42,19 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
         LinearPredictor lp = new LinearPredictor(collection, step);
-        Tensor hullLP = lp.getHullPredictions();
-        Tensor meanLP = lp.getMeanPredictions();
+        Tensor hullsLP = lp.getHullPredictions();
+        Tensor meansLP = lp.getMeanPredictions();
         ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
-        Tensor predictedHulls = Tensors.empty();
-        Tensor predictedMeans = Tensors.empty();
-        for (ClusterDeque x : collection.getCollection()) {
-          if (Tensors.nonEmpty(x.getNonEmptyMeans())) {
-            Tensor predictedMean = SimplePredictor.getMeanPrediction(x);
-            Tensor predictedHull = SimplePredictor.getHullPrediction(x);
-            predictedMeans.append(predictedMean);
-            predictedHulls.append(predictedHull);
-          }
-        }
-        //
-        if (0 < predictedMeans.length()) {
-          double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
-          System.out.println(String.format("perf     =%6.3f", evaluatePerformance));
-        }
-        double evaluatePerformanceLP = evaluatePerformance(meanLP, predictedHulls);
+        SimplePredictor sp = new SimplePredictor(collection);
+        Tensor hullsSP = sp.getHullPredictions();
+        Tensor meansSP = sp.getMeanPredictions();
+        double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
+        System.out.println(String.format("perf     =%6.3f", evaluatePerformanceSP));
+        double evaluatePerformanceLP = evaluatePerformance(meansLP, hullsSP);
         System.out.println(String.format("perf LP  =%6.3f\n", evaluatePerformanceLP));
-        PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
+        PerformanceMeasures measures = computeRecall(hullsSP, newScan);
         System.out.println(measures.toString());
-        PerformanceMeasures measuresLP = computeRecall(hullLP, newScan);
+        PerformanceMeasures measuresLP = computeRecall(hullsLP, newScan);
         System.out.println("LP\n" + measuresLP.toString());
       }
     } else
