@@ -10,13 +10,15 @@ import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
 import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
   public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
+  public final Scalar maxDuration = RealScalar.of(50); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -79,10 +81,12 @@ public class PipelineConfig {
   // SLAM algorithm parameters
   public final Boolean useSlam = true;
   public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(10);
-  public final Scalar cellDim = RealScalar.of(0.2); // [m] cell dimension for maps
-  public final Scalar dimX = RealScalar.of(50); // [m] x dimension of map
-  public final Scalar dimY = RealScalar.of(50); // [m] y dimension of map
+  public final Scalar numberOfParticles = RealScalar.of(5);
+  // SLAM map parameters
+  public final Scalar cellDim = RealScalar.of(1); // [m] single cell dimension
+  public final Scalar dimX = RealScalar.of(80); // [m] x 'length' of map
+  public final Scalar dimY = RealScalar.of(80); // [m] y 'length' of map
+  public final Tensor corner = Tensors.vector(10,10); // [m] coordinates of lower left point in map
   
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */

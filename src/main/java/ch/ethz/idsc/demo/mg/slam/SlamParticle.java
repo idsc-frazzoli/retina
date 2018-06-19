@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -10,15 +9,14 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // provides a single particle for the SLAM algorithm
-// TODO Is this the correct interface
 public class SlamParticle implements GokartPoseInterface {
   private double x;
   private double y;
   private double angle;
   private double particleLikelihood;
 
-  SlamParticle() {
-    // somehow set the initial pose from LIDAR
+  SlamParticle(double initParticleLikelihood) {
+    particleLikelihood = initParticleLikelihood;
   }
 
   // ideally, we want to use wheel odometry to propagate the state
@@ -37,12 +35,11 @@ public class SlamParticle implements GokartPoseInterface {
     this.particleLikelihood = particleLikelihood;
   }
 
-  public Tensor getWorldCoord(double[] gokartFramePos) {
-    Tensor gokart2World = GokartPoseHelper.toSE2Matrix(this.getPose());
-    Tensor worldCoord = gokart2World.dot(Tensors.vector(gokartFramePos[0], gokartFramePos[1], 0));
-    return worldCoord;
-  }
-  
+  // public Tensor getWorldCoord(double[] gokartFramePos) {
+  // Tensor gokart2World = GokartPoseHelper.toSE2Matrix(this.getPose());
+  // Tensor worldCoord = gokart2World.dot(Tensors.vector(gokartFramePos[0], gokartFramePos[1], 1));
+  // return worldCoord;
+  // }
   public double getParticleLikelihood() {
     return particleLikelihood;
   }
