@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
@@ -56,6 +57,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JTextField jTF_rimoRatePair;
   private final JTextField jTF_joystick;
+  private final JTextField jTF_joystickAhead;
   private final JTextField jTF_davis240c;
   private final JTextField jTF_localPose;
   private final JButton jButtonAppend;
@@ -78,6 +80,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     jTF_rimoRatePair = createReading("Rimo");
     jTF_davis240c = createReading("Davis240C");
     jTF_joystick = createReading("Joystick");
+    jTF_joystickAhead = createReading("Ahead");
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     {
@@ -132,6 +135,15 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
           String string = optional.isPresent() ? optional.get().toString() : ToolbarsComponent.UNKNOWN;
           jTF_joystick.setText(string);
+        }
+        {
+          Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
+          String string = ToolbarsComponent.UNKNOWN;
+          if (optional.isPresent()) {
+            GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+            string = gokartJoystickInterface.getAheadAverage().map(Round._5).toString();
+          }
+          jTF_joystickAhead.setText(string);
         }
         jTF_davis240c.setText("#=" + imuFrame_count);
         { // pose coordinates

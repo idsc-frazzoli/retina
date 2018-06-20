@@ -8,7 +8,12 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** works also for {@link Quantity} */
+/** maps real values to the interval [-clip.max, clip.max]
+ * where values in [-clip.min clip.min] are mapped to zero.
+ * 
+ * implementation supports {@link Quantity}
+ * 
+ * application is to */
 public class Clipzone implements ScalarUnaryOperator {
   private final Clip clip;
   private final Scalar zero;

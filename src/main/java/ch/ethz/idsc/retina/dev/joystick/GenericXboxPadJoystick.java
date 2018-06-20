@@ -16,14 +16,15 @@ import ch.ethz.idsc.tensor.sca.Clip;
  */
 @SafetyCritical
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
+  private static final Clip PASSIVE = Clip.function(-0.05, 0.05); // TODO magic const
+
   // function for testing
   static GenericXboxPadJoystick createDefault() {
     return new GenericXboxPadJoystick(9.5);
   }
 
-  private static final Clip PASSIVE = Clip.function(-0.05, 0.05); // TODO magic const
   // ---
-  private final Clipzone clipzone; // = new Clipzone(Clip.function(9.5 / 127, 1.0));
+  private final Clipzone clipzone;
 
   /** @param deadzone number between [0, 127] */
   public GenericXboxPadJoystick(double deadzone) {
