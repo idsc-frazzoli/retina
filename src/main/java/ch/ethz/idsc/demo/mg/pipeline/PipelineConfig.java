@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public class PipelineConfig {
   // log file parameters
   public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(50); // [ms]
+  public final Scalar maxDuration = RealScalar.of(1000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -87,6 +87,7 @@ public class PipelineConfig {
   public final Scalar dimX = RealScalar.of(80); // [m] x 'length' of map
   public final Scalar dimY = RealScalar.of(80); // [m] y 'length' of map
   public final Tensor corner = Tensors.vector(10,10); // [m] coordinates of lower left point in map
+  // SLAM visualization parameters
   
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */

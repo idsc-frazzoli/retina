@@ -26,7 +26,9 @@ public class SlamProvider implements DavisDvsListener {
   // particles
   private final SlamParticleSet slamParticleSet;
   // further fields
+  private SlamEstimatedPose estimatedPose;
   private Tensor lastExpectedPose = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), DoubleScalar.of(0));
+  private Tensor initialLidarPose;
   private int lastTimeStamp;
   private boolean isInitialized = false;
 
@@ -51,21 +53,34 @@ public class SlamProvider implements DavisDvsListener {
     // localization step:
     // state estimate propagation
     // slamParticleSet.propagateStateEstimate();
-    slamParticleSet.setPose(gokartLidarPose.getPose()); // for testing
+    slamParticleSet.setPose(gokartOdometryPose.getPose()); // for testing
     // state likelihoods update
     slamParticleSet.updateStateLikelihoods(eventGokartFrame, eventMaps.getLikelihoodMap());
     // mapping step:
     // occurrence map update
     eventMaps.updateOccurrenceMap(eventGokartFrame, slamParticleSet.getParticles());
     // normalization map update
-    // this does not need to be done for every event --> choose some threshold maybe 50ms
     if (davisDvsEvent.time - lastTimeStamp > 5000) {
+      System.out.println(lastExpectedPose);
+      System.out.println(slamParticleSet.getExpectedPose());
       eventMaps.updateNormalizationMap(slamParticleSet.getExpectedPose(), lastExpectedPose, imageToWorldLookup, worldToImageUtil);
       lastExpectedPose = slamParticleSet.getExpectedPose();
       lastTimeStamp = davisDvsEvent.time;
     }
+    // update GokartPoseInterface
+    estimatedPose.setPose(slamParticleSet.getExpectedPose());
     // likelihood update
     eventMaps.updateLikelihoodMap();
     // particle resampling??
+  }
+  
+  // for visualization
+  public GokartPoseInterface getPoseInterface() {
+    return estimatedPose;
+  }
+  
+  // for visualization
+  public MapProvider[] getMaps() {
+    return eventMaps.getMaps();
   }
 }

@@ -40,16 +40,18 @@ public class EventMap {
 
   public void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, ImageToWorldInterface imageToWorldLookup,
       WorldToImageInterface worldToImageUtil) {
-    // use of hashset?
+    // use of hashset since we want a list of unique cells
     Set<Integer> seenCells = new HashSet<>();
     // find all cells in the map which were seen on the sensor with current or last expected pose
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
         double[] gokartCoord = imageToWorldLookup.imageToWorld(i, j);
+        // get cell index number for event position using last expected pose
         double[] worldCoordLast = SlamUtil.gokartToWorld(lastExpectedPose, gokartCoord);
         int cellIndexLast = eventMaps[2].getCellIndex(worldCoordLast[0], worldCoordLast[1]);
         if (cellIndexLast != eventMaps[2].getNumberOfCells())
           seenCells.add(cellIndexLast);
+        // get cell index number for event position using current expected pose
         double[] worldCoordCurrent = SlamUtil.gokartToWorld(currentExpectedPose, gokartCoord);
         int cellIndexCurrent = eventMaps[2].getCellIndex(worldCoordCurrent[0], worldCoordCurrent[1]);
         if (cellIndexCurrent != eventMaps[2].getNumberOfCells())
@@ -59,12 +61,21 @@ public class EventMap {
     // for the center of all these cells, compute image plane location for last and current expected pose and compute norm
     synchronized (seenCells) {
       for (Integer cell : seenCells) {
-        // find world coordinates of cell middle
-        double[] worldCoord = eventMaps[1].getCellCoord(cell);
+        // find world coordinates of cell middle point
+        double[] cellWorldCoord = eventMaps[1].getCellCoord(cell);
+        // transform to go kart frame for current and last go kart pose
+        double[] cellGokartCoordCurrent = SlamUtil.worldToGokart(currentExpectedPose, cellWorldCoord);
+        double[] cellGokartCoordLast = SlamUtil.worldToGokart(lastExpectedPose, cellWorldCoord);
+        // transform to image plane
+        double[] cellImageCoordCurrent = worldToImageUtil.worldToImage(cellGokartCoordCurrent[0], cellGokartCoordCurrent[1]);
+        double[] cellImageCoordLast = worldToImageUtil.worldToImage(cellGokartCoordLast[0], cellGokartCoordLast[1]);
+        // compute norm and set value
+        double imagePlaneDistance = Math.pow((cellImageCoordCurrent[0] - cellGokartCoordLast[0]), 1)
+            + Math.pow((cellImageCoordCurrent[1] - cellImageCoordLast[1]), 1);
+//        System.out.println(imagePlaneDistance);
+        eventMaps[2].setValue(cell, imagePlaneDistance);
       }
     }
-    // NOTE: map location close to the sensor will have larger movements on the image plane than far away locations
-    // therefore, we normalize the fact that far away features do not generate as many events
   }
 
   public void updateLikelihoodMap() {
@@ -73,5 +84,9 @@ public class EventMap {
 
   public MapProvider getLikelihoodMap() {
     return eventMaps[2];
+  }
+  
+  public MapProvider[] getMaps() {
+    return eventMaps;
   }
 }

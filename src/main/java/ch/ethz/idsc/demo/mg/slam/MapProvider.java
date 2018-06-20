@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 // provides a grid map which is used by the SLAM algorithm
+// TODO maybe handle exceptions more elegant
 public class MapProvider {
   private final double[] mapArray;
   private final Scalar dimX;
@@ -44,7 +45,7 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
-  private void setValue(int cellIndex, double value) {
+  public void setValue(int cellIndex, double value) {
     mapArray[cellIndex] = value;
   }
 
@@ -75,11 +76,20 @@ public class MapProvider {
     return cellIndex;
   }
 
+  /** sets value in grid cell corresponding to pose 
+   * 
+   * @param pose [x,y,angle] pose in world coordinates
+   * @param value */
   public void setValue(Tensor pose, double value) {
     setValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
   }
 
-  // sets value of cell associated with with given position
+  /** sets value in grid cell corresponding to pose
+   * 
+   * @param posX in world coordinates
+   * @param posY in world coordinates
+   * @param value
+   */
   public void setValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     if (cellIndex == numberOfCells.number().intValue()) {

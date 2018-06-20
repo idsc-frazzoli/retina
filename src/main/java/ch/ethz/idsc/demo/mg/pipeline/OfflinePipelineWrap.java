@@ -60,7 +60,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals("davis240c.overview.dvs")) {
       davisDvsDatagramDecoder.decode(byteBuffer);
-      int timeInst = (int) (1000000 * time.number().doubleValue()); // TODO hack
+      int timeInst = (int) (1000 * time.number().doubleValue()); // TODO hack
       // initialize timers
       if (!isInitialized) {
         startTime = System.currentTimeMillis();
@@ -70,14 +70,14 @@ public class OfflinePipelineWrap implements OfflineLogListener {
         isInitialized = true;
       }
       // the events are accumulated for the interval time and then displayed in a single frame
-      if (visualizePipeline && (timeInst - lastImagingTimestamp) > visualizationInterval * 1000) {
+      if (visualizePipeline && (timeInst - lastImagingTimestamp) > visualizationInterval) {
         // visualization repaint
         visualizer.setFrames(constructFrames());
         resetAllFrames();
         lastImagingTimestamp = timeInst;
       }
       // save frames
-      if ((saveImagesConfig != 0) && (timeInst - lastSavingTimestamp) > savingInterval * 1000) {
+      if ((saveImagesConfig != 0) && (timeInst - lastSavingTimestamp) > savingInterval) {
         saveFrame(parentFilePath, imagePrefix, timeInst);
         lastSavingTimestamp = timeInst;
       }
@@ -89,7 +89,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
     endTime = System.currentTimeMillis();
     int diff = lastTimestamp - firstTimestamp;
     System.out.println("Percentage hit by active blobs: " + pipelineProvider.tracking.hitthreshold / pipelineProvider.eventCount * 100);
-    System.out.println("Elapsed time in the eventstream [ms]: " + diff / 1000 + " with " + pipelineProvider.eventCount + " events");
+    System.out.println("Elapsed time in the eventstream [ms]: " + diff+ " with " + pipelineProvider.eventCount + " events");
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
     System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * pipelineProvider.filteredEventCount / pipelineProvider.eventCount));
