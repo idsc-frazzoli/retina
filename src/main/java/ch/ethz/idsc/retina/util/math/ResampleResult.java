@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -14,6 +15,9 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class ResampleResult {
+  // TODO magic constant specific to gokart
+  private static final Scalar OFFSET = DoubleScalar.of(0.75);
+  // ---
   private final Interpolation interpolation;
   private final List<Tensor> list;
   private final int numel;
@@ -38,10 +42,10 @@ public class ResampleResult {
     for (Tensor vector : list) {
       Tensor entry = Tensors.empty();
       for (Tensor _param : vector) {
-        Scalar param = clip.requireInside((Scalar) _param);
+        Scalar param = (Scalar) _param;
         Tensor point = interpolation.at(param);
-        // TODO error is introduced here
-        Scalar angle = clip.rescale(param).multiply(rate);
+        // TODO rescale introduces error because it assumes regular sampling along the circle
+        Scalar angle = clip.rescale(param).subtract(OFFSET).multiply(rate);
         Tensor matrix = RotationMatrix.of(angle);
         entry.append(matrix.dot(point));
       }
