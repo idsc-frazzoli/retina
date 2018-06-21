@@ -1,6 +1,8 @@
-// code by jph
-package ch.ethz.idsc.gokart.core.pos;
+// code by mg
+package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
@@ -17,34 +19,33 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 
-/** odometry is the integration of the wheels speeds to obtain the pose of the gokart
+/** odometry is the integration of the wheels speeds to obtain the pose of the go kart
  * due to the high quality of the wheel/motor encoders the odometry turns out to be
  * quite smooth and stable.
  * 
  * <p>Naturally, any tire slip results in a loss of tracking accuracy. */
-// TODO probably better to implement GokartPoseInterface instead of MappedPoseInterface -->
-// no setPose() method is required.
+// this is a demo class for wheel odometry. It implements GokartPoseInterface instead of MappedPoseInterface.
 // TODO add method that provides "delta_pose" for a variable dt
 @SafetyCritical
-public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
+public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);
 
-  public static GokartPoseOdometry create(Tensor state) {
-    return new GokartPoseOdometry(state);
+  public static GokartPoseOdometryDemo create(Tensor state) {
+    return new GokartPoseOdometryDemo(state);
   }
 
-  public static GokartPoseOdometry create() {
+  public static GokartPoseOdometryDemo create() {
     return create(GokartPoseLocal.INSTANCE.getPose());
   }
 
-  // ---
-  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
-  private Tensor state;
-  /** initial quality value == 0 */
-  private Scalar quality = RealScalar.ZERO;
+  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s] update period
+  private Tensor currentState; // forward integrated since beginning until current event
+  private Tensor lastState; // forward integrated state until last event
+  private Tensor deltaState; // delta state between last two RimoGetEvents
 
-  private GokartPoseOdometry(Tensor state) {
-    this.state = state.copy();
+  private GokartPoseOdometryDemo(Tensor state) {
+    this.currentState = state.copy();
+    this.lastState = state.copy();
   }
 
   @Override // from RimoGetListener
@@ -61,7 +62,9 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
     Scalar yTireRear = ChassisGeometry.GLOBAL.yTireRear;
     // yTireRear = Quantity.of(0.54, "m");
     Flow flow = singleton(speed_pair.Get(0), speed_pair.Get(1), yTireRear);
-    state = Se2CarIntegrator.INSTANCE.step(flow, state, dt);
+    currentState = Se2CarIntegrator.INSTANCE.step(flow, currentState, dt);
+    deltaState = currentState.subtract(lastState);
+    lastState = currentState;
   }
 
   /** .
@@ -78,19 +81,10 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return state.unmodifiable();
+    return currentState.unmodifiable();
   }
 
-  @Override
-  public synchronized void setPose(Tensor pose, Scalar quality) {
-    // TODO this is not good design: odometry should always be consistent integration of wheels!
-    // other entities may track different poses
-    state = pose.copy();
-    this.quality = quality;
-  }
-
-  @Override
-  public GokartPoseEvent getPoseEvent() {
-    return GokartPoseEvents.getPoseEvent(state, quality);
+  public Tensor getDeltaPose() {
+    return deltaState;
   }
 }

@@ -10,13 +10,15 @@ import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
 import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
   public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
+  public final Scalar maxDuration = RealScalar.of(1000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -54,7 +56,7 @@ public class PipelineConfig {
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
   public final Scalar defaultBlobID = RealScalar.of(0);
   // tracking collector
-  public final Boolean collectEstimatedFeatures = true;
+  public final Boolean collectEstimatedFeatures = false;
   public final Scalar iterationLength = RealScalar.of(10);
   public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
   // performance evaluation
@@ -74,10 +76,18 @@ public class PipelineConfig {
   public final Scalar originPosY = RealScalar.of(400); // [pixel]
   public final Scalar objectSize = RealScalar.of(30); // [pixel]
   public final Scalar gokartSize = RealScalar.of(35); // [pixel]
+  //
   /***************************************************/
   // SLAM algorithm parameters
-  public final Scalar alpha = RealScalar.of(0.8);
-  public final Scalar numberOfParticles = RealScalar.of(10);
+  public final Boolean useSlam = true;
+  public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
+  public final Scalar numberOfParticles = RealScalar.of(5);
+  // SLAM map parameters
+  public final Scalar cellDim = RealScalar.of(1); // [m] single cell dimension
+  public final Scalar dimX = RealScalar.of(80); // [m] x 'length' of map
+  public final Scalar dimY = RealScalar.of(80); // [m] y 'length' of map
+  public final Tensor corner = Tensors.vector(10, 10); // [m] coordinates of lower left point in map
+  // SLAM visualization parameters
 
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */
