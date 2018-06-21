@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
+import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
@@ -77,7 +78,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
       // post 20180604: the forward command is provided by right slider
       Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
-      Scalar speed = Clip.unit().apply(ratio.add(pair));
+      Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(speed));
     }
     purePursuitRimo.setOperational(status);
@@ -121,8 +122,10 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(poseNoUnits).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     // if measured tangent speed is negative flip sign of X coord. of waypoints in tensor
-    if (!isForward)
+    if (!isForward) {
       tensor.set(Scalar::negate, Tensor.ALL, 0);
+      tensor = Reverse.of(tensor);
+    }
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
