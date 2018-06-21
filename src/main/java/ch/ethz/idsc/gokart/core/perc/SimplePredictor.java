@@ -2,19 +2,42 @@
 package ch.ethz.idsc.gokart.core.perc;
 
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Last;
 
 public class SimplePredictor {
-  /** @param clusterDeque
+  private Tensor nextMeans = Tensors.empty();
+  private Tensor nextHulls = Tensors.empty();
+
+  /** @param clusterCollection
    * @return
    * @throws Exception if there are no non-empty means in given cd */
-  public static Tensor getMeanPrediction(ClusterDeque clusterDeque) {
-    Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
-    return Last.of(nonEmptyMeans);
-    // return nonEmptyMeans.get(nonEmptyMeans.length() - 1);
+  public SimplePredictor(ClusterCollection collection) {
+    for (ClusterDeque x : collection.getCollection()) {
+      if (Tensors.nonEmpty(x.getNonEmptyMeans())) {
+        Tensor predictedMean = getMeanPrediction(x);
+        Tensor predictedHull = getHullPrediction(x);
+        nextMeans.append(predictedMean);
+        if (Tensors.nonEmpty(predictedHull))
+          nextHulls.append(predictedHull);
+      }
+    }
   }
 
-  public static Tensor getHullPrediction(ClusterDeque clusterDeque) {
+  private Tensor getMeanPrediction(ClusterDeque clusterDeque) {
+    Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
+    return Last.of(nonEmptyMeans);
+  }
+
+  private Tensor getHullPrediction(ClusterDeque clusterDeque) {
     return clusterDeque.getLast().hull();
+  }
+
+  public Tensor getMeanPredictions() {
+    return nextMeans.unmodifiable();
+  }
+
+  public Tensor getHullPredictions() {
+    return nextHulls.unmodifiable();
   }
 }

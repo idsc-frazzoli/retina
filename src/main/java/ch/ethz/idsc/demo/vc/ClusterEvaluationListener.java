@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
-import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.owl.math.planar.PolygonClip;
@@ -42,21 +41,12 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
         ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
-        Tensor predictedHulls = Tensors.empty();
-        Tensor predictedMeans = Tensors.empty();
-        for (ClusterDeque x : collection.getCollection()) {
-          if (Tensors.nonEmpty(x.getNonEmptyMeans())) {
-            Tensor predictedMean = SimplePredictor.getMeanPrediction(x);
-            Tensor predictedHull = SimplePredictor.getHullPrediction(x);
-            predictedMeans.append(predictedMean);
-            predictedHulls.append(predictedHull);
-          }
-        }
-        if (0 < predictedMeans.length()) {
-          double evaluatePerformance = evaluatePerformance(predictedMeans, predictedHulls);
-          System.out.println("performance=" + evaluatePerformance);
-        }
-        PerformanceMeasures measures = computeRecall(predictedHulls, newScan);
+        SimplePredictor sp = new SimplePredictor(collection);
+        Tensor hullsSP = sp.getHullPredictions();
+        Tensor meansSP = sp.getMeanPredictions();
+        double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
+        System.out.println(String.format("perf     =%6.3f", evaluatePerformanceSP));
+        PerformanceMeasures measures = computeRecall(hullsSP, newScan);
         System.out.println(measures.toString());
       }
     } else
