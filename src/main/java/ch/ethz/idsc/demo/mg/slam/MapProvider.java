@@ -15,7 +15,8 @@ public class MapProvider {
   private final Scalar numberOfCells;
   private final double cornerX;
   private final double cornerY;
-  private final int xAxisCellNumber;
+  private final int widthInCells;
+  private double maxValue;
 
   MapProvider(PipelineConfig pipelineConfig) {
     dimX = pipelineConfig.dimX;
@@ -24,7 +25,7 @@ public class MapProvider {
     numberOfCells = dimX.divide(cellDim).multiply(dimY).divide(cellDim);
     cornerX = pipelineConfig.corner.Get(0).number().doubleValue();
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
-    xAxisCellNumber = dimX.divide(cellDim).number().intValue();
+    widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
   }
 
@@ -45,9 +46,9 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
-  public void setValue(int cellIndex, double value) {
-    mapArray[cellIndex] = value;
-  }
+   public void setValue(int cellIndex, double value) {
+   mapArray[cellIndex] = value;
+   }
 
   // returns coordinates of cell middle point
   public double[] getCellCoord(int cellIndex) {
@@ -55,8 +56,8 @@ public class MapProvider {
       System.out.println("Fatal: should not access that");
       return null;
     }
-    int gridPosY = cellIndex / xAxisCellNumber;
-    int gridPosX = cellIndex - gridPosY * xAxisCellNumber;
+    int gridPosY = cellIndex / widthInCells;
+    int gridPosX = cellIndex - gridPosY * widthInCells;
     double xPos = cornerX + (gridPosX + 0.5) * cellDim.number().doubleValue();
     double yPos = cornerY + (gridPosY + 0.5) * cellDim.number().doubleValue();
     return new double[] { xPos, yPos };
@@ -72,29 +73,31 @@ public class MapProvider {
     }
     int gridPosX = (int) ((posX - cornerX) / cellDim.number().doubleValue());
     int gridPosY = (int) ((posY - cornerY) / cellDim.number().doubleValue());
-    int cellIndex = gridPosX + xAxisCellNumber * gridPosY;
+    int cellIndex = gridPosX + widthInCells * gridPosY;
     return cellIndex;
   }
 
-  /** sets value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose
    * 
    * @param pose [x,y,angle] pose in world coordinates
    * @param value */
-  public void setValue(Tensor pose, double value) {
-    setValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
+  public void addValue(Tensor pose, double value) {
+    addValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
   }
 
-  /** sets value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
    * @param value */
-  public void setValue(double posX, double posY, double value) {
+  public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     if (cellIndex == numberOfCells.number().intValue()) {
       return;
     }
-    mapArray[cellIndex] = value;
+    mapArray[cellIndex] += value;
+    if(mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
   }
 
   // gets value of cell in which the coordinates are
@@ -111,7 +114,15 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
+  public double[] getMapArray() {
+    return mapArray;
+  }
+
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
+  }
+  
+  public double getMaxValue() {
+    return maxValue;
   }
 }

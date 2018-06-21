@@ -19,7 +19,7 @@ public enum VisualizationUtil {
    * @param unscaled original bufferedImage
    * @param scale scaling factor
    * @return scaled bufferedImage */
-  public static BufferedImage scaleImage(BufferedImage unscaled, float scale) {
+  public static BufferedImage scaleImage(BufferedImage unscaled, double scale) {
     int newWidth = (int) (unscaled.getWidth() * scale);
     int newHeight = (int) (unscaled.getHeight() * scale);
     BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_INDEXED);

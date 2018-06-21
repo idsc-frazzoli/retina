@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.ImageToWorldInterface;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.SlamUtil;
-import ch.ethz.idsc.demo.mg.util.WorldToImageInterface;
+import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 // provides three event maps: occurrence map, normalization map, likelihood map
@@ -34,18 +34,18 @@ public class EventMap {
       // each distribution is weighted with the particle likelihood and then added to the occurrenceMap
       // ..
       // in first try, we just update the exact position
-      eventMaps[0].setValue(worldCoord, slamParticles[i].getParticleLikelihood());
+      eventMaps[0].addValue(worldCoord, slamParticles[i].getParticleLikelihood());
     }
   }
 
-  public void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, ImageToWorldInterface imageToWorldLookup,
-      WorldToImageInterface worldToImageUtil) {
+  public void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, ImageToGokartInterface imageToWorldLookup,
+      GokartToImageInterface worldToImageUtil) {
     // use of hashset since we want a list of unique cells
     Set<Integer> seenCells = new HashSet<>();
     // find all cells in the map which were seen on the sensor with current or last expected pose
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
-        double[] gokartCoord = imageToWorldLookup.imageToWorld(i, j);
+        double[] gokartCoord = imageToWorldLookup.imageToGokart(i, j);
         // get cell index number for event position using last expected pose
         double[] worldCoordLast = SlamUtil.gokartToWorld(lastExpectedPose, gokartCoord);
         int cellIndexLast = eventMaps[2].getCellIndex(worldCoordLast[0], worldCoordLast[1]);
@@ -67,8 +67,8 @@ public class EventMap {
         double[] cellGokartCoordCurrent = SlamUtil.worldToGokart(currentExpectedPose, cellWorldCoord);
         double[] cellGokartCoordLast = SlamUtil.worldToGokart(lastExpectedPose, cellWorldCoord);
         // transform to image plane
-        double[] cellImageCoordCurrent = worldToImageUtil.worldToImage(cellGokartCoordCurrent[0], cellGokartCoordCurrent[1]);
-        double[] cellImageCoordLast = worldToImageUtil.worldToImage(cellGokartCoordLast[0], cellGokartCoordLast[1]);
+        double[] cellImageCoordCurrent = worldToImageUtil.gokartToImage(cellGokartCoordCurrent[0], cellGokartCoordCurrent[1]);
+        double[] cellImageCoordLast = worldToImageUtil.gokartToImage(cellGokartCoordLast[0], cellGokartCoordLast[1]);
         // compute norm and set value
         double imagePlaneDistance = Math.pow((cellImageCoordCurrent[0] - cellGokartCoordLast[0]), 1)
             + Math.pow((cellImageCoordCurrent[1] - cellImageCoordLast[1]), 1);
@@ -82,11 +82,12 @@ public class EventMap {
     eventMaps[2] = MapProvider.divide(eventMaps[0], eventMaps[1]);
   }
 
+  // TODO replace with getMap
   public MapProvider getLikelihoodMap() {
     return eventMaps[2];
   }
 
-  public MapProvider[] getMaps() {
-    return eventMaps;
+  public MapProvider getMap(int mapID) {
+    return eventMaps[mapID];
   }
 }
