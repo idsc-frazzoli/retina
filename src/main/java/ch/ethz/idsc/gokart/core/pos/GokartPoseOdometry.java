@@ -62,7 +62,7 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
     // yTireRear = Quantity.of(0.54, "m");
     Flow flow = singleton(speed_pair.Get(0), speed_pair.Get(1), yTireRear);
     state = Se2CarIntegrator.INSTANCE.step(flow, state, dt);
-  } 
+  }
 
   /** .
    * @param speedL with unit "m*s^-1"

@@ -21,7 +21,7 @@ public class SlamMapFrame implements RenderInterface {
   private MapProvider[] maps;
 
   SlamMapFrame(PipelineConfig pipelineConfig) {
-    bufferedImage = new BufferedImage(400,200,BufferedImage.TYPE_BYTE_INDEXED);
+    bufferedImage = new BufferedImage(400, 200, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     scale = 2;
     height = 200;

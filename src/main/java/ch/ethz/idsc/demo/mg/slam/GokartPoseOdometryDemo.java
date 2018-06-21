@@ -83,7 +83,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   public Tensor getPose() {
     return currentState.unmodifiable();
   }
-  
+
   public Tensor getDeltaPose() {
     return deltaState;
   }

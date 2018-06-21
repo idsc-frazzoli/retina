@@ -86,9 +86,9 @@ public class PipelineConfig {
   public final Scalar cellDim = RealScalar.of(1); // [m] single cell dimension
   public final Scalar dimX = RealScalar.of(80); // [m] x 'length' of map
   public final Scalar dimY = RealScalar.of(80); // [m] y 'length' of map
-  public final Tensor corner = Tensors.vector(10,10); // [m] coordinates of lower left point in map
+  public final Tensor corner = Tensors.vector(10, 10); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
-  
+
   /***************************************************/
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {

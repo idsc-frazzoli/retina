@@ -73,12 +73,12 @@ public class SlamProvider implements DavisDvsListener {
     eventMaps.updateLikelihoodMap();
     // particle resampling??
   }
-  
+
   // for visualization
   public GokartPoseInterface getPoseInterface() {
     return estimatedPose;
   }
-  
+
   // for visualization
   public MapProvider[] getMaps() {
     return eventMaps.getMaps();

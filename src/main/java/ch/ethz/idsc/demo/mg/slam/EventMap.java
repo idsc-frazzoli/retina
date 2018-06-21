@@ -72,7 +72,7 @@ public class EventMap {
         // compute norm and set value
         double imagePlaneDistance = Math.pow((cellImageCoordCurrent[0] - cellGokartCoordLast[0]), 1)
             + Math.pow((cellImageCoordCurrent[1] - cellImageCoordLast[1]), 1);
-//        System.out.println(imagePlaneDistance);
+        // System.out.println(imagePlaneDistance);
         eventMaps[2].setValue(cell, imagePlaneDistance);
       }
     }
@@ -85,7 +85,7 @@ public class EventMap {
   public MapProvider getLikelihoodMap() {
     return eventMaps[2];
   }
-  
+
   public MapProvider[] getMaps() {
     return eventMaps;
   }

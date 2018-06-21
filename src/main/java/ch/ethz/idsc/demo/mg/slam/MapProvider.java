@@ -76,7 +76,7 @@ public class MapProvider {
     return cellIndex;
   }
 
-  /** sets value in grid cell corresponding to pose 
+  /** sets value in grid cell corresponding to pose
    * 
    * @param pose [x,y,angle] pose in world coordinates
    * @param value */
@@ -88,8 +88,7 @@ public class MapProvider {
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
-   * @param value
-   */
+   * @param value */
   public void setValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     if (cellIndex == numberOfCells.number().intValue()) {

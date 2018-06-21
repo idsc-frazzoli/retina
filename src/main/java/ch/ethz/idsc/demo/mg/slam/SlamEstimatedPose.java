@@ -12,7 +12,7 @@ public class SlamEstimatedPose implements GokartPoseInterface {
   public void setPose(Tensor pose) {
     this.pose = pose;
   }
-  
+
   @Override
   public Tensor getPose() {
     return pose;

@@ -37,11 +37,10 @@ public class OfflineSlamWrap implements OfflineLogListener {
   // decode DavisDvsEvents, RimoGetEvents and GokartPoseEvents
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-
     if (channel.equals("davis240c.overview.dvs")) {
       davisDvsDatagramDecoder.decode(byteBuffer);
-      if(!isInitialized)
-        lastTimeStamp = (int) (1000*time.number().doubleValue());     
+      if (!isInitialized)
+        lastTimeStamp = (int) (1000 * time.number().doubleValue());
     }
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
@@ -49,7 +48,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     // every once in a while, run visualization
     if ((time.number().intValue() - lastTimeStamp) > 50) {
-        slamVisualization.setMaps(slamProvider.getMaps());
+      slamVisualization.setMaps(slamProvider.getMaps());
     }
   }
 }
