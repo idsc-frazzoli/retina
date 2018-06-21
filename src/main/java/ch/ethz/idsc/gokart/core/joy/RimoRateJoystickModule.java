@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.Scalar;
   }
 
   /***************************************************/
-  @Override
+  @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());

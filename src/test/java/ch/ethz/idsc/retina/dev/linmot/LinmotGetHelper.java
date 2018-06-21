@@ -4,8 +4,11 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public enum LinmotGetEventSimulator {
+public enum LinmotGetHelper {
   ;
+  /** @param t1
+   * @param t2
+   * @return */
   public static LinmotGetEvent createTemperature(int t1, int t2) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

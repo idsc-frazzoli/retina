@@ -8,7 +8,7 @@ import java.util.Properties;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
-import ch.ethz.idsc.gokart.core.fuse.LinmotEmergencyModule;
+import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
@@ -61,6 +61,7 @@ enum RunTabbedTaskGui {
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      LinmotSafetyModule.class, //
       JoystickResetModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
@@ -83,9 +84,9 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SteerBatteryWatchdog.class, //
-      LinmotCoolingModule.class, //
+      LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class, //
-      LinmotEmergencyModule.class, //
+      // LinmotEmergencyModule.class, //
       // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
       DavisImuWatchdog.class, //
       DeadManSwitchModule.class // joystick

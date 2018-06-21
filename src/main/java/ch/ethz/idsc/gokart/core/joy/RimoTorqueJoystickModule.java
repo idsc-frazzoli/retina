@@ -27,7 +27,7 @@ public class RimoTorqueJoystickModule extends GuideJoystickModule<RimoPutEvent> 
   }
 
   /***************************************************/
-  @Override
+  @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar factor = joystick.getAheadAverage(); // [-1, 1]
