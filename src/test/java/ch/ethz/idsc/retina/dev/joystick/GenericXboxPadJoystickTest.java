@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class GenericXboxPadJoystickTest extends TestCase {
   public void testLinmot() {
-    GenericXboxPadJoystick joystick = new GenericXboxPadJoystick();
+    GenericXboxPadJoystick joystick = GenericXboxPadJoystick.createDefault();
     byte[] array = new byte[20];
     for (int index = 0; index < array.length; ++index)
       array[index] = (byte) index;
@@ -35,7 +35,7 @@ public class GenericXboxPadJoystickTest extends TestCase {
   }
 
   public void testSteer() {
-    GenericXboxPadJoystick joystick = new GenericXboxPadJoystick();
+    GenericXboxPadJoystick joystick = GenericXboxPadJoystick.createDefault();
     assertFalse(joystick.isPassive()); // ahead pair is 0.5, 0.5
     byte[] array = new byte[20];
     for (int index = 0; index < array.length; ++index)
@@ -61,7 +61,7 @@ public class GenericXboxPadJoystickTest extends TestCase {
   }
 
   public void testRimoAverage() {
-    GenericXboxPadJoystick joystick = new GenericXboxPadJoystick();
+    GenericXboxPadJoystick joystick = GenericXboxPadJoystick.createDefault();
     byte[] array = new byte[20];
     for (int index = 0; index < array.length; ++index)
       array[index] = (byte) index;
@@ -91,7 +91,7 @@ public class GenericXboxPadJoystickTest extends TestCase {
   }
 
   public void testRimoPair() {
-    GenericXboxPadJoystick joystick = new GenericXboxPadJoystick();
+    GenericXboxPadJoystick joystick = GenericXboxPadJoystick.createDefault();
     byte[] array = new byte[20];
     for (int index = 0; index < array.length; ++index)
       array[index] = (byte) index;

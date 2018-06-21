@@ -22,6 +22,7 @@
 * [20180429_minimum_turning_radius.pdf](https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf)
 * [20180607_gps_inside_hangar.pdf](https://github.com/idsc-frazzoli/retina/files/2101276/20180607_gps_inside_hangar.pdf)
 * [20180616_power_steering_breakdown.pdf](https://github.com/idsc-frazzoli/retina/files/2108415/20180616_power_steering_breakdown.pdf)
+* [20180617_rimo_response.pdf](https://github.com/idsc-frazzoli/retina/files/2109415/20180617_rimo_response.pdf)
 
 
 ## Bug Reports

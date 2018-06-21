@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEventSimulator;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
@@ -21,9 +21,9 @@ public class LinmotCoolingModuleTest extends TestCase {
   public void testEvents() {
     LinmotCoolingModule lcm = new LinmotCoolingModule();
     assertTrue(lcm.putEvent().isPresent());
-    lcm.getEvent(LinmotGetEventSimulator.createTemperature(1000, 700));
+    lcm.getEvent(LinmotGetHelper.createTemperature(1000, 700));
     assertTrue(lcm.putEvent().isPresent());
-    lcm.getEvent(LinmotGetEventSimulator.createTemperature(700, 700));
+    lcm.getEvent(LinmotGetHelper.createTemperature(700, 700));
     assertFalse(lcm.putEvent().isPresent());
   }
 }

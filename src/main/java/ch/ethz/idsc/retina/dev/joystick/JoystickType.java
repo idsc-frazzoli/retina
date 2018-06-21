@@ -10,7 +10,7 @@ import ch.ethz.idsc.owl.data.GlobalAssert;
 public enum JoystickType {
   /** tested on GUID=030000004c0e00001035000070000000 */
   GENERIC_XBOX_PAD( //
-      () -> new GenericXboxPadJoystick(), 6, 10, 1), //
+      () -> new GenericXboxPadJoystick(9.5), 6, 10, 1), //
   /** tested on GUID=03000000380700005032000011010000 */
   // MAD_CATZ_FIGHTPAD_PRO_PS3( //
   // () -> new MadCatzIncMadCatzFightpadProPs3(), 4, 16, 1)

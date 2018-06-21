@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class LinmotGetEventTest extends TestCase {
   public void testPosition() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createPos(123_000, 124_000);
+    LinmotGetEvent linmotGetEvent = LinmotGetHelper.createPos(123_000, 124_000);
     assertEquals(linmotGetEvent.getActualPosition(), Quantity.of(0.0123, "m"));
     assertEquals(linmotGetEvent.getDemandPosition(), Quantity.of(0.0124, "m"));
     assertTrue(Chop._13.close(linmotGetEvent.getPositionDiscrepancy(), Quantity.of(0.0001, "m")));
@@ -23,7 +23,7 @@ public class LinmotGetEventTest extends TestCase {
   }
 
   public void testOperation() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(500, 200);
+    LinmotGetEvent linmotGetEvent = LinmotGetHelper.createTemperature(500, 200);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));
@@ -38,7 +38,7 @@ public class LinmotGetEventTest extends TestCase {
   }
 
   public void testHardware() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(1000, 700);
+    LinmotGetEvent linmotGetEvent = LinmotGetHelper.createTemperature(1000, 700);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));
@@ -53,7 +53,7 @@ public class LinmotGetEventTest extends TestCase {
   }
 
   public void testFireworks() {
-    LinmotGetEvent linmotGetEvent = LinmotGetEventSimulator.createTemperature(1150, 900);
+    LinmotGetEvent linmotGetEvent = LinmotGetHelper.createTemperature(1150, 900);
     assertEquals(linmotGetEvent.length(), 16);
     linmotGetEvent.asArray();
     assertTrue(Objects.nonNull(linmotGetEvent.toInfoString()));

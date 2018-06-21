@@ -75,9 +75,11 @@ public class ChassisGeometry implements Serializable {
     return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRearMeter());
   }
 
-  /** @param rate without unit */
-  public Scalar steerAngleForTurningRatio(Scalar rate) {
-    return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(rate)), "rad");
+  /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
+   * 
+   * @param ratio without unit */
+  public Scalar steerAngleForTurningRatio(Scalar ratio) {
+    return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(ratio)), "rad");
   }
 
   /** @param rimoGetEvent
