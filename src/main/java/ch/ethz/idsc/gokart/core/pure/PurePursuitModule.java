@@ -25,10 +25,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public final class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
+  private final Chop chop = Chop.below(.1);
   private final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
@@ -43,6 +45,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     public void getEvent(RimoGetEvent rimoGetEvent) {
       // TODO this is not yet covered by tests
       Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+      speed = chop.apply(speed);
       isForward = Sign.isPositiveOrZero(speed);
     }
   };
