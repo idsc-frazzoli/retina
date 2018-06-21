@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEventSimulator;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
 import junit.framework.TestCase;
 
 public class LinmotTakeoverModuleTest extends TestCase {
@@ -20,25 +20,25 @@ public class LinmotTakeoverModuleTest extends TestCase {
 
   public void testDiscrepancyFine() throws Exception {
     LinmotTakeoverModule linmotTakeoverModule = new LinmotTakeoverModule();
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-50_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-50_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-50_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-50_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-50_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-50_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-50_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-50_000, -50_000));
     assertFalse(linmotTakeoverModule.putEvent().isPresent());
   }
 
   public void testDiscrepancyBad() throws Exception {
     LinmotTakeoverModule linmotTakeoverModule = new LinmotTakeoverModule();
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-100_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-100_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-100_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-100_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-100_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-100_000, -50_000));
     Thread.sleep(20);
-    linmotTakeoverModule.getEvent(LinmotGetEventSimulator.createPos(-100_000, -50_000));
+    linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-100_000, -50_000));
     assertTrue(linmotTakeoverModule.putEvent().isPresent());
   }
 }

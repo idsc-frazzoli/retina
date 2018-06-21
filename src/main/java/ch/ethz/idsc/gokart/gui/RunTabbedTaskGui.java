@@ -84,7 +84,7 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SteerBatteryWatchdog.class, //
-      LinmotCoolingModule.class, //
+      LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class, //
       // LinmotEmergencyModule.class, //
       // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable

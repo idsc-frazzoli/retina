@@ -12,6 +12,11 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
+/** sends stop command if linmot status is "not-operational"
+ * {@link LinmotGetEvent#isOperational()}
+ * 
+ * <p>The module has {@link ProviderRank#SAFETY} to prevent the autonomous
+ * drive without operational brake. */
 public final class LinmotSafetyModule extends AbstractModule implements LinmotGetListener, PutProvider<RimoPutEvent> {
   private boolean isOperational = false;
 
