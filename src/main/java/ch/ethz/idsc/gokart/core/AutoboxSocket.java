@@ -50,7 +50,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
           try {
             listener.getEvent(getEvent); // notify get listener
           } catch (Exception exception) {
-            exception.printStackTrace(); // TODO any get listener that causes problems should be removed?
+            exception.printStackTrace();
           }
       }
     }
