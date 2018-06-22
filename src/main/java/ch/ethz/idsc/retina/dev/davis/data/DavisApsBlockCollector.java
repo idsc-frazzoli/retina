@@ -9,18 +9,18 @@ import ch.ethz.idsc.retina.dev.davis.DavisStatics;
  * {@link DavisApsColumnListener} */
 public class DavisApsBlockCollector implements DavisApsColumnListener {
   private final int columns = DavisStatics.APS_COLUMNS;
+  private final DavisApsBlockListener davisApsBlockListener;
   /** column + COLUMNS * [time + pixels] */
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2 + columns * DavisApsColumnCompiler.LENGTH]);
-  private DavisApsBlockListener davisApsBlockListener;
 
-  public DavisApsBlockCollector() {
+  public DavisApsBlockCollector(DavisApsBlockListener davisApsBlockListener) {
+    this.davisApsBlockListener = davisApsBlockListener;
     byteBuffer.order(DavisStatics.BYTE_ORDER);
   }
 
-  public void setListener(DavisApsBlockListener davisApsBlockListener) {
-    this.davisApsBlockListener = davisApsBlockListener;
-  }
-
+  // public void setListener(DavisApsBlockListener davisApsBlockListener) {
+  // this.davisApsBlockListener = davisApsBlockListener;
+  // }
   public ByteBuffer byteBuffer() {
     return byteBuffer;
   }
