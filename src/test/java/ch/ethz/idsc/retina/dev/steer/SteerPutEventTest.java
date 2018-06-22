@@ -38,7 +38,7 @@ public class SteerPutEventTest extends TestCase {
   }
 
   public void testMotTrq() {
-    assertTrue(Arrays.equals(SteerPutEvent.MOT_TRQ_OFF.asArray(), new byte[5]));
-    assertTrue(Arrays.equals(SteerPutEvent.MOT_TRQ_ON.asArray(), new byte[] { 1, 0, 0, 0, 0 }));
+    assertTrue(Arrays.equals(SteerPutEvent.PASSIVE_MOT_TRQ_0.asArray(), new byte[5]));
+    assertTrue(Arrays.equals(SteerPutEvent.PASSIVE_MOT_TRQ_1.asArray(), new byte[] { 1, 0, 0, 0, 0 }));
   }
 }

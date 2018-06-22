@@ -29,6 +29,6 @@ public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.ofNullable(isCharging ? SteerPutEvent.MOT_TRQ_OFF : null);
+    return Optional.ofNullable(isCharging ? SteerPutEvent.PASSIVE_MOT_TRQ_0 : null);
   }
 }

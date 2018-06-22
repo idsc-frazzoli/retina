@@ -1,13 +1,11 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
+import ch.ethz.idsc.gokart.dev.GokartActuatorCalibration;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
-import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -16,7 +14,9 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
  * the calibration procedure for the devices that are not calibrated.
  * the devices are: misc, linmot, and steer. */
 public class JoystickResetModule extends AbstractModule implements JoystickListener {
-  // TODO use JoystickLcmProvider ?
+  /** use of joystick lcm client is sufficient over joystick lcm provider since the
+   * JoystickEvent is processed in the callback function which ensures the message
+   * is not outdated. */
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
 
   @Override // from AbstractModule
@@ -28,20 +28,13 @@ public class JoystickResetModule extends AbstractModule implements JoystickListe
   @Override // from AbstractModule
   protected void last() {
     joystickLcmClient.stopSubscriptions();
+    joystickLcmClient.removeListener(this);
   }
 
   @Override // from JoystickListener
   public void joystick(JoystickEvent joystickEvent) {
     GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
-    if (gokartJoystickInterface.isResetPressed()) {
-      if (MiscIgnitionProvider.INSTANCE.isScheduleSuggested())
-        MiscIgnitionProvider.INSTANCE.schedule(); // reset misc comm
-      // ---
-      if (LinmotCalibrationProvider.INSTANCE.isScheduleSuggested())
-        LinmotCalibrationProvider.INSTANCE.schedule(); // calibrate linmot
-      // ---
-      if (SteerCalibrationProvider.INSTANCE.isScheduleSuggested())
-        SteerCalibrationProvider.INSTANCE.schedule(); // calibrate steering
-    }
+    if (gokartJoystickInterface.isResetPressed())
+      GokartActuatorCalibration.all();
   }
 }
