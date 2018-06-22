@@ -5,10 +5,9 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** AbstractClockedModule implements a timer thread which calls the algorithm
  * based on the period specified by the getPeriod() method.
@@ -17,8 +16,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * be replaced by ScheduledThreadPoolExecutor in the future for better control
  * of the task. */
 public abstract class AbstractClockedModule extends AbstractModule {
-  static final ScalarUnaryOperator TO_MILLI_SECONDS = QuantityMagnitude.SI().in("ms");
-  // always private
   private final Timer timer = new Timer(getClass().getSimpleName()); // <- this is the thread
 
   /** Task to be executed for user implementation. */
@@ -48,7 +45,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
         runAlgo();
       }
     };
-    timer.schedule(timerTask, 0, TO_MILLI_SECONDS.apply(getPeriod()).number().longValue());
+    timer.schedule(timerTask, 0, Magnitude.MILLI_SECOND.apply(getPeriod()).number().longValue());
   }
 
   @Override
