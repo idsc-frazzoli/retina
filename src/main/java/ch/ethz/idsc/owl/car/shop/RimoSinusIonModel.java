@@ -130,9 +130,9 @@ public class RimoSinusIonModel extends DefaultCarModel {
   // at the extreme the tires are inclined as 18 [deg] to 35 [deg]
   private static final Scalar MAX_DELTA = DoubleScalar.of(25 * Math.PI / 180); // maximal steering angle [rad]
   // maximal motor torque [Nm], with gears included
-  private static final Scalar MAX_PRESS = DoubleScalar.of(4.0); // TODO no info yet
+  private static final Scalar MAX_PRESS = DoubleScalar.of(4.0);
   private static final Scalar MAX_THB = DoubleScalar.of(1000.0); // max handbrake torque [Nm]
-  private static final Scalar MAX_THROTTLE = DoubleScalar.of(100.0); // TODO no info yet
+  private static final Scalar MAX_THROTTLE = DoubleScalar.of(100.0);
 
   @Override
   public CarControl createControl(Tensor u) {

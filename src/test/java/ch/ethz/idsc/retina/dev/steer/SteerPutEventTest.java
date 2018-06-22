@@ -3,7 +3,9 @@ package ch.ethz.idsc.retina.dev.steer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
+import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -26,12 +28,17 @@ public class SteerPutEventTest extends TestCase {
 
   public void testCreate() {
     SteerPutEvent steerPutEvent = //
-        SteerPutEvent.create(SteerPutEvent.CMD_OFF, Quantity.of(-0.9, "SCT"));
+        SteerPutEvent.create(Word.createByte("not important", (byte) 0), Quantity.of(-0.9, "SCT"));
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[5]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     steerPutEvent.insert(byteBuffer);
     assertEquals(byteBuffer.get(0), 0);
     assertEquals(byteBuffer.getFloat(1), -0.9f);
     assertTrue(Scalars.isZero(steerPutEvent.asVector().Get(0)));
+  }
+
+  public void testMotTrq() {
+    assertTrue(Arrays.equals(SteerPutEvent.MOT_TRQ_OFF.asArray(), new byte[5]));
+    assertTrue(Arrays.equals(SteerPutEvent.MOT_TRQ_ON.asArray(), new byte[] { 1, 0, 0, 0, 0 }));
   }
 }

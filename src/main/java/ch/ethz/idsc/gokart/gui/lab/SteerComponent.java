@@ -56,7 +56,7 @@ import ch.ethz.idsc.tensor.Scalar;
     {
       JToolBar jToolBar = createRow("Command");
       spinnerLabelLw.setList(SteerPutEvent.COMMANDS);
-      spinnerLabelLw.setValueSafe(SteerPutEvent.CMD_ON);
+      spinnerLabelLw.setValueSafe(SteerPutEvent.COMMANDS.get(0));
       spinnerLabelLw.addToComponent(jToolBar, new Dimension(200, 20), "");
     }
     { // command speed
