@@ -16,13 +16,17 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   private final GokartToImageUtil gokartToImageUtil;
   private final ImageToGokartUtil imageToGokartUtil;
-  // private final double[] lookupArray;
+  private final double[] lookupArray;
+  private final double cellDim;
   private final double lookAhead;
   private final double padding = 1; // [m] doesnt matter if lookuptable is too large
+  private final int widthInCells;
+  private final int heightInCells;
 
-  public GokartToImageLookup(ImageToGokartUtil imageToGokartUtil, GokartToImageUtil gokartToImageUtil, Scalar cellDim, Scalar lookAheadDistance) {
+  public GokartToImageLookup(ImageToGokartUtil imageToGokartUtil, GokartToImageUtil gokartToImageUtil, Scalar cellDimension, Scalar lookAheadDistance) {
     this.gokartToImageUtil = gokartToImageUtil;
     this.imageToGokartUtil = imageToGokartUtil;
+    cellDim = cellDimension.number().doubleValue();
     // lookAhead = lookAheadDistance.number().doubleValue();
     lookAhead = 20;
     // find the left and right corners at lookAheadDistance
@@ -30,15 +34,27 @@ public class GokartToImageLookup implements GokartToImageInterface {
     double[] upperLeft = imageToGokartUtil.imageToGokart(0, lookAheadImagePlane[1]);
     double[] upperRight = imageToGokartUtil.imageToGokart(239, lookAheadImagePlane[1]);
     double[] lowerLeft = imageToGokartUtil.imageToGokart(0, 179);
-    // ..
+    // compute lookup array dimensions
     double rectangleWidth = upperLeft[1] + 2 * padding - upperRight[1];
     double rectangleHeight = upperLeft[0] + 2 * padding - lowerLeft[0];
-    // once we know the corners, generate lookupArray of appropriate size
-    // store values of transformation of center of the cells
+    widthInCells = (int) (rectangleWidth / cellDim);
+    heightInCells = (int) (rectangleHeight / cellDim);
+    lookupArray = new double[2 * widthInCells * heightInCells];
+    int index = 0;
+    for (int i = 0; i < widthInCells; i++) {
+      for (int j = 0; j < heightInCells; j++) {
+        double gokartPosX = upperLeft[0] + padding;
+        double gokartPosY = upperLeft[1] + padding;
+        double[] transformedPoint = this.gokartToImageUtil.gokartToImage(gokartPosX, gokartPosY);
+        lookupArray[2 * index] = transformedPoint[0];
+        lookupArray[2 * index + 1] = transformedPoint[1];
+        index++;
+      }
+    }
   }
 
   @Override
-  public double[] gokartToImage(double worldPosX, double worldPosY) {
+  public double[] gokartToImage(double gokartPosX, double gokartPosY) {
     // find nearest position for which we have a lookup value
     // then return that value
     return null;

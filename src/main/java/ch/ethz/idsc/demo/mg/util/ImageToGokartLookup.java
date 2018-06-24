@@ -25,12 +25,10 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
     int index = 0;
     for (int y = 0; y < height; ++y)
       for (int x = 0; x < width; ++x) {
-        int imagePosX = x;
-        int imagePosY = y;
-        double[] transformedPoint = transformUtil.imageToGokart(imagePosX, imagePosY);
+        double[] transformedPoint = this.transformUtil.imageToGokart(x, y);
         lookupArray[2 * index] = transformedPoint[0];
         lookupArray[2 * index + 1] = transformedPoint[1];
-        ++index;
+        index++;
       }
   }
 

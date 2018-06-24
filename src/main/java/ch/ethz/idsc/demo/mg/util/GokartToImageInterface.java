@@ -2,5 +2,5 @@
 package ch.ethz.idsc.demo.mg.util;
 
 public interface GokartToImageInterface {
-  double[] gokartToImage(double worldPosX, double worldPosY);
+  double[] gokartToImage(double gokartPosX, double gokartPosY);
 }
