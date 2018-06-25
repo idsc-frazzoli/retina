@@ -30,11 +30,11 @@ import ch.ethz.idsc.tensor.sca.Round;
   /** the several events are packed into a single message.
    * the DavisDvsDatagramDecoder helps to step through all events in a single message */
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private static final Scalar DVS_PERIOD = Quantity.of(RationalScalar.of(1, 50), SI.SECOND);
+  // private static final Scalar DVS_PERIOD = Quantity.of(RationalScalar.of(1, 50), SI.SECOND);
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
-  private Scalar time_next = DVS_PERIOD;
+  private Scalar time_next;
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
   /** counters with long precision (using int results in overflow) */
@@ -50,34 +50,29 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   Integer reference = null;
+
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-      if (Objects.isNull(reference))
+    if (Objects.isNull(reference))
       reference = davisDvsEvent.time;
     ++events[davisDvsEvent.i];
     Scalar now = Quantity.of((davisDvsEvent.time - reference) * 1e-6, SI.SECOND);
     if (Scalars.lessEquals(time_next, now)) { // TODO not as precise as could be
-      
-      Scalar speed = Objects.isNull(rge)? Quantity.of(0,SI.VELOCITY):ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-      Scalar rate = Objects.isNull(rge)? Quantity.of(0,SI.ANGULAR_RATE):ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+      Scalar speed = Objects.isNull(rge) ? Quantity.of(0, SI.VELOCITY) : ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
+      Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.ANGULAR_RATE) : ChassisGeometry.GLOBAL.odometryTurningRate(rge);
       tableBuilder.appendRow( //
-          Magnitude.SECOND.apply(time_next.subtract(DVS_PERIOD)), //
-          Tensors.vectorLong(events),
-          
-          speed.map(Magnitude.VELOCITY).map(Round._2), //
+          Magnitude.SECOND.apply(time_next.subtract(delta)), //
+          Tensors.vectorLong(events), speed.map(Magnitude.VELOCITY).map(Round._2), //
           rate.map(Magnitude.ANGULAR_RATE).map(Round._4) //
-          );
-      time_next = time_next.add(DVS_PERIOD);
+      );
+      time_next = time_next.add(delta);
       events[0] = 0;
       events[1] = 0;
-      
-      
     }
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
     } else //
