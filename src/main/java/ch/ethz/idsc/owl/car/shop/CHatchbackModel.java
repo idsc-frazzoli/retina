@@ -96,7 +96,7 @@ public class CHatchbackModel extends DefaultCarModel {
   }
 
   // maximal steering angle [deg]
-  // TODO check online what is appropriate
+  // check online what is appropriate
   private static final Scalar MAX_DELTA = DoubleScalar.of(45 * Math.PI / 180);
   // maximal motor torque [Nm], with gears included
   private static final Scalar MAX_PRESS = DoubleScalar.of(13); // maximal master cylinder presure [MPa]

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.red.Times;
@@ -11,6 +11,8 @@ import ch.ethz.idsc.tensor.red.Times;
  * maxDeceleration <= 0, velocity >= 0
  * maxDeceleration >= 0, velocity <= 0 */
 public class EmergencyBrakeManeuver {
+  private static final Scalar NEGATIVE_HALF = RealScalar.of(-0.5);
+  // ---
   /** duration to full stop with unit "s" */
   public final Scalar duration;
   /** distance to full stop with unit "m" */
@@ -22,7 +24,7 @@ public class EmergencyBrakeManeuver {
   public EmergencyBrakeManeuver(Scalar responseTime, Scalar maxDeceleration, Scalar velocity) {
     Scalar d0 = velocity.multiply(responseTime); // [m]
     Scalar bt = velocity.divide(maxDeceleration).negate();
-    Scalar d1 = Times.of(RationalScalar.HALF.negate(), maxDeceleration, bt, bt);
+    Scalar d1 = Times.of(NEGATIVE_HALF, maxDeceleration, bt, bt);
     duration = responseTime.add(bt);
     distance = d0.add(d1);
   }

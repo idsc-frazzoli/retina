@@ -44,6 +44,6 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     isBlown |= watchdog_steerVoltage.isBlown();
-    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null); // deactivate throttle
+    return isBlown ? StaticHelper.OPTIONAL_RIMO_PASSIVE : Optional.empty();
   }
 }

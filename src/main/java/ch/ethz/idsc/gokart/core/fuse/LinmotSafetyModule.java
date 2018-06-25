@@ -44,6 +44,6 @@ public final class LinmotSafetyModule extends AbstractModule implements LinmotGe
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(isOperational ? null : RimoPutEvent.PASSIVE);
+    return isOperational ? Optional.empty() : StaticHelper.OPTIONAL_RIMO_PASSIVE;
   }
 }

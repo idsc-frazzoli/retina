@@ -182,34 +182,6 @@ public class PurePursuitModuleTest extends TestCase {
         Quantity.of(0.07, "rad")).isInside(angle));
   }
 
-  public void testSpecificHLE() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.0627054558616751)));
-  }
-
-  public void testSpecificHLE_R() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.009685440563639316)));
-  }
-
-  public void testSpecificHLER() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.009685440563639316)));
-  }
-
-  public void testSpecificHLER_R() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.0627054558616751)));
-  }
-
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
     Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);

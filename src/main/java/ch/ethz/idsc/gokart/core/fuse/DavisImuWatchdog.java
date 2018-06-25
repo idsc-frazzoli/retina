@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** the davis imu watchdog detects the absence of {@link DavisImuFrame}
  * for instance when the connection to the Davis240C camera fails. */
+// TODO provider rank should be safety
 public class DavisImuWatchdog extends EmergencyModule<RimoPutEvent> implements DavisImuFrameListener {
   private static final long TIMEOUT_MS = 150; // 150[ms]
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -36,7 +37,7 @@ public class DavisImuWatchdog extends EmergencyModule<RimoPutEvent> implements D
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     boolean isBlown = watchdog.isBlown(); // true == stop gokart
-    return Optional.ofNullable(isBlown ? RimoPutEvent.PASSIVE : null);
+    return isBlown ? StaticHelper.OPTIONAL_RIMO_PASSIVE : Optional.empty();
   }
 
   /***************************************************/

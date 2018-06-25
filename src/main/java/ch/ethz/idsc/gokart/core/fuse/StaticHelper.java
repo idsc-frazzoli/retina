@@ -2,10 +2,12 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import java.nio.FloatBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
+import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -14,6 +16,8 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ enum StaticHelper {
   ;
+  static final Optional<RimoPutEvent> OPTIONAL_RIMO_PASSIVE = Optional.of(RimoPutEvent.PASSIVE);
+
   static boolean isPathObstructed(SteerColumnInterface steerColumnInterface, FloatBuffer floatBuffer) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked

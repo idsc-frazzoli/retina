@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
-  private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_ON);
+  private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_1);
   // ---
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 

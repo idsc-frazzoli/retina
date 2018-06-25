@@ -38,4 +38,8 @@ public class JoystickLcmClient extends BinaryLcmClient {
   public void addListener(JoystickListener joystickListener) {
     listeners.add(joystickListener);
   }
+
+  public void removeListener(JoystickListener joystickListener) {
+    listeners.remove(joystickListener);
+  }
 }

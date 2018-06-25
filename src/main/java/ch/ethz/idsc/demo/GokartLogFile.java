@@ -450,6 +450,22 @@ public enum GokartLogFile implements LogFile {
   /** steer operation failure at 57.514723[s]
    * during calibration procedure */
   _20180614T142228_6a2f62c6, //
+  /***************************************************/
+  /* 2018-06-18 */
+  /* investigation of steering system anomaly */
+  /***************************************************/
+  /* 2018-06-21 */
+  /** pure pursuit figure eight with localization failure
+   * after emergency stop */
+  _20180621T085525_2876053b, //
+  /** pure pursuit figure eight with driving in reverse */
+  _20180621T093117_2876053b, //
+  /** trajectory planning with changing obstacles */
+  _20180621T095326_707a71e0, //
+  /** pure pursuit figure eight with localization failure */
+  _20180621T120115_707a71e0, //
+  /** pure pursuit figure eight with driving in reverse */
+  _20180621T125013_2b01cac5, //
   ;
   @Override // from LogFile
   public String getFilename() {
