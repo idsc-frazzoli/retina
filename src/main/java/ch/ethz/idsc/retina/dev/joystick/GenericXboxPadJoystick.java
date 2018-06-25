@@ -11,10 +11,25 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
+/**
+ * 
+ */
 @SafetyCritical
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
-  private static final Clipzone CLIPZONE = new Clipzone(Clip.function(9.5 / 127, 1.0));
-  private static final Clip PASSIVE = Clip.function(-0.05, 0.05);
+  private static final Clip PASSIVE = Clip.function(-0.05, 0.05); // TODO magic const
+
+  // function for testing
+  static GenericXboxPadJoystick createDefault() {
+    return new GenericXboxPadJoystick(9.5);
+  }
+
+  // ---
+  private final Clipzone clipzone;
+
+  /** @param deadzone number between [0, 127] */
+  public GenericXboxPadJoystick(double deadzone) {
+    clipzone = new Clipzone(Clip.function(deadzone / 127, 1.0));
+  }
 
   // ---
   @Override
@@ -145,7 +160,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
   @Override // from GokartJoystickInterface
   public Scalar getAheadAverage() {
-    return CLIPZONE.apply(DoubleScalar.of(getLeftKnobDirectionUp()));
+    return clipzone.apply(DoubleScalar.of(getLeftKnobDirectionUp()));
   }
 
   @Override // from GokartJoystickInterface

@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,6 +17,7 @@ public class TrajectoryConfig implements Serializable {
   public static final TrajectoryConfig GLOBAL = AppResources.load(new TrajectoryConfig());
   /***************************************************/
   public Scalar planningPeriod = Quantity.of(1, SI.SECOND); // 1[s] == 1[Hz]
+  public Scalar expandFraction = RationalScalar.of(3, 4);
   public Scalar planningOffset = Quantity.of(2.5, SI.METER);
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap */
   public Scalar horizonDistance = RealScalar.of(8);
@@ -36,6 +38,10 @@ public class TrajectoryConfig implements Serializable {
     return Ramp.FUNCTION.apply(tangentSpeed) //
         .multiply(planningPeriod) // for instance 1[s]
         .add(planningOffset); // for instance 2.5[m]
+  }
+
+  public Scalar expandTimeLimit() {
+    return planningPeriod.multiply(expandFraction);
   }
 
   /** @return matrix with dimensions N x 3

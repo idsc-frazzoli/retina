@@ -117,9 +117,9 @@ public class PhysicalBlobFrame {
     IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
-  /** transforms physical coordinates in gokart reference frame to image plane coordinates
+  /** transforms physical coordinates in go kart reference frame to image plane coordinates
    * 
-   * @param physicalPos [m] gokart reference frame
+   * @param physicalPos [m] go kart reference frame
    * @return imagePlaneCoord [pixel] image plane coordinates */
   private double[] worldToImgPlane(double[] physicalPos) {
     // unit conversion from [m] to [pixel]

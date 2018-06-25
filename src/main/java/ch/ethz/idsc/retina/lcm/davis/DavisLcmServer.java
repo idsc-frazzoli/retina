@@ -12,10 +12,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.ResetDavisApsCorrection;
 import ch.ethz.idsc.retina.dev.davis.data.CorrectedDavisApsColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockCollector;
-import ch.ethz.idsc.retina.dev.davis.data.DavisApsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsColumnCompiler;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockCollector;
-import ch.ethz.idsc.retina.dev.davis.data.DavisDvsBlockListener;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
 
 /** collection of functionality that filters raw data for aps content the aps
@@ -31,20 +29,16 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameCollector;
  * DAVIS FX2 02460045
  * </pre> */
 public class DavisLcmServer {
-  // ---
-  public final DavisDecoder davisDecoder;
+  private final DavisDecoder davisDecoder;
 
   /** @param serial for instance "FX2_02460045"
    * @param cameraId determines the channel name "davis240c.cameraId.aps", "davis240c.cameraId.imu"
    * @param davisApsTypes */
   public DavisLcmServer(String serial, String cameraId, DavisApsType... davisApsTypes) {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
-    {
-      DavisDvsBlockCollector davisDvsBlockCollector = new DavisDvsBlockCollector();
-      DavisDvsBlockListener davisDvsBlockListener = new DavisDvsBlockPublisher(cameraId);
-      davisDvsBlockCollector.setListener(davisDvsBlockListener);
-      davisDecoder.addDvsListener(davisDvsBlockCollector);
-    }
+    // ---
+    davisDecoder.addDvsListener(new DavisDvsBlockCollector(new DavisDvsBlockPublisher(cameraId)));
+    // ---
     Set<DavisApsType> set = EnumSet.copyOf(Arrays.asList(davisApsTypes));
     if (set.contains(DavisApsType.RST))
       davisDecoder.addRstListener(create(cameraId, DavisApsType.RST)); // RST
@@ -53,10 +47,10 @@ public class DavisLcmServer {
     if (set.contains(DavisApsType.DIF)) {
       ResetDavisApsCorrection resetDavisApsCorrection = new ResetDavisApsCorrection();
       davisDecoder.addRstListener(resetDavisApsCorrection);
-      DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, DavisApsType.SIG);
-      DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
-      davisApsBlockCollector.setListener(davisApsBlockListener);
-      DavisApsListener davisApsColumnCompiler = new CorrectedDavisApsColumnCompiler(davisApsBlockCollector, resetDavisApsCorrection);
+      DavisApsBlockCollector davisApsBlockCollector = //
+          new DavisApsBlockCollector(new DavisApsBlockPublisher(cameraId, DavisApsType.SIG));
+      DavisApsListener davisApsColumnCompiler = //
+          new CorrectedDavisApsColumnCompiler(davisApsBlockCollector, resetDavisApsCorrection);
       davisDecoder.addSigListener(davisApsColumnCompiler);
     }
     {
@@ -67,18 +61,23 @@ public class DavisLcmServer {
     }
   }
 
-  /** @param length
-   * @param data
-   * @param time */
-  public void append(int length, int[] data, int[] time) {
-    for (int index = 0; index < length; ++index)
-      davisDecoder.read(data[index], time[index]);
+  /** function called from jaer with fields from AEPacketRaw
+   * <pre>
+   * append(aeRaw.getNumEvents(), aeRaw.addresses, aeRaw.timestamps);
+   * </pre>
+   * 
+   * @param numEvents
+   * @param addresses
+   * @param timestamps */
+  public void append(int numEvents, int[] addresses, int[] timestamps) {
+    for (int index = 0; index < numEvents; ++index)
+      davisDecoder.read(addresses[index], timestamps[index]);
   }
 
+  // helper function
   private static DavisApsListener create(String cameraId, DavisApsType davisApsType) {
-    DavisApsBlockListener davisApsBlockListener = new DavisApsBlockPublisher(cameraId, davisApsType);
-    DavisApsBlockCollector davisApsBlockCollector = new DavisApsBlockCollector();
-    davisApsBlockCollector.setListener(davisApsBlockListener);
-    return new DavisApsColumnCompiler(davisApsBlockCollector);
+    return new DavisApsColumnCompiler( //
+        new DavisApsBlockCollector( //
+            new DavisApsBlockPublisher(cameraId, davisApsType)));
   }
 }

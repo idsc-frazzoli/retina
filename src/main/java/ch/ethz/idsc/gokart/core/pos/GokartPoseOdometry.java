@@ -22,6 +22,9 @@ import ch.ethz.idsc.tensor.sca.N;
  * quite smooth and stable.
  * 
  * <p>Naturally, any tire slip results in a loss of tracking accuracy. */
+// TODO probably better to implement GokartPoseInterface instead of MappedPoseInterface -->
+// no setPose() method is required.
+// TODO add method that provides "delta_pose" for a variable dt
 @SafetyCritical
 public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
   private static final Scalar HALF = DoubleScalar.of(0.5);

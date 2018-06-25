@@ -101,8 +101,8 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     { // TODO not generic
-      Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT;
-      curve = CROP_REGION;
+      Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT_REVERSE;
+      // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }

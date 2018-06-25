@@ -59,7 +59,6 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Emergency<td>MiscEmergencyModule<td>no acceleration with steering battery low<th>X<th><th><th></tr>
   <tr><td>Emergency<td>SteerEmergencyModule<td>no acceleration with uncalibrated steering<th>X<th><th><th></tr>
   <tr><td>Emergency<td>Vlp16ClearanceModule<td>no acceleration towards a close obstacle<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>LinmotEmergencyModule<td>no acceleration with brake disabled<th>X<th><th><th></tr>
   <tr><td>Emergency<td>EmergencyBrakeProvider<td>brake maneuver based on obstacle in path<th><th><th>X<th></tr>
   <tr><td>Emergency<td>LinmotTakeoverModule<td>switch linmot to passive when driver pushes brake pedal<th><th><th>X<th></tr>
   <tr><td>Emergency<td>DeadManSwitchModule<td>brake if driver doesn't use joystick and gokart is above certain speed<th><th><th>X<th></tr>
@@ -73,6 +72,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Testing<td>SteerComponent<td>interaction with steering in GUI<th><th>X<th><th></tr>
   <tr><td>Testing<td>LinmotComponent<td>interaction with brake in GUI<th><th><th>X<th></tr>
   <tr><td>Testing<td>MiscComponent<td>interaction with misc in GUI<th><th><th><th>X</tr>
+  <tr><td>Safety<td>LinmotSafetyModule<td>no acceleration with brake disabled<th>X<th><th><th></tr>
   <tr><td>Autonomous<td>PurePursuitRimo<td>control of speed during pure pursuit trajectory following<th>X<th><th><th></tr>
   <tr><td>Autonomous<td>PurePursuitSteer<td>steering during pure pursuit<th><th>X<th><th></tr>
   <tr><td>Fallback<td>RimoPutFallback<td>zero torque on motors<th>X<th><th><th></tr>
