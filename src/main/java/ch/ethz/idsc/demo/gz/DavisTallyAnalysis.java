@@ -15,13 +15,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 enum DavisTallyAnalysis {
   ;
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20180509T120343_8d5acc24;
+    // GokartLogFile gokartLogFile = GokartLogFile._20180509T120343_8d5acc24;
+    GokartLogFile gokartLogFile =GokartLogFile._20180522T114650_6806b8fd;
     File file = GioeleLogFileLocator.file(gokartLogFile);
     DavisEventTable davisEventTable = //
-        new DavisEventTable(Quantity.of(RationalScalar.of(1, 2), "s"));
+        // new DavisEventTable(Quantity.of(RationalScalar.of(1, 2), "s"));
+        // new DavisEventTable(Quantity.of(RationalScalar.of(1, 4), "s"));
+        new DavisEventTable(Quantity.of(RationalScalar.of(1, 1), "s"));
     OfflineLogPlayer.process(file, davisEventTable);
     Export.of( //
-        UserHome.file(gokartLogFile.getTitle() + ".csv"), //
+        UserHome.file(gokartLogFile.getTitle() + "one.csv"), //
         davisEventTable.getTable().map(CsvFormat.strict()));
   }
 }

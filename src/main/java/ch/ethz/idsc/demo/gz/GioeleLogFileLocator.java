@@ -25,7 +25,8 @@ enum GioeleLogFileLocator implements LogFileLocator {
     String title = logFile.getFilename();
     String date = title.substring(0, 8);
     for (File dir : LOG_ROOT) {
-      File file = new File(new File(dir, date), title);
+    //  File file = new File(new File(dir, date), title);
+     File file = new File(dir, title);
       if (file.isFile())
         return file;
     }
