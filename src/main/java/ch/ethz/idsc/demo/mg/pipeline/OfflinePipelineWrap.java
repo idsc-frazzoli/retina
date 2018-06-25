@@ -22,7 +22,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   private final PipelineProvider pipelineProvider;
   // visualization
   private final boolean visualizePipeline;
-  private int visualizationInterval;
+  private final int visualizationInterval;
   private PipelineVisualization visualizer = null;
   private int lastImagingTimestamp;
   private final boolean calibrationAvailable;

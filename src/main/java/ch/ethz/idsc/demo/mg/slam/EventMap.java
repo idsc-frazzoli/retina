@@ -82,11 +82,6 @@ public class EventMap {
     eventMaps[2] = MapProvider.divide(eventMaps[0], eventMaps[1]);
   }
 
-  // TODO replace with getMap
-  public MapProvider getLikelihoodMap() {
-    return eventMaps[2];
-  }
-
   public MapProvider getMap(int mapID) {
     return eventMaps[mapID];
   }

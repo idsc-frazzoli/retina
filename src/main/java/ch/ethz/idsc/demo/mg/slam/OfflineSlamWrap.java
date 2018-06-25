@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 // A SLAM algorithm "wrapper" to run the algorithm offline. DVS Events, wheel odometry 
 // and lidar pose are provided to the SLAM algorithm
-// TODO saveImage as static method in VisualizationUtil
+// TODO maybe create abstract wrapper class and then extend OfflineSlamWrap and OfflinePipelineWrap
 public class OfflineSlamWrap implements OfflineLogListener {
   // listen to DAVIS, lidar and wheel odometry
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -28,8 +28,11 @@ public class OfflineSlamWrap implements OfflineLogListener {
   // SLAM algorithm
   private final SlamProvider slamProvider;
   // visualization
-  private final SlamMapFrame slamVisualization;
+  private final SlamVisualization slamVisualization;
+  private final SlamMapFrame slamMapFrame;
+  private final int visualizationInterval;
   private boolean isInitialized;
+  private int lastImagingTimestamp;
   // frame saving
   private final String imagePrefix;
   private final File parentFilePath;
@@ -38,9 +41,11 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private int lastTimeStamp;
 
   public OfflineSlamWrap(PipelineConfig pipelineConfig) {
+    slamVisualization = new SlamVisualization();
     slamProvider = new SlamProvider(pipelineConfig, gokartOdometryPose, gokartLidarPose);
+    visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    slamVisualization = new SlamMapFrame(pipelineConfig);
+    slamMapFrame = new SlamMapFrame(pipelineConfig);
     imagePrefix = pipelineConfig.logFileName;
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
     savingInterval = pipelineConfig.savingInterval.number().intValue();
@@ -68,10 +73,14 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // every once in a while, run visualization
     if ((timeInst - lastTimeStamp) > savingInterval) {
       // get occurrence map
-      slamVisualization.setMap(slamProvider.getMap(0));
-      slamVisualization.addGokartPose(gokartLidarPose.getPose());
-      saveFrame(slamVisualization.getFrame(), parentFilePath, imagePrefix, timeInst);
+      slamMapFrame.setMap(slamProvider.getMap(0));
+      slamMapFrame.addGokartPose(gokartLidarPose.getPose());
+      saveFrame(slamMapFrame.getFrame(), parentFilePath, imagePrefix, timeInst);
       lastTimeStamp = timeInst;
+    }
+    if ((timeInst - lastImagingTimestamp) > visualizationInterval) {
+      // set frames in slamVisualization
+      lastImagingTimestamp = timeInst;
     }
   }
 
