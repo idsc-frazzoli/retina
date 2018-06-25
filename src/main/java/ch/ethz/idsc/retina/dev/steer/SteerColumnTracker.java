@@ -35,7 +35,7 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
 
   @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
-    isRelRckQual &= steerGetEvent.isRelRckQual();
+    // isRelRckQual &= steerGetEvent.isRelRckQual(); // FIXME
     intervalTracker.setValue(steerGetEvent.getGcpRelRckPos());
   }
 
