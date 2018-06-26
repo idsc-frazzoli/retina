@@ -40,8 +40,8 @@ public class SlamParticleSet {
       Tensor worldCoord = SlamUtil.gokartToWorldTensor(slamParticleSet[i].getPose(), gokartFramePos);
       // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
       double updatedParticleLikelihood = slamParticleSet[i].getParticleLikelihood() + alpha * likelihoodMap.getValue(worldCoord);
-      sumOfLikelihoods += updatedParticleLikelihood;
       slamParticleSet[i].setParticleLikelihood(updatedParticleLikelihood);
+      sumOfLikelihoods += updatedParticleLikelihood;
     }
     // normalize particle likelihoods
     for (int i = 0; i < numberOfParticles; i++) {

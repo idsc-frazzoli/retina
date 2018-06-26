@@ -5,9 +5,10 @@ import java.io.File;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.demo.mg.util.ImageToWorldLookup;
-import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
-import ch.ethz.idsc.demo.mg.util.WorldToImageUtil;
+import ch.ethz.idsc.demo.mg.util.GokartToImageLookup;
+import ch.ethz.idsc.demo.mg.util.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -17,8 +18,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class PipelineConfig {
   // log file parameters
-  public String logFileName = "DUBI15b"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(1000); // [ms]
+  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
+  public final Scalar maxDuration = RealScalar.of(20000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -48,7 +49,7 @@ public class PipelineConfig {
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
-  public final Scalar savingInterval = RealScalar.of(500); // [ms]
+  public final Scalar savingInterval = RealScalar.of(1000); // [ms]
   // hand-labeling tool
   public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
@@ -67,7 +68,7 @@ public class PipelineConfig {
   // visualization
   public Boolean visualizePipeline = false;
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
-  public final Scalar visualizationInterval = RealScalar.of(50); // [ms]
+  public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   // physical world visualization
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame
   public final Scalar frameHeight = RealScalar.of(450); // [pixel] for physical frame
@@ -81,15 +82,19 @@ public class PipelineConfig {
   // SLAM algorithm parameters
   public final Boolean useSlam = true;
   public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(5);
+  public final Scalar numberOfParticles = RealScalar.of(1);
+  public final Scalar lookAheadDistance = RealScalar.of(7); // events further away are neglected
+  public final Scalar normalizationUpdateRate = RealScalar.of(200); // [ms]
   // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(1); // [m] single cell dimension
-  public final Scalar dimX = RealScalar.of(80); // [m] x 'length' of map
-  public final Scalar dimY = RealScalar.of(80); // [m] y 'length' of map
-  public final Tensor corner = Tensors.vector(10, 10); // [m] coordinates of lower left point in map
+  public final Scalar cellDim = RealScalar.of(0.1); // [m] single cell dimension
+  public final Scalar dimX = RealScalar.of(30); // [m] x 'length' of map
+  public final Scalar dimY = RealScalar.of(25); // [m] y 'length' of map
+  public final Tensor corner = Tensors.vector(35, 40); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
+  public final Boolean saveSlamFrame = false;
 
   /***************************************************/
+  // ...
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
     LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
@@ -98,19 +103,24 @@ public class PipelineConfig {
     return logFileLocations.getFile();
   }
 
-  /** @return new instance of {@link ImageToWorldUtil} derived from parameters in pipelineConfig */
-  public ImageToWorldUtil createImageToWorldUtil() {
-    return ImageToWorldUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
+  public ImageToGokartUtil createImageToGokartUtil() {
+    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
 
-  /** @return new instance of {@link ImageToWorldLookup} derived from parameters in pipelineConfig */
-  public ImageToWorldLookup createImageToWorldUtilLookup() {
-    return ImageToWorldLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
+  /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
+  public ImageToGokartLookup createImageToGokartUtilLookup() {
+    return ImageToGokartLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
   }
 
-  /** @return new instance of {@link WorldToImageUtil} derived from parameters in pipelineConfig */
-  public WorldToImageUtil createWorldToImageUtil() {
-    return WorldToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
+  public GokartToImageUtil createGokartToImageUtil() {
+    return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+  }
+
+  /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
+  public GokartToImageLookup createGokartToImageLookup() {
+    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, cellDim, lookAheadDistance);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

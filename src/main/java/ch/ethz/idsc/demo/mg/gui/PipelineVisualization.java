@@ -14,7 +14,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 public class PipelineVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[6];
-  private final float scaling = 1.5f; // original images are tiny
+  private final double scaling = 1.5f; // original images are tiny
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {

@@ -47,8 +47,8 @@ public class LinearPredictor {
         double nextX = Last.of(nonEmptyMeans).Get(0).number().doubleValue() + i * step * Math.cos(b);
         double nextY = Last.of(nonEmptyMeans).Get(1).number().doubleValue() + i * step * Math.sin(b);
         return Tensors.vectorDouble(nextX, nextY);
-      } else
-        return Flatten.of(nonEmptyMeans);// if only one point assume it is not going to move
+      }
+      return Flatten.of(nonEmptyMeans);// if only one point assume it is not going to move
     }
     return Tensors.empty();
   }

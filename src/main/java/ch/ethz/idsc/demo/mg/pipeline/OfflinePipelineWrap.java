@@ -22,15 +22,15 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   private final PipelineProvider pipelineProvider;
   // visualization
   private final boolean visualizePipeline;
-  private int visualizationInterval;
+  private final int visualizationInterval;
   private PipelineVisualization visualizer = null;
   private int lastImagingTimestamp;
   private final boolean calibrationAvailable;
   // image saving
-  private int saveImagesConfig;
-  private int savingInterval;
-  private String imagePrefix;
-  private File parentFilePath;
+  private final int saveImagesConfig;
+  private final int savingInterval;
+  private final String imagePrefix;
+  private final File parentFilePath;
   private int imageCount = 0;
   private int lastSavingTimestamp;
   // summary
@@ -46,7 +46,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
     if (visualizePipeline)
       visualizer = new PipelineVisualization();
     saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
-    imagePrefix = pipelineConfig.logFileName.toString();
+    imagePrefix = pipelineConfig.logFileName;
     if (saveImagesConfig == 1) {
       parentFilePath = EvaluationFileLocations.testing();
     } else {

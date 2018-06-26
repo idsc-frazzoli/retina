@@ -20,13 +20,13 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
 // TODO z coordinate is implicitly set to zero
-public class WorldToImageUtil implements WorldToImageInterface {
+public class GokartToImageUtil implements GokartToImageInterface {
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
    * @param unitConversion */
-  public static WorldToImageUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
-    return new WorldToImageUtil(inputTensor, unitConversion);
+  public static GokartToImageUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
+    return new GokartToImageUtil(inputTensor, unitConversion);
   }
 
   private final Scalar unitConversion;
@@ -41,7 +41,7 @@ public class WorldToImageUtil implements WorldToImageInterface {
   private final Tensor focalLength; // [mm]
   private final Tensor focalLengthInv; // [mm]
 
-  WorldToImageUtil(Tensor inputTensor, Scalar unitConversion) {
+  GokartToImageUtil(Tensor inputTensor, Scalar unitConversion) {
     this.unitConversion = unitConversion;
     transformationMatrix = Inverse.of(inputTensor.extract(0, 3));
     principalPoint = inputTensor.get(3); // vector of length 2
@@ -51,11 +51,11 @@ public class WorldToImageUtil implements WorldToImageInterface {
   }
 
   @Override
-  public double[] worldToImage(double worldPosX, double worldPosY) {
-    return Primitives.toDoubleArray(worldToImageTensor(worldPosX, worldPosY));
+  public double[] gokartToImage(double worldPosX, double worldPosY) {
+    return Primitives.toDoubleArray(gokartToImageTensor(worldPosX, worldPosY));
   }
 
-  public Tensor worldToImageTensor(double worldPosX, double worldPosY) {
+  public Tensor gokartToImageTensor(double worldPosX, double worldPosY) {
     // transform axes from go kart coordinate system to camera calibration system
     double cameraPhysicalX = worldPosY;
     double cameraPhysicalY = worldPosX;
@@ -84,8 +84,8 @@ public class WorldToImageUtil implements WorldToImageInterface {
 
   // testing
   public static void main(String[] args) {
-    WorldToImageUtil test = new PipelineConfig().createWorldToImageUtil();
-    double[] imgPos = test.worldToImage(3.4386292832405725, -0.4673008409796591);
+    GokartToImageUtil test = new PipelineConfig().createGokartToImageUtil();
+    double[] imgPos = test.gokartToImage(3.4386292832405725, -0.4673008409796591);
     System.out.println(imgPos[0] + "/" + imgPos[1]);
   }
 }
