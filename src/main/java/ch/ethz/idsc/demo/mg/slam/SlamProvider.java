@@ -23,29 +23,32 @@ public class SlamProvider implements DavisDvsListener {
   private final SlamParticleSet slamParticleSet;
   // further fields
   private final double lookAheadDistance;
+  private final int normalizationUpdateRate;
   private SlamEstimatedPose estimatedPose;
   private boolean isInitialized = false;
   private int lastTimeStamp;
   private Tensor lastExpectedPose;
 
   SlamProvider(PipelineConfig pipelineConfig, GokartPoseInterface gokartOdometryPose, GokartPoseInterface gokartLidarPose) {
+    normalizationUpdateRate = pipelineConfig.normalizationUpdateRate.number().intValue() * 1000;
     lookAheadDistance = pipelineConfig.lookAheadDistance.number().doubleValue();
     imageToWorldLookup = pipelineConfig.createImageToGokartUtilLookup();
     worldToImageUtil = pipelineConfig.createGokartToImageUtil();
+    slamParticleSet = new SlamParticleSet(pipelineConfig);
     eventMaps = new EventMap(pipelineConfig);
     this.gokartOdometryPose = gokartOdometryPose;
     this.gokartLidarPose = gokartLidarPose;
-    // TODO initial lidar pose for initialization required
-    slamParticleSet = new SlamParticleSet(pipelineConfig);
   }
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if(!isInitialized) {
+    if (!isInitialized) {
+      // use lidar pose for initialization
+      lastExpectedPose = gokartLidarPose.getPose();
+      slamParticleSet.setPose(gokartLidarPose.getPose());
       lastTimeStamp = davisDvsEvent.time;
       isInitialized = true;
     }
-    // we map the event onto go kart coordinates since this is gonna be required multiple times
     double[] eventGokartFrame = imageToWorldLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
     // localization step:
     // state estimate propagation
@@ -55,20 +58,19 @@ public class SlamProvider implements DavisDvsListener {
     // slamParticleSet.updateStateLikelihoods(eventGokartFrame, eventMaps.getLikelihoodMap());
     // mapping step:
     // occurrence map update
-    // include lookahead chop off
-    if (eventGokartFrame[0] < lookAheadDistance) {
+    if (eventGokartFrame[0] < lookAheadDistance)
       eventMaps.updateOccurrenceMap(eventGokartFrame, slamParticleSet.getParticles());
-    }
     // normalization map update
-     if (davisDvsEvent.time - lastTimeStamp > 5000) {
-     eventMaps.updateNormalizationMap(slamParticleSet.getExpectedPose(), lastExpectedPose, imageToWorldLookup, worldToImageUtil);
-     lastExpectedPose = slamParticleSet.getExpectedPose();
-     lastTimeStamp = davisDvsEvent.time;
-     }
+    if ((davisDvsEvent.time - lastTimeStamp) > normalizationUpdateRate) {
+      eventMaps.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, imageToWorldLookup, worldToImageUtil);
+      lastExpectedPose = gokartLidarPose.getPose();
+      lastTimeStamp = davisDvsEvent.time;
+      eventMaps.updateLikelihoodMap();
+    }
     // update GokartPoseInterface
     // estimatedPose.setPose(slamParticleSet.getExpectedPose());
     // likelihood update
-    // eventMaps.updateLikelihoodMap();
+
     // particle resampling??
   }
 

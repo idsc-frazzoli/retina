@@ -14,26 +14,25 @@ import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 // provides static functions for visualization
 public enum VisualizationUtil {
   ;
-  /** scales a bufferedImage
+  /** scales a bufferedImage. if scaled width/height is smaller than 1, it is set to 1
    * 
    * @param unscaled original bufferedImage
    * @param scale scaling factor
    * @return scaled bufferedImage */
   public static BufferedImage scaleImage(BufferedImage unscaled, double scale) {
-    int newWidth = (int) (unscaled.getWidth() * scale);
-    int newHeight = (int) (unscaled.getHeight() * scale);
-    BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    int newWidth = (int) (unscaled.getWidth() * scale >= 1 ? unscaled.getWidth() * scale : 1);
+    int newHeight = (int) (unscaled.getHeight() * scale >= 1 ? unscaled.getHeight() * scale : 1);
+    BufferedImage scaled = new BufferedImage(newWidth, newHeight, unscaled.getType());
     AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale, scale);
     AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     scaleOp.filter(unscaled, scaled);
     return scaled;
   }
-  
+
   /** flips the bufferedImage along the horizontal axis
    * 
    * @param bufferedImage
-   * @return flipped bufferedImage
-   */
+   * @return flipped bufferedImage */
   public static BufferedImage flipHorizontal(BufferedImage bufferedImage) {
     AffineTransform affineTransform = AffineTransform.getScaleInstance(1, -1);
     affineTransform.translate(0, -bufferedImage.getHeight());

@@ -21,7 +21,7 @@ public class SlamParticle implements GokartPoseInterface {
 
   // ideally, we want to use wheel odometry to propagate the state
   public void propagateStateEstimate() {
-    // ..
+   
   }
 
   // for testing to use instead of propagateStateEstimate
@@ -35,11 +35,6 @@ public class SlamParticle implements GokartPoseInterface {
     this.particleLikelihood = particleLikelihood;
   }
 
-  // public Tensor getWorldCoord(double[] gokartFramePos) {
-  // Tensor gokart2World = GokartPoseHelper.toSE2Matrix(this.getPose());
-  // Tensor worldCoord = gokart2World.dot(Tensors.vector(gokartFramePos[0], gokartFramePos[1], 1));
-  // return worldCoord;
-  // }
   public double getParticleLikelihood() {
     return particleLikelihood;
   }

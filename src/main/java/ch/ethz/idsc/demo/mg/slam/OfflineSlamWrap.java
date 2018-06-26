@@ -29,13 +29,14 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private final SlamProvider slamProvider;
   // visualization
   private final SlamVisualization slamVisualization;
-  private final SlamMapFrame slamMapFrame;
+  private final SlamMapFrame[] slamMapFrames;
   private final int visualizationInterval;
   private boolean isInitialized;
   private int lastImagingTimestamp;
   // frame saving
   private final String imagePrefix;
   private final File parentFilePath;
+  private final boolean saveSlamFrame;
   private final int savingInterval;
   private int imageCount = 0;
   private int lastTimeStamp;
@@ -45,7 +46,11 @@ public class OfflineSlamWrap implements OfflineLogListener {
     slamProvider = new SlamProvider(pipelineConfig, gokartOdometryPose, gokartLidarPose);
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    slamMapFrame = new SlamMapFrame(pipelineConfig);
+    slamMapFrames = new SlamMapFrame[3];
+    for (int i = 0; i < 3; i++) {
+      slamMapFrames[i] = new SlamMapFrame(pipelineConfig);
+    }
+    saveSlamFrame = pipelineConfig.saveEvaluationFrame;
     imagePrefix = pipelineConfig.logFileName;
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
     savingInterval = pipelineConfig.savingInterval.number().intValue();
@@ -70,16 +75,14 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // odometry not required for testing
     // if (channel.equals(RimoLcmServer.CHANNEL_GET))
     // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
-    // every once in a while, run visualization
-    if ((timeInst - lastTimeStamp) > savingInterval) {
-      // get occurrence map
-      slamMapFrame.setMap(slamProvider.getMap(0));
-      slamMapFrame.addGokartPose(gokartLidarPose.getPose());
-      saveFrame(slamMapFrame.getFrame(), parentFilePath, imagePrefix, timeInst);
+    if (saveSlamFrame && ((timeInst - lastTimeStamp) > savingInterval)) {
+      slamMapFrames[0].setMap(slamProvider.getMap(0));
+      slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
+      saveFrame(slamMapFrames[0].getFrame(), parentFilePath, imagePrefix, timeInst);
       lastTimeStamp = timeInst;
     }
     if ((timeInst - lastImagingTimestamp) > visualizationInterval) {
-      // set frames in slamVisualization
+      slamVisualization.setFrames(constructFrames());
       lastImagingTimestamp = timeInst;
     }
   }
@@ -94,5 +97,19 @@ public class OfflineSlamWrap implements OfflineLogListener {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  // visualization
+  private BufferedImage[] constructFrames() {
+    BufferedImage[] combinedFrames = new BufferedImage[3];
+    // paint the frames
+    slamMapFrames[0].setMap(slamProvider.getMap(0));
+    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
+    slamMapFrames[1].setMap(slamProvider.getMap(1));
+    slamMapFrames[2].setMap(slamProvider.getMap(2));
+    // for passing to visualization
+    for (int i = 0; i < 3; i++)
+      combinedFrames[i] = slamMapFrames[i].getFrame();
+    return combinedFrames;
   }
 }

@@ -29,15 +29,16 @@ public class MapProvider {
     mapArray = new double[numberOfCells.number().intValue()];
   }
 
+  // the method returns the divided map, however the input "oneMap" is modified as well and also divided.
   public static MapProvider divide(MapProvider oneMap, MapProvider anotherMap) {
     MapProvider dividedMap = oneMap;
     for (int i = 0; i < dividedMap.getNumberOfCells(); i++) {
-      double newValue;
-      if (anotherMap.getValue(i) == 0)
-        newValue = oneMap.getValue(i);
-      else
-        newValue = oneMap.getValue(i) / anotherMap.getValue(i);
-      dividedMap.setValue(i, newValue);
+      if (anotherMap.getValue(i) == 0) {
+        // do nothing
+      } else {
+        double newValue = oneMap.getValue(i) / anotherMap.getNormalizedValue(i);
+        dividedMap.setValue(i, newValue);
+      }
     }
     return dividedMap;
   }
@@ -46,9 +47,13 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
-   public void setValue(int cellIndex, double value) {
-   mapArray[cellIndex] = value;
-   }
+  private double getNormalizedValue(int cellIndex) {
+    return mapArray[cellIndex] / maxValue;
+  }
+
+  private void setValue(int cellIndex, double value) {
+    mapArray[cellIndex] = value;
+  }
 
   // returns coordinates of cell middle point
   public double[] getCellCoord(int cellIndex) {
@@ -96,7 +101,13 @@ public class MapProvider {
       return;
     }
     mapArray[cellIndex] += value;
-    if(mapArray[cellIndex] > maxValue)
+    if (mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
+  }
+
+  public void addValue(int cellIndex, double value) {
+    mapArray[cellIndex] += value;
+    if (mapArray[cellIndex] > maxValue)
       maxValue = mapArray[cellIndex];
   }
 
@@ -121,7 +132,7 @@ public class MapProvider {
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
   }
-  
+
   public double getMaxValue() {
     return maxValue;
   }

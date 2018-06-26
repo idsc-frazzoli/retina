@@ -48,13 +48,13 @@ public class EventMap {
         double[] gokartCoord = imageToWorldLookup.imageToGokart(i, j);
         // get cell index number for event position using last expected pose
         double[] worldCoordLast = SlamUtil.gokartToWorld(lastExpectedPose, gokartCoord);
-        int cellIndexLast = eventMaps[2].getCellIndex(worldCoordLast[0], worldCoordLast[1]);
-        if (cellIndexLast != eventMaps[2].getNumberOfCells())
+        int cellIndexLast = eventMaps[1].getCellIndex(worldCoordLast[0], worldCoordLast[1]);
+        if (cellIndexLast != eventMaps[1].getNumberOfCells())
           seenCells.add(cellIndexLast);
         // get cell index number for event position using current expected pose
         double[] worldCoordCurrent = SlamUtil.gokartToWorld(currentExpectedPose, gokartCoord);
-        int cellIndexCurrent = eventMaps[2].getCellIndex(worldCoordCurrent[0], worldCoordCurrent[1]);
-        if (cellIndexCurrent != eventMaps[2].getNumberOfCells())
+        int cellIndexCurrent = eventMaps[1].getCellIndex(worldCoordCurrent[0], worldCoordCurrent[1]);
+        if (cellIndexCurrent != eventMaps[1].getNumberOfCells())
           seenCells.add(cellIndexCurrent);
       }
     }
@@ -70,10 +70,9 @@ public class EventMap {
         double[] cellImageCoordCurrent = worldToImageUtil.gokartToImage(cellGokartCoordCurrent[0], cellGokartCoordCurrent[1]);
         double[] cellImageCoordLast = worldToImageUtil.gokartToImage(cellGokartCoordLast[0], cellGokartCoordLast[1]);
         // compute norm and set value
-        double imagePlaneDistance = Math.pow((cellImageCoordCurrent[0] - cellGokartCoordLast[0]), 1)
-            + Math.pow((cellImageCoordCurrent[1] - cellImageCoordLast[1]), 1);
-        // System.out.println(imagePlaneDistance);
-        eventMaps[2].setValue(cell, imagePlaneDistance);
+        double imagePlaneDistance = Math.pow((cellImageCoordCurrent[0] - cellGokartCoordLast[0]), 2)
+            + Math.pow((cellImageCoordCurrent[1] - cellImageCoordLast[1]), 2);
+        eventMaps[1].addValue(cell, imagePlaneDistance);
       }
     }
   }
