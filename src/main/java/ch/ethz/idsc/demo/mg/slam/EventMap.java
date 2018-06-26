@@ -18,7 +18,7 @@ public class EventMap {
   private final int height;
 
   EventMap(PipelineConfig pipelineConfig) {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < eventMaps.length; i++)
       eventMaps[i] = new MapProvider(pipelineConfig);
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
@@ -42,6 +42,7 @@ public class EventMap {
       GokartToImageInterface worldToImageUtil) {
     // use of hashset since we want a list of unique cells
     Set<Integer> seenCells = new HashSet<>();
+    // TODO use GeometricLayer
     // find all cells in the map which were seen on the sensor with current or last expected pose
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
@@ -64,6 +65,7 @@ public class EventMap {
         // find world coordinates of cell middle point
         double[] cellWorldCoord = eventMaps[1].getCellCoord(cell);
         // transform to go kart frame for current and last go kart pose
+        // TODO JAN inverse transform is computed unnecessary often
         double[] cellGokartCoordCurrent = SlamUtil.worldToGokart(currentExpectedPose, cellWorldCoord);
         double[] cellGokartCoordLast = SlamUtil.worldToGokart(lastExpectedPose, cellWorldCoord);
         // transform to image plane
@@ -78,7 +80,7 @@ public class EventMap {
   }
 
   public void updateLikelihoodMap() {
-    eventMaps[2] = MapProvider.divide(eventMaps[0], eventMaps[1]);
+    MapProvider.divide(eventMaps[0], eventMaps[1], eventMaps[2]);
   }
 
   public MapProvider getMap(int mapID) {

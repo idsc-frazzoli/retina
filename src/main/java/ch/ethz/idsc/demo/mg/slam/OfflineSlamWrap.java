@@ -101,13 +101,13 @@ public class OfflineSlamWrap implements OfflineLogListener {
 
   // visualization
   private BufferedImage[] constructFrames() {
-    BufferedImage[] combinedFrames = new BufferedImage[3];
     // paint the frames
     slamMapFrames[0].setMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
     slamMapFrames[1].setMap(slamProvider.getMap(1));
     slamMapFrames[2].setMap(slamProvider.getMap(2));
     // for passing to visualization
+    BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < 3; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
     return combinedFrames;

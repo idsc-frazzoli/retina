@@ -14,9 +14,9 @@ public class SlamUtil {
    * @param gokartFramePos coordinates in go kart frame
    * @return Tensor containing homogeneous coordinates in world frame */
   public static Tensor gokartToWorldTensor(Tensor pose, double[] gokartFramePos) {
+    // TODO JAN use of geometric layer is preferred
     Tensor gokart2World = GokartPoseHelper.toSE2Matrix(pose);
-    Tensor worldCoord = gokart2World.dot(Tensors.vector(gokartFramePos[0], gokartFramePos[1], 1));
-    return worldCoord;
+    return gokart2World.dot(Tensors.vector(gokartFramePos[0], gokartFramePos[1], 1)); // in world coordinate
   }
 
   /** go kart to world transformation
@@ -26,8 +26,9 @@ public class SlamUtil {
    * @return array containing coordinates in world frame */
   public static double[] gokartToWorld(Tensor pose, double[] gokartFramePos) {
     Tensor worldCoordTensor = SlamUtil.gokartToWorldTensor(pose, gokartFramePos);
-    double[] worldCoord = new double[] { worldCoordTensor.Get(0).number().doubleValue(), worldCoordTensor.Get(1).number().doubleValue() };
-    return worldCoord;
+    return new double[] { //
+        worldCoordTensor.Get(0).number().doubleValue(), //
+        worldCoordTensor.Get(1).number().doubleValue() };
   }
 
   /** world to go kart transformation
@@ -38,7 +39,8 @@ public class SlamUtil {
   public static double[] worldToGokart(Tensor pose, double[] worldFramePos) {
     Tensor worldToGokart = Inverse.of(GokartPoseHelper.toSE2Matrix(pose));
     Tensor gokartCoordTensor = worldToGokart.dot(Tensors.vector(worldFramePos[0], worldFramePos[1], 1));
-    double[] gokartCoord = new double[] { gokartCoordTensor.Get(0).number().doubleValue(), gokartCoordTensor.Get(1).number().doubleValue() };
-    return gokartCoord;
+    return new double[] { //
+        gokartCoordTensor.Get(0).number().doubleValue(), //
+        gokartCoordTensor.Get(1).number().doubleValue() };
   }
 }

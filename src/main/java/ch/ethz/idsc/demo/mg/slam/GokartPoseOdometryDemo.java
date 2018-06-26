@@ -37,6 +37,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   public static GokartPoseOdometryDemo create() {
     return create(GokartPoseLocal.INSTANCE.getPose());
   }
+  // ---
 
   private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s] update period
   private Tensor currentState; // forward integrated since beginning until current event
