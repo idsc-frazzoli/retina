@@ -21,7 +21,7 @@ public class SlamParticle implements GokartPoseInterface {
 
   // ideally, we want to use wheel odometry to propagate the state
   public void propagateStateEstimate() {
-   
+    // ---
   }
 
   // for testing to use instead of propagateStateEstimate

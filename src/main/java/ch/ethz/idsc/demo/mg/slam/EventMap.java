@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.SlamUtil;
-import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 // provides three event maps: occurrence map, normalization map, likelihood map

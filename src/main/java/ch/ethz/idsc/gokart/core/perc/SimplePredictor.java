@@ -24,12 +24,12 @@ public class SimplePredictor {
     }
   }
 
-  private Tensor getMeanPrediction(ClusterDeque clusterDeque) {
+  private static Tensor getMeanPrediction(ClusterDeque clusterDeque) {
     Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
     return Last.of(nonEmptyMeans);
   }
 
-  private Tensor getHullPrediction(ClusterDeque clusterDeque) {
+  private static Tensor getHullPrediction(ClusterDeque clusterDeque) {
     return clusterDeque.getLast().hull();
   }
 

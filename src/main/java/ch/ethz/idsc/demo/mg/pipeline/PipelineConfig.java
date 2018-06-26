@@ -5,10 +5,10 @@ import java.io.File;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 import ch.ethz.idsc.demo.mg.util.GokartToImageLookup;
 import ch.ethz.idsc.demo.mg.util.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -92,6 +92,7 @@ public class PipelineConfig {
   public final Tensor corner = Tensors.vector(35, 40); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
+
   /***************************************************/
   // ...
   /** @return file specified by parameter {@link #logFileName} */
@@ -116,7 +117,7 @@ public class PipelineConfig {
   public GokartToImageUtil createGokartToImageUtil() {
     return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
   }
-  
+
   /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
   public GokartToImageLookup createGokartToImageLookup() {
     return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, cellDim, lookAheadDistance);

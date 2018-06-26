@@ -2,8 +2,8 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -70,7 +70,6 @@ public class SlamProvider implements DavisDvsListener {
     // update GokartPoseInterface
     // estimatedPose.setPose(slamParticleSet.getExpectedPose());
     // likelihood update
-
     // particle resampling??
   }
 
