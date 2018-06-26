@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -13,21 +14,24 @@ import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
+import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public final class PurePursuitModule extends AbstractClockedModule implements GokartPoseListener {
+  private final Chop chop = RimoConfig.GLOBAL.speedChop();
   private final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
@@ -36,13 +40,14 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   // ---
   private Optional<Tensor> optionalCurve = Optional.empty();
   private GokartPoseEvent gokartPoseEvent = null;
+  /** forward motion is determined by odometry:
+   * noise in the measurements around zero are also mapped to "forward" */
   private boolean isForward = true;
-  private final RimoGetListener rimoGetListener = new RimoGetListener() {
+  /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
-      // TODO this is not yet covered by tests
       Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
-      isForward = Sign.isPositiveOrZero(speed);
+      isForward = Sign.isPositiveOrZero(chop.apply(speed));
     }
   };
 
@@ -77,7 +82,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
       // post 20180604: the forward command is provided by right slider
       Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
-      Scalar speed = Clip.unit().apply(ratio.add(pair));
+      Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(speed));
     }
     purePursuitRimo.setOperational(status);
@@ -117,12 +122,12 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   }
 
   /* package */ static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
-    Tensor poseNoUnits = pose.map(scalar -> RealScalar.of(scalar.number()));
-    TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(poseNoUnits).inverse();
-    Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
-    // if measured tangent speed is negative flip sign of X coord. of waypoints in tensor
-    if (!isForward)
-      tensor.set(Scalar::negate, Tensor.ALL, 0);
+    TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
+    Tensor tensor = Tensor.of(curve.stream().map(toLocal));
+    if (!isForward) { // if measured tangent speed is negative
+      tensor.set(Scalar::negate, Tensor.ALL, 0); // flip sign of X coord. of waypoints in tensor
+      tensor = Reverse.of(tensor); // reverse order of points along trajectory
+    }
     Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
@@ -152,5 +157,9 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   /** @return curve */
   /* for tests */ Optional<Tensor> getCurve() {
     return optionalCurve;
+  }
+
+  public boolean isForward() {
+    return isForward;
   }
 }

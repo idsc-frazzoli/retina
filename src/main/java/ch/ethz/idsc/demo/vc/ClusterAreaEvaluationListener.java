@@ -1,3 +1,4 @@
+// code by vc
 package ch.ethz.idsc.demo.vc;
 
 import java.awt.geom.Area;
@@ -17,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
+  // TODO number 0.01 may not be correct? 20 scans per second
   private double step = 0.01; // length of the step from a scan to the other,
   // 0 if we assume the clusters are not moving, TODO
 

@@ -31,6 +31,11 @@ public class PurePursuitModuleTest extends TestCase {
     purePursuitModule.last();
   }
 
+  public void testChopUnit() {
+    Scalar scalar = Chop.below(.1).apply(Quantity.of(.01, "rad*s^-1"));
+    System.out.println(scalar);
+  }
+
   public void testSome() {
     PurePursuitModule purePursuitModule = new PurePursuitModule();
     Scalar period = purePursuitModule.getPeriod();
@@ -175,34 +180,6 @@ public class PurePursuitModuleTest extends TestCase {
     assertTrue(Clip.function( //
         Quantity.of(0.04, "rad"), //
         Quantity.of(0.07, "rad")).isInside(angle));
-  }
-
-  public void testSpecificHLE() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.0627054558616751)));
-  }
-
-  public void testSpecificHLE_R() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.0627054558616751)));
-  }
-
-  public void testSpecificHLER() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.009685440563639316)));
-  }
-
-  public void testSpecificHLER_R() throws Exception {
-    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false);
-    Scalar lookAhead = optional.get();
-    assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.009685440563639316)));
   }
 
   public void testLookAheadFail() throws Exception {

@@ -15,6 +15,6 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 
   @Override // from PutProvider
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.of(SteerPutEvent.PASSIVE);
+    return Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0);
   }
 }

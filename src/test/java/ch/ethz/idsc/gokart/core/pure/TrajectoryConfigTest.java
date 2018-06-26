@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -41,5 +42,15 @@ public class TrajectoryConfigTest extends TestCase {
     List<Integer> dims = Dimensions.of(tensor);
     assertTrue(1 < dims.get(0));
     assertEquals((int) dims.get(1), 3); // {x, y, theta}
+  }
+
+  public void testExpandFraction() {
+    Clip.unit().requireInside(TrajectoryConfig.GLOBAL.expandFraction);
+  }
+
+  public void testTimeLimit() {
+    Scalar timeLimit = TrajectoryConfig.GLOBAL.expandTimeLimit();
+    Scalar seconds = Magnitude.SECOND.apply(timeLimit);
+    Clip.unit().requireInside(seconds);
   }
 }
