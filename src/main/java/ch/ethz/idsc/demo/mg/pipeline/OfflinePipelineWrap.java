@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -21,9 +22,9 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final PipelineProvider pipelineProvider;
   // visualization
-  private final boolean visualizePipeline;
+  // private final boolean visualizePipeline;
   private final int visualizationInterval;
-  private PipelineVisualization visualizer = null;
+  private final PipelineVisualization visualizer;
   private int lastImagingTimestamp;
   private final boolean calibrationAvailable;
   // image saving
@@ -41,10 +42,8 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   OfflinePipelineWrap(PipelineConfig pipelineConfig) {
     pipelineProvider = new PipelineProvider(pipelineConfig);
     davisDvsDatagramDecoder.addDvsListener(pipelineProvider);
-    visualizePipeline = pipelineConfig.visualizePipeline;
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
-    if (visualizePipeline)
-      visualizer = new PipelineVisualization();
+    visualizer = pipelineConfig.visualizePipeline ? new PipelineVisualization() : null;
     saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
     imagePrefix = pipelineConfig.logFileName;
     if (saveImagesConfig == 1) {
@@ -70,7 +69,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
         isInitialized = true;
       }
       // the events are accumulated for the interval time and then displayed in a single frame
-      if (visualizePipeline && (timeInst - lastImagingTimestamp) > visualizationInterval) {
+      if (Objects.nonNull(visualizer) && (timeInst - lastImagingTimestamp) > visualizationInterval) {
         // visualization repaint
         visualizer.setFrames(constructFrames());
         resetAllFrames();

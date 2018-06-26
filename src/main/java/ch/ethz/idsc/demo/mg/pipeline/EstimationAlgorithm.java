@@ -7,8 +7,8 @@ import java.util.List;
 // TODO set up simple visualization for this module
 public class EstimationAlgorithm {
   // fields
-  List<PhysicalBlob> measurementBlobs;
-  List<PhysicalBlob> estimatedBlobs; // TODO maybe create new class for estimation of features
+  private List<PhysicalBlob> measurementBlobs;
+  private List<PhysicalBlob> estimatedBlobs; // TODO maybe create new class for estimation of features
 
   EstimationAlgorithm() {
     // ...

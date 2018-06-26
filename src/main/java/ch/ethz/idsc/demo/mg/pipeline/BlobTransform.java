@@ -8,12 +8,12 @@ import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 
 // Transformation of ImageBlobs to PhysicalBlobs.
 // TODO switch to TransformUtilLookup, maybe use interpolation?
-public class BlobTransform {
-  private List<PhysicalBlob> physicalBlobs;
+class BlobTransform {
+  // TODO JAN mental note class design
+  private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
   private final ImageToGokartUtil imageToWorldUtil;
 
-  BlobTransform(PipelineConfig pipelineConfig) {
-    physicalBlobs = new ArrayList<>();
+  public BlobTransform(PipelineConfig pipelineConfig) {
     imageToWorldUtil = pipelineConfig.createImageToGokartUtil();
   }
 

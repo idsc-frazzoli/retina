@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 // this class provides a blob object in image coordinates
 public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
+  // ---
   private final float[] pos;
   private final int timeStamp;
   private final int blobID; // == 0 for hidden blobs

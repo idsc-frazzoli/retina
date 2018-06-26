@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 public class EventFiltering {
   private static int width;
   private static int height;
+  // ---
   private int filterConfig;
   // for background activity filter
   private int[][] timestamps;
