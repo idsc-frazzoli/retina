@@ -20,8 +20,8 @@ public class SlamParticleSet {
     alpha = pipelineConfig.alpha.number().doubleValue();
     numberOfParticles = pipelineConfig.numberOfParticles.number().intValue();
     slamParticleSet = new SlamParticle[numberOfParticles];
-    double initParticleLikelihood = 1 / ((double) numberOfParticles);
-    for (int i = 0; i < numberOfParticles; i++) {
+    double initParticleLikelihood = 1.0 / numberOfParticles;
+    for (int i = 0; i < slamParticleSet.length; i++) {
       slamParticleSet[i] = new SlamParticle(initParticleLikelihood);
     }
   }

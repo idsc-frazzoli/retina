@@ -104,7 +104,7 @@ public class PhysicalBlobFrame {
    * @param physicalBlob
    * @param color
    * @param size */
-  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
+  private static void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
     double leftCornerX = physicalBlob.getImageCoord()[0] - size / 2;
     double leftCornerY = physicalBlob.getImageCoord()[1] - size / 2;
     Ellipse2D ellipse = new Ellipse2D.Double(leftCornerX, leftCornerY, size, size);

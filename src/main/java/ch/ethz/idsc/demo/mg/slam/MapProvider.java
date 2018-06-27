@@ -29,18 +29,16 @@ public class MapProvider {
     mapArray = new double[numberOfCells.number().intValue()];
   }
 
-  // the method returns the divided map, however the input "oneMap" is modified as well and also divided.
-  public static MapProvider divide(MapProvider oneMap, MapProvider anotherMap) {
-    MapProvider dividedMap = oneMap;
-    for (int i = 0; i < dividedMap.getNumberOfCells(); i++) {
-      if (anotherMap.getValue(i) == 0) {
+  // the method returns the divided map
+  public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
+    for (int i = 0; i < targetMap.getNumberOfCells(); i++) {
+      if (denominator.getValue(i) == 0) {
         // do nothing
       } else {
-        double newValue = oneMap.getValue(i) / anotherMap.getNormalizedValue(i);
-        dividedMap.setValue(i, newValue);
+        double newValue = numerator.getValue(i) / denominator.getNormalizedValue(i);
+        targetMap.setValue(i, newValue);
       }
     }
-    return dividedMap;
   }
 
   private double getValue(int cellIndex) {
