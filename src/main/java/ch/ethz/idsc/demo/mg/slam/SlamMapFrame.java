@@ -7,6 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
@@ -52,9 +53,13 @@ public class SlamMapFrame implements RenderInterface {
       System.out.println("Fatal: something went wrong!");
     else {
       mapArray = map.getMapArray();
-      maxValue = map.getMaxValue();
+      maxValue = getMaxValue(mapArray);
       paintFrame();
     }
+  }
+
+  private double getMaxValue(double[] mapArray) {
+    return Arrays.stream(mapArray).max().getAsDouble();
   }
 
   // draws the frame according to the mapArray values. values are normalized by maxValue

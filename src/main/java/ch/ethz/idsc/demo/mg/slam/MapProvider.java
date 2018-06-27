@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import java.util.Arrays;
+
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,7 +18,6 @@ public class MapProvider {
   private final double cornerX;
   private final double cornerY;
   private final int widthInCells;
-  private double maxValue;
 
   MapProvider(PipelineConfig pipelineConfig) {
     dimX = pipelineConfig.dimX;
@@ -27,6 +28,7 @@ public class MapProvider {
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
     widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
+    
   }
 
   // the method returns the divided map
@@ -35,22 +37,10 @@ public class MapProvider {
       if (denominator.getValue(i) == 0) {
         // do nothing
       } else {
-        double newValue = numerator.getValue(i) / denominator.getNormalizedValue(i);
+        double newValue = numerator.getValue(i) / denominator.getValue(i);
         targetMap.setValue(i, newValue);
       }
     }
-  }
-
-  private double getValue(int cellIndex) {
-    return mapArray[cellIndex];
-  }
-
-  private double getNormalizedValue(int cellIndex) {
-    return mapArray[cellIndex] / maxValue;
-  }
-
-  private void setValue(int cellIndex, double value) {
-    mapArray[cellIndex] = value;
   }
 
   // returns coordinates of cell middle point
@@ -95,18 +85,23 @@ public class MapProvider {
    * @param value */
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return;
     }
     mapArray[cellIndex] += value;
-    if (mapArray[cellIndex] > maxValue)
-      maxValue = mapArray[cellIndex];
   }
 
   public void addValue(int cellIndex, double value) {
     mapArray[cellIndex] += value;
-    if (mapArray[cellIndex] > maxValue)
-      maxValue = mapArray[cellIndex];
+  }
+
+  private void setValue(int cellIndex, double value) {
+    mapArray[cellIndex] = value;
+  }
+
+  private double getValue(int cellIndex) {
+    return mapArray[cellIndex];
   }
 
   // gets value of cell in which the coordinates are
@@ -117,6 +112,7 @@ public class MapProvider {
   // gets value of cell in which the coordinates are
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return 0;
     }
@@ -130,8 +126,8 @@ public class MapProvider {
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
   }
-
+  
   public double getMaxValue() {
-    return maxValue;
+    return Arrays.stream(mapArray).max().getAsDouble();
   }
 }

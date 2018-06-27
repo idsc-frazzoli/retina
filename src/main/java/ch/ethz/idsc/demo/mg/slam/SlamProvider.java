@@ -12,8 +12,8 @@ import ch.ethz.idsc.tensor.Tensor;
 // implements the slam algorithm "simultaneous localization and mapping for event-based vision systems"
 public class SlamProvider implements DavisDvsListener {
   // camera utilities
-  private final ImageToGokartInterface imageToWorldLookup;
-  private final GokartToImageInterface worldToImageUtil;
+  private final ImageToGokartInterface imageToGokartLookup;
+  private final GokartToImageInterface gokartToImageUtil;
   // odometry and lidar pose
   private final GokartPoseInterface gokartOdometryPose;
   private final GokartPoseInterface gokartLidarPose;
@@ -21,21 +21,30 @@ public class SlamProvider implements DavisDvsListener {
   private final EventMap eventMaps;
   // particles
   private final SlamParticleSet slamParticleSet;
+  private final double linVelAvg;
+  private final double linVelStd;
+  private final double angVelStd;
   // further fields
   private final double lookAheadDistance;
   private final int normalizationUpdateRate;
-  private SlamEstimatedPose estimatedPose;
+  private final SlamEstimatedPose estimatedPose;
+  private final double dT = 0.00001;
   private boolean isInitialized = false;
-  private int lastTimeStamp;
+  private int lastNormalizationTimeStamp;
+  private int lastPropagationTimeStamp;
   private Tensor lastExpectedPose;
 
   SlamProvider(PipelineConfig pipelineConfig, GokartPoseInterface gokartOdometryPose, GokartPoseInterface gokartLidarPose) {
     normalizationUpdateRate = pipelineConfig.normalizationUpdateRate.number().intValue() * 1000;
     lookAheadDistance = pipelineConfig.lookAheadDistance.number().doubleValue();
-    imageToWorldLookup = pipelineConfig.createImageToGokartUtilLookup();
-    worldToImageUtil = pipelineConfig.createGokartToImageUtil();
-    slamParticleSet = new SlamParticleSet(pipelineConfig);
+    imageToGokartLookup = pipelineConfig.createImageToGokartUtilLookup();
+    gokartToImageUtil = pipelineConfig.createGokartToImageUtil();
     eventMaps = new EventMap(pipelineConfig);
+    slamParticleSet = new SlamParticleSet(pipelineConfig);
+    linVelAvg = pipelineConfig.linVelAverage.number().doubleValue();
+    linVelStd = pipelineConfig.linVelStandardDeviation.number().doubleValue();
+    angVelStd = pipelineConfig.angVelStandardDeviation.number().doubleValue();
+    estimatedPose = new SlamEstimatedPose();
     this.gokartOdometryPose = gokartOdometryPose;
     this.gokartLidarPose = gokartLidarPose;
   }
@@ -45,35 +54,47 @@ public class SlamProvider implements DavisDvsListener {
     if (!isInitialized) {
       // use lidar pose for initialization
       lastExpectedPose = gokartLidarPose.getPose();
-      slamParticleSet.setPose(gokartLidarPose.getPose());
-      lastTimeStamp = davisDvsEvent.time;
+      slamParticleSet.setInitialDistribution(gokartLidarPose.getPose());
+      estimatedPose.setPose(gokartLidarPose.getPose());
+      lastNormalizationTimeStamp = davisDvsEvent.time;
+      lastPropagationTimeStamp = davisDvsEvent.time;
       isInitialized = true;
     }
-    double[] eventGokartFrame = imageToWorldLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
+    double[] eventGokartFrame = imageToGokartLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
     // localization step:
     // state estimate propagation
-    // slamParticleSet.propagateStateEstimate();
-    slamParticleSet.setPose(gokartLidarPose.getPose()); // for testing
-    // state likelihoods update
-    // slamParticleSet.updateStateLikelihoods(eventGokartFrame, eventMaps.getLikelihoodMap());
-    // mapping step:
-    // occurrence map update
-    if (eventGokartFrame[0] < lookAheadDistance)
+    if ((davisDvsEvent.time - lastPropagationTimeStamp) > dT*1000000) {
+      slamParticleSet.propagateStateEstimate(linVelAvg, linVelStd, angVelStd, dT);
+      // printStatusInfo();
+    }
+    // slamParticleSet.setPose(gokartLidarPose.getPose()); // for testing
+    if (eventGokartFrame[0] < lookAheadDistance) {
+      // state likelihoods update
+      slamParticleSet.updateStateLikelihoods(eventGokartFrame, eventMaps.getMap(0));
+      // mapping step:
+      // occurrence map update
       eventMaps.updateOccurrenceMap(eventGokartFrame, slamParticleSet.getParticles());
+    }
     // normalization map update
-    if ((davisDvsEvent.time - lastTimeStamp) > normalizationUpdateRate) {
-      eventMaps.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, imageToWorldLookup, worldToImageUtil);
+    if ((davisDvsEvent.time - lastNormalizationTimeStamp) > normalizationUpdateRate) {
+      eventMaps.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, imageToGokartLookup, gokartToImageUtil);
       lastExpectedPose = gokartLidarPose.getPose();
-      lastTimeStamp = davisDvsEvent.time;
+      lastNormalizationTimeStamp = davisDvsEvent.time;
       eventMaps.updateLikelihoodMap();
     }
     // update GokartPoseInterface
-    // estimatedPose.setPose(slamParticleSet.getExpectedPose());
-    // likelihood update
+    estimatedPose.setPose(slamParticleSet.getExpectedPose());
     // particle resampling??
   }
 
-  // for visualization
+  private void printStatusInfo() {
+    System.out.println("**** new status info **********");
+    for (int i = 0; i < slamParticleSet.getNumberOfParticles(); i++) {
+      System.out.println("Particle likelihood " + slamParticleSet.getParticle(i).getParticleLikelihood());
+    }
+  }
+
+  // provides interface for use of SLAM pose in other modules
   public GokartPoseInterface getPoseInterface() {
     return estimatedPose;
   }

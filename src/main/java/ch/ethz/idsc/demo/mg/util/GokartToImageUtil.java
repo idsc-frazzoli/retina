@@ -55,6 +55,11 @@ public class GokartToImageUtil implements GokartToImageInterface {
     return Primitives.toDoubleArray(gokartToImageTensor(worldPosX, worldPosY));
   }
 
+  @Override
+  public Tensor gokartToImage(Tensor gokartPos) {
+    return gokartToImageTensor(gokartPos.Get(0).number().doubleValue(), gokartPos.Get(1).number().doubleValue());
+  }
+
   public Tensor gokartToImageTensor(double worldPosX, double worldPosY) {
     // transform axes from go kart coordinate system to camera calibration system
     double cameraPhysicalX = worldPosY;

@@ -47,7 +47,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
     slamMapFrames = new SlamMapFrame[3];
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < slamMapFrames.length; i++) {
       slamMapFrames[i] = new SlamMapFrame(pipelineConfig);
     }
     saveSlamFrame = pipelineConfig.saveEvaluationFrame;
@@ -77,7 +77,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
     if (saveSlamFrame && ((timeInst - lastTimeStamp) > savingInterval)) {
       slamMapFrames[0].setMap(slamProvider.getMap(0));
-      slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
+      slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose());
       saveFrame(slamMapFrames[0].getFrame(), parentFilePath, imagePrefix, timeInst);
       lastTimeStamp = timeInst;
     }
@@ -103,12 +103,12 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private BufferedImage[] constructFrames() {
     // paint the frames
     slamMapFrames[0].setMap(slamProvider.getMap(0));
-    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
+    slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose());
     slamMapFrames[1].setMap(slamProvider.getMap(1));
     slamMapFrames[2].setMap(slamProvider.getMap(2));
     // for passing to visualization
     BufferedImage[] combinedFrames = new BufferedImage[3];
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < combinedFrames.length; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
     return combinedFrames;
   }

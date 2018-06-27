@@ -21,10 +21,10 @@ public class SlamVisualization {
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Occurrencce map", 50, 13);
       graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
-      graphics.drawString("Normalization map", 50, 513);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 50, 520, null);
-      graphics.drawString("Likelihood map", 550, 13);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[2], scaling), 550, 20, null);
+      // graphics.drawString("Normalization map", 50, 513);
+      // graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 50, 520, null);
+      // graphics.drawString("Likelihood map", 550, 13);
+      // graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[2], scaling), 550, 20, null);
     }
   };
 
