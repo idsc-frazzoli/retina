@@ -41,11 +41,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private final LidarSpacialProvider lidarSpacialProvider;
   // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate //
-      = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
+      SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
-  /** clearanceTracker is always non-null */
-  private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
 
   public Vlp16ClearanceModule() {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -81,6 +79,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   /***************************************************/
+  /** clearanceTracker is always non-null */
+  private ClearanceTracker clearanceTracker = EmptyClearanceTracker.INSTANCE;
+  /** synchronized read/write access */
   private Optional<Scalar> contact = Optional.empty();
 
   @Override // from LidarSpacialListener
@@ -96,17 +97,20 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   @Override // from GokartStatusListener
   public final void getEvent(GokartStatusEvent gokartStatusEvent) {
     Optional<Scalar> touching = clearanceTracker.contact();
-    if (touching.isPresent())
-      contact = contact.isPresent() //
-          ? Optional.of(Min.of(contact.get(), touching.get())) //
+    if (touching.isPresent()) {
+      Optional<Scalar> _contact = contact;
+      contact = _contact.isPresent() //
+          ? Optional.of(Min.of(_contact.get(), touching.get())) //
           : touching;
+    }
     clearanceTracker = SafetyConfig.GLOBAL.getClearanceTracker(UNIT_SPEED, gokartStatusEvent);
   }
 
   @Override // from RimoPutProvider
   public final Optional<RimoPutEvent> putEvent() {
-    if (contact.isPresent()) {
-      EmergencyBrakeProvider.INSTANCE.consider(contact.get());
+    Optional<Scalar> _contact = contact;
+    if (_contact.isPresent()) {
+      EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
     return Optional.ofNullable(penaltyTimeout.isPenalty() ? penaltyAction() : null);
