@@ -20,8 +20,8 @@ public class SlamParticleSet {
     alpha = pipelineConfig.alpha.number().doubleValue();
     numberOfParticles = pipelineConfig.numberOfParticles.number().intValue();
     slamParticleSet = new SlamParticle[numberOfParticles];
-    double initParticleLikelihood = 1 / ((double) numberOfParticles);
-    for (int i = 0; i < numberOfParticles; i++) {
+    double initParticleLikelihood = 1.0 / numberOfParticles;
+    for (int i = 0; i < slamParticleSet.length; i++) {
       slamParticleSet[i] = new SlamParticle(initParticleLikelihood);
     }
   }
@@ -40,8 +40,8 @@ public class SlamParticleSet {
       Tensor worldCoord = SlamUtil.gokartToWorldTensor(slamParticleSet[i].getPose(), gokartFramePos);
       // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
       double updatedParticleLikelihood = slamParticleSet[i].getParticleLikelihood() + alpha * likelihoodMap.getValue(worldCoord);
-      sumOfLikelihoods += updatedParticleLikelihood;
       slamParticleSet[i].setParticleLikelihood(updatedParticleLikelihood);
+      sumOfLikelihoods += updatedParticleLikelihood;
     }
     // normalize particle likelihoods
     for (int i = 0; i < numberOfParticles; i++) {

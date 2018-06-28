@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class EmergencyBrakeProviderTest extends TestCase {
   public void testMargin() {
-    assertEquals(EmergencyBrakeProvider.INSTANCE.margin(), DoubleScalar.of(1.66));
+    assertEquals(EmergencyBrakeProvider.INSTANCE.marginMeter(), DoubleScalar.of(1.66));
   }
 
   public void testRank() {

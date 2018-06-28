@@ -4,10 +4,10 @@ package ch.ethz.idsc.demo.mg.pipeline;
 // provides blob object in physical space
 public class PhysicalBlob {
   // fields
-  private double[] pos; // [m] in gokart reference frame
-  private double[] vel;
-  private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
+  private final double[] pos; // [m] in gokart reference frame
+  private final double[] vel;
   private final int blobID; // default blobID == 0
+  private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
 
   PhysicalBlob(double[] pos, int blobID) {
     this.pos = pos;

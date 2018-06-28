@@ -50,7 +50,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     if (Objects.nonNull(rimoGetEvent))
       try {
-        isPathObstructed = StaticHelper.isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
+        isPathObstructed = Urg04lxClearanceHelper.isPathObstructed(steerColumnInterface, lidarRayBlockEvent.floatBuffer);
         return;
       } catch (Exception exception) {
         exception.printStackTrace();

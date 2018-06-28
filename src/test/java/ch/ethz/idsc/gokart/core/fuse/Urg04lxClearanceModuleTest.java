@@ -31,7 +31,7 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     ucm.getEvent(rimoGetEvent);
     assertTrue(ucm.putEvent().isPresent());
     SteerColumnInterface sci = new SteerColumnAdapter(false, Quantity.of(.2, "SCE"));
-    assertTrue(StaticHelper.isPathObstructed(sci, null));
+    assertTrue(Urg04lxClearanceHelper.isPathObstructed(sci, null));
   }
 
   public void testObstruction() {
@@ -44,13 +44,13 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);
     array[0] = 10;
     array[1] = 10;
-    assertFalse(StaticHelper.isPathObstructed(sci, floatBuffer));
+    assertFalse(Urg04lxClearanceHelper.isPathObstructed(sci, floatBuffer));
     array[0] = 10;
     array[1] = 0;
-    assertFalse(StaticHelper.isPathObstructed(sci, floatBuffer));
+    assertFalse(Urg04lxClearanceHelper.isPathObstructed(sci, floatBuffer));
     array[0] = 1;
     array[1] = 0;
-    assertTrue(StaticHelper.isPathObstructed(sci, floatBuffer));
+    assertTrue(Urg04lxClearanceHelper.isPathObstructed(sci, floatBuffer));
   }
 
   public void testObstructionAngle() {
@@ -63,13 +63,13 @@ public class Urg04lxClearanceModuleTest extends TestCase {
     FloatBuffer floatBuffer = FloatBuffer.wrap(array);
     array[0] = 10;
     array[1] = 10;
-    assertFalse(StaticHelper.isPathObstructed(angle, floatBuffer));
+    assertFalse(Urg04lxClearanceHelper.isPathObstructed(angle, floatBuffer));
     array[0] = 10;
     array[1] = 0;
-    assertFalse(StaticHelper.isPathObstructed(angle, floatBuffer));
+    assertFalse(Urg04lxClearanceHelper.isPathObstructed(angle, floatBuffer));
     array[0] = 1;
     array[1] = 0;
-    assertTrue(StaticHelper.isPathObstructed(angle, floatBuffer));
+    assertTrue(Urg04lxClearanceHelper.isPathObstructed(angle, floatBuffer));
   }
 
   public void testRank() {
