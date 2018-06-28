@@ -7,7 +7,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
@@ -23,12 +22,13 @@ public class SlamMapFrame implements RenderInterface {
   private final Graphics2D graphics;
   private final byte[] bytes;
   // visualization stuff
-  private final int frameWidth;
-  private final int frameHeight;
-  private final int numberOfCells;
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
+  private final int kartLength;
+  private final int frameWidth;
+  private final int frameHeight;
+  private final int numberOfCells;
   // from the SLAM algorithm
   private double[] mapArray;
   private double maxValue;
@@ -40,6 +40,7 @@ public class SlamMapFrame implements RenderInterface {
     cornerX = pipelineConfig.corner.Get(0).number().doubleValue();
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
     cellDim = pipelineConfig.cellDim.number().doubleValue();
+    kartLength = (int) (pipelineConfig.kartSize.number().doubleValue() / cellDim);
     mapArray = new double[numberOfCells];
     bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_BYTE_GRAY);
     graphics = bufferedImage.createGraphics();
@@ -53,13 +54,9 @@ public class SlamMapFrame implements RenderInterface {
       System.out.println("Fatal: something went wrong!");
     else {
       mapArray = map.getMapArray();
-      maxValue = getMaxValue(mapArray);
+      maxValue = map.getMaxValue();
       paintFrame();
     }
-  }
-
-  private double getMaxValue(double[] mapArray) {
-    return Arrays.stream(mapArray).max().getAsDouble();
   }
 
   // draws the frame according to the mapArray values. values are normalized by maxValue
@@ -81,11 +78,12 @@ public class SlamMapFrame implements RenderInterface {
     int pixelPoseX = (int) ((posX - cornerX) / cellDim);
     int pixelPoseY = (int) ((posY - cornerY) / cellDim);
     // draw ellipse at go kart position
-    Ellipse2D ellipse = new Ellipse2D.Float(pixelPoseX - 15, pixelPoseY - 8, 30, 16);
+    Ellipse2D ellipse = new Ellipse2D.Float(pixelPoseX - kartLength/2, pixelPoseY - kartLength/4, kartLength, kartLength/2);
     AffineTransform old = graphics.getTransform();
     graphics.rotate(rotAngle, pixelPoseX, pixelPoseY);
     graphics.setColor(Color.BLACK);
     graphics.draw(ellipse);
+    graphics.fill(ellipse);
     graphics.setTransform(old);
   }
 

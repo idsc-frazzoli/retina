@@ -68,7 +68,7 @@ public class PipelineConfig {
   // visualization
   public Boolean visualizePipeline = false;
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
-  public final Scalar visualizationInterval = RealScalar.of(50); // [ms]
+  public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   // physical world visualization
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame
   public final Scalar frameHeight = RealScalar.of(450); // [pixel] for physical frame
@@ -86,15 +86,16 @@ public class PipelineConfig {
   public final Scalar lookAheadDistance = RealScalar.of(7); // events further away are neglected
   public final Scalar normalizationUpdateRate = RealScalar.of(500); // [ms]
   public final Scalar linVelAverage = RealScalar.of(3); // [m/s]
-  public final Scalar linVelStandardDeviation = RealScalar.of(2); // [m/s]
-  public final Scalar angVelStandardDeviation = RealScalar.of(0.2); // [rad/s]
+  public final Scalar linVelStandardDeviation = RealScalar.of(1.5); // [m/s]
+  public final Scalar angVelStandardDeviation = RealScalar.of(0.8); // [rad/s]
   // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(0.1); // [m] single cell dimension
-  public final Scalar dimX = RealScalar.of(50); // [m] x 'length' of map
-  public final Scalar dimY = RealScalar.of(50); // [m] y 'length' of map
+  public final Scalar cellDim = RealScalar.of(0.03); // [m] single cell dimension
+  public final Scalar dimX = RealScalar.of(30); // [m] x 'length' of map
+  public final Scalar dimY = RealScalar.of(30); // [m] y 'length' of map
   public final Tensor corner = Tensors.vector(35, 40); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
+  public final Scalar kartSize = RealScalar.of(1.5); // [m]
 
   /***************************************************/
   // ...

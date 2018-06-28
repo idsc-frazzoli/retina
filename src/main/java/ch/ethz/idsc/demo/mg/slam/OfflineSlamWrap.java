@@ -42,7 +42,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private int lastTimeStamp;
 
   public OfflineSlamWrap(PipelineConfig pipelineConfig) {
-    slamVisualization = new SlamVisualization();
+    slamVisualization = new SlamVisualization(pipelineConfig);
     slamProvider = new SlamProvider(pipelineConfig, gokartOdometryPose, gokartLidarPose);
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
@@ -60,11 +60,13 @@ public class OfflineSlamWrap implements OfflineLogListener {
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     int timeInst = (int) (1000 * time.number().doubleValue()); // TODO hack
-    // in testing, we only start SLAM when lidar pose is available
+    // we only start SLAM when lidar pose is available
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
       if (!isInitialized) {
         lastTimeStamp = timeInst;
+        slamProvider.initializePose(gokartLidarPose.getPose(), time.number().doubleValue());
+        slamVisualization.setFrames(constructFrames());
         isInitialized = true;
       }
     }
@@ -104,6 +106,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // paint the frames
     slamMapFrames[0].setMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose());
+    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
     slamMapFrames[1].setMap(slamProvider.getMap(1));
     slamMapFrames[2].setMap(slamProvider.getMap(2));
     // for passing to visualization

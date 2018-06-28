@@ -1,8 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import java.util.Arrays;
-
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,6 +16,7 @@ public class MapProvider {
   private final double cornerX;
   private final double cornerY;
   private final int widthInCells;
+  private double maxValue;
 
   MapProvider(PipelineConfig pipelineConfig) {
     dimX = pipelineConfig.dimX;
@@ -28,7 +27,7 @@ public class MapProvider {
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
     widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
-    
+    maxValue = 0;
   }
 
   // the method returns the divided map
@@ -90,13 +89,19 @@ public class MapProvider {
       return;
     }
     mapArray[cellIndex] += value;
+    if (mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
   }
 
   public void addValue(int cellIndex, double value) {
     mapArray[cellIndex] += value;
+    if (mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
   }
 
   private void setValue(int cellIndex, double value) {
+    if (value > maxValue)
+      maxValue = value;
     mapArray[cellIndex] = value;
   }
 
@@ -126,8 +131,8 @@ public class MapProvider {
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
   }
-  
+
   public double getMaxValue() {
-    return Arrays.stream(mapArray).max().getAsDouble();
+    return maxValue;
   }
 }
