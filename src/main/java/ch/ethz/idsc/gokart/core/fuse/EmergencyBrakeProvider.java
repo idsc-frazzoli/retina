@@ -35,11 +35,14 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
   // ---
   public static final EmergencyBrakeProvider INSTANCE = new EmergencyBrakeProvider();
   // ---
+  /** unit m*s^-1 */
   private final Scalar minVelocity = LinmotConfig.GLOBAL.minVelocity;
+  /** without unit but with interpretation in meter */
   private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16.Get(0));
-  private Scalar velocity = Quantity.of(0.0, SI.METER);
+  private Scalar velocity = Quantity.of(0.0, SI.VELOCITY);
 
   private EmergencyBrakeProvider() {
+    CLIP.requireInside(velocity);
   }
 
   @Override // from PutProvider
@@ -71,8 +74,9 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
         () -> LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ONE));
   }
 
-  /** @return distance from lidar to front bumper of gokart along x-axis */
-  Scalar margin() {
+  /** @return distance from lidar to front bumper of gokart along x-axis
+   * without unit but with interpretation in meter */
+  Scalar marginMeter() {
     return margin;
   }
 }
