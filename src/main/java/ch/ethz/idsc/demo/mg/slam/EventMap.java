@@ -14,7 +14,6 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 
 // provides three event maps: occurrence map, normalization map, likelihood map
-// TODO probably should be split up into three distinct files
 public class EventMap {
   private final MapProvider[] eventMaps = new MapProvider[3];
   private final double lookAheadDistance;
@@ -27,17 +26,6 @@ public class EventMap {
     width = pipelineConfig.width.number().intValue();
     height = pipelineConfig.height.number().intValue();
     lookAheadDistance = pipelineConfig.lookAheadDistance.number().doubleValue();
-  }
-
-  // TODO precompute gaussian distributions with different variances?
-  public void updateOccurrenceMap(double[] gokartFramePos, SlamParticle[] slamParticles) {
-    for (int i = 0; i < slamParticles.length; i++) {
-      // we generate a Gaussian distribution for each particle. Mean = world coordinate pos, Variance depends on distance to sensor
-      // TODO the distance between sensor and each pixel projected into world coord can be precomputed and stored in a lookup table
-      Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0],gokartFramePos[1]);
-      // in first edition, we just update the exact position
-      eventMaps[0].addValue(worldCoord, slamParticles[i].getParticleLikelihood());
-    }
   }
 
   public void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, ImageToGokartInterface imageToGokartLookup,
@@ -81,10 +69,6 @@ public class EventMap {
         eventMaps[1].addValue(cell, Norm2Squared.between(imageCoordCurrent, imageCoordLast).number().doubleValue());
       }
     }
-  }
-
-  public void updateLikelihoodMap() {
-    MapProvider.divide(eventMaps[0], eventMaps[1], eventMaps[2]);
   }
 
   public MapProvider getMap(int mapID) {

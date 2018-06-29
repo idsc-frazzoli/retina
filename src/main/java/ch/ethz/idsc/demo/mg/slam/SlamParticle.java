@@ -36,10 +36,6 @@ public class SlamParticle implements GokartPoseInterface {
     gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(pose));
   }
 
-  private Tensor getPoseUnitless() {
-    return GokartPoseHelper.toUnitless(pose);
-  }
-
   private void setPoseUnitless(Tensor unitlessPose) {
     double x = unitlessPose.Get(0).number().doubleValue();
     double y = unitlessPose.Get(1).number().doubleValue();
@@ -63,6 +59,10 @@ public class SlamParticle implements GokartPoseInterface {
 
   public GeometricLayer getGeometricLayer() {
     return gokartPoseLayer;
+  }
+
+  private Tensor getPoseUnitless() {
+    return GokartPoseHelper.toUnitless(pose);
   }
 
   @Override // from GokartPoseInterface

@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
     for (int i = 0; i < slamMapFrames.length; i++) {
       slamMapFrames[i] = new SlamMapFrame(pipelineConfig);
     }
-    saveSlamFrame = pipelineConfig.saveEvaluationFrame;
+    saveSlamFrame = pipelineConfig.saveSlamFrame;
     imagePrefix = pipelineConfig.logFileName;
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
     savingInterval = pipelineConfig.savingInterval.number().intValue();
@@ -78,8 +79,10 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // if (channel.equals(RimoLcmServer.CHANNEL_GET))
     // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
     if (saveSlamFrame && ((timeInst - lastTimeStamp) > savingInterval)) {
+      System.out.println("hi");
       slamMapFrames[0].setMap(slamProvider.getMap(0));
-      slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose());
+      slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
+      slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
       saveFrame(slamMapFrames[0].getFrame(), parentFilePath, imagePrefix, timeInst);
       lastTimeStamp = timeInst;
     }
@@ -105,8 +108,8 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private BufferedImage[] constructFrames() {
     // paint the frames
     slamMapFrames[0].setMap(slamProvider.getMap(0));
-    slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose());
-    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose());
+    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
+    slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     slamMapFrames[1].setMap(slamProvider.getMap(1));
     slamMapFrames[2].setMap(slamProvider.getMap(2));
     // for passing to visualization

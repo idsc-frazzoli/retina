@@ -42,7 +42,7 @@ public class SlamMapFrame implements RenderInterface {
     cellDim = pipelineConfig.cellDim.number().doubleValue();
     kartLength = (int) (pipelineConfig.kartSize.number().doubleValue() / cellDim);
     mapArray = new double[numberOfCells];
-    bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_BYTE_GRAY);
+    bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
@@ -65,12 +65,12 @@ public class SlamMapFrame implements RenderInterface {
       IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
     else {
       for (int i = 0; i < bytes.length; i++) {
-        bytes[i] = (byte) (255 * (1 - mapArray[i] / maxValue));
+        bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
       }
     }
   }
 
-  public void addGokartPose(Tensor pose) {
+  public void addGokartPose(Tensor pose, Color color) {
     double posX = pose.Get(0).number().doubleValue();
     double posY = pose.Get(1).number().doubleValue();
     double rotAngle = pose.Get(2).number().doubleValue();
@@ -78,10 +78,10 @@ public class SlamMapFrame implements RenderInterface {
     int pixelPoseX = (int) ((posX - cornerX) / cellDim);
     int pixelPoseY = (int) ((posY - cornerY) / cellDim);
     // draw ellipse at go kart position
-    Ellipse2D ellipse = new Ellipse2D.Float(pixelPoseX - kartLength/2, pixelPoseY - kartLength/4, kartLength, kartLength/2);
+    Ellipse2D ellipse = new Ellipse2D.Float(pixelPoseX - kartLength / 2, pixelPoseY - kartLength / 4, kartLength, kartLength / 2);
     AffineTransform old = graphics.getTransform();
     graphics.rotate(rotAngle, pixelPoseX, pixelPoseY);
-    graphics.setColor(Color.BLACK);
+    graphics.setColor(color);
     graphics.draw(ellipse);
     graphics.fill(ellipse);
     graphics.setTransform(old);
