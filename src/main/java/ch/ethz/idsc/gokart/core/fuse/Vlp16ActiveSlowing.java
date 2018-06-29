@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
@@ -27,8 +29,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override // from Vlp16ClearanceModule
-  RimoPutEvent penaltyAction() {
+  Optional<RimoPutEvent> penaltyAction() {
     // steering angle not used in RimoRateControllerUno
-    return rimoRateControllerWrap.iterate(SPEED_ZERO, null).orElse(RimoPutEvent.PASSIVE);
+    return Optional.of(rimoRateControllerWrap.iterate(SPEED_ZERO, null).orElse(RimoPutEvent.PASSIVE));
   }
 }

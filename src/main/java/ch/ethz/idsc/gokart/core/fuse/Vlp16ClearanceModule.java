@@ -113,12 +113,10 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
-    return Optional.empty(); // FIXME
-    // Optional.ofNullable( //
-    // // penaltyTimeout.isPenalty() ? penaltyAction() :
-    // null);
+    // return Optional.empty();
+    return penaltyTimeout.isPenalty() ? penaltyAction() : Optional.empty();
   }
 
   /** @return non-null */
-  abstract RimoPutEvent penaltyAction();
+  abstract Optional<RimoPutEvent> penaltyAction();
 }

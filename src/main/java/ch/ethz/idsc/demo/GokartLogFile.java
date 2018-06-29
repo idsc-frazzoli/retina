@@ -466,7 +466,37 @@ public enum GokartLogFile implements LogFile {
   _20180621T120115_707a71e0, //
   /** pure pursuit figure eight with driving in reverse */
   _20180621T125013_2b01cac5, //
+  /***************************************************/
+  /* 2018-06-25 */
+  /* visitors from local school */
+  /** pure pursuit figure 8 with reverse driving */
+  _20180625T084608_ab61da0c, //
+  /** pure pursuit figure 8 with reverse driving */
+  _20180625T100400_52c7710a, //
+  /** demo for school: pure pursuit figure 8
+   * with reverse driving and several emergency stops */
+  _20180625T101902_52c7710a, //
+  /** driving with joystick, u-turn challenge */
+  _20180625T113242_52c7710a, //
+  /** driving with joystick, u-turn challenge */
+  _20180625T141009_52c7710a, //
+  /** parallel parking challenge */
+  _20180625T142644_52c7710a, //
+  /** parallel parking challenge but steering failure after single attempt */
+  _20180625T144316_52c7710a, //
+  /***************************************************/
+  /* 2018-06-28 */
+  /* driving with new steering battery lithium polymer */
+  /** parallel parking challenge */
+  _20180628T160026_275d4082, //
+  /** parallel parking challenge */
+  _20180628T172648_275d4082, //
+  /** pure pursuit figure 8 including reverse driving */
+  _20180628T173900_275d4082, //
+  /***************************************************/
+  /* 2018-07-02 */
   ;
+  // ---
   @Override // from LogFile
   public String getFilename() {
     return name().substring(1) + ".lcm.00";
