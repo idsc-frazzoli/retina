@@ -56,14 +56,14 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
    * @return */
   private boolean probeY(Tensor point, Scalar t) {
     // negate() in the next line helps to move point from front of gokart to y-axis of rear axle
-    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t.negate())));
+    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.exp(u.multiply(t.negate())));
     Tensor v = se2ForwardAction.apply(point); // results in v.Get(0) == 0
     return clip_Y.isInside(v.Get(1));
   }
 
   public Optional<Tensor> violation() {
     if (Scalars.lessThan(min, clip_X.max())) // strictly less than
-      return Optional.of(Se2Utils.integrate_g0(u.multiply(min)));
+      return Optional.of(Se2Utils.exp(u.multiply(min)));
     return Optional.empty();
   }
 

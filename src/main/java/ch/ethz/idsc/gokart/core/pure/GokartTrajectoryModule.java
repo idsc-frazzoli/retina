@@ -21,13 +21,13 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
+import ch.ethz.idsc.owl.bot.r2.WaypointDistanceCost;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2ComboRegion;
 import ch.ethz.idsc.owl.bot.se2.Se2MinTimeGoalManager;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
-import ch.ethz.idsc.owl.bot.se2.glc.WaypointDistanceCost;
 import ch.ethz.idsc.owl.bot.util.FlowsInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
@@ -193,7 +193,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         List<CostFunction> costs = new ArrayList<>();
         costs.add(waypointCost);
         costs.add(new Se2MinTimeGoalManager(se2ComboRegion, controls));
-        GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion, controls);
+        GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion);
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         ((StandardTrajectoryPlanner) trajectoryPlanner).relabelDecision = //
