@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public class PipelineConfig {
   // log file parameters
   public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(20000); // [ms]
+  public final Scalar maxDuration = RealScalar.of(10000); // [ms]
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -49,7 +49,7 @@ public class PipelineConfig {
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
-  public final Scalar savingInterval = RealScalar.of(1000); // [ms]
+  public final Scalar savingInterval = RealScalar.of(200); // [ms]
   // hand-labeling tool
   public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
@@ -82,16 +82,19 @@ public class PipelineConfig {
   // SLAM algorithm parameters
   public final Boolean useSlam = true;
   public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(1);
+  public final Scalar numberOfParticles = RealScalar.of(20);
   public final Scalar lookAheadDistance = RealScalar.of(7); // events further away are neglected
-  public final Scalar normalizationUpdateRate = RealScalar.of(200); // [ms]
+  public final Scalar normalizationUpdateRate = RealScalar.of(20); // [ms]
+  public final Scalar linVelStandardDeviation = RealScalar.of(1); // [m/s]
+  public final Scalar angVelStandardDeviation = RealScalar.of(0.8); // [rad/s]
   // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(0.1); // [m] single cell dimension
+  public final Scalar cellDim = RealScalar.of(0.03); // [m] single cell dimension
   public final Scalar dimX = RealScalar.of(30); // [m] x 'length' of map
-  public final Scalar dimY = RealScalar.of(25); // [m] y 'length' of map
+  public final Scalar dimY = RealScalar.of(30); // [m] y 'length' of map
   public final Tensor corner = Tensors.vector(35, 40); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
-  public final Boolean saveSlamFrame = false;
+  public final Boolean saveSlamFrame = true;
+  public final Scalar kartSize = RealScalar.of(1.5); // [m]
 
   /***************************************************/
   // ...
