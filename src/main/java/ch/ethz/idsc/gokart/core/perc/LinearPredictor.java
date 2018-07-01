@@ -17,8 +17,7 @@ public class LinearPredictor {
   private Tensor twiceNextMeans = Tensors.empty();// prediction 2 time steps in the future
   private Tensor twiceNextHulls = Tensors.empty();
 
-  public LinearPredictor(ClusterCollection collection, double step) {
-    this.step = step;
+  public LinearPredictor(ClusterCollection collection) {
     for (ClusterDeque clusterDeque : collection.getCollection()) {
       Tensor nonEmptyMeans = clusterDeque.getNonEmptyMeans();
       Tensor hull = clusterDeque.getLast().hull();
@@ -42,6 +41,12 @@ public class LinearPredictor {
     Tensor y = Tensor.of(nonEmptyMeans.stream().map(tensor -> tensor.Get(1)));
     if (Tensors.nonEmpty(x)) {
       if (x.length() > 1) { // fit a line if more than one point
+        Tensor subtract = Tensor.of(x.extract(0, x.length() - 2).subtract(x.extract(1, x.length() - 1)).stream().map(tensor -> tensor.Get(0)));
+        Tensor subtract1 = y.extract(0, x.length() - 2).subtract(y.extract(1, y.length() - 1));
+        Tensor add = subtract1.pmul(subtract1).add(subtract.pmul(subtract));
+        if (Tensors.nonEmpty(add)) {
+          step = Math.sqrt(Mean.of(add).Get().number().doubleValue());
+        }
         Tensor beta = Inverse.of(Transpose.of(x).dot(x)).dot(Transpose.of(x).dot(y));
         double b = beta.Get(0).number().doubleValue();
         double nextX = Last.of(nonEmptyMeans).Get(0).number().doubleValue() + i * step * Math.cos(b);

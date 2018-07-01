@@ -18,9 +18,6 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
-  // TODO number 0.01 may not be correct? 20 scans per second
-  private double step = 0.01; // length of the step from a scan to the other,
-  // 0 if we assume the clusters are not moving, TODO
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -43,7 +40,7 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         .map(point -> point.extract(0, 2))); // only x,y matter
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
-        LinearPredictor lp = new LinearPredictor(collection, step);
+        LinearPredictor lp = new LinearPredictor(collection);
         Tensor hullsLP = lp.getHullPredictions();
         Tensor meansLP = lp.getMeanPredictions();
         ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
