@@ -27,6 +27,7 @@ public class MapProvider {
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
     widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
+    maxValue = 0;
   }
 
   // the method returns the divided map
@@ -35,22 +36,10 @@ public class MapProvider {
       if (denominator.getValue(i) == 0) {
         // do nothing
       } else {
-        double newValue = numerator.getValue(i) / denominator.getNormalizedValue(i);
+        double newValue = numerator.getValue(i) / denominator.getValue(i);
         targetMap.setValue(i, newValue);
       }
     }
-  }
-
-  private double getValue(int cellIndex) {
-    return mapArray[cellIndex];
-  }
-
-  private double getNormalizedValue(int cellIndex) {
-    return mapArray[cellIndex] / maxValue;
-  }
-
-  private void setValue(int cellIndex, double value) {
-    mapArray[cellIndex] = value;
   }
 
   // returns coordinates of cell middle point
@@ -95,6 +84,7 @@ public class MapProvider {
    * @param value */
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return;
     }
@@ -109,6 +99,16 @@ public class MapProvider {
       maxValue = mapArray[cellIndex];
   }
 
+  private void setValue(int cellIndex, double value) {
+    if (value > maxValue)
+      maxValue = value;
+    mapArray[cellIndex] = value;
+  }
+
+  private double getValue(int cellIndex) {
+    return mapArray[cellIndex];
+  }
+
   // gets value of cell in which the coordinates are
   public double getValue(Tensor pose) {
     return getValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue());
@@ -117,6 +117,7 @@ public class MapProvider {
   // gets value of cell in which the coordinates are
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return 0;
     }

@@ -60,6 +60,12 @@ public class GokartToImageLookup implements GokartToImageInterface {
     return null;
   }
 
+  @Override
+  public Tensor gokartToImage(Tensor gokartPos) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   // testing
   public static void main(String[] args) {
     PipelineConfig pipelineConfig = new PipelineConfig();
