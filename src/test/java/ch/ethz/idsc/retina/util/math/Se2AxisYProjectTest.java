@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.sample.CircleRandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSample;
@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -34,7 +35,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor p = Tensors.vector(-10, 3);
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertTrue(Chop._12.close(t, RealScalar.of(5.124917769722165)));
-    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.exp(u.multiply(t.negate())));
+    TensorUnaryOperator se2ForwardAction = new Se2Bijection(Se2Utils.exp(u.multiply(t.negate()))).forward();
     Tensor v = se2ForwardAction.apply(p);
     assertTrue(Chop._13.close(v, Tensors.fromString("{0, -6.672220679869088}")));
   }
@@ -44,7 +45,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor p = Tensors.vector(-10, 3);
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertTrue(Chop._12.close(t, RealScalar.of(-5.124917769722165)));
-    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.exp(u.multiply(t.negate())));
+    TensorUnaryOperator se2ForwardAction = new Se2Bijection(Se2Utils.exp(u.multiply(t.negate()))).forward();
     Tensor v = se2ForwardAction.apply(p);
     assertTrue(Chop._13.close(v, Tensors.fromString("{0, -6.672220679869088}")));
   }
@@ -69,7 +70,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor p = Tensors.vector(-10, 3);
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertTrue(Chop._12.close(t, RealScalar.of(-5)));
-    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.exp(u.multiply(t.negate())));
+    TensorUnaryOperator se2ForwardAction = new Se2Bijection(Se2Utils.exp(u.multiply(t.negate()))).forward();
     Tensor v = se2ForwardAction.apply(p);
     assertEquals(v, Tensors.vector(0, 3));
   }
