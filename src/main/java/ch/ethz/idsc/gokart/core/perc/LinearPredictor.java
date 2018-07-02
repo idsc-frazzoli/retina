@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Mean;
 
@@ -48,10 +49,7 @@ public class LinearPredictor {
           step = Math.sqrt(Mean.of(add).Get().number().doubleValue());
         }
         Tensor beta = Inverse.of(Transpose.of(x).dot(x)).dot(Transpose.of(x).dot(y));
-        double b = beta.Get(0).number().doubleValue();
-        double nextX = Last.of(nonEmptyMeans).Get(0).number().doubleValue() + i * step * Math.cos(b);
-        double nextY = Last.of(nonEmptyMeans).Get(1).number().doubleValue() + i * step * Math.sin(b);
-        return Tensors.vectorDouble(nextX, nextY);
+        return Last.of(nonEmptyMeans).add(AngleVector.of(beta.Get(0)).multiply(RealScalar.of(i * step)));
       }
       return Flatten.of(nonEmptyMeans);// if only one point assume it is not going to move
     }

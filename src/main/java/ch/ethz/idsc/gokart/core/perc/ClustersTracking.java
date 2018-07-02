@@ -89,6 +89,8 @@ public enum ClustersTracking {
         else {
           System.out.println("only old clusters"); // TODO comment on this case, unhandled?
         }
+      } else {
+        System.out.println("Noise ratio = " + (double) cluster.size() / (oldClusters.toMatrices().length() + newScan.length()));
       }
     oldClusters.removeDeques(removeIndex);
     System.out.println(removeIndex);

@@ -18,6 +18,13 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
+  private int count = 0;
+  private double recallAveragedLP = 0;
+  private double precisionAveragedLP = 0;
+  private double precisionAveragedSP = 0;
+  private double recallAveragedSP = 0;
+  private double perfAveragedLP = 0;
+  private double perfAveragedSP = 0;
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -48,16 +55,38 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         Tensor hullsSP = sp.getHullPredictions();
         Tensor meansSP = sp.getMeanPredictions();
         double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
-        System.out.println(String.format("perf     =%6.3f", evaluatePerformanceSP));
         double evaluatePerformanceLP = evaluatePerformance(meansLP, hullsSP);
-        System.out.println(String.format("perf LP  =%6.3f\n", evaluatePerformanceLP));
-        PerformanceMeasures measures = computeRecall(hullsSP, newScan);
-        System.out.println(measures.toString());
-        PerformanceMeasures measuresLP = computeRecall(hullsLP, newScan);
-        System.out.println("LP\n" + measuresLP.toString());
+        PerformanceMeasures measuresSP = recallPrecision(hullsSP, newScan);
+        PerformanceMeasures measuresLP = recallPrecision(hullsLP, newScan);
+        // update average values for performance, recall and precision
+        if (Double.isFinite(evaluatePerformanceLP))
+          perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
+        if (Double.isFinite(evaluatePerformanceSP))
+          perfAveragedSP = averageValue(perfAveragedSP, evaluatePerformanceSP);
+        if (Double.isFinite(measuresLP.recall))
+          recallAveragedLP = averageValue(recallAveragedLP, measuresLP.recall);
+        if (Double.isFinite(measuresLP.precision))
+          precisionAveragedLP = averageValue(precisionAveragedLP, measuresLP.precision);
+        if (Double.isFinite(measuresSP.recall))
+          recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
+        if (Double.isFinite(measuresSP.precision))
+          precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
+        // printouts
+        System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
+            "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
+            "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n", //
+            count, //
+            perfAveragedSP, perfAveragedLP, //
+            recallAveragedSP, precisionAveragedSP, //
+            recallAveragedLP, precisionAveragedLP));
+        count++;
       }
     } else
       System.err.println("scan is empty");
+  }
+
+  public double averageValue(double old, double newValue) {
+    return (old * count + newValue) / (count + 1);
   }
 
   private double side = 0.04;
@@ -73,17 +102,12 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
     return count / (double) predictedMeans.length();
   }
 
-  public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
+  public PerformanceMeasures recallPrecision(Tensor predictedShapes, Tensor newScan) {
     EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
     EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
     Area ep = predictedAreas.getArea();
     ep.intersect(enlargedPoints.getArea());
     double areaIntersection = AreaMeasure.of(ep);
-    // System.out.println(String.format("Area of hulls =%6.3f\n" + //
-    // "Area of hulls approx =%6.3f\nArea of points =%6.3f\n", //
-    // predictedAreas.getTotalArea(), //
-    // AreaMeasure.of(predictedAreas.getArea()), //
-    // enlargedPoints.getTotalArea()));
     return new PerformanceMeasures( //
         areaIntersection / enlargedPoints.getTotalArea(), //
         areaIntersection / predictedAreas.getTotalArea());
