@@ -33,7 +33,7 @@ public class SlamVisualization {
   public SlamVisualization(PipelineConfig pipelineConfig) {
     double mapWidth = pipelineConfig.dimX.divide(pipelineConfig.cellDim).number().doubleValue();
     double mapHeight = pipelineConfig.dimY.divide(pipelineConfig.cellDim).number().doubleValue();
-    scaling = desiredWidth/mapWidth;
+    scaling = desiredWidth / mapWidth;
     bufferedImage[0] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
