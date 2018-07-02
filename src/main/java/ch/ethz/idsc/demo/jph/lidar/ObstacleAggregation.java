@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -36,7 +37,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 /* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
-  private static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBILAB_LOCALIZATION_20180610;
+  private static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   private static final Tensor MODEL2PIXEL = PREDEFINED_MAP.getModel2Pixel();
   private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   private static final String CHANNEL_LIDAR = //

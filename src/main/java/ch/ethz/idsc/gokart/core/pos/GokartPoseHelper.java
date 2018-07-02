@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -15,10 +14,12 @@ public enum GokartPoseHelper {
     return Se2Utils.toSE2Matrix(toUnitless(state));
   }
 
+  /** @param state of the form {x[m], y[m], angle}
+   * @return {x, y, angle} */
   public static Tensor toUnitless(Tensor state) {
-    Scalar x = Magnitude.METER.apply(state.Get(0));
-    Scalar y = Magnitude.METER.apply(state.Get(1));
-    Scalar angle = state.Get(2);
-    return Tensors.of(x, y, angle);
+    return Tensors.of( //
+        Magnitude.METER.apply(state.Get(0)), //
+        Magnitude.METER.apply(state.Get(1)), //
+        state.Get(2));
   }
 }

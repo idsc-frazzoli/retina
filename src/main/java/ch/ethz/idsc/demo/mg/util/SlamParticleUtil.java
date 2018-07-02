@@ -26,7 +26,7 @@ public class SlamParticleUtil {
     }
   }
 
-  public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha ) {
+  public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
     double sumOfLikelihoods = 0;
     for (int i = 0; i < slamParticles.length; i++) {
       // map go kart coordinates into world coordinates using the state estimate of the particle
