@@ -7,29 +7,42 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Integrator;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Norm;
 
 // provides a single particle for the SLAM algorithm
-// TODO instead of x,y,angle maybe just a Tensor field
 public class SlamParticle implements GokartPoseInterface {
   private Tensor pose;
+  private Scalar linVel; // direction of go kart x axis
+  private Scalar angVel;
   private double particleLikelihood;
   private GeometricLayer gokartPoseLayer;
 
-  public void initialize(Tensor pose, double particleLikelihood) {
-    this.pose = pose;
-    this.particleLikelihood = particleLikelihood;
+  public void initialize(Tensor initPose, Scalar initLinVel, Scalar initAngVel, double initParticleLikelihood) {
+    pose = initPose;
+    linVel = initLinVel;
+    angVel = initAngVel;
+    particleLikelihood = initParticleLikelihood;
     setGeometricLayer();
   }
 
-  /** @param deltaPose of the form {vx, vy, vangle} multipled by time_delta */
-  public void propagateStateEstimate(Tensor deltaPose) {
+  /** @param deltaPose of the form {vx, vy, vangle} */
+  public void propagateStateEstimate(Tensor deltaPose, double dT) {
+    deltaPose = deltaPose.multiply(RealScalar.of(dT));
     setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
     // different option below
     // Tensor xya = Se2Utils.fromSE2Matrix(Se2Utils.toSE2Matrix(getPoseUnitless()).dot(Se2Utils.toSE2Matrix(deltaPose)));
     // setPose(xya);
+  }
+
+  // will replace propagateStateEstimate(deltaPose,dT)
+  public void propagateStateEstimate(double dT) {
+    Tensor deltaPose = linVel.multiply(RealScalar.of(dT));
+    setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
   private void setGeometricLayer() {
@@ -44,6 +57,14 @@ public class SlamParticle implements GokartPoseInterface {
     setGeometricLayer();
   }
 
+  public void setLinVel(Scalar linVel) {
+    this.linVel = linVel;
+  }
+
+  public void setAngVel(Scalar angVel) {
+    this.angVel = angVel;
+  }
+
   public void setPose(Tensor pose) {
     this.pose = pose;
     setGeometricLayer();
@@ -51,6 +72,14 @@ public class SlamParticle implements GokartPoseInterface {
 
   public void setParticleLikelihood(double particleLikelihood) {
     this.particleLikelihood = particleLikelihood;
+  }
+
+  public double getLinVelNorm2() {
+    return Norm._2.ofVector(linVel).number().doubleValue();
+  }
+
+  public double getAngVelDouble() {
+    return angVel.Get(0).number().doubleValue();
   }
 
   public double getParticleLikelihood() {

@@ -48,4 +48,8 @@ public class SlamVelocityEstimator {
   public double getLinVelNorm2() {
     return Norm._2.ofVector(linVel).number().doubleValue();
   }
+
+  public double getAngVelDouble() {
+    return angVel.Get(0).number().doubleValue();
+  }
 }

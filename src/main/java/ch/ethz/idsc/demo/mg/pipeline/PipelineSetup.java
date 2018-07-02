@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.slam.OfflineSlamWrap;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /** pipeline setup for single/multirun of logfiles
@@ -13,11 +12,9 @@ import ch.ethz.idsc.tensor.RealScalar;
 /* package */ class PipelineSetup {
   private final PipelineConfig pipelineConfig;
   private final int iterationLength;
-  private final boolean useSlam;
 
   PipelineSetup(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
-    this.useSlam = pipelineConfig.useSlam;
     iterationLength = pipelineConfig.iterationLength.number().intValue();
   }
 
@@ -36,16 +33,11 @@ import ch.ethz.idsc.tensor.RealScalar;
     File logFile = pipelineConfig.getLogFile();
     Long logFileDuration = pipelineConfig.maxDuration.number().longValue() * 1000;
     try {
-      if (useSlam) {
-        OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(pipelineConfig);
-        BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
-      } else {
-        // initialize offlinePipelineWrap with current pipelineConfig
-        OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);
-        BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlinePipelineWrap);
-        // show summary
-        offlinePipelineWrap.summarizeLog();
-      }
+      // initialize offlinePipelineWrap with current pipelineConfig
+      OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);
+      BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlinePipelineWrap);
+      // show summary
+      offlinePipelineWrap.summarizeLog();
     } catch (IOException e) {
       e.printStackTrace();
     }

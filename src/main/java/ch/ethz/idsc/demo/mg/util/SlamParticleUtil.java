@@ -1,12 +1,13 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.util;
 
+import java.util.Arrays;
+
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -19,10 +20,13 @@ public class SlamParticleUtil {
    * @param pose
    * @param slamParticles */
   public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose) {
-    // TODO use deterministic distribution depending on particleNumber
     double initLikelihood = (double) 1 / slamParticles.length;
+    double initLinVelAvg = 3;
+    double initAngVelAvg = 0;
     for (int i = 0; i < slamParticles.length; i++) {
-      slamParticles[i].initialize(pose, initLikelihood);
+      double vx = SlamRandomUtil.getGaussian(initLinVelAvg, 0.2);
+      double vangle = SlamRandomUtil.getGaussian(initAngVelAvg, 0.1);
+      slamParticles[i].initialize(pose, RealScalar.of(vx), RealScalar.of(vangle), initLikelihood);
     }
   }
 
@@ -32,7 +36,7 @@ public class SlamParticleUtil {
       // map go kart coordinates into world coordinates using the state estimate of the particle
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
-      double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord);
+      double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / map.getMaxValue();
       slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
     }
@@ -48,15 +52,17 @@ public class SlamParticleUtil {
    * @param angVelStd
    * @param dT unit [s]
    * @param slamParticles SlamParticle array whose states will be propagated */
-  public static void propagateStateEstimate(SlamParticle[] slamParticles, double linVelAvg, double linVelStd, double angVelStd, Scalar dT) {
+  public static void propagateStateEstimate(SlamParticle[] slamParticles, double linVelAvg, double linVelStd, double angVelAvg, double angVelStd, double dT) {
     for (int i = 0; i < slamParticles.length; i++) {
       double vx = SlamRandomUtil.getGaussian(linVelAvg, linVelStd);
-      double vangle = SlamRandomUtil.getGaussian(0, angVelStd);
+      // we assume no backwards driving
+      if (vx < 0)
+        vx = 0;
+      double vangle = SlamRandomUtil.getGaussian(angVelAvg, angVelStd);
       Tensor deltaPose = Tensors.vector(vx, 0, vangle);
       // use below for testing of accuracy of Se2Integrator
       // Tensor deltaPose = Tensors.vector(3, 0, 0);
-      deltaPose = deltaPose.multiply(dT);
-      slamParticles[i].propagateStateEstimate(deltaPose);
+      slamParticles[i].propagateStateEstimate(deltaPose, dT);
     }
   }
 
@@ -103,21 +109,29 @@ public class SlamParticleUtil {
   }
 
   private static void particleRoughening(SlamParticle[] slamParticles) {
-    // disturb the pose of the particles
+    // idea: disturb velocities of idential particles
+    // first, gotta group the particles into groups with identical pose
+    
+    // then, disturb with Gaussian each of that groups
   }
 
-  // get average pose
-  public static Tensor getAveragePose(SlamParticle[] slamParticles) {
+  // get average pose of particles with highest likelihood
+  // TODO test if correct
+  public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     Tensor expectedPose = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), DoubleScalar.of(0));
-    for (int i = 0; i < slamParticles.length; i++) {
+    Arrays.sort(slamParticles, SlamMapUtil.slamCompare);
+    double likelihoodSum = 0;
+    for (int i = 0; i < relevantRange; i++) {
       Tensor pose = slamParticles[i].getPose();
       double likelihood = slamParticles[i].getParticleLikelihood();
+      likelihoodSum += likelihood;
       expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
     }
-    return expectedPose;
+    return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
 
   // get maximum likelihood pose
+  // TODO compare with getAveragePose(slamParticles, 1)
   public static Tensor getMLPose(SlamParticle[] slamParticles) {
     double maxLikelihood = 0;
     int maxLikelihoodIndex = 0;

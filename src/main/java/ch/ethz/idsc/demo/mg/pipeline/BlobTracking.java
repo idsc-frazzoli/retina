@@ -12,8 +12,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
 /* package */ class BlobTracking {
   // camera parameters
-  private static int width;
-  private static int height;
+  private final int width;
+  private final int height;
   // tracker initialization parameters
   private final int initNumberOfBlobs;
   private final int numberRows; // on how many rows are the blobs initially distributed

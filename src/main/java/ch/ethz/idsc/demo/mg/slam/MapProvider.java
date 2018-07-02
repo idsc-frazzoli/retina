@@ -124,6 +124,19 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
+  // for recorded maps
+  public void setMapArray(double[] mapArray) {
+    if (this.mapArray.length == mapArray.length) {
+      double tempMaxValue = 0;
+      for (int i = 0; i < mapArray.length; i++) {
+        if(mapArray[i]>tempMaxValue)
+          tempMaxValue = mapArray[i];
+        this.mapArray[i] = mapArray[i];
+      }
+      maxValue = tempMaxValue;
+    }
+  }
+
   public double[] getMapArray() {
     return mapArray;
   }
