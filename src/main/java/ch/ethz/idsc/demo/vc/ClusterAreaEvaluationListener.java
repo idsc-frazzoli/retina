@@ -25,6 +25,7 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   private double recallAveragedSP = 0;
   private double perfAveragedLP = 0;
   private double perfAveragedSP = 0;
+  private double noiseAveraged = 0;
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -50,7 +51,7 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         LinearPredictor lp = new LinearPredictor(collection);
         Tensor hullsLP = lp.getHullPredictions();
         Tensor meansLP = lp.getMeanPredictions();
-        ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
+        double noiseRatio = ClusterConfig.GLOBAL.dbscanTracking(collection, newScan, 0.035, 8);
         SimplePredictor sp = new SimplePredictor(collection);
         Tensor hullsSP = sp.getHullPredictions();
         Tensor meansSP = sp.getMeanPredictions();
@@ -59,26 +60,29 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         PerformanceMeasures measuresSP = recallPrecision(hullsSP, newScan);
         PerformanceMeasures measuresLP = recallPrecision(hullsLP, newScan);
         // update average values for performance, recall and precision
-        if (Double.isFinite(evaluatePerformanceLP))
-          perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
-        if (Double.isFinite(evaluatePerformanceSP))
-          perfAveragedSP = averageValue(perfAveragedSP, evaluatePerformanceSP);
-        if (Double.isFinite(measuresLP.recall))
-          recallAveragedLP = averageValue(recallAveragedLP, measuresLP.recall);
-        if (Double.isFinite(measuresLP.precision))
-          precisionAveragedLP = averageValue(precisionAveragedLP, measuresLP.precision);
-        if (Double.isFinite(measuresSP.recall))
-          recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
-        if (Double.isFinite(measuresSP.precision))
-          precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
-        // printouts
-        System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
-            "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
-            "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n", //
-            count, //
-            perfAveragedSP, perfAveragedLP, //
-            recallAveragedSP, precisionAveragedSP, //
-            recallAveragedLP, precisionAveragedLP));
+        if (count > 5) { // ignore the first scans
+          noiseAveraged = averageValue(noiseAveraged, noiseRatio);
+          if (Double.isFinite(evaluatePerformanceLP))
+            perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
+          if (Double.isFinite(evaluatePerformanceSP))
+            perfAveragedSP = averageValue(perfAveragedSP, evaluatePerformanceSP);
+          if (Double.isFinite(measuresLP.recall))
+            recallAveragedLP = averageValue(recallAveragedLP, measuresLP.recall);
+          if (Double.isFinite(measuresLP.precision))
+            precisionAveragedLP = averageValue(precisionAveragedLP, measuresLP.precision);
+          if (Double.isFinite(measuresSP.recall))
+            recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
+          if (Double.isFinite(measuresSP.precision))
+            precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
+          // printouts
+          System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
+              "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
+              "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio          =%6.3f\n", //
+              count, //
+              perfAveragedSP, perfAveragedLP, //
+              recallAveragedSP, precisionAveragedSP, //
+              recallAveragedLP, precisionAveragedLP, noiseAveraged));
+        }
         count++;
       }
     } else

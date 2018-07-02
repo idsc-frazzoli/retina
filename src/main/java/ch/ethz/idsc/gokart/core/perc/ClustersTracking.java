@@ -36,7 +36,8 @@ public enum ClustersTracking {
    * @param eps parameter for DBSCAN
    * @param minPoints parameter for DBSCAN */
   // TODO also handle empty input
-  public static void elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
+  public static double elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
+    double noiseRatio = 0;
     Tensor scans = oldClusters.toMatrices().append(newScan);
     oldClusters.getCollection().forEach(ClusterDeque::appendEmpty);
     int sizeCollection = oldClusters.getCollection().size();
@@ -90,11 +91,12 @@ public enum ClustersTracking {
           System.out.println("only old clusters"); // TODO comment on this case, unhandled?
         }
       } else {
-        System.out.println("Noise ratio = " + (double) cluster.size() / (oldClusters.toMatrices().length() + newScan.length()));
+        noiseRatio = (double) cluster.size() / (oldClusters.toMatrices().length() + newScan.length());
       }
     oldClusters.removeDeques(removeIndex);
     System.out.println(removeIndex);
     oldClusters.maintainUntil(sizeCollection - removeIndex.size());
+    return noiseRatio;
   }
 
   private static <T> NavigableMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {
