@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -25,11 +26,11 @@ public class ClusterConfig implements Serializable {
   }
 
   public int getMinPoints() {
-    return minPoints.number().intValue();
+    return Scalars.intValueExact(minPoints);
   }
 
   public int getScanCount() {
-    return scanCount.number().intValue();
+    return Scalars.intValueExact(scanCount);
   }
 
   public void dbscanTracking(ClusterCollection collection, Tensor matrix) {
@@ -37,7 +38,8 @@ public class ClusterConfig implements Serializable {
     collection.decompose();
   }
 
-  public double dbscanTracking(ClusterCollection collection, Tensor matrix, double eps, int minPoints) {
+  // TODO design not ideal
+  public static double dbscanTracking(ClusterCollection collection, Tensor matrix, double eps, int minPoints) {
     double noiseRatio = ClustersTracking.elkiDBSCAN(collection, matrix, eps, minPoints);
     collection.decompose();
     return noiseRatio;

@@ -12,11 +12,10 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class LinearPredictor {
-  private Tensor nextMeans = Tensors.empty();
-  private Tensor nextHulls = Tensors.empty();
-  private double step;
-  private Tensor twiceNextMeans = Tensors.empty();// prediction 2 time steps in the future
-  private Tensor twiceNextHulls = Tensors.empty();
+  private final Tensor nextMeans = Tensors.empty();
+  private final Tensor nextHulls = Tensors.empty();
+  private final Tensor twiceNextMeans = Tensors.empty(); // prediction 2 time steps in the future
+  private final Tensor twiceNextHulls = Tensors.empty();
 
   public LinearPredictor(ClusterCollection collection) {
     for (ClusterDeque clusterDeque : collection.getCollection()) {
@@ -37,21 +36,23 @@ public class LinearPredictor {
   }
 
   // linear prediction: linear regression in closed form, from the last mean take a step of length i*step
-  private Tensor predictMean(Tensor nonEmptyMeans, int i) {
-    Tensor x = Tensor.of(nonEmptyMeans.stream().map(tensor -> Tensors.of(tensor.Get(0), RealScalar.of(1))));// homogeneous coordinates
+  private static Tensor predictMean(Tensor nonEmptyMeans, int i) {
+    Tensor x = Tensor.of(nonEmptyMeans.stream().map(tensor -> Tensors.of(tensor.Get(0), RealScalar.of(1)))); // homogeneous coordinates
+    // TODO try y = nonEmptyMeans.get(Tensor.ALL,1);
     Tensor y = Tensor.of(nonEmptyMeans.stream().map(tensor -> tensor.Get(1)));
     if (Tensors.nonEmpty(x)) {
-      if (x.length() > 1) { // fit a line if more than one point
+      if (1 < x.length()) { // fit a line if more than one point
         Tensor subtract = Tensor.of(x.extract(0, x.length() - 2).subtract(x.extract(1, x.length() - 1)).stream().map(tensor -> tensor.Get(0)));
         Tensor subtract1 = y.extract(0, x.length() - 2).subtract(y.extract(1, y.length() - 1));
         Tensor add = subtract1.pmul(subtract1).add(subtract.pmul(subtract));
-        if (Tensors.nonEmpty(add)) {
-          step = Math.sqrt(Mean.of(add).Get().number().doubleValue());
-        }
+        double step = Tensors.nonEmpty(add) //
+            ? Math.sqrt(Mean.of(add).Get().number().doubleValue())
+            : 0;
+        // TODO try beta = LeastSquares.of(x, y);
         Tensor beta = Inverse.of(Transpose.of(x).dot(x)).dot(Transpose.of(x).dot(y));
         return Last.of(nonEmptyMeans).add(AngleVector.of(beta.Get(0)).multiply(RealScalar.of(i * step)));
       }
-      return Flatten.of(nonEmptyMeans);// if only one point assume it is not going to move
+      return Flatten.of(nonEmptyMeans); // if only one point assume it is not going to move
     }
     return Tensors.empty();
   }

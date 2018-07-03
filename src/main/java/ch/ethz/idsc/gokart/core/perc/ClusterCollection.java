@@ -16,7 +16,7 @@ public class ClusterCollection {
   private int i = 0;
 
   public Tensor toMatrices() {
-    return Tensor.of(collection.stream().map(c -> Tensor.of(c.vertexStream())));
+    return Tensor.of(collection.stream().map(ClusterDeque::vertexStream).map(Tensor::of));
   }
 
   public void maintainUntil(int size) {

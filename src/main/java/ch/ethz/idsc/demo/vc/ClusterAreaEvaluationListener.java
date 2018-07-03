@@ -51,7 +51,7 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         LinearPredictor lp = new LinearPredictor(collection);
         Tensor hullsLP = lp.getHullPredictions();
         Tensor meansLP = lp.getMeanPredictions();
-        double noiseRatio = ClusterConfig.GLOBAL.dbscanTracking(collection, newScan, 0.035, 8);
+        double noiseRatio = ClusterConfig.dbscanTracking(collection, newScan, 0.035, 8);
         SimplePredictor sp = new SimplePredictor(collection);
         Tensor hullsSP = sp.getHullPredictions();
         Tensor meansSP = sp.getMeanPredictions();
@@ -103,7 +103,7 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         count += i;
       }
     }
-    return count / (double) predictedMeans.length();
+    return count / (double) predictedMeans.length(); // TODO explore options to treat case length == 0
   }
 
   public PerformanceMeasures recallPrecision(Tensor predictedShapes, Tensor newScan) {

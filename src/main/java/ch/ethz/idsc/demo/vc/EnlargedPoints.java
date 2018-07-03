@@ -12,8 +12,15 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 public class EnlargedPoints {
   private static final GeometricLayer IDENTITY_LAYER = GeometricLayer.of(IdentityMatrix.of(3));
+
+  public static Area toArea(Tensor polygon) {
+    Path2D path2d = IDENTITY_LAYER.toPath2D(polygon);
+    path2d.closePath();
+    return new Area(path2d);
+  }
+
   // ---
-  private Area area = new Area();
+  private final Area area = new Area();
   private double totalArea;
 
   public EnlargedPoints(Tensor points, double w) {
@@ -23,15 +30,11 @@ public class EnlargedPoints {
   }
 
   public EnlargedPoints(Tensor hulls) {
-    for (Tensor hull : hulls) {
+    for (Tensor hull : hulls)
       if (Tensors.nonEmpty(hull)) {
-        Path2D path2d = IDENTITY_LAYER.toPath2D(hull);
-        path2d.closePath();
-        Area hl = new Area(path2d);
-        area.add(hl);
+        area.add(toArea(hull));
         totalArea += StaticHelper.computeBetterArea(hull);
       }
-    }
   }
 
   private void addToCollection(Tensor point, double w) {
@@ -45,6 +48,6 @@ public class EnlargedPoints {
   }
 
   public Area getArea() {
-    return (Area) area.clone();
+    return new Area(area);
   }
 }
