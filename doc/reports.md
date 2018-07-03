@@ -24,6 +24,7 @@
 * [20180616_power_steering_breakdown.pdf](https://github.com/idsc-frazzoli/retina/files/2108415/20180616_power_steering_breakdown.pdf)
 * [20180617_rimo_response.pdf](https://github.com/idsc-frazzoli/retina/files/2109415/20180617_rimo_response.pdf)
 * [20180624_vibration_sensor_rack.pdf](https://github.com/idsc-frazzoli/retina/files/2131149/20180624_vibration_sensor_rack.pdf)
+* [20180627_davis240c_polarity_imbalance.pdf](https://github.com/idsc-frazzoli/retina/files/2148391/20180627_davis240c_polarity_imbalance.pdf)
 
 ## Bug Reports
 

@@ -19,7 +19,7 @@ public class SlamVelocityEstimator {
 
   public void initialize(Tensor initialPose, double initialTimeStamp) {
     lastPose = initialPose;
-    linVel = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(0, SI.PER_METER));
+    linVel = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.PER_METER));
     angVel = Tensors.of(RealScalar.of(0));
     lastTimeStamp = initialTimeStamp;
   }
@@ -36,7 +36,7 @@ public class SlamVelocityEstimator {
     lastPose = currentPose;
     lastTimeStamp = currentTimeStamp;
   }
-  
+
   public Tensor getAngVel() {
     return angVel;
   }
@@ -44,7 +44,7 @@ public class SlamVelocityEstimator {
   public Tensor getLinVel() {
     return linVel;
   }
-  
+
   public double getLinVelNorm2() {
     return Norm._2.ofVector(linVel).number().doubleValue();
   }

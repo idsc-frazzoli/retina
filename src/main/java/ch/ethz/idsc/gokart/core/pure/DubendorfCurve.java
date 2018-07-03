@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.retina.util.curve.CurveSubdivision;
-import ch.ethz.idsc.retina.util.curve.FourPointSubdivision;
+import ch.ethz.idsc.owl.subdiv.curve.EuclideanGeodesic;
+import ch.ethz.idsc.owl.subdiv.curve.FourPointCurveSubdivision;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
@@ -12,6 +12,8 @@ import ch.ethz.idsc.tensor.red.Nest;
 
 public enum DubendorfCurve {
   ;
+  private static final TensorUnaryOperator SUBDIVISION = //
+      new FourPointCurveSubdivision(EuclideanGeodesic.INSTANCE)::cyclic;
   /** used in tests */
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
   public static final Tensor HYPERLOOP_EIGHT_REVERSE = Reverse.of(HYPERLOOP_EIGHT);
@@ -37,8 +39,7 @@ public enum DubendorfCurve {
         Tensors.vector(57.200, 54.800), //
         Tensors.vector(49.200, 45.067), //
         Tensors.vector(40.800, 37.333));
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   private static Tensor oval_shifted() {
@@ -48,8 +49,7 @@ public enum DubendorfCurve {
         Tensors.vector(58.200, 55.800), //
         Tensors.vector(51.200, 47.067), //
         Tensors.vector(42.800, 40.333));
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   private static Tensor oval_demoday() {
@@ -58,8 +58,7 @@ public enum DubendorfCurve {
         Tensors.vector(36.133, 45.200), //
         Tensors.vector(51.633, 59.400), //
         Tensors.vector(57.067, 54.133));
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   private static Tensor eight_demoday() {
@@ -78,26 +77,22 @@ public enum DubendorfCurve {
     // careful: shift is subtracted
     Tensor shift = Tensors.vector(0.71, 0.71); // 1[m] away from balloon
     Tensor poly = Tensor.of(poly_pre.stream().map(point -> point.subtract(shift)));
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   /** coordinates are used in tests */
   private static Tensor hyperloop_eight() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv");
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   private static Tensor hyperloop_oval() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/oval/20180502.csv");
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 6).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 6).unmodifiable();
   }
 
   private static Tensor hyperloop_ducttape() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/ducttape/20180514.csv");
-    TensorUnaryOperator unaryOperator = CurveSubdivision.of(FourPointSubdivision.SCHEME);
-    return Nest.of(unaryOperator, poly, 5).unmodifiable();
+    return Nest.of(SUBDIVISION, poly, 5).unmodifiable();
   }
 }

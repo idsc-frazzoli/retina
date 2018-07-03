@@ -4,7 +4,7 @@ package ch.ethz.idsc.owl.car.math;
 import java.io.Serializable;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.map.Se2ForwardAction;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
 import ch.ethz.idsc.tensor.Scalar;
@@ -12,13 +12,14 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class CircleClearanceTracker implements ClearanceTracker, Serializable {
   private final Clip clip_Y;
   private final Clip clip_X;
-  private final Se2ForwardAction se2ForwardAction;
+  private final TensorUnaryOperator se2ForwardAction;
   private final Tensor u;
   private final TensorScalarFunction se2AxisYProject;
   // ---
@@ -38,7 +39,7 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
     u = Tensors.of(speed, speed.zero(), angle.multiply(speed)).unmodifiable();
     se2AxisYProject = Se2AxisYProject.of(u);
     min = clip_X.max();
-    se2ForwardAction = new Se2ForwardAction(xya);
+    se2ForwardAction = new Se2Bijection(xya).forward();
   }
 
   @Override // from ClearanceTracker
@@ -56,14 +57,15 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
    * @return */
   private boolean probeY(Tensor point, Scalar t) {
     // negate() in the next line helps to move point from front of gokart to y-axis of rear axle
-    Se2ForwardAction se2ForwardAction = new Se2ForwardAction(Se2Utils.integrate_g0(u.multiply(t.negate())));
+    TensorUnaryOperator se2ForwardAction = //
+        new Se2Bijection(Se2Utils.exp(u.multiply(t.negate()))).forward();
     Tensor v = se2ForwardAction.apply(point); // results in v.Get(0) == 0
     return clip_Y.isInside(v.Get(1));
   }
 
   public Optional<Tensor> violation() {
     if (Scalars.lessThan(min, clip_X.max())) // strictly less than
-      return Optional.of(Se2Utils.integrate_g0(u.multiply(min)));
+      return Optional.of(Se2Utils.exp(u.multiply(min)));
     return Optional.empty();
   }
 

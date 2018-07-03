@@ -2,7 +2,6 @@
 // https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -28,12 +27,11 @@ public enum ProjectionMatrix {
    * 
    * @param fovy field of view angle in the y direction
    * @param aspect ratio of x (width) to y (height)
-   * @param clip from zNear and zFar
+   * @param clip from 0 < zNear < zFar
    * @return matrix with dimensions 4 x 4 */
   public static Tensor of(Scalar fovy, Scalar aspect, Clip clip) {
-    Scalar zNear = clip.min();
+    Scalar zNear = Sign.requirePositive(clip.min());
     Scalar zFar = clip.max();
-    GlobalAssert.that(Sign.isPositive(zNear));
     Scalar f = Cot.of(fovy.multiply(RationalScalar.of(1, 2)));
     Tensor matrix = Array.zeros(4, 4);
     matrix.set(f.divide(aspect), 0, 0);
