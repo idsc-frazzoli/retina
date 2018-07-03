@@ -495,6 +495,25 @@ public enum GokartLogFile implements LogFile {
   _20180628T173900_275d4082, //
   /***************************************************/
   /* 2018-07-02 */
+  /** pure pursuit forward and reverse */
+  _20180702T102850_4e2a5674, //
+  /** parallel parking */
+  _20180702T112912_4e2a5674, //
+  /** race track, fence */
+  _20180702T133612_4e2a5674, //
+  /** workshop, pure pursuit, trajectory planning */
+  _20180702T144949_4e2a5674, //
+  /** trajectory planning with spherical goal region */
+  _20180702T153457_4e2a5674, //
+  /** race track */
+  _20180702T154417_4e2a5674, //
+  /** pure pursuit figure eight with emergency stops
+   * and localization failure */
+  _20180702T170032_4e2a5674, //
+  /** pedestrians in front of stationary gokart */
+  _20180702T174738_4e2a5674, //
+  /** race track */
+  _20180702T180041_4e2a5674, //
   ;
   // ---
   @Override // from LogFile

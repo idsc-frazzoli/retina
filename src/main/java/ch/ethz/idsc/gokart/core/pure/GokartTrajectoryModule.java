@@ -191,8 +191,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();
         Collection<Flow> controls = flowsInterface.getFlows(resolution);
         Se2ComboRegion se2ComboRegion = //
-            // Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
-            Se2ComboRegion.spherical(goal, Tensors.vector(2.5, 2.5, goalRadius.Get(2).number().doubleValue()));
+            Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
+        // TODO spherical goal region works on gokart but tests fail
+        // Se2ComboRegion.spherical(goal, Tensors.vector(2.5, 2.5, goalRadius.Get(2).number().doubleValue()));
         // ---
         // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
         // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
