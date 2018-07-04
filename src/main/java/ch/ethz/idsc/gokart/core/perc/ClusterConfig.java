@@ -38,11 +38,4 @@ public class ClusterConfig implements Serializable {
     collection.decompose();
     return noiseRatio;
   }
-
-  // TODO design not ideal
-  public static double dbscanTracking(ClusterCollection collection, Tensor matrix, double eps, int minPoints) {
-    double noiseRatio = ClustersTracking.elkiDBSCAN(collection, matrix, eps, minPoints);
-    collection.decompose();
-    return noiseRatio;
-  }
 }

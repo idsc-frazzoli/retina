@@ -10,11 +10,9 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
 import ch.ethz.idsc.gokart.core.perc.DequeCloud;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
@@ -23,18 +21,17 @@ import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 
 /** used in {@link PresenterLcmModule} */
-class ObstacleClusterTrackingRender implements RenderInterface, ActionListener {
+public class ObstacleClusterTrackingRender implements RenderInterface, ActionListener {
   private static final Color COLOR_TRACE = new Color(255, 0, 0, 128);
   // ---
   // ---
   final JToggleButton jToggleButton = new JToggleButton("cluster");
   // ---
-  private ClusterCollection collection = new ClusterCollection();
   private final ColorDataIndexed colorDataIndexed = ColorDataLists._250.cyclic().deriveWithAlpha(64);
-  public final LidarClustering lidarClustering;
+  private final LidarClustering lidarClustering;
 
-  public ObstacleClusterTrackingRender(GokartPoseInterface gokartPoseInterface) {
-    lidarClustering = new LidarClustering(collection, gokartPoseInterface);
+  public ObstacleClusterTrackingRender(LidarClustering lidarClustering) {
+    this.lidarClustering = lidarClustering;
     jToggleButton.setSelected(lidarClustering.isClustering);
     jToggleButton.addActionListener(this);
   }
@@ -44,8 +41,8 @@ class ObstacleClusterTrackingRender implements RenderInterface, ActionListener {
     if (!lidarClustering.isClustering)
       return;
     // ---
-    synchronized (collection) {
-      for (ClusterDeque clusterDeque : collection.getCollection()) {
+    synchronized (lidarClustering.collection) {
+      for (ClusterDeque clusterDeque : lidarClustering.collection.getCollection()) {
         graphics.setColor(colorDataIndexed.getColor(clusterDeque.getID()));
         for (DequeCloud dequeCloud : clusterDeque.getDeque())
           if (Tensors.nonEmpty(dequeCloud.hull())) {

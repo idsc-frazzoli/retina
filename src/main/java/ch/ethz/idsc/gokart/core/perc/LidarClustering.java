@@ -23,11 +23,13 @@ public class LidarClustering implements LidarRayBlockListener {
   private final UnknownObstacleGlobalPredicate unknownObstacleGlobalPredicate = //
       new UnknownObstacleGlobalPredicate(predefinedMap);
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart().unmodifiable();
-  private ClusterCollection collection;
+  public final ClusterCollection collection;
   public boolean isClustering = ENABLED;
   private final GokartPoseInterface gokartPoseInterface;
+  private final ClusterConfig clusterConfig;
 
-  public LidarClustering(ClusterCollection collection, GokartPoseInterface gokartPoseInterface) {
+  public LidarClustering(ClusterConfig clusterConfig, ClusterCollection collection, GokartPoseInterface gokartPoseInterface) {
+    this.clusterConfig = clusterConfig;
     this.gokartPoseInterface = gokartPoseInterface;
     this.collection = collection;
   }
@@ -57,7 +59,7 @@ public class LidarClustering implements LidarRayBlockListener {
     if (Tensors.nonEmpty(points))
       synchronized (collection) {
         anteScan();
-        double noiseRatio = ClusterConfig.GLOBAL.dbscanTracking(collection, points);
+        double noiseRatio = clusterConfig.dbscanTracking(collection, points);
         postScan(points, noiseRatio);
       }
   }
