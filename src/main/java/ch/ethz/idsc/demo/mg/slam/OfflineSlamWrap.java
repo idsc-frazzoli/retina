@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
-import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
+import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
@@ -25,25 +25,21 @@ import ch.ethz.idsc.tensor.Scalar;
 // and lidar pose are provided to the SLAM algorithm
 // TODO maybe create abstract wrapper class and then extend OfflineSlamWrap and OfflinePipelineWrap
 public class OfflineSlamWrap implements OfflineLogListener {
-  // listen to DAVIS, lidar and wheel odometry
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
   private final GokartPoseOdometry gokartOdometryPose;
   private final GokartPoseLcmLidar gokartLidarPose;
-  // SLAM algorithm
   private final SlamProvider slamProvider;
-  // visualization
   private final SlamVisualization slamVisualization;
   private final SlamMapFrame[] slamMapFrames;
-  private final int visualizationInterval;
-  private boolean isInitialized;
-  private int lastImagingTimestamp;
-  // frame saving
   private final String imagePrefix;
   private final File parentFilePath;
   private final boolean saveSlamFrame;
+  private final int visualizationInterval;
   private final int savingInterval;
+  private boolean isInitialized;
+  private int lastImagingTimestamp;
+  private int lastSavingTimeStamp;
   private int imageCount;
-  private int lastTimeStamp;
 
   public OfflineSlamWrap(PipelineConfig pipelineConfig) {
     davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -62,19 +58,16 @@ public class OfflineSlamWrap implements OfflineLogListener {
     savingInterval = pipelineConfig.savingInterval.number().intValue();
   }
 
-  // decode DavisDvsEvents, RimoGetEvents and GokartPoseEvents
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     int timeInst = (int) (1000 * time.number().doubleValue()); // TODO hack
-    // we only start SLAM when lidar pose is available
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
       if (!isInitialized) {
-        lastTimeStamp = timeInst;
-        slamProvider.initialize(gokartLidarPose.getPose(), time.number().doubleValue(), imagePrefix);
-        slamVisualization.setFrames(constructFrames());
+        lastSavingTimeStamp = timeInst;
+        lastImagingTimestamp = timeInst;
         isInitialized = true;
       }
+      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     }
     if (channel.equals("davis240c.overview.dvs")) {
       if (isInitialized)
@@ -83,9 +76,9 @@ public class OfflineSlamWrap implements OfflineLogListener {
     // odometry not required for testing
     // if (channel.equals(RimoLcmServer.CHANNEL_GET))
     // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
-    if (saveSlamFrame && ((timeInst - lastTimeStamp) > savingInterval)) {
+    if (saveSlamFrame && ((timeInst - lastSavingTimeStamp) > savingInterval)) {
       saveFrame(constructFrames()[0], parentFilePath, imagePrefix, timeInst);
-      lastTimeStamp = timeInst;
+      lastSavingTimeStamp = timeInst;
     }
     if ((timeInst - lastImagingTimestamp) > visualizationInterval) {
       slamVisualization.setFrames(constructFrames());
@@ -122,11 +115,11 @@ public class OfflineSlamWrap implements OfflineLogListener {
     return combinedFrames;
   }
 
-  // draw the pose of particles with highest likelihood
   private void drawParticlePoses() {
     SlamParticle[] slamParticles = slamProvider.getParticles();
-    Arrays.sort(slamParticles, SlamMapUtil.slamCompare);
-    for (int i = 0; i < 5; i++) {
+    int partNumber = slamParticles.length/3;
+    Arrays.sort(slamParticles, 0, partNumber, SlamParticleUtil.SlamCompare);
+    for (int i = 0; i < partNumber; i++) {
       slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
     }
   }

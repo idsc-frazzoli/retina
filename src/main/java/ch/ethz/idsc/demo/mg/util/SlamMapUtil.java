@@ -2,13 +2,13 @@
 package ch.ethz.idsc.demo.mg.util;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
@@ -16,30 +16,31 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
 
 // provides utilities to manipulate maps
 public class SlamMapUtil {
-  public static final Comparator<SlamParticle> slamCompare = new Comparator<SlamParticle>() {
-    @Override
-    public int compare(SlamParticle o1, SlamParticle o2) {
-      if (o1.getParticleLikelihood() < o2.getParticleLikelihood())
-        return 1;
-      if (o1.getParticleLikelihood() > o2.getParticleLikelihood())
-        return -1;
-      return 0;
-    }
-  };
-
-  /** in first version, just update exact world frame cell with particle likelihoods
+  /** update occurrence map with particles. in v1.0, counting events in each cell.
    * 
    * @param slamParticles particle set
    * @param occurrenceMap
    * @param gokartFramePos [m]
    * @param particleRange number of particles with highest likelihoods used for update */
-  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
+  public static void updateOccurrenceMapParticles(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
-    Arrays.sort(slamParticles, slamCompare);
+    Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, slamParticles[i].getParticleLikelihood());
     }
+  }
+
+  /** update occurrence map with lidar ground truth
+   * 
+   * @param gokartLidarPose ground truth pose provided by lidar
+   * @param occurrenceMap
+   * @param gokartFramePos [m] */
+  public static void updateOccurrenceMapLidar(GokartPoseInterface gokartLidarPose, MapProvider occurrenceMap, double[] gokartFramePos) {
+    GeometricLayer gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartLidarPose.getPose()));
+    Tensor worldCoord = gokartPoseLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
+    // we just add 1
+    occurrenceMap.addValue(worldCoord, 1);
   }
 
   /** @param currentExpectedPose

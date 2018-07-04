@@ -9,11 +9,9 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
 public class SlamSetup {
   private final PipelineConfig pipelineConfig;
-  private final boolean saveSlamMap;
 
   SlamSetup(PipelineConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
-    saveSlamMap = pipelineConfig.saveSlamMap;
   }
 
   private void runAlgo() {
@@ -22,7 +20,7 @@ public class SlamSetup {
     try {
       OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(pipelineConfig);
       BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
-      if(saveSlamMap)
+      if (pipelineConfig.saveSlamMap && !pipelineConfig.localizationMode)
         offlineSlamWrap.saveRecordedMap();
     } catch (IOException e) {
       e.printStackTrace();

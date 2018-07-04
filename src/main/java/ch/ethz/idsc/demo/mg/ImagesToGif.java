@@ -15,10 +15,10 @@ import ch.ethz.idsc.tensor.io.AnimationWriter;
 enum ImagesToGif {
   ;
   public static void main(String[] args) throws Exception {
-    File dir = UserHome.Pictures("gif/image");
+    File dir = UserHome.Pictures("gif/slamTest");
     dir.mkdir();
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(2500).collect(Collectors.toList());
-    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("slamDemo.gif"), 100)) {
+    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("slamLocalization.gif"), 200)) {
       int count = 0;
       for (File file : list) {
         BufferedImage bufferedImage = ImageIO.read(file);

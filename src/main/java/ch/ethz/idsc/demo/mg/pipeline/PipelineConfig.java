@@ -87,13 +87,14 @@ public class PipelineConfig {
   // SLAM algorithm parameters
   public final Boolean localizationMode = true; // in localization mode, a previously saved map is used
   public final Boolean saveSlamMap = false;
-  public final Scalar alpha = RealScalar.of(0.8); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(20);
+  public final Scalar alpha = RealScalar.of(0.99); // [-] for update of state estimate
+  public final Scalar numberOfParticles = RealScalar.of(40);
   public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(7); // [m] events further away are neglected
-  public final Scalar normalizationUpdateRate = RealScalar.of(0.03); // [s]
-  public final Scalar linVelStandardDeviation = RealScalar.of(1); // [m/s]
-  public final Scalar angVelStandardDeviation = RealScalar.of(0.2); // [rad/s]
+  public final Scalar lookAheadDistance = RealScalar.of(9); // [m] events further away are neglected
+  public final Scalar normalizationUpdateRate = RealScalar.of(0.025); // [s]
+  public final Scalar linVelAvg = RealScalar.of(4); // [m] for initial particle distribution
+  public final Scalar linVelStd = RealScalar.of(1); // [m/s] for initial particle distribution
+  public final Scalar angVelStd = RealScalar.of(0.2); // [rad/s] for initial particle distribution
   // SLAM map parameters
   public final Scalar cellDim = RealScalar.of(0.06); // [m] single cell dimension
   public final Scalar dimX = RealScalar.of(30); // [m] x 'width' of map
