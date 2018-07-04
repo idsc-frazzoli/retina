@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class LidarClustering implements LidarRayBlockListener {
   private static final boolean ENABLED = UserHome.file("").getName().equals("valentinacavinato");
+  // ---
   private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
   private final SpacialXZObstaclePredicate nonFloorPredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final UnknownObstacleGlobalPredicate unknownObstacleGlobalPredicate = //

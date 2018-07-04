@@ -29,6 +29,9 @@ public enum PredefinedMap implements LocalizationImage {
    * image with central tents, bus tent, and aerotain */
   DUBILAB_OBSTACLES_20180610(7.5), //
   DUBILAB_LOCALIZATION_20180702(7.5), //
+  /** empty space */
+  DUBILAB_OBSTACLES_20180703(7.5), //
+  /** empty space with tents */
   DUBILAB_OBSTACLES_20180704(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
