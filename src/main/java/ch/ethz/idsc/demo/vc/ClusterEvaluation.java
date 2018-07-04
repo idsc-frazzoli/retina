@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -14,7 +15,9 @@ import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum ClusterEvaluation {
   ;
@@ -22,8 +25,10 @@ enum ClusterEvaluation {
 
   public static void main(String[] args) throws IOException {
     Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-    ClusterAreaEvaluationListener clusterEvaluationListener = new ClusterAreaEvaluationListener();
-    vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener);
+    ClusterConfig clusterConfig = new ClusterConfig();
+    clusterConfig.epsilon = Quantity.of(0.3, SI.METER);
+    ClusterAreaEvaluationListener clusterEvaluationListener = new ClusterAreaEvaluationListener(clusterConfig);
+    vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener.lidarClustering);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -32,7 +37,7 @@ enum ClusterEvaluation {
         else //
         if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
           GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
-          clusterEvaluationListener.unknownObstaclePredicate.setPose(gpe.getPose());
+          clusterEvaluationListener.setPose(gpe.getPose());
         }
       }
     };
