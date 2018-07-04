@@ -23,7 +23,7 @@ enum ClusterEvaluation {
   public static void main(String[] args) throws IOException {
     Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     ClusterAreaEvaluationListener clusterEvaluationListener = new ClusterAreaEvaluationListener();
-    vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener);
+    vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener.lc);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -32,7 +32,7 @@ enum ClusterEvaluation {
         else //
         if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
           GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
-          clusterEvaluationListener.unknownObstaclePredicate.setPose(gpe.getPose());
+          clusterEvaluationListener.setPose(gpe.getPose());
         }
       }
     };

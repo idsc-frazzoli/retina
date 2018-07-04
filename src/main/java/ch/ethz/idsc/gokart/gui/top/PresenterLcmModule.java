@@ -84,7 +84,7 @@ public class PresenterLcmModule extends AbstractModule {
     {
       ObstacleClusterTrackingRender obstacleClusterTrackingRender = //
           new ObstacleClusterTrackingRender(gokartPoseInterface);
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterTrackingRender);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterTrackingRender.lidarClustering);
       timerFrame.geometricComponent.addRenderInterface(obstacleClusterTrackingRender);
       timerFrame.jToolBar.add(obstacleClusterTrackingRender.jToggleButton);
     }

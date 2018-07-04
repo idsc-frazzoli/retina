@@ -33,9 +33,10 @@ public class ClusterConfig implements Serializable {
     return Scalars.intValueExact(scanCount);
   }
 
-  public void dbscanTracking(ClusterCollection collection, Tensor matrix) {
-    ClustersTracking.elkiDBSCAN(collection, matrix, getEpsilon(), getMinPoints());
+  public double dbscanTracking(ClusterCollection collection, Tensor matrix) {
+    double noiseRatio = ClustersTracking.elkiDBSCAN(collection, matrix, getEpsilon(), getMinPoints());
     collection.decompose();
+    return noiseRatio;
   }
 
   // TODO design not ideal
