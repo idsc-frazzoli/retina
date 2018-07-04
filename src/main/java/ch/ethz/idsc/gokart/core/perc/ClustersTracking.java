@@ -34,9 +34,11 @@ public enum ClustersTracking {
   /** @param oldClusters
    * @param newScan latest lidar points
    * @param eps parameter for DBSCAN
-   * @param minPoints parameter for DBSCAN */
+   * @param minPoints parameter for DBSCAN
+   * @return */
   // TODO also handle empty input
-  public static void elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
+  public static double elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
+    double noiseRatio = 0;
     Tensor scans = oldClusters.toMatrices().append(newScan);
     oldClusters.getCollection().forEach(ClusterDeque::appendEmpty);
     int sizeCollection = oldClusters.getCollection().size();
@@ -78,9 +80,8 @@ public enum ClustersTracking {
             Tensor vertices = Tensor.of(navigableSet.subSet(0, sizeCollection).stream()//
                 .map(index -> oldClusters.getCollection().get(index))//
                 .flatMap(ClusterDeque::vertexStream));
-            for (Integer index : navigableSet.subSet(0, sizeCollection)) {
+            for (Integer index : navigableSet.subSet(0, sizeCollection))
               removeIndex.add(index);
-            }
             Tensor join = Join.of(vertices, navigableMap.lastEntry().getValue());
             oldClusters.addToCollection(join);
             System.out.println("case " + navigableSet.size());
@@ -89,10 +90,14 @@ public enum ClustersTracking {
         else {
           System.out.println("only old clusters"); // TODO comment on this case, unhandled?
         }
+      } else {
+        // TODO can length of matrix be used as denominator?
+        noiseRatio = (double) cluster.size() / (oldClusters.toMatrices().length() + newScan.length());
       }
     oldClusters.removeDeques(removeIndex);
     System.out.println(removeIndex);
     oldClusters.maintainUntil(sizeCollection - removeIndex.size());
+    return noiseRatio;
   }
 
   private static <T> NavigableMap<Integer, T> partitionMap(int[] array, Function<Integer, T> function) {

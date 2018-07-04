@@ -18,9 +18,14 @@ import ch.ethz.idsc.tensor.Tensors;
 public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
   final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
-  // TODO number 0.01 may not be correct? 20 scans per second
-  private double step = 0.01; // length of the step from a scan to the other,
-  // 0 if we assume the clusters are not moving, TODO
+  private int count = 0;
+  private double recallAveragedLP = 0;
+  private double precisionAveragedLP = 0;
+  private double precisionAveragedSP = 0;
+  private double recallAveragedSP = 0;
+  private double perfAveragedLP = 0;
+  private double perfAveragedSP = 0;
+  private double noiseAveraged = 0;
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -43,24 +48,49 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         .map(point -> point.extract(0, 2))); // only x,y matter
     if (Tensors.nonEmpty(newScan)) {
       synchronized (collection) {
-        LinearPredictor lp = new LinearPredictor(collection, step);
+        LinearPredictor lp = new LinearPredictor(collection);
         Tensor hullsLP = lp.getHullPredictions();
         Tensor meansLP = lp.getMeanPredictions();
-        ClusterConfig.GLOBAL.dbscanTracking(collection, newScan);
+        double noiseRatio = ClusterConfig.dbscanTracking(collection, newScan, 0.035, 8);
         SimplePredictor sp = new SimplePredictor(collection);
         Tensor hullsSP = sp.getHullPredictions();
         Tensor meansSP = sp.getMeanPredictions();
         double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
-        System.out.println(String.format("perf     =%6.3f", evaluatePerformanceSP));
         double evaluatePerformanceLP = evaluatePerformance(meansLP, hullsSP);
-        System.out.println(String.format("perf LP  =%6.3f\n", evaluatePerformanceLP));
-        PerformanceMeasures measures = computeRecall(hullsSP, newScan);
-        System.out.println(measures.toString());
-        PerformanceMeasures measuresLP = computeRecall(hullsLP, newScan);
-        System.out.println("LP\n" + measuresLP.toString());
+        PerformanceMeasures measuresSP = recallPrecision(hullsSP, newScan);
+        PerformanceMeasures measuresLP = recallPrecision(hullsLP, newScan);
+        // update average values for performance, recall and precision
+        if (count > 5) { // ignore the first scans
+          noiseAveraged = averageValue(noiseAveraged, noiseRatio);
+          if (Double.isFinite(evaluatePerformanceLP))
+            perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
+          if (Double.isFinite(evaluatePerformanceSP))
+            perfAveragedSP = averageValue(perfAveragedSP, evaluatePerformanceSP);
+          if (Double.isFinite(measuresLP.recall))
+            recallAveragedLP = averageValue(recallAveragedLP, measuresLP.recall);
+          if (Double.isFinite(measuresLP.precision))
+            precisionAveragedLP = averageValue(precisionAveragedLP, measuresLP.precision);
+          if (Double.isFinite(measuresSP.recall))
+            recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
+          if (Double.isFinite(measuresSP.precision))
+            precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
+          // printouts
+          System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
+              "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
+              "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio          =%6.3f\n", //
+              count, //
+              perfAveragedSP, perfAveragedLP, //
+              recallAveragedSP, precisionAveragedSP, //
+              recallAveragedLP, precisionAveragedLP, noiseAveraged));
+        }
+        count++;
       }
     } else
       System.err.println("scan is empty");
+  }
+
+  public double averageValue(double old, double newValue) {
+    return (old * count + newValue) / (count + 1);
   }
 
   private double side = 0.04;
@@ -73,20 +103,15 @@ public class ClusterAreaEvaluationListener implements LidarRayBlockListener {
         count += i;
       }
     }
-    return count / (double) predictedMeans.length();
+    return count / (double) predictedMeans.length(); // TODO explore options to treat case length == 0
   }
 
-  public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
+  public PerformanceMeasures recallPrecision(Tensor predictedShapes, Tensor newScan) {
     EnlargedPoints enlargedPoints = new EnlargedPoints(newScan, side);
     EnlargedPoints predictedAreas = new EnlargedPoints(predictedShapes);
     Area ep = predictedAreas.getArea();
     ep.intersect(enlargedPoints.getArea());
     double areaIntersection = AreaMeasure.of(ep);
-    // System.out.println(String.format("Area of hulls =%6.3f\n" + //
-    // "Area of hulls approx =%6.3f\nArea of points =%6.3f\n", //
-    // predictedAreas.getTotalArea(), //
-    // AreaMeasure.of(predictedAreas.getArea()), //
-    // enlargedPoints.getTotalArea()));
     return new PerformanceMeasures( //
         areaIntersection / enlargedPoints.getTotalArea(), //
         areaIntersection / predictedAreas.getTotalArea());

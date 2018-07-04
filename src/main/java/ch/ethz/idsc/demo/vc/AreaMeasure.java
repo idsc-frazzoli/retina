@@ -29,4 +29,26 @@ public enum AreaMeasure {
     }
     return height * width * count / (RES * RES);
   }
+
+  public static double midpoint(Area area) {
+    int count = 0;
+    Rectangle2D bounds2d = area.getBounds2D();
+    double x = bounds2d.getX();
+    double y = bounds2d.getY();
+    double width = bounds2d.getWidth();
+    double height = bounds2d.getHeight();
+    // TODO adapt resolution depending on width and height
+    double dx = bounds2d.getWidth() / RES;
+    double dy = bounds2d.getHeight() / RES;
+    double mx = x + width;
+    double my = y + height;
+    for (double ix = x + dx / 2; ix < mx; ix += dx) {
+      for (double iy = y + dy / 2; iy < my; iy += dy) {
+        Point2D point = new Point2D.Double(ix, iy);
+        if (area.contains(point))
+          ++count;
+      }
+    }
+    return height * width * count / (RES * RES);
+  }
 }
