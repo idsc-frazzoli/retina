@@ -27,9 +27,11 @@ import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.io.Export;
 
 public class ClusterAreaEvaluationListener {
   private static final File directory = UserHome.Pictures("clusters");
+  private static final File directory1 = UserHome.Pictures("pf");
   private static final Tensor MODEL2PIXEL = Tensors.matrix(new Number[][] { //
       { 15, 0, -320 }, //
       { 0, -15, 960 }, //
@@ -68,7 +70,7 @@ public class ClusterAreaEvaluationListener {
         PerformanceMeasures measuresSP = recallPrecision(hullsSP, newScan);
         PerformanceMeasures measuresLP = recallPrecision(hullsLP, newScan);
         // update average values for performance, recall and precision
-        if (count > 5) { // ignore the first scans
+        if (5 < count) {
           noiseAveraged = averageValue(noiseAveraged, noiseRatio);
           if (Double.isFinite(evaluatePerformanceLP))
             perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
@@ -83,13 +85,29 @@ public class ClusterAreaEvaluationListener {
           if (Double.isFinite(measuresSP.precision))
             precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
           // printouts
-          System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
-          "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
-          "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio          =%6.3f\n", //
-              count, //
-              perfAveragedSP, perfAveragedLP, //
-              recallAveragedSP, precisionAveragedSP, //
-              recallAveragedLP, precisionAveragedLP, noiseAveraged));
+          // System.out.println(String.format("Scan count :%s\n" + "Average perf =%6.3f\n" + "Average perf LP =%6.3f\n" + //
+          // "Average recall SP =%6.3f\n" + "Average precision SP =%6.3f\n" + //
+          // "Average recall LP =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio =%6.3f\n", //
+          // count, //
+          // perfAveragedSP, perfAveragedLP, //
+          // recallAveragedSP, precisionAveragedSP, //
+          // recallAveragedLP, precisionAveragedLP, noiseAveraged));
+          if (count == 700) {
+            try {
+              directory1.mkdir();
+              Export.of(new File(directory1, //
+                  String.format("epsilon%fminPoints%d.csv", clusterConfig.epsilon.Get().number().doubleValue(), //
+                      clusterConfig.minPoints.Get().number().intValue())), //
+                  Tensors.of(Tensors.fromString(
+                      "{Average perf SP},{Average perf LP},{Average recall SP},{Average recall LP},{Average precision SP},{Average precision LP},{Noise ratio}"), //
+                      Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
+                          precisionAveragedSP, precisionAveragedLP, noiseRatio)));
+            } catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+          System.out.println(count);
         }
         count++;
         GeometricLayer geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
