@@ -11,7 +11,7 @@ enum ImageToWorldUtilDemo {
    * 3.4386292832405725/-0.4673008409796591 */
   public static void main(String[] args) {
     ImageToGokartUtil test = new PipelineConfig().createImageToGokartUtil();
-    ImageToGokartLookup anotherTest = new PipelineConfig().createImageToGokartUtilLookup();
+    ImageToGokartLookup anotherTest = new PipelineConfig().davisConfig.createImageToGokartUtilLookup();
     test.printInfo();
     System.out.println("---");
     int x = 170;

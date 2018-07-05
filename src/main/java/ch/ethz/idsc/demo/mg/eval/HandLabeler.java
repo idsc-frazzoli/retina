@@ -154,7 +154,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
   public HandLabeler(PipelineConfig pipelineConfig) {
     // set parameters
-    imagePrefix = pipelineConfig.logFileName.toString();
+    imagePrefix = pipelineConfig.davisConfig.logFileName.toString();
     numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
     positionDifference = pipelineConfig.positionDifference.number().intValue();

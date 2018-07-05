@@ -1,13 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
-import java.io.File;
-import java.util.Objects;
-
-import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.demo.mg.util.GokartToImageLookup;
-import ch.ethz.idsc.demo.mg.util.GokartToImageUtil;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
 import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -18,17 +13,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 // TODO probably split into file for pipeline and file for slam
 public class PipelineConfig {
-  // log file parameters
-  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
-  public final Scalar maxDuration = RealScalar.of(28000); // [ms]
   // general parameters
-  public final Scalar width = RealScalar.of(240);
-  public final Scalar height = RealScalar.of(180);
-  public final Scalar unitConversion = RealScalar.of(1000);
-  // event filtering
-  public final Scalar filterConfig = RealScalar.of(0); // 0 == background activity filter, 1 == FAST corner filter
-  public final Scalar margin = RealScalar.of(4);
-  public Scalar filterConstant = RealScalar.of(500); // [us]
+  public final DavisConfig davisConfig = new DavisConfig();
   // visualization and image saving
   public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   public final Scalar savingInterval = RealScalar.of(200); // [ms]
@@ -50,14 +36,14 @@ public class PipelineConfig {
   public Scalar boundaryDistance = RealScalar.of(1);
   public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
-  public Scalar upperBoarder = RealScalar.of(height.number()); // with this number, all features are selected
+  public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // TransformUtil
-  public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv"; // relative to main/resources/
+  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFileName.substring(0, davisConfig.logFileName.length() - 1) + ".csv"; // relative to main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool
-  public final String handLabelFileName = logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
+  public final String handLabelFileName = davisConfig.logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
   public final Scalar positionDifference = RealScalar.of(2); // [pixel]
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
@@ -65,11 +51,11 @@ public class PipelineConfig {
   // tracking collector
   public final Boolean collectEstimatedFeatures = false;
   public final Scalar iterationLength = RealScalar.of(10);
-  public String estimatedLabelFileName = logFileName + "_estimatedFeatures";
+  public String estimatedLabelFileName = davisConfig.logFileName + "_estimatedFeatures";
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
   public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
-  public final Scalar maxDistance = width.add(height); // [pixel] upper bound for distance between features
+  public final Scalar maxDistance = davisConfig.width.add(davisConfig.height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = false;
@@ -85,7 +71,8 @@ public class PipelineConfig {
   //
   /***************************************************/
   // SLAM algorithm parameters
-  public final Boolean localizationMode = true; // in localization mode, a previously saved map is used
+  public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
+  public final Boolean lidarMappingMode = true; // pose provided by lidar instead of particle filter
   public final Boolean saveSlamMap = false;
   public final Scalar alpha = RealScalar.of(0.99); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(40);
@@ -104,34 +91,14 @@ public class PipelineConfig {
   public final Boolean saveSlamFrame = false;
   public final Scalar kartSize = RealScalar.of(1.5); // [m]
 
-  /***************************************************/
-  // ...
-  /** @return file specified by parameter {@link #logFileName} */
-  public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
-    if (Objects.isNull(logFileLocations))
-      throw new RuntimeException("invalid logFileName: " + logFileName);
-    return logFileLocations.getFile();
-  }
-
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
-  }
-
-  /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
-  public ImageToGokartLookup createImageToGokartUtilLookup() {
-    return ImageToGokartLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
-  }
-
-  /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
-  public GokartToImageUtil createGokartToImageUtil() {
-    return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion);
   }
 
   /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
   public GokartToImageLookup createGokartToImageLookup() {
-    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, cellDim, lookAheadDistance);
+    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

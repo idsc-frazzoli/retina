@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides event filters
@@ -27,13 +28,13 @@ public class EventFiltering {
       { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
-  public EventFiltering(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
-    filterConfig = pipelineConfig.filterConfig.number().intValue();
+  public EventFiltering(DavisConfig davisConfig) {
+    width = davisConfig.width.number().intValue();
+    height = davisConfig.height.number().intValue();
+    filterConfig = davisConfig.filterConfig.number().intValue();
     timestamps = new int[width][height];
-    filterConstant = pipelineConfig.filterConstant.number().doubleValue();
-    margin = pipelineConfig.margin.number().intValue();
+    filterConstant = davisConfig.filterConstant.number().doubleValue();
+    margin = davisConfig.margin.number().intValue();
     SAE = new int[width][height][2];
   }
 

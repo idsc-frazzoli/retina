@@ -30,7 +30,7 @@ public class PipelineProvider implements DavisDvsListener {
     calibrationAvailable = pipelineConfig.calibrationAvailable;
     collectEstimatedFeatures = pipelineConfig.collectEstimatedFeatures;
     // initialize pipeline modules
-    eventFiltering = new EventFiltering(pipelineConfig);
+    eventFiltering = new EventFiltering(pipelineConfig.davisConfig);
     tracking = new BlobTracking(pipelineConfig);
     blobSelector = pipelineConfig.createImageBlobSelector();
     // calibration required for transformation to physical space

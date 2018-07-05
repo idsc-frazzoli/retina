@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.RealScalar;
     for (int i = 0; i < iterationLength; i++) {
       System.out.println("******** Iteration nr " + (i + 1));
       double aUp = 0.08 + i * 0.01;
-      String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_aUp_" + aUp;
+      String newEstimatedLabelFileName = pipelineConfig.davisConfig.logFileName.toString() + "_aUp_" + aUp;
       pipelineConfig.aUp = RealScalar.of(aUp);
       pipelineConfig.estimatedLabelFileName = newEstimatedLabelFileName;
       runPipeline();
@@ -30,8 +30,8 @@ import ch.ethz.idsc.tensor.RealScalar;
   }
 
   private void runPipeline() {
-    File logFile = pipelineConfig.getLogFile();
-    Long logFileDuration = pipelineConfig.maxDuration.number().longValue() * 1000;
+    File logFile = pipelineConfig.davisConfig.getLogFile();
+    Long logFileDuration = pipelineConfig.davisConfig.maxDuration.number().longValue() * 1000;
     try {
       // initialize offlinePipelineWrap with current pipelineConfig
       OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);

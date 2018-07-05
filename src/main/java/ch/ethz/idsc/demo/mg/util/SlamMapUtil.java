@@ -8,7 +8,6 @@ import java.util.Set;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
@@ -22,7 +21,7 @@ public class SlamMapUtil {
    * @param occurrenceMap
    * @param gokartFramePos [m]
    * @param particleRange number of particles with highest likelihoods used for update */
-  public static void updateOccurrenceMapParticles(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
+  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
     Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
@@ -36,8 +35,8 @@ public class SlamMapUtil {
    * @param gokartLidarPose ground truth pose provided by lidar
    * @param occurrenceMap
    * @param gokartFramePos [m] */
-  public static void updateOccurrenceMapLidar(GokartPoseInterface gokartLidarPose, MapProvider occurrenceMap, double[] gokartFramePos) {
-    GeometricLayer gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartLidarPose.getPose()));
+  public static void updateOccurrenceMapLidar(Tensor gokartPose, MapProvider occurrenceMap, double[] gokartFramePos) {
+    GeometricLayer gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
     Tensor worldCoord = gokartPoseLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
     // we just add 1
     occurrenceMap.addValue(worldCoord, 1);

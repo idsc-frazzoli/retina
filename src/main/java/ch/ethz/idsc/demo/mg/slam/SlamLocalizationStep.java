@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
@@ -9,19 +8,25 @@ import ch.ethz.idsc.tensor.Tensor;
 // executes the localization step of the SLAM algorithm
 public class SlamLocalizationStep {
   private final SlamEstimatedPose estimatedPose;
-  private final double resampleRate = 0.01;;
-  private final double propagationRate = 0.001;
+  private final double resampleRate;
+  private final double statePropagationRate;
+  private final double rougheningLinVelStd;
+  private final double rougheningAngVelStd;
   private final double linVelAvg;
   private final double linVelStd;
   private final double angVelStd;
   private double lastResampleTimeStamp;
   private double lastPropagationTimeStamp;
 
-  SlamLocalizationStep(PipelineConfig pipelineConfig) {
+  SlamLocalizationStep(SlamConfig slamConfig) {
     estimatedPose = new SlamEstimatedPose();
-    linVelAvg = pipelineConfig.linVelAvg.number().doubleValue();
-    linVelStd = pipelineConfig.linVelStd.number().doubleValue();
-    angVelStd = pipelineConfig.angVelStd.number().doubleValue();
+    resampleRate = slamConfig.resampleRate.number().doubleValue();
+    statePropagationRate = slamConfig.statePropagationRate.number().doubleValue();
+    rougheningLinVelStd = slamConfig.rougheningLinVelStd.number().doubleValue();
+    rougheningAngVelStd = slamConfig.rougheningAngVelStd.number().doubleValue();
+    linVelAvg = slamConfig.linVelAvg.number().doubleValue();
+    linVelStd = slamConfig.linVelStd.number().doubleValue();
+    angVelStd = slamConfig.angVelStd.number().doubleValue();
   }
 
   public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
@@ -32,17 +37,22 @@ public class SlamLocalizationStep {
   }
 
   public void localizationStep(SlamParticle[] slamParticles, double[] eventGokartFrame, double currentTimeStamp) {
-    if ((currentTimeStamp - lastPropagationTimeStamp) > propagationRate) {
-      SlamParticleUtil.propagateStateEstimate(slamParticles, currentTimeStamp - lastPropagationTimeStamp);
+    if ((currentTimeStamp - lastPropagationTimeStamp) > statePropagationRate) {
+      double dT1 = currentTimeStamp - lastPropagationTimeStamp;
+      SlamParticleUtil.propagateStateEstimate(slamParticles, dT1);
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if ((currentTimeStamp - lastResampleTimeStamp) > resampleRate) {
-      SlamParticleUtil.resampleParticles(slamParticles, currentTimeStamp - lastResampleTimeStamp);
+      double dT2 = currentTimeStamp - lastResampleTimeStamp;
+      SlamParticleUtil.resampleParticles(slamParticles, dT2, rougheningLinVelStd, rougheningAngVelStd);
       lastResampleTimeStamp = currentTimeStamp;
     }
     estimatedPose.setPose(SlamParticleUtil.getAveragePose(slamParticles, 1));
   }
 
+  public void setPose(Tensor pose) {
+    estimatedPose.setPose(pose);
+  }
   public GokartPoseInterface getPoseInterface() {
     return estimatedPose;
   }

@@ -33,7 +33,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private int currentLabelInstant = 0;
 
   EvaluatorSingleRun(PipelineConfig pipelineConfig) {
-    logFileName = pipelineConfig.logFileName.toString();
+    logFileName = pipelineConfig.davisConfig.logFileName.toString();
     numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
     evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());

@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -18,13 +17,13 @@ public class MapProvider {
   private final int widthInCells;
   private double maxValue;
 
-  MapProvider(PipelineConfig pipelineConfig) {
-    dimX = pipelineConfig.dimX;
-    dimY = pipelineConfig.dimY;
-    cellDim = pipelineConfig.cellDim;
+  MapProvider(SlamConfig slamConfig) {
+    dimX = slamConfig.dimX;
+    dimY = slamConfig.dimY;
+    cellDim = slamConfig.cellDim;
     numberOfCells = dimX.divide(cellDim).multiply(dimY).divide(cellDim);
-    cornerX = pipelineConfig.corner.Get(0).number().doubleValue();
-    cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
+    cornerX = slamConfig.corner.Get(0).number().doubleValue();
+    cornerY = slamConfig.corner.Get(1).number().doubleValue();
     widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
     maxValue = 0;

@@ -69,12 +69,12 @@ public class SlamParticleUtil {
   /** resamples the particles
    * 
    * @param slamParticles */
-  public static void resampleParticles(SlamParticle[] slamParticles, double dT) {
+  public static void resampleParticles(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
     // different methods to assign particles can be tested here
     // SlamParticleUtil.multinomialSampling(slamParticles);
     SlamParticleUtil.neglectLowLikelihoodds(slamParticles);
     // depending on resampling method, roughening might be used
-    SlamParticleUtil.particleRoughening(slamParticles, dT);
+    SlamParticleUtil.particleRoughening(slamParticles, dT, rougheningLinVelStd, rougheningAngVelStd);
   }
 
   private static void multinomialSampling(SlamParticle[] slamParticles) {
@@ -111,10 +111,6 @@ public class SlamParticleUtil {
     int neglectNumber = slamParticles.length / 3;
     // sort by likelihood
     Arrays.sort(slamParticles, SlamCompare);
-    // System.out.println("******");
-    // for (int i = 0; i < slamParticles.length; i++) {
-    // System.out.println(slamParticles[i].getParticleLikelihood());
-    // }
     int startIndex = slamParticles.length - neglectNumber;
     for (int i = startIndex; i < slamParticles.length; i++) {
       slamParticles[i].setStateFromParticle(slamParticles[i - startIndex], initLikelihood);
@@ -123,20 +119,37 @@ public class SlamParticleUtil {
 
   // roughens the linVel and angVel of the particles
   // TODO maybe roughen position as well? or only position
-  // TODO parameterize it
-  private static void particleRoughening(SlamParticle[] slamParticles, double dT) {
+  private static void particleRoughening(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
     for (int i = 0; i < slamParticles.length; i++) {
-      double vx = slamParticles[i].getLinVelDouble() + SlamRandomUtil.getGaussian(0, 0.3);
-      if (vx < 0)
-        vx = 0;
-      double vangle = slamParticles[i].getAngVelDouble() + SlamRandomUtil.getGaussian(0, 0.1);
+      double vx = limitLinAccel(slamParticles[i].getLinVelDouble(), rougheningLinVelStd, dT);
+      double vangle = limitAngAccel(slamParticles[i].getAngVelDouble(), rougheningAngVelStd, dT);
       slamParticles[i].setLinVel(RealScalar.of(vx));
-      // TODO angVel limits should be incorporated
       slamParticles[i].setAngVel(RealScalar.of(vangle));
     }
   }
 
+  // incorporate the physical limits of linear acceleration and minVel/maxVel
+  private static double limitLinAccel(double oldLinVel, double linVelRougheningStd, double dT) {
+    double linAccel = SlamRandomUtil.getGaussian(0, linVelRougheningStd) / dT;
+    // TODO restrict accel with box constraints
+    double newLinVel = oldLinVel + linAccel * dT;
+    // TODO restrict vel with box constraints as well
+    if (newLinVel < 0)
+      newLinVel = 0;
+    return newLinVel;
+  }
+
+  // incorporate the physical limits of angular acceleration and minVel/maxVel
+  private static double limitAngAccel(double oldAngVel, double angVelRougheningStd, double dT) {
+    double angAccel = SlamRandomUtil.getGaussian(0, angVelRougheningStd) / dT;
+    // TODO restrict accel with box constraints
+    double newAngVel = oldAngVel + angAccel*dT;
+    // TODO restrict vel with box constraints
+    return newAngVel;
+  }
+
   // get average pose of particles with highest likelihood
+  // for maximum likelihood estimate, set relevant range to one
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     Tensor expectedPose = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), DoubleScalar.of(0));
     Arrays.sort(slamParticles, 0, relevantRange, SlamCompare);
@@ -148,19 +161,5 @@ public class SlamParticleUtil {
       expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
     }
     return expectedPose.divide(RealScalar.of(likelihoodSum));
-  }
-
-  // get maximum likelihood pose
-  // TODO compare with getAveragePose(slamParticles, 1) which could replace it
-  public static Tensor getMLPose(SlamParticle[] slamParticles) {
-    double maxLikelihood = 0;
-    int maxLikelihoodIndex = 0;
-    for (int i = 0; i < slamParticles.length; i++) {
-      if (slamParticles[i].getParticleLikelihood() > maxLikelihood) {
-        maxLikelihood = slamParticles[i].getParticleLikelihood();
-        maxLikelihoodIndex = i;
-      }
-    }
-    return slamParticles[maxLikelihoodIndex].getPose();
   }
 }

@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -34,6 +33,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private final String imagePrefix;
   private final File parentFilePath;
   private final boolean saveSlamFrame;
+  private final boolean lidarMappingMode;
   private final int visualizationInterval;
   private final int savingInterval;
   private boolean isInitialized;
@@ -41,21 +41,22 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private int lastSavingTimeStamp;
   private int imageCount;
 
-  public OfflineSlamWrap(PipelineConfig pipelineConfig) {
+  public OfflineSlamWrap(SlamConfig slamConfig) {
     davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
     gokartOdometryPose = GokartPoseOdometry.create();
     gokartLidarPose = new GokartPoseLcmLidar();
-    slamProvider = new SlamProvider(pipelineConfig, gokartOdometryPose, gokartLidarPose);
+    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    slamVisualization = new SlamVisualization(pipelineConfig);
+    slamVisualization = new SlamVisualization(slamConfig);
     slamMapFrames = new SlamMapFrame[3];
     for (int i = 0; i < slamMapFrames.length; i++)
-      slamMapFrames[i] = new SlamMapFrame(pipelineConfig);
-    visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
-    saveSlamFrame = pipelineConfig.saveSlamFrame;
-    imagePrefix = pipelineConfig.logFileName;
+      slamMapFrames[i] = new SlamMapFrame(slamConfig);
+    visualizationInterval = slamConfig.visualizationInterval.number().intValue();
+    saveSlamFrame = slamConfig.saveSlamFrame;
+    lidarMappingMode = slamConfig.lidarMappingMode;
+    imagePrefix = slamConfig.davisConfig.logFileName;
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
-    savingInterval = pipelineConfig.savingInterval.number().intValue();
+    savingInterval = slamConfig.savingInterval.number().intValue();
   }
 
   @Override
@@ -105,7 +106,8 @@ public class OfflineSlamWrap implements OfflineLogListener {
   private BufferedImage[] constructFrames() {
     slamMapFrames[0].setMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
-    drawParticlePoses();
+    if (!lidarMappingMode)
+      drawParticlePoses();
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     slamMapFrames[1].setMap(slamProvider.getMap(1));
     slamMapFrames[2].setMap(slamProvider.getMap(2));
@@ -117,7 +119,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
 
   private void drawParticlePoses() {
     SlamParticle[] slamParticles = slamProvider.getParticles();
-    int partNumber = slamParticles.length/3;
+    int partNumber = slamParticles.length / 3;
     Arrays.sort(slamParticles, 0, partNumber, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < partNumber; i++) {
       slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);

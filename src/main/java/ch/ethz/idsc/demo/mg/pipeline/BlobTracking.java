@@ -40,8 +40,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   public float hitthreshold = 0;
 
   BlobTracking(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
+    width = pipelineConfig.davisConfig.width.number().intValue();
+    height = pipelineConfig.davisConfig.height.number().intValue();
     initNumberOfBlobs = pipelineConfig.initNumberOfBlobs.number().intValue();
     numberRows = pipelineConfig.numberRows.number().intValue();
     initVariance = pipelineConfig.initVariance.number().intValue();
