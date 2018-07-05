@@ -23,7 +23,7 @@ enum LogEventExtract {
       dst.delete();
     }
     int lo = 40000;
-    int hi = 100000;
+    int hi = 80000;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

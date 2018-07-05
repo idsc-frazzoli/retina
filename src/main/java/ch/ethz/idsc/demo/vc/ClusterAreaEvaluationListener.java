@@ -92,7 +92,7 @@ public class ClusterAreaEvaluationListener {
           // perfAveragedSP, perfAveragedLP, //
           // recallAveragedSP, precisionAveragedSP, //
           // recallAveragedLP, precisionAveragedLP, noiseAveraged));
-          if (count == 700) {
+          if (count == 230) {
             try {
               directory1.mkdir();
               Export.of(new File(directory1, //
@@ -103,7 +103,6 @@ public class ClusterAreaEvaluationListener {
                       Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
                           precisionAveragedSP, precisionAveragedLP, noiseRatio)));
             } catch (IOException e) {
-              // TODO Auto-generated catch block
               e.printStackTrace();
             }
           }
@@ -121,7 +120,6 @@ public class ClusterAreaEvaluationListener {
           directory.mkdir();
           ImageIO.write(bufferedImage, "png", new File(directory, String.format("clusters%04d.png", count)));
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       };

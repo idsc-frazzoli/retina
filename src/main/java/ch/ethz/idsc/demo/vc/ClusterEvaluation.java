@@ -27,19 +27,21 @@ enum ClusterEvaluation {
   private static final String CHANNEL_VLP16 = VelodyneLcmChannels.ray(VelodyneModel.VLP16, "center");
 
   public static void main(String[] args) throws IOException {
-    Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
+    // Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     Tensor minPoints = Tensors.empty();
     Tensor epsilon = Tensors.empty();
-    for (int i = 2; i < 15; i++) {
+    for (int i = 2; i < 10; i++) {
       minPoints.append(RealScalar.of(i));
       epsilon.append(RealScalar.of(0.01 + 0.005 * i));
     }
     for (Tensor eps : epsilon) {
       for (Tensor minPts : minPoints) {
+        System.out.println(minPts);
         ClusterConfig clusterConfig = new ClusterConfig();
         clusterConfig.epsilon = Quantity.of(eps.Get(), SI.METER);
         clusterConfig.minPoints = minPts.Get();
         ClusterAreaEvaluationListener clusterEvaluationListener = new ClusterAreaEvaluationListener(clusterConfig);
+        Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
         vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener.lidarClustering);
         OfflineLogListener offlineLogListener = new OfflineLogListener() {
           @Override
