@@ -5,8 +5,8 @@ import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
-// executes the localization step of the SLAM algorithm
-public class SlamLocalizationStep {
+/** executes the localization step of the SLAM algorithm */
+class SlamLocalizationStep {
   private final SlamEstimatedPose estimatedPose;
   private final double resampleRate;
   private final double statePropagationRate;

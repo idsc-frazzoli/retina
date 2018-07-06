@@ -5,8 +5,8 @@ import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
-// executes the mapping step of the SLAM algorithm
-public class SlamMappingStep {
+/** executes the mapping step of the SLAM algorithm */
+class SlamMappingStep {
   private final MapProvider[] eventMaps;
   private final String imagePrefix;
   private final boolean localizationMode;

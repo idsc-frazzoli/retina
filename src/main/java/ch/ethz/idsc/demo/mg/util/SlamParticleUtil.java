@@ -14,7 +14,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // collection of public static void methods to handle SlamParticle
-public class SlamParticleUtil {
+public enum SlamParticleUtil {
+  ;
   public static final Comparator<SlamParticle> SlamCompare = new Comparator<SlamParticle>() {
     @Override
     public int compare(SlamParticle o1, SlamParticle o2) {
@@ -31,7 +32,7 @@ public class SlamParticleUtil {
    * @param pose
    * @param slamParticles */
   public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
-    double initLikelihood = (double) 1 / slamParticles.length;
+    double initLikelihood = 1.0 / slamParticles.length;
     for (int i = 0; i < slamParticles.length; i++) {
       double vx = SlamRandomUtil.getGaussian(linVelAvg, linVelStd);
       if (vx < 0)

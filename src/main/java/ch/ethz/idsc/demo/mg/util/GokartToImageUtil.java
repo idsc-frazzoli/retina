@@ -29,6 +29,7 @@ public class GokartToImageUtil implements GokartToImageInterface {
     return new GokartToImageUtil(inputTensor, unitConversion);
   }
 
+  // ---
   private final Scalar unitConversion;
   // ** transforms homogeneous physical coordinates into homogeneous image coordinates */
   private final Tensor transformationMatrix; // inverse of transformationMatrix in ImageToWorldUtil

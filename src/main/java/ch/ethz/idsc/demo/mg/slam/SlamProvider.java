@@ -9,8 +9,9 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
-// implements the slam algorithm "simultaneous localization and mapping for event-based vision systems"
-public class SlamProvider implements DavisDvsListener {
+/** implements the slam algorithm
+ * "simultaneous localization and mapping for event-based vision systems" */
+class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartLookup;
   private final GokartToImageInterface gokartToImageUtil;
   private final GokartPoseInterface gokartOdometryPose;

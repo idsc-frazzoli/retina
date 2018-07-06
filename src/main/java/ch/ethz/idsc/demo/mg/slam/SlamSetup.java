@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 
-// sets up the SLAM algorithm to process an offline log file
-public class SlamSetup {
+/** sets up the SLAM algorithm to process an offline log file */
+class SlamSetup {
   private final SlamConfig slamConfig;
 
   SlamSetup(SlamConfig slamConfig) {

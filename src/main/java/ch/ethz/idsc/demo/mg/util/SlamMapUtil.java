@@ -13,8 +13,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 
-// provides utilities to manipulate maps
-public class SlamMapUtil {
+/** utilities to manipulate maps */
+public enum SlamMapUtil {
+  ;
   /** update occurrence map with particles. in v1.0, counting events in each cell.
    * 
    * @param slamParticles particle set

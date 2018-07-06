@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// provides a single particle for the SLAM algorithm
+/** provides a single particle for the SLAM algorithm */
 public class SlamParticle implements GokartPoseInterface {
   private Tensor pose;
   private Scalar linVel; // in direction of go kart x axis

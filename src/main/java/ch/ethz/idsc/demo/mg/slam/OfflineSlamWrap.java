@@ -20,10 +20,10 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-// A SLAM algorithm "wrapper" to run the algorithm offline. DVS Events, wheel odometry 
-// and lidar pose are provided to the SLAM algorithm
+/** A SLAM algorithm "wrapper" to run the algorithm offline. DVS Events, wheel odometry
+ * and lidar pose are provided to the SLAM algorithm */
 // TODO maybe create abstract wrapper class and then extend OfflineSlamWrap and OfflinePipelineWrap
-public class OfflineSlamWrap implements OfflineLogListener {
+class OfflineSlamWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
   private final GokartPoseOdometry gokartOdometryPose;
   private final GokartPoseLcmLidar gokartLidarPose;
