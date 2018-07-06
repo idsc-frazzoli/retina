@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Scalar;
  * extract all dvs events */
 class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
+  int[] polairty_count = new int[2];
 
   public NewTrajectoryProcess() {
     davisDvsDatagramDecoder.addDvsListener(this);
@@ -24,7 +25,7 @@ class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    System.out.println(channel);
+    // System.out.println(channel);
     if (channel.equals("davis240c.overview.dvs")) {
       davisDvsDatagramDecoder.decode(byteBuffer);
     }
@@ -32,13 +33,19 @@ class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    System.out.println(davisDvsEvent.toString());
+    // TODO GZ determine polairty_count for every 1[s]
+    // ... and after 1[s] you can reset the polairty_count
+    // ... we can export this to a table and then make a plot
+    // System.out.println(davisDvsEvent.toString());
+    ++polairty_count[davisDvsEvent.i];
   }
 
   public static void main(String[] args) throws IOException {
     File file = UserHome.file("gokart/twist/20180108T165210_4/log.lcm");
-    NewTrajectoryProcess oll = new NewTrajectoryProcess();
-    oll.davisDvsDatagramDecoder.addDvsListener(oll);
-    OfflineLogPlayer.process(file, oll);
+    NewTrajectoryProcess newTrajectoryProcess = new NewTrajectoryProcess();
+    newTrajectoryProcess.davisDvsDatagramDecoder.addDvsListener(newTrajectoryProcess);
+    OfflineLogPlayer.process(file, newTrajectoryProcess);
+    System.out.println("#0=" + newTrajectoryProcess.polairty_count[0]);
+    System.out.println("#1=" + newTrajectoryProcess.polairty_count[1]);
   }
 }

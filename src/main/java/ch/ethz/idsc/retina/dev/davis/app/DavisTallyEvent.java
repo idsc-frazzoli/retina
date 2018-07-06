@@ -7,7 +7,7 @@ public class DavisTallyEvent {
   public final int first;
   private int last;
   public final int shift; // 2^shift
-  public final int[] bin = new int[1600]; // TODO magic const
+  public final int[][] bin = new int[1600][2]; // TODO magic const
   public int binLast = -1;
   public IntRange resetRange = new IntRange(0, 0);
   public IntRange imageRange = null;
@@ -22,10 +22,13 @@ public class DavisTallyEvent {
     return time >> shift;
   }
 
-  public void register(int time) {
+  /** @param time
+   * @param i either 0 or 1
+   * @throws Exception if input is out of valid range */
+  public void register(int time, int i) {
     int index = binIndex(time);
     if (0 <= index && index < bin.length) {
-      ++bin[index];
+      ++bin[index][i]; // TODO
       binLast = Math.max(binLast, index);
     }
   }
