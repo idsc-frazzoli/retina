@@ -22,19 +22,22 @@ import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.io.Export;
 
 public class ClusterAreaEvaluationListener {
-  private static final File directory = UserHome.Pictures("clusters");
+  static final File DIRECTORY_CLUSTERS = UserHome.Pictures("clusters");
+  private static final File DIRECTORY_PF = UserHome.Pictures("pf");
   private static final Tensor MODEL2PIXEL = Tensors.matrix(new Number[][] { //
       { 15, 0, -320 }, //
       { 0, -15, 960 }, //
       { 0, 0, 1 }, //
   });
+  /** image height and width */
+  private static final int SIZE = 640;
   private final ClusterCollection collection = new ClusterCollection();
   private int count = 0;
   private double recallAveragedLP = 0;
@@ -46,6 +49,8 @@ public class ClusterAreaEvaluationListener {
   private double noiseAveraged = 0;
   private Tensor pose = GokartPoseLocal.INSTANCE.getPose();
   public final LidarClustering lidarClustering;
+  private final double side = 0.04;
+  private final ObstacleClusterTrackingRender octr;
 
   public ClusterAreaEvaluationListener(ClusterConfig clusterConfig) {
     ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
@@ -53,22 +58,24 @@ public class ClusterAreaEvaluationListener {
     lidarClustering = new LidarClustering(clusterConfig, collection, () -> pose) {
       private LinearPredictor linearPredictor;
 
+      @Override
       public void anteScan() {
         linearPredictor = new LinearPredictor(collection);
-      };
+      }
 
+      @Override
       public void postScan(Tensor newScan, double noiseRatio) {
         SimplePredictor simplePredictor = new SimplePredictor(collection);
         Tensor hullsSP = simplePredictor.getHullPredictions();
         Tensor meansSP = simplePredictor.getMeanPredictions();
         Tensor hullsLP = linearPredictor.getHullPredictions();
         Tensor meansLP = linearPredictor.getMeanPredictions();
-        double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
-        double evaluatePerformanceLP = evaluatePerformance(meansLP, hullsSP);
+        double evaluatePerformanceSP = StaticHelper.evaluatePerformance(meansSP, hullsSP);
+        double evaluatePerformanceLP = StaticHelper.evaluatePerformance(meansLP, hullsSP);
         PerformanceMeasures measuresSP = recallPrecision(hullsSP, newScan);
         PerformanceMeasures measuresLP = recallPrecision(hullsLP, newScan);
         // update average values for performance, recall and precision
-        if (count > 5) { // ignore the first scans
+        if (5 < count) {
           noiseAveraged = averageValue(noiseAveraged, noiseRatio);
           if (Double.isFinite(evaluatePerformanceLP))
             perfAveragedLP = averageValue(perfAveragedLP, evaluatePerformanceLP);
@@ -82,52 +89,43 @@ public class ClusterAreaEvaluationListener {
             recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
           if (Double.isFinite(measuresSP.precision))
             precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
-          // printouts
-          System.out.println(String.format("Scan count :%s\n" + "Average perf         =%6.3f\n" + "Average perf LP      =%6.3f\n" + //
-          "Average recall SP    =%6.3f\n" + "Average precision SP =%6.3f\n" + //
-          "Average recall LP    =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio          =%6.3f\n", //
-              count, //
-              perfAveragedSP, perfAveragedLP, //
-              recallAveragedSP, precisionAveragedSP, //
-              recallAveragedLP, precisionAveragedLP, noiseAveraged));
+          if (count == 230) {
+            try {
+              DIRECTORY_PF.mkdir();
+              Export.of(new File(DIRECTORY_PF, //
+                  String.format("epsilon%fminPoints%d.csv", clusterConfig.epsilon.Get().number().doubleValue(), //
+                      clusterConfig.minPoints.Get().number().intValue())), //
+                  Tensors.of(
+                      Tensors.fromString(
+                          "{Average perf SP, Average perf LP,Average recall SP,Average recall LP,Average precision SP,Average precision LP,Noise ratio}"), //
+                      Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
+                          precisionAveragedSP, precisionAveragedLP, noiseRatio)));
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
         }
         count++;
         GeometricLayer geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
-        BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_BGR);
+        BufferedImage bufferedImage = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_BGR);
         Graphics2D graphics2d = bufferedImage.createGraphics();
-        graphics2d.setColor(Color.white);
-        graphics2d.fillRect(0, 0, 640, 640);
+        graphics2d.setColor(Color.WHITE);
+        graphics2d.fillRect(0, 0, SIZE, SIZE);
         create.render(geometricLayer, graphics2d);
         octr.render(geometricLayer, graphics2d);
         try {
-          directory.mkdir();
-          ImageIO.write(bufferedImage, "png", new File(directory, String.format("clusters%04d.png", count)));
+          DIRECTORY_CLUSTERS.mkdir();
+          ImageIO.write(bufferedImage, "png", new File(DIRECTORY_CLUSTERS, String.format("clusters%04d.png", count)));
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
-      };
+      }
     };
     octr = new ObstacleClusterTrackingRender(lidarClustering);
   }
 
-  ObstacleClusterTrackingRender octr;
-
   public double averageValue(double old, double newValue) {
     return (old * count + newValue) / (count + 1);
-  }
-
-  private double side = 0.04;
-
-  public double evaluatePerformance(Tensor predictedMeans, Tensor hulls) {
-    int count = 0;
-    for (Tensor z : predictedMeans) {
-      for (Tensor hull : hulls) {
-        int i = Polygons.isInside(hull, z) ? 1 : 0;
-        count += i;
-      }
-    }
-    return count / (double) predictedMeans.length(); // TODO explore options to treat case length == 0
   }
 
   public PerformanceMeasures recallPrecision(Tensor predictedShapes, Tensor newScan) {
