@@ -15,10 +15,11 @@ import ch.ethz.idsc.tensor.io.AnimationWriter;
 enum ImagesToGif {
   ;
   public static void main(String[] args) throws Exception {
-    File dir = UserHome.Pictures("clusters");
+    File dir = ClusterAreaEvaluationListener.DIRECTORY_CLUSTERS;
     dir.mkdir();
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(2500).collect(Collectors.toList());
-    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("clusterDemo.gif"), 100)) {
+    int period_ms = 100; // duration for each frame
+    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("clusterDemo.gif"), period_ms)) {
       int count = 0;
       for (File file : list) {
         BufferedImage bufferedImage = ImageIO.read(file);

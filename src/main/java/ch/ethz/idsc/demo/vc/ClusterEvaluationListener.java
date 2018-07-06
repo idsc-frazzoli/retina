@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.perc.UnknownObstaclePredicate;
 import ch.ethz.idsc.owl.math.planar.PolygonClip;
-import ch.ethz.idsc.owl.math.planar.Polygons;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,8 +15,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public class ClusterEvaluationListener implements LidarRayBlockListener {
-  final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
+  private final UnknownObstaclePredicate unknownObstaclePredicate = new UnknownObstaclePredicate();
   private final ClusterCollection collection = new ClusterCollection();
+  private final double side = 0.1;
 
   /** LidarRayBlockListener to be subscribed after LidarRender */
   @Override
@@ -44,28 +44,13 @@ public class ClusterEvaluationListener implements LidarRayBlockListener {
         SimplePredictor sp = new SimplePredictor(collection);
         Tensor hullsSP = sp.getHullPredictions();
         Tensor meansSP = sp.getMeanPredictions();
-        double evaluatePerformanceSP = evaluatePerformance(meansSP, hullsSP);
+        double evaluatePerformanceSP = StaticHelper.evaluatePerformance(meansSP, hullsSP);
         System.out.println(String.format("perf     =%6.3f", evaluatePerformanceSP));
         PerformanceMeasures measures = computeRecall(hullsSP, newScan);
         System.out.println(measures.toString());
       }
     } else
       System.err.println("scan is empty");
-  }
-
-  private double side = 0.1;
-
-  // basic performance measure: compute the fraction of predicted centres of clusters that are
-  // in the convexHull of the new lidar scan clusters
-  public double evaluatePerformance(Tensor predictedMeans, Tensor hulls) {
-    int count = 0;
-    for (Tensor z : predictedMeans) {
-      for (Tensor hull : hulls) {
-        int i = Polygons.isInside(hull, z) ? 1 : 0;
-        count += i;
-      }
-    }
-    return count / (double) predictedMeans.length();
   }
 
   public PerformanceMeasures computeRecall(Tensor predictedShapes, Tensor newScan) {
