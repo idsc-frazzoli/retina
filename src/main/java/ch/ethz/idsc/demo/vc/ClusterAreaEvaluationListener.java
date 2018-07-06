@@ -89,29 +89,21 @@ public class ClusterAreaEvaluationListener {
             recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
           if (Double.isFinite(measuresSP.precision))
             precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
-          // printouts
-          // System.out.println(String.format("Scan count :%s\n" + "Average perf =%6.3f\n" + "Average perf LP =%6.3f\n" + //
-          // "Average recall SP =%6.3f\n" + "Average precision SP =%6.3f\n" + //
-          // "Average recall LP =%6.3f\n" + "Average precision LP =%6.3f\n" + "Noise ratio =%6.3f\n", //
-          // count, //
-          // perfAveragedSP, perfAveragedLP, //
-          // recallAveragedSP, precisionAveragedSP, //
-          // recallAveragedLP, precisionAveragedLP, noiseAveraged));
           if (count == 230) {
             try {
               DIRECTORY_PF.mkdir();
               Export.of(new File(DIRECTORY_PF, //
                   String.format("epsilon%fminPoints%d.csv", clusterConfig.epsilon.Get().number().doubleValue(), //
                       clusterConfig.minPoints.Get().number().intValue())), //
-                  Tensors.of(Tensors.fromString(
-                      "{Average perf SP},{Average perf LP},{Average recall SP},{Average recall LP},{Average precision SP},{Average precision LP},{Noise ratio}"), //
+                  Tensors.of(
+                      Tensors.fromString(
+                          "{Average perf SP, Average perf LP,Average recall SP,Average recall LP,Average precision SP,Average precision LP,Noise ratio}"), //
                       Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
                           precisionAveragedSP, precisionAveragedLP, noiseRatio)));
             } catch (IOException e) {
               e.printStackTrace();
             }
           }
-          System.out.println(count);
         }
         count++;
         GeometricLayer geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
