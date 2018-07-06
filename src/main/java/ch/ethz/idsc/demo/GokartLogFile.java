@@ -514,6 +514,20 @@ public enum GokartLogFile implements LogFile {
   _20180702T174738_4e2a5674, //
   /** race track */
   _20180702T180041_4e2a5674, //
+  /***************************************************/
+  /* 2018-07-05 */
+  /** manual driving on white track (from 2018-07-02) */
+  _20180705T101944_b01c2886, //
+  /** manual driving along blue track */
+  _20180705T105112_b01c2886, //
+  /** manual driving along blue track with water shed on the floor */
+  _20180705T110648_b01c2886, //
+  /** manual driving along blue track */
+  _20180705T145317_b01c2886, //
+  /** manual driving along blue track */
+  _20180705T151140_b01c2886, //
+  /** manual driving along blue track with steering failure */
+  _20180705T154948_b01c2886, //
   ;
   // ---
   @Override // from LogFile
