@@ -55,6 +55,8 @@ import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
+import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
+import ch.ethz.idsc.owl.subdiv.curve.Se2Geodesic;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -71,6 +73,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
@@ -101,8 +104,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
   private Scalar tangentSpeed = null;
-  private final CostFunction waypointCost = // TODO magic const redundant
-      WaypointDistanceCost.linear(waypoints, Tensors.vector(85.33, 85.33), 8.0f, new Dimension(640, 640));
+  // TODO magic const redundant
+  private final CostFunction waypointCost = WaypointDistanceCost.linear( //
+      Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), // 1 round of refinement
+      Tensors.vector(85.33, 85.33), 8.0f, new Dimension(640, 640));
   private final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
     @Override
     public void getEvent(GokartPoseEvent getEvent) { // arrives at 50[Hz]
@@ -187,6 +192,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         Collection<Flow> controls = flowsInterface.getFlows(resolution);
         Se2ComboRegion se2ComboRegion = //
             Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
+        // TODO spherical goal region works on gokart but tests fail
+        // Se2ComboRegion.spherical(goal, Tensors.vector(2.5, 2.5, goalRadius.Get(2).number().doubleValue()));
         // ---
         // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
         // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);

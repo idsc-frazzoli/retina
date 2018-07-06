@@ -80,6 +80,7 @@ public class LocalizationConfig implements Serializable {
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {
-    return PredefinedMap.DUBILAB_OBSTACLES_20180610;
+    // return PredefinedMap.DUBILAB_OBSTACLES_20180703; // without tents
+    return PredefinedMap.DUBILAB_OBSTACLES_20180704; // with tents
   }
 }

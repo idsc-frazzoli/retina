@@ -10,6 +10,9 @@ import java.util.Objects;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
+import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
+import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
+import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
@@ -82,9 +85,11 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
+      ClusterCollection collection = new ClusterCollection();
+      LidarClustering lidarClustering = new LidarClustering(ClusterConfig.GLOBAL, collection, gokartPoseInterface);
       ObstacleClusterTrackingRender obstacleClusterTrackingRender = //
-          new ObstacleClusterTrackingRender(gokartPoseInterface);
-      vlp16LcmHandler.lidarAngularFiringCollector.addListener(obstacleClusterTrackingRender);
+          new ObstacleClusterTrackingRender(lidarClustering);
+      vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarClustering);
       timerFrame.geometricComponent.addRenderInterface(obstacleClusterTrackingRender);
       timerFrame.jToolBar.add(obstacleClusterTrackingRender.jToggleButton);
     }

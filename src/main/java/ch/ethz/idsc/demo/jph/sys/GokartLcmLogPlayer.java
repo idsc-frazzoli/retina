@@ -15,7 +15,7 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
     file = UserHome.file("gokart/pedestrian/20180604T150508/log.lcm");
-    file = DatahakiLogFileLocator.file(GokartLogFile._20180628T173900_275d4082);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180705T154948_b01c2886);
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 2;
