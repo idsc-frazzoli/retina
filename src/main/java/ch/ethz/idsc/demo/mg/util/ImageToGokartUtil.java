@@ -18,14 +18,14 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * 4th line represents image coordinates of principal point [pixel]
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
-public class ImageToWorldUtil {
+public class ImageToGokartUtil {
   // TODO these are magic constants but will not change often
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
    * @param unitConversion */
-  public static ImageToWorldUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
-    return new ImageToWorldUtil(inputTensor, unitConversion);
+  public static ImageToGokartUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
+    return new ImageToGokartUtil(inputTensor, unitConversion);
   }
 
   // ---
@@ -42,7 +42,7 @@ public class ImageToWorldUtil {
   private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
-  /* package */ ImageToWorldUtil(Tensor inputTensor, Scalar unitConversion) {
+  /* package */ ImageToGokartUtil(Tensor inputTensor, Scalar unitConversion) {
     this.unitConversion = unitConversion;
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2
@@ -54,14 +54,14 @@ public class ImageToWorldUtil {
   /** @param imagePosX [pixel]
    * @param imagePosY [pixel]
    * @return physicalCoordinates [m] in gokart reference frame */
-  public double[] imageToWorld(float imagePosX, float imagePosY) {
-    return Primitives.toDoubleArray(imageToWorldTensor(imagePosX, imagePosY));
+  public double[] imageToGokart(double imagePosX, double imagePosY) {
+    return Primitives.toDoubleArray(imageToGokartTensor(imagePosX, imagePosY));
   }
 
   /** @param imagePosX [pixel]
    * @param imagePosY [pixel]
    * @return physicalCoordinates [m] in gokart reference frame */
-  public Tensor imageToWorldTensor(float imagePosX, float imagePosY) {
+  public Tensor imageToGokartTensor(double imagePosX, double imagePosY) {
     // normalize image coordinates
     Tensor normalizedImgCoord = Tensors.vector(imagePosX, imagePosY).subtract(principalPoint).pmul(focalLengthInv);
     // calculate squared radial distance

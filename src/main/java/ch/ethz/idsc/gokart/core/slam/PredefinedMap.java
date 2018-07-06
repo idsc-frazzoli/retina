@@ -21,17 +21,18 @@ import ch.ethz.idsc.tensor.io.ResourceData;
  * the predefined geometry is crucial for lidar-based localization */
 // TODO not necessary to mix localization and obstacles, for instance extrusion only required in one case
 public enum PredefinedMap implements LocalizationImage {
-  /** image */
-  DUBILAB_LOCALIZATION_20180122(7.5), //
   /** image of known static obstacles */
   DUBILAB_OBSTACLES_20180423(7.5), //
   /** image */
   DUBILAB_LOCALIZATION_20180506(7.5), //
-  /** image with central tents, bus tent, and aerotain */
-  DUBILAB_LOCALIZATION_20180610(7.5), //
   /** image of known static obstacles
    * image with central tents, bus tent, and aerotain */
   DUBILAB_OBSTACLES_20180610(7.5), //
+  DUBILAB_LOCALIZATION_20180702(7.5), //
+  /** empty space */
+  DUBILAB_OBSTACLES_20180703(7.5), //
+  /** empty space with tents */
+  DUBILAB_OBSTACLES_20180704(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;

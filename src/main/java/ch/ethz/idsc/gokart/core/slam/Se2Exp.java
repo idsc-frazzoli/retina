@@ -15,6 +15,6 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param x vector of length 3
    * @return matrix with dimensions 3x3 */
   public static Tensor of(Tensor x) {
-    return Se2Utils.toSE2Matrix(Se2Utils.integrate_g0(x));
+    return Se2Utils.toSE2Matrix(Se2Utils.exp(x));
   }
 }

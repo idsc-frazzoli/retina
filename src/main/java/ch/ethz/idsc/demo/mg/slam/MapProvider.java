@@ -15,7 +15,8 @@ public class MapProvider {
   private final Scalar numberOfCells;
   private final double cornerX;
   private final double cornerY;
-  private final int xAxisCellNumber;
+  private final int widthInCells;
+  private double maxValue;
 
   MapProvider(PipelineConfig pipelineConfig) {
     dimX = pipelineConfig.dimX;
@@ -24,29 +25,21 @@ public class MapProvider {
     numberOfCells = dimX.divide(cellDim).multiply(dimY).divide(cellDim);
     cornerX = pipelineConfig.corner.Get(0).number().doubleValue();
     cornerY = pipelineConfig.corner.Get(1).number().doubleValue();
-    xAxisCellNumber = dimX.divide(cellDim).number().intValue();
+    widthInCells = dimX.divide(cellDim).number().intValue();
     mapArray = new double[numberOfCells.number().intValue()];
+    maxValue = 0;
   }
 
-  public static MapProvider divide(MapProvider oneMap, MapProvider anotherMap) {
-    MapProvider dividedMap = oneMap;
-    for (int i = 0; i < dividedMap.getNumberOfCells(); i++) {
-      double newValue;
-      if (anotherMap.getValue(i) == 0)
-        newValue = oneMap.getValue(i);
-      else
-        newValue = oneMap.getValue(i) / anotherMap.getValue(i);
-      dividedMap.setValue(i, newValue);
+  // the method returns the divided map
+  public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
+    for (int i = 0; i < targetMap.getNumberOfCells(); i++) {
+      if (denominator.getValue(i) == 0) {
+        // do nothing
+      } else {
+        double newValue = numerator.getValue(i) / denominator.getValue(i);
+        targetMap.setValue(i, newValue);
+      }
     }
-    return dividedMap;
-  }
-
-  private double getValue(int cellIndex) {
-    return mapArray[cellIndex];
-  }
-
-  public void setValue(int cellIndex, double value) {
-    mapArray[cellIndex] = value;
   }
 
   // returns coordinates of cell middle point
@@ -55,8 +48,8 @@ public class MapProvider {
       System.out.println("Fatal: should not access that");
       return null;
     }
-    int gridPosY = cellIndex / xAxisCellNumber;
-    int gridPosX = cellIndex - gridPosY * xAxisCellNumber;
+    int gridPosY = cellIndex / widthInCells;
+    int gridPosX = cellIndex - gridPosY * widthInCells;
     double xPos = cornerX + (gridPosX + 0.5) * cellDim.number().doubleValue();
     double yPos = cornerY + (gridPosY + 0.5) * cellDim.number().doubleValue();
     return new double[] { xPos, yPos };
@@ -72,29 +65,48 @@ public class MapProvider {
     }
     int gridPosX = (int) ((posX - cornerX) / cellDim.number().doubleValue());
     int gridPosY = (int) ((posY - cornerY) / cellDim.number().doubleValue());
-    int cellIndex = gridPosX + xAxisCellNumber * gridPosY;
+    int cellIndex = gridPosX + widthInCells * gridPosY;
     return cellIndex;
   }
 
-  /** sets value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose
    * 
    * @param pose [x,y,angle] pose in world coordinates
    * @param value */
-  public void setValue(Tensor pose, double value) {
-    setValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
+  public void addValue(Tensor pose, double value) {
+    addValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
   }
 
-  /** sets value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
    * @param value */
-  public void setValue(double posX, double posY, double value) {
+  public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return;
     }
+    mapArray[cellIndex] += value;
+    if (mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
+  }
+
+  public void addValue(int cellIndex, double value) {
+    mapArray[cellIndex] += value;
+    if (mapArray[cellIndex] > maxValue)
+      maxValue = mapArray[cellIndex];
+  }
+
+  private void setValue(int cellIndex, double value) {
+    if (value > maxValue)
+      maxValue = value;
     mapArray[cellIndex] = value;
+  }
+
+  private double getValue(int cellIndex) {
+    return mapArray[cellIndex];
   }
 
   // gets value of cell in which the coordinates are
@@ -105,13 +117,22 @@ public class MapProvider {
   // gets value of cell in which the coordinates are
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
+    // case of outside map domain
     if (cellIndex == numberOfCells.number().intValue()) {
       return 0;
     }
     return mapArray[cellIndex];
   }
 
+  public double[] getMapArray() {
+    return mapArray;
+  }
+
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
+  }
+
+  public double getMaxValue() {
+    return maxValue;
   }
 }

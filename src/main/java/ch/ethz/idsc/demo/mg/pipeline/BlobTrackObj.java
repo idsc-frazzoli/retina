@@ -62,7 +62,9 @@ public class BlobTrackObj {
     float deltaXX = (eventPosX - pos[0]) * (eventPosX - pos[0]);
     float deltaXY = (eventPosX - pos[0]) * (eventPosY - pos[1]);
     float deltaYY = (eventPosY - pos[1]) * (eventPosY - pos[1]);
-    float[][] deltaCovariance = { { deltaXX, deltaXY }, { deltaXY, deltaYY } };
+    float[][] deltaCovariance = { //
+        { deltaXX, deltaXY }, //
+        { deltaXY, deltaYY } };
     // covariance update
     covariance[0][0] = alphaTwo * covariance[0][0] + (1 - alphaTwo) * deltaCovariance[0][0];
     covariance[0][1] = alphaTwo * covariance[0][1] + (1 - alphaTwo) * deltaCovariance[0][1];
@@ -84,7 +86,8 @@ public class BlobTrackObj {
     // compute exponent of Gaussian distribution
     float offsetX = eventPosX - pos[0];
     float offsetY = eventPosY - pos[1];
-    double[] intermediate = { covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY,
+    double[] intermediate = { //
+        covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY, //
         covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
     float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
     currentScore = (float) (1 / (2 * Math.PI) * 1 / Math.sqrt(covarianceDeterminant) * Math.exp(exponent));
@@ -98,8 +101,10 @@ public class BlobTrackObj {
     double gamma = sigma / 15;
     double lambda = 4 * sigma;
     double theta = Math.PI / 2;
-    double xU = (davisDvsEvent.x - pos[0]) * Math.cos(theta) + (davisDvsEvent.y - pos[1]) * Math.sin(theta);
-    double yU = -(davisDvsEvent.x - pos[0]) * Math.sin(theta) + (davisDvsEvent.y - pos[1]) * Math.cos(theta);
+    double cos_t = Math.cos(theta);
+    double sin_t = Math.sin(theta);
+    double xU = +(davisDvsEvent.x - pos[0]) * cos_t + (davisDvsEvent.y - pos[1]) * sin_t;
+    double yU = -(davisDvsEvent.x - pos[0]) * sin_t + (davisDvsEvent.y - pos[1]) * cos_t;
     currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
     return currentScore;
   }
@@ -111,7 +116,8 @@ public class BlobTrackObj {
   // return distance;
   // }
   public void updateAttractionEquation(float alphaAttr, float dRep) {
-    double posDiff = Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
+    double posDiff = Math.hypot(pos[0] - initPos[0], pos[1] - initPos[1]);
+    // Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
     if (posDiff > dRep) {
       pos[0] = initPos[0];
       pos[1] = initPos[1];
@@ -123,9 +129,10 @@ public class BlobTrackObj {
 
   // required for merging
   public double getDistanceTo(BlobTrackObj otherBlob) {
-    double distance = Math
-        .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
-    return distance;
+    // double distance = Math
+    // .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
+    // return distance;
+    return Math.hypot(pos[0] - otherBlob.getPos()[0], pos[1] - otherBlob.getPos()[1]);
   }
 
   // merge blobs by using activity-weighted average

@@ -8,8 +8,8 @@ import java.util.List;
 // for visualization in PresenterLcmModule
 // TODO for each blobID, only visualize most recent blob
 public class AccumulatedFeaturePoints {
-  private List<Point2D> accumulatedPoints;
-  private List<Integer> blobIDList;
+  private final List<Point2D> accumulatedPoints;
+  private final List<Integer> blobIDList;
 
   public AccumulatedFeaturePoints() {
     accumulatedPoints = new ArrayList<>();

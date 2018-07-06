@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 /** pipeline setup for single/multirun of logfiles
  * SLAM algorithm is also set up here */
 /* package */ class PipelineSetup {
-  private PipelineConfig pipelineConfig;
+  private final PipelineConfig pipelineConfig;
   private final int iterationLength;
   private final boolean useSlam;
 

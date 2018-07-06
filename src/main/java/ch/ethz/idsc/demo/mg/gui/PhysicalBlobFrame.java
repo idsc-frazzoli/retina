@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.ImageToWorldUtil;
+import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
 public class PhysicalBlobFrame {
@@ -24,7 +24,7 @@ public class PhysicalBlobFrame {
   private final Graphics2D graphics;
   private final byte[] bytes;
   // world coord to visualization mapping
-  private ImageToWorldUtil transformUtil;
+  private ImageToGokartUtil transformUtil;
   private final double[][] fieldOfView; // contains image plane coordinates of trapezoid defining field of view
   private final double scaleFactor; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
   private final int gokartSize; // [pixel]
@@ -39,7 +39,7 @@ public class PhysicalBlobFrame {
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    transformUtil = pipelineConfig.createImageToWorldUtil();
+    transformUtil = pipelineConfig.createImageToGokartUtil();
     scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();
@@ -47,11 +47,11 @@ public class PhysicalBlobFrame {
     // TODO physical boarder points could be loaded from .csv
     fieldOfView = new double[4][2];
     // upper corners
-    fieldOfView[0] = worldToImgPlane(transformUtil.imageToWorld(10, 10));
-    fieldOfView[1] = worldToImgPlane(transformUtil.imageToWorld(230, 10));
+    fieldOfView[0] = worldToImgPlane(transformUtil.imageToGokart(10, 10));
+    fieldOfView[1] = worldToImgPlane(transformUtil.imageToGokart(230, 10));
     // lower corners
-    fieldOfView[2] = worldToImgPlane(transformUtil.imageToWorld(230, 180));
-    fieldOfView[3] = worldToImgPlane(transformUtil.imageToWorld(10, 180));
+    fieldOfView[2] = worldToImgPlane(transformUtil.imageToGokart(230, 180));
+    fieldOfView[3] = worldToImgPlane(transformUtil.imageToGokart(10, 180));
     // generate path
     trapezoid = new Path2D.Double();
     trapezoid.moveTo(fieldOfView[0][0], fieldOfView[0][1]);
@@ -104,7 +104,7 @@ public class PhysicalBlobFrame {
    * @param physicalBlob
    * @param color
    * @param size */
-  private void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
+  private static void drawPhysicalBlob(Graphics2D graphics, PhysicalBlob physicalBlob, Color color, double size) {
     double leftCornerX = physicalBlob.getImageCoord()[0] - size / 2;
     double leftCornerY = physicalBlob.getImageCoord()[1] - size / 2;
     Ellipse2D ellipse = new Ellipse2D.Double(leftCornerX, leftCornerY, size, size);

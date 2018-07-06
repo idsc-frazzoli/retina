@@ -19,8 +19,16 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class SteerConfig implements Serializable {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
   /***************************************************/
-  public Scalar voltageLo = Quantity.of(10.8, SI.VOLT); // 10.8[V] for 1[s] confirmed with mac
-  public Scalar voltageHi = Quantity.of(13.0, SI.VOLT);
+  /** battery supply voltage ratings
+   * 
+   * ante 20180628: the steer battery was
+   * Yuasa NP2.3-12 with 2Ah, lead acid, 6 cells
+   * the range was 10.8[V] .. 13.0[V] for 1[s] confirmed with mac
+   * 
+   * post 20180628: the steer battery is replaced. the new model is
+   * Lithium Polymer Akku: 45C/90C 4500mAh 11.1V 3S1P */
+  public Scalar voltageLo = Quantity.of(3.6 * 3, SI.VOLT); // 3.6 * 3 == 10.8[V]
+  public Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
   // ---
   /** amplitude of signal during calibration procedure */
   public Scalar calibration = Quantity.of(1.5, "SCT");
