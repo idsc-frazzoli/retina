@@ -38,7 +38,8 @@ public class PipelineConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // TransformUtil
-  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFileName.substring(0, davisConfig.logFileName.length() - 1) + ".csv"; // relative to main/resources/
+  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFileName.substring(0, davisConfig.logFileName.length() - 1) + ".csv"; // relative to
+                                                                                                                                               // main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling

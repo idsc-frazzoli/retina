@@ -97,7 +97,7 @@ public class PipelineProvider implements DavisDvsListener {
   public ImageBlobSelector getBlobSelector() {
     return blobSelector;
   }
-  
+
   public EventFiltering getEventFiltering() {
     return eventFiltering;
   }

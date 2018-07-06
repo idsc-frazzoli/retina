@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Tensors;
 /** defines all parameters of the SLAM algorithm and optionally saves them to a .properties file */
 public class SlamConfig {
   // general parameters
-  public final DavisConfig davisConfig = new DavisConfig();                                                                                                                                               // main/resources/
+  public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   // SLAM algorithm parameters
   public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
   public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter

@@ -45,7 +45,7 @@ public class SlamFileUtil {
   public static void loadFromCSV(File file, double[] map) {
     try {
       Tensor inputTensor = Import.of(file);
-      if(inputTensor.length() != map.length)
+      if (inputTensor.length() != map.length)
         System.out.println("FATAL @loadFromCSV: array not same length");
       int i = 0;
       for (Tensor row : inputTensor) {

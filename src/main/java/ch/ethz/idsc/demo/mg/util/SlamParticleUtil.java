@@ -172,7 +172,7 @@ public class SlamParticleUtil {
     }
     return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
-  
+
   public static void printStatusInfo(SlamParticle[] slamParticles) {
     Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
     System.out.println("**** new status info **********");

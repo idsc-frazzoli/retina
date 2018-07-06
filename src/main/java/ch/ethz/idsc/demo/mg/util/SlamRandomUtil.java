@@ -13,8 +13,7 @@ public class SlamRandomUtil {
    * @param standardDeviation
    * @param lowerBound
    * @param upperBound
-   * @return
-   */
+   * @return */
   public static double getTrunctatedGaussian(double mean, double standardDeviation, double lowerBound, double upperBound) {
     double trunctatedGaussian = getGaussian(mean, standardDeviation);
     while (trunctatedGaussian < lowerBound || trunctatedGaussian > upperBound) {
