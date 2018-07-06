@@ -29,8 +29,9 @@ public class SlamMappingStep {
   public void initialize(double initTimeStamp) {
     lastNormalizationTimeStamp = initTimeStamp;
     if (localizationMode) {
-      double[] mapArray = new double[eventMaps[0].getNumberOfCells()];
-      SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix), mapArray);
+      double[] mapArray = SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
+      if (mapArray.length != eventMaps[0].getNumberOfCells())
+        throw new RuntimeException("bad size");
       eventMaps[0].setMapArray(mapArray);
     }
   }

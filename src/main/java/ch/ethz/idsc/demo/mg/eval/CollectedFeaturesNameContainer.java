@@ -8,8 +8,8 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 // PipelineConfigs through TensorProperties
 // TODO use in pipelineSetup to save and EvaluatorMultiRun to load from
 public class CollectedFeaturesNameContainer {
-  String[] estimatedLabelFileNames;
-  PipelineConfig[] pipelineConfigs;
+  private final String[] estimatedLabelFileNames;
+  private final PipelineConfig[] pipelineConfigs;
 
   CollectedFeaturesNameContainer(int iterationLength) {
     estimatedLabelFileNames = new String[iterationLength];

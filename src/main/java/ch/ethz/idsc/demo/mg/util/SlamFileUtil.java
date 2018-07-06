@@ -2,59 +2,44 @@
 package ch.ethz.idsc.demo.mg.util;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.stream.DoubleStream;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.Primitives;
 
 // utility to save/load maps obtained from the SLAM algorithm
+// TODO tensor lib v057 refactor
 public class SlamFileUtil {
-  private static final String NEW_LINE = "\n";
-
   /** saves a {@link MapProvider} map array in a csv file. one value per line
    * 
    * @param file
    * @param map */
   public static void saveToCSV(File file, MapProvider map) {
-    double[] mapArray = map.getMapArray();
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(file);
-      for (int i = 0; i < mapArray.length; i++) {
-        writer.append(String.valueOf(mapArray[i]));
-        writer.append(NEW_LINE);
-      }
+    // double[] mapArray = map.getMapArray();
+    try (PrintWriter printWriter = new PrintWriter(file)) {
+      DoubleStream.of(map.getMapArray()) //
+          .mapToObj(String::valueOf) //
+          .forEach(printWriter::println);
+      // for (int i = 0; i < mapArray.length; i++)
+      // printWriter.println(String.valueOf(mapArray[i]));
     } catch (IOException e) {
       e.printStackTrace();
-    } finally {
-      try {
-        writer.flush();
-        writer.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
   /** loads a {@link MapProvider} map array form a csv file
    * 
    * @param file
-   * @param map */
-  public static void loadFromCSV(File file, double[] map) {
+   * @return */
+  public static double[] loadFromCSV(File file) {
     try {
-      Tensor inputTensor = Import.of(file);
-      if (inputTensor.length() != map.length)
-        System.out.println("FATAL @loadFromCSV: array not same length");
-      int i = 0;
-      for (Tensor row : inputTensor) {
-        double mapValue = row.Get(0).number().doubleValue();
-        map[i] = mapValue;
-        i++;
-      }
+      return Primitives.toDoubleArray(Import.of(file));
     } catch (IOException e) {
       e.printStackTrace();
     }
+    return null;
   }
 }

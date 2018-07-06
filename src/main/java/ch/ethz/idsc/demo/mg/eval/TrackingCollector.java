@@ -19,7 +19,7 @@ public class TrackingCollector {
   private final File estimatedLabelFile;
   private final List<List<ImageBlob>> estimatedFeatures;
   private final int numberOfLabelInstants;
-  private int[] timeStamps; // timestamps for which hand-labeled features are available
+  private final int[] timeStamps; // timestamps for which hand-labeled features are available
   private int currentLabelInstant = 0;
 
   public TrackingCollector(PipelineConfig pipelineConfig) {

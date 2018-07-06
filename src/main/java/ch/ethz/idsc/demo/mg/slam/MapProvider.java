@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import java.util.stream.DoubleStream;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -11,16 +13,19 @@ public class MapProvider {
   private final Scalar dimX;
   private final Scalar dimY;
   private final Scalar cellDim;
+  private final double cellDim_double;
   private final Scalar numberOfCells;
   private final double cornerX;
   private final double cornerY;
   private final int widthInCells;
+  /** tracks max value of values in array */
   private double maxValue;
 
   MapProvider(SlamConfig slamConfig) {
     dimX = slamConfig.dimX;
     dimY = slamConfig.dimY;
     cellDim = slamConfig.cellDim;
+    cellDim_double = cellDim.number().doubleValue();
     numberOfCells = dimX.divide(cellDim).multiply(dimY).divide(cellDim);
     cornerX = slamConfig.corner.Get(0).number().doubleValue();
     cornerY = slamConfig.corner.Get(1).number().doubleValue();
@@ -49,9 +54,10 @@ public class MapProvider {
     }
     int gridPosY = cellIndex / widthInCells;
     int gridPosX = cellIndex - gridPosY * widthInCells;
-    double xPos = cornerX + (gridPosX + 0.5) * cellDim.number().doubleValue();
-    double yPos = cornerY + (gridPosY + 0.5) * cellDim.number().doubleValue();
-    return new double[] { xPos, yPos };
+    // TODO precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim_double
+    return new double[] { //
+        cornerX + (gridPosX + 0.5) * cellDim_double, //
+        cornerY + (gridPosY + 0.5) * cellDim_double };
   }
 
   // gets the index of the cell in which the coordinate position lies
@@ -62,10 +68,9 @@ public class MapProvider {
       // unreasonable number to indicate that we dont have this location
       return numberOfCells.number().intValue();
     }
-    int gridPosX = (int) ((posX - cornerX) / cellDim.number().doubleValue());
-    int gridPosY = (int) ((posY - cornerY) / cellDim.number().doubleValue());
-    int cellIndex = gridPosX + widthInCells * gridPosY;
-    return cellIndex;
+    int gridPosX = (int) ((posX - cornerX) / cellDim_double);
+    int gridPosY = (int) ((posY - cornerY) / cellDim_double);
+    return gridPosX + widthInCells * gridPosY;
   }
 
   /** adds value in grid cell corresponding to pose
@@ -73,7 +78,9 @@ public class MapProvider {
    * @param pose [x,y,angle] pose in world coordinates
    * @param value */
   public void addValue(Tensor pose, double value) {
-    addValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue(), value);
+    addValue( //
+        pose.Get(0).number().doubleValue(), //
+        pose.Get(1).number().doubleValue(), value);
   }
 
   /** adds value in grid cell corresponding to pose
@@ -84,9 +91,8 @@ public class MapProvider {
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells.number().intValue()) {
+    if (cellIndex == numberOfCells.number().intValue())
       return;
-    }
     mapArray[cellIndex] += value;
     if (mapArray[cellIndex] > maxValue)
       maxValue = mapArray[cellIndex];
@@ -110,29 +116,34 @@ public class MapProvider {
 
   // gets value of cell in which the coordinates are
   public double getValue(Tensor pose) {
-    return getValue(pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue());
+    return getValue( //
+        pose.Get(0).number().doubleValue(), //
+        pose.Get(1).number().doubleValue());
   }
 
   // gets value of cell in which the coordinates are
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells.number().intValue()) {
+    if (cellIndex == numberOfCells.number().intValue())
       return 0;
-    }
     return mapArray[cellIndex];
   }
 
   // for recorded maps
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
-      double tempMaxValue = 0;
-      for (int i = 0; i < mapArray.length; i++) {
-        if (mapArray[i] > tempMaxValue)
-          tempMaxValue = mapArray[i];
-        this.mapArray[i] = mapArray[i];
-      }
-      maxValue = tempMaxValue;
+      // double tempMaxValue = 0;
+      // TODO mario, check if the below line works:
+      System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);
+      // for (int i = 0; i < mapArray.length; i++) {
+      // // if (mapArray[i] > tempMaxValue)
+      // // tempMaxValue = mapArray[i];
+      // this.mapArray[i] = mapArray[i];
+      // }
+      // maxValue = tempMaxValue;
+      maxValue = DoubleStream.of(mapArray) //
+          .reduce(Math::max).getAsDouble();
     }
   }
 
@@ -144,8 +155,9 @@ public class MapProvider {
     return numberOfCells.number().intValue();
   }
 
+  /** @return maxValue or 1 if maxValue == 0
+   * since we divide by that value, we avoid all kinds of problems with that */
   public double getMaxValue() {
-    // since we divide by that value, we avoid all kinds of problems with that
     if (maxValue == 0)
       return 1;
     return maxValue;

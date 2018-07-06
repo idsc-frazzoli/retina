@@ -59,7 +59,7 @@ public class OfflineSlamWrap implements OfflineLogListener {
     savingInterval = slamConfig.savingInterval.number().intValue();
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     int timeInst = (int) (1000 * time.number().doubleValue()); // TODO hack
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
