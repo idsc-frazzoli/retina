@@ -34,7 +34,9 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   // Tensor displayEventCount = Array.zeros(3);
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
-    public void columnTimedImage(ColumnTimedImage columnTimedImage) { // TODO store reference
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) { // TODO
+      // store
+      // reference
       if (!columnTimedImage.isComplete)
         System.err.println("rst incomplete");
       rstImage = columnTimedImage.bufferedImage;
@@ -73,7 +75,7 @@ public class DavisViewerComponent implements DavisImuFrameListener {
       if (imageCopy.hasValue())
         graphics.drawImage(imageCopy.get(), 2 * 240, offsetY, null);
       // ---
-      final int baseline_y = getSize().height - 20;
+      final int baseline_y = getSize().height - 100;
       if (Objects.nonNull(davisTallyEvent)) {
         DavisTallyEvent dte = davisTallyEvent;
         graphics.setColor(Color.LIGHT_GRAY);
@@ -82,15 +84,33 @@ public class DavisViewerComponent implements DavisImuFrameListener {
           graphics.fillRect(0, baseline_y - h, dte.binLast, 1);
           graphics.drawString("" + Math.round(blub), dte.binLast, baseline_y - h);
         }
-        graphics.setColor(Color.BLUE);
-        for (int index = 0; index < dte.binLast; ++index) {
-          int height = (int) Math.round(Math.log(dte.bin[index] + 1) * 10);
-          graphics.fillRect(index, baseline_y - height, 1, height);
+        {
+          graphics.setColor(Color.ORANGE);
+          for (int index = 0; index < dte.binLast; ++index) {
+            int height = (int) Math.round(Math.log(dte.bin[index][0] + 1) * 10);
+            graphics.fillRect(index, baseline_y - height, 1, height);
+          }
         }
+        {
+          graphics.setColor(Color.BLACK);
+          for (int index = 0; index < dte.binLast; ++index) {
+            int height = (int) Math.round(Math.log(dte.bin[index][1] + 1) * 10);
+            graphics.fillRect(index, baseline_y + 1, 1, height);
+          }
+        }
+        // {
+        // graphics.setColor(new Color(0, 0, 128, 255));
+        // for (int index = 0; index < dte.binLast; ++index) {
+        // int height = (int) Math.round(Math.log(dte.bin[index][1] + 1) * 10);
+        // graphics.fillRect(index, baseline_y - height, 1, height);
+        // }
+        // }
         drawBar(graphics, baseline_y, dte.resetRange, Color.RED, "RST");
         drawBar(graphics, baseline_y, dte.imageRange, Color.GREEN, "SIG");
         graphics.setColor(Color.GRAY);
         graphics.drawString(dte.getDurationUs() + " [us]", dte.binLast, baseline_y);
+        // graphics.drawString(dte.getDurationUs() + " [us]", dte.binMinusLast,
+        // -baseline_y);
       }
       if (Objects.nonNull(imuFrame)) {
         graphics.setColor(Color.GRAY);
