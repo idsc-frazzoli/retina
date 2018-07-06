@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 
 /** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
  * estimated run. */

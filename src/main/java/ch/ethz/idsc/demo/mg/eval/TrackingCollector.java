@@ -7,7 +7,6 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves

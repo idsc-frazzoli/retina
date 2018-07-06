@@ -31,7 +31,6 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
