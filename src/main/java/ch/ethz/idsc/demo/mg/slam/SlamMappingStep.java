@@ -3,7 +3,6 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
-import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
 // executes the mapping step of the SLAM algorithm
@@ -13,7 +12,6 @@ public class SlamMappingStep {
   private final boolean localizationMode;
   private final double lookAheadDistance;
   private final double normalizationUpdateRate;
-  private final double alpha;
   private final int relevantParticles;
   private double lastNormalizationTimeStamp;
 
@@ -23,7 +21,6 @@ public class SlamMappingStep {
       eventMaps[i] = new MapProvider(slamConfig);
     imagePrefix = slamConfig.davisConfig.logFileName;
     localizationMode = slamConfig.localizationMode;
-    alpha = slamConfig.alpha.number().doubleValue();
     lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();
     normalizationUpdateRate = slamConfig.normalizationUpdateRate.number().doubleValue();
     relevantParticles = slamConfig.relevantParticles.number().intValue();
@@ -50,7 +47,8 @@ public class SlamMappingStep {
       // lookAheadDistance);
       // lastExpectedPose = gokartLidarPose.getPose();
       // MapProvider.divide(eventMaps[0], eventMaps[1], eventMaps[2]);
-      // lastNormalizationTimeStamp = currentTimeStamp;
+      // SlamParticleUtil.printStatusInfo(slamParticles);
+      lastNormalizationTimeStamp = currentTimeStamp;
     }
   }
 

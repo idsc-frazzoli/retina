@@ -128,7 +128,7 @@ public class MapProvider {
     if (this.mapArray.length == mapArray.length) {
       double tempMaxValue = 0;
       for (int i = 0; i < mapArray.length; i++) {
-        if(mapArray[i]>tempMaxValue)
+        if (mapArray[i] > tempMaxValue)
           tempMaxValue = mapArray[i];
         this.mapArray[i] = mapArray[i];
       }
@@ -145,6 +145,9 @@ public class MapProvider {
   }
 
   public double getMaxValue() {
+    // since we divide by that value, we avoid all kinds of problems with that
+    if (maxValue == 0)
+      return 1;
     return maxValue;
   }
 }

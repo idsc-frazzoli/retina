@@ -10,10 +10,10 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-// provides general parameters
+// provides general parameters not specific to SLAM or object detection algorithms
 public class DavisConfig {
   // log file parameters
-  public String logFileName = "DUBI15c"; // must match name in LogFileLocations and be an extract of a recording
+  public String logFileName = "DUBI15a"; // must match name in LogFileLocations and be an extract of a recording
   public final Scalar maxDuration = RealScalar.of(60000); // [ms]
   public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv"; // relative to main/resources/
   // general parameters
@@ -22,8 +22,8 @@ public class DavisConfig {
   public final Scalar unitConversion = RealScalar.of(1000);
   // event filtering
   public final Scalar filterConfig = RealScalar.of(0); // 0 == background activity filter, 1 == FAST corner filter
-  public final Scalar margin = RealScalar.of(4);
-  public Scalar filterConstant = RealScalar.of(300); // [us]
+  public Scalar filterConstant = RealScalar.of(300); // [us] for backgournd activity filter
+  public final Scalar margin = RealScalar.of(4); // [-] for FAST corner filter
 
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {

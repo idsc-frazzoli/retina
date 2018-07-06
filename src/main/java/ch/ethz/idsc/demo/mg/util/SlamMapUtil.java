@@ -23,7 +23,7 @@ public class SlamMapUtil {
    * @param particleRange number of particles with highest likelihoods used for update */
   public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
-    Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
+    Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, slamParticles[i].getParticleLikelihood());

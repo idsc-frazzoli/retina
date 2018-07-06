@@ -7,6 +7,22 @@ import java.util.Random;
 public class SlamRandomUtil {
   private static Random generator = new Random();
 
+  /** trunctated Gaussian distribution obtained with rejection sampling
+   * 
+   * @param mean
+   * @param standardDeviation
+   * @param lowerBound
+   * @param upperBound
+   * @return
+   */
+  public static double getTrunctatedGaussian(double mean, double standardDeviation, double lowerBound, double upperBound) {
+    double trunctatedGaussian = getGaussian(mean, standardDeviation);
+    while (trunctatedGaussian < lowerBound || trunctatedGaussian > upperBound) {
+      trunctatedGaussian = getGaussian(mean, standardDeviation);
+    }
+    return trunctatedGaussian;
+  }
+
   /** Gaussian distributed random variable with given mean and standard deviation
    * 
    * @param mean

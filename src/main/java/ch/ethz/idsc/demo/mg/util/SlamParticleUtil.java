@@ -14,7 +14,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // collection of public static void methods to handle SlamParticle
-// TODO change to interface with static implementations?
 public class SlamParticleUtil {
   public static final Comparator<SlamParticle> SlamCompare = new Comparator<SlamParticle>() {
     @Override
@@ -48,7 +47,7 @@ public class SlamParticleUtil {
       // map go kart coordinates into world coordinates using the state estimate of the particle
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
-      double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + 2 * alpha * map.getValue(worldCoord) / map.getMaxValue();
+      double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / map.getMaxValue();
       slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
     }
@@ -108,7 +107,7 @@ public class SlamParticleUtil {
   // just throw away lowest likelihoods
   private static void neglectLowLikelihoodds(SlamParticle[] slamParticles) {
     double initLikelihood = (double) 1 / slamParticles.length;
-    int neglectNumber = slamParticles.length / 3;
+    int neglectNumber = slamParticles.length / 2;
     // sort by likelihood
     Arrays.sort(slamParticles, SlamCompare);
     int startIndex = slamParticles.length - neglectNumber;
@@ -122,7 +121,7 @@ public class SlamParticleUtil {
   private static void particleRoughening(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
     for (int i = 0; i < slamParticles.length; i++) {
       double vx = limitLinAccel(slamParticles[i].getLinVelDouble(), rougheningLinVelStd, dT);
-      double vangle = limitAngAccel(slamParticles[i].getAngVelDouble(), rougheningAngVelStd, dT);
+      double vangle = limitAngAccel(slamParticles[i].getAngVelDouble(), slamParticles[i].getLinVelDouble(), rougheningAngVelStd, dT);
       slamParticles[i].setLinVel(RealScalar.of(vx));
       slamParticles[i].setAngVel(RealScalar.of(vangle));
     }
@@ -130,21 +129,32 @@ public class SlamParticleUtil {
 
   // incorporate the physical limits of linear acceleration and minVel/maxVel
   private static double limitLinAccel(double oldLinVel, double linVelRougheningStd, double dT) {
-    double linAccel = SlamRandomUtil.getGaussian(0, linVelRougheningStd) / dT;
-    // TODO restrict accel with box constraints
+    double maxAccel = 2.5;
+    double minAccel = -2.5;
+    double minVel = 0;
+    double maxVel = 8;
+    double linAccel = SlamRandomUtil.getTrunctatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
     double newLinVel = oldLinVel + linAccel * dT;
-    // TODO restrict vel with box constraints as well
-    if (newLinVel < 0)
-      newLinVel = 0;
+    if (newLinVel < minVel)
+      newLinVel = minVel;
+    if (newLinVel > maxVel)
+      newLinVel = maxVel;
     return newLinVel;
   }
 
   // incorporate the physical limits of angular acceleration and minVel/maxVel
-  private static double limitAngAccel(double oldAngVel, double angVelRougheningStd, double dT) {
-    double angAccel = SlamRandomUtil.getGaussian(0, angVelRougheningStd) / dT;
-    // TODO restrict accel with box constraints
-    double newAngVel = oldAngVel + angAccel*dT;
-    // TODO restrict vel with box constraints
+  private static double limitAngAccel(double oldAngVel, double oldLinVel, double angVelRougheningStd, double dT) {
+    double minAccel = -6;
+    double maxAccel = 6;
+    double turnRatePerMeter = 0.4082;
+    double minVel = -turnRatePerMeter * oldLinVel;
+    double maxVel = -minVel;
+    double angAccel = SlamRandomUtil.getTrunctatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
+    double newAngVel = oldAngVel + angAccel * dT;
+    if (newAngVel < minVel)
+      newAngVel = minVel;
+    if (newAngVel > maxVel)
+      newAngVel = maxVel;
     return newAngVel;
   }
 
@@ -161,5 +171,13 @@ public class SlamParticleUtil {
       expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
     }
     return expectedPose.divide(RealScalar.of(likelihoodSum));
+  }
+  
+  public static void printStatusInfo(SlamParticle[] slamParticles) {
+    Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
+    System.out.println("**** new status info **********");
+    for (int i = 0; i < slamParticles.length; i++) {
+      System.out.println("Particle likelihood " + slamParticles[i].getParticleLikelihood());
+    }
   }
 }

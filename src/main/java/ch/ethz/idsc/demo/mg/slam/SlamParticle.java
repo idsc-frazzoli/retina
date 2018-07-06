@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class SlamParticle implements GokartPoseInterface {
   private Tensor pose;
   private Scalar linVel; // in direction of go kart x axis
-  private Scalar angVel;
+  private Scalar angVel; // around go kart z axis
   private double particleLikelihood;
   private GeometricLayer gokartPoseLayer;
 
@@ -45,10 +45,6 @@ public class SlamParticle implements GokartPoseInterface {
     setGeometricLayer();
   }
 
-  private void setGeometricLayer() {
-    gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(pose));
-  }
-
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
     pose = particle.getPose();
     linVel = particle.getLinVel();
@@ -57,10 +53,15 @@ public class SlamParticle implements GokartPoseInterface {
     setGeometricLayer();
   }
 
+  private void setGeometricLayer() {
+    gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(pose));
+  }
+
   // for mapping with lidar pose
   public void setPose(Tensor pose) {
     this.pose = pose;
   }
+
   public void setLinVel(Scalar linVel) {
     this.linVel = linVel;
   }

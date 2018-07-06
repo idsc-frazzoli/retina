@@ -18,7 +18,7 @@ enum ImagesToGif {
     File dir = UserHome.Pictures("gif/slamTest");
     dir.mkdir();
     List<File> list = Stream.of(dir.listFiles()).sorted().limit(2500).collect(Collectors.toList());
-    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("slamDuckie.gif"), 100)) {
+    try (AnimationWriter animationWriter = AnimationWriter.of(UserHome.Pictures("slamFullLap.gif"), 200)) {
       int count = 0;
       for (File file : list) {
         BufferedImage bufferedImage = ImageIO.read(file);
