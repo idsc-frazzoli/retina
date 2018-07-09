@@ -18,11 +18,12 @@ public class SlamConfig {
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(30);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(7); // [m] events further away are neglected
+  public final Scalar lookAheadDistance = RealScalar.of(12); // [m] events further away are neglected
   // update rates
-  public final Scalar resampleRate = RealScalar.of(0.025); // [s]
-  public final Scalar statePropagationRate = RealScalar.of(0.01); // [s]
+  public final Scalar resampleRate = RealScalar.of(0.05); // [s]
+  public final Scalar statePropagationRate = RealScalar.of(0.005); // [s]
   public final Scalar normalizationUpdateRate = RealScalar.of(0.05); // [s]
+  public final Scalar wayPointUpdateRate = RealScalar.of(0.1); // [s]
   // particle initialization
   public final Scalar linVelAvg = RealScalar.of(3); // [m/s] for initial particle distribution
   public final Scalar linVelStd = RealScalar.of(1); // [m/s] for initial particle distribution
@@ -40,4 +41,6 @@ public class SlamConfig {
   public final Scalar savingInterval = RealScalar.of(250); // [ms]
   public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   public final Scalar kartSize = RealScalar.of(1.5); // [m]
+  // waypoint processing parameters
+  public final Scalar mapThreshold = RealScalar.of(0.25);
 }

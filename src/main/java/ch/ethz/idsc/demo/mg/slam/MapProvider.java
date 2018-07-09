@@ -9,12 +9,12 @@ import ch.ethz.idsc.tensor.Tensor;
 // provides a grid map which is used by the SLAM algorithm
 // TODO maybe handle exceptions more elegant
 public class MapProvider {
-  private final double[] mapArray;
+  private final Scalar numberOfCells;
   private final Scalar dimX;
   private final Scalar dimY;
   private final Scalar cellDim;
+  private final double[] mapArray;
   private final double cellDim_double;
-  private final Scalar numberOfCells;
   private final double cornerX;
   private final double cornerY;
   private final int widthInCells;
@@ -104,7 +104,7 @@ public class MapProvider {
       maxValue = mapArray[cellIndex];
   }
 
-  private void setValue(int cellIndex, double value) {
+  public void setValue(int cellIndex, double value) {
     if (value > maxValue)
       maxValue = value;
     mapArray[cellIndex] = value;
@@ -133,15 +133,7 @@ public class MapProvider {
   // for recorded maps
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
-      // double tempMaxValue = 0;
-      // TODO mario, check if the below line works:
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);
-      // for (int i = 0; i < mapArray.length; i++) {
-      // // if (mapArray[i] > tempMaxValue)
-      // // tempMaxValue = mapArray[i];
-      // this.mapArray[i] = mapArray[i];
-      // }
-      // maxValue = tempMaxValue;
       maxValue = DoubleStream.of(mapArray) //
           .reduce(Math::max).getAsDouble();
     }
@@ -153,6 +145,14 @@ public class MapProvider {
 
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
+  }
+  
+  public int getWidth() {
+    return dimX.divide(cellDim).number().intValue();
+  }
+  
+  public int getHeight() {
+    return dimY.divide(cellDim).number().intValue();
   }
 
   /** @return maxValue or 1 if maxValue == 0

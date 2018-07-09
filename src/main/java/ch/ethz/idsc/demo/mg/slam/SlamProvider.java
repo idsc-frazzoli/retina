@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import org.bytedeco.javacpp.opencv_core.Mat;
+
 import ch.ethz.idsc.demo.mg.pipeline.EventFiltering;
 import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
@@ -20,6 +22,7 @@ class SlamProvider implements DavisDvsListener {
   private final SlamParticle[] slamParticles;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
+  private final SlamWayPointExtraction slamWayPoints;
   private final boolean lidarMappingMode;
   private final int numOfPart;
   private boolean isInitialized;
@@ -32,6 +35,7 @@ class SlamProvider implements DavisDvsListener {
     eventFiltering = new EventFiltering(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
+    slamWayPoints = new SlamWayPointExtraction(slamConfig, slamLocalizationStep.getPoseInterface());
     lidarMappingMode = slamConfig.lidarMappingMode;
     numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
@@ -42,6 +46,7 @@ class SlamProvider implements DavisDvsListener {
   public void initialize(Tensor pose, double timeStamp) {
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
+    slamWayPoints.initialize(timeStamp);
   }
 
   @Override
@@ -59,6 +64,7 @@ class SlamProvider implements DavisDvsListener {
       } else {
         slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), eventGokartFrame, currentTimeStamp);
         slamMappingStep.mappingStep(slamParticles, eventGokartFrame, currentTimeStamp);
+        slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
       }
     }
   }
@@ -69,6 +75,10 @@ class SlamProvider implements DavisDvsListener {
 
   public SlamParticle[] getParticles() {
     return slamParticles;
+  }
+
+  public Mat getProcessedMat() {
+    return slamWayPoints.getProcessedMat();
   }
 
   // mapID: 0 == occurrence map, 1 == normalization map, 2 == likelihood map
