@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public class JoystickLcmServer implements StartAndStoppable {
   private static String formatName(String string) {
-    return string.replace(' ', '_').replaceAll("\\W", "").toLowerCase();
+    return string.replace(' ', '_').replaceAll("\\W", "").toUpperCase();
   }
 
   // ---
@@ -28,7 +28,7 @@ public class JoystickLcmServer implements StartAndStoppable {
   private BinaryBlobPublisher publisher;
   private Timer timer;
 
-  public JoystickLcmServer(JoystickType joystickType, int period) {
+  public JoystickLcmServer(JoystickType joystickType, String channel, int period) {
     this.joystickType = joystickType;
     this.period = period;
     GLFWErrorCallback.createPrint(System.err).set();
@@ -37,13 +37,13 @@ public class JoystickLcmServer implements StartAndStoppable {
       throw new IllegalStateException("Unable to initialize GLFW");
     for (int index = GLFW.GLFW_JOYSTICK_1; index < GLFW.GLFW_JOYSTICK_LAST; ++index) {
       final String string = GLFW.glfwGetJoystickName(index);
+      System.out.println(string);
       if (Objects.nonNull(string)) {
         final String generic = formatName(string);
-        // System.out.println(generic);
-        if (generic.equalsIgnoreCase(joystickType.name())) {
+        if (generic.equals(joystickType.name())) {
           System.out.println("found joystick " + joystickType);
           joystick = index;
-          publisher = new BinaryBlobPublisher("joystick." + generic);
+          publisher = new BinaryBlobPublisher(channel);
           break;
         }
       }
