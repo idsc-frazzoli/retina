@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 
 /** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
  * estimated run. */
@@ -30,7 +29,7 @@ import ch.ethz.idsc.demo.mg.util.EvalUtil;
       // to initialize singleRun, only the estimatedLabelFileName needs to be changed
       // TODO this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
       int newTau = 1000 + 1000 * i;
-      String newEstimatedLabelFileName = pipelineConfig.logFileName.toString() + "_tau_" + newTau;
+      String newEstimatedLabelFileName = pipelineConfig.davisConfig.logFileName.toString() + "_tau_" + newTau;
       // TODO filename not generic. perhaps pass in "Dubi15a_tau" as argument?
       pipelineConfig.estimatedLabelFileName = "Dubi15a_tau/" + newEstimatedLabelFileName;
       // initialize singleRun object and run evaluation

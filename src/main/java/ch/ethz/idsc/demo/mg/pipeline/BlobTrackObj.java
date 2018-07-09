@@ -31,8 +31,8 @@ public class BlobTrackObj {
 
   // set static parameters of class
   public static void setParams(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
+    width = pipelineConfig.davisConfig.width.number().intValue();
+    height = pipelineConfig.davisConfig.height.number().intValue();
     defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
   }
 

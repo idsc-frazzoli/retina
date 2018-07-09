@@ -29,8 +29,8 @@ public class AccumulatedEventFrame {
   private final boolean rotateFrame;
 
   public AccumulatedEventFrame(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
+    width = pipelineConfig.davisConfig.width.number().intValue();
+    height = pipelineConfig.davisConfig.height.number().intValue();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();

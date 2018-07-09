@@ -19,7 +19,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 class ImageDisplayFrame {
   private final JFrame jFrame = new JFrame();
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
-  private JComponent jComponent = new JComponent() {
+  private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawImage(bufferedImage, 0, 0, null);

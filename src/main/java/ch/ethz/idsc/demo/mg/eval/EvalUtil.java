@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.eval;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.eval.EvaluationFileLocations;
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
 
-// provides static functions to work with CSV files
-public class EvalUtil {
+/** provides static functions to work with CSV files */
+/* package */ enum EvalUtil {
+  ;
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
   private static final int defaultBlobID = 0;
@@ -26,9 +26,7 @@ public class EvalUtil {
    * @param featureList
    * @param timeStamps timestamps at which features are available */
   public static void saveToCSV(File file, List<List<ImageBlob>> featureList, int[] timeStamps) {
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(file);
+    try (FileWriter writer = new FileWriter(file)) {
       for (int i = 0; i < featureList.size(); i++) {
         final List<ImageBlob> blobs = featureList.get(i);
         for (int j = 0; j < featureList.get(i).size(); j++) {
@@ -49,13 +47,6 @@ public class EvalUtil {
       }
     } catch (IOException e) {
       e.printStackTrace();
-    } finally {
-      try {
-        writer.flush();
-        writer.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
@@ -64,9 +55,7 @@ public class EvalUtil {
    * @param file object is saved to that file
    * @param collectedResults */
   public static void saveToCSV(File file, List<double[]> collectedResults) {
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(file);
+    try (FileWriter writer = new FileWriter(file)) {
       for (int i = 0; i < collectedResults.size(); i++) {
         final double[] singleResult = collectedResults.get(i);
         writer.append(String.valueOf(singleResult[0]));
@@ -78,13 +67,6 @@ public class EvalUtil {
       }
     } catch (IOException e) {
       e.printStackTrace();
-    } finally {
-      try {
-        writer.flush();
-        writer.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 

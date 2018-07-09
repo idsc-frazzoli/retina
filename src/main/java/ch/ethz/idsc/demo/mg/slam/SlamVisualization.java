@@ -8,12 +8,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
-// similar to pipelineVisualization. Provides a live update of SlamMapFrame
+/** similar to pipelineVisualization. Provides a live update of SlamMapFrame */
 // TODO probably create abstract visualization class and then extend Slamvisualization and PipelineVisualization?
-public class SlamVisualization {
+class SlamVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
   private final int desiredWidth = 800; // [pixel]
@@ -30,9 +29,9 @@ public class SlamVisualization {
     }
   };
 
-  public SlamVisualization(PipelineConfig pipelineConfig) {
-    double mapWidth = pipelineConfig.dimX.divide(pipelineConfig.cellDim).number().doubleValue();
-    double mapHeight = pipelineConfig.dimY.divide(pipelineConfig.cellDim).number().doubleValue();
+  public SlamVisualization(SlamConfig slamConfig) {
+    double mapWidth = slamConfig.dimX.divide(slamConfig.cellDim).number().doubleValue();
+    double mapHeight = slamConfig.dimY.divide(slamConfig.cellDim).number().doubleValue();
     scaling = desiredWidth / mapWidth;
     bufferedImage[0] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
