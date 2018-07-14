@@ -22,8 +22,8 @@ class SlamVisualization {
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Occurrencce map", 50, 13);
       graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
-       graphics.drawString("Detected Waypoints", 670, 13);
-       graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 670, 20, null);
+      graphics.drawString("Detected Waypoints", 670, 13);
+      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 670, 20, null);
     }
   };
 

@@ -6,15 +6,19 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 
-// provides methods to convert to and from mat objects
+/** provides methods to convert to and from mat objects */
 // TODO maybe switch to static void methods
-public class CVUtil {
+public enum CVUtil {
+  ;
   // some colors for BufferedImage.TYPE_BYTE_INDEXED
   private static final byte CLEAR_BYTE = (byte) 255;
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
 
-  // convert mat object to byteArray
+  /** convert mat object to byteArray
+   * 
+   * @param mat
+   * @return */
   public static byte[] matToByteArray(Mat mat) {
     int width = mat.arrayWidth();
     int height = mat.arrayHeight();
@@ -24,7 +28,10 @@ public class CVUtil {
     return dataArray;
   }
 
-  // convert binary image to a mat object
+  /** convert binary image to a mat object
+   * 
+   * @param mapProvider
+   * @return */
   public static Mat mapProviderToMat(MapProvider mapProvider) {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];

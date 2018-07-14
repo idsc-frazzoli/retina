@@ -146,11 +146,11 @@ public class MapProvider {
   public int getNumberOfCells() {
     return numberOfCells.number().intValue();
   }
-  
+
   public int getWidth() {
     return dimX.divide(cellDim).number().intValue();
   }
-  
+
   public int getHeight() {
     return dimY.divide(cellDim).number().intValue();
   }
