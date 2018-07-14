@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.stream.IntStream;
 
+import org.bytedeco.javacpp.opencv_core.Mat;
+
+import ch.ethz.idsc.demo.mg.util.CVUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -17,6 +20,7 @@ class SlamMapFrame {
   private static final byte CLEAR_BYTE = (byte) 255;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
+  private final double[] mapArray;
   private final byte[] bytes;
   private final double cornerX;
   private final double cornerY;
@@ -25,7 +29,6 @@ class SlamMapFrame {
   private final int frameWidth;
   private final int frameHeight;
   private final int numberOfCells;
-  private double[] mapArray;
   private double maxValue;
 
   SlamMapFrame(SlamConfig slamConfig) {
@@ -43,19 +46,22 @@ class SlamMapFrame {
     bytes = dataBufferByte.getData();
   }
 
-  public void setMap(MapProvider map) {
+  public void setRawMap(MapProvider map) {
     // safety check
     if (map.getNumberOfCells() != numberOfCells)
       System.out.println("Fatal: something went wrong!");
     else {
-      mapArray = map.getMapArray();
+      double[] newMapArray = map.getMapArray();
+      for (int i = 0; i < newMapArray.length; i++) {
+        mapArray[i] = newMapArray[i];
+      }
       maxValue = map.getMaxValue();
-      paintFrame();
+      paintRawMap();
     }
   }
 
   // draws the frame according to the mapArray values. values are normalized by maxValue
-  private void paintFrame() {
+  private void paintRawMap() {
     if (maxValue == 0)
       IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
     else {
@@ -69,10 +75,8 @@ class SlamMapFrame {
     double posX = pose.Get(0).number().doubleValue();
     double posY = pose.Get(1).number().doubleValue();
     double rotAngle = pose.Get(2).number().doubleValue();
-    // get pixelPos
     int pixelPoseX = (int) ((posX - cornerX) / cellDim);
     int pixelPoseY = (int) ((posY - cornerY) / cellDim);
-    // draw ellipse at go kart position
     Ellipse2D ellipse = new Ellipse2D.Float(pixelPoseX - kartLength / 2, pixelPoseY - kartLength / 4, kartLength, kartLength / 2);
     AffineTransform old = graphics.getTransform();
     graphics.rotate(rotAngle, pixelPoseX, pixelPoseY);
@@ -85,5 +89,12 @@ class SlamMapFrame {
   // return flipped image such that x axis points right and y axis upwards
   public BufferedImage getFrame() {
     return VisualizationUtil.flipHorizontal(bufferedImage);
+  }
+
+  public void setProcessedMat(Mat processedMat) {
+    byte[] processedByteArray = CVUtil.matToByteArray(processedMat);
+    for (int i = 0; i < bytes.length; i++) {
+      bytes[i] = processedByteArray[i];
+    }
   }
 }

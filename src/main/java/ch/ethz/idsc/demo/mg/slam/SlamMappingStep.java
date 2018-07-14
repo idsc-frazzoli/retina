@@ -31,7 +31,7 @@ class SlamMappingStep {
     if (localizationMode) {
       double[] mapArray = SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
       if (mapArray.length != eventMaps[0].getNumberOfCells())
-        throw new RuntimeException("bad size");
+        throw new RuntimeException("FATAL: bad size");
       eventMaps[0].setMapArray(mapArray);
     }
   }

@@ -78,7 +78,7 @@ class OfflineSlamWrap implements OfflineLogListener {
     // if (channel.equals(RimoLcmServer.CHANNEL_GET))
     // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
     if (saveSlamFrame && ((timeInst - lastSavingTimeStamp) > savingInterval)) {
-      saveFrame(constructFrames()[0], parentFilePath, imagePrefix, timeInst);
+      saveFrame(constructFrames()[1], parentFilePath, imagePrefix, timeInst);
       lastSavingTimeStamp = timeInst;
     }
     if ((timeInst - lastImagingTimestamp) > visualizationInterval) {
@@ -104,13 +104,15 @@ class OfflineSlamWrap implements OfflineLogListener {
   }
 
   private BufferedImage[] constructFrames() {
-    slamMapFrames[0].setMap(slamProvider.getMap(0));
+    // first frame is raw occurrence map
+    slamMapFrames[0].setRawMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
       drawParticlePoses();
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    slamMapFrames[1].setMap(slamProvider.getMap(1));
-    slamMapFrames[2].setMap(slamProvider.getMap(2));
+    // second frame is processed waypoint map
+    slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
+    slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < combinedFrames.length; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
