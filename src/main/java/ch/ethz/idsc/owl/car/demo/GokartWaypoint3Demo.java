@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
-import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.owl.bot.r2.WaypointDistanceCost;
@@ -47,11 +46,11 @@ public class GokartWaypoint3Demo implements DemoInterface {
       public RegionWithDistance<Tensor> getGoalRegionWithDistance(Tensor goal) {
         return new ConeRegion(goal, RealScalar.of(Math.PI / 10));
       }
-
-      @Override
-      public Optional<CostFunction> getPrimaryCost() {
-        return Optional.of(waypointCost);
-      }
+      // FIXME
+      // @Override
+      // public Optional<CostFunction> getPrimaryCost() {
+      // return Optional.of(waypointCost);
+      // }
     };
     // ---
     HelperHangarMap hangarMap = new HelperHangarMap("/dubilab/obstacles/20180610.png", gokartEntity);
