@@ -7,7 +7,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 // TODO load and store from file --> can be done elegant since we save Strings easily and
 // PipelineConfigs through TensorProperties
 // TODO use in pipelineSetup to save and EvaluatorMultiRun to load from
-public class CollectedFeaturesNameContainer {
+class CollectedFeaturesNameContainer {
   private final String[] estimatedLabelFileNames;
   private final PipelineConfig[] pipelineConfigs;
 

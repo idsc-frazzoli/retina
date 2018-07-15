@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 
-public enum CanProcess {
+enum CanProcess {
   ;
   private static final String CAN_RX_EVENT = "CAN Rx Event";
 

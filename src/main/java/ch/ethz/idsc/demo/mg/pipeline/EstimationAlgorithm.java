@@ -5,7 +5,7 @@ import java.util.List;
 
 // estimates the location of features in physical space based on measurements and process model
 // TODO set up simple visualization for this module
-public class EstimationAlgorithm {
+class EstimationAlgorithm {
   // fields
   private List<PhysicalBlob> measurementBlobs;
   private List<PhysicalBlob> estimatedBlobs; // TODO maybe create new class for estimation of features

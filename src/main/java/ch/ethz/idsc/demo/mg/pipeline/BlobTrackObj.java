@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides blob object for the tracking algorithm.
-public class BlobTrackObj {
+class BlobTrackObj {
   // camera parameters
   private static int width;
   private static int height;

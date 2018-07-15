@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.sca.Cos;
 
-public class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
+class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
   private final DriftStateSpaceModel driftStateSpaceModel;
 
   public DriftExtStateSpaceModel(DriftParameters driftParameters) {

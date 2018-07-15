@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Export;
 
-public class ClusterAreaEvaluationListener {
+class ClusterAreaEvaluationListener {
   static final File DIRECTORY_CLUSTERS = UserHome.Pictures("clusters");
   private static final File DIRECTORY_PF = UserHome.Pictures("pf");
   private static final Tensor MODEL2PIXEL = Tensors.matrix(new Number[][] { //

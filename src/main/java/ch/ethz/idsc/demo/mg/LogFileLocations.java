@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.subare.util.UserHome;
 
-public enum LogFileLocations {
+enum LogFileLocations {
   /** extracted part of DUBI4 log file */
   DUBI4a("logs/20180307T154859_0cd18c6bExtracted.lcm"), //
   /** 22sec, only noise */
