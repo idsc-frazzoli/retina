@@ -47,7 +47,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class OfflineHud implements OfflineLogListener {
+class OfflineHud implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Dimension DIMENSION = new Dimension(1920, 480);
   public static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBILAB_LOCALIZATION_20180506;

@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public class Enlarger {
+class Enlarger {
   private final List<Tensor> collectionOfAreas = new ArrayList<>();
   private double totalArea;
 

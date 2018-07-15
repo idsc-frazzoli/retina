@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 // provides a pipeline "wrapper" for analyzing logfiles with visualization
 // TODO visualization is not yet cleanly separated from PipelineProvider
-public class OfflinePipelineWrap implements OfflineLogListener {
+class OfflinePipelineWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final PipelineProvider pipelineProvider;
   // visualization

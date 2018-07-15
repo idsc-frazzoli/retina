@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class SecondMoments {
+class SecondMoments {
   public static SecondMoments add(SecondMoments sm1, SecondMoments sm2) {
     Scalar mass = sm1.mass.add(sm2.mass);
     Scalar index = Clip.function(RealScalar.ZERO, mass).rescale(sm2.mass);

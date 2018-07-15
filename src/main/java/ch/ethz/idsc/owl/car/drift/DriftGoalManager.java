@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class DriftGoalManager extends SimpleTrajectoryRegionQuery implements GoalInterface {
+class DriftGoalManager extends SimpleTrajectoryRegionQuery implements GoalInterface {
   public static GoalInterface createStandard(Tensor goalState, Tensor tolerance) {
     return new DriftGoalManager(new DriftGoalRegion(goalState, tolerance));
   }
