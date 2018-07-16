@@ -38,9 +38,9 @@ public class SlamConfig {
   public final Tensor corner = Tensors.vector(35, 35); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = RealScalar.of(250); // [ms]
-  public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
+  public final Scalar savingInterval = RealScalar.of(2); // [s]
+  public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
   public final Scalar kartSize = RealScalar.of(1.5); // [m]
   // waypoint processing parameters
-  public final Scalar mapThreshold = RealScalar.of(0.25);
+  public final Scalar mapThreshold = RealScalar.of(0.3);
 }

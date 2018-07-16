@@ -10,11 +10,6 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 // TODO maybe switch to static void methods
 public enum CVUtil {
   ;
-  // some colors for BufferedImage.TYPE_BYTE_INDEXED
-  private static final byte CLEAR_BYTE = (byte) 255;
-  private static final byte ORANGE = (byte) -52;
-  private static final byte GREEN = (byte) 30;
-
   /** convert mat object to byteArray
    * 
    * @param mat
@@ -35,12 +30,12 @@ public enum CVUtil {
   public static Mat mapProviderToMat(MapProvider mapProvider) {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];
-    Mat mat = new Mat(mapProvider.getWidth(), mapProvider.getHeight(), opencv_core.CV_8U);
+    Mat mat = new Mat(mapProvider.getWidth(), mapProvider.getHeight(), opencv_core.CV_8UC1);
     for (int i = 0; i < byteArray.length; i++) {
       if (mapArray[i] == 0) {
-        byteArray[i] = CLEAR_BYTE;
+        byteArray[i] = 0;
       } else {
-        byteArray[i] = GREEN;
+        byteArray[i] = 1;
       }
     }
     mat.data().put(byteArray);

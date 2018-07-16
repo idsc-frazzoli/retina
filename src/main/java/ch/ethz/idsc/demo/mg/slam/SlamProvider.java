@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import java.util.List;
+
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.pipeline.EventFiltering;
@@ -79,6 +81,10 @@ class SlamProvider implements DavisDvsListener {
 
   public Mat getProcessedMat() {
     return slamWayPoints.getProcessedMat();
+  }
+
+  public List<double[]> getWayPoints() {
+    return slamWayPoints.getFrameWayPoints();
   }
 
   // mapID: 0 == occurrence map, 1 == normalization map, 2 == likelihood map
