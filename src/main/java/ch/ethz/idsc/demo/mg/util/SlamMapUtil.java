@@ -37,10 +37,30 @@ public enum SlamMapUtil {
    * @param occurrenceMap
    * @param gokartFramePos [m] */
   public static void updateOccurrenceMapLidar(Tensor gokartPose, MapProvider occurrenceMap, double[] gokartFramePos) {
-    GeometricLayer gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
-    Tensor worldCoord = gokartPoseLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
+    GeometricLayer gokartToWorldLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
+    Tensor worldCoord = gokartToWorldLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
     // we just add 1
     occurrenceMap.addValue(worldCoord, 1);
+  }
+
+  /** 
+   * 
+   * @param gokartPose
+   * @param occurrenceMap
+   * @param lookBehindDistance */
+  public static void updateReactiveOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(gokartPose)));
+    double[] mapArray = occurrenceMap.getMapArray();
+    for (int i = 0; i < mapArray.length; i++) {
+      if (mapArray[i] != 0) {
+        double[] worldCoord = occurrenceMap.getCellCoord(i);
+        Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
+        double[] gokartCoord = { gokartCoordTensor.Get(0).number().doubleValue(), gokartCoordTensor.Get(1).number().doubleValue() };
+        if (gokartCoord[0] < lookBehindDistance) {
+          occurrenceMap.setValue(i, 0);
+        }
+      }
+    }
   }
 
   /** @param currentExpectedPose

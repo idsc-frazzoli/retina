@@ -10,10 +10,14 @@ class SlamMappingStep {
   private final MapProvider[] eventMaps;
   private final String imagePrefix;
   private final boolean localizationMode;
+  private final boolean reactiveMappingMode;
   private final double lookAheadDistance;
+  private final double lookBehindDistance;
   private final double normalizationUpdateRate;
+  private final double reactiveUpdateRate;
   private final int relevantParticles;
   private double lastNormalizationTimeStamp;
+  private double lastReactiveUpdateTimeStamp;
 
   SlamMappingStep(SlamConfig slamConfig) {
     eventMaps = new MapProvider[3];
@@ -21,13 +25,17 @@ class SlamMappingStep {
       eventMaps[i] = new MapProvider(slamConfig);
     imagePrefix = slamConfig.davisConfig.logFileName;
     localizationMode = slamConfig.localizationMode;
+    reactiveMappingMode = slamConfig.reactiveMappingMode;
     lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();
+    lookBehindDistance = slamConfig.lookBehindDistance.number().doubleValue();
     normalizationUpdateRate = slamConfig.normalizationUpdateRate.number().doubleValue();
+    reactiveUpdateRate = slamConfig.reacitveUpdateRate.number().doubleValue();
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
   public void initialize(double initTimeStamp) {
     lastNormalizationTimeStamp = initTimeStamp;
+    lastReactiveUpdateTimeStamp = initTimeStamp;
     if (localizationMode) {
       double[] mapArray = SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
       if (mapArray.length != eventMaps[0].getNumberOfCells())
@@ -36,11 +44,17 @@ class SlamMappingStep {
     }
   }
 
-  public void mappingStep(SlamParticle[] slamParticles, double[] eventGokartFrame, double currentTimeStamp) {
+  public void mappingStep(SlamParticle[] slamParticles, Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance) {
       if (!localizationMode) {
         SlamMapUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
       }
+    }
+    if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
+      if (reactiveMappingMode) {
+        SlamMapUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
+      }
+      lastReactiveUpdateTimeStamp = currentTimeStamp;
     }
     // normalization map currently unused
     if ((currentTimeStamp - lastNormalizationTimeStamp) > normalizationUpdateRate) {

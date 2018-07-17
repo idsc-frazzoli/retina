@@ -105,13 +105,11 @@ class OfflineSlamWrap implements OfflineLogListener {
   }
 
   private BufferedImage[] constructFrames() {
-    // first frame is raw occurrence map
     slamMapFrames[0].setRawMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
       drawParticlePoses();
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    // slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
     slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
     slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];

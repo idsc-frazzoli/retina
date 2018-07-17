@@ -14,14 +14,17 @@ public class SlamConfig {
   // SLAM algorithm parameters
   public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
   public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
+  public final Boolean reactiveMappingMode = false; // in reactive mode, the map far away from go kart is deleted
   public final Boolean saveSlamMap = false;
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(30);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(12); // [m] events further away are neglected
+  public final Scalar lookAheadDistance = RealScalar.of(13); // [m] events further away are neglected
+  public final Scalar lookBehindDistance = RealScalar.of(-3); // [m] for reactive mapping mode
   // update rates
   public final Scalar resampleRate = RealScalar.of(0.05); // [s]
   public final Scalar statePropagationRate = RealScalar.of(0.005); // [s]
+  public final Scalar reacitveUpdateRate = RealScalar.of(0.5); // [s]
   public final Scalar normalizationUpdateRate = RealScalar.of(0.05); // [s]
   public final Scalar wayPointUpdateRate = RealScalar.of(0.1); // [s]
   // particle initialization
@@ -38,7 +41,7 @@ public class SlamConfig {
   public final Tensor corner = Tensors.vector(35, 35); // [m] coordinates of lower left point in map
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = RealScalar.of(2); // [s]
+  public final Scalar savingInterval = RealScalar.of(0.2); // [s]
   public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
   public final Scalar kartSize = RealScalar.of(1.5); // [m]
   // waypoint processing parameters

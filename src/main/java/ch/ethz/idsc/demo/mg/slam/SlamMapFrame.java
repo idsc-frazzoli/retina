@@ -68,7 +68,7 @@ class SlamMapFrame {
   // draws the frame according to the mapArray values. values are normalized by maxValue
   private void paintRawMap() {
     if (maxValue == 0)
-      IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+      clearFrame();
     else {
       for (int i = 0; i < bytes.length; i++) {
         bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
@@ -96,15 +96,33 @@ class SlamMapFrame {
     return VisualizationUtil.flipHorizontal(bufferedImage);
   }
 
-  public void setWayPoints(List<double[]> wayPoints) {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+  public void setWayPoints(List<WayPoint> wayPoints) {
+    clearFrame();
     int width = 20;
     int height = 20;
     for (int i = 0; i < wayPoints.size(); i++) {
-      Ellipse2D ellipse = new Ellipse2D.Double(wayPoints.get(i)[0] - width / 2, wayPoints.get(i)[1] - height / 2, width, height);
-      graphics.setColor(Color.ORANGE);
+      double[] framePos = worldToFrame(wayPoints.get(i).getWorldPosition());
+      Ellipse2D ellipse = new Ellipse2D.Double(framePos[0] - width / 2, framePos[1] - height / 2, width, height);
+      // paint waypoints according to visibility
+      if (wayPoints.get(i).getVisibility()) {
+        graphics.setColor(Color.GREEN);
+      } else {
+        graphics.setColor(Color.ORANGE);
+      }
       graphics.fill(ellipse);
     }
+  }
+
+  private void clearFrame() {
+    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+  }
+
+  // TODO maybe move to static utility class
+  private double[] worldToFrame(double[] worldPos) {
+    double[] framePos = new double[2];
+    framePos[0] = (worldPos[0] - cornerX) / cellDim;
+    framePos[1] = (worldPos[1] - cornerY) / cellDim;
+    return framePos;
   }
 
   public void setProcessedMat(Mat processedMat) {

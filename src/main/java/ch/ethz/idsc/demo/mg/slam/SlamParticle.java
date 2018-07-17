@@ -32,9 +32,6 @@ public class SlamParticle implements GokartPoseInterface {
   public void propagateStateEstimate(double dT) {
     Tensor deltaPose = Tensors.of(linVel, RealScalar.of(0), angVel).multiply(RealScalar.of(dT));
     setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
-    // different option below
-    // Tensor xya = Se2Utils.fromSE2Matrix(Se2Utils.toSE2Matrix(getPoseUnitless()).dot(Se2Utils.toSE2Matrix(deltaPose)));
-    // setPose(xya);
   }
 
   private void setPoseUnitless(Tensor unitlessPose) {

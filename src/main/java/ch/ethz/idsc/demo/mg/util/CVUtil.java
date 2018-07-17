@@ -7,7 +7,7 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 
 /** provides methods to convert to and from mat objects */
-// TODO maybe switch to static void methods
+// TODO put restrictions on input type
 public enum CVUtil {
   ;
   /** convert mat object to byteArray

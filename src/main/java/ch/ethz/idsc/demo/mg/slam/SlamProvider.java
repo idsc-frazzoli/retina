@@ -25,6 +25,7 @@ class SlamProvider implements DavisDvsListener {
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamWayPointExtraction slamWayPoints;
+  private final SlamTrajectoryPlanning slamTrajectoryPlanning;
   private final boolean lidarMappingMode;
   private final int numOfPart;
   private boolean isInitialized;
@@ -37,7 +38,8 @@ class SlamProvider implements DavisDvsListener {
     eventFiltering = new EventFiltering(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
-    slamWayPoints = new SlamWayPointExtraction(slamConfig, slamLocalizationStep.getPoseInterface());
+    slamWayPoints = new SlamWayPointExtraction(slamConfig);
+    slamTrajectoryPlanning = new SlamTrajectoryPlanning(slamConfig, slamLocalizationStep.getPoseInterface());
     lidarMappingMode = slamConfig.lidarMappingMode;
     numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
@@ -49,6 +51,7 @@ class SlamProvider implements DavisDvsListener {
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
     slamWayPoints.initialize(timeStamp);
+    slamTrajectoryPlanning.initialize(timeStamp);
   }
 
   @Override
@@ -65,8 +68,9 @@ class SlamProvider implements DavisDvsListener {
         slamMappingStep.mappingStepWithLidar(gokartLidarPose.getPose(), eventGokartFrame, currentTimeStamp);
       } else {
         slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), eventGokartFrame, currentTimeStamp);
-        slamMappingStep.mappingStep(slamParticles, eventGokartFrame, currentTimeStamp);
+        slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getPoseInterface().getPose(), eventGokartFrame, currentTimeStamp);
         slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
+        slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
       }
     }
   }
@@ -83,8 +87,8 @@ class SlamProvider implements DavisDvsListener {
     return slamWayPoints.getProcessedMat();
   }
 
-  public List<double[]> getWayPoints() {
-    return slamWayPoints.getFrameWayPoints();
+  public List<WayPoint> getWayPoints() {
+    return slamTrajectoryPlanning.getWayPoints();
   }
 
   // mapID: 0 == occurrence map, 1 == normalization map, 2 == likelihood map
