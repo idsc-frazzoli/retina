@@ -29,7 +29,7 @@ class SlamMappingStep {
     lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();
     lookBehindDistance = slamConfig.lookBehindDistance.number().doubleValue();
     normalizationUpdateRate = slamConfig.normalizationUpdateRate.number().doubleValue();
-    reactiveUpdateRate = slamConfig.reacitveUpdateRate.number().doubleValue();
+    reactiveUpdateRate = slamConfig.reactiveUpdateRate.number().doubleValue();
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 

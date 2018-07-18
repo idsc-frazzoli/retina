@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** executes the localization step of the SLAM algorithm */
 class SlamLocalizationStep {
   private final SlamEstimatedPose estimatedPose;
+  private final boolean odometryStatePropagation;
   private final double resampleRate;
   private final double statePropagationRate;
   private final double rougheningLinVelStd;
@@ -23,6 +24,7 @@ class SlamLocalizationStep {
   SlamLocalizationStep(SlamConfig slamConfig) {
     estimatedPose = new SlamEstimatedPose();
     resampleRate = slamConfig.resampleRate.number().doubleValue();
+    odometryStatePropagation = slamConfig.odometryStatePropagation;
     statePropagationRate = slamConfig.statePropagationRate.number().doubleValue();
     rougheningLinVelStd = slamConfig.rougheningLinAccelStd.number().doubleValue();
     rougheningAngVelStd = slamConfig.rougheningAngAccelStd.number().doubleValue();
@@ -40,10 +42,14 @@ class SlamLocalizationStep {
     lastPropagationTimeStamp = initTimeStamp;
   }
 
-  public void localizationStep(SlamParticle[] slamParticles, MapProvider map, double[] eventGokartFrame, double currentTimeStamp) {
+  public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
     if ((currentTimeStamp - lastPropagationTimeStamp) > statePropagationRate) {
       double dT = currentTimeStamp - lastPropagationTimeStamp;
-      SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
+      if (!odometryStatePropagation) {
+        SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
+      } else {
+        SlamParticleUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
+      }
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if ((currentTimeStamp - lastResampleTimeStamp) > resampleRate) {

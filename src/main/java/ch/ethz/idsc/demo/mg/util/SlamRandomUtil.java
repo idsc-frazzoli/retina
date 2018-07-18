@@ -32,7 +32,9 @@ public enum SlamRandomUtil {
     return RANDOM.nextGaussian() * standardDeviation + mean;
   }
 
-  // set array with uniformly distributed random variables in interval [0,1]
+  /** fills array with random variables uniformly distributed in [0,1]
+   * 
+   * @param */
   public static void setUniformRVArray(double[] randomArray) {
     for (int i = 0; i < randomArray.length; i++)
       randomArray[i] = SlamRandomUtil.getUniformRV();

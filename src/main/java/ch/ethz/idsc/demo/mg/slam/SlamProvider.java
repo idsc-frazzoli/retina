@@ -18,27 +18,27 @@ import ch.ethz.idsc.tensor.Tensor;
 class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartLookup;
   private final GokartToImageInterface gokartToImageUtil;
-  private final GokartPoseInterface gokartOdometryPose;
   private final GokartPoseInterface gokartLidarPose;
+  private final GokartPoseOdometryDemo gokartOdometry;
   private final EventFiltering eventFiltering;
   private final SlamParticle[] slamParticles;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
-  private final SlamWayPointExtraction slamWayPoints;
+  private final SlamMapProcessing slamWayPoints;
   private final SlamTrajectoryPlanning slamTrajectoryPlanning;
   private final boolean lidarMappingMode;
   private final int numOfPart;
   private boolean isInitialized;
 
-  SlamProvider(SlamConfig slamConfig, GokartPoseInterface gokartOdometryPose, GokartPoseInterface gokartLidarPose) {
+  SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartLookup = slamConfig.davisConfig.createImageToGokartUtilLookup();
     gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
-    this.gokartOdometryPose = gokartOdometryPose;
     this.gokartLidarPose = gokartLidarPose;
+    this.gokartOdometry = gokartOdometry;
     eventFiltering = new EventFiltering(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
-    slamWayPoints = new SlamWayPointExtraction(slamConfig);
+    slamWayPoints = new SlamMapProcessing(slamConfig);
     slamTrajectoryPlanning = new SlamTrajectoryPlanning(slamConfig, slamLocalizationStep.getPoseInterface());
     lidarMappingMode = slamConfig.lidarMappingMode;
     numOfPart = slamConfig.numberOfParticles.number().intValue();
@@ -67,7 +67,7 @@ class SlamProvider implements DavisDvsListener {
         slamLocalizationStep.setPose(gokartLidarPose.getPose());
         slamMappingStep.mappingStepWithLidar(gokartLidarPose.getPose(), eventGokartFrame, currentTimeStamp);
       } else {
-        slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), eventGokartFrame, currentTimeStamp);
+        slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
         slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getPoseInterface().getPose(), eventGokartFrame, currentTimeStamp);
         slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
         slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);

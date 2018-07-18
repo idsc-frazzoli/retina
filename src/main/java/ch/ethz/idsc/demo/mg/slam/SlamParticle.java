@@ -34,12 +34,9 @@ public class SlamParticle implements GokartPoseInterface {
     setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
-  private void setPoseUnitless(Tensor unitlessPose) {
-    double x = unitlessPose.Get(0).number().doubleValue();
-    double y = unitlessPose.Get(1).number().doubleValue();
-    double angle = unitlessPose.Get(2).number().doubleValue();
-    pose = Tensors.of(Quantity.of(x, SI.METER), Quantity.of(y, SI.METER), DoubleScalar.of(angle));
-    setGeometricLayer();
+  public void propagateStateEstimateOdometry(Tensor velocity, double dT) {
+    Tensor deltaPose = velocity.multiply(Quantity.of(dT, SI.SECOND));
+    setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), GokartPoseHelper.toUnitless(deltaPose)));
   }
 
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
@@ -47,6 +44,14 @@ public class SlamParticle implements GokartPoseInterface {
     linVel = particle.getLinVel();
     angVel = particle.getAngVel();
     particleLikelihood = updatedLikelihood;
+    setGeometricLayer();
+  }
+
+  private void setPoseUnitless(Tensor unitlessPose) {
+    double x = unitlessPose.Get(0).number().doubleValue();
+    double y = unitlessPose.Get(1).number().doubleValue();
+    double angle = unitlessPose.Get(2).number().doubleValue();
+    pose = Tensors.of(Quantity.of(x, SI.METER), Quantity.of(y, SI.METER), DoubleScalar.of(angle));
     setGeometricLayer();
   }
 

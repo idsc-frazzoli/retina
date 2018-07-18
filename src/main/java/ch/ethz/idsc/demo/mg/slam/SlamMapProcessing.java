@@ -12,8 +12,9 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.util.CVUtil;
 
-/** extracts way points from a map */
-class SlamWayPointExtraction {
+/** extracts way points from a map using threshold operation, morphological processing
+ * and connected component labeling */
+class SlamMapProcessing {
   private final static int arrayStep = Double.SIZE / Byte.SIZE;
   private final MapProvider thresholdMap;
   private final Mat dilateKernel = opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, //
@@ -31,7 +32,7 @@ class SlamWayPointExtraction {
   private Mat processedMap;
   private Mat labels;
 
-  SlamWayPointExtraction(SlamConfig slamConfig) {
+  SlamMapProcessing(SlamConfig slamConfig) {
     thresholdMap = new MapProvider(slamConfig);
     processedMap = new Mat(thresholdMap.getWidth(), thresholdMap.getHeight(), opencv_core.CV_8U);
     labels = new Mat(thresholdMap.getWidth(), thresholdMap.getHeight(), opencv_core.CV_8U);

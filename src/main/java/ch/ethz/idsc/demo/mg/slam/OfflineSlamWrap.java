@@ -14,9 +14,10 @@ import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
@@ -25,7 +26,7 @@ import ch.ethz.idsc.tensor.Scalar;
 // TODO maybe create abstract wrapper class and then extend OfflineSlamWrap and OfflinePipelineWrap
 class OfflineSlamWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
-  private final GokartPoseOdometry gokartOdometryPose;
+  private final GokartPoseOdometryDemo gokartOdometryPose;
   private final GokartPoseLcmLidar gokartLidarPose;
   private final SlamProvider slamProvider;
   private final SlamVisualization slamVisualization;
@@ -43,7 +44,7 @@ class OfflineSlamWrap implements OfflineLogListener {
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
     davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-    gokartOdometryPose = GokartPoseOdometry.create();
+    gokartOdometryPose = GokartPoseOdometryDemo.create();
     gokartLidarPose = new GokartPoseLcmLidar();
     slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
@@ -63,20 +64,21 @@ class OfflineSlamWrap implements OfflineLogListener {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     double timeInst = time.number().doubleValue();
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
       if (!isInitialized) {
         lastSavingTimeStamp = timeInst;
         lastImagingTimestamp = timeInst;
+        gokartOdometryPose.initializePose(gokartLidarPose.getPose());
         isInitialized = true;
       }
-      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     }
     if (channel.equals("davis240c.overview.dvs")) {
       if (isInitialized)
         davisDvsDatagramDecoder.decode(byteBuffer);
     }
-    // odometry not required for testing
-    // if (channel.equals(RimoLcmServer.CHANNEL_GET))
-    // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
+    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
+      gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
+    }
     if (saveSlamFrame && ((timeInst - lastSavingTimeStamp) > savingInterval)) {
       saveFrame(constructFrames()[1], parentFilePath, imagePrefix, timeInst);
       lastSavingTimeStamp = timeInst;

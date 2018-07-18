@@ -13,6 +13,11 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 // module receives a set of waypoints in world frame and outputs a trajectory
 public class SlamTrajectoryPlanning {
   private final GokartPoseInterface gokartPose;
+  private final double initialDelay;
+  private final double trajectoryUpdateRate;
+  private final double visibleBoxXMin;
+  private final double visibleBoxXMax;
+  private final double visibleBoxHalfWidth;
   private List<WayPoint> gokartWayPoints;
   private List<WayPoint> visibleGokartWayPoints;
   private double lastComputationTimeStamp;
@@ -20,16 +25,21 @@ public class SlamTrajectoryPlanning {
 
   SlamTrajectoryPlanning(SlamConfig slamConfig, GokartPoseInterface gokartPose) {
     this.gokartPose = gokartPose;
+    initialDelay = slamConfig.initialDelay.number().doubleValue();
+    trajectoryUpdateRate = slamConfig.trajectoryUpdateRate.number().doubleValue();
+    visibleBoxXMin = slamConfig.visibleBoxXMin.number().doubleValue();
+    visibleBoxXMax = slamConfig.visibleBoxXMax.number().doubleValue();
+    visibleBoxHalfWidth = slamConfig.visibleBoxHalfWidth.number().doubleValue();
   }
 
   public void initialize(double initTimeStamp) {
     gokartWayPoints = new ArrayList<WayPoint>();
     visibleGokartWayPoints = new ArrayList<WayPoint>();
-    lastComputationTimeStamp = initTimeStamp + 1; // TODO magic constant
+    lastComputationTimeStamp = initTimeStamp + initialDelay;
   }
 
   public void computeTrajectory(List<double[]> worldWayPoints, double currentTimeStamp) {
-    if (currentTimeStamp - lastComputationTimeStamp > 0.1) {
+    if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
       gokartWayPoints = new ArrayList<WayPoint>(worldWayPoints.size());
       visibleGokartWayPoints = new ArrayList<WayPoint>();
       setGokartWayPoints(worldWayPoints);
@@ -69,7 +79,8 @@ public class SlamTrajectoryPlanning {
   private void checkVisibility() {
     for (int i = 0; i < gokartWayPoints.size(); i++) {
       double[] gokartPosition = gokartWayPoints.get(i).getGokartPosition();
-      if (gokartPosition[0] > 1 && gokartPosition[1] < 10 && gokartPosition[1] > -5 && gokartPosition[1] < 5) {
+      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[1] < visibleBoxXMax && gokartPosition[1] > -visibleBoxHalfWidth
+          && gokartPosition[1] < visibleBoxHalfWidth) {
         gokartWayPoints.get(i).setVisibility(true);
         visibleGokartWayPoints.add(gokartWayPoints.get(i));
       }
