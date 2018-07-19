@@ -182,8 +182,7 @@ public enum SlamParticleUtil {
    * 
    * @param slamParticles
    * @param relevantRange [-] number of particles with highest likelihood that is used
-   * @return average pose
-   */
+   * @return average pose */
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     Tensor expectedPose = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), DoubleScalar.of(0));
     Arrays.sort(slamParticles, 0, relevantRange, SlamCompare);
