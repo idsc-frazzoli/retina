@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// collection of public static void methods to handle SlamParticle
+// collection of public static methods to handle the mighty SlamParticle object
 public enum SlamParticleUtil {
   ;
   public static final Comparator<SlamParticle> SlamCompare = new Comparator<SlamParticle>() {
@@ -27,10 +27,13 @@ public enum SlamParticleUtil {
     }
   };
 
-  /** initial distribution with a given initial pose
+  /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
    * 
-   * @param pose
-   * @param slamParticles */
+   * @param slamParticles
+   * @param pose initial pose which is identical for all particles
+   * @param linVelAvg [m/s] average initial linear velocity
+   * @param linVelStd [m/s] standard deviation of linear velocity
+   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
   public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
     double initLikelihood = 1.0 / slamParticles.length;
     for (int i = 0; i < slamParticles.length; i++) {
@@ -42,12 +45,16 @@ public enum SlamParticleUtil {
     }
   }
 
+  /** updates particle likelihoods by referring to a map
+   * 
+   * @param slamParticles
+   * @param map
+   * @param gokartFramePos [m] event position in go kart frame
+   * @param alpha [-] update equation parameter */
   public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
     double sumOfLikelihoods = 0;
     for (int i = 0; i < slamParticles.length; i++) {
-      // map go kart coordinates into world coordinates using the state estimate of the particle
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
-      // get the likelihoodMap value of the computed world coordinate position and apply the actual update rule
       double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / map.getMaxValue();
       slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
@@ -57,7 +64,7 @@ public enum SlamParticleUtil {
       slamParticles[i].setParticleLikelihood(slamParticles[i].getParticleLikelihood() / sumOfLikelihoods);
   }
 
-  /** propagate the particles' state estimates
+  /** propagate the particles' state estimates with their estimated velocity
    * 
    * @param slamParticles
    * @param dT [s] */
@@ -66,11 +73,23 @@ public enum SlamParticleUtil {
       slamParticles[i].propagateStateEstimate(dT);
   }
 
-  /** resamples the particles
+  /** propagate the particles' state estimates with the velocity provided by odometry
    * 
-   * @param slamParticles */
+   * @param slamParticles
+   * @param velocity provided by odometry
+   * @param dT [s] */
+  public static void propagateStateEstimateOdometry(SlamParticle[] slamParticles, Tensor velocity, double dT) {
+    for (int i = 0; i < slamParticles.length; i++)
+      slamParticles[i].propagateStateEstimateOdometry(velocity, dT);
+  }
+
+  /** particle resampling. multinominal sampling and neglect_low_likelihood method are available. particle roughening is also provided
+   * 
+   * @param slamParticles
+   * @param dT [s]
+   * @param rougheningLinVelStd [m/s] particle roughening parameter
+   * @param rougheningAngVelStd [rad/s] particle roughening parameter */
   public static void resampleParticles(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
-    // different methods to assign particles can be tested here
     // SlamParticleUtil.multinomialSampling(slamParticles);
     SlamParticleUtil.neglectLowLikelihoodds(slamParticles);
     // depending on resampling method, roughening might be used
@@ -159,8 +178,11 @@ public enum SlamParticleUtil {
     return newAngVel;
   }
 
-  // get average pose of particles with highest likelihood
-  // for maximum likelihood estimate, set relevant range to one
+  /** get average pose of particles in relevent range
+   * 
+   * @param slamParticles
+   * @param relevantRange [-] number of particles with highest likelihood that is used
+   * @return average pose */
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     Tensor expectedPose = Tensors.of(Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), DoubleScalar.of(0));
     Arrays.sort(slamParticles, 0, relevantRange, SlamCompare);

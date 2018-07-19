@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -87,7 +88,11 @@ public class ChassisGeometry implements Serializable {
    * computed from the angular rates of the rear wheels. The odometry value
    * has error due to slip. */
   public Scalar odometryTangentSpeed(RimoGetEvent rimoGetEvent) {
-    return Mean.of(rimoGetEvent.getAngularRate_Y_pair()).multiply(tireRadiusRear).Get();
+    return odometryTangentSpeed(rimoGetEvent.getAngularRate_Y_pair());
+  }
+
+  public Scalar odometryTangentSpeed(Tensor angularRate_Y_pair) {
+    return Mean.of(angularRate_Y_pair).multiply(tireRadiusRear).Get();
   }
 
   /** @param rimoGetEvent
@@ -95,8 +100,19 @@ public class ChassisGeometry implements Serializable {
    * computed from the angular rates of the rear wheels. The odometry value
    * has error due to slip. */
   public Scalar odometryTurningRate(RimoGetEvent rimoGetEvent) {
+    return odometryTurningRate(rimoGetEvent.getAngularRate_Y_pair());
+  }
+
+  public Scalar odometryTurningRate(Tensor angularRate_Y_pair) {
     // rad/s * m == (m / s) / m
-    return Differences.of(rimoGetEvent.getAngularRate_Y_pair()).Get(0) //
+    return Differences.of(angularRate_Y_pair).Get(0) //
         .multiply(RationalScalar.HALF).multiply(tireRadiusRear).divide(yTireRear);
+  }
+
+  public Tensor odometryVelocity(Tensor angularRate_Y_pair) {
+    return Tensors.of( //
+        odometryTangentSpeed(angularRate_Y_pair), //
+        Quantity.of(0, SI.VELOCITY), //
+        odometryTurningRate(angularRate_Y_pair));
   }
 }

@@ -16,31 +16,62 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
 /** utilities to manipulate maps */
 public enum SlamMapUtil {
   ;
-  /** update occurrence map with particles. in v1.0, counting events in each cell.
+  /** update occurrence map with particles. in v1.0, counting events in each cell
    * 
    * @param slamParticles particle set
    * @param occurrenceMap
-   * @param gokartFramePos [m]
+   * @param gokartFramePos [m] position of event in go kart frame
    * @param particleRange number of particles with highest likelihoods used for update */
   public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
+    double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
     Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
-      occurrenceMap.addValue(worldCoord, slamParticles[i].getParticleLikelihood());
+      occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
     }
+  }
+
+  /** adapts the event weight based on e.g. distance to sensor
+   * 
+   * @param gokartFramePos [m] positoin of event in go kart frame
+   * @return adaptiveWeightFactor */
+  // TODO in future, the weight could be adapted by where we expect the next waypoint to appear
+  private static double adaptiveEventWeightening(double[] gokartFramePos) {
+    // compute distance metric
+    double distance = Math.sqrt(gokartFramePos[0] * gokartFramePos[0]);
+    return 1 + distance;
   }
 
   /** update occurrence map with lidar ground truth
    * 
    * @param gokartLidarPose ground truth pose provided by lidar
    * @param occurrenceMap
-   * @param gokartFramePos [m] */
+   * @param gokartFramePos [m] position of event in go kart frame */
   public static void updateOccurrenceMapLidar(Tensor gokartPose, MapProvider occurrenceMap, double[] gokartFramePos) {
-    GeometricLayer gokartPoseLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
-    Tensor worldCoord = gokartPoseLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
-    // we just add 1
+    GeometricLayer gokartToWorldLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
+    Tensor worldCoord = gokartToWorldLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
     occurrenceMap.addValue(worldCoord, 1);
+  }
+
+  /** update reactive occurrence map. part of the map which is more then {@link lookBehindDistance} behind go kart is set to zero
+   * 
+   * @param gokartPose
+   * @param occurrenceMap
+   * @param lookBehindDistance [m] */
+  public static void updateReactiveOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(gokartPose)));
+    double[] mapArray = occurrenceMap.getMapArray();
+    for (int i = 0; i < mapArray.length; i++) {
+      if (mapArray[i] != 0) {
+        double[] worldCoord = occurrenceMap.getCellCoord(i);
+        Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
+        double[] gokartCoord = { gokartCoordTensor.Get(0).number().doubleValue(), gokartCoordTensor.Get(1).number().doubleValue() };
+        if (gokartCoord[0] < lookBehindDistance) {
+          occurrenceMap.setValue(i, 0);
+        }
+      }
+    }
   }
 
   /** @param currentExpectedPose

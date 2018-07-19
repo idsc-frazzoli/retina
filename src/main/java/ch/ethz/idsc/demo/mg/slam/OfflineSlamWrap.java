@@ -14,9 +14,10 @@ import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
@@ -25,7 +26,7 @@ import ch.ethz.idsc.tensor.Scalar;
 // TODO maybe create abstract wrapper class and then extend OfflineSlamWrap and OfflinePipelineWrap
 class OfflineSlamWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
-  private final GokartPoseOdometry gokartOdometryPose;
+  private final GokartPoseOdometryDemo gokartOdometryPose;
   private final GokartPoseLcmLidar gokartLidarPose;
   private final SlamProvider slamProvider;
   private final SlamVisualization slamVisualization;
@@ -34,16 +35,16 @@ class OfflineSlamWrap implements OfflineLogListener {
   private final File parentFilePath;
   private final boolean saveSlamFrame;
   private final boolean lidarMappingMode;
-  private final int visualizationInterval;
-  private final int savingInterval;
+  private final double visualizationInterval;
+  private final double savingInterval;
   private boolean isInitialized;
-  private int lastImagingTimestamp;
-  private int lastSavingTimeStamp;
+  private double lastImagingTimestamp;
+  private double lastSavingTimeStamp;
   private int imageCount;
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
     davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-    gokartOdometryPose = GokartPoseOdometry.create();
+    gokartOdometryPose = GokartPoseOdometryDemo.create();
     gokartLidarPose = new GokartPoseLcmLidar();
     slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
@@ -51,32 +52,33 @@ class OfflineSlamWrap implements OfflineLogListener {
     slamMapFrames = new SlamMapFrame[3];
     for (int i = 0; i < slamMapFrames.length; i++)
       slamMapFrames[i] = new SlamMapFrame(slamConfig);
-    visualizationInterval = slamConfig.visualizationInterval.number().intValue();
+    visualizationInterval = slamConfig.visualizationInterval.number().doubleValue();
     saveSlamFrame = slamConfig.saveSlamFrame;
     lidarMappingMode = slamConfig.lidarMappingMode;
     imagePrefix = slamConfig.davisConfig.logFileName;
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
-    savingInterval = slamConfig.savingInterval.number().intValue();
+    savingInterval = slamConfig.savingInterval.number().doubleValue();
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    int timeInst = (int) (1000 * time.number().doubleValue()); // TODO hack
+    double timeInst = time.number().doubleValue();
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
       if (!isInitialized) {
         lastSavingTimeStamp = timeInst;
         lastImagingTimestamp = timeInst;
+        gokartOdometryPose.initializePose(gokartLidarPose.getPose());
         isInitialized = true;
       }
-      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     }
     if (channel.equals("davis240c.overview.dvs")) {
       if (isInitialized)
         davisDvsDatagramDecoder.decode(byteBuffer);
     }
-    // odometry not required for testing
-    // if (channel.equals(RimoLcmServer.CHANNEL_GET))
-    // gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
+    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
+      gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
+    }
     if (saveSlamFrame && ((timeInst - lastSavingTimeStamp) > savingInterval)) {
       saveFrame(constructFrames()[1], parentFilePath, imagePrefix, timeInst);
       lastSavingTimeStamp = timeInst;
@@ -92,10 +94,11 @@ class OfflineSlamWrap implements OfflineLogListener {
     System.out.println("Slam map successfully saved");
   }
 
-  private void saveFrame(BufferedImage bufferedImage, File parentFilePath, String imagePrefix, int timeStamp) {
+  private void saveFrame(BufferedImage bufferedImage, File parentFilePath, String imagePrefix, double timeStamp) {
+    int fileTimeStamp = (int) (1000 * timeStamp);
     try {
       imageCount++;
-      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
+      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, fileTimeStamp);
       ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
       System.out.printf("Image saved as %s\n", fileName);
     } catch (IOException e) {
@@ -104,14 +107,12 @@ class OfflineSlamWrap implements OfflineLogListener {
   }
 
   private BufferedImage[] constructFrames() {
-    // first frame is raw occurrence map
     slamMapFrames[0].setRawMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
       drawParticlePoses();
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    // second frame is processed waypoint map
-    slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
+    slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
     slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < combinedFrames.length; i++)

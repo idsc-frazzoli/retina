@@ -16,7 +16,7 @@ public class DavisConfig {
   /** must match name in LogFileLocations and be an extract of a recording */
   public String logFileName = "DUBI15a";
   /** maxDuration with interpretation in [ms] */
-  public final Scalar maxDuration = RealScalar.of(60000);
+  public final Scalar maxDuration = RealScalar.of(15000);
   /** relative to src/main/resources/ */
   // TODO assignment of calibrationFileName is prone to error. is is possible to implement as member function?
   public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv";
