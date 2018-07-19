@@ -100,7 +100,7 @@ public class ChassisGeometry implements Serializable {
    * computed from the angular rates of the rear wheels. The odometry value
    * has error due to slip. */
   public Scalar odometryTurningRate(RimoGetEvent rimoGetEvent) {
-    return odometryTangentSpeed(rimoGetEvent.getAngularRate_Y_pair());
+    return odometryTurningRate(rimoGetEvent.getAngularRate_Y_pair());
   }
 
   public Scalar odometryTurningRate(Tensor angularRate_Y_pair) {
