@@ -20,10 +20,10 @@ import ch.ethz.idsc.tensor.sca.N;
  * quite smooth and stable.
  * 
  * <p>Naturally, any tire slip results in a loss of tracking accuracy. */
-// DEMO class which provides velocity such that it can be integrated into the SLAM algorithm
+ // DEMO class which provides velocity such that it can be integrated into the SLAM algorithm
 // rad 0.14, ytir = 0.65 very good rotation tracking! but speed not accurate
 // rad 0.12, ytir = 0.54 good speed tracking, rotation ok
-class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListener {
+public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListener {
   public static GokartPoseOdometryDemo create(Tensor state) {
     return new GokartPoseOdometryDemo(state);
   }

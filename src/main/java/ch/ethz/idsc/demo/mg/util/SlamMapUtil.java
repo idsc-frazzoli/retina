@@ -25,6 +25,7 @@ public enum SlamMapUtil {
   public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
     double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
+    adaptiveWeightFactor = 1;
     Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);

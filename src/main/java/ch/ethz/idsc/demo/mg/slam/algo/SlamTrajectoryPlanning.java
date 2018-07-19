@@ -1,9 +1,11 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;

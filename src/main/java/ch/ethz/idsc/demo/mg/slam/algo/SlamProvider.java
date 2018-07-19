@@ -1,11 +1,16 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.List;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.pipeline.EventFiltering;
+import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
+import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamParticle;
+import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.util.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -13,9 +18,9 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** implements the slam algorithm
+/** implements the SLAM algorithm
  * "simultaneous localization and mapping for event-based vision systems" */
-class SlamProvider implements DavisDvsListener {
+public class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartLookup;
   private final GokartToImageInterface gokartToImageUtil;
   private final GokartPoseInterface gokartLidarPose;
@@ -30,7 +35,7 @@ class SlamProvider implements DavisDvsListener {
   private final int numOfPart;
   private boolean isInitialized;
 
-  SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
+  public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartLookup = slamConfig.davisConfig.createImageToGokartUtilLookup();
     gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
     this.gokartLidarPose = gokartLidarPose;

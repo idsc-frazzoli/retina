@@ -1,17 +1,15 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
-import javax.imageio.ImageIO;
-
-import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
-import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
+import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
+import ch.ethz.idsc.demo.mg.slam.vis.SlamMapFrame;
+import ch.ethz.idsc.demo.mg.slam.vis.SlamVisualization;
+import ch.ethz.idsc.demo.mg.util.VisGeneralUtil;
+import ch.ethz.idsc.demo.mg.util.VisSlamUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -80,52 +78,18 @@ class OfflineSlamWrap implements OfflineLogListener {
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
     }
     if (saveSlamFrame && ((timeInst - lastSavingTimeStamp) > savingInterval)) {
-      saveFrame(constructFrames()[1], parentFilePath, imagePrefix, timeInst);
+      imageCount++;
+      BufferedImage slamFrame = VisSlamUtil.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
+      VisGeneralUtil.saveFrame(slamFrame, parentFilePath, imagePrefix, timeInst, imageCount);
       lastSavingTimeStamp = timeInst;
     }
     if ((timeInst - lastImagingTimestamp) > visualizationInterval) {
-      slamVisualization.setFrames(constructFrames());
+      slamVisualization.setFrames(VisSlamUtil.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
       lastImagingTimestamp = timeInst;
     }
   }
 
-  public void saveRecordedMap() {
-    SlamFileUtil.saveToCSV(SlamFileLocations.recordedMaps(imagePrefix), slamProvider.getMap(0));
-    System.out.println("Slam map successfully saved");
-  }
-
-  private void saveFrame(BufferedImage bufferedImage, File parentFilePath, String imagePrefix, double timeStamp) {
-    int fileTimeStamp = (int) (1000 * timeStamp);
-    try {
-      imageCount++;
-      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, fileTimeStamp);
-      ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
-      System.out.printf("Image saved as %s\n", fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private BufferedImage[] constructFrames() {
-    slamMapFrames[0].setRawMap(slamProvider.getMap(0));
-    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
-    if (!lidarMappingMode)
-      drawParticlePoses();
-    slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
-    slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    BufferedImage[] combinedFrames = new BufferedImage[3];
-    for (int i = 0; i < combinedFrames.length; i++)
-      combinedFrames[i] = slamMapFrames[i].getFrame();
-    return combinedFrames;
-  }
-
-  private void drawParticlePoses() {
-    SlamParticle[] slamParticles = slamProvider.getParticles();
-    int partNumber = slamParticles.length / 3;
-    Arrays.sort(slamParticles, 0, partNumber, SlamParticleUtil.SlamCompare);
-    for (int i = 0; i < partNumber; i++) {
-      slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
-    }
+  public SlamProvider getSlamProvider() {
+    return slamProvider;
   }
 }

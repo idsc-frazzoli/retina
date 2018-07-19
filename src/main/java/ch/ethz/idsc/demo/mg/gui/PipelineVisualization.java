@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
+import ch.ethz.idsc.demo.mg.util.VisGeneralUtil;
 
 // provides a visualization of the complete pipeline
 public class PipelineVisualization {
@@ -19,11 +19,11 @@ public class PipelineVisualization {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Raw event stream", 50, 13);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
+      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
       graphics.drawString("Filtered event stream with active blobs", 50, 313);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 50, 320, null);
+      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage[1], scaling), 50, 320, null);
       graphics.drawString("Filtered event stream with hidden blobs", 50, 613);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[2], scaling), 50, 620, null);
+      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage[2], scaling), 50, 620, null);
       graphics.drawString("Raw features in physical space", 460, 13);
       graphics.drawImage(bufferedImage[3], 460, 20, null);
     }

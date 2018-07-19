@@ -1,6 +1,10 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
+import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
+import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
 import ch.ethz.idsc.tensor.Tensor;
