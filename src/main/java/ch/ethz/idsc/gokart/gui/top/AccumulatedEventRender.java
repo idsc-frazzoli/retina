@@ -12,7 +12,7 @@ import java.awt.image.DataBufferByte;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;

@@ -31,8 +31,8 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.VisGeneralUtil;
-import ch.ethz.idsc.demo.mg.util.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length. Feature position can be adjusted with wasd keys.

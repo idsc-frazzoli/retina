@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.vis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

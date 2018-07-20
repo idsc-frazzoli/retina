@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
  * is compared in a TrackingEvaluatorInstant object. */

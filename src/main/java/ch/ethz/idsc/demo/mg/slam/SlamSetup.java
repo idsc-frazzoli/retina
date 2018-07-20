@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
+import ch.ethz.idsc.demo.mg.util.slam.SlamFileUtil;
 
 /** sets up the SLAM algorithm to process an offline log file */
 class SlamSetup {

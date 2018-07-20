@@ -5,8 +5,8 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
-import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
+import ch.ethz.idsc.demo.mg.util.slam.SlamFileUtil;
+import ch.ethz.idsc.demo.mg.util.slam.SlamMapUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the mapping step of the SLAM algorithm */

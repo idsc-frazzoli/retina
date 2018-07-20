@@ -9,10 +9,9 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.util.VisGeneralUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 
-/** similar to pipelineVisualization. Provides a live update of SlamMapFrame */
-//TODO probably create abstract visualization class and then extend SlamVisualization and PipelineVisualization?
+/** similar to PipelineVisualization. Provides a live update of SlamMapFrame */
 public class SlamVisualization {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];

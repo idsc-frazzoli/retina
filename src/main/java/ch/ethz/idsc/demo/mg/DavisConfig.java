@@ -4,8 +4,8 @@ package ch.ethz.idsc.demo.mg;
 import java.io.File;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.mg.util.GokartToImageUtil;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;

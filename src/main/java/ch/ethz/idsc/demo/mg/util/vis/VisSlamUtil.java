@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.vis;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -8,6 +8,7 @@ import java.util.Arrays;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamMapFrame;
+import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
 // provides slam visualization static methods
@@ -27,7 +28,8 @@ public enum VisSlamUtil {
     if (!lidarMappingMode)
       drawParticlePoses(slamMapFrames, slamProvider);
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-    slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
+    slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
+     slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
     slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < 3; i++)

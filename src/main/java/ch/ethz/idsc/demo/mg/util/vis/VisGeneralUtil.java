@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.vis;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;

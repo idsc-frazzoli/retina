@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
 /** demo to test ellipse merging */
 class ImageDisplayFrame {
