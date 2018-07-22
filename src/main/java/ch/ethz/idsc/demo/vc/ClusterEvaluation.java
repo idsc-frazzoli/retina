@@ -27,7 +27,6 @@ enum ClusterEvaluation {
   private static final String CHANNEL_VLP16 = VelodyneLcmChannels.ray(VelodyneModel.VLP16, "center");
 
   public static void main(String[] args) throws IOException {
-    // Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     Tensor minPoints = Tensors.empty();
     Tensor epsilon = Tensors.empty();
     for (int i = 2; i < 10; i++) {
@@ -55,7 +54,7 @@ enum ClusterEvaluation {
             }
           }
         };
-        File file = UserHome.file("Desktop/ETHZ/log/trimmed.lcm");
+        File file = UserHome.file("Desktop/ETHZ/log/trimmed3.lcm");
         if (UserHome.file("").getName().equals("datahaki"))
           file = UserHome.file("gokart/pedestrian/20180412T163855/log.lcm");
         OfflineLogPlayer.process(file, offlineLogListener);

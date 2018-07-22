@@ -16,8 +16,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class ClusterConfig implements Serializable {
   public static final ClusterConfig GLOBAL = AppResources.load(new ClusterConfig());
   /***************************************************/
-  public Scalar epsilon = Quantity.of(0.03, SI.METER);
-  public Scalar minPoints = RealScalar.of(5);
+  public Scalar epsilon = Quantity.of(0.035, SI.METER);
+  public Scalar minPoints = RealScalar.of(7);
   public Scalar scanCount = RealScalar.of(6);
 
   /***************************************************/
