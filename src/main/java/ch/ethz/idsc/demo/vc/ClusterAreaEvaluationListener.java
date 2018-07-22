@@ -89,7 +89,7 @@ class ClusterAreaEvaluationListener {
             recallAveragedSP = averageValue(recallAveragedSP, measuresSP.recall);
           if (Double.isFinite(measuresSP.precision))
             precisionAveragedSP = averageValue(precisionAveragedSP, measuresSP.precision);
-          if (count == 230) {
+          if (count == 80) {
             try {
               DIRECTORY_PF.mkdir();
               Export.of(new File(DIRECTORY_PF, //
@@ -106,6 +106,7 @@ class ClusterAreaEvaluationListener {
           }
         }
         count++;
+        System.out.println(count);
         GeometricLayer geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
         BufferedImage bufferedImage = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_BGR);
         Graphics2D graphics2d = bufferedImage.createGraphics();

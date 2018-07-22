@@ -47,7 +47,8 @@ public class LinearPredictor {
             ? Math.sqrt(Mean.of(add).Get().number().doubleValue())
             : 0;
         Tensor beta = LeastSquares.of(x, y);
-        return Last.of(nonEmptyMeans).add(AngleVector.of(beta.Get(0)).multiply(RealScalar.of(i * step)));
+        double angle = Math.atan(beta.Get(0).number().doubleValue());
+        return Last.of(nonEmptyMeans).add(AngleVector.of(RealScalar.of(angle)).multiply(RealScalar.of(i * step)));
       }
       return Flatten.of(nonEmptyMeans); // if only one point assume it is not going to move
     }

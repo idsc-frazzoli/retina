@@ -17,13 +17,13 @@ enum LogEventExtract {
     File src = UserHome.file("Desktop/ETHZ/log/pedestrian/20180412T163855/log.lcm");
     System.out.println(src.toString());
     File dst = null;
-    dst = UserHome.file("Desktop/ETHZ/log/trimmed.lcm");
+    dst = UserHome.file("Desktop/ETHZ/log/trimmed3.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 40000;
-    int hi = 80000;
+    int lo = 708000;
+    int hi = 800000;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);
