@@ -12,6 +12,7 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
     return new ImageToGokartLookup(new ImageToGokartUtil(inputTensor, unitConversion), width, height);
   }
 
+  // ---
   private final ImageToGokartUtil transformUtil;
   private final double[] lookupArray;
   private final int width;

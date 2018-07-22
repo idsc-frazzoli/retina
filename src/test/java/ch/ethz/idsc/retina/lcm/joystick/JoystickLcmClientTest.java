@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class JoystickLcmClientTest extends TestCase {
   /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
-    BinaryBlobPublisher bbp = new BinaryBlobPublisher("joystick." + GokartLcmChannel.JOYSTICK);
+    BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
     JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
     byte[] data = new byte[joystickType.encodingSize()];
     FloatBuffer axes = FloatBuffer.wrap(new float[6]);
@@ -43,7 +43,7 @@ public class JoystickLcmClientTest extends TestCase {
     joystickLcmClient.startSubscriptions();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     {
-      BinaryBlobPublisher bbp = new BinaryBlobPublisher("joystick." + GokartLcmChannel.JOYSTICK);
+      BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
       JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
       byte[] data = new byte[joystickType.encodingSize()];
       FloatBuffer axes = FloatBuffer.wrap(new float[6]);

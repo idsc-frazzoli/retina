@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 // this class incorporates prior knowledge to recognize the features we want to track.
 // filter has no memory --> a further filtering step is conducted by the estimation algorithm in physical space.
-public class ImageBlobSelector {
+class ImageBlobSelector {
   // parameters
   private final int upperBoarder; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
   // fields

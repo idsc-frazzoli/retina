@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.5.6</version>
+			<version>0.5.7</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.1.4</version>
+			<version>0.1.5</version>
 		</dependency>
 
 		<dependency>
@@ -130,7 +130,11 @@
 			<version>${lwjgl.version}</version>
 			<classifier>natives-${platform}</classifier>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.4.1</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

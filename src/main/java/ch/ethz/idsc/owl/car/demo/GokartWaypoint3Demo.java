@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
-import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.owl.bot.r2.WaypointDistanceCost;
@@ -31,7 +30,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** demo to simulate dubendorf hangar */
-public class GokartWaypoint3Demo implements DemoInterface {
+class GokartWaypoint3Demo implements DemoInterface {
   private static final Tensor ARROWHEAD = Tensors.matrixDouble( //
       new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(2));
   private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
@@ -47,11 +46,11 @@ public class GokartWaypoint3Demo implements DemoInterface {
       public RegionWithDistance<Tensor> getGoalRegionWithDistance(Tensor goal) {
         return new ConeRegion(goal, RealScalar.of(Math.PI / 10));
       }
-
-      @Override
-      public Optional<CostFunction> getPrimaryCost() {
-        return Optional.of(waypointCost);
-      }
+      // FIXME
+      // @Override
+      // public Optional<CostFunction> getPrimaryCost() {
+      // return Optional.of(waypointCost);
+      // }
     };
     // ---
     HelperHangarMap hangarMap = new HelperHangarMap("/dubilab/obstacles/20180610.png", gokartEntity);

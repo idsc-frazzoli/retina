@@ -31,21 +31,21 @@ public enum EvaluationFileLocations {
   /** @param filename without .csv extension
    * @return file in directory containing the handlabels */
   public static File handlabels(String filename) {
-    filename = filename + ".csv";
+    filename += ".csv";
     return new File(warningIfNotDirectory(HANDLABEL_CSV), filename);
   }
 
   /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File estimatedlabels(String filename) {
-    filename = filename + ".csv";
+    filename += ".csv";
     return new File(warningIfNotDirectory(ESTIMATED_CSV), filename);
   }
 
   /** @param filename without .csv extension
    * @return file in directory containing the estimatedlabels */
   public static File evalResults(String filename) {
-    filename = filename + ".csv";
+    filename += ".csv";
     return new File(warningIfNotDirectory(EVALRESULTS), filename);
   }
 

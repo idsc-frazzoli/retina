@@ -14,6 +14,7 @@ public class GokartToImageLookup implements GokartToImageInterface {
         lookAheadDistance);
   }
 
+  // ---
   private final GokartToImageUtil gokartToImageUtil;
   private final ImageToGokartUtil imageToGokartUtil;
   private final double[] lookupArray;

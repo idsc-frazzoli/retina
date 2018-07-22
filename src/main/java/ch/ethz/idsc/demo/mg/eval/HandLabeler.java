@@ -31,7 +31,6 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
@@ -154,7 +153,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
   public HandLabeler(PipelineConfig pipelineConfig) {
     // set parameters
-    imagePrefix = pipelineConfig.logFileName.toString();
+    imagePrefix = pipelineConfig.davisConfig.logFileName.toString();
     numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
     positionDifference = pipelineConfig.positionDifference.number().intValue();

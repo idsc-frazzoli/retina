@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.owl.subdiv.curve.EuclideanGeodesic;
 import ch.ethz.idsc.owl.subdiv.curve.FourPointCurveSubdivision;
+import ch.ethz.idsc.owl.subdiv.curve.RnGeodesic;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 public enum DubendorfCurve {
   ;
   private static final TensorUnaryOperator SUBDIVISION = //
-      new FourPointCurveSubdivision(EuclideanGeodesic.INSTANCE)::cyclic;
+      new FourPointCurveSubdivision(RnGeodesic.INSTANCE)::cyclic;
   /** used in tests */
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
   public static final Tensor HYPERLOOP_EIGHT_REVERSE = Reverse.of(HYPERLOOP_EIGHT);

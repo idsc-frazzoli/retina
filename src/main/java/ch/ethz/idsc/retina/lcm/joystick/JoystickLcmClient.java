@@ -16,17 +16,17 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
  * 
  * {@link JoystickLcmProvider} is suitable for modules that control live operations */
 public class JoystickLcmClient extends BinaryLcmClient {
-  private final String pattern;
+  private final String channel;
   private final List<JoystickListener> listeners = new LinkedList<>();
 
-  /** @param pattern for instance "generic_xbox_pad" */
-  public JoystickLcmClient(String pattern) {
-    this.pattern = pattern;
+  /** @param channel for instance "joystick.generic_xbox_pad" */
+  public JoystickLcmClient(String channel) {
+    this.channel = channel;
   }
 
   @Override // from LcmClientAdapter
   protected String channel() {
-    return "joystick." + pattern;
+    return channel;
   }
 
   @Override // from LcmClientAdapter

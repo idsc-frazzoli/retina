@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.EvalUtil;
 import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
@@ -33,7 +32,7 @@ import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
   private int currentLabelInstant = 0;
 
   EvaluatorSingleRun(PipelineConfig pipelineConfig) {
-    logFileName = pipelineConfig.logFileName.toString();
+    logFileName = pipelineConfig.davisConfig.logFileName.toString();
     numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
     evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());

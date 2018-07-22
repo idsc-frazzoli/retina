@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public class DriftGoalRegion implements Region<Tensor>, Serializable {
+class DriftGoalRegion implements Region<Tensor>, Serializable {
   private final Tensor goalState;
   private final Tensor tolerance;
 

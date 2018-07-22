@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 // provides a pipeline "wrapper" for analyzing logfiles with visualization
 // TODO visualization is not yet cleanly separated from PipelineProvider
-public class OfflinePipelineWrap implements OfflineLogListener {
+class OfflinePipelineWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final PipelineProvider pipelineProvider;
   // visualization
@@ -45,7 +45,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     visualizer = pipelineConfig.visualizePipeline ? new PipelineVisualization() : null;
     saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
-    imagePrefix = pipelineConfig.logFileName;
+    imagePrefix = pipelineConfig.davisConfig.logFileName;
     if (saveImagesConfig == 1) {
       parentFilePath = EvaluationFileLocations.testing();
     } else {
@@ -87,11 +87,12 @@ public class OfflinePipelineWrap implements OfflineLogListener {
   public void summarizeLog() {
     endTime = System.currentTimeMillis();
     int diff = lastTimestamp - firstTimestamp;
-    System.out.println("Percentage hit by active blobs: " + pipelineProvider.tracking.hitthreshold / pipelineProvider.eventCount * 100);
-    System.out.println("Elapsed time in the eventstream [ms]: " + diff + " with " + pipelineProvider.eventCount + " events");
+    System.out.println(
+        "Percentage hit by active blobs: " + pipelineProvider.getBlobTracking().hitthreshold / pipelineProvider.getEventFiltering().getEventCount() * 100);
+    System.out.println("Elapsed time in the eventstream [ms]: " + diff + " with " + pipelineProvider.getEventFiltering().getEventCount() + " events");
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
-    System.out.format("%.2f%% of the events were processed after filtering.\n", (100 * pipelineProvider.filteredEventCount / pipelineProvider.eventCount));
+    System.out.format("%.2f%% of the events were processed after filtering.\n", pipelineProvider.getEventFiltering().getFilteredPercentage());
   }
 
   // for image saving
@@ -100,7 +101,7 @@ public class OfflinePipelineWrap implements OfflineLogListener {
       imageCount++;
       String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, timeStamp);
       String secondFileName = String.format("%s_%s_%04d_%d.png", "physical", imagePrefix, imageCount, timeStamp);
-      ImageIO.write(pipelineProvider.eventFrames[1].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
+      ImageIO.write(pipelineProvider.getEventFrames()[1].getAccumulatedEvents(), "png", new File(parentFilePath, fileName));
       // ImageIO.write(physicalFrames[0].overlayPhysicalBlobs((transformer.getPhysicalBlobs())), "png", new File(parentFilePath, secondFileName));
       // possibility to save whole GUI
       // BufferedImage wholeGUI = viz.getGUIFrame();
@@ -113,22 +114,22 @@ public class OfflinePipelineWrap implements OfflineLogListener {
 
   // for visualization
   private void resetAllFrames() {
-    for (int i = 0; i < pipelineProvider.eventFrames.length; i++) {
-      pipelineProvider.eventFrames[i].clearImage();
+    for (int i = 0; i < pipelineProvider.getEventFrames().length; i++) {
+      pipelineProvider.getEventFrames()[i].clearImage();
     }
   }
 
   // for visualization
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
-    combinedFrames[0] = pipelineProvider.eventFrames[0].getAccumulatedEvents();
-    combinedFrames[1] = pipelineProvider.eventFrames[1].overlayActiveBlobs(pipelineProvider.blobSelector.getProcessedBlobs(), Color.GREEN, Color.RED);
-    combinedFrames[2] = pipelineProvider.eventFrames[2].overlayHiddenBlobs(pipelineProvider.tracking.getHiddenBlobs(), Color.GRAY);
+    combinedFrames[0] = pipelineProvider.getEventFrames()[0].getAccumulatedEvents();
+    combinedFrames[1] = pipelineProvider.getEventFrames()[1].overlayActiveBlobs(pipelineProvider.getBlobSelector().getProcessedBlobs(), Color.GREEN, Color.RED);
+    combinedFrames[2] = pipelineProvider.getEventFrames()[2].overlayHiddenBlobs(pipelineProvider.getBlobTracking().getHiddenBlobs(), Color.GRAY);
     if (calibrationAvailable) {
-      combinedFrames[3] = pipelineProvider.physicalFrames[0].overlayPhysicalBlobs((pipelineProvider.getProcessedblobs()));
+      combinedFrames[3] = pipelineProvider.getPhysicalFrames()[0].overlayPhysicalBlobs((pipelineProvider.getProcessedblobs()));
       // currently unused
-      combinedFrames[4] = pipelineProvider.physicalFrames[1].getFrame();
-      combinedFrames[5] = pipelineProvider.physicalFrames[2].getFrame();
+      combinedFrames[4] = pipelineProvider.getPhysicalFrames()[1].getFrame();
+      combinedFrames[5] = pipelineProvider.getPhysicalFrames()[2].getFrame();
     }
     return combinedFrames;
   }

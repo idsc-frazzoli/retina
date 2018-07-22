@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -14,7 +15,8 @@ public class GenericXboxPadLcmServerModule extends AbstractModule {
 
   @Override
   protected final void first() throws Exception {
-    joystickLcmServer = new JoystickLcmServer(getJoystickType(), PERIOD_MS);
+    joystickLcmServer = new JoystickLcmServer( //
+        getJoystickType(), GokartLcmChannel.JOYSTICK, PERIOD_MS);
     joystickLcmServer.start();
   }
 
@@ -27,6 +29,6 @@ public class GenericXboxPadLcmServerModule extends AbstractModule {
   }
 
   public JoystickType getJoystickType() {
-    return JoystickType.GENERIC_XBOX_PAD;
+    return JoystickType.RADICA_GAMESTER;
   }
 }

@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides blob object for the tracking algorithm.
-public class BlobTrackObj {
+class BlobTrackObj {
   // camera parameters
   private static int width;
   private static int height;
@@ -31,8 +31,8 @@ public class BlobTrackObj {
 
   // set static parameters of class
   public static void setParams(PipelineConfig pipelineConfig) {
-    width = pipelineConfig.width.number().intValue();
-    height = pipelineConfig.height.number().intValue();
+    width = pipelineConfig.davisConfig.width.number().intValue();
+    height = pipelineConfig.davisConfig.height.number().intValue();
     defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
   }
 

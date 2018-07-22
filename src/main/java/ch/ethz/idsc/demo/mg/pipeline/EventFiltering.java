@@ -1,21 +1,22 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.tensor.Scalar;
 
 // provides event filters
 public class EventFiltering {
-  private static int width;
-  private static int height;
-  // ---
-  private int filterConfig;
+  private final int width;
+  private final int height;
+  private final int filterConfig;
+  private double eventCount;
+  private double filteredEventCount;
   // for background activity filter
-  private int[][] timestamps;
-  private double filterConstant;
+  private final int[][] timestamps;
+  private final double filterConstant;
   // for corner detector
-  private int margin; // events too close to image border are neglected
-  private int[][][] SAE; // surface of active events for each polarity
+  private final int margin; // events too close to image border are neglected
+  private final int[][][] SAE; // surface of active events for each polarity
   // hard coded circle parameters for corner detector
   private final int[][] circle3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, { 3, 0 }, //
@@ -27,31 +28,28 @@ public class EventFiltering {
       { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
       { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
 
-  public EventFiltering(Scalar filterConfig, Scalar filterConstant, Scalar margin) {
-    this.filterConfig = filterConfig.number().intValue();
-    this.filterConstant = filterConstant.number().doubleValue();
-    this.margin = margin.number().intValue();
-    // ---
+  public EventFiltering(DavisConfig davisConfig) {
+    width = davisConfig.width.number().intValue();
+    height = davisConfig.height.number().intValue();
+    filterConfig = davisConfig.filterConfig.number().intValue();
     timestamps = new int[width][height];
+    filterConstant = davisConfig.filterConstant.number().doubleValue();
+    margin = davisConfig.margin.number().intValue();
     SAE = new int[width][height][2];
-  }
-
-  public static void setParams(Scalar widthInput, Scalar heightInput) {
-    width = widthInput.number().intValue();
-    height = heightInput.number().intValue();
   }
 
   // possibility to apply various filters, e.g. filter specific region of interest plus backgroundActivity filter
   public boolean filterPipeline(DavisDvsEvent davisDvsEvent) {
-    if (filterConfig == 0) {
-      return backgroundActivityFilter(davisDvsEvent, filterConstant);
-    } else if (filterConfig == 1) {
-      return cornerDetector(davisDvsEvent);
-    } else {
-      System.out.println("filterConfig parameter not correctly set... exiting program.");
-      System.exit(0);
-      return false;
+    eventCount++;
+    if (filterConfig == 0 && backgroundActivityFilter(davisDvsEvent, filterConstant)) {
+      filteredEventCount++;
+      return true;
     }
+    if (filterConfig == 1 && cornerDetector(davisDvsEvent)) {
+      filteredEventCount++;
+      return true;
+    }
+    return false;
   }
 
   // update all neighboring cells with the timestamp of the incoming event
@@ -157,5 +155,13 @@ public class EventFiltering {
       }
     }
     return found_streak;
+  }
+
+  public double getEventCount() {
+    return eventCount;
+  }
+
+  public double getFilteredPercentage() {
+    return 100 * filteredEventCount / eventCount;
   }
 }

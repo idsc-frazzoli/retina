@@ -29,6 +29,7 @@ public class GokartToImageUtil implements GokartToImageInterface {
     return new GokartToImageUtil(inputTensor, unitConversion);
   }
 
+  // ---
   private final Scalar unitConversion;
   // ** transforms homogeneous physical coordinates into homogeneous image coordinates */
   private final Tensor transformationMatrix; // inverse of transformationMatrix in ImageToWorldUtil
@@ -89,7 +90,7 @@ public class GokartToImageUtil implements GokartToImageInterface {
 
   // testing
   public static void main(String[] args) {
-    GokartToImageUtil test = new PipelineConfig().createGokartToImageUtil();
+    GokartToImageUtil test = new PipelineConfig().davisConfig.createGokartToImageUtil();
     double[] imgPos = test.gokartToImage(3.4386292832405725, -0.4673008409796591);
     System.out.println(imgPos[0] + "/" + imgPos[1]);
   }

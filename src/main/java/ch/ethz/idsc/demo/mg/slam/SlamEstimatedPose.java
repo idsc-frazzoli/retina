@@ -4,8 +4,8 @@ package ch.ethz.idsc.demo.mg.slam;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
-// estimated pose can be passed to other modules with this class
-public class SlamEstimatedPose implements GokartPoseInterface {
+/** estimated pose can be passed to other modules with this class */
+class SlamEstimatedPose implements GokartPoseInterface {
   private Tensor pose;
 
   // pose is set in the SLAM algorithm
@@ -13,7 +13,7 @@ public class SlamEstimatedPose implements GokartPoseInterface {
     this.pose = pose;
   }
 
-  @Override
+  @Override // from GokartPoseInterface
   public Tensor getPose() {
     return pose;
   }
