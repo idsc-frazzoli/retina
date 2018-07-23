@@ -24,7 +24,7 @@ public class SlamMapProcessingUtil {
    * 
    * @param rawMap
    * @param thresholdMap
-   * @param mapThreshold [-] between [0,1] actual threshold = maxValue*mapThreshold */
+   * @param mapThreshold [-] between [0,1]: actual threshold = maxValue*mapThreshold */
   public static void computeThresholdMap(MapProvider rawMap, MapProvider thresholdMap, double mapThreshold) {
     double[] mapCopy = rawMap.getMapArray();
     double maxValue = rawMap.getMaxValue();

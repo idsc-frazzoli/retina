@@ -6,13 +6,12 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-// initializes SlamProvider to work with live data
+// initializes SlamProvider with live listeners
 public class OnlineSlamWrap implements StartAndStoppable {
   private final DavisLcmClient davisLcmClient;
   private final RimoGetLcmClient rimoGetLcmClient;
@@ -29,28 +28,23 @@ public class OnlineSlamWrap implements StartAndStoppable {
     gokartOdometryPose = GokartPoseOdometryDemo.create();
     gokartLidarPose = new GokartPoseLcmLidar();
     slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-    slamViewer = new SlamViewer(slamConfig);
-    // add listeners
+    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
     rimoGetLcmClient.addListener(gokartOdometryPose);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamProvider);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }
 
   @Override
   public void start() {
-    // start GokartOdometryPose listener
     rimoGetLcmClient.startSubscriptions();
-    // start GokartPoseLcmLidar listener --> is already set up at object creation?
-    // once we receive poseEvents, start DavisDvsEvent listener which should initialize SlamProvider
-    if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose()) {
-      // need to have a timestamp to initialize visualization
-      slamViewer.initialize(100);
-      davisLcmClient.startSubscriptions();
-    }
+    gokartLidarPose.gokartPoseLcmClient.startSubscriptions();
+    davisLcmClient.startSubscriptions();
   }
 
   @Override
   public void stop() {
     rimoGetLcmClient.stopSubscriptions();
+    gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
   }
 }

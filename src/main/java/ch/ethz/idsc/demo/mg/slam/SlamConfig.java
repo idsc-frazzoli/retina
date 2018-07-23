@@ -15,11 +15,11 @@ public class SlamConfig {
   public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
   public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
   public final Boolean reactiveMappingMode = false; // in reactive mode, only the part of the map around the go kart is kept
-  public final Boolean odometryStatePropagation = true; // state propagation using odometry instead of estimated velocities
+  public final Boolean odometryStatePropagation = false; // state propagation using odometry instead of estimated velocities
   public final Boolean saveSlamMap = false; // saves the final map. to be used for saving ground truth maps
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(30); // [-]
+  public final Scalar numberOfParticles = RealScalar.of(10); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   public final Scalar lookAheadDistance = RealScalar.of(13); // [m] events further away are neglected
   public final Scalar lookBehindDistance = RealScalar.of(-3); // [m] for reactive mapping mode
@@ -47,6 +47,7 @@ public class SlamConfig {
   public final Scalar savingInterval = RealScalar.of(0.2); // [s]
   public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
   public final Scalar kartSize = RealScalar.of(1.5); // [m]
+  public final Scalar wayPointRadius = RealScalar.of(10); // [pixel]
   // map processing parameters
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters

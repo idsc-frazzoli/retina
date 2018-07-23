@@ -12,7 +12,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 
 /** similar to PipelineVisualization. Provides a live update of SlamMapFrame */
-public class SlamVisualization {
+public class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
   private final int desiredWidth = 600; // [pixel]
@@ -27,7 +27,7 @@ public class SlamVisualization {
     }
   };
 
-  public SlamVisualization(SlamConfig slamConfig) {
+  public SlamMapGUI(SlamConfig slamConfig) {
     double mapWidth = slamConfig.dimX.divide(slamConfig.cellDim).number().doubleValue();
     double mapHeight = slamConfig.dimY.divide(slamConfig.cellDim).number().doubleValue();
     scaling = desiredWidth / mapWidth;

@@ -14,46 +14,35 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** A SLAM algorithm "wrapper" to run the algorithm offline. DVS Events, wheel odometry
- * and lidar pose are provided to the SLAM algorithm */
+/** A SLAM algorithm "wrapper" to run the algorithm offline */
 class OfflineSlamWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
   private final GokartPoseOdometryDemo gokartOdometryPose;
   private final GokartPoseLcmLidar gokartLidarPose;
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
-  private final String imagePrefix;
-  private boolean isInitialized;
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
-    slamViewer = new SlamViewer(slamConfig);
     davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
     gokartOdometryPose = GokartPoseOdometryDemo.create();
     gokartLidarPose = new GokartPoseLcmLidar();
     slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
+    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    imagePrefix = slamConfig.davisConfig.logFileName;
+    davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    double timeInst = time.number().doubleValue();
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
-      if (!isInitialized) {
-        slamViewer.initialize(timeInst);
-        gokartOdometryPose.initializePose(gokartLidarPose.getPose());
-        isInitialized = true;
-      }
     }
     if (channel.equals("davis240c.overview.dvs")) {
-      if (isInitialized)
-        davisDvsDatagramDecoder.decode(byteBuffer);
+      davisDvsDatagramDecoder.decode(byteBuffer);
     }
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
     }
-    slamViewer.visualize(slamProvider, gokartLidarPose, timeInst);
   }
 
   public SlamProvider getSlamProvider() {
