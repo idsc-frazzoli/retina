@@ -11,8 +11,8 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-// initializes SlamProvider with live listeners
-public class OnlineSlamWrap implements StartAndStoppable {
+/** initializes SlamProvider with live listeners */
+class OnlineSlamWrap implements StartAndStoppable {
   private final DavisLcmClient davisLcmClient;
   private final RimoGetLcmClient rimoGetLcmClient;
   private final GokartPoseOdometryDemo gokartOdometryPose;

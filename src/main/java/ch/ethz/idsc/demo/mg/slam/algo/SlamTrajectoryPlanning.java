@@ -32,15 +32,15 @@ public class SlamTrajectoryPlanning {
   }
 
   public void initialize(double initTimeStamp) {
-    gokartWayPoints = new ArrayList<WayPoint>();
-    visibleGokartWayPoints = new ArrayList<WayPoint>();
+    gokartWayPoints = new ArrayList<>();
+    visibleGokartWayPoints = new ArrayList<>();
     lastComputationTimeStamp = initTimeStamp + initialDelay;
   }
 
   public void computeTrajectory(List<double[]> worldWayPoints, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
-      gokartWayPoints = new ArrayList<WayPoint>(worldWayPoints.size());
-      visibleGokartWayPoints = new ArrayList<WayPoint>();
+      gokartWayPoints = new ArrayList<>(worldWayPoints.size());
+      visibleGokartWayPoints = new ArrayList<>();
       SlamMapProcessingUtil.setGokartWayPoints(worldWayPoints, gokartWayPoints, gokartPose.getPose());
       SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleGokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
       SlamMapProcessingUtil.choosePurePursuitPoint(visibleGokartWayPoints, purePursuitIndex);
@@ -55,10 +55,9 @@ public class SlamTrajectoryPlanning {
   public double[] getPurePursuitPoint() {
     if (purePursuitIndex != -1) {
       return visibleGokartWayPoints.get(purePursuitIndex).getGokartPosition();
-    } else {
-      System.out.println("FATAL: no visible waypoint");
-      double[] straightWayPoint = { 10, 0 };
-      return straightWayPoint;
     }
+    System.out.println("FATAL: no visible waypoint");
+    double[] straightWayPoint = { 10, 0 };
+    return straightWayPoint;
   }
 }
