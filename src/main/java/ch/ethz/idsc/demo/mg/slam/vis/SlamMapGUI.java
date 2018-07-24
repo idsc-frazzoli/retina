@@ -41,9 +41,8 @@ public class SlamMapGUI {
   }
 
   public void setFrames(BufferedImage[] bufferedImages) {
-    for (int i = 0; i < bufferedImages.length; i++) {
+    for (int i = 0; i < bufferedImages.length; i++)
       bufferedImage[i] = bufferedImages[i];
-    }
     jComponent.repaint();
   }
 }

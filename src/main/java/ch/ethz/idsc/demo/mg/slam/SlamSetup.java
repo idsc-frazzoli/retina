@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.util.slam.SlamFileUtil;
+import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 
 /** sets up the SLAM algorithm to process an offline log file */
 class SlamSetup {
@@ -30,7 +30,9 @@ class SlamSetup {
       OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
       BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
       if (saveSlamMap && !localizationMode) {
-        SlamFileUtil.saveToCSV(SlamFileLocations.recordedMaps(logFileName), offlineSlamWrap.getSlamProvider().getMap(0));
+        PrimitivesIO.saveToCSV( //
+            SlamFileLocations.recordedMaps(logFileName), //
+            offlineSlamWrap.getSlamProvider().getMap(0).getMapArray());
         System.out.println("Slam map successfully saved");
       }
     } catch (IOException e) {

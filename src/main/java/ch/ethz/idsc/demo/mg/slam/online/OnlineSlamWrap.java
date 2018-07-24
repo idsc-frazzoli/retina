@@ -13,22 +13,15 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** initializes SlamProvider with live listeners */
 class OnlineSlamWrap implements StartAndStoppable {
-  private final DavisLcmClient davisLcmClient;
-  private final RimoGetLcmClient rimoGetLcmClient;
-  private final GokartPoseOdometryDemo gokartOdometryPose;
-  private final GokartPoseLcmLidar gokartLidarPose;
-  private final SlamProvider slamProvider;
-  private final SlamViewer slamViewer;
-  private final SlamConfig slamConfig;
+  private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final SlamConfig slamConfig = new SlamConfig();
+  private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
+  private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
+  private final SlamProvider slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
+  private final SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
 
   OnlineSlamWrap() {
-    davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-    rimoGetLcmClient = new RimoGetLcmClient();
-    slamConfig = new SlamConfig();
-    gokartOdometryPose = GokartPoseOdometryDemo.create();
-    gokartLidarPose = new GokartPoseLcmLidar();
-    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
     rimoGetLcmClient.addListener(gokartOdometryPose);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamProvider);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);

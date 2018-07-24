@@ -5,8 +5,8 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.slam.SlamFileUtil;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapUtil;
+import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the mapping step of the SLAM algorithm */
@@ -40,7 +40,7 @@ class SlamMappingStep {
     lastNormalizationTimeStamp = initTimeStamp;
     lastReactiveUpdateTimeStamp = initTimeStamp;
     if (localizationMode) {
-      double[] mapArray = SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
+      double[] mapArray = PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
       if (mapArray.length != eventMaps[0].getNumberOfCells())
         throw new RuntimeException("FATAL: bad size");
       eventMaps[0].setMapArray(mapArray);
