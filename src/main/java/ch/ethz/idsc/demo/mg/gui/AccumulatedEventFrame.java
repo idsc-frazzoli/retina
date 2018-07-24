@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
@@ -56,9 +56,9 @@ public class AccumulatedEventFrame {
   public BufferedImage overlayActiveBlobs(List<ImageBlob> activeBlobs, Color selectedBlobColor, Color rejectedBlobColor) {
     for (int i = 0; i < activeBlobs.size(); i++) {
       if (activeBlobs.get(i).getIsRecognized()) {
-        VisualizationUtil.drawImageBlob(graphics, activeBlobs.get(i), selectedBlobColor);
+        VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), selectedBlobColor);
       } else {
-        VisualizationUtil.drawImageBlob(graphics, activeBlobs.get(i), rejectedBlobColor);
+        VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), rejectedBlobColor);
       }
     }
     return getFrame();
@@ -71,7 +71,7 @@ public class AccumulatedEventFrame {
    * @return BufferedImage for visualization */
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> hiddenBlobs, Color blobColor) {
     for (int i = 0; i < hiddenBlobs.size(); i++) {
-      VisualizationUtil.drawImageBlob(graphics, hiddenBlobs.get(i), blobColor);
+      VisPipelineUtil.drawImageBlob(graphics, hiddenBlobs.get(i), blobColor);
     }
     return getFrame();
   }

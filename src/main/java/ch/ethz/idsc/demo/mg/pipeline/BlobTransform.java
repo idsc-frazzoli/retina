@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.pipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
 // Transformation of ImageBlobs to PhysicalBlobs.
 // TODO switch to TransformUtilLookup, maybe use interpolation?

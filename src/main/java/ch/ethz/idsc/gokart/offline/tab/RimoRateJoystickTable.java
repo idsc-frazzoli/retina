@@ -14,7 +14,6 @@ import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
@@ -83,7 +82,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
-            rates.map(RimoGetTire.MAGNITUDE_RATE), // rad/s
+            rates.map(Magnitude.ANGULAR_RATE), // rad/s, or 1/s
             speed.map(Magnitude.VELOCITY), // m/s
             rate.map(Magnitude.ANGULAR_RATE), //
             gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER), //

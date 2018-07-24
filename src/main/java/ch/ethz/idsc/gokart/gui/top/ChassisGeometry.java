@@ -109,10 +109,15 @@ public class ChassisGeometry implements Serializable {
         .multiply(RationalScalar.HALF).multiply(tireRadiusRear).divide(yTireRear);
   }
 
+  // ---
+  private static final Scalar ZERO_SPEED = Quantity.of(0, SI.VELOCITY);
+
+  /** @param angularRate_Y_pair
+   * @return {vx[m*s^-1], 0[m*s^-1], omega[s^-1]} */
   public Tensor odometryVelocity(Tensor angularRate_Y_pair) {
     return Tensors.of( //
         odometryTangentSpeed(angularRate_Y_pair), //
-        Quantity.of(0, SI.VELOCITY), //
+        ZERO_SPEED, //
         odometryTurningRate(angularRate_Y_pair));
   }
 }

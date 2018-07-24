@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -10,7 +11,7 @@ import junit.framework.TestCase;
 public class RimoRateControllerTest extends TestCase {
   public void testSimple() {
     RimoRateController rimoRateController = new RimoRateController();
-    Scalar vel_error = Quantity.of(31, RimoGetTire.UNIT_RATE); // rad*s^-1
+    Scalar vel_error = Quantity.of(31, SIDerived.RADIAN_PER_SECOND); // rad*s^-1
     Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
   }

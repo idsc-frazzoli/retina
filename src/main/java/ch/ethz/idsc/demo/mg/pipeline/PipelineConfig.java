@@ -2,8 +2,8 @@
 package ch.ethz.idsc.demo.mg.pipeline;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
-import ch.ethz.idsc.demo.mg.util.GokartToImageLookup;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.slam;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import java.util.Set;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,6 +27,7 @@ public enum SlamMapUtil {
   public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
     // sort in descending order of likelihood
     double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
+    adaptiveWeightFactor = 1;
     Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);

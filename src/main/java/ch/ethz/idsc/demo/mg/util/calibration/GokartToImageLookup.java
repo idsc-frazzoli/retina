@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 import ch.ethz.idsc.tensor.Scalar;

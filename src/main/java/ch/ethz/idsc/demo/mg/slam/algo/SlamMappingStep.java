@@ -1,13 +1,17 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
-import ch.ethz.idsc.demo.mg.util.SlamFileUtil;
-import ch.ethz.idsc.demo.mg.util.SlamMapUtil;
+import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
+import ch.ethz.idsc.demo.mg.slam.SlamParticle;
+import ch.ethz.idsc.demo.mg.util.slam.SlamMapUtil;
+import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the mapping step of the SLAM algorithm */
 class SlamMappingStep {
-  private final MapProvider[] eventMaps;
+  private final MapProvider[] eventMaps = new MapProvider[3];
   private final String imagePrefix;
   private final boolean localizationMode;
   private final boolean reactiveMappingMode;
@@ -20,7 +24,6 @@ class SlamMappingStep {
   private double lastReactiveUpdateTimeStamp;
 
   SlamMappingStep(SlamConfig slamConfig) {
-    eventMaps = new MapProvider[3];
     for (int i = 0; i < 3; i++)
       eventMaps[i] = new MapProvider(slamConfig);
     imagePrefix = slamConfig.davisConfig.logFileName;
@@ -37,7 +40,7 @@ class SlamMappingStep {
     lastNormalizationTimeStamp = initTimeStamp;
     lastReactiveUpdateTimeStamp = initTimeStamp;
     if (localizationMode) {
-      double[] mapArray = SlamFileUtil.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
+      double[] mapArray = PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
       if (mapArray.length != eventMaps[0].getNumberOfCells())
         throw new RuntimeException("FATAL: bad size");
       eventMaps[0].setMapArray(mapArray);
@@ -46,18 +49,16 @@ class SlamMappingStep {
 
   public void mappingStep(SlamParticle[] slamParticles, Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance) {
-      if (!localizationMode) {
+      if (!localizationMode)
         SlamMapUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
-      }
     }
     if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
-      if (reactiveMappingMode) {
+      if (reactiveMappingMode)
         SlamMapUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
-      }
       lastReactiveUpdateTimeStamp = currentTimeStamp;
     }
     // normalization map currently unused
-    if ((currentTimeStamp - lastNormalizationTimeStamp) > normalizationUpdateRate) {
+    if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate) {
       // SlamMapUtil.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, eventMaps[1], imageToGokartLookup, gokartToImageUtil, 240, 180,
       // lookAheadDistance);
       // lastExpectedPose = gokartLidarPose.getPose();

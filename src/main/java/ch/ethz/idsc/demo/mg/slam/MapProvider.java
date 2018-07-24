@@ -21,7 +21,7 @@ public class MapProvider {
   /** tracks max value of values in array */
   private double maxValue;
 
-  MapProvider(SlamConfig slamConfig) {
+  public MapProvider(SlamConfig slamConfig) {
     dimX = slamConfig.dimX;
     dimY = slamConfig.dimY;
     cellDim = slamConfig.cellDim;

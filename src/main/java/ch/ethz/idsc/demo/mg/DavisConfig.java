@@ -4,8 +4,8 @@ package ch.ethz.idsc.demo.mg;
 import java.io.File;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.mg.util.GokartToImageUtil;
-import ch.ethz.idsc.demo.mg.util.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -15,7 +15,7 @@ public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
   public String logFileName = "DUBI15a";
-  /** maxDuration with interpretation in [ms] */
+  /** maxDuration [ms] */
   public final Scalar maxDuration = RealScalar.of(15000);
   /** relative to src/main/resources/ */
   // TODO assignment of calibrationFileName is prone to error. is is possible to implement as member function?

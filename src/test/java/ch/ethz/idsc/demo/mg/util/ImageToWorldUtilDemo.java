@@ -2,6 +2,8 @@
 package ch.ethz.idsc.demo.mg.util;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
 enum ImageToWorldUtilDemo {
   ;

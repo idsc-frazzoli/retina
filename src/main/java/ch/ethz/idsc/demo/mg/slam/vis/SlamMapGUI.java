@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -8,11 +8,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.util.VisualizationUtil;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
-/** similar to pipelineVisualization. Provides a live update of SlamMapFrame */
-// TODO probably create abstract visualization class and then extend Slamvisualization and PipelineVisualization?
-class SlamVisualization {
+/** similar to PipelineVisualization. Provides a live update of SlamMapFrame */
+public class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
   private final int desiredWidth = 600; // [pixel]
@@ -21,13 +21,13 @@ class SlamVisualization {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Occurrencce map", 50, 13);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
+      graphics.drawImage(BufferedImageResize.of(bufferedImage[0], scaling), 50, 20, null);
       graphics.drawString("Detected Waypoints", 670, 13);
-      graphics.drawImage(VisualizationUtil.scaleImage(bufferedImage[1], scaling), 670, 20, null);
+      graphics.drawImage(BufferedImageResize.of(bufferedImage[1], scaling), 670, 20, null);
     }
   };
 
-  public SlamVisualization(SlamConfig slamConfig) {
+  public SlamMapGUI(SlamConfig slamConfig) {
     double mapWidth = slamConfig.dimX.divide(slamConfig.cellDim).number().doubleValue();
     double mapHeight = slamConfig.dimY.divide(slamConfig.cellDim).number().doubleValue();
     scaling = desiredWidth / mapWidth;
@@ -41,9 +41,8 @@ class SlamVisualization {
   }
 
   public void setFrames(BufferedImage[] bufferedImages) {
-    for (int i = 0; i < bufferedImages.length; i++) {
+    for (int i = 0; i < bufferedImages.length; i++)
       bufferedImage[i] = bufferedImages[i];
-    }
     jComponent.repaint();
   }
 }

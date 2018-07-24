@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 
-enum SlamFileLocations {
+public enum SlamFileLocations {
   ;
   private static final File MAP_FRAMES = UserHome.Pictures("slamFrames");
   private static final File RECORDED_MAP = UserHome.Pictures("slamMaps");

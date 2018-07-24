@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.slam;
 
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
@@ -8,7 +8,7 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 
 /** provides methods to convert to and from mat objects */
 // TODO put restrictions on input type
-public enum CVUtil {
+public enum SlamOpenCVUtil {
   ;
   /** convert mat object to byteArray
    * 
@@ -31,13 +31,8 @@ public enum CVUtil {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];
     Mat mat = new Mat(mapProvider.getWidth(), mapProvider.getHeight(), opencv_core.CV_8UC1);
-    for (int i = 0; i < byteArray.length; i++) {
-      if (mapArray[i] == 0) {
-        byteArray[i] = 0;
-      } else {
-        byteArray[i] = 1;
-      }
-    }
+    for (int i = 0; i < byteArray.length; i++)
+      byteArray[i] = mapArray[i] == 0 ? 0 : (byte) 1;
     mat.data().put(byteArray);
     return mat;
   }

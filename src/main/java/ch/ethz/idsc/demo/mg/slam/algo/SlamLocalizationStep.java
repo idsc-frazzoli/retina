@@ -1,7 +1,11 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
-import ch.ethz.idsc.demo.mg.util.SlamParticleUtil;
+import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
+import ch.ethz.idsc.demo.mg.slam.SlamParticle;
+import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 

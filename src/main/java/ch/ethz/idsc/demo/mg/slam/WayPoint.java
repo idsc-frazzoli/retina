@@ -9,7 +9,7 @@ public class WayPoint {
   private double[] gokartPosition;
   private boolean currentlyVisible; // visibility given the current pose of the go kart
 
-  WayPoint(double[] worldPosition) {
+  public WayPoint(double[] worldPosition) {
     this.worldPosition = worldPosition;
     gokartPosition = new double[2];
   }
