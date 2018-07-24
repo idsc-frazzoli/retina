@@ -52,6 +52,14 @@ public class EventFiltering {
     return false;
   }
 
+
+
+  // events on the image boarders are always filtered. smaller filterConstant results in more aggressive filtering.
+  private boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
+    updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
+    return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;
+  }
+
   // update all neighboring cells with the timestamp of the incoming event
   private void updateNeighboursTimestamps(int x, int y, int time) {
     // check if we are not on an edge and then update all 8 neighbours
@@ -66,13 +74,7 @@ public class EventFiltering {
       timestamps[x + 1][y + 1] = time;
     }
   }
-
-  // events on the image boarders are always filtered. smaller filterConstant results in more aggressive filtering.
-  private boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
-    updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
-    return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;
-  }
-
+  
   // based on paper "Fast event-based corner detection". C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
   private boolean cornerDetector(DavisDvsEvent e) {
     // update SAE

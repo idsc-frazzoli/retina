@@ -6,7 +6,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the localization step of the SLAM algorithm */
@@ -39,6 +38,9 @@ class SlamLocalizationStep {
     alpha = slamConfig.alpha.number().doubleValue();
   }
 
+  /** @param slamParticles
+   * @param initPose {[m],[m],[-]} provided by lidar
+   * @param initTimeStamp [s] */
   public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
     SlamParticleUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     estimatedPose.setPose(initPose);
@@ -47,7 +49,7 @@ class SlamLocalizationStep {
   }
 
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
-    if ((currentTimeStamp - lastPropagationTimeStamp) > statePropagationRate) {
+    if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
       double dT = currentTimeStamp - lastPropagationTimeStamp;
       if (!odometryStatePropagation) {
         SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
@@ -56,7 +58,7 @@ class SlamLocalizationStep {
       }
       lastPropagationTimeStamp = currentTimeStamp;
     }
-    if ((currentTimeStamp - lastResampleTimeStamp) > resampleRate) {
+    if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
       double dT = currentTimeStamp - lastResampleTimeStamp;
       SlamParticleUtil.resampleParticles(slamParticles, dT, rougheningLinVelStd, rougheningAngVelStd);
       lastResampleTimeStamp = currentTimeStamp;
@@ -64,14 +66,17 @@ class SlamLocalizationStep {
     if (eventGokartFrame[0] < lookAheadDistance) {
       SlamParticleUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
     }
-    estimatedPose.setPose(SlamParticleUtil.getAveragePose(slamParticles, 3));
+    estimatedPose.setPoseUnitless(SlamParticleUtil.getAveragePose(slamParticles, 1));
   }
 
+  /** used to set pose using lidar ground truth
+   * 
+   * @param pose {[m],[m],[-]} provided by lidar */
   public void setPose(Tensor pose) {
     estimatedPose.setPose(pose);
   }
 
-  public GokartPoseInterface getPoseInterface() {
+  public SlamEstimatedPose getSlamEstimatedPose() {
     return estimatedPose;
   }
 }

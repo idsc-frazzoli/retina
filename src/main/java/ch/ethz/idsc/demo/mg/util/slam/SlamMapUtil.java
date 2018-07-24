@@ -11,6 +11,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
@@ -48,22 +49,22 @@ public enum SlamMapUtil {
 
   /** update occurrence map with lidar ground truth
    * 
-   * @param gokartLidarPose ground truth pose provided by lidar
+   * @param gokartLidarPose unitless representation ground truth pose provided by lidar
    * @param occurrenceMap
    * @param gokartFramePos [m] position of event in go kart frame */
   public static void updateOccurrenceMapLidar(Tensor gokartPose, MapProvider occurrenceMap, double[] gokartFramePos) {
-    GeometricLayer gokartToWorldLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
+    GeometricLayer gokartToWorldLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(gokartPose));
     Tensor worldCoord = gokartToWorldLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
     occurrenceMap.addValue(worldCoord, 1);
   }
 
   /** update reactive occurrence map. part of the map which is more then {@link lookBehindDistance} behind go kart is set to zero
    * 
-   * @param gokartPose
+   * @param gokartPose unitless representation
    * @param occurrenceMap
    * @param lookBehindDistance [m] */
   public static void updateReactiveOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
-    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(gokartPose)));
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(gokartPose)));
     double[] mapArray = occurrenceMap.getMapArray();
     for (int i = 0; i < mapArray.length; i++) {
       if (mapArray[i] != 0) {

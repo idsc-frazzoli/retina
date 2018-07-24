@@ -6,7 +6,7 @@ import java.util.Random;
 /** methods to ease handling with random things in SLAM algorithm */
 public enum SlamRandomUtil {
   ;
-  private static final Random RANDOM = new Random(); // TODO find a seed for which the algorithm works nicely hehe
+  private static final Random RANDOM = new Random(7); // TODO find a seed for which the algorithm works nicely hehe
 
   /** truncated Gaussian distribution obtained with rejection sampling
    * 

@@ -15,7 +15,7 @@ import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
 
 /** extracts way points from a map using threshold operation, morphological processing
  * and connected component labeling */
-class SlamMapProcessing {
+class SlamMapProcessing implements Runnable {
   private final MapProvider thresholdMap;
   private final Mat dilateKernel = opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, //
       new Size(8, 8));
@@ -26,9 +26,9 @@ class SlamMapProcessing {
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
-  private List<double[]> frameWayPoints; // in frame coordinates
-  private List<double[]> worldWayPoints; // in physical coordinates
+  private List<double[]> worldWayPoints; // world frame
   private double lastComputationTimeStamp;
+  private MapProvider occurrenceMap;
   private Mat labels;
 
   SlamMapProcessing(SlamConfig slamConfig) {
@@ -39,7 +39,6 @@ class SlamMapProcessing {
     cornerX = slamConfig.corner.Get(0).number().doubleValue();
     cornerY = slamConfig.corner.Get(1).number().doubleValue();
     cellDim = slamConfig.cellDim.number().doubleValue();
-    frameWayPoints = new ArrayList<>();
     worldWayPoints = new ArrayList<>();
   }
 
@@ -49,9 +48,10 @@ class SlamMapProcessing {
 
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
-      SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
-      frameWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel);
-      worldWayPoints = SlamMapProcessingUtil.updateWorldWayPoints(frameWayPoints, cornerX, cornerY, cellDim);
+      this.occurrenceMap = occurrenceMap;
+      // unelegant solution, however was faster than other options
+      Thread thread = new Thread(this);
+      thread.start();
       lastComputationTimeStamp = currentTimeStamp;
     }
   }
@@ -63,5 +63,11 @@ class SlamMapProcessing {
 
   public List<double[]> getWorldWayPoints() {
     return worldWayPoints;
+  }
+
+  @Override // from Runnable
+  public void run() {
+    SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
+    worldWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel, cornerX, cornerY, cellDim);
   }
 }

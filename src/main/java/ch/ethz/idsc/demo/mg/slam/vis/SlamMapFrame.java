@@ -76,24 +76,11 @@ public class SlamMapFrame {
   public void setProcessedMat(Mat processedMat) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++)
-      // experimental code below
       if (processedByteArray[i] == 0)
         bytes[i] = CLEAR_BYTE;
       else {
         int labelID = processedByteArray[i] % 3;
-        // FIXME labelID will never be 0 at this point because of if clause above
         bytes[i] = LOOKUP[labelID];
-        // switch (labelID) {
-        // case 0:
-        // bytes[i] = ORANGE;
-        // break;
-        // case 1:
-        // bytes[i] = GREEN;
-        // break;
-        // case 2:
-        // bytes[i] = BLUE;
-        // break;
-        // }
       }
   }
 }
