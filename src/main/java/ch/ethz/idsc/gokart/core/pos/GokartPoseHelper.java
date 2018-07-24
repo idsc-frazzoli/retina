@@ -20,6 +20,6 @@ public enum GokartPoseHelper {
     return Tensors.of( //
         Magnitude.METER.apply(state.Get(0)), //
         Magnitude.METER.apply(state.Get(1)), //
-        state.Get(2));
+        Magnitude.ONE.apply(state.Get(2)));
   }
 }

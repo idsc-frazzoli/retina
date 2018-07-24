@@ -54,7 +54,7 @@ public class SlamProvider implements DavisDvsListener {
   }
 
   public void initialize(Tensor pose, double timeStamp) {
-    gokartOdometry.initializePose(pose);
+    gokartOdometry.setPose(pose);
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
     slamWayPoints.initialize(timeStamp);
@@ -104,7 +104,7 @@ public class SlamProvider implements DavisDvsListener {
   public MapProvider getMap(int mapID) {
     return slamMappingStep.getMap(mapID);
   }
-  
+
   public boolean getIsInitialized() {
     return isInitialized;
   }

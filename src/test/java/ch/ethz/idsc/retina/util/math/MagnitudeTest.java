@@ -37,4 +37,30 @@ public class MagnitudeTest extends TestCase {
     assertEquals(fraction, RationalScalar.of(463, 9));
     assertTrue(ExactScalarQ.of(fraction));
   }
+
+  public void testRadPerSec() {
+    Scalar s1 = Quantity.of(100, SI.ANGULAR_RATE);
+    Scalar s2 = Quantity.of(100, SIDerived.RADIAN_PER_SECOND);
+    assertEquals(Magnitude.ANGULAR_RATE.apply(s1), Magnitude.ANGULAR_RATE.apply(s2));
+  }
+
+  public void testFail() {
+    Scalar scalar = Quantity.of(100, "s*knots");
+    try {
+      Magnitude.VELOCITY.apply(scalar);
+      assertTrue(false);
+    } catch (Exception exception) {
+      // ---
+    }
+  }
+
+  public void testFailOne() {
+    Scalar scalar = Quantity.of(100, "s*knots");
+    try {
+      Magnitude.ONE.apply(scalar);
+      assertTrue(false);
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }

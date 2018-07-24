@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoEmergencyError;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
@@ -18,8 +19,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class RimoGetFields {
   private static final Clip RATE_RANGE = Clip.function( //
-      Quantity.of(-3, RimoGetTire.UNIT_RATE), //
-      Quantity.of(+3, RimoGetTire.UNIT_RATE));
+      Quantity.of(-3, SIDerived.RADIAN_PER_SECOND), //
+      Quantity.of(+3, SIDerived.RADIAN_PER_SECOND));
   // ---
   JTextField jTF_status_word; // 2
   JTextField jTF_actual_speed; // 4

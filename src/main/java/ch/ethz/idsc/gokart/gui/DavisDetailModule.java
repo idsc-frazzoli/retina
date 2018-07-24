@@ -1,4 +1,3 @@
-
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 

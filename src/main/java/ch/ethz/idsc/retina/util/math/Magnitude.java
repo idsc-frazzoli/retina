@@ -2,10 +2,13 @@
 package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+/** converts a {@link Quantity} to a unit less {@link Scalar}
+ * or throws an exception if the conversion is not possible */
 public enum Magnitude implements ScalarUnaryOperator {
   ONE(SI.ONE), //
   // ---
@@ -17,7 +20,7 @@ public enum Magnitude implements ScalarUnaryOperator {
   // ---
   VELOCITY(SI.VELOCITY), //
   ACCELERATION(SI.ACCELERATION), //
-  ANGULAR_RATE(SI.ANGULAR_RATE), //
+  ANGULAR_RATE(SI.ANGULAR_RATE), // for s^-1 and rad*s^-1
   // ---
   /** conversion to non-SI magnitude may be necessary
    * when interfacing with 3rd party code that requires input along that scale */

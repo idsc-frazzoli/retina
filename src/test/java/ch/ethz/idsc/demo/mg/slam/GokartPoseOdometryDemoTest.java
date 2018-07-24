@@ -2,11 +2,16 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -33,5 +38,30 @@ public class GokartPoseOdometryDemoTest extends TestCase {
     Scalar speed = speedL.add(speedR).multiply(HALF);
     Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(ChassisGeometry.GLOBAL.yTireRear);
     return Tensors.of(speed, Quantity.of(0, SI.VELOCITY), rate);
+  }
+
+  private static void checkUnits(Tensor velocity) {
+    VectorQ.ofLength(velocity, 3);
+    Magnitude.VELOCITY.apply(velocity.Get(0));
+    Magnitude.VELOCITY.apply(velocity.Get(1));
+    Magnitude.ANGULAR_RATE.apply(velocity.Get(2));
+  }
+
+  public void testInitial() {
+    GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
+    checkUnits(demo.getVelocity());
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(100, 200);
+    demo.getEvent(rimoGetEvent);
+    checkUnits(demo.getVelocity());
+  }
+
+  public void testPoseUnitFail() {
+    GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
+    try {
+      demo.setPose(Array.zeros(3));
+      assertTrue(false);
+    } catch (Exception exception) {
+      // ---
+    }
   }
 }

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_imgproc;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Point;
+import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
