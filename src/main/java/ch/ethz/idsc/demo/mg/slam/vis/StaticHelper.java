@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util.vis;
+package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,14 +12,17 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
-import ch.ethz.idsc.demo.mg.slam.vis.SlamMapFrame;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
-// provides slam visualization static methods
-public class VisSlamUtil {
-  private static final byte CLEAR_BYTE = (byte) 255;
+/** provides slam visualization static methods
+ * 
+ * if a function from this enum is needed in the public scope,
+ * that function can be extracted to another public class */
+/* package */ enum StaticHelper {
+  ;
+  private static final byte CLEAR_BYTE = -1;
 
   /** paints a MapProvider map object
    * 
@@ -29,11 +32,9 @@ public class VisSlamUtil {
   public static void paintRawMap(double[] mapArray, byte[] bytes, double maxValue) {
     if (maxValue == 0)
       clearFrame(bytes);
-    else {
-      for (int i = 0; i < bytes.length; i++) {
+    else
+      for (int i = 0; i < bytes.length; i++)
         bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
-      }
-    }
   }
 
   /** sets bytes back to CLEAR_BYTE value
@@ -53,12 +54,11 @@ public class VisSlamUtil {
    * @param cellDim [m] */
   public static void drawWayPoint(Graphics2D graphics, WayPoint wayPoint, double radius, double cornerX, double cornerY, double cellDim) {
     double[] framePos = worldToFrame(wayPoint.getWorldPosition(), cornerX, cornerY, cellDim);
-    Ellipse2D ellipse = new Ellipse2D.Double(framePos[0] - radius, framePos[1] - radius, 2 * radius, 2 * radius);
-    if (wayPoint.getVisibility()) {
-      graphics.setColor(Color.GREEN);
-    } else {
-      graphics.setColor(Color.ORANGE);
-    }
+    Ellipse2D ellipse = new Ellipse2D.Double( //
+        framePos[0] - radius, //
+        framePos[1] - radius, //
+        2 * radius, 2 * radius);
+    graphics.setColor(wayPoint.getVisibility() ? Color.GREEN : Color.ORANGE);
     graphics.fill(ellipse);
   }
 
@@ -129,8 +129,7 @@ public class VisSlamUtil {
     SlamParticle[] slamParticles = slamProvider.getParticles();
     int partNumber = slamParticles.length / 3;
     Arrays.sort(slamParticles, 0, partNumber, SlamParticleUtil.SlamCompare);
-    for (int i = 0; i < partNumber; i++) {
+    for (int i = 0; i < partNumber; i++)
       slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
-    }
   }
 }

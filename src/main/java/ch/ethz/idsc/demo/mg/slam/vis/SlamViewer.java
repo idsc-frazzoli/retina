@@ -8,7 +8,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
-import ch.ethz.idsc.demo.mg.util.vis.VisSlamUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -50,12 +49,12 @@ public class SlamViewer implements DavisDvsListener {
       double timeStamp = davisDvsEvent.time / 1000000.0;
       if (saveSlamFrame && ((timeStamp - lastSavingTimeStamp) > savingInterval)) {
         imageCount++;
-        BufferedImage slamFrame = VisSlamUtil.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
+        BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
         VisGeneralUtil.saveFrame(slamFrame, parentFilePath, imagePrefix, timeStamp, imageCount);
         lastSavingTimeStamp = timeStamp;
       }
       if ((timeStamp - lastImagingTimeStamp) > visualizationInterval) {
-        slamMapGUI.setFrames(VisSlamUtil.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
+        slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
         lastImagingTimeStamp = timeStamp;
       }
     }
