@@ -31,8 +31,8 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
  * scrolling while holding ctrl/shift changes x/y-axis length. Feature position can be adjusted with wasd keys.
@@ -67,7 +67,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
       VisPipelineUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
-      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage, scaling), 0, 0, null);
+      graphics.drawImage(BufferedImageResize.of(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
   };

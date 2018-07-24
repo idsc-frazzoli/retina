@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the mapping step of the SLAM algorithm */
 class SlamMappingStep {
-  private final MapProvider[] eventMaps;
+  private final MapProvider[] eventMaps = new MapProvider[3];
   private final String imagePrefix;
   private final boolean localizationMode;
   private final boolean reactiveMappingMode;
@@ -24,7 +24,6 @@ class SlamMappingStep {
   private double lastReactiveUpdateTimeStamp;
 
   SlamMappingStep(SlamConfig slamConfig) {
-    eventMaps = new MapProvider[3];
     for (int i = 0; i < 3; i++)
       eventMaps[i] = new MapProvider(slamConfig);
     imagePrefix = slamConfig.davisConfig.logFileName;
@@ -50,18 +49,16 @@ class SlamMappingStep {
 
   public void mappingStep(SlamParticle[] slamParticles, Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance) {
-      if (!localizationMode) {
+      if (!localizationMode)
         SlamMapUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
-      }
     }
     if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
-      if (reactiveMappingMode) {
+      if (reactiveMappingMode)
         SlamMapUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
-      }
       lastReactiveUpdateTimeStamp = currentTimeStamp;
     }
     // normalization map currently unused
-    if ((currentTimeStamp - lastNormalizationTimeStamp) > normalizationUpdateRate) {
+    if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate) {
       // SlamMapUtil.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, eventMaps[1], imageToGokartLookup, gokartToImageUtil, 240, 180,
       // lookAheadDistance);
       // lastExpectedPose = gokartLidarPose.getPose();

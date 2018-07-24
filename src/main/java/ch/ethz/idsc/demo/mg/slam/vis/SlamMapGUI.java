@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
+import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** similar to PipelineVisualization. Provides a live update of SlamMapFrame */
 public class SlamMapGUI {
@@ -21,9 +21,9 @@ public class SlamMapGUI {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawString("Occurrencce map", 50, 13);
-      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage[0], scaling), 50, 20, null);
+      graphics.drawImage(BufferedImageResize.of(bufferedImage[0], scaling), 50, 20, null);
       graphics.drawString("Detected Waypoints", 670, 13);
-      graphics.drawImage(VisGeneralUtil.scaleImage(bufferedImage[1], scaling), 670, 20, null);
+      graphics.drawImage(BufferedImageResize.of(bufferedImage[1], scaling), 670, 20, null);
     }
   };
 

@@ -9,14 +9,14 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 
-// provides pipeline visualization static methods
+/** provides pipeline visualization static methods */
 public enum VisPipelineUtil {
   ;
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object
    * 
    * @param graphics object to be drawn onto
    * @param blob ImageBlob to be drawn
-   * @param color desired color */
+   * @param color desired */
   public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
     double rotAngle = blob.getRotAngle();

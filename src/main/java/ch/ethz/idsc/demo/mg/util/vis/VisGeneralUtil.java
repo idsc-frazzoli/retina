@@ -1,8 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.util.vis;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,20 +26,5 @@ public enum VisGeneralUtil {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  /** scales a bufferedImage. if scaled width/height is smaller than 1, it is set to 1
-   * 
-   * @param unscaled original bufferedImage
-   * @param scale scaling factor
-   * @return scaled bufferedImage */
-  public static BufferedImage scaleImage(BufferedImage unscaled, double scale) {
-    int newWidth = (int) (unscaled.getWidth() * scale >= 1 ? unscaled.getWidth() * scale : 1);
-    int newHeight = (int) (unscaled.getHeight() * scale >= 1 ? unscaled.getHeight() * scale : 1);
-    BufferedImage scaled = new BufferedImage(newWidth, newHeight, unscaled.getType());
-    AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale, scale);
-    AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    scaleOp.filter(unscaled, scaled);
-    return scaled;
   }
 }

@@ -48,7 +48,7 @@ class SlamMapProcessing {
   }
 
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
-    if ((currentTimeStamp - lastComputationTimeStamp) > wayPointUpdateRate) {
+    if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
       frameWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel);
       worldWayPoints = SlamMapProcessingUtil.updateWorldWayPoints(frameWayPoints, cornerX, cornerY, cellDim);
