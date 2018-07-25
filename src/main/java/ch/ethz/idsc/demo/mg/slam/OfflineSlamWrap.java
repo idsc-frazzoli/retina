@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** A SLAM algorithm "wrapper" to run the algorithm offline */
 class OfflineSlamWrap implements OfflineLogListener {
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();;
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final SlamProvider slamProvider;

@@ -45,6 +45,7 @@ public class SlamParticle implements GokartPoseInterface {
     particleLikelihood = updatedLikelihood;
   }
 
+  /** @param unitlessPose {x,y,heading} without units */
   private void setPoseUnitless(Tensor unitlessPose) {
     pose = unitlessPose;
     geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
@@ -94,15 +95,14 @@ public class SlamParticle implements GokartPoseInterface {
    * 
    * @param pose {x[m], y[m], heading[]} */
   public void setPose(Tensor pose) {
-    this.pose = GokartPoseHelper.toUnitless(pose);
-    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(this.pose));
+    setPoseUnitless(GokartPoseHelper.toUnitless(pose));
   }
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return (Tensors.of( //
+    return Tensors.of( //
         Quantity.of(pose.Get(0), SI.METER), //
         Quantity.of(pose.Get(1), SI.METER), //
-        pose.Get(2)));
+        pose.Get(2));
   }
 }

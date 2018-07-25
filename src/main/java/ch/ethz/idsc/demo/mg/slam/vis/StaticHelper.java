@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
-import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
+import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -70,10 +70,9 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param cellDim [m]
    * @return framePos [pixel] */
   private static double[] worldToFrame(double[] worldPos, double cornerX, double cornerY, double cellDim) {
-    double[] framePos = new double[2];
-    framePos[0] = (worldPos[0] - cornerX) / cellDim;
-    framePos[1] = (worldPos[1] - cornerY) / cellDim;
-    return framePos;
+    return new double[] { //
+        (worldPos[0] - cornerX) / cellDim, //
+        (worldPos[1] - cornerY) / cellDim };
   }
 
   /** draws ellipse representing the gokart onto the graphics object
@@ -105,8 +104,8 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param gokartLidarPose
    * @param lidarMappingMode SLAM algorithm parameter
    * @return array of frames */
-  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose,
-      boolean lidarMappingMode) {
+  public static BufferedImage[] constructFrames( //
+      SlamMapFrame[] slamMapFrames, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose, boolean lidarMappingMode) {
     slamMapFrames[0].setRawMap(slamProvider.getMap(0));
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
@@ -121,14 +120,11 @@ import ch.ethz.idsc.tensor.Tensor;
     return combinedFrames;
   }
 
-  /** overlays poses of particles with highest likelihood onto slamMapFrame
-   * 
-   * @param slamMapFrames
-   * @param slamProvider */
+  /** overlays poses of particles with highest likelihood onto slamMapFrame */
   private static void drawParticlePoses(SlamMapFrame[] slamMapFrames, SlamProvider slamProvider) {
     SlamParticle[] slamParticles = slamProvider.getParticles();
     int partNumber = slamParticles.length / 3;
-    Arrays.sort(slamParticles, 0, partNumber, SlamParticleUtil.SlamCompare);
+    Arrays.sort(slamParticles, 0, partNumber, SlamParticleLikelihoodComparator.INSTANCE);
     for (int i = 0; i < partNumber; i++)
       slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
   }

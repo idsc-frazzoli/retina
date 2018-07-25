@@ -29,7 +29,7 @@ public enum SlamMapUtil {
     // sort in descending order of likelihood
     double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
     adaptiveWeightFactor = 1;
-    Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
+    Arrays.sort(slamParticles, 0, particleRange, SlamParticleLikelihoodComparator.INSTANCE);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
@@ -70,7 +70,10 @@ public enum SlamMapUtil {
       if (mapArray[i] != 0) {
         double[] worldCoord = occurrenceMap.getCellCoord(i);
         Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
-        double[] gokartCoord = { gokartCoordTensor.Get(0).number().doubleValue(), gokartCoordTensor.Get(1).number().doubleValue() };
+        // TODO MG can the code below be simplified because only gokartCoord[0] is used?
+        double[] gokartCoord = { //
+            gokartCoordTensor.Get(0).number().doubleValue(), //
+            gokartCoordTensor.Get(1).number().doubleValue() };
         if (gokartCoord[0] < lookBehindDistance) {
           occurrenceMap.setValue(i, 0);
         }
@@ -99,7 +102,8 @@ public enum SlamMapUtil {
             seenCells.add(cellIndexLast);
           // get cell index number for event position using current expected pose
           Tensor worldCoordCurrent = layerCurrent.toVector(gokartCoord[0], gokartCoord[1]);
-          int cellIndexCurrent = normalizationMap.getCellIndex(worldCoordCurrent.Get(0).number().doubleValue(),
+          int cellIndexCurrent = normalizationMap.getCellIndex( //
+              worldCoordCurrent.Get(0).number().doubleValue(), //
               worldCoordCurrent.Get(1).number().doubleValue());
           if (cellIndexCurrent != normalizationMap.getNumberOfCells())
             seenCells.add(cellIndexCurrent);

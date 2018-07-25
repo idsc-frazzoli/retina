@@ -24,6 +24,7 @@ public class SlamMapFrame {
   private static final byte BLUE = (byte) 5;
   private static final byte RED = (byte) -76;
   private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
+  private static final byte[] LOOKUP2 = { CLEAR_BYTE, GREEN, BLUE };
   // ---
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
@@ -76,11 +77,13 @@ public class SlamMapFrame {
   public void setProcessedMat(Mat processedMat) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++)
-      if (processedByteArray[i] == 0)
-        bytes[i] = CLEAR_BYTE;
-      else {
-        int labelID = processedByteArray[i] % 3;
-        bytes[i] = LOOKUP[labelID];
-      }
+      // TODO MG check
+      bytes[i] = LOOKUP2[processedByteArray[i] % 3];
+    // if (processedByteArray[i] == 0)
+    // bytes[i] = CLEAR_BYTE;
+    // else {
+    // int labelID = processedByteArray[i] % 3;
+    // bytes[i] = LOOKUP[labelID];
+    // }
   }
 }

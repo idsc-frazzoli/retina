@@ -46,7 +46,7 @@ public class SlamTrajectoryPlanning {
       SlamMapProcessingUtil.setGokartWayPoints(worldWayPoints, gokartWayPoints, estimatedPose.getPoseUnitless());
       SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleGokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
       SlamMapProcessingUtil.choosePurePursuitPoint(visibleGokartWayPoints, purePursuitIndex);
-//      System.out.println(stopWatch.display_seconds());
+      // System.out.println(stopWatch.display_seconds());
       lastComputationTimeStamp = currentTimeStamp;
     }
   }

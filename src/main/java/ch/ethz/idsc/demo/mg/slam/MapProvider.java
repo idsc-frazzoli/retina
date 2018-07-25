@@ -6,7 +6,7 @@ import java.util.stream.DoubleStream;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-// provides a grid map which is used by the SLAM algorithm
+/** provides a grid map which is used by the SLAM algorithm */
 // TODO maybe handle exceptions more elegant
 public class MapProvider {
   private final Scalar numberOfCells;
@@ -36,14 +36,13 @@ public class MapProvider {
 
   // the method returns the divided map
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
-    for (int i = 0; i < targetMap.getNumberOfCells(); i++) {
+    for (int i = 0; i < targetMap.getNumberOfCells(); i++)
       if (denominator.getValue(i) == 0) {
         // do nothing
       } else {
         double newValue = numerator.getValue(i) / denominator.getValue(i);
         targetMap.setValue(i, newValue);
       }
-    }
   }
 
   // returns coordinates of cell middle point
@@ -136,7 +135,8 @@ public class MapProvider {
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);
       maxValue = DoubleStream.of(mapArray) //
           .reduce(Math::max).getAsDouble();
-    }
+    } else
+      throw new IllegalArgumentException();
   }
 
   public double[] getMapArray() {
@@ -158,8 +158,6 @@ public class MapProvider {
   /** @return maxValue or 1 if maxValue == 0
    * since we divide by that value, we avoid all kinds of problems with that */
   public double getMaxValue() {
-    if (maxValue == 0)
-      return 1;
-    return maxValue;
+    return maxValue == 0 ? 1 : maxValue;
   }
 }

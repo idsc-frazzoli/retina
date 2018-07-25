@@ -26,7 +26,7 @@ class SlamMapProcessing implements Runnable {
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
-  private List<double[]> worldWayPoints; // world frame
+  private List<double[]> worldWayPoints = new ArrayList<>(); // world frame
   private double lastComputationTimeStamp;
   private MapProvider occurrenceMap;
   private Mat labels;
@@ -39,13 +39,16 @@ class SlamMapProcessing implements Runnable {
     cornerX = slamConfig.corner.Get(0).number().doubleValue();
     cornerY = slamConfig.corner.Get(1).number().doubleValue();
     cellDim = slamConfig.cellDim.number().doubleValue();
-    worldWayPoints = new ArrayList<>();
   }
 
   public void initialize(double initTimeStamp) {
     lastComputationTimeStamp = initTimeStamp;
   }
 
+  /** suggested API:
+   * the call to the function "mapPostProcessing" shall be non-blocking.
+   * data is passed to the SlamMapProcessing thread if taken into account
+   * unless the thread is too busy to process the data. */
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       this.occurrenceMap = occurrenceMap;

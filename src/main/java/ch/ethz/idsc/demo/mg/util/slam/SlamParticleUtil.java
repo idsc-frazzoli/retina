@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mg.util.slam;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
@@ -13,17 +12,16 @@ import ch.ethz.idsc.tensor.Tensors;
 // collection of public static methods to handle the mighty SlamParticle object
 public enum SlamParticleUtil {
   ;
-  public static final Comparator<SlamParticle> SlamCompare = new Comparator<SlamParticle>() {
-    @Override
-    public int compare(SlamParticle o1, SlamParticle o2) {
-      if (o1.getParticleLikelihood() < o2.getParticleLikelihood())
-        return 1;
-      if (o1.getParticleLikelihood() > o2.getParticleLikelihood())
-        return -1;
-      return 0;
-    }
-  };
-
+  // public static final Comparator<SlamParticle> SlamCompare = new Comparator<SlamParticle>() {
+  // @Override
+  // public int compare(SlamParticle o1, SlamParticle o2) {
+  // if (o1.getParticleLikelihood() < o2.getParticleLikelihood())
+  // return 1;
+  // if (o1.getParticleLikelihood() > o2.getParticleLikelihood())
+  // return -1;
+  // return 0;
+  // }
+  // };
   /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
    * 
    * @param slamParticles
@@ -95,6 +93,7 @@ public enum SlamParticleUtil {
     SlamParticleUtil.particleRoughening(slamParticles, dT, rougheningLinVelStd, rougheningAngVelStd);
   }
 
+  // TODO function not called
   private static void multinomialSampling(SlamParticle[] slamParticles) {
     int numbOfPart = slamParticles.length;
     // assigned particle numbers start at zero
@@ -123,11 +122,11 @@ public enum SlamParticleUtil {
     }
   }
 
-  // just throw away lowest likelihoods
+  /** just throw away lowest likelihoods */
   private static void neglectLowLikelihoodds(SlamParticle[] slamParticles) {
     double initLikelihood = (double) 1 / slamParticles.length;
     // sort by likelihood
-    Arrays.sort(slamParticles, SlamCompare);
+    Arrays.sort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
     int startIndex = slamParticles.length / 2;
     // duplicate half of particles with highest likelihood
     for (int i = startIndex; i < slamParticles.length; i++) {
@@ -139,7 +138,7 @@ public enum SlamParticleUtil {
     }
   }
 
-  // roughens the linVel and angVel of the particles
+  /** roughens the linVel and angVel of the particles */
   // TODO maybe roughen position as well? or only position
   private static void particleRoughening(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
     for (int i = 0; i < slamParticles.length; i++) {
@@ -150,7 +149,7 @@ public enum SlamParticleUtil {
     }
   }
 
-  // incorporate the physical limits of linear acceleration and minVel/maxVel
+  /** incorporate the physical limits of linear acceleration and minVel/maxVel */
   private static double limitLinAccel(double oldLinVel, double linVelRougheningStd, double dT) {
     double maxAccel = 2.5;
     double minAccel = -2.5;
@@ -169,7 +168,7 @@ public enum SlamParticleUtil {
     return newLinVel;
   }
 
-  // incorporate the physical limits of angular acceleration and minVel/maxVel
+  /** incorporate the physical limits of angular acceleration and minVel/maxVel */
   private static double limitAngAccel(double oldAngVel, double oldLinVel, double angVelRougheningStd, double dT) {
     double minAccel = -6;
     double maxAccel = 6;
@@ -196,7 +195,7 @@ public enum SlamParticleUtil {
    * @return averagePose unitless representation */
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     Tensor expectedPose = Tensors.of(RealScalar.of(0), RealScalar.of(0), RealScalar.of(0));
-    Arrays.sort(slamParticles, 0, relevantRange, SlamCompare);
+    Arrays.sort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
     double likelihoodSum = 0;
     for (int i = 0; i < relevantRange; i++) {
       Tensor pose = slamParticles[i].getPoseUnitless();
@@ -208,7 +207,7 @@ public enum SlamParticleUtil {
   }
 
   public static void printStatusInfo(SlamParticle[] slamParticles) {
-    Arrays.sort(slamParticles, SlamParticleUtil.SlamCompare);
+    Arrays.sort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
     System.out.println("**** new status info **********");
     for (int i = 0; i < slamParticles.length; i++) {
       System.out.println("Particle likelihood " + slamParticles[i].getParticleLikelihood());

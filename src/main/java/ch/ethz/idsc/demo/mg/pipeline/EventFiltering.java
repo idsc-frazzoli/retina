@@ -52,8 +52,6 @@ public class EventFiltering {
     return false;
   }
 
-
-
   // events on the image boarders are always filtered. smaller filterConstant results in more aggressive filtering.
   private boolean backgroundActivityFilter(DavisDvsEvent davisDvsEvent, double filterConstant) {
     updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
@@ -74,7 +72,7 @@ public class EventFiltering {
       timestamps[x + 1][y + 1] = time;
     }
   }
-  
+
   // based on paper "Fast event-based corner detection". C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
   private boolean cornerDetector(DavisDvsEvent e) {
     // update SAE
