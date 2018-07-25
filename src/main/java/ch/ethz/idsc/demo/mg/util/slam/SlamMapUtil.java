@@ -26,10 +26,10 @@ public enum SlamMapUtil {
    * @param gokartFramePos [m] position of event in go kart frame
    * @param particleRange number of particles with highest likelihoods used for update */
   public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
+    // double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
+    double adaptiveWeightFactor = 1;
     // sort in descending order of likelihood
-    double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
-    adaptiveWeightFactor = 1;
-    Arrays.sort(slamParticles, 0, particleRange, SlamParticleLikelihoodComparator.INSTANCE);
+    Arrays.parallelSort(slamParticles, 0, particleRange, SlamParticleLikelihoodComparator.INSTANCE);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());

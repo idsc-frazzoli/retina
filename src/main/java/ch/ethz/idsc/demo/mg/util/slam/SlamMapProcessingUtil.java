@@ -92,7 +92,10 @@ public class SlamMapProcessingUtil {
       WayPoint slamWayPoint = new WayPoint(worldPosition);
       Tensor gokartPosition = worldToGokartLayer.toVector(worldWayPoints.get(i)[0], worldWayPoints.get(i)[1]);
       slamWayPoint.setGokartPosition(gokartPosition);
-      gokartWayPoints.add(i, slamWayPoint);
+      gokartWayPoints.set(i, slamWayPoint);
+    }
+    for (int i = worldWayPoints.size(); i < gokartWayPoints.size(); i++) {
+      gokartWayPoints.remove(i);
     }
   }
 

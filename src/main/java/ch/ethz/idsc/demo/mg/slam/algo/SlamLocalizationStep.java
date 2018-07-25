@@ -6,6 +6,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
+import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the localization step of the SLAM algorithm */
@@ -50,6 +51,7 @@ class SlamLocalizationStep {
 
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
     if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
+      
       double dT = currentTimeStamp - lastPropagationTimeStamp;
       if (!odometryStatePropagation) {
         SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
@@ -57,6 +59,7 @@ class SlamLocalizationStep {
         SlamParticleUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
       }
       lastPropagationTimeStamp = currentTimeStamp;
+      
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
       double dT = currentTimeStamp - lastResampleTimeStamp;
