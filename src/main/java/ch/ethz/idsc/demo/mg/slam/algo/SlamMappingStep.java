@@ -47,6 +47,12 @@ class SlamMappingStep {
     }
   }
 
+  /** updates occurrence map
+   * 
+   * @param slamParticles
+   * @param gokartPose unitless representation
+   * @param eventGokartFrame [m]
+   * @param currentTimeStamp [s] */
   public void mappingStep(SlamParticle[] slamParticles, Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance) {
       if (!localizationMode)
@@ -68,6 +74,11 @@ class SlamMappingStep {
     }
   }
 
+  /** updates occurrence map using pose provided by lidar
+   * 
+   * @param gokartPose unitless representation
+   * @param eventGokartFrame [m]
+   * @param currentTimeStamp [s] */
   public void mappingStepWithLidar(Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     // just to make sure
     if (localizationMode)

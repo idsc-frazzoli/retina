@@ -28,7 +28,7 @@ public class DavisConfig {
    * 0 == background activity filter, 1 == FAST corner filter */
   public final Scalar filterConfig = RealScalar.of(0);
   /** [us] for background activity filter */
-  public Scalar filterConstant = RealScalar.of(300);
+  public Scalar filterConstant = RealScalar.of(1000);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 

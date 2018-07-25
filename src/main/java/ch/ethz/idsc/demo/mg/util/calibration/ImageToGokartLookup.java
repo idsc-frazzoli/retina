@@ -35,7 +35,7 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
 
   /** @param imagePosX [pixel]
    * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in gokart reference frame */
+   * @return physicalCoordinates [m] in go kart reference frame */
   @Override
   public double[] imageToGokart(int imagePosX, int imagePosY) {
     int index = imagePosX + imagePosY * width;
@@ -44,7 +44,7 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
   }
 
   /** @param index of pixel
-   * @return physicalCoordinates in units [m] in gokart reference frame */
+   * @return physicalCoordinates [m] in go kart reference frame */
   public Tensor imageToGokartTensor(int index) {
     index <<= 1;
     return Tensors.vector(lookupArray[index], lookupArray[index + 1]);

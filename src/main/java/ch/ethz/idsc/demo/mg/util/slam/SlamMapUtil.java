@@ -11,6 +11,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
@@ -28,7 +29,7 @@ public enum SlamMapUtil {
     // sort in descending order of likelihood
     double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
     adaptiveWeightFactor = 1;
-    Arrays.sort(slamParticles, 0, particleRange, SlamParticleUtil.SlamCompare);
+    Arrays.sort(slamParticles, 0, particleRange, SlamParticleLikelihoodComparator.INSTANCE);
     for (int i = 0; i < particleRange; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
@@ -48,28 +49,31 @@ public enum SlamMapUtil {
 
   /** update occurrence map with lidar ground truth
    * 
-   * @param gokartLidarPose ground truth pose provided by lidar
+   * @param gokartLidarPose unitless representation ground truth pose provided by lidar
    * @param occurrenceMap
    * @param gokartFramePos [m] position of event in go kart frame */
   public static void updateOccurrenceMapLidar(Tensor gokartPose, MapProvider occurrenceMap, double[] gokartFramePos) {
-    GeometricLayer gokartToWorldLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(gokartPose));
+    GeometricLayer gokartToWorldLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(gokartPose));
     Tensor worldCoord = gokartToWorldLayer.toVector(gokartFramePos[0], gokartFramePos[1]);
     occurrenceMap.addValue(worldCoord, 1);
   }
 
   /** update reactive occurrence map. part of the map which is more then {@link lookBehindDistance} behind go kart is set to zero
    * 
-   * @param gokartPose
+   * @param gokartPose unitless representation
    * @param occurrenceMap
    * @param lookBehindDistance [m] */
   public static void updateReactiveOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
-    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(gokartPose)));
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(gokartPose)));
     double[] mapArray = occurrenceMap.getMapArray();
     for (int i = 0; i < mapArray.length; i++) {
       if (mapArray[i] != 0) {
         double[] worldCoord = occurrenceMap.getCellCoord(i);
         Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
-        double[] gokartCoord = { gokartCoordTensor.Get(0).number().doubleValue(), gokartCoordTensor.Get(1).number().doubleValue() };
+        // TODO MG can the code below be simplified because only gokartCoord[0] is used?
+        double[] gokartCoord = { //
+            gokartCoordTensor.Get(0).number().doubleValue(), //
+            gokartCoordTensor.Get(1).number().doubleValue() };
         if (gokartCoord[0] < lookBehindDistance) {
           occurrenceMap.setValue(i, 0);
         }
@@ -98,7 +102,8 @@ public enum SlamMapUtil {
             seenCells.add(cellIndexLast);
           // get cell index number for event position using current expected pose
           Tensor worldCoordCurrent = layerCurrent.toVector(gokartCoord[0], gokartCoord[1]);
-          int cellIndexCurrent = normalizationMap.getCellIndex(worldCoordCurrent.Get(0).number().doubleValue(),
+          int cellIndexCurrent = normalizationMap.getCellIndex( //
+              worldCoordCurrent.Get(0).number().doubleValue(), //
               worldCoordCurrent.Get(1).number().doubleValue());
           if (cellIndexCurrent != normalizationMap.getNumberOfCells())
             seenCells.add(cellIndexCurrent);

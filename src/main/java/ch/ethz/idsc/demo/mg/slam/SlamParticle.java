@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Integrator;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -14,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** provides a single particle for the SLAM algorithm */
 public class SlamParticle implements GokartPoseInterface {
-  private Tensor pose;
+  private Tensor pose; // unitless representation
   private GeometricLayer geometricLayer;
   private Scalar linVel; // in direction of go kart x axis
   private Scalar angVel; // around go kart z axis
@@ -38,25 +39,20 @@ public class SlamParticle implements GokartPoseInterface {
   }
 
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
-    setPose(particle.getPose());
+    setPoseUnitless(particle.getPoseUnitless());
     linVel = particle.getLinVel();
     angVel = particle.getAngVel();
     particleLikelihood = updatedLikelihood;
   }
 
+  /** @param unitlessPose {x,y,heading} without units */
   private void setPoseUnitless(Tensor unitlessPose) {
-    setPose(Tensors.of( //
-        Quantity.of(unitlessPose.Get(0), SI.METER), //
-        Quantity.of(unitlessPose.Get(1), SI.METER), //
-        unitlessPose.Get(2)));
+    pose = unitlessPose;
+    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }
 
-  /** for mapping with lidar pose
-   * 
-   * @param pose {x[m], y[m], heading[]} */
-  public void setPose(Tensor pose) {
-    this.pose = pose;
-    geometricLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(pose));
+  public Tensor getPoseUnitless() {
+    return pose;
   }
 
   public void setLinVel(Scalar linVel) {
@@ -95,12 +91,18 @@ public class SlamParticle implements GokartPoseInterface {
     return geometricLayer;
   }
 
-  private Tensor getPoseUnitless() {
-    return GokartPoseHelper.toUnitless(pose);
+  /** for mapping with lidar pose
+   * 
+   * @param pose {x[m], y[m], heading[]} */
+  public void setPose(Tensor pose) {
+    setPoseUnitless(GokartPoseHelper.toUnitless(pose));
   }
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return pose;
+    return Tensors.of( //
+        Quantity.of(pose.Get(0), SI.METER), //
+        Quantity.of(pose.Get(1), SI.METER), //
+        pose.Get(2));
   }
 }

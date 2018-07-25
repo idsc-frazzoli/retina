@@ -11,8 +11,8 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
@@ -37,13 +37,18 @@ public class SlamMapProcessingUtil {
     }
   }
 
-  /** @param thresholdMap input object containing binary map
-   * @param processedMap
+  /** finds waypoints through threshold operation, morphological processing and connected component labeling
+   * 
+   * @param thresholdMap input object containing binary map
    * @param labels map with labelled connected components
-   * @param frameWayPoints centroids of labelled connected components
    * @param dilateKernel parameter for dilate morphological operation
-   * @param erodeKernel parameter for erode morphological operation */
-  public static List<double[]> findWayPoints(MapProvider thresholdMap, Mat labels, Mat dilateKernel, Mat erodeKernel) {
+   * @param erodeKernel parameter for erode morphological operation
+   * @param cornerX [m]
+   * @param cornerY [m]
+   * @param cellDim [m]
+   * @return worldWayPoints [m] detected waypoints in world frame */
+  public static List<double[]> findWayPoints(MapProvider thresholdMap, Mat labels, Mat dilateKernel, Mat erodeKernel, double cornerX, double cornerY,
+      double cellDim) {
     Mat processedMap = SlamOpenCVUtil.mapProviderToMat(thresholdMap);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, dilateKernel, new Point(-1, -1), 1, opencv_core.BORDER_CONSTANT, null);
@@ -52,43 +57,36 @@ public class SlamMapProcessingUtil {
     Mat centroid = new Mat(opencv_core.CV_64F);
     Mat stats = new Mat();
     opencv_imgproc.connectedComponentsWithStats(processedMap, labels, stats, centroid, 8, opencv_core.CV_16UC1);
+    List<double[]> worldWayPoints = new ArrayList<>(centroid.rows() - 1);
     // start at 1 because 0 is background label
-    List<double[]> frameWayPoints = new ArrayList<>(centroid.rows() - 1);
     for (int i = 1; i < centroid.rows(); i++) {
       double[] newWayPoint = { centroid.row(i).arrayData().getDouble(0), centroid.row(i).arrayData().getDouble(arrayStep) };
-      frameWayPoints.add(i - 1, newWayPoint);
-    }
-    return frameWayPoints;
-  }
-
-  /** @param worldWayPoints
-   * @param frameWayPoints
-   * @param cornerX
-   * @param cornerY
-   * @param cellDim */
-  public static List<double[]> updateWorldWayPoints(List<double[]> frameWayPoints, double cornerX, double cornerY, double cellDim) {
-    List<double[]> worldWayPoints = new ArrayList<>(frameWayPoints.size());
-    for (int i = 0; i < frameWayPoints.size(); i++) {
-      double[] worldWayPoint = frameToWorld(frameWayPoints.get(i), cornerX, cornerY, cellDim);
-      worldWayPoints.add(worldWayPoint);
+      worldWayPoints.add(i - 1, frameToWorld(newWayPoint, cornerX, cornerY, cellDim));
     }
     return worldWayPoints;
   }
 
+  /** coordinate transformation
+   * 
+   * @param framePos [pixel] waypoint position in frame
+   * @param cornerX [m]
+   * @param cornerY [m]
+   * @param cellDim [m]
+   * @return worldPos [m] waypoint position in world coordinate system */
   private static double[] frameToWorld(double[] framePos, double cornerX, double cornerY, double cellDim) {
-    double[] physicalPos = new double[2];
-    physicalPos[0] = cornerX + framePos[0] * cellDim;
-    physicalPos[1] = cornerY + framePos[1] * cellDim;
-    return physicalPos;
+    double[] worldPos = new double[2];
+    worldPos[0] = cornerX + framePos[0] * cellDim;
+    worldPos[1] = cornerY + framePos[1] * cellDim;
+    return worldPos;
   }
 
   /** sets waypoint objects according to world frame waypoint positions
    * 
    * @param worldWayPoints [m] in world frame
    * @param gokartWayPoints
-   * @param currentPose */
+   * @param currentPose unitless representation */
   public static void setGokartWayPoints(List<double[]> worldWayPoints, List<WayPoint> gokartWayPoints, Tensor currentPose) {
-    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(currentPose)));
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(currentPose)));
     for (int i = 0; i < worldWayPoints.size(); i++) {
       double[] worldPosition = worldWayPoints.get(i);
       WayPoint slamWayPoint = new WayPoint(worldPosition);
