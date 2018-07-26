@@ -79,7 +79,7 @@ class SlamMapProcessing implements Runnable {
         occurrenceMap = null;
       } else {
         try {
-          Thread.sleep(1);
+          Thread.sleep(0);
         } catch (InterruptedException e) {
           // ---
         }

@@ -75,20 +75,22 @@ public class SlamProvider implements DavisDvsListener {
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time / 1000000.0);
     } else {
       if (eventFiltering.filterPipeline(davisDvsEvent)) {
-        Stopwatch stopwatch = Stopwatch.started();
+        
         double currentTimeStamp = davisDvsEvent.time / 1000000.0;
         double[] eventGokartFrame = imageToGokartLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
           slamMappingStep.mappingStepWithLidar(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         } else {
+          Stopwatch stopwatch = Stopwatch.started();
           slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
           slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
           slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
+          if(stopwatch.display_seconds()>0.01)
+            System.out.println(stopwatch.display_seconds());
         }
         eventCount++;
-        timeSum += stopwatch.display_seconds();
         if (currentTimeStamp - initTimeStamp > 10) {
           System.out.println(eventFiltering.getFilteredPercentage());
           System.out.println("avg time is " + timeSum / eventCount);

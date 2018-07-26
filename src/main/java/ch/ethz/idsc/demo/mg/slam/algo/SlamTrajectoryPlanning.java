@@ -22,9 +22,7 @@ public class SlamTrajectoryPlanning implements Runnable {
   // ---
   private List<double[]> worldWayPoints;
   private List<WayPoint> gokartWayPoints;
-  private List<WayPoint> visibleGokartWayPoints;
   private double lastComputationTimeStamp;
-  private int purePursuitIndex;
 
   SlamTrajectoryPlanning(SlamConfig slamConfig, SlamEstimatedPose estimatedPose) {
     this.estimatedPose = estimatedPose;
@@ -37,18 +35,13 @@ public class SlamTrajectoryPlanning implements Runnable {
 
   public void initialize(double initTimeStamp) {
     gokartWayPoints = new ArrayList<>();
-    visibleGokartWayPoints = new ArrayList<>();
     lastComputationTimeStamp = initTimeStamp + initialDelay;
     thread.start();
   }
 
   public void computeTrajectory(List<double[]> worldWayPoints, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
-      // Stopwatch stopWatch = Stopwatch.started();
       this.worldWayPoints = worldWayPoints;
-      // TODO probably array is better than list
-      // gokartWayPoints = new ArrayList<>(worldWayPoints.size());
-      // visibleGokartWayPoints = new ArrayList<>();
       thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;
     }
@@ -61,22 +54,12 @@ public class SlamTrajectoryPlanning implements Runnable {
     return gokartWayPoints;
   }
 
-  public double[] getPurePursuitPoint() {
-    if (purePursuitIndex != -1) {
-      return visibleGokartWayPoints.get(purePursuitIndex).getGokartPosition();
-    }
-    System.out.println("FATAL: no visible waypoint");
-    double[] straightWayPoint = { 10, 0 };
-    return straightWayPoint;
-  }
-
   @Override
   public void run() {
     while (true) {
       if (Objects.nonNull(worldWayPoints)) {
-        SlamMapProcessingUtil.setGokartWayPoints(worldWayPoints, gokartWayPoints, estimatedPose.getPoseUnitless());
-        SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleGokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-        SlamMapProcessingUtil.choosePurePursuitPoint(visibleGokartWayPoints, purePursuitIndex);
+        gokartWayPoints = SlamMapProcessingUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
+        SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
         worldWayPoints = null;
       } else {
         try {
