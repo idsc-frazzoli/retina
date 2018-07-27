@@ -66,6 +66,17 @@ public class SlamMapProcessingUtil {
     return worldWayPoints;
   }
 
+  /** @param inputMap
+   * @param resizeFactor [-]
+   * @return outputMap same type as inputMap */
+  private static Mat resizeMat(Mat inputMap, double resizeFactor) {
+    int newHeight = (int) (inputMap.rows() / resizeFactor);
+    int newWidth = (int) (inputMap.cols() / resizeFactor);
+    Mat outputMap = new Mat(newHeight, newWidth, inputMap.type());
+    opencv_imgproc.resize(inputMap, outputMap, outputMap.size());
+    return outputMap;
+  }
+
   /** coordinate transformation
    * 
    * @param framePos [pixel] waypoint position in frame

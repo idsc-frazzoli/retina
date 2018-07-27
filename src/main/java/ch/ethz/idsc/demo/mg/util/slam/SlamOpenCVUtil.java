@@ -13,7 +13,7 @@ public enum SlamOpenCVUtil {
   /** convert mat object to byteArray
    * 
    * @param mat
-   * @return */
+   * @return byteArray containing image information*/
   public static byte[] matToByteArray(Mat mat) {
     int width = mat.arrayWidth();
     int height = mat.arrayHeight();
@@ -26,7 +26,7 @@ public enum SlamOpenCVUtil {
   /** convert binary image to a mat object
    * 
    * @param mapProvider
-   * @return */
+   * @return binary Mat object*/
   public static Mat mapProviderToMat(MapProvider mapProvider) {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];
