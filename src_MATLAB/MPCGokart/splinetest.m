@@ -1,12 +1,12 @@
 %points = [-1,1,2,0,0,0,1,0,0,0]';
 %points = ones(5,1)
-points = [1,2,3,5;0,0,10,1]';
+points = [1,2,2,4,2,2,1;0,0,4.7,5,5.3,10,10]';
 [np,~]=size(points);
 step = 0.02;
 u = 0:step:np;
 u = u(:,1:end-1)';
 [nu,~]=size(u);
-o = 4
+o = 2
 s = 0.01;
 p = cartbspline(points, u, o, 0);
 v = cartbspline(points, u, o, 1);
@@ -78,11 +78,15 @@ end
 
 totalMaxSpeed = max(vmax);
 
-for i=1:m-1
-    x = [p(i,1),p(i+1,1)];
-   y = [p(i,2),p(i+1,2)];
+for i=1:m
+    next = i+1;
+    if(next>m)
+        next = 1
+    end
+    x = [p(i,1),p(next,1)];
+   y = [p(i,2),p(next,2)];
    vc = vmax(i)/totalMaxSpeed;
-   line(x,y,'Color',[vc,1-vc,0]);
+   line(x,y,'Color',[1-vc,vc,0]);
 end
 hold off
 
