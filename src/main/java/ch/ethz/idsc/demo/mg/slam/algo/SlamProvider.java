@@ -75,7 +75,6 @@ public class SlamProvider implements DavisDvsListener {
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time / 1000000.0);
     } else {
       if (eventFiltering.filterPipeline(davisDvsEvent)) {
-        
         double currentTimeStamp = davisDvsEvent.time / 1000000.0;
         double[] eventGokartFrame = imageToGokartLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
@@ -87,7 +86,7 @@ public class SlamProvider implements DavisDvsListener {
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
           slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
           slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
-          if(stopwatch.display_seconds()>0.01)
+          if (stopwatch.display_seconds() > 0.01)
             System.out.println(stopwatch.display_seconds());
         }
         eventCount++;

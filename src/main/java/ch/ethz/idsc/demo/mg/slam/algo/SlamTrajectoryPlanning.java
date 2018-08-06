@@ -63,6 +63,7 @@ public class SlamTrajectoryPlanning implements Runnable {
         worldWayPoints = null;
       } else {
         try {
+          // TODO jan doesn't understand why duration 0
           Thread.sleep(0);
         } catch (InterruptedException e) {
           // ---
