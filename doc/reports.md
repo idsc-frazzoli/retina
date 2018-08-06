@@ -26,6 +26,8 @@
 * [20180624_vibration_sensor_rack.pdf](https://github.com/idsc-frazzoli/retina/files/2131149/20180624_vibration_sensor_rack.pdf)
 * [20180627_davis240c_polarity_imbalance.pdf](https://github.com/idsc-frazzoli/retina/files/2148391/20180627_davis240c_polarity_imbalance.pdf)
 * [20180720_trajectories_with_improved_curvature.pdf](https://github.com/idsc-frazzoli/retina/files/2213007/20180720_trajectories_with_improved_curvature.pdf)
+* [20180730_lidar_perception_for_autonomous_vehicles.pdf](https://github.com/idsc-frazzoli/retina/files/2263053/20180730_lidar_perception_for_autonomous_vehicles.pdf)
+
 
 ## Bug Reports
 
