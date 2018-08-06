@@ -1,5 +1,4 @@
-%code by mh
-function [p,steps,speed] = getTrajectory(points, order, maxacc)
+function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
     [np,~]=size(points);
     step = 0.02;
     u = 0:step:np;
@@ -91,6 +90,23 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
            vc = vmax(i)/totalMaxSpeed;
            line(x,y,'Color',[1-vc,vc,0]);
         end
+        
+        scatter(points(:,1),points(:,2));
+        
         hold off
+    end
+    
+    ttpos = [];
+    currentt = 0
+    currentu = 0
+    %slow method but i don't know the size beforehand
+    while currentu<np
+        ttpos = [ttpos;[currentt,cartbspline(points, currentu, order, 0)]];
+        %localStep = step*norm(cartbspline(points, currentu, order, 1));
+        %localSpeed = interp1([vmax(end);vmax],0:nu,currentu);
+        localStep = norm(cartbspline(points, currentu, order, 1));
+        localSpeed = vmax(max(1,ceil(currentu/step)));
+        currentu = currentu + timestep*localSpeed/localStep;
+        currentt = currentt+timestep;
     end
 end
