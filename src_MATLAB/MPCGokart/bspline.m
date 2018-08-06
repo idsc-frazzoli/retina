@@ -1,4 +1,4 @@
-%code by mh
+%code by mheim
 function r = bspline(points, u, order, der, circ)
     %equally spaced bspline
     %delivers also derivativs

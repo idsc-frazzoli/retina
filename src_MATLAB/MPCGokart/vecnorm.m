@@ -1,3 +1,4 @@
+%helper code/only needed if MATLAB is older than 2017
 function n = vecnorm(x, dim)
 % VECNORM(x, dim)
 % Norm of a vector

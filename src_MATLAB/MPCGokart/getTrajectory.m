@@ -1,3 +1,4 @@
+%code by mheim
 function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
     [np,~]=size(points);
     step = 0.02;
@@ -10,12 +11,11 @@ function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
     v = cartbspline(points, u, order, 1);
     a = cartbspline(points, u, order, 2);
     %normalized acceleration
-    %TODO: switch vnn and vn
-    vn = vecnorm(v')';
-    vnn = v./vn;
-    an = a./(vn);
-    dd = dot(an',vnn')';
-    an = an-([dd,dd].*vnn);
+    vnn = vecnorm(v')';
+    vn = v./vnn;
+    an = a./(vnn);
+    dd = dot(an',vn')';
+    an = an-([dd,dd].*vn);
     ann = vecnorm(an')';
     
     %curvature pass
@@ -32,7 +32,7 @@ function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
         end
         la = sqrt(maxacc.^2-(ann(next)*vmax(next)).^2);
         %speed gained in step
-        d = step*vn(next);
+        d = step*vnn(next);
         sg = la*d/vmax(next);
         vmax(i)=min(vmax(i),vmax(next)+sg);
         i = i-1;
@@ -55,7 +55,7 @@ function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
         end
         la = sqrt(maxacc.^2-(ann(last)*vmax(last)).^2);
         %speed gained in step
-        d = step*vn(last);
+        d = step*vnn(last);
         sg = la*d/vmax(last);
         vmax(i)=min(vmax(i),vmax(last)+sg);
         i = i+1;
@@ -66,8 +66,8 @@ function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
     end
 
     totalMaxSpeed = max(vmax);
-    steps = step*vn;
-    speed = vnn.*vmax;
+    steps = step*vnn;
+    speed = vn.*vmax;
 
     if(show)
         figure
@@ -90,15 +90,13 @@ function [p,steps,speed, ttpos] = getTrajectory(points, order, maxacc, timestep)
            vc = vmax(i)/totalMaxSpeed;
            line(x,y,'Color',[1-vc,vc,0]);
         end
-        
         scatter(points(:,1),points(:,2));
-        
         hold off
     end
     
     ttpos = [];
-    currentt = 0
-    currentu = 0
+    currentt = 0;
+    currentu = 0;
     %slow method but i don't know the size beforehand
     while currentu<np
         ttpos = [ttpos;[currentt,cartbspline(points, currentu, order, 0)]];
