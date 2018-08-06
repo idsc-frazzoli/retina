@@ -1,3 +1,4 @@
+%code by mh
 function nt = proceed(t,prog,p,steps)
     %t: current position (depends on step length)
     %prog: wanted progress

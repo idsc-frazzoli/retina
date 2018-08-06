@@ -1,3 +1,4 @@
+%code by mh
 function [p,steps,speed] = getTrajectory(points, order, maxacc)
     [np,~]=size(points);
     step = 0.02;

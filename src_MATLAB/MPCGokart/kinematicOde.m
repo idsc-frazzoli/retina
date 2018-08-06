@@ -1,3 +1,4 @@
+%code by mh
 function [ dx ] = kinematicOde( t, x, u, p, w)
     %simplest form: input is acceleration at back axle
     %assuming no slip
