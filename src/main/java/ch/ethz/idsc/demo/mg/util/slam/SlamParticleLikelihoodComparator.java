@@ -12,9 +12,4 @@ public enum SlamParticleLikelihoodComparator implements Comparator<SlamParticle>
   public int compare(SlamParticle o1, SlamParticle o2) {
     return Double.compare(o2.getParticleLikelihood(), o1.getParticleLikelihood());
   }
-
-  // TODO MG remove demo code:
-  public static void main(String[] args) {
-    System.out.println(Double.compare(3, 10)); // sort ascending values
-  }
 }

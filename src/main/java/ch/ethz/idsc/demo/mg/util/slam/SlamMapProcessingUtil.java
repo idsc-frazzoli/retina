@@ -66,6 +66,17 @@ public class SlamMapProcessingUtil {
     return worldWayPoints;
   }
 
+  /** @param inputMap
+   * @param resizeFactor [-]
+   * @return outputMap same type as inputMap */
+  private static Mat resizeMat(Mat inputMap, double resizeFactor) {
+    int newHeight = (int) (inputMap.rows() / resizeFactor);
+    int newWidth = (int) (inputMap.cols() / resizeFactor);
+    Mat outputMap = new Mat(newHeight, newWidth, inputMap.type());
+    opencv_imgproc.resize(inputMap, outputMap, outputMap.size());
+    return outputMap;
+  }
+
   /** coordinate transformation
    * 
    * @param framePos [pixel] waypoint position in frame
@@ -80,13 +91,14 @@ public class SlamMapProcessingUtil {
     return worldPos;
   }
 
-  /** sets waypoint objects according to world frame waypoint positions
+  /** get waypoint objects according to world frame waypoint positions
    * 
    * @param worldWayPoints [m] in world frame
-   * @param gokartWayPoints
-   * @param currentPose unitless representation */
-  public static void setGokartWayPoints(List<double[]> worldWayPoints, List<WayPoint> gokartWayPoints, Tensor currentPose) {
+   * @param currentPose unitless representation
+   * @return gokartWayPoints */
+  public static List<WayPoint> getGokartWayPoints(List<double[]> worldWayPoints, Tensor currentPose) {
     GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(currentPose)));
+    List<WayPoint> gokartWayPoints = new ArrayList<>(worldWayPoints.size());
     for (int i = 0; i < worldWayPoints.size(); i++) {
       double[] worldPosition = worldWayPoints.get(i);
       WayPoint slamWayPoint = new WayPoint(worldPosition);
@@ -94,23 +106,21 @@ public class SlamMapProcessingUtil {
       slamWayPoint.setGokartPosition(gokartPosition);
       gokartWayPoints.add(i, slamWayPoint);
     }
+    return gokartWayPoints;
   }
 
   /** sets visibility field of waypoints
    * 
    * @param gokartWayPoints
-   * @param visibleGokartWayPoints
    * @param visibleBoxXMin [m] in go kart frame
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
-  public static void checkVisibility(List<WayPoint> gokartWayPoints, List<WayPoint> visibleGokartWayPoints, double visibleBoxXMin, double visibleBoxXMax,
-      double visibleBoxHalfWidth) {
+  public static void checkVisibility(List<WayPoint> gokartWayPoints, double visibleBoxXMin, double visibleBoxXMax, double visibleBoxHalfWidth) {
     for (int i = 0; i < gokartWayPoints.size(); i++) {
       double[] gokartPosition = gokartWayPoints.get(i).getGokartPosition();
       if (gokartPosition[0] > visibleBoxXMin && gokartPosition[1] < visibleBoxXMax && gokartPosition[1] > -visibleBoxHalfWidth
           && gokartPosition[1] < visibleBoxHalfWidth) {
         gokartWayPoints.get(i).setVisibility(true);
-        visibleGokartWayPoints.add(gokartWayPoints.get(i));
       }
     }
   }

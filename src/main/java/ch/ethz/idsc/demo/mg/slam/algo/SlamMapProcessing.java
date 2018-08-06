@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
@@ -26,6 +27,8 @@ class SlamMapProcessing implements Runnable {
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
+  private final Thread thread = new Thread(this);
+  // ---
   private List<double[]> worldWayPoints = new ArrayList<>(); // world frame
   private double lastComputationTimeStamp;
   private MapProvider occurrenceMap;
@@ -43,6 +46,7 @@ class SlamMapProcessing implements Runnable {
 
   public void initialize(double initTimeStamp) {
     lastComputationTimeStamp = initTimeStamp;
+    thread.start();
   }
 
   /** suggested API:
@@ -52,9 +56,7 @@ class SlamMapProcessing implements Runnable {
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       this.occurrenceMap = occurrenceMap;
-      // unelegant solution, however was faster than other options
-      Thread thread = new Thread(this);
-      thread.start();
+      thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;
     }
   }
@@ -70,7 +72,19 @@ class SlamMapProcessing implements Runnable {
 
   @Override // from Runnable
   public void run() {
-    SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
-    worldWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel, cornerX, cornerY, cellDim);
+    while (true) {
+      if (Objects.nonNull(occurrenceMap)) {
+        SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
+        worldWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel, cornerX, cornerY, cellDim);
+        occurrenceMap = null;
+      } else {
+        try {
+          // TODO jan doesn't understand why duration 0
+          Thread.sleep(0);
+        } catch (InterruptedException e) {
+          // ---
+        }
+      }
+    }
   }
 }

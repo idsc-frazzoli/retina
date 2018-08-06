@@ -3,25 +3,26 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
-import ch.ethz.idsc.owl.data.Stopwatch;
 
 // module receives a set of waypoints in world frame and outputs a trajectory
-public class SlamTrajectoryPlanning {
+public class SlamTrajectoryPlanning implements Runnable {
   private final SlamEstimatedPose estimatedPose;
   private final double initialDelay;
   private final double trajectoryUpdateRate;
   private final double visibleBoxXMin;
   private final double visibleBoxXMax;
   private final double visibleBoxHalfWidth;
+  private final Thread thread = new Thread(this);
+  // ---
+  private List<double[]> worldWayPoints;
   private List<WayPoint> gokartWayPoints;
-  private List<WayPoint> visibleGokartWayPoints;
   private double lastComputationTimeStamp;
-  private int purePursuitIndex;
 
   SlamTrajectoryPlanning(SlamConfig slamConfig, SlamEstimatedPose estimatedPose) {
     this.estimatedPose = estimatedPose;
@@ -34,19 +35,14 @@ public class SlamTrajectoryPlanning {
 
   public void initialize(double initTimeStamp) {
     gokartWayPoints = new ArrayList<>();
-    visibleGokartWayPoints = new ArrayList<>();
     lastComputationTimeStamp = initTimeStamp + initialDelay;
+    thread.start();
   }
 
   public void computeTrajectory(List<double[]> worldWayPoints, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
-      Stopwatch stopWatch = Stopwatch.started();
-      gokartWayPoints = new ArrayList<>(worldWayPoints.size());
-      visibleGokartWayPoints = new ArrayList<>();
-      SlamMapProcessingUtil.setGokartWayPoints(worldWayPoints, gokartWayPoints, estimatedPose.getPoseUnitless());
-      SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleGokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-      SlamMapProcessingUtil.choosePurePursuitPoint(visibleGokartWayPoints, purePursuitIndex);
-      // System.out.println(stopWatch.display_seconds());
+      this.worldWayPoints = worldWayPoints;
+      thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;
     }
   }
@@ -58,12 +54,21 @@ public class SlamTrajectoryPlanning {
     return gokartWayPoints;
   }
 
-  public double[] getPurePursuitPoint() {
-    if (purePursuitIndex != -1) {
-      return visibleGokartWayPoints.get(purePursuitIndex).getGokartPosition();
+  @Override
+  public void run() {
+    while (true) {
+      if (Objects.nonNull(worldWayPoints)) {
+        gokartWayPoints = SlamMapProcessingUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
+        SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
+        worldWayPoints = null;
+      } else {
+        try {
+          // TODO jan doesn't understand why duration 0
+          Thread.sleep(0);
+        } catch (InterruptedException e) {
+          // ---
+        }
+      }
     }
-    System.out.println("FATAL: no visible waypoint");
-    double[] straightWayPoint = { 10, 0 };
-    return straightWayPoint;
   }
 }

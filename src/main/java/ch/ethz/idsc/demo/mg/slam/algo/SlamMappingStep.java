@@ -58,10 +58,11 @@ class SlamMappingStep {
       if (!localizationMode)
         SlamMapUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
     }
-    if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
-      if (reactiveMappingMode)
+    if (reactiveMappingMode) {
+      if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
         SlamMapUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
-      lastReactiveUpdateTimeStamp = currentTimeStamp;
+        lastReactiveUpdateTimeStamp = currentTimeStamp;
+      }
     }
     // normalization map currently unused
     if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate) {
