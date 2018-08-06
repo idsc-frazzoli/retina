@@ -10,16 +10,24 @@ function [ dx ] = kinematicOde( t, x, u, p, w)
     v = x(4);
     %steering angle
     beta = x(5);
+    %spline positions
+    st = x(6)
     %constant for axle difference
     l = 1;
     %acceleration at rear axle
     ab = u(1);
     %steering input (1st derivative)
-    dotbeta = u(2)
+    dotbeta = u(2);
     %evolution:
+    dx = zeros(6,1);
     dx(1)=v*cos(omega);
     dx(2)=v*sin(omega);
     dx(3)=v/l*tan(beta);
     dx(4)=ab;
     dx(5)=dotbeta;
+    %for spline
+    [n,~]=size(p);
+    lstep = interp1([steps(end);steps],0:n,t);
+    ls = interp1([speed(end);speed],0:n,nt);
+    dx(6)=1/lstep;
 end

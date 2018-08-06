@@ -47,7 +47,7 @@ while dist<np*2
     %speed gained in step
     d = step*vn(next);
     sg = la*d/vmax(next);
-    vmax(i)=min(vmax(i),vmax(next)+la);
+    vmax(i)=min(vmax(i),vmax(next)+sg);
     i = i-1;
     if(i == 0)
         i = nu;
@@ -68,7 +68,7 @@ while dist<np*2
     %speed gained in step
     d = step*vn(last);
     sg = la*d/vmax(last);
-    vmax(i)=min(vmax(i),vmax(last)+la);
+    vmax(i)=min(vmax(i),vmax(last)+sg);
     i = i+1;
     if(i > nu)
         i = 1;
@@ -81,7 +81,7 @@ totalMaxSpeed = max(vmax);
 for i=1:m
     next = i+1;
     if(next>m)
-        next = 1
+        next = 1;
     end
     x = [p(i,1),p(next,1)];
    y = [p(i,2),p(next,2)];

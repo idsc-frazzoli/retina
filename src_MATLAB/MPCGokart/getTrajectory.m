@@ -4,7 +4,6 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
     u = 0:step:np;
     u = u(:,1:end-1)';
     [nu,~]=size(u);
-    o = order;
     s = 0.01;
     show = 1;
     p = cartbspline(points, u, order, 0);
@@ -18,9 +17,6 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
     dd = dot(an',vnn')';
     an = an-([dd,dd].*vnn);
     ann = vecnorm(an')';
-    %
-
-    [m,~]=size(an);
     
     %curvature pass
     vmax = maxacc*ones(nu,1)./ann;
@@ -38,13 +34,15 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
         %speed gained in step
         d = step*vn(next);
         sg = la*d/vmax(next);
-        vmax(i)=min(vmax(i),vmax(next)+la);
+        vmax(i)=min(vmax(i),vmax(next)+sg);
         i = i-1;
         if(i == 0)
             i = nu;
         end
         dist = dist + step;
     end
+    
+
 
     %forward pass
     dist = 0;
@@ -59,7 +57,7 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
         %speed gained in step
         d = step*vn(last);
         sg = la*d/vmax(last);
-        vmax(i)=min(vmax(i),vmax(last)+la);
+        vmax(i)=min(vmax(i),vmax(last)+sg);
         i = i+1;
         if(i > nu)
             i = 1;
@@ -68,22 +66,24 @@ function [p,steps,speed] = getTrajectory(points, order, maxacc)
     end
 
     totalMaxSpeed = max(vmax);
+    steps = step*vn;
+    speed = vnn.*vmax;
 
     if(show)
         figure
         %plot(p(:,1),p(:,2))
         daspect([1 1 1])
         hold on
-        for i=1:m
+        for i=1:nu
            x = [p(i,1),p(i,1)+an(i,1)*s];
            y = [p(i,2),p(i,2)+an(i,2)*s];
            line(x,y,'Color','blue');
         end
 
-        for i=1:m
+        for i=1:nu
             next = i+1;
-            if(next>m)
-                next = 1
+            if(next>nu)
+                next = 1;
             end
             x = [p(i,1),p(next,1)];
            y = [p(i,2),p(next,2)];
