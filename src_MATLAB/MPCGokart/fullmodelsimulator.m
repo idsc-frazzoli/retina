@@ -12,6 +12,9 @@ function [ x] = fullmodelsimulator( x0, u, times, carParams)
 %  CALLER OF THIS FUNCTION MUST CLEAR THE PERSISTENT VARIABLES WITHIN 
 %   THE FUNCTION BETWEEN TWO CALLS (command: clear rollout)
 
+% by mheim: new interpretation of state
+
+
 global params;
 params = carParams;
 global h;
