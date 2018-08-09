@@ -35,17 +35,18 @@ import ch.ethz.idsc.owl.data.Lists;
 import ch.ethz.idsc.owl.glc.adapter.EtaRaster;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
+import ch.ethz.idsc.owl.glc.adapter.LexicographicRelabelDecision;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.glc.adapter.VectorCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
 import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
+import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
-import ch.ethz.idsc.owl.glc.std.LexicographicRelabelDecision;
-import ch.ethz.idsc.owl.glc.std.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
+import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -204,7 +205,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
         ((StandardTrajectoryPlanner) trajectoryPlanner).relabelDecision = //
-            new LexicographicRelabelDecision(Tensors.vector(0, 0));
+            new LexicographicRelabelDecision(Lexicographic.COMPARATOR);
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);

@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Integrator;
+import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -30,12 +30,12 @@ public class SlamParticle implements GokartPoseInterface {
 
   public void propagateStateEstimate(double dT) {
     Tensor deltaPose = Tensors.of(linVel, RealScalar.of(0), angVel).multiply(RealScalar.of(dT));
-    setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
+    setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
   public void propagateStateEstimateOdometry(Tensor velocity, double dT) {
     Tensor deltaPose = velocity.multiply(Quantity.of(dT, SI.SECOND));
-    setPoseUnitless(Se2Integrator.INSTANCE.spin(getPoseUnitless(), GokartPoseHelper.toUnitless(deltaPose)));
+    setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), GokartPoseHelper.toUnitless(deltaPose)));
   }
 
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
