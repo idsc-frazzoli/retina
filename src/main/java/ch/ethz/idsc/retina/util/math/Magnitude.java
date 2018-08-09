@@ -25,6 +25,7 @@ public enum Magnitude implements ScalarUnaryOperator {
   /** conversion to non-SI magnitude may be necessary
    * when interfacing with 3rd party code that requires input along that scale */
   MILLI_SECOND(NonSI.MILLI_SECOND), //
+  MICRO_SECOND(NonSI.MICRO_SECOND), //
   // ---
   DEGREE_CELSIUS(NonSI.DEGREE_CELSIUS), //
   // ---

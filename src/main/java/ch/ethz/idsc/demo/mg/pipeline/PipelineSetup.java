@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /** pipeline setup for single/multirun of logfiles
@@ -31,7 +32,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 
   private void runPipeline() {
     File logFile = pipelineConfig.davisConfig.getLogFile();
-    Long logFileDuration = pipelineConfig.davisConfig.maxDuration.number().longValue() * 1000;
+    long logFileDuration = Magnitude.MICRO_SECOND.apply(pipelineConfig.davisConfig.maxDuration).number().longValue();
     try {
       // initialize offlinePipelineWrap with current pipelineConfig
       OfflinePipelineWrap offlinePipelineWrap = new OfflinePipelineWrap(pipelineConfig);

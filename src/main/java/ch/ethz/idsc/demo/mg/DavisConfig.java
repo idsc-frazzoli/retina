@@ -6,20 +6,19 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** provides general parameters not specific to SLAM or object detection algorithms */
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
   public String logFileName = "DUBI15a";
-  /** maxDuration [ms] */
-  public final Scalar maxDuration = RealScalar.of(15000);
-  /** relative to src/main/resources/ */
-  // TODO assignment of calibrationFileName is prone to error. is is possible to implement as member function?
-  public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv";
+  /** maxDuration */
+  public final Scalar maxDuration = Quantity.of(15, SI.SECOND);
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -40,13 +39,18 @@ public class DavisConfig {
     return logFileLocations.getFile();
   }
 
+  /** relative to src/main/resources/ */
+  public String calibrationFileName() {
+    return "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv";
+  }
+
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
   public ImageToGokartLookup createImageToGokartUtilLookup() {
-    return ImageToGokartLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
+    return ImageToGokartLookup.fromMatrix(ResourceData.of(calibrationFileName()), unitConversion, width, height);
   }
 
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
   public GokartToImageUtil createGokartToImageUtil() {
-    return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+    return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName()), unitConversion);
   }
 }

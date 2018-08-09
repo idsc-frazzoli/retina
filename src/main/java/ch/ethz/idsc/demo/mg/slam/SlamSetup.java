@@ -6,13 +6,15 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.Scalar;
 
 /** sets up the SLAM algorithm to process an offline log file */
 class SlamSetup {
   private final SlamConfig slamConfig;
   private final String logFileName;
   private final File logFile;
-  private final Long logFileDuration;
+  private final Scalar logFileDuration;
   private final boolean saveSlamMap;
   private final boolean localizationMode;
 
@@ -20,7 +22,7 @@ class SlamSetup {
     this.slamConfig = slamConfig;
     logFileName = slamConfig.davisConfig.logFileName;
     logFile = slamConfig.davisConfig.getLogFile();
-    logFileDuration = slamConfig.davisConfig.maxDuration.number().longValue() * 1000;
+    logFileDuration = slamConfig.davisConfig.maxDuration;
     saveSlamMap = slamConfig.saveSlamMap;
     localizationMode = slamConfig.localizationMode;
   }
@@ -28,7 +30,10 @@ class SlamSetup {
   private void runAlgo() {
     try {
       OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
-      BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
+      BoundedOfflineLogPlayer.process( //
+          logFile, //
+          Magnitude.MICRO_SECOND.apply(logFileDuration).number().longValue(), //
+          offlineSlamWrap);
       if (saveSlamMap && !localizationMode) {
         PrimitivesIO.saveToCSV( //
             SlamFileLocations.recordedMaps(logFileName), //
