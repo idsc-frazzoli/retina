@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.RealScalar;
     for (int i = 0; i < iterationLength; i++) {
       System.out.println("******** Iteration nr " + (i + 1));
       double aUp = 0.08 + i * 0.01;
-      String newEstimatedLabelFileName = pipelineConfig.davisConfig.logFileName.toString() + "_aUp_" + aUp;
+      String newEstimatedLabelFileName = pipelineConfig.davisConfig.logFileName() + "_aUp_" + aUp;
       pipelineConfig.aUp = RealScalar.of(aUp);
       pipelineConfig.estimatedLabelFileName = newEstimatedLabelFileName;
       runPipeline();

@@ -16,7 +16,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public String logFileName = "DUBI15a";
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI15a;
+
+  public String logFileName() {
+    return logFileLocations.name();
+  }
+
   /** maxDuration */
   public final Scalar maxDuration = Quantity.of(15, SI.SECOND);
   // general parameters
@@ -33,15 +38,15 @@ public class DavisConfig {
 
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
+    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName());
     if (Objects.isNull(logFileLocations))
-      throw new RuntimeException("invalid logFileName: " + logFileName);
+      throw new RuntimeException("invalid logFileName: " + logFileName());
     return logFileLocations.getFile();
   }
 
   /** relative to src/main/resources/ */
   public String calibrationFileName() {
-    return "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv";
+    return "/demo/mg/" + logFileName().substring(0, logFileName().length() - 1) + ".csv";
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
