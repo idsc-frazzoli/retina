@@ -4,6 +4,8 @@ package ch.ethz.idsc.demo.mg;
 import java.io.File;
 
 import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 enum LogFileLocations {
   /** extracted part of DUBI4 log file */
@@ -114,5 +116,14 @@ enum LogFileLocations {
     if (!file.isFile())
       System.err.println("file does not exist:\n" + file);
     return file;
+  }
+
+  /** relative to src/main/resources/ */
+  String calibrationFileName() {
+    return "/demo/mg/" + name().substring(0, name().length() - 1) + ".csv";
+  }
+
+  public Tensor calibration() {
+    return ResourceData.of(calibrationFileName());
   }
 }
