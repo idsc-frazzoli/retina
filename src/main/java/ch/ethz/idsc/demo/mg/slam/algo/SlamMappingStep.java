@@ -26,7 +26,7 @@ class SlamMappingStep {
   SlamMappingStep(SlamConfig slamConfig) {
     for (int i = 0; i < 3; i++)
       eventMaps[i] = new MapProvider(slamConfig);
-    imagePrefix = slamConfig.davisConfig.logFileName;
+    imagePrefix = slamConfig.davisConfig.logFileName();
     localizationMode = slamConfig.localizationMode;
     reactiveMappingMode = slamConfig.reactiveMappingMode;
     lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();

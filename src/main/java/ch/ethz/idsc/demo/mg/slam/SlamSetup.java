@@ -20,7 +20,7 @@ class SlamSetup {
 
   SlamSetup(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
-    logFileName = slamConfig.davisConfig.logFileName;
+    logFileName = slamConfig.davisConfig.logFileName();
     logFile = slamConfig.davisConfig.getLogFile();
     logFileDuration = slamConfig.davisConfig.maxDuration;
     saveSlamMap = slamConfig.saveSlamMap;

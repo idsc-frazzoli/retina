@@ -45,7 +45,7 @@ class OfflinePipelineWrap implements OfflineLogListener {
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
     visualizer = pipelineConfig.visualizePipeline ? new PipelineVisualization() : null;
     saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
-    imagePrefix = pipelineConfig.davisConfig.logFileName;
+    imagePrefix = pipelineConfig.davisConfig.logFileName();
     if (saveImagesConfig == 1) {
       parentFilePath = EvaluationFileLocations.testing();
     } else {
