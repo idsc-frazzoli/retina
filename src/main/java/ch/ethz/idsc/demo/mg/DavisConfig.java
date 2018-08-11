@@ -16,11 +16,6 @@ public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
   public LogFileLocations logFileLocations = LogFileLocations.DUBI15a;
-
-  public String logFileName() {
-    return logFileLocations.name();
-  }
-
   /** maxDuration */
   public final Scalar maxDuration = Quantity.of(15, SI.SECOND);
   // general parameters
@@ -35,11 +30,16 @@ public class DavisConfig {
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 
+  /** @return for instance "DUBI15a" */
+  public String logFilename() {
+    return logFileLocations.name();
+  }
+
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName());
+    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFilename());
     if (Objects.isNull(logFileLocations))
-      throw new RuntimeException("invalid logFileName: " + logFileName());
+      throw new RuntimeException("invalid logFileName: " + logFilename());
     return logFileLocations.getFile();
   }
 

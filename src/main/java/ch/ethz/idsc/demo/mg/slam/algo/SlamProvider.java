@@ -11,7 +11,6 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
@@ -24,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensor;
  * "simultaneous localization and mapping for event-based vision systems" */
 public class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartLookup;
-  private final GokartToImageInterface gokartToImageUtil;
+  // private final GokartToImageInterface gokartToImageUtil;
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartOdometry;
   private final EventFiltering eventFiltering;
@@ -43,7 +42,7 @@ public class SlamProvider implements DavisDvsListener {
 
   public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartLookup = slamConfig.davisConfig.createImageToGokartUtilLookup();
-    gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
+    // gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
     this.gokartLidarPose = gokartLidarPose;
     this.gokartOdometry = gokartOdometry;
     eventFiltering = new EventFiltering(slamConfig.davisConfig);

@@ -25,6 +25,7 @@ import ch.ethz.idsc.tensor.sca.N;
 // DEMO class which provides velocity such that it can be integrated into the SLAM algorithm
 // rad 0.14, ytir = 0.65 very good rotation tracking! but speed not accurate
 // rad 0.12, ytir = 0.54 good speed tracking, rotation ok
+// TODO lots of commonality with GokartPoseOdometry -> unify
 public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListener {
   public static GokartPoseOdometryDemo create(Tensor state) {
     return new GokartPoseOdometryDemo(state);
@@ -76,7 +77,8 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
     return state.unmodifiable();
   }
 
-  // private helper function
+  /** @param velocity vector of the form {vx[m*s^-1], 0[m*s^-1], omega[s^-1]}
+   * @return */
   private static Flow singleton(Tensor velocity) {
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, N.DOUBLE.of(velocity));
   }

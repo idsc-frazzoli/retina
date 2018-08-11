@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
@@ -20,7 +19,7 @@ class SlamSetup {
 
   SlamSetup(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
-    logFileName = slamConfig.davisConfig.logFileName();
+    logFileName = slamConfig.davisConfig.logFilename();
     logFile = slamConfig.davisConfig.getLogFile();
     logFileDuration = slamConfig.davisConfig.maxDuration;
     saveSlamMap = slamConfig.saveSlamMap;
@@ -28,8 +27,8 @@ class SlamSetup {
   }
 
   private void runAlgo() {
+    OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
     try {
-      OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
       BoundedOfflineLogPlayer.process( //
           logFile, //
           Magnitude.MICRO_SECOND.apply(logFileDuration).number().longValue(), //
@@ -40,8 +39,8 @@ class SlamSetup {
             offlineSlamWrap.getSlamProvider().getMap(0).getMapArray());
         System.out.println("Slam map successfully saved");
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 

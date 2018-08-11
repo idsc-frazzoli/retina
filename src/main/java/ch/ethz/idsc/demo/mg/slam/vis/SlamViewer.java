@@ -31,7 +31,7 @@ public class SlamViewer implements DavisDvsListener {
   public SlamViewer(SlamConfig slamConfig, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
     this.slamProvider = slamProvider;
-    imagePrefix = slamConfig.davisConfig.logFileName();
+    imagePrefix = slamConfig.davisConfig.logFilename();
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
     lidarMappingMode = slamConfig.lidarMappingMode;
     saveSlamFrame = slamConfig.saveSlamFrame;

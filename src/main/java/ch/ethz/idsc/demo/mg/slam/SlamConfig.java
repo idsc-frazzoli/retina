@@ -12,7 +12,8 @@ public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   // SLAM algorithm configuration
-  public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
+  /** in localization mode, a previously saved map is used */
+  public final Boolean localizationMode = false;
   public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
   public final Boolean reactiveMappingMode = false; // in reactive mode, only the part of the map around the go kart is kept
   public final Boolean odometryStatePropagation = false; // state propagation using odometry instead of estimated velocities
