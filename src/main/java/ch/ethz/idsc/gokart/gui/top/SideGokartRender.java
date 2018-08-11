@@ -101,7 +101,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
     { // draw front tire
       Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusFront);
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
-          Magnitude.METER.apply(ChassisGeometry.GLOBAL.xAxleRtoF).number().doubleValue(), // translation right (in pixel space)
+          Magnitude.METER.toDouble(ChassisGeometry.GLOBAL.xAxleRtoF), // translation right (in pixel space)
           radius.number().doubleValue(), // translation up (in pixel space)
           0 // rotation is pixel space
       ));

@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -34,18 +35,21 @@ public class SlamConfig {
   public final Scalar _lookAheadDistance = Quantity.of(13, SI.METER);
   /** [m] for reactive mapping mode */
   public final Scalar _lookBehindDistance = Quantity.of(-3, SI.METER);
+  // SlamLocalizationStep
   // update rates
-  public final Scalar resampleRate = RealScalar.of(0.05); // [s]
-  public final Scalar statePropagationRate = RealScalar.of(0.005); // [s]
-  public final Scalar _reactiveUpdateRate = Quantity.of(0.5, SI.SECOND); // [s]
-  public final Scalar _normalizationUpdateRate = Quantity.of(0.05, SI.SECOND); // [s]
-  public final Scalar _wayPointUpdateRate = Quantity.of(0.1, SI.SECOND); // [s]
-  public final Scalar _trajectoryUpdateRate = Quantity.of(0.1, SI.SECOND); // [s]
+  public final Scalar _resampleRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar _statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
+  public final Scalar _reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
+  public final Scalar _normalizationUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar _wayPointUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar _trajectoryUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
   public final Scalar _linVelAvg = Quantity.of(3, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
-  public final Scalar angVelStd = RealScalar.of(0.1); // [rad/s] for initial particle distribution
+  public final Scalar _angVelStd = Quantity.of(0.1, SI.ANGULAR_RATE); // [rad/s] for initial particle distribution
   // particle roughening
+  // TODO MG variable names and units are not consistent throughout the code
+  // ... see SlamParticleUtil#resampleParticles
   public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
   public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
   // SLAM map parameters

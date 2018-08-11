@@ -54,4 +54,10 @@ public enum Magnitude implements ScalarUnaryOperator {
   public int toInt(Scalar scalar) {
     return apply(scalar).number().intValue();
   }
+
+  /** @param scalar
+   * @return long value of given scalar quantity after conversion to given unit */
+  public long toLong(Scalar scalar) {
+    return apply(scalar).number().longValue();
+  }
 }

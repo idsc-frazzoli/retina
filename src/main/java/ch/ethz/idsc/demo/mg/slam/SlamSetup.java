@@ -31,7 +31,7 @@ class SlamSetup {
     try {
       BoundedOfflineLogPlayer.process( //
           logFile, //
-          Magnitude.MICRO_SECOND.apply(logFileDuration).number().longValue(), //
+          Magnitude.MICRO_SECOND.toLong(logFileDuration), //
           offlineSlamWrap);
       if (saveSlamMap && !localizationMode) {
         PrimitivesIO.saveToCSV( //

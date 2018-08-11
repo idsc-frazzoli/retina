@@ -26,14 +26,14 @@ import ch.ethz.idsc.tensor.Tensor;
 
   SlamLocalizationStep(SlamConfig slamConfig) {
     slamEstimatedPose = new SlamEstimatedPose();
-    resampleRate = slamConfig.resampleRate.number().doubleValue();
+    resampleRate = Magnitude.SECOND.toDouble(slamConfig._resampleRate);
     odometryStatePropagation = slamConfig.odometryStatePropagation;
-    statePropagationRate = slamConfig.statePropagationRate.number().doubleValue();
+    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig._statePropagationRate);
     rougheningLinVelStd = slamConfig.rougheningLinAccelStd.number().doubleValue();
     rougheningAngVelStd = slamConfig.rougheningAngAccelStd.number().doubleValue();
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
-    angVelStd = slamConfig.angVelStd.number().doubleValue();
+    angVelStd = Magnitude.ANGULAR_RATE.toDouble(slamConfig._angVelStd);
     lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
     alpha = slamConfig.alpha.number().doubleValue();
   }

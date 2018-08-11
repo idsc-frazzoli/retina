@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class StaticHelperTest extends TestCase {
   public void testPerMeter() {
-    double turnRatePerMeter = Magnitude.PER_METER.apply(StaticHelper.TURNING_RATIO_MAX).number().doubleValue();
+    double turnRatePerMeter = Magnitude.PER_METER.toDouble(StaticHelper.TURNING_RATIO_MAX);
     assertEquals(turnRatePerMeter, 0.4082);
   }
 

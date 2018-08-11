@@ -63,7 +63,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     int index = 0;
     if (bytes.length == width * height) {
       final double mapAheadDistance = //
-          Magnitude.METER.apply(SensorsConfig.GLOBAL.davis_frustum.Get(1)).number().doubleValue();
+          Magnitude.METER.toDouble(SensorsConfig.GLOBAL.davis_frustum.Get(1));
       for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
           if (bytes[index] == 0 || bytes[index] == (byte) 255) {

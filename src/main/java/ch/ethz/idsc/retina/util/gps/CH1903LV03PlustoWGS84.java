@@ -35,8 +35,8 @@ public enum CH1903LV03PlustoWGS84 {
   ;
   public static Tensor transform(Scalar coord_getX, Scalar coord_getY) {
     return transform( //
-        Magnitude.METER.apply(coord_getX).number().doubleValue(), //
-        Magnitude.METER.apply(coord_getY).number().doubleValue());
+        Magnitude.METER.toDouble(coord_getX), //
+        Magnitude.METER.toDouble(coord_getY));
   }
 
   // function is the original from Matsim except the return statement and type

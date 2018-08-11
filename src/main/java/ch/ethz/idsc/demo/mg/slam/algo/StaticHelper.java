@@ -32,7 +32,7 @@ enum StaticHelper {
     for (int i = 0; i < slamParticles.length; i++) {
       // TODO magic constants 0 and 8. 8 is maximum velocity [m*s^-1]
       double linVel = SlamRandomUtil.getTruncatedGaussian(linVelAvg, linVelStd, 0, 8);
-      double turnRatePerMeter = Magnitude.PER_METER.apply(TURNING_RATIO_MAX).number().doubleValue();
+      double turnRatePerMeter = Magnitude.PER_METER.toDouble(TURNING_RATIO_MAX);
       double maxAngVel = turnRatePerMeter * linVel;
       double minAngVel = -maxAngVel;
       double angVel = SlamRandomUtil.getTruncatedGaussian(0, angVelStd, minAngVel, maxAngVel);
