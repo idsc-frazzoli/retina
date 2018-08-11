@@ -3,13 +3,13 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** provides a grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
-  private final double dimX;
-  private final double dimY;
+  private final int frameHeight;
   private final double cellDim;
   private final double[] mapArray;
   private final double cornerXLow;
@@ -21,15 +21,15 @@ public class MapProvider {
   private double maxValue;
 
   public MapProvider(SlamConfig slamConfig) {
-    dimX = slamConfig.dimX.number().doubleValue();
-    dimY = slamConfig.dimY.number().doubleValue();
-    cellDim = slamConfig.cellDim.number().doubleValue();
-    numberOfCells = (int) (dimX / cellDim * dimX / cellDim);
-    cornerXLow = slamConfig.corner.Get(0).number().doubleValue();
-    cornerYLow = slamConfig.corner.Get(1).number().doubleValue();
-    cornerXHigh = cornerXLow + dimX;
-    cornerYHigh = cornerYLow + dimY;
-    widthInCells = (int) (dimX / cellDim);
+    cellDim = Magnitude.METER.apply(slamConfig._cellDim).number().doubleValue();
+    widthInCells = slamConfig.frameWidth();
+    frameHeight = slamConfig.frameHeight();
+    numberOfCells = widthInCells * frameHeight;
+    cornerXLow = Magnitude.METER.apply(slamConfig._corner.Get(0)).number().doubleValue();
+    cornerYLow = Magnitude.METER.apply(slamConfig._corner.Get(1)).number().doubleValue();
+    Tensor cornerHigh = slamConfig.cornerHigh();
+    cornerXHigh = Magnitude.METER.apply(cornerHigh.Get(0)).number().doubleValue();
+    cornerYHigh = Magnitude.METER.apply(cornerHigh.Get(1)).number().doubleValue();
     mapArray = new double[numberOfCells];
     maxValue = 0;
   }
@@ -156,7 +156,7 @@ public class MapProvider {
   }
 
   public int getHeight() {
-    return (int) (dimY / cellDim);
+    return frameHeight;
   }
 
   /** @return maxValue or 1 if maxValue == 0

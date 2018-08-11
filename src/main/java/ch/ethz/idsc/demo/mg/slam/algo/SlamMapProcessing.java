@@ -13,6 +13,7 @@ import org.bytedeco.javacpp.opencv_imgproc;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** extracts way points from a map using threshold operation, morphological processing
  * and connected component labeling */
@@ -39,9 +40,9 @@ class SlamMapProcessing implements Runnable {
     labels = new Mat(thresholdMap.getWidth(), thresholdMap.getHeight(), opencv_core.CV_8U);
     wayPointUpdateRate = slamConfig.wayPointUpdateRate.number().doubleValue();
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
-    cornerX = slamConfig.corner.Get(0).number().doubleValue();
-    cornerY = slamConfig.corner.Get(1).number().doubleValue();
-    cellDim = slamConfig.cellDim.number().doubleValue();
+    cornerX = Magnitude.METER.apply(slamConfig._corner.Get(0)).number().doubleValue();
+    cornerY = Magnitude.METER.apply(slamConfig._corner.Get(1)).number().doubleValue();
+    cellDim = Magnitude.METER.apply(slamConfig._cellDim).number().doubleValue();
   }
 
   public void initialize(double initTimeStamp) {

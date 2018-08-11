@@ -47,8 +47,8 @@ public class SlamMapProcessingUtil {
    * @param cornerY [m]
    * @param cellDim [m]
    * @return worldWayPoints [m] detected waypoints in world frame */
-  public static List<double[]> findWayPoints(MapProvider thresholdMap, Mat labels, Mat dilateKernel, Mat erodeKernel, double cornerX, double cornerY,
-      double cellDim) {
+  public static List<double[]> findWayPoints( //
+      MapProvider thresholdMap, Mat labels, Mat dilateKernel, Mat erodeKernel, double cornerX, double cornerY, double cellDim) {
     Mat processedMap = SlamOpenCVUtil.mapProviderToMat(thresholdMap);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, dilateKernel, new Point(-1, -1), 1, opencv_core.BORDER_CONSTANT, null);
@@ -85,10 +85,9 @@ public class SlamMapProcessingUtil {
    * @param cellDim [m]
    * @return worldPos [m] waypoint position in world coordinate system */
   private static double[] frameToWorld(double[] framePos, double cornerX, double cornerY, double cellDim) {
-    double[] worldPos = new double[2];
-    worldPos[0] = cornerX + framePos[0] * cellDim;
-    worldPos[1] = cornerY + framePos[1] * cellDim;
-    return worldPos;
+    return new double[] { //
+        cornerX + framePos[0] * cellDim, //
+        cornerY + framePos[1] * cellDim };
   }
 
   /** get waypoint objects according to world frame waypoint positions

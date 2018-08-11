@@ -28,11 +28,11 @@ public class SlamMapGUI {
   };
 
   public SlamMapGUI(SlamConfig slamConfig) {
-    double mapWidth = slamConfig.dimX.divide(slamConfig.cellDim).number().doubleValue();
-    double mapHeight = slamConfig.dimY.divide(slamConfig.cellDim).number().doubleValue();
-    scaling = desiredWidth / mapWidth;
-    bufferedImage[0] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[1] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    int mapWidth = slamConfig.frameWidth();
+    int mapHeight = slamConfig.frameHeight();
+    scaling = desiredWidth / (double) mapWidth;
+    bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);

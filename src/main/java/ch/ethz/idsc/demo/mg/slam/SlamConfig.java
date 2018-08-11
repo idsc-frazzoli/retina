@@ -2,10 +2,14 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 /** defines all parameters of the SLAM algorithm and optionally saves them to a .properties file */
 public class SlamConfig {
@@ -40,15 +44,36 @@ public class SlamConfig {
   public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
   public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
   // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(0.025); // [m] single cell dimension
-  public final Scalar dimX = RealScalar.of(35); // [m] x 'width' of map
-  public final Scalar dimY = RealScalar.of(35); // [m] y 'height' of map
-  public final Tensor corner = Tensors.vector(35, 35); // [m] coordinates of lower left point in map
+  public final Scalar _cellDim = Quantity.of(0.025, SI.METER); // [m] single cell dimension
+  public final Scalar _dimX = Quantity.of(35, SI.METER); // [m] x 'width' of map
+  public final Scalar _dimY = Quantity.of(35, SI.METER); // [m] y 'height' of map
+
+  public final int frameWidth() {
+    return Magnitude.ONE.apply(_dimX.divide(_cellDim)).number().intValue();
+  }
+
+  public final int frameHeight() {
+    return Magnitude.ONE.apply(_dimY.divide(_cellDim)).number().intValue();
+  }
+
+  // [m] coordinates of lower left point in map
+  public final Tensor _corner = Tensors.of( //
+      Quantity.of(35, SI.METER), Quantity.of(35, SI.METER)).map(UnitSystem.SI());
+
+  public Tensor cornerHigh() {
+    return _corner.add(Tensors.of(_dimX, _dimY).map(UnitSystem.SI()));
+  }
+
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = RealScalar.of(0.2); // [s]
   public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
-  public final Scalar kartSize = RealScalar.of(1.5); // [m]
+  public final Scalar _kartSize = Quantity.of(1.5, SI.METER); // [m]
+
+  public final int kartLength() {
+    return Magnitude.ONE.apply(_kartSize.divide(_cellDim)).number().intValue();
+  }
+
   public final Scalar wayPointRadius = RealScalar.of(10); // [pixel]
   // map processing parameters
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]

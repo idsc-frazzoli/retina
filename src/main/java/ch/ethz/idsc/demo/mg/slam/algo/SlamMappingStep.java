@@ -24,7 +24,7 @@ class SlamMappingStep {
   private double lastReactiveUpdateTimeStamp;
 
   SlamMappingStep(SlamConfig slamConfig) {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < eventMaps.length; ++i)
       eventMaps[i] = new MapProvider(slamConfig);
     imagePrefix = slamConfig.davisConfig.logFilename();
     localizationMode = slamConfig.localizationMode;

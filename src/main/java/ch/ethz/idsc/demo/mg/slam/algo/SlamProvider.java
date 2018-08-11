@@ -31,13 +31,13 @@ public class SlamProvider implements DavisDvsListener {
   private final GokartPoseOdometryDemo gokartPoseOdometry;
   // ---
   private final EventFiltering eventFiltering;
-  private final SlamParticle[] slamParticles;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamWayPoints;
   private final SlamTrajectoryPlanning slamTrajectoryPlanning;
   private final boolean lidarMappingMode;
-  private final int numOfPart;
+  private final SlamParticle[] slamParticles;
+  // ---
   private boolean isInitialized;
   // --
   public double timeSum;
@@ -56,9 +56,10 @@ public class SlamProvider implements DavisDvsListener {
     slamWayPoints = new SlamMapProcessing(slamConfig);
     slamTrajectoryPlanning = new SlamTrajectoryPlanning(slamConfig, slamLocalizationStep.getSlamEstimatedPose());
     lidarMappingMode = slamConfig.lidarMappingMode;
-    numOfPart = slamConfig.numberOfParticles.number().intValue();
+    // ---
+    int numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
-    for (int i = 0; i < numOfPart; i++)
+    for (int i = 0; i < numOfPart; ++i)
       slamParticles[i] = new SlamParticle();
   }
 
@@ -76,10 +77,10 @@ public class SlamProvider implements DavisDvsListener {
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!isInitialized) {
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
-        initialize(gokartLidarPose.getPose(), davisDvsEvent.time / 1000000.0);
+        initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
       if (eventFiltering.filterPipeline(davisDvsEvent)) {
-        double currentTimeStamp = davisDvsEvent.time / 1000000.0;
+        double currentTimeStamp = davisDvsEvent.time * 1E-6;
         double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
