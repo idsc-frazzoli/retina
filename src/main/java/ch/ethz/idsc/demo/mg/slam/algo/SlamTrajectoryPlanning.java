@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
 

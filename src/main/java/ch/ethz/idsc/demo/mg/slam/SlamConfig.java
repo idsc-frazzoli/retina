@@ -16,7 +16,8 @@ public class SlamConfig {
   public final Boolean localizationMode = false;
   public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
   public final Boolean reactiveMappingMode = false; // in reactive mode, only the part of the map around the go kart is kept
-  public final Boolean odometryStatePropagation = false; // state propagation using odometry instead of estimated velocities
+  /** state propagation using odometry instead of estimated velocities */
+  public final Boolean odometryStatePropagation = false;
   public final Boolean saveSlamMap = false; // saves the final map. to be used for saving ground truth maps
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate

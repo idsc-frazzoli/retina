@@ -7,9 +7,8 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
-// collection of public static methods to handle the mighty SlamParticle object
+/** collection of public static methods to handle the mighty SlamParticle object */
 public enum SlamParticleUtil {
   ;
   /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
@@ -176,24 +175,6 @@ public enum SlamParticleUtil {
       return newAngVel;
     }
     return newAngVel;
-  }
-
-  /** get average pose of particles in relevant range
-   * 
-   * @param slamParticles
-   * @param relevantRange [-] number of particles with highest likelihood that is used
-   * @return averagePose unitless representation */
-  public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
-    Tensor expectedPose = Tensors.of(RealScalar.of(0), RealScalar.of(0), RealScalar.of(0));
-    Arrays.parallelSort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
-    double likelihoodSum = 0;
-    for (int i = 0; i < relevantRange; i++) {
-      Tensor pose = slamParticles[i].getPoseUnitless();
-      double likelihood = slamParticles[i].getParticleLikelihood();
-      likelihoodSum += likelihood;
-      expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
-    }
-    return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
 
   public static void printStatusInfo(SlamParticle[] slamParticles) {

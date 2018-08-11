@@ -3,14 +3,13 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the localization step of the SLAM algorithm */
 class SlamLocalizationStep {
-  private final SlamEstimatedPose estimatedPose;
+  private final SlamEstimatedPose slamEstimatedPose;
   private final boolean odometryStatePropagation;
   private final double resampleRate;
   private final double statePropagationRate;
@@ -25,7 +24,7 @@ class SlamLocalizationStep {
   private double lastPropagationTimeStamp;
 
   SlamLocalizationStep(SlamConfig slamConfig) {
-    estimatedPose = new SlamEstimatedPose();
+    slamEstimatedPose = new SlamEstimatedPose();
     resampleRate = slamConfig.resampleRate.number().doubleValue();
     odometryStatePropagation = slamConfig.odometryStatePropagation;
     statePropagationRate = slamConfig.statePropagationRate.number().doubleValue();
@@ -43,7 +42,7 @@ class SlamLocalizationStep {
    * @param initTimeStamp [s] */
   public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
     SlamParticleUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
-    estimatedPose.setPose(initPose);
+    slamEstimatedPose.setPose(initPose);
     lastResampleTimeStamp = initTimeStamp;
     lastPropagationTimeStamp = initTimeStamp;
   }
@@ -51,11 +50,10 @@ class SlamLocalizationStep {
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
     if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
       double dT = currentTimeStamp - lastPropagationTimeStamp;
-      if (!odometryStatePropagation) {
-        SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
-      } else {
+      if (odometryStatePropagation)
         SlamParticleUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
-      }
+      else
+        SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
@@ -63,20 +61,20 @@ class SlamLocalizationStep {
       SlamParticleUtil.resampleParticles(slamParticles, dT, rougheningLinVelStd, rougheningAngVelStd);
       lastResampleTimeStamp = currentTimeStamp;
     }
-    if (eventGokartFrame[0] < lookAheadDistance) {
+    if (eventGokartFrame[0] < lookAheadDistance)
       SlamParticleUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
-    }
-    estimatedPose.setPoseUnitless(SlamParticleUtil.getAveragePose(slamParticles, 1));
+    // ---
+    slamEstimatedPose.setPoseUnitless(StaticHelper.getAveragePose(slamParticles, 1));
   }
 
   /** used to set pose using lidar ground truth
    * 
    * @param pose {[m],[m],[-]} provided by lidar */
   public void setPose(Tensor pose) {
-    estimatedPose.setPose(pose);
+    slamEstimatedPose.setPose(pose);
   }
 
   public SlamEstimatedPose getSlamEstimatedPose() {
-    return estimatedPose;
+    return slamEstimatedPose;
   }
 }
