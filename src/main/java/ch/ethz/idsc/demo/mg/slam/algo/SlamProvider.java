@@ -19,10 +19,13 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** implements the SLAM algorithm
- * "simultaneous localization and mapping for event-based vision systems" */
+/** implementation of the SLAM algorithm
+ * "simultaneous localization and mapping for event-based vision systems"
+ * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+ * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public class SlamProvider implements DavisDvsListener {
-  private final ImageToGokartInterface imageToGokartLookup;
+  private final ImageToGokartInterface imageToGokartInterface;
+  // TODO MG gokartToImageUtil not used: remove? (also in the constructor)
   // private final GokartToImageInterface gokartToImageUtil;
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartOdometry;
@@ -41,7 +44,7 @@ public class SlamProvider implements DavisDvsListener {
   private double initTimeStamp;
 
   public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
-    imageToGokartLookup = slamConfig.davisConfig.createImageToGokartUtilLookup();
+    imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
     // gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
     this.gokartLidarPose = gokartLidarPose;
     this.gokartOdometry = gokartOdometry;
@@ -75,7 +78,7 @@ public class SlamProvider implements DavisDvsListener {
     } else {
       if (eventFiltering.filterPipeline(davisDvsEvent)) {
         double currentTimeStamp = davisDvsEvent.time / 1000000.0;
-        double[] eventGokartFrame = imageToGokartLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
+        double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
           slamMappingStep.mappingStepWithLidar(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);

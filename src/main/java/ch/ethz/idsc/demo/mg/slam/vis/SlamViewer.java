@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// wrapper class for the SLAM visualization
+/** wrapper class for the SLAM visualization */
 public class SlamViewer implements DavisDvsListener {
   private final GokartPoseInterface gokartLidarPose;
   private final SlamProvider slamProvider;

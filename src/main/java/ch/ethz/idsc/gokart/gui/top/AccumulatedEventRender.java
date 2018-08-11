@@ -12,7 +12,7 @@ import java.awt.image.DataBufferByte;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.Tensor;
 public class AccumulatedEventRender extends AbstractGokartRender implements TimedImageListener, ActionListener {
   private final DavisDevice davisDevice = Davis240c.INSTANCE;
   public final AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
-  private final ImageToGokartLookup imageToWorldLookup;
+  private final ImageToGokartInterface imageToWorldLookup;
   private final ImageCopy imageCopy;
   private final PipelineConfig pipelineConfig;
   private final int width;

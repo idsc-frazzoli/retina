@@ -1,11 +1,9 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
-enum ImageToWorldUtilDemo {
+enum ImageToGokartUtilDemo {
   ;
   /** for testing
    * 
@@ -13,7 +11,7 @@ enum ImageToWorldUtilDemo {
    * 3.4386292832405725/-0.4673008409796591 */
   public static void main(String[] args) {
     ImageToGokartUtil test = new PipelineConfig().createImageToGokartUtil();
-    ImageToGokartLookup anotherTest = new PipelineConfig().davisConfig.createImageToGokartUtilLookup();
+    ImageToGokartInterface anotherTest = new PipelineConfig().davisConfig.createImageToGokartUtilLookup();
     test.printInfo();
     System.out.println("---");
     int x = 170;

@@ -14,11 +14,12 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** A SLAM algorithm "wrapper" to run the algorithm offline */
+/** A SLAM algorithm "wrapper" to run the event-based SLAM algorithm offline */
 /* package */ class OfflineSlamWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
+  // specific to slam:
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
 

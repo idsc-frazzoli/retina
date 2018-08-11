@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -44,7 +45,7 @@ public class DavisConfig {
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
-  public ImageToGokartLookup createImageToGokartUtilLookup() {
+  public ImageToGokartInterface createImageToGokartUtilLookup() {
     return ImageToGokartLookup.fromMatrix(logFileLocations.calibration(), unitConversion, width, height);
   }
 

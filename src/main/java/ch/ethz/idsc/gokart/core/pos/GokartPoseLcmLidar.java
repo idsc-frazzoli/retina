@@ -6,6 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** stores last pose received by lcm client */
 // TODO extra value of this class in comparison with GokartPoseLcmClient is limited
 public class GokartPoseLcmLidar implements MappedPoseInterface, GokartPoseListener {
   public final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
