@@ -21,15 +21,15 @@ public class MapProvider {
   private double maxValue;
 
   public MapProvider(SlamConfig slamConfig) {
-    cellDim = Magnitude.METER.apply(slamConfig._cellDim).number().doubleValue();
+    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
     widthInCells = slamConfig.frameWidth();
     frameHeight = slamConfig.frameHeight();
     numberOfCells = widthInCells * frameHeight;
-    cornerXLow = Magnitude.METER.apply(slamConfig._corner.Get(0)).number().doubleValue();
-    cornerYLow = Magnitude.METER.apply(slamConfig._corner.Get(1)).number().doubleValue();
+    cornerXLow = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
+    cornerYLow = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
     Tensor cornerHigh = slamConfig.cornerHigh();
-    cornerXHigh = Magnitude.METER.apply(cornerHigh.Get(0)).number().doubleValue();
-    cornerYHigh = Magnitude.METER.apply(cornerHigh.Get(1)).number().doubleValue();
+    cornerXHigh = Magnitude.METER.toDouble(cornerHigh.Get(0));
+    cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));
     mapArray = new double[numberOfCells];
     maxValue = 0;
   }

@@ -7,10 +7,11 @@ import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapUtil;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the mapping step of the SLAM algorithm */
-class SlamMappingStep {
+/* package */ class SlamMappingStep {
   private final MapProvider[] eventMaps = new MapProvider[3];
   private final String imagePrefix;
   private final boolean localizationMode;
@@ -29,10 +30,10 @@ class SlamMappingStep {
     imagePrefix = slamConfig.davisConfig.logFilename();
     localizationMode = slamConfig.localizationMode;
     reactiveMappingMode = slamConfig.reactiveMappingMode;
-    lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();
-    lookBehindDistance = slamConfig.lookBehindDistance.number().doubleValue();
-    normalizationUpdateRate = slamConfig.normalizationUpdateRate.number().doubleValue();
-    reactiveUpdateRate = slamConfig.reactiveUpdateRate.number().doubleValue();
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
+    lookBehindDistance = Magnitude.METER.toDouble(slamConfig._lookBehindDistance);
+    normalizationUpdateRate = Magnitude.SECOND.toDouble(slamConfig._normalizationUpdateRate);
+    reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig._reactiveUpdateRate);
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 

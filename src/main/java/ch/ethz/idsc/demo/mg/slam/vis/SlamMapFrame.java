@@ -23,7 +23,7 @@ public class SlamMapFrame {
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
-  private static final byte RED = (byte) -76;
+  // private static final byte RED = (byte) -76; // TODO MG not used
   private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
   // ---
   private final BufferedImage bufferedImage;
@@ -43,9 +43,9 @@ public class SlamMapFrame {
     frameHeight = slamConfig.frameHeight();
     numberOfCells = frameWidth * frameHeight;
     wayPointRadius = slamConfig.wayPointRadius.number().doubleValue();
-    cornerX = Magnitude.METER.apply(slamConfig._corner.Get(0)).number().doubleValue();
-    cornerY = Magnitude.METER.apply(slamConfig._corner.Get(1)).number().doubleValue();
-    cellDim = Magnitude.METER.apply(slamConfig._cellDim).number().doubleValue();
+    cornerX = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
     kartLength = slamConfig.kartLength();
     bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();

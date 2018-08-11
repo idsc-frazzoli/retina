@@ -5,10 +5,11 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** executes the localization step of the SLAM algorithm */
-class SlamLocalizationStep {
+/* package */ class SlamLocalizationStep {
   private final SlamEstimatedPose slamEstimatedPose;
   private final boolean odometryStatePropagation;
   private final double resampleRate;
@@ -30,10 +31,10 @@ class SlamLocalizationStep {
     statePropagationRate = slamConfig.statePropagationRate.number().doubleValue();
     rougheningLinVelStd = slamConfig.rougheningLinAccelStd.number().doubleValue();
     rougheningAngVelStd = slamConfig.rougheningAngAccelStd.number().doubleValue();
-    linVelAvg = slamConfig.linVelAvg.number().doubleValue();
-    linVelStd = slamConfig.linVelStd.number().doubleValue();
+    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
+    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
     angVelStd = slamConfig.angVelStd.number().doubleValue();
-    lookAheadDistance = slamConfig.lookAheadDistance.number().doubleValue();
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
     alpha = slamConfig.alpha.number().doubleValue();
   }
 

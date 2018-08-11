@@ -16,10 +16,13 @@ public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   // SLAM algorithm configuration
+  // SlamMappingStep
   /** in localization mode, a previously saved map is used */
   public final Boolean localizationMode = false;
-  public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
-  public final Boolean reactiveMappingMode = false; // in reactive mode, only the part of the map around the go kart is kept
+  /** in reactive mode, only the part of the map around the go kart is kept */
+  public final Boolean reactiveMappingMode = false;
+  /** pose provided by lidar instead of particle filter */
+  public final Boolean lidarMappingMode = false; //
   /** state propagation using odometry instead of estimated velocities */
   public final Boolean odometryStatePropagation = false;
   public final Boolean saveSlamMap = false; // saves the final map. to be used for saving ground truth maps
@@ -27,33 +30,37 @@ public class SlamConfig {
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(20); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(13); // [m] events further away are neglected
-  public final Scalar lookBehindDistance = RealScalar.of(-3); // [m] for reactive mapping mode
+  /** [m] events further away are neglected */
+  public final Scalar _lookAheadDistance = Quantity.of(13, SI.METER);
+  /** [m] for reactive mapping mode */
+  public final Scalar _lookBehindDistance = Quantity.of(-3, SI.METER);
   // update rates
   public final Scalar resampleRate = RealScalar.of(0.05); // [s]
   public final Scalar statePropagationRate = RealScalar.of(0.005); // [s]
-  public final Scalar reactiveUpdateRate = RealScalar.of(0.5); // [s]
-  public final Scalar normalizationUpdateRate = RealScalar.of(0.05); // [s]
-  public final Scalar wayPointUpdateRate = RealScalar.of(0.1); // [s]
-  public final Scalar trajectoryUpdateRate = RealScalar.of(0.1); // [s]
+  public final Scalar _reactiveUpdateRate = Quantity.of(0.5, SI.SECOND); // [s]
+  public final Scalar _normalizationUpdateRate = Quantity.of(0.05, SI.SECOND); // [s]
+  public final Scalar _wayPointUpdateRate = Quantity.of(0.1, SI.SECOND); // [s]
+  public final Scalar _trajectoryUpdateRate = Quantity.of(0.1, SI.SECOND); // [s]
   // particle initialization
-  public final Scalar linVelAvg = RealScalar.of(3); // [m/s] for initial particle distribution
-  public final Scalar linVelStd = RealScalar.of(1); // [m/s] for initial particle distribution
+  public final Scalar _linVelAvg = Quantity.of(3, SI.VELOCITY); // [m/s] for initial particle distribution
+  public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar angVelStd = RealScalar.of(0.1); // [rad/s] for initial particle distribution
   // particle roughening
   public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
   public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
   // SLAM map parameters
   public final Scalar _cellDim = Quantity.of(0.025, SI.METER); // [m] single cell dimension
-  public final Scalar _dimX = Quantity.of(35, SI.METER); // [m] x 'width' of map
-  public final Scalar _dimY = Quantity.of(35, SI.METER); // [m] y 'height' of map
+  /** [m] x 'width' of map */
+  public final Scalar _dimX = Quantity.of(35, SI.METER);
+  /** [m] y 'height' of map */
+  public final Scalar _dimY = Quantity.of(35, SI.METER);
 
   public final int frameWidth() {
-    return Magnitude.ONE.apply(_dimX.divide(_cellDim)).number().intValue();
+    return Magnitude.ONE.toInt(_dimX.divide(_cellDim));
   }
 
   public final int frameHeight() {
-    return Magnitude.ONE.apply(_dimY.divide(_cellDim)).number().intValue();
+    return Magnitude.ONE.toInt(_dimY.divide(_cellDim));
   }
 
   // [m] coordinates of lower left point in map
@@ -66,12 +73,13 @@ public class SlamConfig {
 
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = RealScalar.of(0.2); // [s]
-  public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
+  // SlamViewer
+  public final Scalar _savingInterval = Quantity.of(0.2, SI.SECOND); // [s]
+  public final Scalar _visualizationInterval = Quantity.of(0.2, SI.SECOND); // [s]
   public final Scalar _kartSize = Quantity.of(1.5, SI.METER); // [m]
 
   public final int kartLength() {
-    return Magnitude.ONE.apply(_kartSize.divide(_cellDim)).number().intValue();
+    return Magnitude.ONE.toInt(_kartSize.divide(_cellDim));
   }
 
   public final Scalar wayPointRadius = RealScalar.of(10); // [pixel]

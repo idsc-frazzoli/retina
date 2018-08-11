@@ -19,10 +19,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * and connected component labeling */
 class SlamMapProcessing implements Runnable {
   private final MapProvider thresholdMap;
-  private final Mat dilateKernel = opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, //
-      new Size(8, 8));
-  private final Mat erodeKernel = opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, //
-      new Size(3, 3));
+  private final Mat dilateKernel = //
+      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
+  private final Mat erodeKernel = //
+      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private final double wayPointUpdateRate;
   private final double mapThreshold;
   private final double cornerX;
@@ -38,11 +38,11 @@ class SlamMapProcessing implements Runnable {
   SlamMapProcessing(SlamConfig slamConfig) {
     thresholdMap = new MapProvider(slamConfig);
     labels = new Mat(thresholdMap.getWidth(), thresholdMap.getHeight(), opencv_core.CV_8U);
-    wayPointUpdateRate = slamConfig.wayPointUpdateRate.number().doubleValue();
+    wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig._wayPointUpdateRate);
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
-    cornerX = Magnitude.METER.apply(slamConfig._corner.Get(0)).number().doubleValue();
-    cornerY = Magnitude.METER.apply(slamConfig._corner.Get(1)).number().doubleValue();
-    cellDim = Magnitude.METER.apply(slamConfig._cellDim).number().doubleValue();
+    cornerX = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
   }
 
   public void initialize(double initTimeStamp) {

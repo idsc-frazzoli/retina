@@ -38,8 +38,20 @@ public enum Magnitude implements ScalarUnaryOperator {
     scalarUnaryOperator = QuantityMagnitude.SI().in(unit);
   }
 
-  @Override
+  @Override // from ScalarUnaryOperator
   public Scalar apply(Scalar scalar) {
     return scalarUnaryOperator.apply(scalar);
+  }
+
+  /** @param scalar
+   * @return double value of given scalar quantity after conversion to given unit */
+  public double toDouble(Scalar scalar) {
+    return apply(scalar).number().doubleValue();
+  }
+
+  /** @param scalar
+   * @return int value of given scalar quantity after conversion to given unit */
+  public int toInt(Scalar scalar) {
+    return apply(scalar).number().intValue();
   }
 }

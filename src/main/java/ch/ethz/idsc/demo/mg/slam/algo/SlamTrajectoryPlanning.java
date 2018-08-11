@@ -8,6 +8,7 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
 // module receives a set of waypoints in world frame and outputs a trajectory
 public class SlamTrajectoryPlanning implements Runnable {
@@ -26,7 +27,7 @@ public class SlamTrajectoryPlanning implements Runnable {
   SlamTrajectoryPlanning(SlamConfig slamConfig, SlamEstimatedPose estimatedPose) {
     this.estimatedPose = estimatedPose;
     initialDelay = slamConfig.initialDelay.number().doubleValue();
-    trajectoryUpdateRate = slamConfig.trajectoryUpdateRate.number().doubleValue();
+    trajectoryUpdateRate = Magnitude.SECOND.toDouble(slamConfig._trajectoryUpdateRate);
     visibleBoxXMin = slamConfig.visibleBoxXMin.number().doubleValue();
     visibleBoxXMax = slamConfig.visibleBoxXMax.number().doubleValue();
     visibleBoxHalfWidth = slamConfig.visibleBoxHalfWidth.number().doubleValue();
