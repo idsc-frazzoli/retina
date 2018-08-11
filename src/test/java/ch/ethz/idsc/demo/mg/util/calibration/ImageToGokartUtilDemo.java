@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
+// TODO MG make test but fix DUBI15.csv
 enum ImageToGokartUtilDemo {
   ;
   /** for testing

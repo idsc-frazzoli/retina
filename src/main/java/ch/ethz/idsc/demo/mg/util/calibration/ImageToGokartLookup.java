@@ -29,12 +29,10 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
     this.height = height.number().intValue();
     lookupArray = new double[this.width * this.height][];
     this.transformUtil = transformUtil;
-    int index = 0;
+    int index = -1;
     for (int y = 0; y < this.height; ++y)
-      for (int x = 0; x < this.width; ++x) {
-        lookupArray[index] = this.transformUtil.imageToGokart(x, y);
-        ++index;
-      }
+      for (int x = 0; x < this.width; ++x)
+        lookupArray[++index] = this.transformUtil.imageToGokart(x, y);
   }
 
   /** @param imagePosX [pixel]

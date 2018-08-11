@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
 public class ImageToGokartUtil {
-  // TODO these are magic constants but will not change often
+  /** these are magic constants but will not change often */
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
