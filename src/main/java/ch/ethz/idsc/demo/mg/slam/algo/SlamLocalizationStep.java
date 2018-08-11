@@ -41,7 +41,7 @@ class SlamLocalizationStep {
    * @param initPose {[m],[m],[-]} provided by lidar
    * @param initTimeStamp [s] */
   public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
-    SlamParticleUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
+    StaticHelper.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     slamEstimatedPose.setPose(initPose);
     lastResampleTimeStamp = initTimeStamp;
     lastPropagationTimeStamp = initTimeStamp;

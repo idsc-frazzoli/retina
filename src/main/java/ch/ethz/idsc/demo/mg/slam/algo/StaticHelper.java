@@ -5,12 +5,32 @@ import java.util.Arrays;
 
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
+import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
 enum StaticHelper {
   ;
+  /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
+   * 
+   * @param slamParticles
+   * @param pose {[m],[m],[-]} initial pose which is identical for all particles
+   * @param linVelAvg [m/s] average initial linear velocity
+   * @param linVelStd [m/s] standard deviation of linear velocity
+   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
+  public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
+    double initLikelihood = 1.0 / slamParticles.length;
+    for (int i = 0; i < slamParticles.length; i++) {
+      double linVel = SlamRandomUtil.getTruncatedGaussian(linVelAvg, linVelStd, 0, 8); // TODO magic constants
+      double turnRatePerMeter = 0.4082;
+      double minAngVel = -turnRatePerMeter * linVel;
+      double maxAngVel = -minAngVel;
+      double angVel = SlamRandomUtil.getTruncatedGaussian(0, angVelStd, minAngVel, maxAngVel);
+      slamParticles[i].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
+    }
+  }
+
   /** Careful: ordering of given array slamParticles is subject to change
    * 
    * get average pose of particles in relevant range

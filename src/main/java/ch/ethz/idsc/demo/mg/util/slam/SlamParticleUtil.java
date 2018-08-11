@@ -11,25 +11,6 @@ import ch.ethz.idsc.tensor.Tensor;
 /** collection of public static methods to handle the mighty SlamParticle object */
 public enum SlamParticleUtil {
   ;
-  /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
-   * 
-   * @param slamParticles
-   * @param pose {[m],[m],[-]} initial pose which is identical for all particles
-   * @param linVelAvg [m/s] average initial linear velocity
-   * @param linVelStd [m/s] standard deviation of linear velocity
-   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
-  public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
-    double initLikelihood = 1.0 / slamParticles.length;
-    for (int i = 0; i < slamParticles.length; i++) {
-      double linVel = SlamRandomUtil.getTrunctatedGaussian(linVelAvg, linVelStd, 0, 8); // TODO magic constants
-      double turnRatePerMeter = 0.4082;
-      double minAngVel = -turnRatePerMeter * linVel;
-      double maxAngVel = -minAngVel;
-      double angVel = SlamRandomUtil.getTrunctatedGaussian(0, angVelStd, minAngVel, maxAngVel);
-      slamParticles[i].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
-    }
-  }
-
   /** updates particle likelihoods by referring to a map
    * 
    * @param slamParticles
@@ -144,7 +125,7 @@ public enum SlamParticleUtil {
     double minAccel = -2.5;
     double minVel = 0;
     double maxVel = 8;
-    double linAccel = SlamRandomUtil.getTrunctatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
+    double linAccel = SlamRandomUtil.getTruncatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
     double newLinVel = oldLinVel + linAccel * dT;
     if (newLinVel < minVel) {
       newLinVel = minVel;
@@ -164,7 +145,7 @@ public enum SlamParticleUtil {
     double turnRatePerMeter = 0.4082;
     double minVel = -turnRatePerMeter * oldLinVel;
     double maxVel = -minVel;
-    double angAccel = SlamRandomUtil.getTrunctatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
+    double angAccel = SlamRandomUtil.getTruncatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
     double newAngVel = oldAngVel + angAccel * dT;
     if (newAngVel < minVel) {
       newAngVel = minVel;
