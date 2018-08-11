@@ -24,7 +24,8 @@ public class DavisConfig {
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
   /** event filtering
-   * 0 == background activity filter, 1 == FAST corner filter */
+   * 0 == background activity filter
+   * 1 == FAST corner filter */
   public final Scalar filterConfig = RealScalar.of(0);
   /** [us] for background activity filter */
   public Scalar filterConstant = RealScalar.of(1000);
