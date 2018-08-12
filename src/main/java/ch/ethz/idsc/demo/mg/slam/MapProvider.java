@@ -66,9 +66,9 @@ public class MapProvider {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
       // unreasonable number to indicate that we dont have this location
-      return numberOfCells;
+      return numberOfCells; // TODO unconventional
     }
-    int gridPosX = (int) ((posX - cornerXLow) / cellDim);
+    int gridPosX = (int) ((posX - cornerXLow) / cellDim); // TODO store multiplicative inverse in class
     int gridPosY = (int) ((posY - cornerYLow) / cellDim);
     return gridPosX + widthInCells * gridPosY;
   }

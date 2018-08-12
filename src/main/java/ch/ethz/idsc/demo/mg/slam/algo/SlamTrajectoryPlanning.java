@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
+import ch.ethz.idsc.demo.mg.util.slam.SlamTrajectoryPlanningUtil;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 // module receives a set of waypoints in world frame and outputs a trajectory
@@ -58,8 +58,8 @@ public class SlamTrajectoryPlanning implements Runnable {
   public void run() {
     while (true) {
       if (Objects.nonNull(worldWayPoints)) {
-        gokartWayPoints = SlamMapProcessingUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
-        SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
+        gokartWayPoints = SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
+        SlamTrajectoryPlanningUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
         worldWayPoints = null;
       } else {
         try {

@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum StaticHelper {
+enum SlamLocalizationStepUtil {
   ;
   /** max turning rate per meter
    * 

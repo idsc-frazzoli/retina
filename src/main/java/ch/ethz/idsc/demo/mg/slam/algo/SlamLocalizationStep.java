@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param initPose {[m],[m],[-]} provided by lidar
    * @param initTimeStamp [s] */
   public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
-    StaticHelper.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
+    SlamLocalizationStepUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     slamEstimatedPose.setPose(initPose);
     lastResampleTimeStamp = initTimeStamp;
     lastPropagationTimeStamp = initTimeStamp;
@@ -65,7 +65,7 @@ import ch.ethz.idsc.tensor.Tensor;
     if (eventGokartFrame[0] < lookAheadDistance)
       SlamParticleUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
     // ---
-    slamEstimatedPose.setPoseUnitless(StaticHelper.getAveragePose(slamParticles, 1));
+    slamEstimatedPose.setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamParticles, 1));
   }
 
   /** used to set pose using lidar ground truth

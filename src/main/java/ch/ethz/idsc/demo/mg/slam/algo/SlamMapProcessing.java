@@ -12,11 +12,10 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-/** extracts way points from a map using threshold operation, morphological processing
- * and connected component labeling */
+/** extracts way points from a map using threshold operation,
+ * morphological processing and connected component labeling */
 class SlamMapProcessing implements Runnable {
   private final MapProvider thresholdMap;
   private final Mat dilateKernel = //
@@ -34,6 +33,7 @@ class SlamMapProcessing implements Runnable {
   private double lastComputationTimeStamp;
   private MapProvider occurrenceMap;
   private Mat labels;
+  private boolean isLaunched = true;
 
   SlamMapProcessing(SlamConfig slamConfig) {
     thresholdMap = new MapProvider(slamConfig);
@@ -50,10 +50,17 @@ class SlamMapProcessing implements Runnable {
     thread.start();
   }
 
+  public void stop() {
+    // TODO need to cleanly stop operations
+    isLaunched = false;
+    thread.interrupt();
+  }
+
   /** suggested API:
    * the call to the function "mapPostProcessing" shall be non-blocking.
    * data is passed to the SlamMapProcessing thread if taken into account
    * unless the thread is too busy to process the data. */
+  // TODO JPH use timer, but also take case that offline processing is possible
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       this.occurrenceMap = occurrenceMap;
@@ -73,19 +80,16 @@ class SlamMapProcessing implements Runnable {
 
   @Override // from Runnable
   public void run() {
-    while (true) {
+    while (isLaunched)
       if (Objects.nonNull(occurrenceMap)) {
-        SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, thresholdMap, mapThreshold);
+        SlamMapProcessingUtil.computeThresholdMap(occurrenceMap, mapThreshold, thresholdMap);
         worldWayPoints = SlamMapProcessingUtil.findWayPoints(thresholdMap, labels, dilateKernel, erodeKernel, cornerX, cornerY, cellDim);
         occurrenceMap = null;
-      } else {
+      } else
         try {
-          // TODO jan doesn't understand why duration 0
-          Thread.sleep(0);
+          Thread.sleep(1000);
         } catch (InterruptedException e) {
           // ---
         }
-      }
-    }
   }
 }
