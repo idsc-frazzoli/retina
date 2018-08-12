@@ -59,8 +59,8 @@ public class SlamProvider implements DavisDvsListener {
     // ---
     int numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
-    for (int i = 0; i < numOfPart; ++i)
-      slamParticles[i] = new SlamParticle();
+    for (int index = 0; index < numOfPart; ++index)
+      slamParticles[index] = new SlamParticle();
   }
 
   public void initialize(Tensor pose, double timeStamp) {
@@ -68,7 +68,7 @@ public class SlamProvider implements DavisDvsListener {
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
     slamWayPoints.initialize(timeStamp);
-    slamTrajectoryPlanning.initialize(timeStamp);
+    slamTrajectoryPlanning.initialize(timeStamp); // TODO need to call stop function
     initTimeStamp = timeStamp;
     isInitialized = true;
   }
@@ -76,6 +76,7 @@ public class SlamProvider implements DavisDvsListener {
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!isInitialized) {
+      // TODO JPH find other way to trigger initialize
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {

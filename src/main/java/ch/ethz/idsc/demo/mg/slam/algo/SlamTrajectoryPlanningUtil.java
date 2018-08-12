@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
-// static methods to facilitate map and waypoint processing
-public enum SlamTrajectoryPlanningUtil {
+/** static methods to facilitate map and waypoint processing */
+enum SlamTrajectoryPlanningUtil {
   ;
   /** get waypoint objects according to world frame waypoint positions
    * 
@@ -21,12 +21,14 @@ public enum SlamTrajectoryPlanningUtil {
   public static List<WayPoint> getGokartWayPoints(List<double[]> worldWayPoints, Tensor currentPose) {
     GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(currentPose)));
     List<WayPoint> gokartWayPoints = new ArrayList<>(worldWayPoints.size());
-    for (int i = 0; i < worldWayPoints.size(); i++) {
-      double[] worldPosition = worldWayPoints.get(i);
+    for (int index = 0; index < worldWayPoints.size(); ++index) {
+      double[] worldPosition = worldWayPoints.get(index);
       WayPoint slamWayPoint = new WayPoint(worldPosition);
-      Tensor gokartPosition = worldToGokartLayer.toVector(worldWayPoints.get(i)[0], worldWayPoints.get(i)[1]);
+      Tensor gokartPosition = worldToGokartLayer.toVector( //
+          worldPosition[0], //
+          worldPosition[1]);
       slamWayPoint.setGokartPosition(gokartPosition);
-      gokartWayPoints.add(i, slamWayPoint);
+      gokartWayPoints.add(index, slamWayPoint);
     }
     return gokartWayPoints;
   }
@@ -38,12 +40,13 @@ public enum SlamTrajectoryPlanningUtil {
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
   public static void checkVisibility(List<WayPoint> gokartWayPoints, double visibleBoxXMin, double visibleBoxXMax, double visibleBoxHalfWidth) {
-    for (int i = 0; i < gokartWayPoints.size(); i++) {
-      double[] gokartPosition = gokartWayPoints.get(i).getGokartPosition();
-      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[1] < visibleBoxXMax && gokartPosition[1] > -visibleBoxHalfWidth
-          && gokartPosition[1] < visibleBoxHalfWidth) {
-        gokartWayPoints.get(i).setVisibility(true);
-      }
+    for (WayPoint wayPoint : gokartWayPoints) {
+      double[] gokartPosition = wayPoint.getGokartPosition();
+      // FIXME MG condition does not look right: more use of [1] than [0]
+      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[1] < visibleBoxXMax && //
+          gokartPosition[1] > -visibleBoxHalfWidth && gokartPosition[1] < visibleBoxHalfWidth)
+        wayPoint.setVisibility(true);
+      // TODO MG comment why not else set visibility to false?
     }
   }
 
@@ -51,15 +54,20 @@ public enum SlamTrajectoryPlanningUtil {
    * 
    * @param visibleGokartWayPoints
    * @param purePursuitIndex index of element in visibleGokartWayPoints that is furthest away */
-  public static void choosePurePursuitPoint(List<WayPoint> visibleGokartWayPoints, int purePursuitIndex) {
+  // TODO function not used
+  public static int choosePurePursuitPoint(List<WayPoint> visibleGokartWayPoints) {
+    // TODO filter criteria also should consider corridor of steering:
+    // ... a close point on the center line is better than a further point to the side that can't be reached
     double maxDistance = 0;
-    purePursuitIndex = -1;
-    for (int i = 0; i < visibleGokartWayPoints.size(); i++) {
-      if (visibleGokartWayPoints.get(i).getGokartPosition()[0] > maxDistance) {
-        maxDistance = visibleGokartWayPoints.get(i).getGokartPosition()[0];
-        purePursuitIndex = i;
+    int purePursuitIndex = -1;
+    for (int index = 0; index < visibleGokartWayPoints.size(); ++index) {
+      WayPoint wayPoint = visibleGokartWayPoints.get(index);
+      if (maxDistance < wayPoint.getGokartPosition()[0]) {
+        maxDistance = wayPoint.getGokartPosition()[0];
+        purePursuitIndex = index;
       }
     }
+    return purePursuitIndex;
   }
   // idea: attention module that guesses position of next waypoint
 }
