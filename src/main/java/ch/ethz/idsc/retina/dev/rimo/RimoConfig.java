@@ -34,6 +34,6 @@ public class RimoConfig implements Serializable {
 
   /** @return chop for tangent speed values */
   public Chop speedChop() {
-    return Chop.below(Magnitude.VELOCITY.apply(speedChop).number().doubleValue());
+    return Chop.below(Magnitude.VELOCITY.toDouble(speedChop));
   }
 }

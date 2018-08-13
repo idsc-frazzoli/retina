@@ -7,30 +7,10 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
-// collection of public static methods to handle the mighty SlamParticle object
+/** collection of public static methods to handle the mighty SlamParticle object */
 public enum SlamParticleUtil {
   ;
-  /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
-   * 
-   * @param slamParticles
-   * @param pose {[m],[m],[-]} initial pose which is identical for all particles
-   * @param linVelAvg [m/s] average initial linear velocity
-   * @param linVelStd [m/s] standard deviation of linear velocity
-   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
-  public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
-    double initLikelihood = 1.0 / slamParticles.length;
-    for (int i = 0; i < slamParticles.length; i++) {
-      double linVel = SlamRandomUtil.getTrunctatedGaussian(linVelAvg, linVelStd, 0, 8); // TODO magic constants
-      double turnRatePerMeter = 0.4082;
-      double minAngVel = -turnRatePerMeter * linVel;
-      double maxAngVel = -minAngVel;
-      double angVel = SlamRandomUtil.getTrunctatedGaussian(0, angVelStd, minAngVel, maxAngVel);
-      slamParticles[i].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
-    }
-  }
-
   /** updates particle likelihoods by referring to a map
    * 
    * @param slamParticles
@@ -145,7 +125,7 @@ public enum SlamParticleUtil {
     double minAccel = -2.5;
     double minVel = 0;
     double maxVel = 8;
-    double linAccel = SlamRandomUtil.getTrunctatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
+    double linAccel = SlamRandomUtil.getTruncatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
     double newLinVel = oldLinVel + linAccel * dT;
     if (newLinVel < minVel) {
       newLinVel = minVel;
@@ -165,7 +145,7 @@ public enum SlamParticleUtil {
     double turnRatePerMeter = 0.4082;
     double minVel = -turnRatePerMeter * oldLinVel;
     double maxVel = -minVel;
-    double angAccel = SlamRandomUtil.getTrunctatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
+    double angAccel = SlamRandomUtil.getTruncatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
     double newAngVel = oldAngVel + angAccel * dT;
     if (newAngVel < minVel) {
       newAngVel = minVel;
@@ -176,24 +156,6 @@ public enum SlamParticleUtil {
       return newAngVel;
     }
     return newAngVel;
-  }
-
-  /** get average pose of particles in relevant range
-   * 
-   * @param slamParticles
-   * @param relevantRange [-] number of particles with highest likelihood that is used
-   * @return averagePose unitless representation */
-  public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
-    Tensor expectedPose = Tensors.of(RealScalar.of(0), RealScalar.of(0), RealScalar.of(0));
-    Arrays.parallelSort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
-    double likelihoodSum = 0;
-    for (int i = 0; i < relevantRange; i++) {
-      Tensor pose = slamParticles[i].getPoseUnitless();
-      double likelihood = slamParticles[i].getParticleLikelihood();
-      likelihoodSum += likelihood;
-      expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
-    }
-    return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
 
   public static void printStatusInfo(SlamParticle[] slamParticles) {

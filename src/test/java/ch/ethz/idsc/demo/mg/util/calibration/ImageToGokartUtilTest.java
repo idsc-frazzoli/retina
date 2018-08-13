@@ -1,11 +1,10 @@
 // code by jph, mg
-package ch.ethz.idsc.demo.mg.util;
+package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 import junit.framework.TestCase;
 
-public class ImageToWorldUtilTest extends TestCase {
+public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
     ImageToGokartUtil test = new PipelineConfig().createImageToGokartUtil();
     double[] physicalPos = test.imageToGokart(170, 100);

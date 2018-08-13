@@ -43,6 +43,7 @@ public enum SlamMapUtil {
   // TODO in future, the weight could be adapted by where we expect the next waypoint to appear
   private static double adaptiveEventWeightening(double[] gokartFramePos) {
     // compute distance metric
+    // TODO MG next line does not make much sense, do you mean |gokartFramePos[0]| ? Math.abs(...)
     double distance = Math.sqrt(gokartFramePos[0] * gokartFramePos[0]);
     return 1 + distance;
   }
@@ -73,7 +74,7 @@ public enum SlamMapUtil {
         // TODO MG can the code below be simplified because only gokartCoord[0] is used?
         double[] gokartCoord = { //
             gokartCoordTensor.Get(0).number().doubleValue(), //
-            gokartCoordTensor.Get(1).number().doubleValue() };
+            gokartCoordTensor.Get(1).number().doubleValue() }; // <- obsolete
         if (gokartCoord[0] < lookBehindDistance) {
           occurrenceMap.setValue(i, 0);
         }

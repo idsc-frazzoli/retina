@@ -45,7 +45,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
         runAlgo();
       }
     };
-    timer.schedule(timerTask, 0, Magnitude.MILLI_SECOND.apply(getPeriod()).number().longValue());
+    timer.schedule(timerTask, 0, Magnitude.MILLI_SECOND.toLong(getPeriod()));
   }
 
   @Override

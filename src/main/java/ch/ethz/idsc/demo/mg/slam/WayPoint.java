@@ -3,11 +3,12 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-// waypoint object
+/** waypoint object */
 public class WayPoint {
   private final double[] worldPosition;
   private double[] gokartPosition;
-  private boolean currentlyVisible; // visibility given the current pose of the go kart
+  /** visibility given the current pose of the go kart */
+  private boolean currentlyVisible;
 
   public WayPoint(double[] worldPosition) {
     this.worldPosition = worldPosition;
