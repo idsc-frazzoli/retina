@@ -570,6 +570,11 @@ public enum GokartLogFile implements LogFile {
   _20180808T150227_61778dc4, //
   /** manual driving */
   _20180808T155907_61778dc4, //
+  /***************************************************/
+  /* 2018-08-13 */
+  // davis240c on
+  /** collecting lidar data for localization map update */
+  _20180813T115544_26cfbbca, //
   ;
   // ---
   @Override // from LogFile
