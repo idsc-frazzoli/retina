@@ -23,6 +23,9 @@ public class MagnitudeTest extends TestCase {
     Scalar scalar = Quantity.of(2500, "mV");
     Scalar result = Magnitude.VOLT.apply(scalar);
     assertEquals(result, RationalScalar.of(5, 2));
+    assertEquals(Magnitude.VOLT.toDouble(scalar), 2.5);
+    assertEquals(Magnitude.VOLT.toInt(scalar), 2);
+    assertEquals(Magnitude.VOLT.toLong(scalar), 2);
   }
 
   public void testUnitOne() {
@@ -42,6 +45,9 @@ public class MagnitudeTest extends TestCase {
     Scalar s1 = Quantity.of(100, SI.ANGULAR_RATE);
     Scalar s2 = Quantity.of(100, SIDerived.RADIAN_PER_SECOND);
     assertEquals(Magnitude.ANGULAR_RATE.apply(s1), Magnitude.ANGULAR_RATE.apply(s2));
+    assertEquals(Magnitude.ANGULAR_RATE.toDouble(s1), 100.0);
+    assertEquals(Magnitude.ANGULAR_RATE.toInt(s1), 100);
+    assertEquals(Magnitude.ANGULAR_RATE.toLong(s1), 100);
   }
 
   public void testFail() {

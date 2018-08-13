@@ -11,8 +11,9 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
-// wrapper class for the SLAM visualization
+/** wrapper class for the SLAM visualization */
 public class SlamViewer implements DavisDvsListener {
   private final GokartPoseInterface gokartLidarPose;
   private final SlamProvider slamProvider;
@@ -31,12 +32,12 @@ public class SlamViewer implements DavisDvsListener {
   public SlamViewer(SlamConfig slamConfig, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
     this.slamProvider = slamProvider;
-    imagePrefix = slamConfig.davisConfig.logFileName();
+    imagePrefix = slamConfig.davisConfig.logFilename();
     parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
     lidarMappingMode = slamConfig.lidarMappingMode;
     saveSlamFrame = slamConfig.saveSlamFrame;
-    visualizationInterval = slamConfig.visualizationInterval.number().doubleValue();
-    savingInterval = slamConfig.savingInterval.number().doubleValue();
+    visualizationInterval = Magnitude.SECOND.toDouble(slamConfig._visualizationInterval);
+    savingInterval = Magnitude.SECOND.toDouble(slamConfig._savingInterval);
     slamMapGUI = new SlamMapGUI(slamConfig);
     slamMapFrames = new SlamMapFrame[3];
     for (int i = 0; i < slamMapFrames.length; i++)

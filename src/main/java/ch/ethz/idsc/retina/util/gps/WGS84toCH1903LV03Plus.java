@@ -42,8 +42,8 @@ public enum WGS84toCH1903LV03Plus {
    * @return */
   public static Tensor transform(Scalar degX, Scalar degY) {
     return transform( //
-        Magnitude.DEGREE_ANGLE.apply(degX).number().doubleValue(), //
-        Magnitude.DEGREE_ANGLE.apply(degY).number().doubleValue());
+        Magnitude.DEGREE_ANGLE.toDouble(degX), //
+        Magnitude.DEGREE_ANGLE.toDouble(degY));
   }
 
   // function is the original from Matsim except the return statement and type

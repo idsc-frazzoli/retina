@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** estimated pose can be passed to other modules with this class */
-public class SlamEstimatedPose implements GokartPoseInterface {
+/* package */ class SlamEstimatedPose implements GokartPoseInterface {
   private Tensor pose; // unitless representation
 
   public void setPoseUnitless(Tensor unitlessPose) {

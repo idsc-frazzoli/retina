@@ -60,7 +60,7 @@ public class LocalizationConfig implements Serializable {
     int bits = bitShift.number().intValue();
     double angle_offset = sensorsConfig.vlp16_twist.number().doubleValue();
     double tiltY = sensorsConfig.vlp16_incline.number().doubleValue();
-    double emulation_deg = Magnitude.DEGREE_ANGLE.apply(horizon).number().doubleValue();
+    double emulation_deg = Magnitude.DEGREE_ANGLE.toDouble(horizon);
     return new Vlp16TiltedPlanarEmulator(bits, angle_offset, tiltY, emulation_deg);
   }
 

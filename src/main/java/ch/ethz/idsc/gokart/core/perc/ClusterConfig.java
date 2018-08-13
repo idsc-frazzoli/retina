@@ -22,7 +22,7 @@ public class ClusterConfig implements Serializable {
 
   /***************************************************/
   public double getEpsilon() {
-    return Magnitude.METER.apply(epsilon).number().doubleValue();
+    return Magnitude.METER.toDouble(epsilon);
   }
 
   public int getMinPoints() {
