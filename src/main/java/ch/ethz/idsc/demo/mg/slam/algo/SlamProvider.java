@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-import ch.ethz.idsc.demo.mg.pipeline.EventFiltering;
+import ch.ethz.idsc.demo.mg.pipeline.BackgroundActivityFilter;
+import ch.ethz.idsc.demo.mg.pipeline.FilteringPipeline;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
@@ -14,7 +15,6 @@ import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,12 +25,10 @@ import ch.ethz.idsc.tensor.Tensor;
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartInterface;
-  // TODO MG gokartToImageUtil not used: remove? (also in the constructor)
-  // private final GokartToImageInterface gokartToImageUtil;
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartPoseOdometry;
   // ---
-  private final EventFiltering eventFiltering;
+  private final FilteringPipeline filteringPipeline;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamWayPoints;
@@ -46,11 +44,10 @@ public class SlamProvider implements DavisDvsListener {
 
   public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
-    // gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
     this.gokartLidarPose = gokartLidarPose;
     this.gokartPoseOdometry = gokartPoseOdometry;
     // ---
-    eventFiltering = new EventFiltering(slamConfig.davisConfig);
+    filteringPipeline = new BackgroundActivityFilter(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
     slamWayPoints = new SlamMapProcessing(slamConfig);
@@ -80,24 +77,21 @@ public class SlamProvider implements DavisDvsListener {
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
-      if (eventFiltering.filterPipeline(davisDvsEvent)) {
+      if (filteringPipeline.filterPipeline(davisDvsEvent)) {
         double currentTimeStamp = davisDvsEvent.time * 1E-6;
         double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
           slamMappingStep.mappingStepWithLidar(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         } else {
-          Stopwatch stopwatch = Stopwatch.started();
           slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartPoseOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
           slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
           slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
-          if (stopwatch.display_seconds() > 0.01)
-            System.out.println(stopwatch.display_seconds());
         }
         eventCount++;
         if (currentTimeStamp - initTimeStamp > 10) {
-          System.out.println(eventFiltering.getFilteredPercentage());
+          System.out.println(filteringPipeline.getFilteredPercentage());
           System.out.println("avg time is " + timeSum / eventCount);
           initTimeStamp += 10;
         }

@@ -2,6 +2,8 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
@@ -50,7 +52,12 @@ enum SlamLocalizationStepUtil {
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
     // TODO MG the sorting does not move the most relevant to the front! instead would have to sort over entire list?
     // ... comment on what relevantRange is intended to represent
-    Arrays.parallelSort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
+    Stream.of(slamParticles) //
+    .parallel() //
+    .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
+    .limit(relevantRange) //
+    .collect(Collectors.toList());
+//    Arrays.parallelSort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
     double likelihoodSum = 0;
     Tensor expectedPose = Array.zeros(3);
     for (int i = 0; i < relevantRange; ++i) {
@@ -59,7 +66,7 @@ enum SlamLocalizationStepUtil {
       Tensor pose = slamParticles[i].getPoseUnitless();
       expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
     }
-    // TODO MG comment on case likelihoodSum == 0, why not possible?
+    // --> the likelihoods always sum up to 1 and since we sum up the highest likelihoods we wont end up with zero
     return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
 }

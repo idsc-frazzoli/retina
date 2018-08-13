@@ -7,9 +7,10 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
-/** Transformation of ImageBlobs to PhysicalBlobs. */
-// TODO switch to TransformUtilLookup, maybe use interpolation?
-// TODO MG implementation does not use lookup table? -> optimize?
+/** Transformation of ImageBlobs to PhysicalBlobs.
+ * Currently, no lookup table is used because the ImageToGokartLookup is only implemented for
+ * integer pixel values. When the lookup table will accept float values as input
+ * (e.g. by using interpolation between closest integer values) we can switch to that faster solution. */
 /* package */ class BlobTransform {
   // TODO JAN mental note class design
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
@@ -20,7 +21,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
   }
 
   public void transformSelectedBlobs(List<ImageBlob> imageBlobs) {
-    this.physicalBlobs = imageBlobs.stream() // TODO MG parallel?
+    this.physicalBlobs = imageBlobs.parallelStream()
         .map(this::toPhysicalBlob) //
         .collect(Collectors.toList());
   }

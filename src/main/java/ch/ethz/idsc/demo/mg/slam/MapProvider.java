@@ -11,6 +11,7 @@ public class MapProvider {
   private final int numberOfCells;
   private final int frameHeight;
   private final double cellDim;
+  private final double cellDimInv;
   private final double[] mapArray;
   private final double cornerXLow;
   private final double cornerYLow;
@@ -22,6 +23,7 @@ public class MapProvider {
 
   public MapProvider(SlamConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
+    cellDimInv = 1/cellDim;
     widthInCells = slamConfig.frameWidth();
     frameHeight = slamConfig.frameHeight();
     numberOfCells = widthInCells * frameHeight;
@@ -68,8 +70,8 @@ public class MapProvider {
       // unreasonable number to indicate that we dont have this location
       return numberOfCells; // TODO unconventional
     }
-    int gridPosX = (int) ((posX - cornerXLow) / cellDim); // TODO store multiplicative inverse in class
-    int gridPosY = (int) ((posY - cornerYLow) / cellDim);
+    int gridPosX = (int) ((posX - cornerXLow)*cellDimInv);
+    int gridPosY = (int) ((posY - cornerYLow)*cellDimInv);
     return gridPosX + widthInCells * gridPosY;
   }
 

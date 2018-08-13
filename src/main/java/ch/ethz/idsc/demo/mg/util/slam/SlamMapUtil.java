@@ -38,14 +38,12 @@ public enum SlamMapUtil {
 
   /** adapts the event weight based on e.g. distance to sensor
    * 
-   * @param gokartFramePos [m] positoin of event in go kart frame
+   * @param gokartFramePos [m] position of event in go kart frame
    * @return adaptiveWeightFactor */
-  // TODO in future, the weight could be adapted by where we expect the next waypoint to appear
+  // TODO implement and test
   private static double adaptiveEventWeightening(double[] gokartFramePos) {
-    // compute distance metric
-    // TODO MG next line does not make much sense, do you mean |gokartFramePos[0]| ? Math.abs(...)
-    double distance = Math.sqrt(gokartFramePos[0] * gokartFramePos[0]);
-    return 1 + distance;
+    double distance = 1;
+    return distance;
   }
 
   /** update occurrence map with lidar ground truth
@@ -71,11 +69,8 @@ public enum SlamMapUtil {
       if (mapArray[i] != 0) {
         double[] worldCoord = occurrenceMap.getCellCoord(i);
         Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
-        // TODO MG can the code below be simplified because only gokartCoord[0] is used?
-        double[] gokartCoord = { //
-            gokartCoordTensor.Get(0).number().doubleValue(), //
-            gokartCoordTensor.Get(1).number().doubleValue() }; // <- obsolete
-        if (gokartCoord[0] < lookBehindDistance) {
+        double gokartCoordXPos = gokartCoordTensor.Get(0).number().doubleValue();
+        if (gokartCoordXPos < lookBehindDistance) {
           occurrenceMap.setValue(i, 0);
         }
       }

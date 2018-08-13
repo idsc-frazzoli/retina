@@ -87,9 +87,6 @@ class OfflinePipelineWrap implements OfflineLogListener {
   public void summarizeLog() {
     endTime = System.currentTimeMillis();
     int diff = lastTimestamp - firstTimestamp;
-    System.out.println(
-        "Percentage hit by active blobs: " + pipelineProvider.getBlobTracking().hitthreshold / pipelineProvider.getEventFiltering().getEventCount() * 100);
-    System.out.println("Elapsed time in the eventstream [ms]: " + diff + " with " + pipelineProvider.getEventFiltering().getEventCount() + " events");
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
     System.out.format("%.2f%% of the events were processed after filtering.\n", pipelineProvider.getEventFiltering().getFilteredPercentage());

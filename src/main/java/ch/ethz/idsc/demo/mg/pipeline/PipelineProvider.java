@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 // implements the control pipeline
 public class PipelineProvider implements DavisDvsListener {
   // pipeline modules
-  private final EventFiltering eventFiltering;
+  private final FilteringPipeline filteringPipeline;
   private final BlobTracking tracking;
   private final ImageBlobSelector blobSelector;
   private BlobTransform transformer = null; // default initialization if unused
@@ -30,7 +30,7 @@ public class PipelineProvider implements DavisDvsListener {
     calibrationAvailable = pipelineConfig.calibrationAvailable;
     collectEstimatedFeatures = pipelineConfig.collectEstimatedFeatures;
     // initialize pipeline modules
-    eventFiltering = new EventFiltering(pipelineConfig.davisConfig);
+    filteringPipeline = new BackgroundActivityFilter(pipelineConfig.davisConfig);
     tracking = new BlobTracking(pipelineConfig);
     blobSelector = pipelineConfig.createImageBlobSelector();
     // calibration required for transformation to physical space
@@ -63,7 +63,7 @@ public class PipelineProvider implements DavisDvsListener {
       collector.setEstimatedFeatures(blobSelector.getSelectedBlobs());
     }
     // filtering returns a boolean
-    if (eventFiltering.filterPipeline(davisDvsEvent)) {
+    if (filteringPipeline.filterPipeline(davisDvsEvent)) {
       // control pipeline
       tracking.receiveEvent(davisDvsEvent);
       blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
@@ -98,7 +98,7 @@ public class PipelineProvider implements DavisDvsListener {
     return blobSelector;
   }
 
-  public EventFiltering getEventFiltering() {
-    return eventFiltering;
+  public FilteringPipeline getEventFiltering() {
+    return filteringPipeline;
   }
 }

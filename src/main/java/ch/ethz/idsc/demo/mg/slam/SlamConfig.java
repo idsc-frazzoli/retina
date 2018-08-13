@@ -32,7 +32,7 @@ public class SlamConfig {
   public final Scalar numberOfParticles = RealScalar.of(20); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** [m] events further away are neglected */
-  public final Scalar _lookAheadDistance = Quantity.of(13, SI.METER);
+  public final Scalar _lookAheadDistance = Quantity.of(8, SI.METER);
   /** [m] for reactive mapping mode */
   public final Scalar _lookBehindDistance = Quantity.of(-3, SI.METER);
   // SlamLocalizationStep
@@ -48,8 +48,6 @@ public class SlamConfig {
   public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar _angVelStd = Quantity.of(0.1, SI.ANGULAR_RATE); // [rad/s] for initial particle distribution
   // particle roughening
-  // TODO MG variable names and units are not consistent throughout the code
-  // ... see SlamParticleUtil#resampleParticles
   public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
   public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
   // SLAM map parameters

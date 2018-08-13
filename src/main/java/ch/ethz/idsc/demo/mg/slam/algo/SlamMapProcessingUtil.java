@@ -95,7 +95,7 @@ enum SlamMapProcessingUtil {
   /** @param inputMap
    * @param resizeFactor [-]
    * @return outputMap same type as inputMap */
-  // TODO MG remove if not needed
+  // TODO could be used in the future to reduce computational load
   private static Mat resizeMat(Mat inputMap, double resizeFactor) {
     int newHeight = (int) (inputMap.rows() / resizeFactor);
     int newWidth = (int) (inputMap.cols() / resizeFactor);

@@ -42,11 +42,11 @@ enum SlamTrajectoryPlanningUtil {
   public static void checkVisibility(List<WayPoint> gokartWayPoints, double visibleBoxXMin, double visibleBoxXMax, double visibleBoxHalfWidth) {
     for (WayPoint wayPoint : gokartWayPoints) {
       double[] gokartPosition = wayPoint.getGokartPosition();
-      // FIXME MG condition does not look right: more use of [1] than [0]
-      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[1] < visibleBoxXMax && //
+      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[0] < visibleBoxXMax && //
           gokartPosition[1] > -visibleBoxHalfWidth && gokartPosition[1] < visibleBoxHalfWidth)
         wayPoint.setVisibility(true);
-      // TODO MG comment why not else set visibility to false?
+      else
+        wayPoint.setVisibility(false);
     }
   }
 
