@@ -1,6 +1,6 @@
 # ch.ethz.idsc.retina+gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Sensor and actuator interfaces, Gokart software, version `0.0.1`
+Sensor and actuator interfaces, Gokart software
 
 The repository was developed with the following objectives in mind
 * interface sensors without loss of precision or temporal resolution
@@ -47,7 +47,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 ## GOKART
 
-![gokart_operation](https://user-images.githubusercontent.com/4012178/41111341-fe99edea-6a7b-11e8-87a3-0b484d73240a.png)
+![gokart_operation](https://user-images.githubusercontent.com/4012178/44016122-feb61308-9ed3-11e8-945f-0fde5512052d.png)
 
 ### Actuation
 
