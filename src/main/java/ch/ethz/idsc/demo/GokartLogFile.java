@@ -575,6 +575,16 @@ public enum GokartLogFile implements LogFile {
   // davis240c on
   /** collecting lidar data for localization map update */
   _20180813T115544_26cfbbca, //
+  /** slow pure pursuit figure 8 reverse */
+  _20180813T131746_2c569ed8, //
+  /** slow pure pursuit figure 8 reverse */
+  _20180813T134234_2c569ed8, //
+  /** pure pursuit figure 8 reverse with varying speeds
+   * with davis240c but upside down */
+  _20180813T151442_2c569ed8, //
+  /** pure pursuit figure 8 reverse with varying speeds
+   * davis240c with correct orientation */
+  _20180813T165630_2c569ed8, //
   ;
   // ---
   @Override // from LogFile
