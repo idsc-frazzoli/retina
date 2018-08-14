@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-/** module receives a set of waypoints in world frame and outputs a trajectory */
+/** module receives a set of way points in world frame and outputs a trajectory */
 class SlamTrajectoryPlanning implements Runnable {
   private final SlamEstimatedPose estimatedPose;
   private final double initialDelay;
@@ -31,11 +31,12 @@ class SlamTrajectoryPlanning implements Runnable {
     visibleBoxXMin = slamConfig.visibleBoxXMin.number().doubleValue();
     visibleBoxXMax = slamConfig.visibleBoxXMax.number().doubleValue();
     visibleBoxHalfWidth = slamConfig.visibleBoxHalfWidth.number().doubleValue();
+    gokartWayPoints = new ArrayList<>();
   }
 
-  public void initialize(double initTimeStamp) {
-    gokartWayPoints = new ArrayList<>();
+  public void initialize(double initTimeStamp) {    
     lastComputationTimeStamp = initTimeStamp + initialDelay;
+    isLaunched = true;
     thread.start();
   }
 
@@ -63,7 +64,7 @@ class SlamTrajectoryPlanning implements Runnable {
   @Override
   public void run() {
     while (isLaunched)
-      if (Objects.nonNull(worldWayPoints)) {
+      if (Objects.nonNull(worldWayPoints)) {        
         gokartWayPoints = SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
         SlamTrajectoryPlanningUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
         worldWayPoints = null;

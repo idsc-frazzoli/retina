@@ -8,7 +8,7 @@ public class WayPoint {
   private final double[] worldPosition;
   private double[] gokartPosition;
   /** visibility given the current pose of the go kart */
-  private boolean currentlyVisible;
+  private boolean visibility;
 
   public WayPoint(double[] worldPosition) {
     this.worldPosition = worldPosition;
@@ -24,7 +24,7 @@ public class WayPoint {
   }
 
   public boolean getVisibility() {
-    return currentlyVisible;
+    return visibility;
   }
 
   public void setGokartPosition(Tensor gokartPosition) {
@@ -33,6 +33,6 @@ public class WayPoint {
   }
 
   public void setVisibility(boolean visibility) {
-    currentlyVisible = visibility;
+    this.visibility = visibility;
   }
 }

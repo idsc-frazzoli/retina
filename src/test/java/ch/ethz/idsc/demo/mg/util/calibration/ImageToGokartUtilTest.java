@@ -1,14 +1,21 @@
 // code by jph, mg
 package ch.ethz.idsc.demo.mg.util.calibration;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import junit.framework.TestCase;
 
 public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
-    ImageToGokartUtil test = new PipelineConfig().createImageToGokartUtil();
-    double[] physicalPos = test.imageToGokart(170, 100);
-    assertTrue(2 < physicalPos[0]);
-    assertTrue(physicalPos[1] < 0);
+    SlamConfig slamConfig = new SlamConfig();
+    slamConfig.davisConfig.logFileLocations = LogFileLocations.DUBI15a;
+    ImageToGokartLookup test = (ImageToGokartLookup) slamConfig.davisConfig.createImageToGokartUtilLookup();
+    test.printInfo();
+    System.out.println("---");
+    int x = 170;
+    int y = 100;
+    double[] physicalPos = test.imageToGokart(x, y);
+    assertEquals(physicalPos[0], 3.4386292832405725);
+    assertEquals(physicalPos[1], -0.4673008409796591);
   }
 }

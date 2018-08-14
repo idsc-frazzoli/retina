@@ -42,31 +42,26 @@ enum SlamLocalizationStepUtil {
     }
   }
 
-  /** Careful: ordering of given array slamParticles is subject to change
-   * 
-   * get average pose of particles in relevant range
+  /** get average pose of the particles with highest likelihood
    * 
    * @param slamParticles
-   * @param relevantRange [-] number of particles with highest likelihood that is used
+   * @param particleRange [-] >0 number of particles with highest likelihood that is employed
    * @return averagePose unitless representation */
-  public static Tensor getAveragePose(SlamParticle[] slamParticles, int relevantRange) {
-    // TODO MG the sorting does not move the most relevant to the front! instead would have to sort over entire list?
-    // ... comment on what relevantRange is intended to represent
+  public static Tensor getAveragePose(SlamParticle[] slamParticles, int particleRange) {
     Stream.of(slamParticles) //
     .parallel() //
     .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
-    .limit(relevantRange) //
+    .limit(particleRange) //
     .collect(Collectors.toList());
-//    Arrays.parallelSort(slamParticles, 0, relevantRange, SlamParticleLikelihoodComparator.INSTANCE);
     double likelihoodSum = 0;
     Tensor expectedPose = Array.zeros(3);
-    for (int i = 0; i < relevantRange; ++i) {
+    for (int i = 0; i < particleRange; ++i) {
       double likelihood = slamParticles[i].getParticleLikelihood();
       likelihoodSum += likelihood;
       Tensor pose = slamParticles[i].getPoseUnitless();
       expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
     }
-    // --> the likelihoods always sum up to 1 and since we sum up the highest likelihoods we wont end up with zero
+    // likelihoods always sum up to 1 --> sum of highest likelihoods will never be zero
     return expectedPose.divide(RealScalar.of(likelihoodSum));
   }
 }

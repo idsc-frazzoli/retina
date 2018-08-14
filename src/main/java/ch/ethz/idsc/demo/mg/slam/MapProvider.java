@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** provides a grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
+  private final int frameWidth;
   private final int frameHeight;
   private final double cellDim;
   private final double cellDimInv;
@@ -17,16 +18,15 @@ public class MapProvider {
   private final double cornerYLow;
   private final double cornerXHigh;
   private final double cornerYHigh;
-  private final int widthInCells;
   /** tracks max value of values in array */
   private double maxValue;
 
   public MapProvider(SlamConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
     cellDimInv = 1/cellDim;
-    widthInCells = slamConfig.frameWidth();
+    frameWidth = slamConfig.frameWidth();
     frameHeight = slamConfig.frameHeight();
-    numberOfCells = widthInCells * frameHeight;
+    numberOfCells = frameWidth * frameHeight;
     cornerXLow = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
     cornerYLow = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
     Tensor cornerHigh = slamConfig.cornerHigh();
@@ -53,8 +53,8 @@ public class MapProvider {
       System.out.println("FATAL: should not access that");
       return null;
     }
-    int gridPosY = cellIndex / widthInCells;
-    int gridPosX = cellIndex - gridPosY * widthInCells;
+    int gridPosY = cellIndex / frameWidth;
+    int gridPosX = cellIndex - gridPosY * frameWidth;
     // TODO precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
     return new double[] { //
         cornerXLow + (gridPosX + 0.5) * cellDim, //
@@ -72,7 +72,7 @@ public class MapProvider {
     }
     int gridPosX = (int) ((posX - cornerXLow)*cellDimInv);
     int gridPosY = (int) ((posY - cornerYLow)*cellDimInv);
-    return gridPosX + widthInCells * gridPosY;
+    return gridPosX + frameWidth * gridPosY;
   }
 
   /** adds value in grid cell corresponding to coordinates
@@ -153,11 +153,11 @@ public class MapProvider {
     return numberOfCells;
   }
 
-  public int getWidth() {
-    return widthInCells;
+  public int getFrameWidth() {
+    return frameWidth;
   }
 
-  public int getHeight() {
+  public int getFrameHeight() {
     return frameHeight;
   }
 

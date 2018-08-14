@@ -38,9 +38,6 @@ public class SlamProvider implements DavisDvsListener {
   // ---
   private boolean isInitialized;
   // --
-  public double timeSum;
-  public double eventCount;
-  private double initTimeStamp;
 
   public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
@@ -66,7 +63,6 @@ public class SlamProvider implements DavisDvsListener {
     slamMappingStep.initialize(timeStamp);
     slamWayPoints.initialize(timeStamp);
     slamTrajectoryPlanning.initialize(timeStamp); // TODO need to call stop function
-    initTimeStamp = timeStamp;
     isInitialized = true;
   }
 
@@ -86,15 +82,9 @@ public class SlamProvider implements DavisDvsListener {
         } else {
           slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartPoseOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
-          slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
-          slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
         }
-        eventCount++;
-        if (currentTimeStamp - initTimeStamp > 10) {
-          System.out.println(filteringPipeline.getFilteredPercentage());
-          System.out.println("avg time is " + timeSum / eventCount);
-          initTimeStamp += 10;
-        }
+        slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
+        slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
       }
     }
   }
