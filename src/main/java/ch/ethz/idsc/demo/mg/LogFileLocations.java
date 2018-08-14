@@ -7,7 +7,7 @@ import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-enum LogFileLocations {
+public enum LogFileLocations {
   /** extracted part of DUBI4 log file */
   DUBI4a("20180307T154859_0cd18c6bExtracted.lcm"), //
   /** 22sec, only noise */
@@ -94,7 +94,17 @@ enum LogFileLocations {
   /** extracted double round, additional cones */
   DUBI15d("20180514T155248_767e5417Extracted4.lcm"),
   /** short file, duckie thrown in front of gokart */
-  DUBI15e("20180514T155248_767e5417Extracted5.lcm"),;
+  DUBI15e("20180514T155248_767e5417Extracted5.lcm"),
+  /** much more way points on the floor, driving in eight shape */
+  DUBI16("20180813T165630_2c569ed8.lcm.00"),
+  /** one slow round */
+  DUBI16a("20180813T165630_2c569ed8Extracted1.lcm"),
+  /** one round */
+  DUBI16b("20180813T165630_2c569ed8Extracted2.lcm"),
+  /** one faster round, different starting point */
+  DUBI16c("20180813T165630_2c569ed8Extracted3.lcm"),
+  /** one round with aprupt acceleration and braking */
+  DUBI16d("20180813T165630_2c569ed8Extracted4.lcm");
   // ---
   private final String filename;
 

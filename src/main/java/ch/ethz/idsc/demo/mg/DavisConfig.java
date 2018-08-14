@@ -16,17 +16,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI15a;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16a;
   /** maxDuration */
-  public final Scalar maxDuration = Quantity.of(15, SI.SECOND);
+  public final Scalar maxDuration = Quantity.of(60, SI.SECOND);
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
-  /** event filtering
-   * 0 == background activity filter
-   * 1 == FAST corner filter */
-  public final Scalar filterConfig = RealScalar.of(0);
   /** [us] for background activity filter */
   public Scalar filterConstant = RealScalar.of(1000);
   /** [-] for FAST corner filter */

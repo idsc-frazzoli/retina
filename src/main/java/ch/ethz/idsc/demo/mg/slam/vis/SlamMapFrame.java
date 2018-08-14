@@ -23,7 +23,6 @@ public class SlamMapFrame {
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
-  // private static final byte RED = (byte) -76; // TODO MG not used
   private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
   // ---
   private final BufferedImage bufferedImage;

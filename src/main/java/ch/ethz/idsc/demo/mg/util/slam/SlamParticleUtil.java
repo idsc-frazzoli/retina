@@ -6,11 +6,19 @@ import java.util.Arrays;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** collection of public static methods to handle the mighty SlamParticle object */
 public enum SlamParticleUtil {
   ;
+  // TODO JPH same variable is used in SlamLocalizationStepUtil, how to reuse?
+  /** max turning rate per meter
+   * 
+   * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf */
+  public static final Scalar TURNING_RATIO_MAX = Quantity.of(0.4082, "rad*m^-1");
+
   /** updates particle likelihoods by referring to a map
    * 
    * @param slamParticles
@@ -142,8 +150,7 @@ public enum SlamParticleUtil {
   private static double limitAngAccel(double oldAngVel, double oldLinVel, double angVelRougheningStd, double dT) {
     double minAccel = -6;
     double maxAccel = 6;
-    double turnRatePerMeter = 0.4082;
-    double minVel = -turnRatePerMeter * oldLinVel;
+    double minVel = -TURNING_RATIO_MAX.number().doubleValue() * oldLinVel;
     double maxVel = -minVel;
     double angAccel = SlamRandomUtil.getTruncatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
     double newAngVel = oldAngVel + angAccel * dT;

@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.Tensor;
   private final boolean odometryStatePropagation;
   private final double resampleRate;
   private final double statePropagationRate;
-  private final double rougheningLinVelStd;
-  private final double rougheningAngVelStd;
+  private final double rougheningLinAccelStd;
+  private final double rougheningAngAccelStd;
   private final double linVelAvg;
   private final double linVelStd;
   private final double angVelStd;
@@ -29,8 +29,8 @@ import ch.ethz.idsc.tensor.Tensor;
     resampleRate = Magnitude.SECOND.toDouble(slamConfig._resampleRate);
     odometryStatePropagation = slamConfig.odometryStatePropagation;
     statePropagationRate = Magnitude.SECOND.toDouble(slamConfig._statePropagationRate);
-    rougheningLinVelStd = slamConfig.rougheningLinAccelStd.number().doubleValue();
-    rougheningAngVelStd = slamConfig.rougheningAngAccelStd.number().doubleValue();
+    rougheningLinAccelStd = slamConfig.rougheningLinAccelStd.number().doubleValue();
+    rougheningAngAccelStd = slamConfig.rougheningAngAccelStd.number().doubleValue();
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
     angVelStd = Magnitude.ANGULAR_RATE.toDouble(slamConfig._angVelStd);
@@ -59,7 +59,7 @@ import ch.ethz.idsc.tensor.Tensor;
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
       double dT = currentTimeStamp - lastResampleTimeStamp;
-      SlamParticleUtil.resampleParticles(slamParticles, dT, rougheningLinVelStd, rougheningAngVelStd);
+      SlamParticleUtil.resampleParticles(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
       lastResampleTimeStamp = currentTimeStamp;
     }
     if (eventGokartFrame[0] < lookAheadDistance)

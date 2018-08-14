@@ -66,14 +66,8 @@ import ch.ethz.idsc.tensor.Tensor;
       }
     }
     // normalization map currently unused
-    if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate) {
-      // SlamMapUtil.updateNormalizationMap(gokartLidarPose.getPose(), lastExpectedPose, eventMaps[1], imageToGokartLookup, gokartToImageUtil, 240, 180,
-      // lookAheadDistance);
-      // lastExpectedPose = gokartLidarPose.getPose();
-      // MapProvider.divide(eventMaps[0], eventMaps[1], eventMaps[2]);
-      // SlamParticleUtil.printStatusInfo(slamParticles);
+    if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate)
       lastNormalizationTimeStamp = currentTimeStamp;
-    }
   }
 
   /** updates occurrence map using pose provided by lidar

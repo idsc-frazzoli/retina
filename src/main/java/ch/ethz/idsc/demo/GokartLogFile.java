@@ -585,6 +585,30 @@ public enum GokartLogFile implements LogFile {
   /** pure pursuit figure 8 reverse with varying speeds
    * davis240c with correct orientation */
   _20180813T165630_2c569ed8, //
+  /***************************************************/
+  /* 2018-08-14 */
+  /** autonomous figure 8 reverse with varying speeds
+   * along stripes for davis240c */
+  _20180814T111143_2c569ed8, //
+  /** autonomous figure 8 forward with varying speeds
+   * along stripes for davis240c */
+  _20180814T112249_2c569ed8, //
+  /** manual figure 8 forward with varying speeds
+   * along stripes for davis240c */
+  _20180814T112843_2c569ed8, //
+  /** manual driving, davis240c off */
+  _20180814T145725_2c569ed8, //
+  /** autonomous figure 8 reverse with varying speeds
+   * along stripes for davis240c */
+  _20180814T170407_2c569ed8, //
+  /** autonomous figure 8 reverse
+   * pi-controller experiments resulting in backwards motion */
+  _20180814T173757_2c569ed8, //
+  /** autonomous figure 8 reverse
+   * pi-controller experiments resulting in backwards motion */
+  _20180814T174943_2c569ed8, //
+  /** manual driving, davis240c on */
+  _20180814T175821_2c569ed8, //
   ;
   // ---
   @Override // from LogFile

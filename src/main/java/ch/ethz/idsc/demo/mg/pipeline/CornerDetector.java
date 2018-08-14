@@ -1,13 +1,108 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.pipeline;
 
+import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// TODO MG extract functionality from EventFiltering to this class
+/** based on paper "Fast event-based corner detection".
+ * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
+ * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf */
 class CornerDetector implements FilteringPipeline {
+  /** hard coded circle parameters for corner detector */
+  private static final int[][] CIRCLE3 = { //
+      { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //
+      { 3, 0 }, { 3, -1 }, { 2, -2 }, { 1, -3 }, //
+      { 0, -3 }, { -1, -3 }, { -2, -2 }, { -3, -1 }, //
+      { -3, 0 }, { -3, 1 }, { -2, 2 }, { -1, 3 } };
+  private static final int[][] CIRCLE4 = { //
+      { 0, 4 }, { 1, 4 }, { 2, 3 }, { 3, 2 }, { 4, 1 }, //
+      { 4, 0 }, { 4, -1 }, { 3, -2 }, { 2, -3 }, { 1, -4 }, //
+      { 0, -4 }, { -1, -4 }, { -2, -3 }, { -3, -2 }, { -4, -1 }, //
+      { -4, 0 }, { -4, 1 }, { -3, 2 }, { -2, 3 }, { -1, 4 } };
+  // ---
+  private final int width;
+  private final int height;
+  private final int margin;
+  /** surface of active events for each polarity */
+  private final int[][][] SAE;
+  // ---
+  private double eventCount;
+  private double filteredEventCount;
+
+  public CornerDetector(DavisConfig davisConfig) {
+    width = davisConfig.width.number().intValue();
+    height = davisConfig.height.number().intValue();
+    margin = davisConfig.margin.number().intValue();
+    SAE = new int[width][height][2];
+  }
+
   @Override
   public boolean filterPipeline(DavisDvsEvent davisDvsEvent) {
-    // FIXME
+    ++eventCount;
+    if (cornerDetector(davisDvsEvent))
+      return true;
+    ++filteredEventCount;
     return false;
+  }
+
+  private boolean cornerDetector(DavisDvsEvent e) {
+    // update SAE
+    int pol = e.i;
+    SAE[e.x][e.y][pol] = e.time;
+    // check if not too close to boarder
+    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1) {
+      return false;
+    }
+    if (findStreak(CIRCLE3, 3, 6, e, pol))
+      return findStreak(CIRCLE4, 4, 8, e, pol);
+    return false;
+  }
+
+  private boolean findStreak(int[][] circle, int streakSizeMin, int streakSizeMax, DavisDvsEvent e, int pol) {
+    boolean found_streak = false;
+    for (int i = 0; i < circle.length; ++i) {
+      for (int streak_size = streakSizeMin; streak_size <= streakSizeMax; streak_size++) {
+        // check that first event is larger than neighbor
+        if (SAE[e.x + circle[i][0]][e.y + circle[i][1]][pol] < SAE[e.x + circle[(i - 1 + circle.length) % circle.length][0]][e.y
+            + circle[(i - 1 + circle.length) % circle.length][1]][pol])
+          continue;
+        // check that streak event is larger than neighbor
+        if (SAE[e.x + circle[(i + streak_size - 1) % circle.length][0]][e.y
+            + circle[(i + streak_size - 1) % circle.length][1]][pol] < SAE[e.x + circle[(i + streak_size) % circle.length][0]][e.y
+                + circle[(i + streak_size) % circle.length][1]][pol])
+          continue;
+        //
+        double min_t = SAE[e.x + circle[i][0]][e.y + circle[i][1]][pol];
+        for (int j = 1; j < streak_size; j++) {
+          double tj = SAE[e.x + circle[(i + j) % circle.length][0]][e.y + circle[(i + j) % circle.length][1]][pol];
+          if (tj < min_t)
+            min_t = tj;
+        }
+        //
+        boolean did_break = false;
+        for (int j = streak_size; j < circle.length; j++) {
+          double tj = SAE[e.x + circle[(i + j) % circle.length][0]][e.y + circle[(i + j) % circle.length][1]][pol];
+          if (tj >= min_t) {
+            did_break = true;
+            break;
+          }
+        }
+        //
+        if (!did_break) {
+          found_streak = true;
+          break;
+        }
+      }
+      if (found_streak) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** returns the percentage of events that are filtered out */
+  @Override
+  public double getFilteredPercentage() {
+    return 100 * filteredEventCount / eventCount;
   }
 }

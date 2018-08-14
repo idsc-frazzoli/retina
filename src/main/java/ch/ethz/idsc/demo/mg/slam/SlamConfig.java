@@ -21,18 +21,19 @@ public class SlamConfig {
   /** in localization mode, a previously saved map is used */
   public final Boolean localizationMode = false;
   /** in reactive mode, only the part of the map around the go kart is kept */
-  public final Boolean reactiveMappingMode = false;
+  public final Boolean reactiveMappingMode = true;
   /** pose provided by lidar instead of particle filter */
   public final Boolean lidarMappingMode = false; //
   /** state propagation using odometry instead of estimated velocities */
   public final Boolean odometryStatePropagation = false;
-  public final Boolean saveSlamMap = false; // saves the final map. to be used for saving ground truth maps
+  /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
+  public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(20); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** [m] events further away are neglected */
-  public final Scalar _lookAheadDistance = Quantity.of(13, SI.METER);
+  public final Scalar _lookAheadDistance = Quantity.of(8, SI.METER);
   /** [m] for reactive mapping mode */
   public final Scalar _lookBehindDistance = Quantity.of(-3, SI.METER);
   // SlamLocalizationStep
@@ -48,8 +49,6 @@ public class SlamConfig {
   public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar _angVelStd = Quantity.of(0.1, SI.ANGULAR_RATE); // [rad/s] for initial particle distribution
   // particle roughening
-  // TODO MG variable names and units are not consistent throughout the code
-  // ... see SlamParticleUtil#resampleParticles
   public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
   public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
   // SLAM map parameters
@@ -69,7 +68,7 @@ public class SlamConfig {
 
   // [m] coordinates of lower left point in map
   public final Tensor _corner = Tensors.of( //
-      Quantity.of(35, SI.METER), Quantity.of(35, SI.METER)).map(UnitSystem.SI());
+      Quantity.of(30, SI.METER), Quantity.of(30, SI.METER)).map(UnitSystem.SI());
 
   public Tensor cornerHigh() {
     return _corner.add(Tensors.of(_dimX, _dimY).map(UnitSystem.SI()));

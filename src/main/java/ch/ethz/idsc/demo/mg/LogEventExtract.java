@@ -14,16 +14,16 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = LogFileLocations.DUBI15.getFile();
+    File src = LogFileLocations.DUBI16.getFile();
     System.out.println(src.toString());
     File dst = null;
-    dst = UserHome.file("logs/20180514T155248_767e5417Extracted5.lcm");
+    dst = UserHome.file("logs/20180813T165630_2c569ed8Extracted4.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 2769000;
-    int hi = 2800000;
+    int lo = 1540981;
+    int hi = 1688409;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);
