@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,10 +48,10 @@ enum SlamLocalizationStepUtil {
    * @return averagePose unitless representation */
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int particleRange) {
     Stream.of(slamParticles) //
-    .parallel() //
-    .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
-    .limit(particleRange) //
-    .collect(Collectors.toList());
+        .parallel() //
+        .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
+        .limit(particleRange) //
+        .collect(Collectors.toList());
     double likelihoodSum = 0;
     Tensor expectedPose = Array.zeros(3);
     for (int i = 0; i < particleRange; ++i) {

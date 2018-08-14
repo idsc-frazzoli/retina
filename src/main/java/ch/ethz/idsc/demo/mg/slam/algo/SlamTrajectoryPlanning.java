@@ -34,7 +34,7 @@ class SlamTrajectoryPlanning implements Runnable {
     gokartWayPoints = new ArrayList<>();
   }
 
-  public void initialize(double initTimeStamp) {    
+  public void initialize(double initTimeStamp) {
     lastComputationTimeStamp = initTimeStamp + initialDelay;
     isLaunched = true;
     thread.start();
@@ -64,7 +64,7 @@ class SlamTrajectoryPlanning implements Runnable {
   @Override
   public void run() {
     while (isLaunched)
-      if (Objects.nonNull(worldWayPoints)) {        
+      if (Objects.nonNull(worldWayPoints)) {
         gokartWayPoints = SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
         SlamTrajectoryPlanningUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
         worldWayPoints = null;

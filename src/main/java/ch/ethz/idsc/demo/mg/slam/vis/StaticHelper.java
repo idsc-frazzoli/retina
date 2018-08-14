@@ -111,7 +111,7 @@ import ch.ethz.idsc.tensor.Tensor;
     if (!lidarMappingMode)
       drawParticlePoses(slamMapFrames, slamProvider);
     slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
-//     slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
+    // slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
     slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
     slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];

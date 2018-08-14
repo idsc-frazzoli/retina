@@ -21,8 +21,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
   }
 
   public void transformSelectedBlobs(List<ImageBlob> imageBlobs) {
-    this.physicalBlobs = imageBlobs.parallelStream()
-        .map(this::toPhysicalBlob) //
+    this.physicalBlobs = imageBlobs.parallelStream().map(this::toPhysicalBlob) //
         .collect(Collectors.toList());
   }
 

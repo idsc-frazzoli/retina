@@ -23,7 +23,7 @@ public class MapProvider {
 
   public MapProvider(SlamConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
-    cellDimInv = 1/cellDim;
+    cellDimInv = 1 / cellDim;
     frameWidth = slamConfig.frameWidth();
     frameHeight = slamConfig.frameHeight();
     numberOfCells = frameWidth * frameHeight;
@@ -70,8 +70,8 @@ public class MapProvider {
       // unreasonable number to indicate that we dont have this location
       return numberOfCells; // TODO unconventional
     }
-    int gridPosX = (int) ((posX - cornerXLow)*cellDimInv);
-    int gridPosY = (int) ((posY - cornerYLow)*cellDimInv);
+    int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
+    int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);
     return gridPosX + frameWidth * gridPosY;
   }
 

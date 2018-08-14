@@ -52,7 +52,6 @@ enum SlamMapProcessingUtil {
     return worldWayPoints;
   }
 
-
   /** convert mapProvider to binary Mat object by invoking threshold operation.
    * 
    * @param mapProvider
@@ -61,7 +60,7 @@ enum SlamMapProcessingUtil {
   private static Mat mapProviderToBinaryMat(MapProvider mapProvider, double mapThreshold) {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];
-    double maxValueScaled = mapProvider.getMaxValue()*mapThreshold;
+    double maxValueScaled = mapProvider.getMaxValue() * mapThreshold;
     Mat mat = new Mat(mapProvider.getFrameWidth(), mapProvider.getFrameHeight(), opencv_core.CV_8UC1);
     for (int index = 0; index < byteArray.length; ++index)
       byteArray[index] = mapArray[index] >= maxValueScaled ? (byte) 1 : 0;

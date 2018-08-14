@@ -34,7 +34,7 @@ class SlamMapProcessing implements Runnable {
   private Mat labels;
   private boolean isLaunched;
 
-  SlamMapProcessing(SlamConfig slamConfig) {    
+  SlamMapProcessing(SlamConfig slamConfig) {
     wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig._wayPointUpdateRate);
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
     cornerX = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
