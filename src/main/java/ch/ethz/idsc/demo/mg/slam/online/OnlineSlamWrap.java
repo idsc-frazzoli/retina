@@ -13,11 +13,11 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** initializes SlamProvider with live listeners */
 class OnlineSlamWrap implements StartAndStoppable {
-  private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  private final SlamConfig slamConfig = new SlamConfig();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final SlamConfig slamConfig = new SlamConfig();
   private final SlamProvider slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
   private final SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
 

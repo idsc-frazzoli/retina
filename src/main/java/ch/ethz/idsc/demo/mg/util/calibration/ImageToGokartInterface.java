@@ -3,13 +3,13 @@ package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-/** interface supports only integer values */
+/** interface to compute go kart frame positions based on image plane position. only integer values are supported */
 public interface ImageToGokartInterface {
-  /** .
-   * @param imagePosX pixel coordinate
+  /** @param imagePosX pixel coordinate
    * @param imagePosY pixel coordinate
-   * @return double array of length 2 in gokart coordinates */
+   * @return position in go kart frame */
   double[] imageToGokart(int imagePosX, int imagePosY);
 
+  /** @param index = imagePosX + width*imagePosY. standard index when BufferedImage content is represented by 1D array */
   Tensor imageToGokartTensor(int index);
 }

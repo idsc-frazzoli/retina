@@ -95,12 +95,12 @@ public class PipelineConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion);
+    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, davisConfig.width);
   }
 
   /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
   public GokartToImageLookup createGokartToImageLookup() {
-    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance);
+    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance, davisConfig.width);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

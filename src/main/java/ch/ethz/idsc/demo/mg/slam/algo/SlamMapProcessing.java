@@ -40,6 +40,7 @@ class SlamMapProcessing implements Runnable {
     cornerX = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
     cornerY = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
     cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
+    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   public void initialize(double initTimeStamp) {
@@ -61,7 +62,6 @@ class SlamMapProcessing implements Runnable {
   // TODO JPH use timer, but also take case that offline processing is possible
   public void mapPostProcessing(MapProvider occurrenceMap, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
-      labels = new Mat(occurrenceMap.getFrameWidth(), occurrenceMap.getFrameHeight(), opencv_core.CV_8U);
       this.occurrenceMap = occurrenceMap;
       thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;

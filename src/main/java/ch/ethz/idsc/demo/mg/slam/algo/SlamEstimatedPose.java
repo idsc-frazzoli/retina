@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** estimated pose can be passed to other modules with this class */
+/** SLAM algorithm uses a unitless pose representation */
 /* package */ class SlamEstimatedPose implements GokartPoseInterface {
   private Tensor poseUnitless;
 

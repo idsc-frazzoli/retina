@@ -61,7 +61,7 @@ enum SlamMapProcessingUtil {
     double[] mapArray = mapProvider.getMapArray();
     byte[] byteArray = new byte[mapArray.length];
     double maxValueScaled = mapProvider.getMaxValue() * mapThreshold;
-    Mat mat = new Mat(mapProvider.getFrameWidth(), mapProvider.getFrameHeight(), opencv_core.CV_8UC1);
+    Mat mat = new Mat(mapProvider.getMapWidth(), mapProvider.getMapHeight(), opencv_core.CV_8UC1);
     for (int index = 0; index < byteArray.length; ++index)
       byteArray[index] = mapArray[index] >= maxValueScaled ? (byte) 1 : 0;
     mat.data().put(byteArray);

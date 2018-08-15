@@ -9,8 +9,8 @@ import ch.ethz.idsc.tensor.Tensor;
 /** provides a grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
-  private final int frameWidth;
-  private final int frameHeight;
+  private final int mapWidth;
+  private final int mapHeight;
   private final double cellDim;
   private final double cellDimInv;
   private final double[] mapArray;
@@ -24,9 +24,9 @@ public class MapProvider {
   public MapProvider(SlamConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
     cellDimInv = 1 / cellDim;
-    frameWidth = slamConfig.frameWidth();
-    frameHeight = slamConfig.frameHeight();
-    numberOfCells = frameWidth * frameHeight;
+    mapWidth = slamConfig.mapWidth();
+    mapHeight = slamConfig.mapHeight();
+    numberOfCells = mapWidth * mapHeight;
     cornerXLow = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
     cornerYLow = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
     Tensor cornerHigh = slamConfig.cornerHigh();
@@ -53,8 +53,8 @@ public class MapProvider {
       System.out.println("FATAL: should not access that");
       return null;
     }
-    int gridPosY = cellIndex / frameWidth;
-    int gridPosX = cellIndex - gridPosY * frameWidth;
+    int gridPosY = cellIndex / mapWidth;
+    int gridPosX = cellIndex - gridPosY * mapWidth;
     // TODO precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
     return new double[] { //
         cornerXLow + (gridPosX + 0.5) * cellDim, //
@@ -72,7 +72,7 @@ public class MapProvider {
     }
     int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
     int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);
-    return gridPosX + frameWidth * gridPosY;
+    return gridPosX + mapWidth * gridPosY;
   }
 
   /** adds value in grid cell corresponding to coordinates
@@ -153,12 +153,12 @@ public class MapProvider {
     return numberOfCells;
   }
 
-  public int getFrameWidth() {
-    return frameWidth;
+  public int getMapWidth() {
+    return mapWidth;
   }
 
-  public int getFrameHeight() {
-    return frameHeight;
+  public int getMapHeight() {
+    return mapHeight;
   }
 
   /** @return maxValue or 1 if maxValue == 0

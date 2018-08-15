@@ -16,7 +16,7 @@ public class SlamModule extends AbstractModule {
     onlineSlamWrap.stop();
   }
 
-  // ---
+  /***************************************************/
   public static void standalone() throws Exception {
     SlamModule slamModule = new SlamModule();
     slamModule.first();
