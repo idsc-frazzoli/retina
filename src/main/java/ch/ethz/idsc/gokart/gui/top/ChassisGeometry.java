@@ -80,8 +80,11 @@ public class ChassisGeometry implements Serializable {
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
-   * @param ratio without unit */
+   * @param ratio without unit but with interpretation "rad*m^-1"
+   * see for instance SteerConfig.GLOBAL.turningRatioMax
+   * @return steering angle with unit "rad" */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
+    // TODO JPH require ratio to have unit "rad*m^-1"
     return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(ratio)), SIDerived.RADIAN);
   }
 

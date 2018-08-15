@@ -194,7 +194,11 @@ public enum SlamLocalizationStepUtil {
     double minAccel = -2.5; // ... here also
     double linAccel = SlamRandomUtil.getTruncatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
     double newLinVel = oldLinVel + linAccel * dT;
-    return Math.min(Math.max(LINVEL_MIN, newLinVel), LINVEL_MAX);
+    if (LINVEL_MAX < newLinVel)
+      return LINVEL_MAX;
+    if (newLinVel < LINVEL_MIN)
+      return LINVEL_MIN;
+    return newLinVel;
   }
 
   /** disturbs the angVel state with Gaussian noise while not violating the angular acceleration limits of the vehicle
@@ -212,22 +216,17 @@ public enum SlamLocalizationStepUtil {
     double maxVel = -minVel;
     double angAccel = SlamRandomUtil.getTruncatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
     double newAngVel = oldAngVel + angAccel * dT;
-    if (newAngVel < minVel) {
-      newAngVel = minVel;
-      return newAngVel;
-    }
-    if (newAngVel > maxVel) {
-      newAngVel = maxVel;
-      return newAngVel;
-    }
+    if (newAngVel < minVel)
+      return minVel;
+    if (newAngVel > maxVel)
+      return maxVel;
     return newAngVel;
   }
 
   public static void printStatusInfo(SlamParticle[] slamParticles) {
     Arrays.parallelSort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
     System.out.println("**** new status info **********");
-    for (int i = 0; i < slamParticles.length; i++) {
+    for (int i = 0; i < slamParticles.length; i++)
       System.out.println("Particle likelihood " + slamParticles[i].getParticleLikelihood());
-    }
   }
 }

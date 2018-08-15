@@ -42,7 +42,7 @@ public class SteerConfig implements Serializable {
    * but this choice put unnecessary stress on the hardware.
    * 
    * 20180517 the */
-  // TODO JPH value of columnMax does not correspond to the aboe comment
+  // TODO JPH value of columnMax does not correspond to the above comment
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
@@ -50,7 +50,8 @@ public class SteerConfig implements Serializable {
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
    * the numeric value was determined in an experiment documented in the report below
-   * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf */
+   * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf
+   * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
   public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
 
   /***************************************************/
