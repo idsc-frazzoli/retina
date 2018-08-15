@@ -6,8 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
@@ -110,10 +111,10 @@ import ch.ethz.idsc.tensor.Tensor;
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
       drawParticlePoses(slamMapFrames, slamProvider);
-    slamMapFrames[0].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
+    slamMapFrames[0].addGokartPose(slamProvider.getGokartPoseInterface().getPose(), Color.BLUE);
     // slamMapFrames[1].setProcessedMat(slamProvider.getProcessedMat());
     slamMapFrames[1].setWayPoints(slamProvider.getWayPoints());
-    slamMapFrames[1].addGokartPose(slamProvider.getPoseInterface().getPose(), Color.BLUE);
+    slamMapFrames[1].addGokartPose(slamProvider.getGokartPoseInterface().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < 3; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
@@ -121,10 +122,15 @@ import ch.ethz.idsc.tensor.Tensor;
   }
 
   /** overlays poses of particles with highest likelihood onto slamMapFrame */
+  // TODO MG hard-coded parameter
   private static void drawParticlePoses(SlamMapFrame[] slamMapFrames, SlamProvider slamProvider) {
     SlamParticle[] slamParticles = slamProvider.getParticles();
     int partNumber = slamParticles.length / 3;
-    Arrays.sort(slamParticles, 0, partNumber, SlamParticleLikelihoodComparator.INSTANCE);
+    Stream.of(slamParticles) //
+        .parallel() //
+        .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
+        .limit(partNumber) //
+        .collect(Collectors.toList());
     for (int i = 0; i < partNumber; i++)
       slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
   }

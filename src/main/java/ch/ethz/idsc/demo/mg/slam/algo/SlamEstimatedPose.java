@@ -10,28 +10,28 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** estimated pose can be passed to other modules with this class */
 /* package */ class SlamEstimatedPose implements GokartPoseInterface {
-  private Tensor pose; // unitless representation
+  private Tensor poseUnitless;
 
   public void setPoseUnitless(Tensor unitlessPose) {
-    pose = unitlessPose;
+    poseUnitless = unitlessPose;
   }
 
   public Tensor getPoseUnitless() {
-    return pose;
+    return poseUnitless;
   }
 
-  /** set pose
+  /** sets pose with when input argument is not unitless
    * 
    * @param pose {x[m], y[m], heading[]} */
   public void setPose(Tensor pose) {
-    this.pose = GokartPoseHelper.toUnitless(pose);
+    this.poseUnitless = GokartPoseHelper.toUnitless(pose);
   }
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
     return Tensors.of( //
-        Quantity.of(pose.Get(0), SI.METER), //
-        Quantity.of(pose.Get(1), SI.METER), //
-        pose.Get(2));
+        Quantity.of(poseUnitless.Get(0), SI.METER), //
+        Quantity.of(poseUnitless.Get(1), SI.METER), //
+        poseUnitless.Get(2));
   }
 }
