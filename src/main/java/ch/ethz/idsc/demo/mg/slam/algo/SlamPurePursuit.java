@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
 public class SlamPurePursuit {
   // method required for interpolation when more than one waypoint is availble
   public static Optional<Tensor> beacon(List<WayPoint> wayPoints) {
-    // TODO work in progress
+    // TODO MG work in progress
     return Optional.empty();
   }
 

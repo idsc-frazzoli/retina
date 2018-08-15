@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -26,7 +27,7 @@ class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = Quantity.of(0.0, "rad");
+  private Scalar angle = Quantity.of(0.0, SIDerived.RADIAN);
 
   /** @param angle with unit "rad" */
   /* package */ void setHeading(Scalar angle) {

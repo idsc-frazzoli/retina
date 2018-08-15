@@ -63,8 +63,8 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   @Override
   public Tensor gokartToImage(Tensor gokartPos) {
-    // TODO Auto-generated method stub
-    return null;
+    // TODO MG comment if the function should fail:
+    throw new RuntimeException();
   }
 
   // testing

@@ -4,10 +4,12 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.io.Serializable;
 
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
+import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -31,8 +33,8 @@ public class ChassisGeometry implements Serializable {
   /** distance from x-axis to rear tire */
   public Scalar yTireRear = Quantity.of(0.54, SI.METER);
   /** approx. radius of tire when on gokart is on ground */
-  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, "m*rad^-1");
-  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, "m*rad^-1");
+  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
+  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
   /** front tire half width */
   public Scalar tireHalfWidthFront = Quantity.of(0.065, SI.METER);
   public Scalar tireHalfWidthContactFront = Quantity.of(0.045, SI.METER);
@@ -77,10 +79,10 @@ public class ChassisGeometry implements Serializable {
   }
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
-   * 
+   * inverse function of {@link TurningGeometry}
    * @param ratio without unit */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
-    return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(ratio)), "rad");
+    return Quantity.of(ArcTan.of(xAxleDistanceMeter().multiply(ratio)), SIDerived.RADIAN);
   }
 
   /** @param rimoGetEvent

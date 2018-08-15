@@ -42,11 +42,16 @@ public class SteerConfig implements Serializable {
    * but this choice put unnecessary stress on the hardware.
    * 
    * 20180517 the */
+  // TODO JPH value of columnMax does not correspond to the aboe comment
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
+  /** max turning rate per meter
+   * 
+   * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf */
+  public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
 
   /***************************************************/
   /** @return voltage operating range of battery */

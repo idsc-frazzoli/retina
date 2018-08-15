@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-// TODO JAN contains a lot of redundancy
+// TODO JPH contains a lot of redundancy
 public final class ConstantAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
   public static final int INTERVAL_DEFAULT_US = 1_000;
