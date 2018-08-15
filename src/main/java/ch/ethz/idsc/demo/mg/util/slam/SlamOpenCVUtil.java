@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.util.slam;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-/** provides methods to convert to and from mat objects */
+/** provides methods to convert from mat objects */
 // TODO put restrictions on input type
 public enum SlamOpenCVUtil {
   ;

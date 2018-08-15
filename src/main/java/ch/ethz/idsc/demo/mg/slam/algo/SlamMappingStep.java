@@ -5,7 +5,6 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.slam.SlamMapUtil;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
@@ -57,11 +56,11 @@ import ch.ethz.idsc.tensor.Tensor;
   public void mappingStep(SlamParticle[] slamParticles, Tensor gokartPose, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance) {
       if (!localizationMode)
-        SlamMapUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
+        SlamMappingStepUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
     }
     if (reactiveMappingMode) {
       if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
-        SlamMapUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
+        SlamMappingStepUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
         lastReactiveUpdateTimeStamp = currentTimeStamp;
       }
     }
@@ -80,7 +79,7 @@ import ch.ethz.idsc.tensor.Tensor;
     if (localizationMode)
       System.out.println("FATAL: when mapping with lidar pose, localization mode should be false");
     if (eventGokartFrame[0] < lookAheadDistance)
-      SlamMapUtil.updateOccurrenceMapLidar(gokartPose, eventMaps[0], eventGokartFrame);
+      SlamMappingStepUtil.updateOccurrenceMapLidar(gokartPose, eventMaps[0], eventGokartFrame);
   }
 
   public MapProvider getMap(int mapID) {

@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.slam.SlamParticleUtil;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -48,22 +47,29 @@ import ch.ethz.idsc.tensor.Tensor;
     lastPropagationTimeStamp = initTimeStamp;
   }
 
+  /** propagates the state of the particles and updates their likelihoods
+   * 
+   * @param slamParticles
+   * @param map occurrence map used for localization
+   * @param odometryVel {[m/s],[m/s],[-]} provided by odometry
+   * @param eventGokartFrame event position in gokart frame interpreted as [m]
+   * @param currentTimeStamp interpreted as [s] */
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
     if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
       double dT = currentTimeStamp - lastPropagationTimeStamp;
       if (odometryStatePropagation)
-        SlamParticleUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
+        SlamLocalizationStepUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
       else
-        SlamParticleUtil.propagateStateEstimate(slamParticles, dT);
+        SlamLocalizationStepUtil.propagateStateEstimate(slamParticles, dT);
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
       double dT = currentTimeStamp - lastResampleTimeStamp;
-      SlamParticleUtil.resampleParticles(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
+      SlamLocalizationStepUtil.resampleParticles(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
       lastResampleTimeStamp = currentTimeStamp;
     }
     if (eventGokartFrame[0] < lookAheadDistance)
-      SlamParticleUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
+      SlamLocalizationStepUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
     // ---
     slamEstimatedPose.setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamParticles, 1));
   }

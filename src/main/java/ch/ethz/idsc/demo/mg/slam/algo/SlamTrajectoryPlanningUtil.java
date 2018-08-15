@@ -33,7 +33,7 @@ enum SlamTrajectoryPlanningUtil {
     return gokartWayPoints;
   }
 
-  /** sets visibility field of waypoints
+  /** sets visibility field of way points
    * 
    * @param gokartWayPoints
    * @param visibleBoxXMin [m] in go kart frame
@@ -50,10 +50,9 @@ enum SlamTrajectoryPlanningUtil {
     }
   }
 
-  /** finds visible waypoint that is furthest away
+  /** finds visible way point that is farthest away
    * 
-   * @param visibleGokartWayPoints
-   * @param purePursuitIndex index of element in visibleGokartWayPoints that is furthest away */
+   * @param visibleGokartWayPoints */
   // TODO function not used
   public static int choosePurePursuitPoint(List<WayPoint> visibleGokartWayPoints) {
     // TODO filter criteria also should consider corridor of steering:
@@ -69,5 +68,5 @@ enum SlamTrajectoryPlanningUtil {
     }
     return purePursuitIndex;
   }
-  // idea: attention module that guesses position of next waypoint
+  // idea: attention module that guesses position of next way point
 }

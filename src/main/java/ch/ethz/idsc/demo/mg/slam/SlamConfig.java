@@ -58,11 +58,11 @@ public class SlamConfig {
   /** [m] y 'height' of map */
   public final Scalar _dimY = Quantity.of(35, SI.METER);
 
-  public final int frameWidth() {
+  public final int mapWidth() {
     return Magnitude.ONE.toInt(_dimX.divide(_cellDim));
   }
 
-  public final int frameHeight() {
+  public final int mapHeight() {
     return Magnitude.ONE.toInt(_dimY.divide(_cellDim));
   }
 
@@ -76,6 +76,7 @@ public class SlamConfig {
 
   // SLAM visualization parameters
   public final Boolean saveSlamFrame = false;
+  public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   // SlamViewer
   public final Scalar _savingInterval = Quantity.of(0.2, SI.SECOND); // [s]
   public final Scalar _visualizationInterval = Quantity.of(0.2, SI.SECOND); // [s]
@@ -90,7 +91,7 @@ public class SlamConfig {
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters
   public final Scalar _initialDelay = Quantity.of(0.5, SI.SECOND); // [s] initial delay before waypoints are extracted
-  public final Scalar visibleBoxXMin = RealScalar.of(2); // [s] in go kart frame
+  public final Scalar visibleBoxXMin = RealScalar.of(0); // [s] in go kart frame
   public final Scalar visibleBoxXMax = RealScalar.of(10); // [m] in go kart frame
   public final Scalar visibleBoxHalfWidth = RealScalar.of(5); // [m]
 }

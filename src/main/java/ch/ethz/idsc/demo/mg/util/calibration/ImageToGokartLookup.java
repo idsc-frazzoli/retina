@@ -5,16 +5,11 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** precomputes the TransformUtil for integer values of x, y */
-// TODO how to proceed for float values of x,y? maybe interpolate
+/** lookup table for {@link ImageToGokartUtil} */
+// TODO implement interpolation to handle floating input values
 public class ImageToGokartLookup implements ImageToGokartInterface {
-  /** @param inputTensor of length 6 where first 3 rows have length 3, the last 3 rows have length 2
-   * @param unitConversion for example 1000
-   * @param width for instance 240
-   * @param height for instance 180
-   * @return */
   public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
-    ImageToGokartUtil imageToGokartUtil = new ImageToGokartUtil(inputTensor, unitConversion);
+    ImageToGokartUtil imageToGokartUtil = new ImageToGokartUtil(inputTensor, unitConversion, width);
     return new ImageToGokartLookup(imageToGokartUtil, width, height);
   }
 
@@ -35,17 +30,14 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
         lookupArray[++index] = this.transformUtil.imageToGokart(x, y);
   }
 
-  /** @param imagePosX [pixel]
-   * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in go kart reference frame */
+  // from ImageToGokartInterface
   @Override
   public double[] imageToGokart(int imagePosX, int imagePosY) {
     int index = imagePosX + imagePosY * width;
     return lookupArray[index];
   }
 
-  /** @param index of pixel
-   * @return physicalCoordinates [m] in go kart reference frame */
+  // from ImageToGokartInterface
   @Override
   public Tensor imageToGokartTensor(int index) {
     return Tensors.vectorDouble(lookupArray[index]);
