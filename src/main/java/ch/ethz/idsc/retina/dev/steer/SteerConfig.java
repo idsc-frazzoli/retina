@@ -49,7 +49,7 @@ public class SteerConfig implements Serializable {
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
-   * 
+   * the numeric value was determined in an experiment documented in the report below
    * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf */
   public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
 

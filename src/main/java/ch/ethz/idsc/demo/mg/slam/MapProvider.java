@@ -38,12 +38,11 @@ public class MapProvider {
 
   /** divides the provided maps and saves into targMap */
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
-    for (int i = 0; i < targetMap.getNumberOfCells(); i++)
-      if (denominator.getValue(i) == 0) {
-        // do nothing
-      } else {
-        double newValue = numerator.getValue(i) / denominator.getValue(i);
-        targetMap.setValue(i, newValue);
+    // TODO loop can be done in parallel
+    for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
+      if (denominator.getValue(index) != 0) {
+        double newValue = numerator.getValue(index) / denominator.getValue(index);
+        targetMap.setValue(index, newValue);
       }
   }
 
@@ -55,7 +54,7 @@ public class MapProvider {
     }
     int gridPosY = cellIndex / mapWidth;
     int gridPosX = cellIndex - gridPosY * mapWidth;
-    // TODO precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
+    // TODO JPH precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
     return new double[] { //
         cornerXLow + (gridPosX + 0.5) * cellDim, //
         cornerYLow + (gridPosY + 0.5) * cellDim };

@@ -9,20 +9,19 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
 import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
+import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** collection of methods for the localization step of the SLAM algorithm */
 public enum SlamLocalizationStepUtil {
   ;
-  /** max turning rate per meter
-   * 
-   * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf */
-  public static final Scalar TURNING_RATIO_MAX = Quantity.of(0.4082, "rad*m^-1");
+  private static final double TURN_RATE_PER_METER = //
+      Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
+  private static final double LINVEL_MIN = 0; // "m/s"
+  private static final double LINVEL_MAX = 8; // "m/s"
 
   /** updates particle likelihoods by referring to a map
    * 
@@ -33,15 +32,16 @@ public enum SlamLocalizationStepUtil {
   public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
     double sumOfLikelihoods = 0;
     double maxValue = map.getMaxValue();
-    for (int i = 0; i < slamParticles.length; i++) {
-      Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
-      double updatedParticleLikelihood = slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
-      slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
+    for (int index = 0; index < slamParticles.length; ++index) {
+      Tensor worldCoord = slamParticles[index].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
+      double updatedParticleLikelihood = //
+          slamParticles[index].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
+      slamParticles[index].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
     }
-    // normalize particle likelihoods
-    for (int i = 0; i < slamParticles.length; i++)
-      slamParticles[i].setParticleLikelihood(slamParticles[i].getParticleLikelihood() / sumOfLikelihoods);
+    // normalize particle likelihoods to sum up to 1
+    for (int index = 0; index < slamParticles.length; ++index)
+      slamParticles[index].setParticleLikelihood(slamParticles[index].getParticleLikelihood() / sumOfLikelihoods);
   }
 
   /** propagate the particles' state estimates with their estimated velocity
@@ -49,8 +49,8 @@ public enum SlamLocalizationStepUtil {
    * @param slamParticles
    * @param dT [s] */
   public static void propagateStateEstimate(SlamParticle[] slamParticles, double dT) {
-    for (int i = 0; i < slamParticles.length; i++)
-      slamParticles[i].propagateStateEstimate(dT);
+    for (int index = 0; index < slamParticles.length; ++index)
+      slamParticles[index].propagateStateEstimate(dT);
   }
 
   /** propagate the particles' state estimates with the velocity provided by odometry
@@ -69,6 +69,9 @@ public enum SlamLocalizationStepUtil {
    * @param dT interpreted as [s]
    * @param rougheningLinVelStd [m/s] particle roughening parameter
    * @param rougheningAngVelStd [rad/s] particle roughening parameter */
+  // TODO MG documentation above "[m/s]" and variable names "vel" not consistent with ...
+  // ... method calling in SlamLocalizationStep ...
+  // ... where parameters are called rougheningLinAccelStd etc. (accel vs. vel!).
   public static void resampleParticles(SlamParticle[] slamParticles, double dT, double rougheningLinVelStd, double rougheningAngVelStd) {
     // SlamParticleUtil.multinomialSampling(slamParticles);
     SlamLocalizationStepUtil.neglectLowLikelihoods(slamParticles);
@@ -85,14 +88,12 @@ public enum SlamLocalizationStepUtil {
    * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
   public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
     double initLikelihood = 1.0 / slamParticles.length;
-    for (int i = 0; i < slamParticles.length; i++) {
-      // TODO magic constants 0 and 8. 8 is maximum velocity [m*s^-1]
-      double linVel = SlamRandomUtil.getTruncatedGaussian(linVelAvg, linVelStd, 0, 8);
-      double turnRatePerMeter = Magnitude.PER_METER.toDouble(TURNING_RATIO_MAX);
-      double maxAngVel = turnRatePerMeter * linVel;
+    for (int index = 0; index < slamParticles.length; ++index) {
+      double linVel = SlamRandomUtil.getTruncatedGaussian(linVelAvg, linVelStd, LINVEL_MIN, LINVEL_MAX);
+      double maxAngVel = TURN_RATE_PER_METER * linVel;
       double minAngVel = -maxAngVel;
       double angVel = SlamRandomUtil.getTruncatedGaussian(0, angVelStd, minAngVel, maxAngVel);
-      slamParticles[i].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
+      slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
     }
   }
 
@@ -122,19 +123,19 @@ public enum SlamLocalizationStepUtil {
   /** standard multinominal resampling method
    * 
    * @param slamParticles */
+  @SuppressWarnings("unused")
   private static void multinomialResampling(SlamParticle[] slamParticles) {
     int numbOfPart = slamParticles.length;
     // assigned particle numbers start at zero
     int[] assignedPart = new int[slamParticles.length];
     // generate array with cumulative particle probabilities
     double[] particleCDF = new double[numbOfPart];
-    for (int i = 1; i < numbOfPart; i++) {
+    for (int i = 1; i < numbOfPart; i++)
       particleCDF[i] = particleCDF[i - 1] + slamParticles[i].getParticleLikelihood();
-    }
     // draw as many random numbers as particles and find corresponding CDF number
     double[] randomNumbers = new double[numbOfPart];
     SlamRandomUtil.setUniformRVArray(randomNumbers);
-    for (int i = 0; i < numbOfPart; i++) {
+    for (int i = 0; i < numbOfPart; i++)
       for (int j = 1; j < numbOfPart; j++) {
         if (randomNumbers[i] <= particleCDF[j]) {
           assignedPart[i] = j - 1;
@@ -142,30 +143,26 @@ public enum SlamLocalizationStepUtil {
         }
         assignedPart[i] = numbOfPart - 1;
       }
-    }
     // set state once assignedPart array is determined
     double initLikelihood = (double) 1 / slamParticles.length;
-    for (int i = 0; i < slamParticles.length; i++) {
+    for (int i = 0; i < slamParticles.length; i++)
       slamParticles[i].setStateFromParticle(slamParticles[assignedPart[i]], initLikelihood);
-    }
   }
 
   /** non-standard resampling method
    * 
    * @param slamParticles */
   private static void neglectLowLikelihoods(SlamParticle[] slamParticles) {
-    double initLikelihood = (double) 1 / slamParticles.length;
+    final double initLikelihood = 1.0 / slamParticles.length;
     // sort by likelihood
     Arrays.parallelSort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
-    int startIndex = slamParticles.length / 2;
+    final int middle = slamParticles.length / 2;
     // duplicate half of particles with highest likelihood
-    for (int i = startIndex; i < slamParticles.length; i++) {
-      slamParticles[i].setStateFromParticle(slamParticles[i - startIndex], initLikelihood);
-    }
+    for (int index = middle; index < slamParticles.length; index++)
+      slamParticles[index].setStateFromParticle(slamParticles[index - middle], initLikelihood);
     // reset likelihoods of remaining particles
-    for (int i = 0; i < startIndex; i++) {
-      slamParticles[i].setParticleLikelihood(initLikelihood);
-    }
+    for (int index = 0; index < middle; ++index)
+      slamParticles[index].setParticleLikelihood(initLikelihood);
   }
 
   /** disturbs the particle states with trunctuated Gaussian noise
@@ -183,29 +180,21 @@ public enum SlamLocalizationStepUtil {
     }
   }
 
-  /** disturbs the linVel state with Gaussian noise while not violating the linear acceleration limits of the vehicle
+  /** disturbs the linVel state with Gaussian noise while not violating
+   * the linear acceleration limits of the vehicle
+   * 
+   * function uses hard-coded acceleration and velocity limits
    * 
    * @param oldLinVel current linVel state
    * @param linVelRougheningStd interpreted as [m/s] standard deviation of additive Gaussian noise
    * @param dT interpreted as [s]
    * @return updated disturbed linVel */
-  // TODO MG hard-coded acceleration and velocity limits
   private static double limitLinAccel(double oldLinVel, double linVelRougheningStd, double dT) {
-    double maxAccel = 2.5;
-    double minAccel = -2.5;
-    double minVel = 0;
-    double maxVel = 8;
+    double maxAccel = 2.5; // TODO MG declare above like LINVEL_MAX etc.
+    double minAccel = -2.5; // ... here also
     double linAccel = SlamRandomUtil.getTruncatedGaussian(0, linVelRougheningStd, minAccel, maxAccel);
     double newLinVel = oldLinVel + linAccel * dT;
-    if (newLinVel < minVel) {
-      newLinVel = minVel;
-      return newLinVel;
-    }
-    if (newLinVel > maxVel) {
-      newLinVel = maxVel;
-      return newLinVel;
-    }
-    return newLinVel;
+    return Math.min(Math.max(LINVEL_MIN, newLinVel), LINVEL_MAX);
   }
 
   /** disturbs the angVel state with Gaussian noise while not violating the angular acceleration limits of the vehicle
@@ -219,7 +208,7 @@ public enum SlamLocalizationStepUtil {
   private static double limitAngAccel(double oldAngVel, double oldLinVel, double angVelRougheningStd, double dT) {
     double minAccel = -6;
     double maxAccel = 6;
-    double minVel = -TURNING_RATIO_MAX.number().doubleValue() * oldLinVel;
+    double minVel = -TURN_RATE_PER_METER * oldLinVel;
     double maxVel = -minVel;
     double angAccel = SlamRandomUtil.getTruncatedGaussian(0, angVelRougheningStd, minAccel, maxAccel);
     double newAngVel = oldAngVel + angAccel * dT;
