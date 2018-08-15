@@ -89,7 +89,7 @@ public class SlamProvider implements DavisDvsListener {
     }
   }
 
-  public GokartPoseInterface getPoseInterface() {
+  public GokartPoseInterface getGokartPoseInterface() {
     return slamLocalizationStep.getSlamEstimatedPose();
   }
 

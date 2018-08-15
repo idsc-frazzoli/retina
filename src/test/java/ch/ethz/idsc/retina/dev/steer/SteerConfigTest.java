@@ -31,4 +31,8 @@ public class SteerConfigTest extends TestCase {
     Clip clip = SteerConfig.GLOBAL.getAngleLimit();
     assertEquals(clip.min(), clip.max().negate());
   }
+
+  public void testConversion() {
+    // TODO JPH
+  }
 }

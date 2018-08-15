@@ -21,6 +21,12 @@ public class SlamParticle implements GokartPoseInterface {
   private Scalar angVel; // around go kart z axis
   private double particleLikelihood;
 
+  /** initializes particle pose and velocity
+   * 
+   * @param initPose {[m],[m],[-]} initial pose with units
+   * @param initLinVel interpreted as [m/s]
+   * @param initAngVel interpreted as [rad/s]
+   * @param initParticleLikelihood [-] */
   public void initialize(Tensor initPose, Scalar initLinVel, Scalar initAngVel, double initParticleLikelihood) {
     setPose(initPose);
     linVel = initLinVel;
@@ -91,7 +97,7 @@ public class SlamParticle implements GokartPoseInterface {
     return geometricLayer;
   }
 
-  /** for mapping with lidar pose
+  /** sets pose when input argument is not unitless
    * 
    * @param pose {x[m], y[m], heading[]} */
   public void setPose(Tensor pose) {

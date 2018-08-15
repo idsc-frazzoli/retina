@@ -3,18 +3,18 @@ package ch.ethz.idsc.demo.mg.util.slam;
 
 import java.util.Random;
 
-/** methods to ease handling with random things in SLAM algorithm */
+/** methods to ease handling with random variables in SLAM algorithm */
 public enum SlamRandomUtil {
   ;
   private static final Random RANDOM = new Random();
 
-  /** truncated Gaussian distribution obtained with rejection sampling
+  /** truncated Gaussian distribution obtained with rejection sampling. Returned random values will lie
+   * between lowerBound and upperBound
    * 
    * @param mean
    * @param standardDeviation
    * @param lowerBound
-   * @param upperBound
-   * @return */
+   * @param upperBound */
   public static double getTruncatedGaussian(double mean, double standardDeviation, double lowerBound, double upperBound) {
     while (true) {
       double trunctatedGaussian = getGaussian(mean, standardDeviation);
@@ -34,8 +34,7 @@ public enum SlamRandomUtil {
   /** Gaussian distributed random variable with given mean and standard deviation
    * 
    * @param mean
-   * @param standardDeviation
-   * @return */
+   * @param standardDeviation */
   private static double getGaussian(double mean, double standardDeviation) {
     return RANDOM.nextGaussian() * standardDeviation + mean;
   }
