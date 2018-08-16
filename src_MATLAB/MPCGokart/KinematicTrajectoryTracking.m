@@ -25,7 +25,7 @@ BEGIN_ACADO;
     %Q(7,7)=1;
     r = zeros(1,7);
     
-    ocp = acado.OCP(0.0, 10.0, 15);
+    ocp = acado.OCP(0.0, 15.0, 15);
     ocp.minimizeLSQ( Q, h, r );
     
     ocp.subjectTo( f );
@@ -69,9 +69,9 @@ BEGIN_ACADO;
     
     
     % SETTING UP THE SIMULATION ENVIRONMENT,  RUN THE EXAMPLE..
-    sim = acado.SimulationEnvironment( 0.0,100.0,process,controller );
+    sim = acado.SimulationEnvironment( 0.0,30.0,process,controller );
     
-    r = [5,0,0,0,0];
+    r = [5,1,0,3,0];
     sim.init( r );
 
 

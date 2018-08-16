@@ -12,7 +12,8 @@ function [ x] = fullmodelsimulator( x0, u, times, carParams)
 %  CALLER OF THIS FUNCTION MUST CLEAR THE PERSISTENT VARIABLES WITHIN 
 %   THE FUNCTION BETWEEN TWO CALLS (command: clear rollout)
 
-% by mheim: new interpretation of state
+% by mheim: new interpretation of state:
+% u(1)
 
 
 global params;
@@ -169,18 +170,19 @@ end
 [torques] = motorTorques(u);
 
 rollFric = params.m*params.g*params.muRoll;
-du = 1/params.m*(deadZone(sum(FORCES(1:4)) + params.m*x(3)*x(2), -rollFric, rollFric)  - coulombFriction(x(1)));
-dv = 1/params.m*(deadZone(sum(FORCES(5:8)) - params.m*x(1)*x(3), -rollFric, rollFric) -  0*coulombFriction(x(2)));
+du = 1/params.m*((sum(FORCES(1:4)) + params.m*x(3)*x(2))  - coulombFriction(x(1)));
+dv = 1/params.m*((sum(FORCES(5:8)) - params.m*x(1)*x(3)) -  coulombFriction(x(2)));
 dr = 1/params.Iz * (params.lF*(sum(FORCES(5:6))) - params.lR*(sum(FORCES(7:8))) + params.lw * (FORCES(2) + FORCES(4) - FORCES(1) - FORCES(3)));
 dKsi = x(3);
 dx = x(1) * cos(x(4)) - x(2) * sin(x(4));
 dy = x(1) * sin(x(4)) + x(2) * cos(x(4));
-dw1L = 1/params.Iw * (torques(1) + brakeTorques(1) - forces(1)*params.R);
-dw1R = 1/params.Iw * (torques(2) + brakeTorques(2) - forces(2)*params.R);
+%dw1L = 1/params.Iw * (torques(1) + brakeTorques(1) - forces(1)*params.R);
+%dw1R = 1/params.Iw * (torques(2) + brakeTorques(2) - forces(2)*params.R);
 dw2L = 1/params.Iw * (torques(3) + brakeTorques(3) - forces(3)*params.R);
 dw2R = 1/params.Iw * (torques(4) + brakeTorques(4) - forces(4)*params.R);
-
-dX = [du dv dr dKsi dx dy dw1L dw1R dw2L dw2R]';
+dlx
+dly
+dX = [du dv dr dKsi dx dy dw2L dw2R]';
 
 uPrev = u;
 end
