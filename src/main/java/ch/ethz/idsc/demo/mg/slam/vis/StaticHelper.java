@@ -128,6 +128,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * 
    * @param processedMat mat object containing e.g. labels of feature extraction
    * @param bytes representing frame content */
+  @SuppressWarnings("unused")
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++) {

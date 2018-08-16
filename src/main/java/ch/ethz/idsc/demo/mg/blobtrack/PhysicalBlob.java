@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack;
 
 // provides blob object in physical space
 public class PhysicalBlob {
@@ -9,7 +9,7 @@ public class PhysicalBlob {
   private final int blobID; // default blobID == 0
   private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
 
-  PhysicalBlob(double[] pos, int blobID) {
+  public PhysicalBlob(double[] pos, int blobID) {
     this.pos = pos;
     this.blobID = blobID;
     vel = new double[] { 0, 0 };

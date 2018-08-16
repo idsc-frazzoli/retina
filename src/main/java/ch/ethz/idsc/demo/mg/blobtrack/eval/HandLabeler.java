@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -29,8 +29,8 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
@@ -152,7 +152,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     }
   };
 
-  public HandLabeler(PipelineConfig pipelineConfig) {
+  public HandLabeler(BlobTrackConfig pipelineConfig) {
     // set parameters
     imagePrefix = pipelineConfig.davisConfig.logFilename();
     numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
@@ -220,7 +220,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
   // standalone application
   public static void main(String[] args) {
-    PipelineConfig pipelineConfig = new PipelineConfig();
+    BlobTrackConfig pipelineConfig = new BlobTrackConfig();
     HandLabeler handlabeler = new HandLabeler(pipelineConfig);
   }
 }

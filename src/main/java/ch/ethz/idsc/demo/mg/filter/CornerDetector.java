@@ -1,13 +1,14 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.filter;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** based on paper "Fast event-based corner detection".
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
- * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf */
-class CornerDetector implements FilteringPipeline {
+ * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf
+ * Event is always filtered if closer than {@link margin} to the boarder */
+class CornerDetector implements FilterInterface {
   /** hard coded circle parameters for corner detector */
   private static final int[][] CIRCLE3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //
@@ -23,7 +24,7 @@ class CornerDetector implements FilteringPipeline {
   private final int width;
   private final int height;
   private final int margin;
-  /** surface of active events for each polarity */
+  /** surface of active events for both polarities */
   private final int[][][] SAE;
   // ---
   private double eventCount;
@@ -36,8 +37,9 @@ class CornerDetector implements FilteringPipeline {
     SAE = new int[width][height][2];
   }
 
+  // from FilterInterface
   @Override
-  public boolean filterPipeline(DavisDvsEvent davisDvsEvent) {
+  public boolean filter(DavisDvsEvent davisDvsEvent) {
     ++eventCount;
     if (cornerDetector(davisDvsEvent))
       return true;
@@ -100,7 +102,7 @@ class CornerDetector implements FilteringPipeline {
     return false;
   }
 
-  /** returns the percentage of events that are filtered out */
+  // from FilterInterface
   @Override
   public double getFilteredPercentage() {
     return 100 * filteredEventCount / eventCount;

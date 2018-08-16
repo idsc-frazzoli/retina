@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -10,21 +10,23 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.mg.eval.EvaluationFileLocations;
-import ch.ethz.idsc.demo.mg.gui.PipelineVisualization;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
+import ch.ethz.idsc.demo.mg.blobtrack.eval.EvaluationFileLocations;
+import ch.ethz.idsc.demo.mg.blobtrack.vis.BlobTrackViewer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 // provides a pipeline "wrapper" for analyzing logfiles with visualization
 // TODO visualization is not yet cleanly separated from PipelineProvider
-class OfflinePipelineWrap implements OfflineLogListener {
+class OfflineBlobTrackWrap implements OfflineLogListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final PipelineProvider pipelineProvider;
+  private final BlobTrackProvider pipelineProvider;
   // visualization
   // private final boolean visualizePipeline;
   private final int visualizationInterval;
-  private final PipelineVisualization visualizer;
+  private final BlobTrackViewer visualizer;
   private int lastImagingTimestamp;
   private final boolean calibrationAvailable;
   // image saving
@@ -39,11 +41,11 @@ class OfflinePipelineWrap implements OfflineLogListener {
   private int firstTimestamp, lastTimestamp;
   private long startTime, endTime;
 
-  OfflinePipelineWrap(PipelineConfig pipelineConfig) {
-    pipelineProvider = new PipelineProvider(pipelineConfig);
+  OfflineBlobTrackWrap(BlobTrackConfig pipelineConfig) {
+    pipelineProvider = new BlobTrackProvider(pipelineConfig);
     davisDvsDatagramDecoder.addDvsListener(pipelineProvider);
     visualizationInterval = pipelineConfig.visualizationInterval.number().intValue();
-    visualizer = pipelineConfig.visualizePipeline ? new PipelineVisualization() : null;
+    visualizer = pipelineConfig.visualizePipeline ? new BlobTrackViewer() : null;
     saveImagesConfig = pipelineConfig.saveImagesConfig.number().intValue();
     imagePrefix = pipelineConfig.davisConfig.logFilename();
     if (saveImagesConfig == 1) {
@@ -89,7 +91,7 @@ class OfflinePipelineWrap implements OfflineLogListener {
     int diff = lastTimestamp - firstTimestamp;
     long elapsedTime = endTime - startTime;
     System.out.println("Computation time: " + elapsedTime + "[ms]");
-    System.out.format("%.2f%% of the events were processed after filtering.\n", pipelineProvider.getEventFiltering().getFilteredPercentage());
+    System.out.format("%.2f%% of the events were processed after filtering.\n", pipelineProvider.getFilterInterface().getFilteredPercentage());
   }
 
   // for image saving
@@ -117,13 +119,14 @@ class OfflinePipelineWrap implements OfflineLogListener {
   }
 
   // for visualization
+  // TODO MG move into vis package
   private BufferedImage[] constructFrames() {
     BufferedImage[] combinedFrames = new BufferedImage[6];
     combinedFrames[0] = pipelineProvider.getEventFrames()[0].getAccumulatedEvents();
     combinedFrames[1] = pipelineProvider.getEventFrames()[1].overlayActiveBlobs(pipelineProvider.getBlobSelector().getProcessedBlobs(), Color.GREEN, Color.RED);
     combinedFrames[2] = pipelineProvider.getEventFrames()[2].overlayHiddenBlobs(pipelineProvider.getBlobTracking().getHiddenBlobs(), Color.GRAY);
     if (calibrationAvailable) {
-      combinedFrames[3] = pipelineProvider.getPhysicalFrames()[0].overlayPhysicalBlobs((pipelineProvider.getProcessedblobs()));
+      combinedFrames[3] = pipelineProvider.getPhysicalFrames()[0].overlayPhysicalBlobs((pipelineProvider.getPhysicalblobs()));
       // currently unused
       combinedFrames[4] = pipelineProvider.getPhysicalFrames()[1].getFrame();
       combinedFrames[5] = pipelineProvider.getPhysicalFrames()[2].getFrame();

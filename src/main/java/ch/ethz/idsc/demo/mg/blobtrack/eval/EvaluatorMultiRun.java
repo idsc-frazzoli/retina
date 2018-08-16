@@ -1,22 +1,22 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 
 /** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
  * estimated run. */
 /* package */ class EvaluatorMultiRun {
-  private final PipelineConfig pipelineConfig;
+  private final BlobTrackConfig pipelineConfig;
   private final String evaluationResultFileName;
   private final File evaluationResultFile;
   private final List<double[]> collectedResults;
   private final int iterationLength;
 
-  EvaluatorMultiRun(PipelineConfig pipelineConfig) {
+  EvaluatorMultiRun(BlobTrackConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
     evaluationResultFileName = pipelineConfig.evaluationResultFileName.toString();
     evaluationResultFile = EvaluationFileLocations.evalResults(evaluationResultFileName);
@@ -53,7 +53,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
 
   // standalone application
   public static void main(String[] args) {
-    PipelineConfig pipelineConfig = new PipelineConfig();
+    BlobTrackConfig pipelineConfig = new BlobTrackConfig();
     EvaluatorMultiRun test = new EvaluatorMultiRun(pipelineConfig);
     test.multiRun();
     test.summarizeResults();

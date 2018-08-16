@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack;
 
 import java.io.Serializable;
 

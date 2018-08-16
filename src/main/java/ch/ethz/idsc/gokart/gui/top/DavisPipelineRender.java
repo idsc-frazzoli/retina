@@ -9,10 +9,10 @@ import java.util.List;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.gui.AccumulatedFeaturePoints;
-import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineProvider;
+import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
+import ch.ethz.idsc.demo.mg.blobtrack.vis.AccumulatedFeaturePoints;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.img.ColorDataLists;
 // TODO depending on future development, maybe move drawing fct to VisualizationUtil
 public class DavisPipelineRender extends AbstractGokartRender implements ActionListener {
   private AccumulatedFeaturePoints accumulatedFeaturePoints;
-  public final PipelineProvider pipelineProvider = new PipelineProvider(new PipelineConfig());
+  public final BlobTrackProvider pipelineProvider = new BlobTrackProvider(new BlobTrackConfig());
   final ColorDataIndexed colorDataIndexed = ColorDataLists._250.cyclic();
   final JToggleButton jToggleButton = new JToggleButton("pipeline");
   private boolean isSelected = false;
@@ -42,7 +42,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     if (!isSelected)
       return;
     // visualize detected features
-    List<PhysicalBlob> features = pipelineProvider.getProcessedblobs();
+    List<PhysicalBlob> features = pipelineProvider.getPhysicalblobs();
     features.forEach(blob -> accumulateBlobs(geometricLayer, graphics, blob));
     for (int i = 0; i < accumulatedFeaturePoints.getAccumulatedPoints().size(); i++) {
       int blobID = accumulatedFeaturePoints.getBlobIDList().get(i);

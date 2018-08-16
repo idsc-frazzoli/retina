@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.gui;
+package ch.ethz.idsc.demo.mg.blobtrack.vis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,8 +10,8 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.demo.mg.pipeline.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
 /** provides a BufferedImage to visualize a list of PhysialBlob objects */
@@ -32,14 +32,14 @@ public class PhysicalBlobFrame {
   private final int[] originPos; // [pixel] image plane location of physical world origin
   private final Path2D trapezoid; // describes the field of view in physical space
 
-  public PhysicalBlobFrame(PipelineConfig pipelineConfig) {
+  public PhysicalBlobFrame(BlobTrackConfig pipelineConfig) {
     frameWidth = pipelineConfig.frameWidth.number().intValue();
     frameHeight = pipelineConfig.frameHeight.number().intValue();
     bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
-    transformUtil = pipelineConfig.createImageToGokartUtil();
+    transformUtil = pipelineConfig.davisConfig.createImageToGokartUtil();
     scaleFactor = pipelineConfig.scaleFactor.number().doubleValue();
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();

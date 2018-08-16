@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
@@ -31,7 +31,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
   private float averagePrecision;
   private int currentLabelInstant = 0;
 
-  EvaluatorSingleRun(PipelineConfig pipelineConfig) {
+  EvaluatorSingleRun(BlobTrackConfig pipelineConfig) {
     logFileName = pipelineConfig.davisConfig.logFilename();
     numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
     evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
@@ -87,6 +87,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     return bufferedImage;
   }
 
+  // TODO mg replace with saveFrame method in VisGeneralUtil
   private void saveImage(BufferedImage bufferedImage) {
     String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
     try {
@@ -110,7 +111,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
   // standalone application
   public static void main(String[] args) {
-    PipelineConfig pipelineConfig = new PipelineConfig();
+    BlobTrackConfig pipelineConfig = new BlobTrackConfig();
     EvaluatorSingleRun test = new EvaluatorSingleRun(pipelineConfig);
     test.runEvaluation();
   }

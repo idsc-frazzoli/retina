@@ -1,10 +1,12 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack.algo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
 /** Transformation of ImageBlobs to PhysicalBlobs.
@@ -16,8 +18,8 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
   private final ImageToGokartUtil imageToWorldUtil;
 
-  public BlobTransform(PipelineConfig pipelineConfig) {
-    imageToWorldUtil = pipelineConfig.createImageToGokartUtil();
+  public BlobTransform(BlobTrackConfig pipelineConfig) {
+    imageToWorldUtil = pipelineConfig.davisConfig.createImageToGokartUtil();
   }
 
   public void transformSelectedBlobs(List<ImageBlob> imageBlobs) {

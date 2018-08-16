@@ -10,7 +10,7 @@ import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** module receives a set of way points in world frame and outputs a trajectory */
-class SlamTrajectoryPlanning implements Runnable {
+/* package */ class SlamTrajectoryPlanning implements Runnable {
   private final SlamEstimatedPose estimatedPose;
   private final double initialDelay;
   private final double trajectoryUpdateRate;

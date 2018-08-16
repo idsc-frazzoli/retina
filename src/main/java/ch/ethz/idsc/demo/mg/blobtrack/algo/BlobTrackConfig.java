@@ -1,24 +1,18 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack.algo;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
-import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageLookup;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
-// TODO probably split into file for pipeline and file for slam
-public class PipelineConfig {
+public class BlobTrackConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig();
   // visualization and image saving
   public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
   public final Scalar savingInterval = RealScalar.of(200); // [ms]
-  //
   /***************************************************/
   // feature tracking algorithm parameters
   // feature tracking
@@ -70,38 +64,6 @@ public class PipelineConfig {
   public final Scalar originPosY = RealScalar.of(400); // [pixel]
   public final Scalar objectSize = RealScalar.of(30); // [pixel]
   public final Scalar gokartSize = RealScalar.of(35); // [pixel]
-  //
-  /***************************************************/
-  // SLAM algorithm parameters
-  public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
-  public final Boolean lidarMappingMode = true; // pose provided by lidar instead of particle filter
-  public final Boolean saveSlamMap = false;
-  public final Scalar alpha = RealScalar.of(0.99); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(40);
-  public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(9); // [m] events further away are neglected
-  public final Scalar normalizationUpdateRate = RealScalar.of(0.025); // [s]
-  public final Scalar linVelAvg = RealScalar.of(4); // [m] for initial particle distribution
-  public final Scalar linVelStd = RealScalar.of(1); // [m/s] for initial particle distribution
-  public final Scalar angVelStd = RealScalar.of(0.2); // [rad/s] for initial particle distribution
-  // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(0.06); // [m] single cell dimension
-  public final Scalar dimX = RealScalar.of(30); // [m] x 'width' of map
-  public final Scalar dimY = RealScalar.of(30); // [m] y 'height' of map
-  public final Tensor corner = Tensors.vector(35, 35); // [m] coordinates of lower left point in map
-  // SLAM visualization parameters
-  public final Boolean saveSlamFrame = false;
-  public final Scalar kartSize = RealScalar.of(1.5); // [m]
-
-  /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
-  public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, davisConfig.width);
-  }
-
-  /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
-  public GokartToImageLookup createGokartToImageLookup() {
-    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance, davisConfig.width);
-  }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */
   public ImageBlobSelector createImageBlobSelector() {

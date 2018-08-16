@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;

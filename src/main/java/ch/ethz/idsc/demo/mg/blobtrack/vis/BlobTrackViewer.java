@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.gui;
+package ch.ethz.idsc.demo.mg.blobtrack.vis;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -11,7 +11,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 // provides a visualization of the complete pipeline
-public class PipelineVisualization {
+public class BlobTrackViewer {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[6];
   private final double scaling = 1.5f; // original images are tiny
@@ -29,7 +29,7 @@ public class PipelineVisualization {
     }
   };
 
-  public PipelineVisualization() {
+  public BlobTrackViewer() {
     bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);

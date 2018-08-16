@@ -1,10 +1,11 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack;
 
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides blob object for the tracking algorithm.
-class BlobTrackObj {
+public class BlobTrackObj {
   // camera parameters
   private static int width;
   private static int height;
@@ -19,7 +20,7 @@ class BlobTrackObj {
   private int blobID;
 
   // initialize with position and covariance
-  BlobTrackObj(float initialX, float initialY, float initVariance) {
+  public BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
     pos = new float[] { initialX, initialY };
     covariance = new double[][] { { initVariance, 0 }, { 0, initVariance } };
@@ -30,7 +31,7 @@ class BlobTrackObj {
   }
 
   // set static parameters of class
-  public static void setParams(PipelineConfig pipelineConfig) {
+  public static void setParams(BlobTrackConfig pipelineConfig) {
     width = pipelineConfig.davisConfig.width.number().intValue();
     height = pipelineConfig.davisConfig.height.number().intValue();
     defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
@@ -129,9 +130,6 @@ class BlobTrackObj {
 
   // required for merging
   public double getDistanceTo(BlobTrackObj otherBlob) {
-    // double distance = Math
-    // .sqrt((pos[0] - otherBlob.getPos()[0]) * (pos[0] - otherBlob.getPos()[0]) + (pos[1] - otherBlob.getPos()[1]) * (pos[1] - otherBlob.getPos()[1]));
-    // return distance;
     return Math.hypot(pos[0] - otherBlob.getPos()[0], pos[1] - otherBlob.getPos()[1]);
   }
 

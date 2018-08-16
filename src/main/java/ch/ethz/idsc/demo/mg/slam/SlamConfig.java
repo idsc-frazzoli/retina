@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageLookup;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -93,4 +94,10 @@ public class SlamConfig {
   public final Scalar _initialDelay = Quantity.of(0.5, SI.SECOND); // [s] initial delay before waypoints are extracted
   public final Scalar _visibleBoxXMin = Quantity.of(0, SI.METER); // [m] in go kart frame
   public final Scalar _visibleBoxXMax = Quantity.of(10, SI.METER); // [m] in go kart frame
+
+  /** @return new instance of {@link GokartToImageLookup} */
+  public GokartToImageLookup createGokartToImageUtilLookup() {
+    return GokartToImageLookup.fromMatrix(davisConfig.logFileLocations.calibration(), //
+        davisConfig.unitConversion, _cellDim, _lookAheadDistance, davisConfig.width);
+  }
 }

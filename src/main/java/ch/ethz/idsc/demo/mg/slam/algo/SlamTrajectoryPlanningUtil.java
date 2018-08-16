@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
 /** static methods to facilitate map and waypoint processing */
-enum SlamTrajectoryPlanningUtil {
+/* package */ enum SlamTrajectoryPlanningUtil {
   ;
   /** get waypoint objects according to world frame waypoint positions
    * 

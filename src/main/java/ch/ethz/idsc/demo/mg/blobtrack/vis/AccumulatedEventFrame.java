@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.gui;
+package ch.ethz.idsc.demo.mg.blobtrack.vis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,8 +8,8 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
@@ -28,7 +28,7 @@ public class AccumulatedEventFrame {
   private final ImageCopy imageCopy; // for correct visualization
   private final boolean rotateFrame;
 
-  public AccumulatedEventFrame(PipelineConfig pipelineConfig) {
+  public AccumulatedEventFrame(BlobTrackConfig pipelineConfig) {
     width = pipelineConfig.davisConfig.width.number().intValue();
     height = pipelineConfig.davisConfig.height.number().intValue();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);

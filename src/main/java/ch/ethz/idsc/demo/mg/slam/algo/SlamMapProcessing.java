@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
-class SlamMapProcessing implements Runnable {
+/* package */ class SlamMapProcessing implements Runnable {
   private final Mat dilateKernel = //
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
   private final Mat erodeKernel = //

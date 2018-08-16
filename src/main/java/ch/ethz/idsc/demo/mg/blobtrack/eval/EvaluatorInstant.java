@@ -1,10 +1,10 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 
 /* package */ class EvaluatorInstant {
   private final List<ImageBlob> groundTruthInstant;
@@ -19,7 +19,7 @@ import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
   private float recall; // parameter to quantify performance
   private float precision; // parameter to quantify performance
 
-  EvaluatorInstant(PipelineConfig pipelineConfig, List<ImageBlob> groundTruth, List<ImageBlob> estimated) {
+  EvaluatorInstant(BlobTrackConfig pipelineConfig, List<ImageBlob> groundTruth, List<ImageBlob> estimated) {
     groundTruthInstant = groundTruth;
     estimatedInstant = estimated;
     distToClosestEstimate = new float[groundTruthInstant.size()][2];

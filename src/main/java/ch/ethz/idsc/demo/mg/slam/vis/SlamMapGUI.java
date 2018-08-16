@@ -12,7 +12,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** provides a live update of SlamMapFrame */
-public class SlamMapGUI {
+/* package */ class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
   private final double scaling;
@@ -27,7 +27,7 @@ public class SlamMapGUI {
     }
   };
 
-  public SlamMapGUI(SlamConfig slamConfig) {
+  SlamMapGUI(SlamConfig slamConfig) {
     frameWidth = slamConfig.frameWidth.number().intValue();
     int mapWidth = slamConfig.mapWidth();
     int mapHeight = slamConfig.mapHeight();

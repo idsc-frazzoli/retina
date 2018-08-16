@@ -1,16 +1,19 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack.algo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackObj;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
-/* package */ class BlobTracking {
+// TODO MG scope issue
+public class BlobTracking {
   // camera parameters
   private final int width;
   private final int height;
@@ -39,7 +42,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   // testing
   public float hitthreshold = 0;
 
-  BlobTracking(PipelineConfig pipelineConfig) {
+  BlobTracking(BlobTrackConfig pipelineConfig) {
     width = pipelineConfig.davisConfig.width.number().intValue();
     height = pipelineConfig.davisConfig.height.number().intValue();
     initNumberOfBlobs = pipelineConfig.initNumberOfBlobs.number().intValue();

@@ -1,12 +1,12 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.eval;
+package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves
@@ -21,7 +21,7 @@ public class TrackingCollector {
   private final int[] timeStamps; // timestamps for which hand-labeled features are available
   private int currentLabelInstant = 0;
 
-  public TrackingCollector(PipelineConfig pipelineConfig) {
+  public TrackingCollector(BlobTrackConfig pipelineConfig) {
     imagePrefix = pipelineConfig.davisConfig.logFilename();
     numberOfLabelInstants = EvaluationFileLocations.images(imagePrefix).list().length;
     timeStamps = EvalUtil.getTimestampsFromImages(numberOfLabelInstants, imagePrefix);

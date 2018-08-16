@@ -1,44 +1,47 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.pipeline;
+package ch.ethz.idsc.demo.mg.blobtrack.algo;
 
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.eval.TrackingCollector;
-import ch.ethz.idsc.demo.mg.gui.AccumulatedEventFrame;
-import ch.ethz.idsc.demo.mg.gui.PhysicalBlobFrame;
+import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.eval.TrackingCollector;
+import ch.ethz.idsc.demo.mg.blobtrack.vis.AccumulatedEventFrame;
+import ch.ethz.idsc.demo.mg.blobtrack.vis.PhysicalBlobFrame;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
+import ch.ethz.idsc.demo.mg.filter.FilterInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// implements the control pipeline
-public class PipelineProvider implements DavisDvsListener {
+/** implements the object detection and tracking algorithm as described in TODO MG find reference */
+public class BlobTrackProvider implements DavisDvsListener {
   // pipeline modules
-  private final FilteringPipeline filteringPipeline;
-  private final BlobTracking tracking;
+  private final FilterInterface filterInterface;
+  private final BlobTracking blobTracking;
   private final ImageBlobSelector blobSelector;
   private BlobTransform transformer = null; // default initialization if unused
-  private TrackingCollector collector = null;
+  private TrackingCollector trackingCollector = null;
   // visualization
-  private boolean visualizePipeline;
+  private final boolean visualizePipeline;
   private AccumulatedEventFrame[] eventFrames = null;
   private PhysicalBlobFrame[] physicalFrames = null;
   // pipeline configuration
-  private boolean calibrationAvailable;
-  private boolean collectEstimatedFeatures;
+  private final boolean calibrationAvailable;
+  private final boolean collectEstimatedFeatures;
 
-  public PipelineProvider(PipelineConfig pipelineConfig) {
+  public BlobTrackProvider(BlobTrackConfig pipelineConfig) {
     visualizePipeline = pipelineConfig.visualizePipeline;
     calibrationAvailable = pipelineConfig.calibrationAvailable;
     collectEstimatedFeatures = pipelineConfig.collectEstimatedFeatures;
     // initialize pipeline modules
-    filteringPipeline = new BackgroundActivityFilter(pipelineConfig.davisConfig);
-    tracking = new BlobTracking(pipelineConfig);
+    filterInterface = new BackgroundActivityFilter(pipelineConfig.davisConfig);
+    blobTracking = new BlobTracking(pipelineConfig);
     blobSelector = pipelineConfig.createImageBlobSelector();
     // calibration required for transformation to physical space
     if (calibrationAvailable)
       transformer = new BlobTransform(pipelineConfig);
     // optional evaluation
     if (collectEstimatedFeatures)
-      collector = new TrackingCollector(pipelineConfig);
+      trackingCollector = new TrackingCollector(pipelineConfig);
     // optional visualization
     if (visualizePipeline) {
       eventFrames = new AccumulatedEventFrame[3];
@@ -59,14 +62,14 @@ public class PipelineProvider implements DavisDvsListener {
       eventFrames[0].receiveEvent(davisDvsEvent);
     }
     // evaluation tool
-    if (collectEstimatedFeatures && collector.isGroundTruthAvailable(davisDvsEvent)) {
-      collector.setEstimatedFeatures(blobSelector.getSelectedBlobs());
+    if (collectEstimatedFeatures && trackingCollector.isGroundTruthAvailable(davisDvsEvent)) {
+      trackingCollector.setEstimatedFeatures(blobSelector.getSelectedBlobs());
     }
     // filtering returns a boolean
-    if (filteringPipeline.filterPipeline(davisDvsEvent)) {
+    if (filterInterface.filter(davisDvsEvent)) {
       // control pipeline
-      tracking.receiveEvent(davisDvsEvent);
-      blobSelector.receiveActiveBlobs(tracking.getActiveBlobs());
+      blobTracking.receiveEvent(davisDvsEvent);
+      blobSelector.receiveActiveBlobs(blobTracking.getActiveBlobs());
       if (calibrationAvailable) {
         transformer.transformSelectedBlobs(blobSelector.getSelectedBlobs());
       }
@@ -78,7 +81,7 @@ public class PipelineProvider implements DavisDvsListener {
     }
   }
 
-  public List<PhysicalBlob> getProcessedblobs() {
+  public List<PhysicalBlob> getPhysicalblobs() {
     return transformer.getPhysicalBlobs();
   }
 
@@ -91,14 +94,14 @@ public class PipelineProvider implements DavisDvsListener {
   }
 
   public BlobTracking getBlobTracking() {
-    return tracking;
+    return blobTracking;
   }
 
   public ImageBlobSelector getBlobSelector() {
     return blobSelector;
   }
 
-  public FilteringPipeline getEventFiltering() {
-    return filteringPipeline;
+  public FilterInterface getFilterInterface() {
+    return filterInterface;
   }
 }
