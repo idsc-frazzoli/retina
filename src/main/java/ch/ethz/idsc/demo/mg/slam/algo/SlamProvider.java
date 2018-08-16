@@ -5,101 +5,91 @@ import java.util.List;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-import ch.ethz.idsc.demo.mg.pipeline.EventFiltering;
+import ch.ethz.idsc.demo.mg.pipeline.BackgroundActivityFilter;
+import ch.ethz.idsc.demo.mg.pipeline.FilteringPipeline;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** implements the SLAM algorithm
- * "simultaneous localization and mapping for event-based vision systems" */
+/** implementation of the SLAM algorithm
+ * "simultaneous localization and mapping for event-based vision systems"
+ * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+ * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public class SlamProvider implements DavisDvsListener {
-  private final ImageToGokartInterface imageToGokartLookup;
-  private final GokartToImageInterface gokartToImageUtil;
+  private final ImageToGokartInterface imageToGokartInterface;
   private final GokartPoseInterface gokartLidarPose;
-  private final GokartPoseOdometryDemo gokartOdometry;
-  private final EventFiltering eventFiltering;
-  private final SlamParticle[] slamParticles;
+  private final GokartPoseOdometryDemo gokartPoseOdometry;
+  // ---
+  private final FilteringPipeline filteringPipeline;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamWayPoints;
   private final SlamTrajectoryPlanning slamTrajectoryPlanning;
   private final boolean lidarMappingMode;
-  private final int numOfPart;
+  private final SlamParticle[] slamParticles;
+  // ---
   private boolean isInitialized;
   // --
-  public double timeSum;
-  public double eventCount;
-  private double initTimeStamp;
 
-  public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartOdometry, GokartPoseInterface gokartLidarPose) {
-    imageToGokartLookup = slamConfig.davisConfig.createImageToGokartUtilLookup();
-    gokartToImageUtil = slamConfig.davisConfig.createGokartToImageUtil();
+  public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose) {
+    imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
     this.gokartLidarPose = gokartLidarPose;
-    this.gokartOdometry = gokartOdometry;
-    eventFiltering = new EventFiltering(slamConfig.davisConfig);
+    this.gokartPoseOdometry = gokartPoseOdometry;
+    // ---
+    filteringPipeline = new BackgroundActivityFilter(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
     slamWayPoints = new SlamMapProcessing(slamConfig);
     slamTrajectoryPlanning = new SlamTrajectoryPlanning(slamConfig, slamLocalizationStep.getSlamEstimatedPose());
     lidarMappingMode = slamConfig.lidarMappingMode;
-    numOfPart = slamConfig.numberOfParticles.number().intValue();
+    // ---
+    int numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
-    for (int i = 0; i < numOfPart; i++)
-      slamParticles[i] = new SlamParticle();
+    for (int index = 0; index < numOfPart; ++index)
+      slamParticles[index] = new SlamParticle();
   }
 
   public void initialize(Tensor pose, double timeStamp) {
-    gokartOdometry.setPose(pose);
+    gokartPoseOdometry.setPose(pose);
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
     slamWayPoints.initialize(timeStamp);
-    slamTrajectoryPlanning.initialize(timeStamp);
-    initTimeStamp = timeStamp;
+    slamTrajectoryPlanning.initialize(timeStamp); // TODO need to call stop function
     isInitialized = true;
   }
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!isInitialized) {
+      // TODO JPH find other way to trigger initialize
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
-        initialize(gokartLidarPose.getPose(), davisDvsEvent.time / 1000000.0);
+        initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
-      if (eventFiltering.filterPipeline(davisDvsEvent)) {
-        double currentTimeStamp = davisDvsEvent.time / 1000000.0;
-        double[] eventGokartFrame = imageToGokartLookup.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
+      if (filteringPipeline.filterPipeline(davisDvsEvent)) {
+        double currentTimeStamp = davisDvsEvent.time * 1E-6;
+        double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
           slamMappingStep.mappingStepWithLidar(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         } else {
-          Stopwatch stopwatch = Stopwatch.started();
-          slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
+          slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartPoseOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
-          slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
-          slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
-          if (stopwatch.display_seconds() > 0.01)
-            System.out.println(stopwatch.display_seconds());
         }
-        eventCount++;
-        if (currentTimeStamp - initTimeStamp > 10) {
-          System.out.println(eventFiltering.getFilteredPercentage());
-          System.out.println("avg time is " + timeSum / eventCount);
-          initTimeStamp += 10;
-        }
+        slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
+        slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
       }
     }
   }
 
-  public GokartPoseInterface getPoseInterface() {
+  public GokartPoseInterface getGokartPoseInterface() {
     return slamLocalizationStep.getSlamEstimatedPose();
   }
 

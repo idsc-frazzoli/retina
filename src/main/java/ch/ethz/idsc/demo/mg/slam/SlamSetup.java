@@ -2,41 +2,45 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.Scalar;
 
 /** sets up the SLAM algorithm to process an offline log file */
-class SlamSetup {
+/* package */ class SlamSetup {
   private final SlamConfig slamConfig;
   private final String logFileName;
   private final File logFile;
-  private final Long logFileDuration;
+  private final Scalar logFileDuration;
   private final boolean saveSlamMap;
   private final boolean localizationMode;
 
   SlamSetup(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
-    logFileName = slamConfig.davisConfig.logFileName;
+    logFileName = slamConfig.davisConfig.logFilename();
     logFile = slamConfig.davisConfig.getLogFile();
-    logFileDuration = slamConfig.davisConfig.maxDuration.number().longValue() * 1000;
+    logFileDuration = slamConfig.davisConfig.maxDuration;
     saveSlamMap = slamConfig.saveSlamMap;
     localizationMode = slamConfig.localizationMode;
   }
 
   private void runAlgo() {
+    OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
     try {
-      OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
-      BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
+      BoundedOfflineLogPlayer.process( //
+          logFile, //
+          Magnitude.MICRO_SECOND.toLong(logFileDuration), //
+          offlineSlamWrap);
       if (saveSlamMap && !localizationMode) {
         PrimitivesIO.saveToCSV( //
             SlamFileLocations.recordedMaps(logFileName), //
             offlineSlamWrap.getSlamProvider().getMap(0).getMapArray());
         System.out.println("Slam map successfully saved");
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 

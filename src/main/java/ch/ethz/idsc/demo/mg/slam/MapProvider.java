@@ -3,45 +3,46 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** provides a grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
-  private final double dimX;
-  private final double dimY;
+  private final int mapWidth;
+  private final int mapHeight;
   private final double cellDim;
+  private final double cellDimInv;
   private final double[] mapArray;
   private final double cornerXLow;
   private final double cornerYLow;
   private final double cornerXHigh;
   private final double cornerYHigh;
-  private final int widthInCells;
   /** tracks max value of values in array */
   private double maxValue;
 
   public MapProvider(SlamConfig slamConfig) {
-    dimX = slamConfig.dimX.number().doubleValue();
-    dimY = slamConfig.dimY.number().doubleValue();
-    cellDim = slamConfig.cellDim.number().doubleValue();
-    numberOfCells = (int) (dimX / cellDim * dimX / cellDim);
-    cornerXLow = slamConfig.corner.Get(0).number().doubleValue();
-    cornerYLow = slamConfig.corner.Get(1).number().doubleValue();
-    cornerXHigh = cornerXLow + dimX;
-    cornerYHigh = cornerYLow + dimY;
-    widthInCells = (int) (dimX / cellDim);
+    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
+    cellDimInv = 1 / cellDim;
+    mapWidth = slamConfig.mapWidth();
+    mapHeight = slamConfig.mapHeight();
+    numberOfCells = mapWidth * mapHeight;
+    cornerXLow = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
+    cornerYLow = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
+    Tensor cornerHigh = slamConfig.cornerHigh();
+    cornerXHigh = Magnitude.METER.toDouble(cornerHigh.Get(0));
+    cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));
     mapArray = new double[numberOfCells];
     maxValue = 0;
   }
 
   /** divides the provided maps and saves into targMap */
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
-    for (int i = 0; i < targetMap.getNumberOfCells(); i++)
-      if (denominator.getValue(i) == 0) {
-        // do nothing
-      } else {
-        double newValue = numerator.getValue(i) / denominator.getValue(i);
-        targetMap.setValue(i, newValue);
+    // TODO loop can be done in parallel
+    for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
+      if (denominator.getValue(index) != 0) {
+        double newValue = numerator.getValue(index) / denominator.getValue(index);
+        targetMap.setValue(index, newValue);
       }
   }
 
@@ -51,9 +52,9 @@ public class MapProvider {
       System.out.println("FATAL: should not access that");
       return null;
     }
-    int gridPosY = cellIndex / widthInCells;
-    int gridPosX = cellIndex - gridPosY * widthInCells;
-    // TODO precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
+    int gridPosY = cellIndex / mapWidth;
+    int gridPosX = cellIndex - gridPosY * mapWidth;
+    // TODO JPH precomputation of more values is possible, e.g.: cornerX + 0.5 * cellDim
     return new double[] { //
         cornerXLow + (gridPosX + 0.5) * cellDim, //
         cornerYLow + (gridPosY + 0.5) * cellDim };
@@ -66,11 +67,11 @@ public class MapProvider {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
       // unreasonable number to indicate that we dont have this location
-      return numberOfCells;
+      return numberOfCells; // TODO unconventional
     }
-    int gridPosX = (int) ((posX - cornerXLow) / cellDim);
-    int gridPosY = (int) ((posY - cornerYLow) / cellDim);
-    return gridPosX + widthInCells * gridPosY;
+    int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
+    int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);
+    return gridPosX + mapWidth * gridPosY;
   }
 
   /** adds value in grid cell corresponding to coordinates
@@ -151,12 +152,12 @@ public class MapProvider {
     return numberOfCells;
   }
 
-  public int getWidth() {
-    return widthInCells;
+  public int getMapWidth() {
+    return mapWidth;
   }
 
-  public int getHeight() {
-    return (int) (dimY / cellDim);
+  public int getMapHeight() {
+    return mapHeight;
   }
 
   /** @return maxValue or 1 if maxValue == 0

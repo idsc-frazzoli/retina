@@ -154,7 +154,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
   public HandLabeler(PipelineConfig pipelineConfig) {
     // set parameters
-    imagePrefix = pipelineConfig.davisConfig.logFileName.toString();
+    imagePrefix = pipelineConfig.davisConfig.logFilename();
     numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
     positionDifference = pipelineConfig.positionDifference.number().intValue();

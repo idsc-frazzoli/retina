@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import ch.ethz.idsc.owl.math.map.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -15,6 +16,6 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param x vector of length 3
    * @return matrix with dimensions 3x3 */
   public static Tensor of(Tensor x) {
-    return Se2Utils.toSE2Matrix(Se2Utils.exp(x));
+    return Se2Utils.toSE2Matrix(Se2CoveringExponential.INSTANCE.exp(x));
   }
 }

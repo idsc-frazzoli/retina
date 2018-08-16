@@ -8,7 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// TODO JAN comment
+/** decoder of davis240C event packets
+ * a single packet may contain up to ~300 events
+ * each event in the packet is passed to each listener */
 public class DavisDvsDatagramDecoder {
   private final List<DavisDvsListener> listeners = new CopyOnWriteArrayList<>();
 

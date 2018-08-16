@@ -4,10 +4,12 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import ch.ethz.idsc.retina.util.IntRange;
 
 public class DavisTallyEvent {
+  private static final int SIZE_MAX = 1600;
+  // ---
   public final int first;
   private int last;
   public final int shift; // 2^shift
-  public final int[][] bin = new int[1600][2]; // TODO magic const
+  public final int[][] bin = new int[SIZE_MAX][2];
   public int binLast = -1;
   public IntRange resetRange = new IntRange(0, 0);
   public IntRange imageRange = null;
@@ -28,7 +30,7 @@ public class DavisTallyEvent {
   public void register(int time, int i) {
     int index = binIndex(time);
     if (0 <= index && index < bin.length) {
-      ++bin[index][i]; // TODO
+      ++bin[index][i];
       binLast = Math.max(binLast, index);
     }
   }

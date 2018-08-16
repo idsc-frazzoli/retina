@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.demo.mg.util.slam.SlamMapProcessingUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
-// module receives a set of waypoints in world frame and outputs a trajectory
-public class SlamTrajectoryPlanning implements Runnable {
+/** module receives a set of way points in world frame and outputs a trajectory */
+class SlamTrajectoryPlanning implements Runnable {
   private final SlamEstimatedPose estimatedPose;
   private final double initialDelay;
   private final double trajectoryUpdateRate;
@@ -23,22 +22,30 @@ public class SlamTrajectoryPlanning implements Runnable {
   private List<double[]> worldWayPoints;
   private List<WayPoint> gokartWayPoints;
   private double lastComputationTimeStamp;
+  private boolean isLaunched;
 
   SlamTrajectoryPlanning(SlamConfig slamConfig, SlamEstimatedPose estimatedPose) {
     this.estimatedPose = estimatedPose;
-    initialDelay = slamConfig.initialDelay.number().doubleValue();
-    trajectoryUpdateRate = slamConfig.trajectoryUpdateRate.number().doubleValue();
-    visibleBoxXMin = slamConfig.visibleBoxXMin.number().doubleValue();
-    visibleBoxXMax = slamConfig.visibleBoxXMax.number().doubleValue();
-    visibleBoxHalfWidth = slamConfig.visibleBoxHalfWidth.number().doubleValue();
+    initialDelay = Magnitude.SECOND.toDouble(slamConfig._initialDelay);
+    trajectoryUpdateRate = Magnitude.SECOND.toDouble(slamConfig._trajectoryUpdateRate);
+    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig._visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig._visibleBoxXMax);
+    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
+    gokartWayPoints = new ArrayList<>();
   }
 
   public void initialize(double initTimeStamp) {
-    gokartWayPoints = new ArrayList<>();
     lastComputationTimeStamp = initTimeStamp + initialDelay;
+    isLaunched = true;
     thread.start();
   }
 
+  public void stop() {
+    isLaunched = false;
+    thread.interrupt();
+  }
+
+  // TODO JPH use timertask
   public void computeTrajectory(List<double[]> worldWayPoints, double currentTimeStamp) {
     if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
       this.worldWayPoints = worldWayPoints;
@@ -56,19 +63,16 @@ public class SlamTrajectoryPlanning implements Runnable {
 
   @Override
   public void run() {
-    while (true) {
+    while (isLaunched)
       if (Objects.nonNull(worldWayPoints)) {
-        gokartWayPoints = SlamMapProcessingUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
-        SlamMapProcessingUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
+        gokartWayPoints = SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, estimatedPose.getPoseUnitless());
+        SlamTrajectoryPlanningUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
         worldWayPoints = null;
-      } else {
+      } else
         try {
-          // TODO jan doesn't understand why duration 0
-          Thread.sleep(0);
+          Thread.sleep(1000);
         } catch (InterruptedException e) {
           // ---
         }
-      }
-    }
   }
 }

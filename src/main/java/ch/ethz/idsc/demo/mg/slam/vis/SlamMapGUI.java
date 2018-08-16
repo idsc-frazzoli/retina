@@ -11,12 +11,12 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
-/** similar to PipelineVisualization. Provides a live update of SlamMapFrame */
+/** provides a live update of SlamMapFrame */
 public class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];
-  private final int desiredWidth = 600; // [pixel]
   private final double scaling;
+  private final int frameWidth;
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -28,11 +28,12 @@ public class SlamMapGUI {
   };
 
   public SlamMapGUI(SlamConfig slamConfig) {
-    double mapWidth = slamConfig.dimX.divide(slamConfig.cellDim).number().doubleValue();
-    double mapHeight = slamConfig.dimY.divide(slamConfig.cellDim).number().doubleValue();
-    scaling = desiredWidth / mapWidth;
-    bufferedImage[0] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[1] = new BufferedImage((int) mapWidth, (int) mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    frameWidth = slamConfig.frameWidth.number().intValue();
+    int mapWidth = slamConfig.mapWidth();
+    int mapHeight = slamConfig.mapHeight();
+    scaling = frameWidth / (double) mapWidth;
+    bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);

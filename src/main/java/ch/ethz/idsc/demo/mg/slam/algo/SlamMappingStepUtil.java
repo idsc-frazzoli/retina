@@ -1,14 +1,16 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util.slam;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
+import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -16,21 +18,24 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 
-/** utilities to manipulate maps */
-public enum SlamMapUtil {
+/** collection of methods for the mapping step of the SLAM algorithm */
+public enum SlamMappingStepUtil {
   ;
   /** update occurrence map with particles. in v1.0, counting events in each cell
    * 
    * @param slamParticles particle set
    * @param occurrenceMap
    * @param gokartFramePos [m] position of event in go kart frame
-   * @param particleRange number of particles with highest likelihoods used for update */
-  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int particleRange) {
-    // double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
-    double adaptiveWeightFactor = 1;
+   * @param relevantParticles number of particles with highest likelihoods used for update */
+  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int relevantParticles) {
+    double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
     // sort in descending order of likelihood
-    Arrays.parallelSort(slamParticles, 0, particleRange, SlamParticleLikelihoodComparator.INSTANCE);
-    for (int i = 0; i < particleRange; i++) {
+    Stream.of(slamParticles) //
+        .parallel() //
+        .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
+        .limit(relevantParticles) //
+        .collect(Collectors.toList());
+    for (int i = 0; i < relevantParticles; i++) {
       Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
     }
@@ -38,13 +43,12 @@ public enum SlamMapUtil {
 
   /** adapts the event weight based on e.g. distance to sensor
    * 
-   * @param gokartFramePos [m] positoin of event in go kart frame
-   * @return adaptiveWeightFactor */
-  // TODO in future, the weight could be adapted by where we expect the next waypoint to appear
+   * @param gokartFramePos [m] position of event in go kart frame
+   * @return adaptiveWeightFactor [-] */
+  // TODO implement and test
   private static double adaptiveEventWeightening(double[] gokartFramePos) {
-    // compute distance metric
-    double distance = Math.sqrt(gokartFramePos[0] * gokartFramePos[0]);
-    return 1 + distance;
+    double distance = 1;
+    return distance;
   }
 
   /** update occurrence map with lidar ground truth
@@ -70,20 +74,20 @@ public enum SlamMapUtil {
       if (mapArray[i] != 0) {
         double[] worldCoord = occurrenceMap.getCellCoord(i);
         Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
-        // TODO MG can the code below be simplified because only gokartCoord[0] is used?
-        double[] gokartCoord = { //
-            gokartCoordTensor.Get(0).number().doubleValue(), //
-            gokartCoordTensor.Get(1).number().doubleValue() };
-        if (gokartCoord[0] < lookBehindDistance) {
+        double gokartCoordXPos = gokartCoordTensor.Get(0).number().doubleValue();
+        if (gokartCoordXPos < lookBehindDistance) {
           occurrenceMap.setValue(i, 0);
         }
       }
     }
   }
 
-  /** @param currentExpectedPose
+  /** updates the normalization map
+   * 
+   * @param currentExpectedPose
    * @param lastExpectedPose
    * @param normalizationMap */
+  // TODO unused due to computational complexity
   public static void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, MapProvider normalizationMap,
       ImageToGokartInterface imageToGokartLookup, GokartToImageInterface gokartToImageUtil, int width, int height, double lookAheadDistance) {
     // use of hash set since we want a list of unique cells

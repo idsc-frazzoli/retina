@@ -38,13 +38,14 @@ public class PipelineConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // TransformUtil
-  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFileName.substring(0, davisConfig.logFileName.length() - 1) + ".csv"; // relative to
-                                                                                                                                               // main/resources/
+  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFilename().substring(0, davisConfig.logFilename().length() - 1) + ".csv"; // relative
+                                                                                                                                                   // to
+  // main/resources/
   public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool
-  public final String handLabelFileName = davisConfig.logFileName + "_labeledFeatures"; // file must be present to collect tracking estimates
+  public final String handLabelFileName = davisConfig.logFilename() + "_labeledFeatures"; // file must be present to collect tracking estimates
   public final Scalar initAxis = RealScalar.of(400);
   public final Scalar positionDifference = RealScalar.of(2); // [pixel]
   public final Scalar sizeMultiplier = RealScalar.of(20); // [covariance of ImageBlob]
@@ -52,7 +53,7 @@ public class PipelineConfig {
   // tracking collector
   public final Boolean collectEstimatedFeatures = false;
   public final Scalar iterationLength = RealScalar.of(10);
-  public String estimatedLabelFileName = davisConfig.logFileName + "_estimatedFeatures";
+  public String estimatedLabelFileName = davisConfig.logFilename() + "_estimatedFeatures";
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
   public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
@@ -94,12 +95,12 @@ public class PipelineConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion);
+    return ImageToGokartUtil.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, davisConfig.width);
   }
 
   /** @return new instance of {@link GokartToImageLookup} derived form parameters in pipelineConfig */
   public GokartToImageLookup createGokartToImageLookup() {
-    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance);
+    return GokartToImageLookup.fromMatrix(ResourceData.of(calibrationFileName), davisConfig.unitConversion, cellDim, lookAheadDistance, davisConfig.width);
   }
 
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */

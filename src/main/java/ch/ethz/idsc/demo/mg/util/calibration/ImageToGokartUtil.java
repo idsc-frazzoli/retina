@@ -13,23 +13,25 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Transformation between image and physical space. For documentation, see MATLAB single camera calibration.
- * The CSV file must have the structure as below. Also important, exponential format must use capitalized E ("%E" in MATLAB).
+ * The CSV file must have the structure as below. Exponential format must use capitalized E ("%E" in MATLAB).
  * 1st-3rd lines represent the transformation matrix
  * 4th line represents image coordinates of principal point [pixel]
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
-public class ImageToGokartUtil {
-  // TODO these are magic constants but will not change often
+public class ImageToGokartUtil implements ImageToGokartInterface {
+  /** Offset between origin of calibration frame and origin of go kart frame. Unit is [mm] */
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
-   * @param unitConversion */
-  public static ImageToGokartUtil fromMatrix(Tensor inputTensor, Scalar unitConversion) {
-    return new ImageToGokartUtil(inputTensor, unitConversion);
+   * @param unitConversion
+   * @param width */
+  public static ImageToGokartUtil fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width) {
+    return new ImageToGokartUtil(inputTensor, unitConversion, width);
   }
 
   // ---
   private final Scalar unitConversion;
+  private final int width;
   /** transforms homogeneous image coordinates into homogeneous physical coordinates */
   private final Tensor transformationMatrix;
   private final Tensor principalPoint; // [pixel]
@@ -42,8 +44,9 @@ public class ImageToGokartUtil {
   private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
-  /* package */ ImageToGokartUtil(Tensor inputTensor, Scalar unitConversion) {
+  /* package */ ImageToGokartUtil(Tensor inputTensor, Scalar unitConversion, Scalar width) {
     this.unitConversion = unitConversion;
+    this.width = width.number().intValue();
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2
     radDistortionPoly = Series.of(Join.of(Tensors.vector(1.0), inputTensor.get(4)));
@@ -51,16 +54,24 @@ public class ImageToGokartUtil {
     focalLengthInv = focalLength.map(Scalar::reciprocal);
   }
 
-  /** @param imagePosX [pixel]
-   * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in gokart reference frame */
+  // from ImageToGokartInterface
+  @Override
+  public double[] imageToGokart(int imagePosX, int imagePosY) {
+    return Primitives.toDoubleArray(imageToGokartTensor(imagePosX, imagePosY));
+  }
+
   public double[] imageToGokart(double imagePosX, double imagePosY) {
     return Primitives.toDoubleArray(imageToGokartTensor(imagePosX, imagePosY));
   }
 
-  /** @param imagePosX [pixel]
-   * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in gokart reference frame */
+  // from ImageToGokartInterface
+  @Override
+  public Tensor imageToGokartTensor(int index) {
+    int imagePosY = index / width;
+    int imagePosX = index % width;
+    return imageToGokartTensor(imagePosX, imagePosY);
+  }
+
   public Tensor imageToGokartTensor(double imagePosX, double imagePosY) {
     // normalize image coordinates
     Tensor normalizedImgCoord = Tensors.vector(imagePosX, imagePosY).subtract(principalPoint).pmul(focalLengthInv);

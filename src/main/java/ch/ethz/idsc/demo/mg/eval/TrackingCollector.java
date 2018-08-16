@@ -22,7 +22,7 @@ public class TrackingCollector {
   private int currentLabelInstant = 0;
 
   public TrackingCollector(PipelineConfig pipelineConfig) {
-    imagePrefix = pipelineConfig.davisConfig.logFileName.toString();
+    imagePrefix = pipelineConfig.davisConfig.logFilename();
     numberOfLabelInstants = EvaluationFileLocations.images(imagePrefix).list().length;
     timeStamps = EvalUtil.getTimestampsFromImages(numberOfLabelInstants, imagePrefix);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();

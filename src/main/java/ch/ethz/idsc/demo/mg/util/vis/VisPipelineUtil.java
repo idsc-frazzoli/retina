@@ -12,6 +12,14 @@ import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
 /** provides pipeline visualization static methods */
 public enum VisPipelineUtil {
   ;
+  /** draw ellipses for image based on list of blobs for the image.
+   * 
+   * @param graphics
+   * @param blobs */
+  public static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
+    blobs.forEach(blob -> drawImageBlob(graphics, blob, Color.WHITE));
+  }
+
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object
    * 
    * @param graphics object to be drawn onto
@@ -30,13 +38,5 @@ public enum VisPipelineUtil {
     graphics.setColor(color);
     graphics.draw(ellipse);
     graphics.setTransform(old);
-  }
-
-  /** draw ellipses for image based on list of blobs for the image.
-   * 
-   * @param graphics
-   * @param blobs */
-  public static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
-    blobs.forEach(blob -> drawImageBlob(graphics, blob, Color.WHITE));
   }
 }
