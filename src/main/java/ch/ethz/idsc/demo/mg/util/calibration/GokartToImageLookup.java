@@ -64,7 +64,7 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   @Override
   public Tensor gokartToImage(Tensor gokartPos) {
-    return null;
+    throw new RuntimeException();
   }
 
   // testing

@@ -121,6 +121,8 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
     return false; // autonomous operation denied
   }
 
+  // TODO JPH function should return a scalar with unit "rad*m^-1"...
+  // right now, "curve" does not have "m" as unit but entries are unitless.
   /* package */ static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));

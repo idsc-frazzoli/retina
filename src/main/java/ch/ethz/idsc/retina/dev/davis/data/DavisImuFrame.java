@@ -120,6 +120,6 @@ public class DavisImuFrame extends DataEvent {
 
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return null; // FIXME
+    throw new RuntimeException();
   }
 }

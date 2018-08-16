@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** sets up the SLAM algorithm to process an offline log file */
-class SlamSetup {
+/* package */ class SlamSetup {
   private final SlamConfig slamConfig;
   private final String logFileName;
   private final File logFile;

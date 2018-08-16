@@ -28,9 +28,9 @@ class SlamTrajectoryPlanning implements Runnable {
     this.estimatedPose = estimatedPose;
     initialDelay = Magnitude.SECOND.toDouble(slamConfig._initialDelay);
     trajectoryUpdateRate = Magnitude.SECOND.toDouble(slamConfig._trajectoryUpdateRate);
-    visibleBoxXMin = slamConfig.visibleBoxXMin.number().doubleValue();
-    visibleBoxXMax = slamConfig.visibleBoxXMax.number().doubleValue();
-    visibleBoxHalfWidth = slamConfig.visibleBoxHalfWidth.number().doubleValue();
+    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig._visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig._visibleBoxXMax);
+    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
     gokartWayPoints = new ArrayList<>();
   }
 

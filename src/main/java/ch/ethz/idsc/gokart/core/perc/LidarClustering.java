@@ -65,11 +65,11 @@ public class LidarClustering implements LidarRayBlockListener {
       }
   }
 
-  public void postScan(Tensor points, double noiseRatio) {
-    // TODO Auto-generated method stub
+  public void anteScan() {
+    // override if necessary
   }
 
-  public void anteScan() {
-    // TODO Auto-generated method stub
+  public void postScan(Tensor points, double noiseRatio) {
+    // override if necessary
   }
 }

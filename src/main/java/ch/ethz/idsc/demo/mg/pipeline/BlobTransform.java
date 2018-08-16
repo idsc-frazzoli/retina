@@ -12,7 +12,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
  * integer pixel values. When the lookup table will accept float values as input
  * (e.g. by using interpolation between closest integer values) we can switch to that faster solution. */
 /* package */ class BlobTransform {
-  // TODO JAN mental note class design
+  // TODO JPH mental note class design
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
   private final ImageToGokartUtil imageToWorldUtil;
 

@@ -91,7 +91,6 @@ public class SlamConfig {
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters
   public final Scalar _initialDelay = Quantity.of(0.5, SI.SECOND); // [s] initial delay before waypoints are extracted
-  public final Scalar visibleBoxXMin = RealScalar.of(0); // [s] in go kart frame
-  public final Scalar visibleBoxXMax = RealScalar.of(10); // [m] in go kart frame
-  public final Scalar visibleBoxHalfWidth = RealScalar.of(5); // [m]
+  public final Scalar _visibleBoxXMin = Quantity.of(0, SI.METER); // [m] in go kart frame
+  public final Scalar _visibleBoxXMax = Quantity.of(10, SI.METER); // [m] in go kart frame
 }
