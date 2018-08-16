@@ -19,7 +19,7 @@ public class SlamViewer implements DavisDvsListener {
   private final SlamProvider slamProvider;
   private final SlamMapGUI slamMapGUI;
   private final SlamMapFrame[] slamMapFrames;
-  private final String imagePrefix;
+  private final String logFilename;
   private final File parentFilePath;
   private final boolean lidarMappingMode;
   private final boolean saveSlamFrame;
@@ -32,8 +32,8 @@ public class SlamViewer implements DavisDvsListener {
   public SlamViewer(SlamConfig slamConfig, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
     this.slamProvider = slamProvider;
-    imagePrefix = slamConfig.davisConfig.logFilename();
-    parentFilePath = SlamFileLocations.mapFrames(imagePrefix);
+    logFilename = slamConfig.davisConfig.logFilename();
+    parentFilePath = SlamFileLocations.mapFrames(logFilename);
     lidarMappingMode = slamConfig.lidarMappingMode;
     saveSlamFrame = slamConfig.saveSlamFrame;
     visualizationInterval = Magnitude.SECOND.toDouble(slamConfig._visualizationInterval);
@@ -48,15 +48,15 @@ public class SlamViewer implements DavisDvsListener {
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (slamProvider.getIsInitialized()) {
       double timeStamp = davisDvsEvent.time / 1000000.0;
-      if (saveSlamFrame && ((timeStamp - lastSavingTimeStamp) > savingInterval)) {
-        imageCount++;
-        BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
-        VisGeneralUtil.saveFrame(slamFrame, parentFilePath, imagePrefix, timeStamp, imageCount);
-        lastSavingTimeStamp = timeStamp;
-      }
-      if ((timeStamp - lastImagingTimeStamp) > visualizationInterval) {
+      if (timeStamp - lastImagingTimeStamp > visualizationInterval) {
         slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
         lastImagingTimeStamp = timeStamp;
+      }
+      if (saveSlamFrame && (timeStamp - lastSavingTimeStamp > savingInterval)) {
+        imageCount++;
+        BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
+        VisGeneralUtil.saveFrame(slamFrame, parentFilePath, logFilename, timeStamp, imageCount);
+        lastSavingTimeStamp = timeStamp;
       }
     }
   }

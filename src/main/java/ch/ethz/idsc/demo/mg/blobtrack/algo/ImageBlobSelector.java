@@ -15,7 +15,7 @@ public class ImageBlobSelector {
   // fields
   private List<ImageBlob> imageBlobs;
 
-  ImageBlobSelector(Scalar upperBoarder) {
+  public ImageBlobSelector(Scalar upperBoarder) {
     this.upperBoarder = upperBoarder.number().intValue();
     imageBlobs = new ArrayList<>();
   }

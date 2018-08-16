@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
  * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf
  * Event is always filtered if closer than {@link margin} to the boarder */
-class CornerDetector implements FilterInterface {
+public class CornerDetector implements FilterInterface {
   /** hard coded circle parameters for corner detector */
   private static final int[][] CIRCLE3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //

@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.swing.JToggleButton;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.demo.mg.blobtrack.vis.AccumulatedFeaturePoints;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -37,7 +37,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     accumulatedFeaturePoints = new AccumulatedFeaturePoints();
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (!isSelected)
       return;
@@ -60,7 +60,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     }
   }
 
-  @Override
+  @Override // from ActionListener
   public void actionPerformed(ActionEvent e) {
     isSelected = jToggleButton.isSelected();
   }

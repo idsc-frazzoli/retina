@@ -10,11 +10,11 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
-/** provides a BufferedImage to visualize a list of PhysialBlob objects */
+/** BufferedImage to visualize a list of PhysialBlob objects */
 public class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static int frameWidth;
@@ -60,13 +60,6 @@ public class PhysicalBlobFrame {
     trapezoid.lineTo(fieldOfView[3][0], fieldOfView[3][1]);
     trapezoid.closePath();
     setBackground();
-  }
-
-  /** simple fct to be replaced later
-   * 
-   * @return */
-  public BufferedImage getFrame() {
-    return bufferedImage;
   }
 
   /** paint list of physicalBlob objects

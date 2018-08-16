@@ -66,7 +66,7 @@ public class SlamProvider implements DavisDvsListener {
     isInitialized = true;
   }
 
-  @Override
+  @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!isInitialized) {
       // TODO JPH find other way to trigger initialize

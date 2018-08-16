@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves

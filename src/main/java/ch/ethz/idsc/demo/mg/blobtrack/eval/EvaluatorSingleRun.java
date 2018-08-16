@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant

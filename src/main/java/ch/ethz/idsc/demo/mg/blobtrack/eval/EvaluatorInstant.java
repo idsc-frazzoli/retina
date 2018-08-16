@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 
 /* package */ class EvaluatorInstant {
   private final List<ImageBlob> groundTruthInstant;

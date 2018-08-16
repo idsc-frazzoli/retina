@@ -11,7 +11,7 @@ import java.awt.image.DataBufferByte;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;

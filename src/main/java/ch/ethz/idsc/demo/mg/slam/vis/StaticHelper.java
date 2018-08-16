@@ -7,7 +7,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
@@ -18,16 +17,17 @@ import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.util.slam.SlamOpenCVUtil;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** provides slam visualization static methods
+/** SLAM algorithm visualization static methods
  * 
  * if a function from this enum is needed in the public scope,
  * that function can be extracted to another public class */
 /* package */ enum StaticHelper {
   ;
-  private static final byte CLEAR_BYTE = -1;
+  private static final byte CLEAR_BYTE = -1; // white
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
@@ -64,7 +64,7 @@ import ch.ethz.idsc.tensor.Tensor;
     double[] mapArray = map.getMapArray();
     double maxValue = map.getMaxValue();
     if (maxValue == 0)
-      clearFrame(bytes);
+      VisGeneralUtil.clearFrame(bytes);
     else
       for (int i = 0; i < bytes.length; i++)
         bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
@@ -90,13 +90,6 @@ import ch.ethz.idsc.tensor.Tensor;
     graphics.draw(ellipse);
     graphics.fill(ellipse);
     graphics.setTransform(old);
-  }
-
-  /** sets bytes back to CLEAR_BYTE value
-   * 
-   * @param bytes representing frame content */
-  public static void clearFrame(byte[] bytes) {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
   /** transforms world frame coordinates to frame coordinates

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackObj;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;

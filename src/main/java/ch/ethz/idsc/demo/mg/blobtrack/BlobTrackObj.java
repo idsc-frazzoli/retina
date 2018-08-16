@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.blobtrack;
 
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 // provides blob object for the tracking algorithm.
@@ -31,10 +30,10 @@ public class BlobTrackObj {
   }
 
   // set static parameters of class
-  public static void setParams(BlobTrackConfig pipelineConfig) {
-    width = pipelineConfig.davisConfig.width.number().intValue();
-    height = pipelineConfig.davisConfig.height.number().intValue();
-    defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
+  public static void setParams(BlobTrackConfig blobTrackConfig) {
+    width = blobTrackConfig.davisConfig.width.number().intValue();
+    height = blobTrackConfig.davisConfig.height.number().intValue();
+    defaultBlobID = blobTrackConfig.defaultBlobID.number().intValue();
   }
 
   // updates the activity of a blob

@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
-// this class provides a blob object in image coordinates
+/** blob object for blob tracking algorithm. position in the image plane is tracked */
 public class ImageBlob implements Serializable {
   private static final long serialVersionUID = 1L;
   // ---
@@ -36,14 +36,14 @@ public class ImageBlob implements Serializable {
     this.isHidden = isHidden;
   }
 
-  // returns the square roots of the eigenvalues of the covariance matrix
+  /** @return square roots of the eigenvalues of the covariance matrix */
   public float[] getStandardDeviation() {
     Tensor covarianceMatrix = Tensors.matrixDouble(getCovariance());
     Tensor stD = Sqrt.of(Eigensystem.ofSymmetric(covarianceMatrix).values());
     return Primitives.toFloatArray(stD);
   }
 
-  // returns the eigenvectors of the covariance matrix - not necessarily scaled to unit length
+  /** @return eigenvectors of the covariance matrix - not necessarily scaled to unit length */
   public float[][] getEigenVectors() {
     float[][] eigenVectors = new float[2][2];
     Tensor covarianceMatrix = Tensors.matrixDouble(getCovariance());
@@ -55,8 +55,7 @@ public class ImageBlob implements Serializable {
     return eigenVectors;
   }
 
-  // returns the angle between the eigenvector belonging to the first eigenvalue and the x-axis
-  // eigendecomp needs to be carried out every time because covariance matrix will change between visualization instants
+  /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public double getRotAngle() {
     float[][] eigenVec = getEigenVectors();
     return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
@@ -92,13 +91,11 @@ public class ImageBlob implements Serializable {
     return blobID;
   }
 
-  // required for hand-labeling
   public void setPos(float[] pos) {
     this.pos[0] = pos[0];
     this.pos[1] = pos[1];
   }
 
-  // required for hand-labeling
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
     Tensor notRotated = DiagonalMatrix.of(firstAxis, secondAxis);
     Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));

@@ -1,9 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.blobtrack;
 
-// provides blob object in physical space
+/** blob object in physical space */
 public class PhysicalBlob {
-  // fields
   private final double[] pos; // [m] in gokart reference frame
   private final double[] vel;
   private final int blobID; // default blobID == 0

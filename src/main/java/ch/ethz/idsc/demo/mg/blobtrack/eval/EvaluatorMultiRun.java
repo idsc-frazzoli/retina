@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 
 /** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
  * estimated run. */

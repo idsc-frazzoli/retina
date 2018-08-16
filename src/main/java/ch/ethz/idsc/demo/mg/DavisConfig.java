@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI15a;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16a;
   /** maxDuration */
   public final Scalar logFileDuration = Quantity.of(60, SI.SECOND);
   // general parameters
@@ -45,7 +45,7 @@ public class DavisConfig {
   public ImageToGokartUtil createImageToGokartUtil() {
     return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, width);
   }
-  
+
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
   public ImageToGokartInterface createImageToGokartUtilLookup() {
     return ImageToGokartLookup.fromMatrix(logFileLocations.calibration(), unitConversion, width, height);
@@ -55,5 +55,4 @@ public class DavisConfig {
   public GokartToImageUtil createGokartToImageUtil() {
     return GokartToImageUtil.fromMatrix(logFileLocations.calibration(), unitConversion);
   }
-
 }

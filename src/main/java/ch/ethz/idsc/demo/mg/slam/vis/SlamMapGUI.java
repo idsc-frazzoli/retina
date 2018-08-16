@@ -11,7 +11,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
-/** provides a live update of SlamMapFrame */
+/** GUI to display SLAM algorithm */
 /* package */ class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
   private final BufferedImage[] bufferedImage = new BufferedImage[3];

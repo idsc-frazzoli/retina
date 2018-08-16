@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;

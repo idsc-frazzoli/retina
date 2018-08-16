@@ -5,8 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-// for visualization in PresenterLcmModule
-// TODO for each blobID, only visualize most recent blob
+/** for visualization in PresenterLcmModule */
 public class AccumulatedFeaturePoints {
   private final List<Point2D> accumulatedPoints;
   private final List<Integer> blobIDList;

@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** sets up the SLAM algorithm to process an offline log file */
+/** sets up the SLAM algorithm for offline processing of a log file */
 /* package */ class SlamSetup {
   private final SlamConfig slamConfig;
   private final String logFilename;

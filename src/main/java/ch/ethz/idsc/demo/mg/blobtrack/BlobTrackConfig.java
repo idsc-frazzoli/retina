@@ -1,18 +1,21 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.blobtrack.algo;
+package ch.ethz.idsc.demo.mg.blobtrack;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.ImageBlobSelector;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class BlobTrackConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig();
   // visualization and image saving
-  public final Scalar visualizationInterval = RealScalar.of(100); // [ms]
-  public final Scalar savingInterval = RealScalar.of(200); // [ms]
+  public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND);
   /***************************************************/
   // feature tracking algorithm parameters
   // feature tracking
@@ -54,7 +57,7 @@ public class BlobTrackConfig {
   public final Scalar maxDistance = davisConfig.width.add(davisConfig.height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
-  public Boolean visualizePipeline = false;
+  public Boolean visualizePipeline = true;
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
   // physical world visualization
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame

@@ -1,58 +1,66 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.blobtrack.vis;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.io.File;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
+import ch.ethz.idsc.demo.mg.blobtrack.eval.EvaluationFileLocations;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
+import ch.ethz.idsc.demo.mg.filter.FilterInterface;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
-import ch.ethz.idsc.retina.util.img.BufferedImageResize;
+/** wrapper for blob tracking algorithm visualization */
+public class BlobTrackViewer implements DavisDvsListener {
+  private final FilterInterface filterInterface;
+  private final BlobTrackProvider blobTrackProvider;
+  private final BlobTrackGUI blobTrackGUI;
+  private final AccumulatedEventFrame[] eventFrames;
+  private final PhysicalBlobFrame[] physicalFrames;
+  private final String imagePrefix;
+  private final File parentFilePath;
+  private final double visualizationInterval;
+  private final double savingInterval;
+  private double lastImagingTimeStamp;
+  private double lastSavingTimeStamp;
+  private int imageCount;
 
-// provides a visualization of the complete pipeline
-public class BlobTrackViewer {
-  private final JFrame jFrame = new JFrame();
-  private final BufferedImage[] bufferedImage = new BufferedImage[6];
-  private final double scaling = 1.5f; // original images are tiny
-  private final JComponent jComponent = new JComponent() {
-    @Override
-    protected void paintComponent(Graphics graphics) {
-      graphics.drawString("Raw event stream", 50, 13);
-      graphics.drawImage(BufferedImageResize.of(bufferedImage[0], scaling), 50, 20, null);
-      graphics.drawString("Filtered event stream with active blobs", 50, 313);
-      graphics.drawImage(BufferedImageResize.of(bufferedImage[1], scaling), 50, 320, null);
-      graphics.drawString("Filtered event stream with hidden blobs", 50, 613);
-      graphics.drawImage(BufferedImageResize.of(bufferedImage[2], scaling), 50, 620, null);
-      graphics.drawString("Raw features in physical space", 460, 13);
-      graphics.drawImage(bufferedImage[3], 460, 20, null);
-    }
-  };
-
-  public BlobTrackViewer() {
-    bufferedImage[0] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[1] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[3] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[4] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[5] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
-    // ---
-    jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setContentPane(jComponent);
-    jFrame.setBounds(100, 100, 1050, 950);
-    jFrame.setVisible(true);
+  public BlobTrackViewer(BlobTrackConfig blobTrackConfig, BlobTrackProvider blobTrackProvider) {
+    filterInterface = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
+    this.blobTrackProvider = blobTrackProvider;
+    blobTrackGUI = new BlobTrackGUI();
+    eventFrames = new AccumulatedEventFrame[3];
+    for (int i = 0; i < eventFrames.length; i++)
+      eventFrames[i] = new AccumulatedEventFrame(blobTrackConfig);
+    physicalFrames = new PhysicalBlobFrame[3];
+    for (int i = 0; i < physicalFrames.length; i++)
+      physicalFrames[i] = new PhysicalBlobFrame(blobTrackConfig);
+    imagePrefix = blobTrackConfig.davisConfig.logFilename();
+    parentFilePath = EvaluationFileLocations.images(imagePrefix);
+    visualizationInterval = Magnitude.SECOND.toDouble(blobTrackConfig.visualizationInterval);
+    savingInterval = Magnitude.SECOND.toDouble(blobTrackConfig.savingInterval);
   }
 
-  // set all frames and repaint
-  public void setFrames(BufferedImage[] bufferedImages) {
-    for (int i = 0; i < bufferedImages.length; i++) {
-      bufferedImage[i] = bufferedImages[i];
+  @Override // from DavisDvsListener
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    double timeStamp = davisDvsEvent.time / 1000000.0;
+    eventFrames[0].receiveEvent(davisDvsEvent);
+    if (filterInterface.filter(davisDvsEvent)) {
+      eventFrames[1].receiveEvent(davisDvsEvent);
+      eventFrames[2].receiveEvent(davisDvsEvent);
     }
-    jComponent.repaint();
-  }
-
-  // for saving of whole GUI frame
-  public BufferedImage getGUIFrame() {
-    return new BufferedImage(jFrame.getContentPane().getWidth(), jFrame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
+    if (timeStamp - lastImagingTimeStamp > visualizationInterval) {
+      blobTrackGUI.setFrames(StaticHelper.constructFrames(eventFrames, physicalFrames, blobTrackProvider, true));
+      StaticHelper.resetFrames(eventFrames);
+      lastImagingTimeStamp = timeStamp;
+    }
+    if (timeStamp - lastSavingTimeStamp > savingInterval) {
+      imageCount++;
+      // VisGeneralUtil.saveFrame(eventFrames[1].getAccumulatedEvents(), parentFilePath, imagePrefix, timeStamp, imageCount);
+      lastSavingTimeStamp = timeStamp;
+    }
   }
 }

@@ -8,41 +8,37 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
 
-/** provides BufferedImage with accumulated events and overlaid ImageBlobs */
+/** BufferedImage with accumulated events and overlaid ImageBlobs */
 public class AccumulatedEventFrame {
-  private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static final byte[] VALUE = { 0, (byte) 255 };
   // ---
-  private final int width;
-  private final int height;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
-  private final byte[] bytes;
   private final ImageCopy imageCopy; // for correct visualization
+  private final byte[] bytes;
   private final boolean rotateFrame;
+  private final int width;
+  private final int height;
 
-  public AccumulatedEventFrame(BlobTrackConfig pipelineConfig) {
-    width = pipelineConfig.davisConfig.width.number().intValue();
-    height = pipelineConfig.davisConfig.height.number().intValue();
+  public AccumulatedEventFrame(BlobTrackConfig blobTrackConfig) {
+    width = blobTrackConfig.davisConfig.width.number().intValue();
+    height = blobTrackConfig.davisConfig.height.number().intValue();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     imageCopy = new ImageCopy();
-    rotateFrame = pipelineConfig.rotateFrame;
-    clearImage();
+    rotateFrame = blobTrackConfig.rotateFrame;
+    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = (byte) 240);
   }
 
-  /** displays the accumulated events
-   * 
-   * @return BufferedImage for visualization */
   public BufferedImage getAccumulatedEvents() {
     return getFrame();
   }
@@ -82,16 +78,15 @@ public class AccumulatedEventFrame {
     bytes[index] = VALUE[davisDvsEvent.i];
   }
 
-  // resets all pixel to grey
-  public void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
-  }
-
   // depending on whether frame is rotated or not
   private BufferedImage getFrame() {
     if (rotateFrame)
       return ImageRotate._180deg(bufferedImage);
     imageCopy.update(bufferedImage);
     return imageCopy.get();
+  }
+
+  public byte[] getBytes() {
+    return bytes;
   }
 }
