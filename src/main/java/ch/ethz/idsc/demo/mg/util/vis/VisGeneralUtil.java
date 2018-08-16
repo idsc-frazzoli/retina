@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.util.vis;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -36,7 +36,9 @@ public enum VisGeneralUtil {
    * 
    * @param bytes representing frame content */
   public static void clearFrame(byte[] bytes) {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    // https://stackoverflow.com/questions/9128737/fastest-way-to-set-all-values-of-an-array
+    Arrays.fill(bytes, CLEAR_BYTE);
+    // IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
   /** saves screenshot of GUI

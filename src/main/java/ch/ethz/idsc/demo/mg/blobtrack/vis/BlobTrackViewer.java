@@ -8,7 +8,6 @@ import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.demo.mg.blobtrack.eval.EvaluationFileLocations;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.filter.FilterInterface;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;

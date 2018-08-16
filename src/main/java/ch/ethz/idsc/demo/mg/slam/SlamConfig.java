@@ -50,8 +50,8 @@ public class SlamConfig {
   public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar _angVelStd = Quantity.of(0.1, SI.ANGULAR_RATE); // [rad/s] for initial particle distribution
   // particle roughening
-  public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
-  public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
+  public final Scalar _rougheningLinAccelStd = Quantity.of(8, SI.ACCELERATION); // [m/s²]
+  public final Scalar _rougheningAngAccelStd = Quantity.of(10, "rad*s^-2"); // [rad/s²]
   // SLAM map parameters
   public final Scalar _cellDim = Quantity.of(0.025, SI.METER); // [m] single cell dimension
   /** [m] x 'width' of map */
