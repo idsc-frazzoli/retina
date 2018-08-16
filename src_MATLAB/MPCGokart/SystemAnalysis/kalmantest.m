@@ -7,15 +7,15 @@ ly = sin(lt);
 ltheta = lt*0;
 ldat = [lx;ly;ltheta];
 lR = eye(3)*0.2;
-plot(lx,ly)
-daspect([1 1 1])
+%plot(lx,ly)
+%daspect([1 1 1])
 at = 0:0.001:2;
 ax = -cos(at);
 ay = -sin(at);
 atheta = at*0;
 adat = [ax;ay;atheta];
 aR = eye(3)*10;
-plot(ax,ay);
+%plot(ax,ay);
 
 currentt = 0;
 acount = 1;
@@ -28,13 +28,14 @@ while(currentt < maxt)
         dt = lt(lcount)-currentt;
         currentt = lt(acount);
         [x,P]=lidarMeasure(x,P,dt,adat(:,lcount),ldat(:,lcount-1),ldat(:,lcount-2),lR,Q);
-        x
+        xhist = [xhist,lt(acount);x];
         lcount = lcount+1;
     else
         %update with IMU
         dt = at(acount)-currentt;
         currentt = at(acount);
         [x,P]=IMUMeasure(x,P,dt,adat(:,lcount), aR,Q);
+        xhist = [xhist,at(acount);x];
         acount = acount+1;
     end
 end

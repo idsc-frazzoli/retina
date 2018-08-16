@@ -3,5 +3,5 @@ function [nx,nP] = kmeasure(x,P,h,Hx,z,R)
     S = Hx*P*Hx'+R;
     K = P*Hx'*inv(S);
     nx = x+K*y;
-    nP = (I-K*H)*P;
+    nP = (eye(numel(y))-K*Hx)*P;
 end

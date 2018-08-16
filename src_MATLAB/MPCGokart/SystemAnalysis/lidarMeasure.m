@@ -15,7 +15,12 @@ fullz = [p;v;a];
 fullR = blkdiag(R1,R2,R3);
 Fx = getEvolution(x);
 dotx = @(x)Fx*x;
-[px,pP]=Predict(x,P,dotx,Fx,dt,Q*dt);
+if(dt > 0.00001)
+    [px,pP]=Predict(x,P,dotx,Fx,dt,Q*dt);
+else
+    px = x;
+    pP = P;
+end
 h = @(x)x;
 Hx = eye(7);
 [nx,nP]=kmeasure(px,pP,h,Hx,fullz,fullR);
