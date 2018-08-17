@@ -11,7 +11,7 @@ import java.awt.image.DataBufferByte;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -30,7 +30,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   public final AbstractAccumulatedImage abstractAccumulatedImage = AccumulatedEventsGrayImage.of(davisDevice);
   private final ImageToGokartInterface imageToWorldLookup;
   private final ImageCopy imageCopy;
-  private final PipelineConfig pipelineConfig;
+  private final BlobTrackConfig pipelineConfig;
   private final int width;
   private final int height;
   // ..
@@ -43,7 +43,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     super(gokartPoseInterface);
     abstractAccumulatedImage.setInterval(25_000);
     abstractAccumulatedImage.addListener(this);
-    pipelineConfig = new PipelineConfig();
+    pipelineConfig = new BlobTrackConfig();
     imageToWorldLookup = pipelineConfig.davisConfig.createImageToGokartUtilLookup();
     width = pipelineConfig.davisConfig.width.number().intValue();
     height = pipelineConfig.davisConfig.height.number().intValue();

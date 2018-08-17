@@ -20,7 +20,10 @@ public enum Magnitude implements ScalarUnaryOperator {
   // ---
   VELOCITY(SI.VELOCITY), //
   ACCELERATION(SI.ACCELERATION), //
-  ANGULAR_RATE(SI.ANGULAR_RATE), // for s^-1 and rad*s^-1
+  /** for s^-1 and rad*s^-1 */
+  ANGULAR_RATE(SI.ANGULAR_RATE), //
+  /** for s^-2 and rad*s^-2 */
+  ANGULAR_ACCELERATION(SI.ANGULAR_ACCELERATION), //
   // ---
   /** conversion to non-SI magnitude may be necessary
    * when interfacing with 3rd party code that requires input along that scale */

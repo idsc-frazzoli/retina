@@ -7,13 +7,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 
-/** provides pipeline visualization static methods */
+/** blob tracking algorithm visualization static methods */
 public enum VisPipelineUtil {
   ;
   /** draw ellipses for image based on list of blobs for the image.
-   * 
+   *
    * @param graphics
    * @param blobs */
   public static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> blobs) {
@@ -21,7 +21,7 @@ public enum VisPipelineUtil {
   }
 
   /** draws an ellipse representing a ImageBlob object onto a Graphics2D object
-   * 
+   *
    * @param graphics object to be drawn onto
    * @param blob ImageBlob to be drawn
    * @param color desired */

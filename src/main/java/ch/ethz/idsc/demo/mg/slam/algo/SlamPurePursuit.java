@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
 
 /** adaption of {@link PurePursuit} to work with SLAM algorithm
  * the input will consist of one or multiple {@link WayPoint} objects */
-public class SlamPurePursuit {
+/* package */ class SlamPurePursuit {
   // method required for interpolation when more than one waypoint is availble
   public static Optional<Tensor> beacon(List<WayPoint> wayPoints) {
     // TODO MG work in progress
