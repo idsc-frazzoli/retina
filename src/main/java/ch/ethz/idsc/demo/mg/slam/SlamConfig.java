@@ -18,6 +18,8 @@ public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   // SLAM algorithm configuration
+  /* in onlineMode, periodic tasks run as timedTasks while in offline mode they run periodic relative to event stream timestamps */
+  public Boolean onlineMode = false;
   // SlamMappingStep
   /** in localization mode, a previously saved map is used */
   public final Boolean localizationMode = false;

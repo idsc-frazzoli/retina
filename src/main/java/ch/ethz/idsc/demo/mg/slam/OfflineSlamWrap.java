@@ -21,14 +21,15 @@ import ch.ethz.idsc.tensor.Scalar;
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   // specific to slam
+  private final Timer timer;
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
-    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, new Timer());
+    timer = new Timer();
+    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose, timer);
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    davisDvsDatagramDecoder.addDvsListener(slamViewer);
+    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, timer);
   }
 
   @Override // from OfflineLogListener
@@ -46,5 +47,9 @@ import ch.ethz.idsc.tensor.Scalar;
 
   public SlamProvider getSlamProvider() {
     return slamProvider;
+  }
+
+  public void terminateTimer() {
+    timer.cancel();
   }
 }

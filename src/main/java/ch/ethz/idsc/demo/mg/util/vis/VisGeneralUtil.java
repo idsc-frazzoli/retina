@@ -48,7 +48,6 @@ public enum VisGeneralUtil {
   public static void clearFrame(byte[] bytes) {
     // https://stackoverflow.com/questions/9128737/fastest-way-to-set-all-values-of-an-array
     Arrays.fill(bytes, CLEAR_BYTE);
-    // IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
   /** saves screenshot of GUI
