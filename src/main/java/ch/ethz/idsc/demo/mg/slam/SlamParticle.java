@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** provides a single particle for the SLAM algorithm */
+/** single particle for the SLAM algorithm */
 public class SlamParticle implements GokartPoseInterface {
   private Tensor pose; // unitless representation
   private GeometricLayer geometricLayer;

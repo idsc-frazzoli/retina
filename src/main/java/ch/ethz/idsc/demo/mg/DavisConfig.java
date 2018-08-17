@@ -7,6 +7,7 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,9 +17,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI15a;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16a;
   /** maxDuration */
-  public final Scalar maxDuration = Quantity.of(60, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(60, SI.SECOND);
   // general parameters
   public final Scalar width = RealScalar.of(240);
   public final Scalar height = RealScalar.of(180);
@@ -28,7 +29,6 @@ public class DavisConfig {
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 
-  /** @return for instance "DUBI15a" */
   public String logFilename() {
     return logFileLocations.name();
   }
@@ -39,6 +39,11 @@ public class DavisConfig {
     if (Objects.isNull(logFileLocations))
       throw new RuntimeException("invalid logFileName: " + logFilename());
     return logFileLocations.getFile();
+  }
+
+  /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
+  public ImageToGokartUtil createImageToGokartUtil() {
+    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, width);
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */

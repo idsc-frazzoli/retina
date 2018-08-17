@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-import ch.ethz.idsc.demo.mg.pipeline.BackgroundActivityFilter;
-import ch.ethz.idsc.demo.mg.pipeline.FilteringPipeline;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
+import ch.ethz.idsc.demo.mg.filter.FilterInterface;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
@@ -28,7 +28,7 @@ public class SlamProvider implements DavisDvsListener {
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartPoseOdometry;
   // ---
-  private final FilteringPipeline filteringPipeline;
+  private final FilterInterface filteringPipeline;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamWayPoints;
@@ -66,14 +66,14 @@ public class SlamProvider implements DavisDvsListener {
     isInitialized = true;
   }
 
-  @Override
+  @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!isInitialized) {
       // TODO JPH find other way to trigger initialize
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
-      if (filteringPipeline.filterPipeline(davisDvsEvent)) {
+      if (filteringPipeline.filter(davisDvsEvent)) {
         double currentTimeStamp = davisDvsEvent.time * 1E-6;
         double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {

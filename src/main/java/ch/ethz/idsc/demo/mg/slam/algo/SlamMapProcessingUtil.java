@@ -11,7 +11,7 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 
-enum SlamMapProcessingUtil {
+/* package */ enum SlamMapProcessingUtil {
   ;
   private static final Point POINT = new Point(-1, -1);
 
