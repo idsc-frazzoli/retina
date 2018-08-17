@@ -14,7 +14,9 @@ public enum ImageHistogram {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     byte[] bytes = dataBufferByte.getData();
     int[] bins = new int[256];
-    IntStream.range(0, bytes.length).map(i -> bytes[i] & 0xff).forEach(i -> ++bins[i]);
+    IntStream.range(0, bytes.length) //
+        .map(i -> bytes[i] & 0xff) //
+        .forEach(i -> ++bins[i]);
     return bins;
   }
 }
