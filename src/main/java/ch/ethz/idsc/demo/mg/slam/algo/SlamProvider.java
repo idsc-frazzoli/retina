@@ -37,7 +37,6 @@ public class SlamProvider implements DavisDvsListener {
   private final SlamParticle[] slamParticles;
   // ---
   private boolean isInitialized;
-  // --
 
   public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose) {
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();

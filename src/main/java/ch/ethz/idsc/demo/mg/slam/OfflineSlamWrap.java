@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import java.nio.ByteBuffer;
+import java.util.Timer;
 
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
@@ -16,16 +17,16 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** wrapper to run the event-based SLAM algorithm offline */
 /* package */ class OfflineSlamWrap implements OfflineLogListener {
+  private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
-  private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   // specific to slam
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
     slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
+    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, new Timer());
     davisDvsDatagramDecoder.addDvsListener(slamProvider);
     davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }

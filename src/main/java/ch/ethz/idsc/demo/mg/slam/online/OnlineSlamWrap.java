@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.online;
 
+import java.util.Timer;
+
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
@@ -18,13 +20,13 @@ class OnlineSlamWrap implements StartAndStoppable {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final SlamConfig slamConfig = new SlamConfig();
+  private final Timer timer = new Timer();
   private final SlamProvider slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-  private final SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
+  private final SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, timer);
 
   OnlineSlamWrap() {
     rimoGetLcmClient.addListener(gokartOdometryPose);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }
 
   @Override
