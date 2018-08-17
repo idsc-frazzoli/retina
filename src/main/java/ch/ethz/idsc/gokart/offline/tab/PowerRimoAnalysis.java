@@ -18,6 +18,32 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** creates table related to rear wheel motor measurements and commands
+ * 
+ * the columns in the table have the following ordering
+ * <pre>
+ * timestamp
+ * --- from left wheel:
+ * status_word
+ * actual_rate * sign * MIN_TO_S
+ * rms_motor_current
+ * dc_bus_voltage
+ * error_code
+ * temperature_motor
+ * temperature_heatsink
+ * --- from right wheel:
+ * status_word
+ * actual_rate * sign * MIN_TO_S
+ * rms_motor_current
+ * dc_bus_voltage
+ * error_code
+ * temperature_motor
+ * temperature_heatsink
+ * torque command left wheel
+ * torque command right wheel
+ * </pre>
+ * 
+ * for more information on the variables see {@link RimoGetEvent}, and {@link RimoPutEvent} */
 public class PowerRimoAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
@@ -30,7 +56,7 @@ public class PowerRimoAnalysis implements OfflineTableSupplier {
     this.delta = delta;
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
@@ -38,7 +64,7 @@ public class PowerRimoAnalysis implements OfflineTableSupplier {
     if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
       rpe = RimoPutHelper.from(byteBuffer);
     }
-    if (Scalars.lessThan(time_next, time)) {
+    if (Scalars.lessEquals(time_next, time)) {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe)) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
@@ -51,7 +77,7 @@ public class PowerRimoAnalysis implements OfflineTableSupplier {
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }

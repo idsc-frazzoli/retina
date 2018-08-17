@@ -18,6 +18,28 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** creates table related to steering measurements and commands to steering unit
+ * 
+ * the columns in the table have the following ordering
+ * <pre>
+ * timestamp in seconds
+ * motAsp_CANInput
+ * motAsp_Qual
+ * tsuTrq_CANInput
+ * tsuTrq_Qual
+ * refMotTrq_CANInput
+ * estMotTrq_CANInput
+ * estMotTrq_Qual
+ * gcpRelRckPos
+ * gcpRelRckQual
+ * gearRat
+ * halfRckPos
+ * command
+ * torque
+ * steeringBatteryVoltage [V]
+ * </pre>
+ * 
+ * for the meaning of variables refer to {@link SteerGetEvent}, {@link SteerPutEvent} */
 public class PowerSteerTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
@@ -42,9 +64,11 @@ public class PowerSteerTable implements OfflineTableSupplier {
     if (channel.equals(MiscLcmServer.CHANNEL_GET))
       mge = new MiscGetEvent(byteBuffer);
     // ---
-    if (Scalars.lessThan(time_next, time))
+    if (Scalars.lessEquals(time_next, time))
       if (Objects.nonNull(sge) && Objects.nonNull(spe) && Objects.nonNull(mge)) {
         time_next = time.add(delta);
+        // append a row in the table that is a concatenation of
+        // [time, measurements, commands, battery-voltage]
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), // 0
             sge.asVector(), // [1 - 11]

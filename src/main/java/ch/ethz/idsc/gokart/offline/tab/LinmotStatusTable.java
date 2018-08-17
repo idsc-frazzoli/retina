@@ -28,6 +28,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
   private boolean isFused = false;
   private Integer failure_index = null;
 
+  // TODO JPH what does offset do?
   public LinmotStatusTable(Scalar offset) {
     range = Clip.function(offset, offset.add(Quantity.of(0.2, SI.SECOND)));
   }
