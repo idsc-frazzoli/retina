@@ -3,8 +3,6 @@ package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
@@ -30,11 +28,8 @@ public class SlamViewer implements DavisDvsListener {
   private double lastImagingTimeStamp;
   private double lastSavingTimeStamp;
   private int imageCount;
-  // ---
-  private final TimerTask visualizationTask;
-  private final TimerTask saveFrameTask;
 
-  public SlamViewer(SlamConfig slamConfig, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose, Timer timer) {
+  public SlamViewer(SlamConfig slamConfig, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
     this.slamProvider = slamProvider;
     logFilename = slamConfig.davisConfig.logFilename();
@@ -47,51 +42,22 @@ public class SlamViewer implements DavisDvsListener {
     slamMapFrames = new SlamMapFrame[3];
     for (int i = 0; i < slamMapFrames.length; i++)
       slamMapFrames[i] = new SlamMapFrame(slamConfig);
-    visualizationTask = new TimerTask() {
-      @Override
-      public void run() {
-        if (slamProvider.getIsInitialized())
-          slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
-      }
-    };
-    saveFrameTask = new TimerTask() {
-      @Override
-      public void run() {
-        if (saveSlamFrame && slamProvider.getIsInitialized())
-          saveFrame();
-      }
-    };
-    timer.schedule(visualizationTask, 0, Magnitude.MILLI_SECOND.toLong(slamConfig._visualizationInterval));
-    timer.schedule(saveFrameTask, 0, Magnitude.MILLI_SECOND.toLong(slamConfig._savingInterval));
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    // cancel timertasks since we are in offline mode
-    visualizationTask.cancel();
-    saveFrameTask.cancel();
     if (slamProvider.getIsInitialized()) {
-      double timeStamp = davisDvsEvent.time * 1E-6;
+      double timeStamp = davisDvsEvent.time / 1000000.0;
       if (timeStamp - lastImagingTimeStamp > visualizationInterval) {
         slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode));
         lastImagingTimeStamp = timeStamp;
       }
       if (saveSlamFrame && (timeStamp - lastSavingTimeStamp > savingInterval)) {
-        saveFrame(timeStamp);
+        imageCount++;
+        BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
+        VisGeneralUtil.saveFrame(slamFrame, parentFilePath, logFilename, timeStamp, imageCount);
         lastSavingTimeStamp = timeStamp;
       }
     }
-  }
-
-  private void saveFrame(double timeStamp) {
-    imageCount++;
-    BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
-    VisGeneralUtil.saveFrame(slamFrame, parentFilePath, logFilename, timeStamp, imageCount);
-  }
-
-  private void saveFrame() {
-    imageCount++;
-    BufferedImage slamFrame = StaticHelper.constructFrames(slamMapFrames, slamProvider, gokartLidarPose, lidarMappingMode)[1];
-    VisGeneralUtil.saveFrame(slamFrame, parentFilePath, logFilename, imageCount);
   }
 }

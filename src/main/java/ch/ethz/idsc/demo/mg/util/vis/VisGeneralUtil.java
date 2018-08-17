@@ -18,23 +18,13 @@ public enum VisGeneralUtil {
    * 
    * @param bufferedImage
    * @param parentFilePath
-   * @param logFilename
+   * @param imagePrefix
    * @param timeStamp interpreted as [s]
    * @param imageCount */
-  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String logFilename, double timeStamp, int imageCount) {
+  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String imagePrefix, double timeStamp, int imageCount) {
     int fileTimeStamp = (int) (1000 * timeStamp);
     try {
-      String fileName = String.format("%s_%04d_%d.png", logFilename, imageCount, fileTimeStamp);
-      ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
-      System.out.printf("Image saved as %s\n", fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String logFilename, int imageCount) {
-    try {
-      String fileName = String.format("%s_%04d.png", logFilename, imageCount);
+      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, fileTimeStamp);
       ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
       System.out.printf("Image saved as %s\n", fileName);
     } catch (IOException e) {
