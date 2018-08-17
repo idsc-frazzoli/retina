@@ -2,6 +2,7 @@ function F = getEvolution(x)
     %get state matrix
     %states (everything is in global frame)
     %[x,y,theta,dotx, doty, dottheta, dotdotx, dotdoty]
+    %do it for every line
     F = zeros(8);
     F(1,4) = 1;
     F(2,5) = 1;

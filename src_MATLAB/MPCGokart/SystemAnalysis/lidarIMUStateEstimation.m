@@ -1,3 +1,4 @@
+function [sx,sP] = lidarIMUStateEstimation(adat,ldat)
 x = zeros(8,1);
 dim = numel(x);
 P = eye(dim)*1;
@@ -5,36 +6,10 @@ top = 0.01;
 middle = 0.1;
 bottom = 1.5;
 Q = diag([top,top, middle,middle, middle, bottom,bottom, bottom]);
-lt = 0:0.05:20;
-lx = 2*cos(lt);
-ly = 2*sin(lt);
-ltheta = lt*0;
-ldat = [lx;ly;ltheta];
-%add noise
-randdat = normrnd(0,0.2,size(ldat));
-ldat = ldat+randdat;
-%plot(lx,ly)
-%daspect([1 1 1])
-%at = 0:0.001:10;
-at = 0:0.001:20;
-ax = -2*cos(at);
-ay = -2*sin(at);
-vtheta = at*0;
-adat = [vtheta;ax;ay];
-randdat = normrnd(0,0.1,size(adat));
-adat = adat+randdat;
-%plot(ax,ay);
-
-%get estimation of variance of data
-fl = lt(2)-lt(1);
-wpass = fl*0.1;
-hpldat = highpass(ldat',wpass,fl)';
-
-%hold on
-%plot(lt,ldat(1,:))
-%plot(lt,hpldat(1,:))
-%plot(lt,ldat(1,:)-hpldat(1,:))
-%hold off
+lt = ldat(:,1);
+at = adat(:,1);
+ldat = ldat(:,2:4);
+adat = adat(:,2:4);
 
 %use higher frequency for data
 lR = estimateVar(ldat);
@@ -101,13 +76,6 @@ plot(thist,xhist(:,7));
 %plot(at,ax);
 hold off
 
-%figure
-%inputs
-%hold on
-%plot(thist,xhist(:,1));
-%plot(lt,lx);
-%hold off
-
 figure
 hold on
 plot(lx,ly);
@@ -115,3 +83,5 @@ plot(lx,ly);
 plot(sx(:,1),sx(:,2));
 daspect([1 1 1])
 hold off
+end
+
