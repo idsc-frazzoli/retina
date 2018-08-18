@@ -36,6 +36,7 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+/** export log files to tables for display in macro view image */
 /* package */ class MacroViewTable implements OfflineTableSupplier {
   static final File ROOT = UserHome.file("gokartproc");
   private static final String JOYSTICK = "joystick.generic_xbox_pad";

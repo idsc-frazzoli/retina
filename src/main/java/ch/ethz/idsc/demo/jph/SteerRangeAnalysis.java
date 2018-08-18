@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
+/** https://github.com/idsc-frazzoli/retina/files/1958519/20180428_steering_unit_range.pdf */
 class SteerRangeAnalysis implements OfflineLogListener {
   private final SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
 

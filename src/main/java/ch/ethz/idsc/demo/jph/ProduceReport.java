@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
+/** export all io between actuators and computer as separate tables */
 enum ProduceReport {
   ;
   public static void of(LogFile logFile) throws IOException {

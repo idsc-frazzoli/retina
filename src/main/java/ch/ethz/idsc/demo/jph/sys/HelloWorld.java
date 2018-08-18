@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.sys;
 
 import java.util.Arrays;
 

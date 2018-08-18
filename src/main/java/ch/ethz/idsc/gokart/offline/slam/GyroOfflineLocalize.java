@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -27,7 +28,7 @@ import ch.ethz.idsc.tensor.sca.N;
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class GyroOfflineLocalize extends OfflineLocalize {
-  private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+  private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   /** 3x3 transformation matrix of lidar to center of rear axle */
