@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.online;
 
+import java.util.Timer;
+
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
@@ -12,19 +14,24 @@ import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** initializes SlamProvider with live listeners */
-class OnlineSlamWrap implements StartAndStoppable {
+/* package */ class OnlineSlamWrap implements StartAndStoppable {
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  private final SlamConfig slamConfig = new SlamConfig();
-  private final SlamProvider slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose);
-  private final SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose);
+  private final Timer timer = new Timer();
+  // ---
+  private final SlamConfig slamConfig;
+  private final SlamProvider slamProvider;
+  private final SlamViewer slamViewer;
 
   OnlineSlamWrap() {
+    slamConfig = new SlamConfig();
+    slamConfig.onlineMode = true; // just to make sure
+    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose, timer);
+    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, timer);
     rimoGetLcmClient.addListener(gokartOdometryPose);
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }
 
   @Override
@@ -39,5 +46,6 @@ class OnlineSlamWrap implements StartAndStoppable {
     rimoGetLcmClient.stopSubscriptions();
     gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
+    timer.cancel();
   }
 }

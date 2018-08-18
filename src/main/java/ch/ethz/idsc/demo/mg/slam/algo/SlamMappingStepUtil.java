@@ -25,10 +25,10 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
    * 
    * @param slamParticles particle set
    * @param occurrenceMap
-   * @param gokartFramePos [m] position of event in go kart frame
+   * @param eventGokartFrame [m] position of event in go kart frame
    * @param relevantParticles number of particles with highest likelihoods used for update */
-  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] gokartFramePos, int relevantParticles) {
-    double adaptiveWeightFactor = adaptiveEventWeightening(gokartFramePos);
+  public static void updateOccurrenceMap(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] eventGokartFrame, int relevantParticles) {
+    double adaptiveWeightFactor = adaptiveEventWeightening(eventGokartFrame);
     // sort in descending order of likelihood
     Stream.of(slamParticles) //
         .parallel() //
@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
         .limit(relevantParticles) //
         .collect(Collectors.toList());
     for (int i = 0; i < relevantParticles; i++) {
-      Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
+      Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(eventGokartFrame[0], eventGokartFrame[1]);
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
     }
   }
