@@ -18,13 +18,23 @@ public enum VisGeneralUtil {
    * 
    * @param bufferedImage
    * @param parentFilePath
-   * @param imagePrefix
+   * @param logFilename
    * @param timeStamp interpreted as [s]
    * @param imageCount */
-  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String imagePrefix, double timeStamp, int imageCount) {
+  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String logFilename, double timeStamp, int imageCount) {
     int fileTimeStamp = (int) (1000 * timeStamp);
     try {
-      String fileName = String.format("%s_%04d_%d.png", imagePrefix, imageCount, fileTimeStamp);
+      String fileName = String.format("%s_%04d_%d.png", logFilename, imageCount, fileTimeStamp);
+      ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
+      System.out.printf("Image saved as %s\n", fileName);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String logFilename, int imageCount) {
+    try {
+      String fileName = String.format("%s_%04d.png", logFilename, imageCount);
       ImageIO.write(bufferedImage, "png", new File(parentFilePath, fileName));
       System.out.printf("Image saved as %s\n", fileName);
     } catch (IOException e) {
@@ -38,7 +48,6 @@ public enum VisGeneralUtil {
   public static void clearFrame(byte[] bytes) {
     // https://stackoverflow.com/questions/9128737/fastest-way-to-set-all-values-of-an-array
     Arrays.fill(bytes, CLEAR_BYTE);
-    // IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
   }
 
   /** saves screenshot of GUI

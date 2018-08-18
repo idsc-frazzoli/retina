@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   SlamSetup(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
+    slamConfig.onlineMode = false; // just to make sure
     logFilename = slamConfig.davisConfig.logFilename();
     logFile = slamConfig.davisConfig.getLogFile();
     logFileDuration = slamConfig.davisConfig.logFileDuration;
@@ -39,6 +40,7 @@ import ch.ethz.idsc.tensor.Scalar;
             offlineSlamWrap.getSlamProvider().getMap(0).getMapArray());
         System.out.println("Slam map successfully saved");
       }
+      offlineSlamWrap.terminateTimer();
     } catch (Exception exception) {
       exception.printStackTrace();
     }
