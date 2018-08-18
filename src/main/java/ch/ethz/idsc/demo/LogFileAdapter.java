@@ -1,9 +1,11 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.api;
+package ch.ethz.idsc.demo;
 
 import java.io.File;
 
-public enum LogFileAdapter {
+import ch.ethz.idsc.gokart.offline.api.LogFile;
+
+/* package */ enum LogFileAdapter {
   ;
   public static LogFile from(File file) {
     return new LogFile() {

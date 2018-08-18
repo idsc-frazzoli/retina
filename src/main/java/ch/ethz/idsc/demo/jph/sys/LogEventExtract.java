@@ -16,7 +16,7 @@ enum LogEventExtract {
   public static void main(String[] args) throws Exception {
     File src = DatahakiLogFileLocator.file(GokartLogFile._20180705T101944_b01c2886);
     final File folder = new File("/media/datahaki/media/ethz/gokart/topic/track_white", //
-        "20180705T101944_3");
+        "20180705T101944_2");
     folder.mkdir();
     if (!folder.isDirectory())
       throw new RuntimeException();
@@ -26,8 +26,8 @@ enum LogEventExtract {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 4231661;
-    int hi = 4504923;
+    int lo = 3715260;
+    int hi = 3986070;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

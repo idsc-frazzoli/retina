@@ -13,6 +13,7 @@ public enum GokartPoseHelper {
   /** @param state vector with units {x[m], y[m], angle[]}
    * @return */
   public static Tensor toSE2Matrix(Tensor state) {
+    // Se2Utils.toSE2Matrix(state.extract(0, 2).map(Magnitude.METER).append(state.Get(2)));
     return Se2Utils.toSE2Matrix(toUnitless(state));
   }
 

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.offline.api.LogFile;
-import ch.ethz.idsc.gokart.offline.api.LogFileAdapter;
 
 public enum GokartLogFiles {
   ;
