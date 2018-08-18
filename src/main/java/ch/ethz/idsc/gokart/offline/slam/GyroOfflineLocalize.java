@@ -25,8 +25,10 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 
-/** the test matches 3 consecutive lidar scans to the dubendorf hangar map
- * the matching qualities are 51255, 43605, 44115 */
+/** localization that uses lidar in combination with gyro rate to rectify measurements
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
+// TODO JPH check that correct offset is used
 public class GyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();

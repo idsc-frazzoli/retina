@@ -49,8 +49,8 @@ public class SensorsConfig implements Serializable {
    * @see SafetyConfig */
   public Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
   /** number of rotations per second */
-  public Scalar vlp16_rate = Quantity.of(20, "s^-1");
-  public Scalar davis_imu_rate = Quantity.of(1000, "s^-1");
+  public Scalar vlp16_rate = Quantity.of(20, SI.PER_SECOND);
+  public Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
   // TODO the location of the frustum is not final
   public Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
   // TODO create a conversion formula from inclination to scaling factor (will have singularity)

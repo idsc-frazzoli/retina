@@ -78,11 +78,11 @@ public class DavisImuFrame extends DataEvent {
   }
 
   public Scalar getTime() {
-    return Quantity.of(time, "us");
+    return Quantity.of(time, NonSI.MICRO_SECOND);
   }
 
   public Scalar getTimeRelativeTo(int time_us_zero) {
-    return Quantity.of(time - time_us_zero, "us");
+    return Quantity.of(time - time_us_zero, NonSI.MICRO_SECOND);
   }
 
   /** see above definition of image frame

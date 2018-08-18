@@ -77,6 +77,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart
       Tensor result = Se2Utils.fromSE2Matrix(model);
+      // TODO there is a function for this:
       Tensor vector = Tensors.of( //
           Quantity.of(result.Get(0), SI.METER), //
           Quantity.of(result.Get(1), SI.METER), //
