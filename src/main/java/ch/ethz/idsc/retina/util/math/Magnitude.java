@@ -21,7 +21,7 @@ public enum Magnitude implements ScalarUnaryOperator {
   VELOCITY(SI.VELOCITY), //
   ACCELERATION(SI.ACCELERATION), //
   /** for s^-1 and rad*s^-1 */
-  ANGULAR_RATE(SI.ANGULAR_RATE), //
+  PER_SECOND(SI.PER_SECOND), //
   /** for s^-2 and rad*s^-2 */
   ANGULAR_ACCELERATION(SI.ANGULAR_ACCELERATION), //
   // ---
@@ -33,6 +33,8 @@ public enum Magnitude implements ScalarUnaryOperator {
   DEGREE_CELSIUS(NonSI.DEGREE_CELSIUS), //
   // ---
   DEGREE_ANGLE(NonSI.DEGREE_ANGLE), //
+  // ---
+  ARMS(NonSI.ARMS), //
   ;
   // ---
   private final ScalarUnaryOperator scalarUnaryOperator;
@@ -50,6 +52,12 @@ public enum Magnitude implements ScalarUnaryOperator {
    * @return double value of given scalar quantity after conversion to given unit */
   public double toDouble(Scalar scalar) {
     return apply(scalar).number().doubleValue();
+  }
+
+  /** @param scalar
+   * @return short value of given scalar quantity after conversion to given unit */
+  public short toShort(Scalar scalar) {
+    return apply(scalar).number().shortValue();
   }
 
   /** @param scalar

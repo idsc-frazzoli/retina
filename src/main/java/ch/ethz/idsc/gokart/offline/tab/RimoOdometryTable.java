@@ -25,7 +25,7 @@ public class RimoOdometryTable implements OfflineTableSupplier {
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
           speed.map(Magnitude.VELOCITY), //
-          rate.map(Magnitude.ANGULAR_RATE) //
+          rate.map(Magnitude.PER_SECOND) //
       );
     }
   }

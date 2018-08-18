@@ -47,8 +47,7 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
    * @return adaptiveWeightFactor [-] */
   // TODO implement and test
   private static double adaptiveEventWeightening(double[] gokartFramePos) {
-    double distance = 1;
-    return distance;
+    return 1;
   }
 
   /** update occurrence map with lidar ground truth

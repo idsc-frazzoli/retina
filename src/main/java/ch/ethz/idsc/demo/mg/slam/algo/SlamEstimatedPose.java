@@ -3,10 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** SLAM algorithm uses a unitless pose representation */
 /* package */ class SlamEstimatedPose implements GokartPoseInterface {
@@ -29,9 +26,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return Tensors.of( //
-        Quantity.of(poseUnitless.Get(0), SI.METER), //
-        Quantity.of(poseUnitless.Get(1), SI.METER), //
-        poseUnitless.Get(2));
+    return GokartPoseHelper.attachUnits(poseUnitless);
   }
 }

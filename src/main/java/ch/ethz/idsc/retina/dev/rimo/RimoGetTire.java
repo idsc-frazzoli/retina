@@ -13,9 +13,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** information received from micro-autobox about the status of a motor usually
  * two of the events are received simultaneously: for the left and right rear wheel
@@ -25,8 +22,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 @SafetyCritical
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
-  public static final Unit ARMS = Unit.of("ARMS");
-  public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(ARMS);
   public static final double MIN_TO_S = 1 / 60.0;
   // ---
   public final short status_word;
@@ -88,7 +83,7 @@ public class RimoGetTire implements Serializable {
    * 
    * @return */
   public Scalar getRmsMotorCurrent() {
-    return Quantity.of(rms_motor_current, ARMS);
+    return Quantity.of(rms_motor_current, NonSI.ARMS);
   }
 
   public Scalar getBusVoltage() {

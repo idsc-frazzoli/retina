@@ -85,14 +85,14 @@ public class LocalizationTable implements OfflineTableSupplier {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._6), //
             speed.map(Magnitude.VELOCITY).map(Round._3), //
-            rate.map(Magnitude.ANGULAR_RATE).map(Round._3), //
+            rate.map(Magnitude.PER_SECOND).map(Round._3), //
             getPose(), //
             degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             metric.map(Magnitude.METER).map(Round._2), //
             vpe.speed().map(Magnitude.VELOCITY).map(Round._3), //
             vpe.course().map(Magnitude.ONE).map(Round._6), //
-            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE).map(Round._5) //
+            dif.gyroImageFrame().map(Magnitude.PER_SECOND).map(Round._5) //
         );
         System.out.println(tableBuilder.getRowCount());
       }

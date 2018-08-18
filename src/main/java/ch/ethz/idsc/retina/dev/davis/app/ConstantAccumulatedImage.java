@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
@@ -82,6 +82,6 @@ public final class ConstantAccumulatedImage implements DavisDvsListener {
   }
 
   private void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    Arrays.fill(bytes, CLEAR_BYTE);
   }
 }

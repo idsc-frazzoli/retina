@@ -46,7 +46,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           RealScalar.of(usec_last), //
-          dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE), //
+          dif.gyroImageFrame().map(Magnitude.PER_SECOND), //
           gap);
     }
     row = Tensors.empty();

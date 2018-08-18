@@ -47,6 +47,9 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** visualization of gokart odometry and sensor information
+ * 
+ * https://www.youtube.com/watch?v=noqpenUZ34w */
 class OfflineHud implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Dimension DIMENSION = new Dimension(1920, 480);

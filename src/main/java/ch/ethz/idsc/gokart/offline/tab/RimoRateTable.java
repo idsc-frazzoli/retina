@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -56,10 +55,10 @@ public class RimoRateTable implements OfflineTableSupplier {
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
-            rates.map(Magnitude.ANGULAR_RATE), // rad/s, or 1/s
+            rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS
+            rates.map(Magnitude.PER_SECOND), // rad/s, or 1/s
             speed.map(Magnitude.VELOCITY), // m/s
-            rate.map(Magnitude.ANGULAR_RATE), //
+            rate.map(Magnitude.PER_SECOND), //
             gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER));
       }
     }

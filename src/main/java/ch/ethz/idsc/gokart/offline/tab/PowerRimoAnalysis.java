@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -71,7 +70,7 @@ public class PowerRimoAnalysis implements OfflineTableSupplier {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rge.asVector(), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS) // ARMS
+            rpe.getTorque_Y_pair().map(Magnitude.ARMS) // ARMS
         );
       }
     }

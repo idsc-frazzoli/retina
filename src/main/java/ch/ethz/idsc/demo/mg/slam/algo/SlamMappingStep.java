@@ -1,8 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import java.util.Timer;
-
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;

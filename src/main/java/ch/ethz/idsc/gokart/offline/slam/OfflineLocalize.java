@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** functionality is strictly for offline processing
  * do not use during live operation: memory consumption is not bounded */
 public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
-  private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   // ---
   protected final SlamScore slamScore;
   private final List<LocalizationResultListener> listeners = new LinkedList<>();

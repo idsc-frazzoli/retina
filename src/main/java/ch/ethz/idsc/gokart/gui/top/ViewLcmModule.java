@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -59,12 +60,14 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() throws Exception {
     {
+      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       RenderInterface renderInterface = //
-          new BufferedImageRender(LocalizationConfig.getPredefinedMap().getImage());
+          new BufferedImageRender(predefinedMap.getImage());
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
+      // TODO JPH make function
       final Tensor ARROWHEAD = Tensors.matrixDouble( //
           new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));

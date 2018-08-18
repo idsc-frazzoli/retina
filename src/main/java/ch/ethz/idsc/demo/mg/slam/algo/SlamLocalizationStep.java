@@ -34,7 +34,7 @@ import ch.ethz.idsc.tensor.Tensor;
     rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig._rougheningAngAccelStd);
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
-    angVelStd = Magnitude.ANGULAR_RATE.toDouble(slamConfig._angVelStd);
+    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig._angVelStd);
     lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
     alpha = slamConfig.alpha.number().doubleValue();
   }

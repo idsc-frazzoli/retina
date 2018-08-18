@@ -44,6 +44,9 @@ class SpeedClip implements ScalarUnaryOperator {
   }
 }
 
+/** generates an image that lists the operation of the gokart
+ * 
+ * https://user-images.githubusercontent.com/4012178/44048221-08391a08-9f31-11e8-86ec-df450f4051e6.png */
 /* package */ class MacroViewImage {
   private static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, 13);
   private static final int LENGTH = MacroViewTable.LENGTH;

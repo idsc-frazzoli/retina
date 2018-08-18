@@ -42,6 +42,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
   public static void checkVisibility(List<WayPoint> gokartWayPoints, double visibleBoxXMin, double visibleBoxXMax, double visibleBoxHalfWidth) {
     for (WayPoint wayPoint : gokartWayPoints) {
       double[] gokartPosition = wayPoint.getGokartPosition();
+      // TODO JPH simplify
       if (gokartPosition[0] > visibleBoxXMin && gokartPosition[0] < visibleBoxXMax && //
           gokartPosition[1] > -visibleBoxHalfWidth && gokartPosition[1] < visibleBoxHalfWidth)
         wayPoint.setVisibility(true);

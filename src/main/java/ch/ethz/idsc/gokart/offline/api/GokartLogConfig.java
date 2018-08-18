@@ -1,10 +1,11 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.api;
 
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** an instance is typically constructed using {@link TensorProperties} */
 public class GokartLogConfig {
   /** initial pose
    * 
@@ -14,6 +15,6 @@ public class GokartLogConfig {
 
   /***************************************************/
   public Tensor model() {
-    return Se2Utils.toSE2Matrix(pose.extract(0, 2).map(Magnitude.METER).append(pose.Get(2)));
+    return GokartPoseHelper.toSE2Matrix(pose);
   }
 }
