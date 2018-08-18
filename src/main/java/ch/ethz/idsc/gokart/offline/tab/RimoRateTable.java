@@ -56,9 +56,9 @@ public class RimoRateTable implements OfflineTableSupplier {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS
-            rates.map(Magnitude.ANGULAR_RATE), // rad/s, or 1/s
+            rates.map(Magnitude.PER_SECOND), // rad/s, or 1/s
             speed.map(Magnitude.VELOCITY), // m/s
-            rate.map(Magnitude.ANGULAR_RATE), //
+            rate.map(Magnitude.PER_SECOND), //
             gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER));
       }
     }

@@ -42,12 +42,12 @@ public class MagnitudeTest extends TestCase {
   }
 
   public void testRadPerSec() {
-    Scalar s1 = Quantity.of(100, SI.ANGULAR_RATE);
+    Scalar s1 = Quantity.of(100, SI.PER_SECOND);
     Scalar s2 = Quantity.of(100, SIDerived.RADIAN_PER_SECOND);
-    assertEquals(Magnitude.ANGULAR_RATE.apply(s1), Magnitude.ANGULAR_RATE.apply(s2));
-    assertEquals(Magnitude.ANGULAR_RATE.toDouble(s1), 100.0);
-    assertEquals(Magnitude.ANGULAR_RATE.toInt(s1), 100);
-    assertEquals(Magnitude.ANGULAR_RATE.toLong(s1), 100);
+    assertEquals(Magnitude.PER_SECOND.apply(s1), Magnitude.PER_SECOND.apply(s2));
+    assertEquals(Magnitude.PER_SECOND.toDouble(s1), 100.0);
+    assertEquals(Magnitude.PER_SECOND.toInt(s1), 100);
+    assertEquals(Magnitude.PER_SECOND.toLong(s1), 100);
   }
 
   public void testFail() {

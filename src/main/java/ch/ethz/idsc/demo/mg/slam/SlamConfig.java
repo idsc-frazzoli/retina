@@ -50,7 +50,7 @@ public class SlamConfig {
   // particle initialization
   public final Scalar _linVelAvg = Quantity.of(3, SI.VELOCITY); // [m/s] for initial particle distribution
   public final Scalar _linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
-  public final Scalar _angVelStd = Quantity.of(0.1, SI.ANGULAR_RATE); // [rad/s] for initial particle distribution
+  public final Scalar _angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
   public final Scalar _rougheningLinAccelStd = Quantity.of(8, SI.ACCELERATION); // [m/s²]
   public final Scalar _rougheningAngAccelStd = Quantity.of(10, "rad*s^-2"); // [rad/s²]

@@ -63,11 +63,11 @@ public class RimoSlipTable implements OfflineTableSupplier {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), //
-            rates.map(Magnitude.ANGULAR_RATE), //
+            rates.map(Magnitude.PER_SECOND), //
             SteerConfig.GLOBAL.getAngleFromSCE(gse), //
             speed.map(Magnitude.VELOCITY), //
-            rate.map(Magnitude.ANGULAR_RATE), //
-            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE) //
+            rate.map(Magnitude.PER_SECOND), //
+            dif.gyroImageFrame().map(Magnitude.PER_SECOND) //
         );
       }
     }

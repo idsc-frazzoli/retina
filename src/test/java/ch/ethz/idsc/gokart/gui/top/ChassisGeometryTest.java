@@ -85,7 +85,7 @@ public class ChassisGeometryTest extends TestCase {
     assertTrue(Chop._04.close(vel, RealScalar.of(0.3)));
     Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
     assertEquals(Units.of(rate), Unit.of("s^-1"));
-    Scalar ome = Magnitude.ANGULAR_RATE.apply(rate);
+    Scalar ome = Magnitude.PER_SECOND.apply(rate);
     assertTrue(Chop._04.close(ome, RealScalar.of(0.18518518518518517)));
   }
 }

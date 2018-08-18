@@ -98,10 +98,10 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
         rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS), //
-        rates.map(Magnitude.ANGULAR_RATE), //
+        rates.map(Magnitude.PER_SECOND), //
         speed.map(Magnitude.VELOCITY), //
-        rate.map(Magnitude.ANGULAR_RATE), //
-        davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.ANGULAR_RATE), //
+        rate.map(Magnitude.PER_SECOND), //
+        davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
         SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent), //
         linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
         localizationResult.pose_xyt.extract(0, 2).map(Round._3), //

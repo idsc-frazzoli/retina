@@ -58,11 +58,11 @@ import ch.ethz.idsc.tensor.sca.Round;
     Scalar now = Quantity.of((davisDvsEvent.time - reference) * 1e-6, SI.SECOND);
     if (Scalars.lessEquals(time_next, now)) { // TODO not as precise as could be
       Scalar speed = Objects.isNull(rge) ? Quantity.of(0, SI.VELOCITY) : ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-      Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.ANGULAR_RATE) : ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+      Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.PER_SECOND) : ChassisGeometry.GLOBAL.odometryTurningRate(rge);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time_next.subtract(delta)), //
           Tensors.vectorLong(events), speed.map(Magnitude.VELOCITY).map(Round._2), //
-          rate.map(Magnitude.ANGULAR_RATE).map(Round._4) //
+          rate.map(Magnitude.PER_SECOND).map(Round._4) //
       );
       time_next = time_next.add(delta);
       events[0] = 0;

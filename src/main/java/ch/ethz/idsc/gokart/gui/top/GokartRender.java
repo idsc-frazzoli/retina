@@ -97,7 +97,7 @@ public class GokartRender extends AbstractGokartRender {
       final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
-      Tensor rateY_draw = rateY_pair.map(Magnitude.ANGULAR_RATE).multiply(RealScalar.of(0.1));
+      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
           Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));

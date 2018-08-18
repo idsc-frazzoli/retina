@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements DavisImuFrameListener {
-  private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();

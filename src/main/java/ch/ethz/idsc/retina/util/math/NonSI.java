@@ -16,5 +16,6 @@ public enum NonSI {
   // ---
   public static final Unit DEGREE_CELSIUS = Unit.of("degC");
   // ---
+  /** amplitude/Ampere root mean square */
   public static final Unit ARMS = Unit.of("ARMS");
 }
