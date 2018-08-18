@@ -28,12 +28,26 @@ import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/**
+/** class produces table with the following columns:
  * 
- */
+ * time [s]
+ * rimo torque left [ARMS]
+ * rimo torque right [ARMS]
+ * rimo rate left [rad*s^-1]
+ * rimo rate right [rad*s^-1]
+ * tangent speed [m*s^-1]
+ * rotational rate [rad*s^-1]
+ * gyro rate around gokart z-axis [rad*s^-1]
+ * steering column encoder [SCE]
+ * brake position [m]
+ * localization pose x [m]
+ * localization pose y [m]
+ * localization pose theta [rad]
+ * localization pose quality */
 public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationResultListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
@@ -94,7 +108,8 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
         Objects.isNull(rimoPutEvent) || //
         Objects.isNull(gokartStatusEvent))
       return;
-    System.out.println(localizationResult.time + " " + localizationResult.ratio);
+    Tensor info = Tensors.of(localizationResult.time, localizationResult.ratio);
+    System.out.println("locCall " + info.map(Round._3));
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
     Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
     Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
