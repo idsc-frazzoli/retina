@@ -33,6 +33,8 @@ public enum Magnitude implements ScalarUnaryOperator {
   DEGREE_CELSIUS(NonSI.DEGREE_CELSIUS), //
   // ---
   DEGREE_ANGLE(NonSI.DEGREE_ANGLE), //
+  // ---
+  ARMS(NonSI.ARMS), //
   ;
   // ---
   private final ScalarUnaryOperator scalarUnaryOperator;
@@ -50,6 +52,12 @@ public enum Magnitude implements ScalarUnaryOperator {
    * @return double value of given scalar quantity after conversion to given unit */
   public double toDouble(Scalar scalar) {
     return apply(scalar).number().doubleValue();
+  }
+
+  /** @param scalar
+   * @return short value of given scalar quantity after conversion to given unit */
+  public short toShort(Scalar scalar) {
+    return apply(scalar).number().shortValue();
   }
 
   /** @param scalar

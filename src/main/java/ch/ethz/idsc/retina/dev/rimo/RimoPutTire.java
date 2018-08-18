@@ -8,18 +8,14 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 @SafetyCritical
 public class RimoPutTire implements Serializable {
-  public static final Unit UNIT_TORQUE = Unit.of("ARMS");
-  public static final ScalarUnaryOperator MAGNITUDE_ARMS = QuantityMagnitude.singleton(UNIT_TORQUE);
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);
   /* package */ static final RimoPutTire PASSIVE = new RimoPutTire(OPERATION, (short) 0, (short) 0);
@@ -74,7 +70,7 @@ public class RimoPutTire implements Serializable {
 
   /** @return torque with unit "ARMS" */
   public Scalar getTorque() {
-    return Quantity.of(torque, UNIT_TORQUE);
+    return Quantity.of(torque, NonSI.ARMS);
   }
 
   void insert(ByteBuffer byteBuffer) {

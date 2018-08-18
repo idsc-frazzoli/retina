@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -81,7 +80,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
         Scalar factor = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), // ARMS
+            rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS
             rates.map(Magnitude.ANGULAR_RATE), // rad/s, or 1/s
             speed.map(Magnitude.VELOCITY), // m/s
             rate.map(Magnitude.ANGULAR_RATE), //

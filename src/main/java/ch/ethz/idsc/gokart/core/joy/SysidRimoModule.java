@@ -13,14 +13,16 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** module generates ... */
 /* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
-  private static final Scalar MAGNITUDE = RealScalar.of(1500); // TODO magic const, unit [ARMS]
+  private static final Scalar MAGNITUDE = Quantity.of(1500, NonSI.ARMS);
   // ---
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Stopwatch stopwatch = Stopwatch.started();
@@ -65,11 +67,15 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     return Optional.empty();
   }
 
+  /** @param aheadAverage unitless in the interval [-1, 1]
+   * @param timestamp
+   * @return */
   /* package */ RimoPutEvent create(Scalar aheadAverage, Scalar timestamp) {
-    Scalar value = signal.apply(timestamp);
-    value = value.multiply(aheadAverage).multiply(MAGNITUDE);
-    short armsL_raw = (short) (-value.number().shortValue()); // sign left invert
-    short armsR_raw = (short) (+value.number().shortValue()); // sign right id
-    return RimoPutHelper.operationTorque(armsL_raw, armsR_raw);
+    short arms_raw = Magnitude.ARMS.toShort( //
+        signal.apply(timestamp).multiply(aheadAverage).multiply(MAGNITUDE));
+    return RimoPutHelper.operationTorque( //
+        (short) -arms_raw, // sign left invert
+        (short) +arms_raw // sign right id
+    );
   }
 }

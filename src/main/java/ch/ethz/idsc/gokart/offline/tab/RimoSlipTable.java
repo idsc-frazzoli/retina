@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -63,7 +62,7 @@ public class RimoSlipTable implements OfflineTableSupplier {
         dif.gyroImageFrame();
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
-            rpe.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
+            rpe.getTorque_Y_pair().map(Magnitude.ARMS), //
             rates.map(Magnitude.ANGULAR_RATE), //
             SteerConfig.GLOBAL.getAngleFromSCE(gse), //
             speed.map(Magnitude.VELOCITY), //

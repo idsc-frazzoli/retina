@@ -24,7 +24,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -109,8 +108,8 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(rimoPutEvent)) {
       double factor = 5E-4;
-      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireL.getTorque()).number().doubleValue() * factor;
-      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireR.getTorque()).number().doubleValue() * factor;
+      double trqL = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor;
+      double trqR = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor;
       graphics.setColor(Color.BLUE);
       graphics.setStroke(new BasicStroke(2));
       graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));

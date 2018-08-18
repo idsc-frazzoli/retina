@@ -22,7 +22,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
@@ -98,7 +97,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
     Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
-        rimoPutEvent.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
+        rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS), //
         rates.map(Magnitude.ANGULAR_RATE), //
         speed.map(Magnitude.VELOCITY), //
         rate.map(Magnitude.ANGULAR_RATE), //
