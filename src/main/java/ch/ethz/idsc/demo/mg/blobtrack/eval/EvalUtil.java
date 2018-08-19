@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
   ;
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
-  private static final int defaultBlobID = 0;
+  private static final int DEFAULT_BLOB_ID = 0;
 
   /** saves a List<List<ImageBlob>> object to a CSV file.
    * 
@@ -56,7 +56,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
    * @param collectedResults */
   public static void saveToCSV(File file, List<double[]> collectedResults) {
     try (FileWriter writer = new FileWriter(file)) {
-      for (int i = 0; i < collectedResults.size(); i++) {
+      for (int i = 0; i < collectedResults.size(); ++i) {
         final double[] singleResult = collectedResults.get(i);
         writer.append(String.valueOf(singleResult[0]));
         writer.append(COMMA_DELIMITER);
@@ -79,7 +79,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
   public static List<List<ImageBlob>> loadFromCSV(File file, int[] timeStamps) {
     // set up empty list
     List<List<ImageBlob>> extractedFeatures = new ArrayList<>(timeStamps.length);
-    for (int i = 0; i < timeStamps.length; i++)
+    for (int i = 0; i < timeStamps.length; ++i)
       extractedFeatures.add(new ArrayList<>());
     try {
       Tensor inputTensor = Import.of(file);
@@ -90,13 +90,13 @@ import ch.ethz.idsc.tensor.io.Primitives;
         double[][] cov = new double[][] { //
             { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
             { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
-        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, defaultBlobID));
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, DEFAULT_BLOB_ID));
       }
       return extractedFeatures;
     } catch (IOException e) {
       e.printStackTrace();
-      return null;
     }
+    return null;
   }
 
   /** load the timestamps from the hand-labeled images.
@@ -109,7 +109,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
     // get all filenames and sort
     String[] fileNames = EvaluationFileLocations.images(imagePrefix).list();
     Arrays.sort(fileNames);
-    for (int i = 0; i < numberOfFiles; i++) {
+    for (int i = 0; i < numberOfFiles; ++i) {
       String fileName = fileNames[i];
       // remove file extension
       fileName = fileName.substring(0, fileName.lastIndexOf("."));

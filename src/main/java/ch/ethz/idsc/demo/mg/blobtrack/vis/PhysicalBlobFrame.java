@@ -15,7 +15,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
 
 /** BufferedImage to visualize a list of PhysialBlob objects */
-public class PhysicalBlobFrame {
+/* package */ class PhysicalBlobFrame {
   private static final byte CLEAR_BYTE = (byte) 240; // grey (TYPE_BYTE_INDEXED)
   private static int frameWidth;
   private static int frameHeight;
@@ -24,7 +24,7 @@ public class PhysicalBlobFrame {
   private final Graphics2D graphics;
   private final byte[] bytes;
   // world coord to visualization mapping
-  private ImageToGokartUtil transformUtil;
+  private final ImageToGokartUtil transformUtil;
   private final double[][] fieldOfView; // contains image plane coordinates of trapezoid defining field of view
   private final double scaleFactor; // [pixel/m] how many pixels in the frame correspond to one meter in physical world
   private final int gokartSize; // [pixel]

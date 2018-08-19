@@ -12,7 +12,6 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
-import ch.ethz.idsc.demo.mg.blobtrack.vis.AccumulatedFeaturePoints;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;

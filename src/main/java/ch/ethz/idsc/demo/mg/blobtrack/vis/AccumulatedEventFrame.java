@@ -5,8 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
@@ -16,16 +16,17 @@ import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
 
 /** BufferedImage with accumulated events and overlaid ImageBlobs */
-public class AccumulatedEventFrame {
+/* package */ class AccumulatedEventFrame {
   private static final byte[] VALUE = { 0, (byte) 255 };
+  private static final byte GRAY_BYTE = (byte) 240;
   // ---
+  private final int width;
+  private final int height;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final ImageCopy imageCopy; // for correct visualization
   private final byte[] bytes;
   private final boolean rotateFrame;
-  private final int width;
-  private final int height;
 
   public AccumulatedEventFrame(BlobTrackConfig blobTrackConfig) {
     width = blobTrackConfig.davisConfig.width.number().intValue();
@@ -36,7 +37,7 @@ public class AccumulatedEventFrame {
     bytes = dataBufferByte.getData();
     imageCopy = new ImageCopy();
     rotateFrame = blobTrackConfig.rotateFrame;
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = (byte) 240);
+    clearBytes();
   }
 
   public BufferedImage getAccumulatedEvents() {
@@ -50,13 +51,9 @@ public class AccumulatedEventFrame {
    * @param rejectedBlobColor color for rejected blobs
    * @return BufferedImage for visualization */
   public BufferedImage overlayActiveBlobs(List<ImageBlob> activeBlobs, Color selectedBlobColor, Color rejectedBlobColor) {
-    for (int i = 0; i < activeBlobs.size(); i++) {
-      if (activeBlobs.get(i).getIsRecognized()) {
-        VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), selectedBlobColor);
-      } else {
-        VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), rejectedBlobColor);
-      }
-    }
+    for (int i = 0; i < activeBlobs.size(); ++i)
+      VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), //
+          activeBlobs.get(i).getIsRecognized() ? selectedBlobColor : rejectedBlobColor);
     return getFrame();
   }
 
@@ -66,9 +63,8 @@ public class AccumulatedEventFrame {
    * @param blobColor color for blobs
    * @return BufferedImage for visualization */
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> hiddenBlobs, Color blobColor) {
-    for (int i = 0; i < hiddenBlobs.size(); i++) {
+    for (int i = 0; i < hiddenBlobs.size(); ++i)
       VisPipelineUtil.drawImageBlob(graphics, hiddenBlobs.get(i), blobColor);
-    }
     return getFrame();
   }
 
@@ -86,7 +82,7 @@ public class AccumulatedEventFrame {
     return imageCopy.get();
   }
 
-  public byte[] getBytes() {
-    return bytes;
+  public void clearBytes() {
+    Arrays.fill(bytes, GRAY_BYTE);
   }
 }

@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.blobtrack.vis;
+package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

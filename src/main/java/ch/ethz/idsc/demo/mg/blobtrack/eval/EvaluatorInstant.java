@@ -41,10 +41,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
     recall = truePositiveCount / (truePositiveCount + falseNegativeCount);
     // avoid division by zero
     float denominator = truePositiveCount + falsePositiveCount;
-    if (denominator == 0)
-      precision = 0;
-    else
-      precision = truePositiveCount / denominator;
+    precision = denominator == 0 ? 0 : truePositiveCount / denominator;
   }
 
   private void computeDistances() {

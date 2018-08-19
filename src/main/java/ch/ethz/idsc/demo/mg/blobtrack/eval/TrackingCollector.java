@@ -29,7 +29,7 @@ public class TrackingCollector {
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
     // set up empty list of estimated features
     estimatedFeatures = new ArrayList<>(numberOfLabelInstants);
-    for (int i = 0; i < timeStamps.length; i++)
+    for (int i = 0; i < timeStamps.length; ++i)
       estimatedFeatures.add(new ArrayList<>());
   }
 
@@ -42,7 +42,7 @@ public class TrackingCollector {
     System.out.println("Estimated features are collected. Instant nr " + (currentLabelInstant + 1));
     estimatedFeatures.set(currentLabelInstant, estimatedFeaturesInstant);
     // counter
-    currentLabelInstant++;
+    ++currentLabelInstant;
     if (currentLabelInstant == numberOfLabelInstants) {
       EvalUtil.saveToCSV(estimatedLabelFile, estimatedFeatures, timeStamps);
       System.out.println("Estimated labels saved to " + estimatedLabelFileName);

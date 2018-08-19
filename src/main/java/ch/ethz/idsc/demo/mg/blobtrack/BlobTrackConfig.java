@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
+// TODO MG lot of parameters redundant to BlobTracking
 public class BlobTrackConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig();
