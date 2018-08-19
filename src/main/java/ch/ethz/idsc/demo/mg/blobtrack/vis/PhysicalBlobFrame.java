@@ -7,8 +7,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
@@ -105,9 +105,9 @@ public class PhysicalBlobFrame {
     graphics.fill(ellipse);
   }
 
-  // resets all pixel to grey
+  /** resets all pixel to grey */
   private void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    Arrays.fill(bytes, CLEAR_BYTE);
   }
 
   /** transforms physical coordinates in go kart reference frame to image plane coordinates
@@ -119,7 +119,8 @@ public class PhysicalBlobFrame {
     double[] physicalPosPixel = new double[] { physicalPos[0] * scaleFactor, physicalPos[1] * scaleFactor };
     // shift origin from gokart to upper left corner and transform coordinate axes: x --> -y and y --> -x
     // TODO the coordinate transformation is hardcoded
-    double[] imagePlaneCoord = new double[] { originPos[0] - physicalPosPixel[1], originPos[1] - physicalPosPixel[0] };
-    return imagePlaneCoord;
+    return new double[] { //
+        originPos[0] - physicalPosPixel[1], //
+        originPos[1] - physicalPosPixel[0] };
   }
 }

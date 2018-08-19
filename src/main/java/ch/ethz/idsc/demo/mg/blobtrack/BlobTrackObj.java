@@ -3,12 +3,23 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-// provides blob object for the tracking algorithm.
+/** provides blob object for the tracking algorithm */
 public class BlobTrackObj {
   // camera parameters
-  private static int width;
-  private static int height;
-  private static int defaultBlobID;
+  private static int WIDTH;
+  private static int HEIGHT;
+  private static int DEFAULT_BLOB_ID;
+
+  /** set static parameters of class
+   * 
+   * @param blobTrackConfig */
+  public static void setParams(BlobTrackConfig blobTrackConfig) {
+    WIDTH = blobTrackConfig.davisConfig.width.number().intValue();
+    HEIGHT = blobTrackConfig.davisConfig.height.number().intValue();
+    DEFAULT_BLOB_ID = blobTrackConfig.defaultBlobID.number().intValue();
+  }
+
+  // ---
   // blob parameters
   private final double[][] covariance;
   private final float[] initPos;
@@ -22,18 +33,13 @@ public class BlobTrackObj {
   public BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
     pos = new float[] { initialX, initialY };
-    covariance = new double[][] { { initVariance, 0 }, { 0, initVariance } };
+    covariance = new double[][] { //
+        { initVariance, 0 }, //
+        { 0, initVariance } };
     layerID = false;
-    currentScore = 0.0f;
-    activity = 0.0f;
-    blobID = defaultBlobID;
-  }
-
-  // set static parameters of class
-  public static void setParams(BlobTrackConfig blobTrackConfig) {
-    width = blobTrackConfig.davisConfig.width.number().intValue();
-    height = blobTrackConfig.davisConfig.height.number().intValue();
-    defaultBlobID = blobTrackConfig.defaultBlobID.number().intValue();
+    currentScore = 0;
+    activity = 0;
+    blobID = DEFAULT_BLOB_ID;
   }
 
   // updates the activity of a blob
@@ -152,7 +158,7 @@ public class BlobTrackObj {
     float boundPointRight = pos[0] + boundaryDistance;
     float boundPointUp = pos[1] - boundaryDistance;
     float boundPointDown = pos[1] + boundaryDistance;
-    return boundPointLeft < 0 || boundPointRight > (width - 1) || boundPointUp < 0 || boundPointDown > height;
+    return boundPointLeft < 0 || boundPointRight > WIDTH - 1 || boundPointUp < 0 || boundPointDown > HEIGHT;
   }
 
   public void setToActiveLayer(int blobID) {

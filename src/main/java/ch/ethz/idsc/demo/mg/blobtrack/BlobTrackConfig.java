@@ -35,6 +35,7 @@ public class BlobTrackConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // TransformUtil
+  // TODO calibrationFileName and calibrationAvailable as functions
   public final String calibrationFileName = "/demo/mg/" + davisConfig.logFilename().substring(0, davisConfig.logFilename().length() - 1) + ".csv"; // relative
                                                                                                                                                    // to
   // main/resources/

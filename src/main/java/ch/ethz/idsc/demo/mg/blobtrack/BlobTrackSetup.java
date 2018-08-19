@@ -48,10 +48,9 @@ import ch.ethz.idsc.tensor.Scalar;
   public static void main(String[] args) {
     BlobTrackConfig blobTrackConfig = new BlobTrackConfig();
     BlobTrackSetup blobTrackSetup = new BlobTrackSetup(blobTrackConfig);
-    if (blobTrackConfig.collectEstimatedFeatures) {
+    if (blobTrackConfig.collectEstimatedFeatures)
       blobTrackSetup.iterate();
-    } else {
+    else
       blobTrackSetup.runAlgo();
-    }
   }
 }
