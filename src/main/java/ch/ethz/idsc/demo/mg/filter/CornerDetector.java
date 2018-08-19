@@ -26,9 +26,6 @@ public class CornerDetector implements DavisDvsEventFilter {
   private final int margin;
   /** surface of active events for both polarities */
   private final int[][][] SAE;
-  // TODO not every filter should count the events!
-  private int eventCount;
-  private int filteredEventCount;
 
   public CornerDetector(DavisConfig davisConfig) {
     width = davisConfig.width.number().intValue();
@@ -39,27 +36,13 @@ public class CornerDetector implements DavisDvsEventFilter {
 
   // from FilterInterface
   @Override
-  public boolean filter(DavisDvsEvent davisDvsEvent) {
-    ++eventCount;
-    if (cornerDetector(davisDvsEvent))
-      return true;
-    ++filteredEventCount;
-    return false;
-  }
-
-  @Override // from FilterInterface
-  public double getFilteredPercentage() {
-    return 100.0 * filteredEventCount / eventCount;
-  }
-
-  private boolean cornerDetector(DavisDvsEvent e) {
+  public boolean filter(DavisDvsEvent e) {
     // update SAE
     int pol = e.i;
     SAE[e.x][e.y][pol] = e.time;
     // check if not too close to boarder
-    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1) {
+    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1)
       return false;
-    }
     if (findStreak(CIRCLE3, 3, 6, e, pol))
       return findStreak(CIRCLE4, 4, 8, e, pol);
     return false;

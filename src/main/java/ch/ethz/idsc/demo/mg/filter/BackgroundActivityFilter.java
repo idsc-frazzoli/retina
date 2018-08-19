@@ -11,9 +11,6 @@ public class BackgroundActivityFilter implements DavisDvsEventFilter {
   private final int height;
   private final int[][] timestamps;
   private final double filterConstant;
-  // ---
-  private int eventCount;
-  private int filteredEventCount;
 
   public BackgroundActivityFilter(DavisConfig davisConfig) {
     width = davisConfig.width.number().intValue();
@@ -24,17 +21,8 @@ public class BackgroundActivityFilter implements DavisDvsEventFilter {
 
   @Override // from FilterInterface
   public boolean filter(DavisDvsEvent davisDvsEvent) {
-    ++eventCount;
     updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
-    if (davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant)
-      return true;
-    ++filteredEventCount;
-    return false;
-  }
-
-  @Override // from FilterInterface
-  public double getFilteredPercentage() {
-    return 100.0 * filteredEventCount / eventCount;
+    return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;
   }
 
   /** updates all neighboring cells with the time stamp of the incoming event

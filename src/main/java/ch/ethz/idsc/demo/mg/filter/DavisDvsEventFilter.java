@@ -6,7 +6,4 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 public interface DavisDvsEventFilter {
   /** @return true if event passes filter */
   boolean filter(DavisDvsEvent davisDvsEvent);
-
-  /** @return percentage of events that are filtered out */
-  double getFilteredPercentage();
 }

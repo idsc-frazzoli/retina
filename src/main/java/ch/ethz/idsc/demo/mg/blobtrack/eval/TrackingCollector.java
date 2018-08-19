@@ -32,6 +32,7 @@ public class TrackingCollector implements DavisDvsListener {
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
     // set up empty list of estimated features
+    // TODO MG numberOfLabelInstants vs. timeStamps.length ?
     estimatedFeatures = new ArrayList<>(numberOfLabelInstants);
     for (int i = 0; i < timeStamps.length; ++i)
       estimatedFeatures.add(new ArrayList<>());
