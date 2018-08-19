@@ -42,7 +42,12 @@ public class BlobTrackObj {
     blobID = DEFAULT_BLOB_ID;
   }
 
-  // updates the activity of a blob
+  /** updates the activity of a blob
+   * 
+   * @param hasHighestScore
+   * @param aUp
+   * @param exponential
+   * @return */
   public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
     if (hasHighestScore) {
@@ -57,7 +62,11 @@ public class BlobTrackObj {
     return isPromoted;
   }
 
-  // updates parameters of matching blob
+  /** updates parameters of matching blob
+   * 
+   * @param davisDvsEvent
+   * @param alphaOne
+   * @param alphaTwo */
   public void updateBlobParameters(DavisDvsEvent davisDvsEvent, float alphaOne, float alphaTwo) {
     float eventPosX = davisDvsEvent.x;
     float eventPosY = davisDvsEvent.y;
@@ -78,43 +87,18 @@ public class BlobTrackObj {
     covariance[1][1] = alphaTwo * covariance[1][1] + (1 - alphaTwo) * deltaCovariance[1][1];
   }
 
-  // scoring function based on Gaussian distribution
-  public float gaussianBlobScore(DavisDvsEvent davisDvsEvent) {
-    float eventPosX = davisDvsEvent.x;
-    float eventPosY = davisDvsEvent.y;
-    // determinant and inverse
-    double covarianceDeterminant = covariance[0][0] * covariance[1][1] - covariance[0][1] * covariance[1][0];
-    double[][] covarianceInverse = { { covariance[1][1], -covariance[0][1] }, { -covariance[1][0], covariance[0][0] } };
-    covarianceInverse[0][0] /= covarianceDeterminant;
-    covarianceInverse[0][1] /= covarianceDeterminant;
-    covarianceInverse[1][0] /= covarianceDeterminant;
-    covarianceInverse[1][1] /= covarianceDeterminant;
-    // compute exponent of Gaussian distribution
-    float offsetX = eventPosX - pos[0];
-    float offsetY = eventPosY - pos[1];
-    double[] intermediate = { //
-        covarianceInverse[0][0] * offsetX + covarianceInverse[0][1] * offsetY, //
-        covarianceInverse[1][0] * offsetX + covarianceInverse[1][1] * offsetY };
-    float exponent = (float) (-0.5 * (offsetX * intermediate[0] + offsetY * intermediate[1]));
-    currentScore = (float) (1 / (2 * Math.PI) * 1 / Math.sqrt(covarianceDeterminant) * Math.exp(exponent));
-    return currentScore;
-  }
-
-  // scoring function based on Gabor filters
-  // TODO how to incorporate event polarity?
-  public float gaborBlobScore(DavisDvsEvent davisDvsEvent) {
-    double sigma = 3;
-    double gamma = sigma / 15;
-    double lambda = 4 * sigma;
-    double theta = Math.PI / 2;
-    double cos_t = Math.cos(theta);
-    double sin_t = Math.sin(theta);
-    double xU = +(davisDvsEvent.x - pos[0]) * cos_t + (davisDvsEvent.y - pos[1]) * sin_t;
-    double yU = -(davisDvsEvent.x - pos[0]) * sin_t + (davisDvsEvent.y - pos[1]) * cos_t;
-    currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
-    return currentScore;
-  }
-
+  // public float gaborBlobScore(DavisDvsEvent davisDvsEvent) {
+  // double sigma = 3;
+  // double gamma = sigma / 15;
+  // double lambda = 4 * sigma;
+  // double theta = Math.PI / 2;
+  // double cos_t = Math.cos(theta);
+  // double sin_t = Math.sin(theta);
+  // double xU = +(davisDvsEvent.x - pos[0]) * cos_t + (davisDvsEvent.y - pos[1]) * sin_t;
+  // double yU = -(davisDvsEvent.x - pos[0]) * sin_t + (davisDvsEvent.y - pos[1]) * cos_t;
+  // currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
+  // return currentScore = (float) GaborBlobScore.INSTANCE.evaluate(this, davisDvsEvent);
+  // }
   // // maybe use also Manhattan distance?
   // public double geometricBlobScore(DavisDvsEvent davisDvsEvent) {
   // double distance = Math.sqrt((davisDvsEvent.x - pos[0]) * (davisDvsEvent.x - pos[0]) + (davisDvsEvent.y - pos[1]) * (davisDvsEvent.y - pos[1]));
@@ -122,28 +106,32 @@ public class BlobTrackObj {
   // return distance;
   // }
   public void updateAttractionEquation(float alphaAttr, float dRep) {
-    double posDiff = Math.hypot(pos[0] - initPos[0], pos[1] - initPos[1]);
-    // Math.sqrt((pos[0] - initPos[0]) * (pos[0] - initPos[0]) + (pos[1] - initPos[1]) * (pos[1] - initPos[1]));
-    if (posDiff > dRep) {
+    double posDiff = getDistanceTo(initPos);
+    if (dRep < posDiff) {
       pos[0] = initPos[0];
       pos[1] = initPos[1];
     } else {
-      pos[0] = pos[0] + alphaAttr * (initPos[0] - pos[0]);
-      pos[1] = pos[1] + alphaAttr * (initPos[1] - pos[1]);
+      pos[0] += alphaAttr * (initPos[0] - pos[0]);
+      pos[1] += alphaAttr * (initPos[1] - pos[1]);
     }
   }
 
-  // required for merging
-  public double getDistanceTo(BlobTrackObj otherBlob) {
-    return Math.hypot(pos[0] - otherBlob.getPos()[0], pos[1] - otherBlob.getPos()[1]);
+  /** required for merging
+   * 
+   * @param otherPos
+   * @return */
+  public double getDistanceTo(float[] otherPos) {
+    return Math.hypot(pos[0] - otherPos[0], pos[1] - otherPos[1]);
   }
 
-  // merge blobs by using activity-weighted average
+  /** merge blobs by using activity-weighted average
+   * 
+   * @param otherBlob */
   public void eat(BlobTrackObj otherBlob) {
-    float totActivity = activity + otherBlob.getActivity();
+    final float totActivity = activity + otherBlob.getActivity();
     // position merge
-    pos[0] = (1 / totActivity) * (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]);
-    pos[1] = (1 / totActivity) * (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]);
+    pos[0] = (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]) / totActivity;
+    pos[1] = (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]) / totActivity;
     // covariance merge TODO find out which is the correct way to do that
     covariance[0][0] = 0.5 * (covariance[0][0] + otherBlob.getCovariance()[0][0]);
     covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
@@ -158,7 +146,10 @@ public class BlobTrackObj {
     float boundPointRight = pos[0] + boundaryDistance;
     float boundPointUp = pos[1] - boundaryDistance;
     float boundPointDown = pos[1] + boundaryDistance;
-    return boundPointLeft < 0 || boundPointRight > WIDTH - 1 || boundPointUp < 0 || boundPointDown > HEIGHT;
+    return boundPointLeft < 0 //
+        || boundPointRight > WIDTH - 1 //
+        || boundPointUp < 0 //
+        || boundPointDown > HEIGHT;
   }
 
   public void setToActiveLayer(int blobID) {
@@ -188,5 +179,9 @@ public class BlobTrackObj {
 
   public int getBlobID() {
     return blobID;
+  }
+
+  public void setCurrentScore(float score) {
+    currentScore = score;
   }
 }

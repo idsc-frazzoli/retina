@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** implements the object detection and tracking algorithm as described in TODO MG find reference */
 public class BlobTrackProvider implements DavisDvsListener {
-  private final DavisDvsEventFilter filterInterface;
+  private final DavisDvsEventFilter davisDvsEventFilter;
   private final BlobTracking blobTracking;
   private final ImageBlobSelector imageBlobSelector;
   private final boolean calibrationAvailable;
@@ -22,9 +22,9 @@ public class BlobTrackProvider implements DavisDvsListener {
   private TrackingCollector trackingCollector = null;
 
   public BlobTrackProvider(BlobTrackConfig blobTrackConfig) {
-    calibrationAvailable = blobTrackConfig.calibrationAvailable;
+    calibrationAvailable = blobTrackConfig.isCalibrationAvailable();
     collectEstimatedFeatures = blobTrackConfig.collectEstimatedFeatures;
-    filterInterface = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
+    davisDvsEventFilter = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
     blobTracking = new BlobTracking(blobTrackConfig);
     imageBlobSelector = blobTrackConfig.createImageBlobSelector();
     if (calibrationAvailable)
@@ -38,7 +38,7 @@ public class BlobTrackProvider implements DavisDvsListener {
     if (collectEstimatedFeatures && trackingCollector.isGroundTruthAvailable(davisDvsEvent)) {
       trackingCollector.setEstimatedFeatures(imageBlobSelector.getSelectedBlobs());
     }
-    if (filterInterface.filter(davisDvsEvent)) {
+    if (davisDvsEventFilter.filter(davisDvsEvent)) {
       blobTracking.receiveEvent(davisDvsEvent);
       imageBlobSelector.receiveActiveBlobs(blobTracking.getActiveBlobs());
       if (calibrationAvailable) {

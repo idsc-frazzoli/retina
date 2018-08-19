@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.blobtrack;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.ImageBlobSelector;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -36,11 +38,6 @@ public class BlobTrackConfig {
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // TransformUtil
-  // TODO calibrationFileName and calibrationAvailable as functions
-  public final String calibrationFileName = "/demo/mg/" + davisConfig.logFilename().substring(0, davisConfig.logFilename().length() - 1) + ".csv"; // relative
-                                                                                                                                                   // to
-  // main/resources/
-  public final Boolean calibrationAvailable = !(ResourceData.of(calibrationFileName.toString()) == null);
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool
@@ -73,5 +70,11 @@ public class BlobTrackConfig {
   /** @return new instance of {@link ImageBlobSelector} derived from parameters in pipelineConfig */
   public ImageBlobSelector createImageBlobSelector() {
     return new ImageBlobSelector(upperBoarder);
+  }
+
+  public boolean isCalibrationAvailable() {
+    String logFilename = davisConfig.logFilename();
+    String calibrationFileName = "/demo/mg/" + logFilename.substring(0, logFilename.length() - 1) + ".csv";
+    return Objects.nonNull(ResourceData.of(calibrationFileName));
   }
 }

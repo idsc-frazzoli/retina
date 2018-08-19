@@ -19,8 +19,8 @@ public class ImageBlob implements Serializable {
   private final int timeStamp;
   private final int blobID; // == 0 for hidden blobs
   private double[][] covariance;
+  private final boolean isHidden;
   private boolean isRecognized;
-  private boolean isHidden;
 
   /** @param pos array of length 2
    * @param covariance array of size 2 x 2
@@ -47,10 +47,8 @@ public class ImageBlob implements Serializable {
     return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
   }
 
-  public float getDistanceTo(ImageBlob blob) {
-    return (float) Math.hypot( //
-        pos[0] - blob.getPos()[0], //
-        pos[1] - blob.getPos()[1]);
+  public float getDistanceTo(float[] otherPos) {
+    return (float) Math.hypot(pos[0] - otherPos[0], pos[1] - otherPos[1]);
   }
 
   public float[] getPos() {

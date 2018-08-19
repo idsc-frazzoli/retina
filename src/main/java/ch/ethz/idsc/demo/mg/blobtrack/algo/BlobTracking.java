@@ -103,13 +103,14 @@ public class BlobTracking {
 
   private void calcScoreAndParams(DavisDvsEvent davisDvsEvent) {
     float highScore = 0;
-    float hiddenHighScore = 0;
+    // float hiddenHighScore = 0;
     int highScoreBlob = 0;
-    int hiddenHighScoreBlob = 0;
+    // int hiddenHighScoreBlob = 0;
     // calculate score for all blobs
-    for (int i = 0; i < blobs.size(); i++) {
+    for (int i = 0; i < blobs.size(); ++i) {
       // if (blobs.get(i).getLayerID()) {
-      float score = blobs.get(i).gaussianBlobScore(davisDvsEvent);
+      float score = (float) GaussianBlobScore.INSTANCE.evaluate(blobs.get(i), davisDvsEvent);
+      blobs.get(i).setCurrentScore(score);
       // store highest score and which blob it belongs to
       if (score > highScore) {
         highScore = score;
@@ -204,9 +205,9 @@ public class BlobTracking {
     int firstBlob = 0; // no active blob at 0 so its safe to assign 0
     int secondBlob = 0;
     // find pair of active blobs that is closest to each other
-    for (int i = initNumberOfBlobs; i < (blobs.size() - 1); i++)
-      for (int j = i + 1; j < blobs.size(); j++) {
-        double distance = blobs.get(i).getDistanceTo(blobs.get(j));
+    for (int i = initNumberOfBlobs; i < blobs.size() - 1; ++i)
+      for (int j = i + 1; j < blobs.size(); ++j) {
+        double distance = blobs.get(i).getDistanceTo(blobs.get(j).getPos());
         if (distance < minDistance) {
           firstBlob = i;
           secondBlob = j;
@@ -233,7 +234,7 @@ public class BlobTracking {
 
   // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getActiveBlobs() {
-    List<ImageBlob> activeBlobs = new ArrayList<>();
+    List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)
       if (blobs.get(i).getLayerID()) {
         ImageBlob activeBlob = new ImageBlob( //
@@ -242,14 +243,14 @@ public class BlobTracking {
             getEventTimestamp(), //
             false, //
             blobs.get(i).getBlobID());
-        activeBlobs.add(activeBlob);
+        list.add(activeBlob);
       }
-    return activeBlobs;
+    return list;
   }
 
   // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getHiddenBlobs() {
-    List<ImageBlob> hiddenBlobs = new ArrayList<>();
+    List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)
       if (!blobs.get(i).getLayerID()) {
         ImageBlob hiddenBlob = new ImageBlob( //
@@ -258,9 +259,9 @@ public class BlobTracking {
             getEventTimestamp(), //
             true, //
             defaultBlobID);
-        hiddenBlobs.add(hiddenBlob);
+        list.add(hiddenBlob);
       }
-    return hiddenBlobs;
+    return list;
   }
 
   // return number of blobs. layerId=0: hidden blobs, layerId=1: active blobs, layerId=2: all blobs
