@@ -1,10 +1,11 @@
 function [sx,sP] = lidarIMUStateEstimation(adat,ldat)
-x = zeros(8,1);
+x = zeros(10,1);
 dim = numel(x);
 P = eye(dim)*1;
 IMUa = 0.01;
 IMUr = 1;
-Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa]);
+DRIFT=0.01;
+Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa,DRIFT,DRIFT]);
 lt = ldat(:,1);
 at = adat(:,1);
 ldat = ldat(:,2:4);
@@ -38,9 +39,9 @@ Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
     currentt
     maxt
-    if currentt>540
-        lR=eye(3)*1000000;
-    end
+    %if currentt>540
+    %    lR=eye(3)*1000000;
+    %end
     if(lt(lcount)<at(acount))
         %update with lidar
         dt = lt(lcount)-currentt;

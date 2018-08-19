@@ -21,8 +21,8 @@ else
     px = x;
     pP = P;
 end
-h = x;
-Hx = eye(8);
+h = x(1:8);
+Hx = [eye(8),zeros(8,2)];
 [nx,nP]=kmeasure(px,pP,h,Hx,fullz,fullR);
 end
 
