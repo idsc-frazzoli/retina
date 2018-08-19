@@ -7,13 +7,13 @@ import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.eval.TrackingCollector;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
-import ch.ethz.idsc.demo.mg.filter.FilterInterface;
+import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** implements the object detection and tracking algorithm as described in TODO MG find reference */
 public class BlobTrackProvider implements DavisDvsListener {
-  private final FilterInterface filterInterface;
+  private final DavisDvsEventFilter filterInterface;
   private final BlobTracking blobTracking;
   private final ImageBlobSelector imageBlobSelector;
   private final boolean calibrationAvailable;

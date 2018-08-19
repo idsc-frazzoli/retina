@@ -6,14 +6,14 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** Implementation of background activity filter as presented in TODO MG find reference paper.
  * Events on the image boarders are always filtered. Smaller {@link filterConstant} results in more aggressive filtering */
-public class BackgroundActivityFilter implements FilterInterface {
+public class BackgroundActivityFilter implements DavisDvsEventFilter {
   private final int width;
   private final int height;
   private final int[][] timestamps;
   private final double filterConstant;
   // ---
-  private double eventCount;
-  private double filteredEventCount;
+  private int eventCount;
+  private int filteredEventCount;
 
   public BackgroundActivityFilter(DavisConfig davisConfig) {
     width = davisConfig.width.number().intValue();
@@ -22,16 +22,19 @@ public class BackgroundActivityFilter implements FilterInterface {
     filterConstant = davisConfig.filterConstant.number().doubleValue();
   }
 
-  // from FilterInterface
-  @Override
+  @Override // from FilterInterface
   public boolean filter(DavisDvsEvent davisDvsEvent) {
     ++eventCount;
     updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
-    if (davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant) {
+    if (davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant)
       return true;
-    }
-    filteredEventCount++;
+    ++filteredEventCount;
     return false;
+  }
+
+  @Override // from FilterInterface
+  public double getFilteredPercentage() {
+    return 100.0 * filteredEventCount / eventCount;
   }
 
   /** updates all neighboring cells with the time stamp of the incoming event
@@ -51,11 +54,5 @@ public class BackgroundActivityFilter implements FilterInterface {
       timestamps[x][y + 1] = time;
       timestamps[x + 1][y + 1] = time;
     }
-  }
-
-  // from FilterInterface
-  @Override
-  public double getFilteredPercentage() {
-    return 100 * filteredEventCount / eventCount;
   }
 }

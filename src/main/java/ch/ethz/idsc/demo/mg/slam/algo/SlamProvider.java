@@ -7,7 +7,7 @@ import java.util.Timer;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
-import ch.ethz.idsc.demo.mg.filter.FilterInterface;
+import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
@@ -31,7 +31,7 @@ public class SlamProvider implements DavisDvsListener {
   private final Timer timer;
   private final SlamTimerTask slamTimedTask;
   // ---
-  private final FilterInterface filteringPipeline;
+  private final DavisDvsEventFilter filteringPipeline;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamMapProcessing;

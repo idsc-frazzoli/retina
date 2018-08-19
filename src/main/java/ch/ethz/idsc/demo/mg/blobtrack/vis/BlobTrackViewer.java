@@ -7,14 +7,14 @@ import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.demo.mg.blobtrack.eval.EvaluationFileLocations;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
-import ch.ethz.idsc.demo.mg.filter.FilterInterface;
+import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** wrapper for blob tracking algorithm visualization */
 public class BlobTrackViewer implements DavisDvsListener {
-  private final FilterInterface filterInterface;
+  private final DavisDvsEventFilter filterInterface;
   private final BlobTrackProvider blobTrackProvider;
   private final BlobTrackGUI blobTrackGUI;
   private final AccumulatedEventFrame[] eventFrames;

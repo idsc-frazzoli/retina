@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
  * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf
  * Event is always filtered if closer than {@link margin} to the boarder */
-public class CornerDetector implements FilterInterface {
+public class CornerDetector implements DavisDvsEventFilter {
   /** hard coded circle parameters for corner detector */
   private static final int[][] CIRCLE3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //
@@ -26,9 +26,9 @@ public class CornerDetector implements FilterInterface {
   private final int margin;
   /** surface of active events for both polarities */
   private final int[][][] SAE;
-  // ---
-  private double eventCount;
-  private double filteredEventCount;
+  // TODO not every filter should count the events!
+  private int eventCount;
+  private int filteredEventCount;
 
   public CornerDetector(DavisConfig davisConfig) {
     width = davisConfig.width.number().intValue();
@@ -45,6 +45,11 @@ public class CornerDetector implements FilterInterface {
       return true;
     ++filteredEventCount;
     return false;
+  }
+
+  @Override // from FilterInterface
+  public double getFilteredPercentage() {
+    return 100.0 * filteredEventCount / eventCount;
   }
 
   private boolean cornerDetector(DavisDvsEvent e) {
@@ -100,11 +105,5 @@ public class CornerDetector implements FilterInterface {
       }
     }
     return false;
-  }
-
-  // from FilterInterface
-  @Override
-  public double getFilteredPercentage() {
-    return 100 * filteredEventCount / eventCount;
   }
 }
