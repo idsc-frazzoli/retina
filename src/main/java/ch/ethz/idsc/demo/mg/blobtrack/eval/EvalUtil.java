@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
   public static int[] getTimestampsFromImages(int numberOfFiles, String imagePrefix) {
     int[] timeStamps = new int[numberOfFiles];
     // get all filenames and sort
-    String[] fileNames = EvaluationFileLocations.images(imagePrefix).list();
+    String[] fileNames = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix).list();
     Arrays.sort(fileNames);
     for (int i = 0; i < numberOfFiles; ++i) {
       String fileName = fileNames[i];

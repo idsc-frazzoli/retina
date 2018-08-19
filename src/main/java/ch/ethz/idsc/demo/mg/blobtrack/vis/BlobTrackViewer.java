@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
-import ch.ethz.idsc.demo.mg.blobtrack.eval.EvaluationFileLocations;
+import ch.ethz.idsc.demo.mg.blobtrack.eval.MgEvaluationFolders;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
@@ -38,7 +38,7 @@ public class BlobTrackViewer implements DavisDvsListener {
     for (int i = 0; i < physicalFrames.length; i++)
       physicalFrames[i] = new PhysicalBlobFrame(blobTrackConfig);
     imagePrefix = blobTrackConfig.davisConfig.logFilename();
-    parentFilePath = EvaluationFileLocations.images(imagePrefix);
+    parentFilePath = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix);
     visualizationInterval = Magnitude.SECOND.toDouble(blobTrackConfig.visualizationInterval);
     savingInterval = Magnitude.SECOND.toDouble(blobTrackConfig.savingInterval);
   }

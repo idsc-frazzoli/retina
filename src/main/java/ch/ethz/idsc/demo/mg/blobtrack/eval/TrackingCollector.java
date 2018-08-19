@@ -27,7 +27,7 @@ public class TrackingCollector implements DavisDvsListener {
   public TrackingCollector(ImageBlobSelector imageBlobSelector, BlobTrackConfig pipelineConfig) {
     this.imageBlobSelector = imageBlobSelector;
     imagePrefix = pipelineConfig.davisConfig.logFilename();
-    numberOfLabelInstants = EvaluationFileLocations.images(imagePrefix).list().length;
+    numberOfLabelInstants = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix).list().length;
     timeStamps = EvalUtil.getTimestampsFromImages(numberOfLabelInstants, imagePrefix);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);

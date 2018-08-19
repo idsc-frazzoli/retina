@@ -33,8 +33,8 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
   EvaluatorSingleRun(BlobTrackConfig pipelineConfig) {
     logFileName = pipelineConfig.davisConfig.logFilename();
-    numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
-    evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
+    numberOfFiles = MgEvaluationFolders.HANDLABEL.subfolder(logFileName).list().length;
+    evaluationImagesFilePath = MgEvaluationFolders.EVALUATED.subfolder(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
     groundTruthTimeStamps = EvalUtil.getTimestampsFromImages(numberOfFiles, logFileName);
     groundTruthFeatures = EvalUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
@@ -74,7 +74,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     // load matching accumulatedEventFrame (very similar as in HandLabeler)
     String imgNumberString = String.format("%04d", currentLabelInstant + 1);
     String fileName = logFileName + "_" + imgNumberString + "_" + groundTruthTimeStamps[currentLabelInstant] + ".png";
-    File pathToFile = new File(EvaluationFileLocations.images(logFileName), fileName);
+    File pathToFile = new File(MgEvaluationFolders.HANDLABEL.subfolder(logFileName), fileName);
     BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     try {
       bufferedImage = ImageIO.read(pathToFile);
