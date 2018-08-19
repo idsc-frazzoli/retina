@@ -50,7 +50,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 /** visualization of gokart odometry and sensor information
  * 
  * https://www.youtube.com/watch?v=noqpenUZ34w */
-class OfflineHud implements OfflineLogListener {
+// public because class is referenced outside of retina
+public class OfflineHud implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Dimension DIMENSION = new Dimension(1920, 480);
   public static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBILAB_LOCALIZATION_20180506;

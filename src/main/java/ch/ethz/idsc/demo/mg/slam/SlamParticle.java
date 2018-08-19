@@ -106,9 +106,6 @@ public class SlamParticle implements GokartPoseInterface {
 
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return Tensors.of( //
-        Quantity.of(pose.Get(0), SI.METER), //
-        Quantity.of(pose.Get(1), SI.METER), //
-        pose.Get(2));
+    return GokartPoseHelper.attachUnits(pose);
   }
 }
