@@ -1,17 +1,17 @@
 x = zeros(8,1);
+x = [1,0,0,0,2,0,0,0]';
 dim = numel(x);
 P = eye(dim)*1;
-top = 0.01;
-middle = 0.1;
-bottom = 1.5;
-Q = diag([top,top, middle,middle, middle, bottom,bottom, bottom]);
+IMUa = 1;
+IMUr = 1;
+Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa]);
 lt = 0:0.05:20;
 lx = 2*cos(lt);
 ly = 2*sin(lt);
 ltheta = lt*0;
 ldat = [lx;ly;ltheta];
 %add noise
-randdat = normrnd(0,0.2,size(ldat));
+randdat = normrnd(0,0.02,size(ldat));
 ldat = ldat+randdat;
 %plot(lx,ly)
 %daspect([1 1 1])
@@ -21,7 +21,7 @@ ax = -2*cos(at);
 ay = -2*sin(at);
 vtheta = at*0;
 adat = [vtheta;ax;ay];
-randdat = normrnd(0,0.1,size(adat));
+randdat = normrnd(0,0.01,size(adat));
 adat = adat+randdat;
 %plot(ax,ay);
 
@@ -37,7 +37,7 @@ hpldat = highpass(ldat',wpass,fl)';
 %hold off
 
 %use higher frequency for data
-lR = estimateVar(ldat);
+lR = estimateVar(ldat)*1000000000;
 aR = estimateVar(adat);
 
 
@@ -91,6 +91,8 @@ close all
 
 %apply smoothing
 [sx,sP] = RTSSmoother(xhist,Phist,Qhist,Fhist);
+sx = xhist;
+sP = Phist;
 
 figure
 %inputs
@@ -111,6 +113,7 @@ hold off
 figure
 hold on
 plot(lx,ly);
+%plot(ldat(1,:), ldat(2,:))
 %plot(xhist(:,1),xhist(:,2));
 plot(sx(:,1),sx(:,2));
 daspect([1 1 1])

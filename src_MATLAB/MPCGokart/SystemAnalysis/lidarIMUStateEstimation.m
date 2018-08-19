@@ -2,48 +2,64 @@ function [sx,sP] = lidarIMUStateEstimation(adat,ldat)
 x = zeros(8,1);
 dim = numel(x);
 P = eye(dim)*1;
-top = 0.01;
-middle = 0.1;
-bottom = 1.5;
-Q = diag([top,top, middle,middle, middle, bottom,bottom, bottom]);
+IMUa = 0.01;
+IMUr = 1;
+Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa]);
 lt = ldat(:,1);
 at = adat(:,1);
 ldat = ldat(:,2:4);
 adat = adat(:,2:4);
 
+%debugging
+mwdebug = [];
+
+%aggregate accelerationdata
+aagg = 10;
+
 %use higher frequency for data
 lR = estimateVar(ldat);
-aR = estimateVar(adat);
+aR = estimateVar(adat)*4;
 
 
 [~,lN]=size(ldat);
 [~,lA]=size(adat);
 totalN = lN+lA;
 
-currentt = 0;
-acount = 1;
+currentt = min(lt(1),at(1));
+acount = aagg;
 lcount = 3;
 tcount = 1;
-maxt = 15;
+maxt = max(at)-0.1;
 thist = zeros(totalN,1);
 xhist = zeros(totalN,dim);
 Phist = zeros(totalN,dim,dim);
 Fhist = zeros(totalN,dim,dim);
 Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
+    currentt
+    maxt
+    if currentt>540
+        lR=eye(3)*1000000;
+    end
     if(lt(lcount)<at(acount))
         %update with lidar
         dt = lt(lcount)-currentt;
         currentt = lt(lcount);
         dmt = lt(lcount)-lt(lcount-1);
-        [x,P]=lidarMeasure(x,P,dt,dmt,ldat(:,lcount),ldat(:,lcount-1),ldat(:,lcount-2),lR,Q);
+        [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,Q);
         lcount = lcount+1;
     else
         %update with IMU
         dt = at(acount)-currentt;
         currentt = at(acount);
-        [x,P]=IMUMeasure(x,P,dt,adat(:,acount), aR,Q);
-        acount = acount+1;
+        m = mean(adat(acount-aagg+1:acount,:));
+        [x,P]=IMUMeasure(x,P,dt,m', aR,Q);
+        acount = acount+aagg;
+        
+        %debugging
+        %Rot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
+        %mw = Rot(x(3))*m';
+        %mwdebug = [mwdebug;currentt,mw'];
     end
     thist(tcount)=currentt;
     xhist(tcount,:) = x;
@@ -59,29 +75,59 @@ Phist = Phist(1:tcount-1,:,:);
 Fhist = Fhist(1:tcount-1,:,:);
 Qhist = Qhist(1:tcount-1,:,:);
 
-close all
+    %apply smoothing
+    [sx,sP] = RTSSmoother(xhist,Phist,Qhist,Fhist);
+    %sx = xhist;
+    %sP = Phist;
+
+    show = 1;
+    if(show)
+        close all
 
 
+        %figure
+        %inputs
+        %hold on
+        %plot(at,adat(:,1));
+        %plot(thist,sx(:,7));
+        %plot(thist,xhist(:,7));
+        %plot(at,ax);
+        %hold off
+
+        figure
+        hold on
+        plot(ldat(:,1),ldat(:,2));
+        plot(sx(:,1),sx(:,2));
+        daspect([1 1 1])
+        hold off
+
+        figure
+        hold on
+        plot(thist,sx(:,3))
+        plot(lt, ldat(:,3))
+        hold off
+
+        %test acceleration
+        figure
+        hold on
+        plot(thist,sx(:,7));
+        plot(thist,sx(:,8));
+        hold off
+
+        sigma = 20;
+        sz = sigma*30;    % length of gaussFilter vector
+        x = linspace(-sz / 2, sz / 2, sz);
+        gaussFilter = exp(-x .^ 2 / (2 * sigma ^ 2));
+        gaussFilter = gaussFilter / sum (gaussFilter); % normalize
+        %mwdebug(:,3) = conv (mwdebug(:,3), gaussFilter, 'same');
+        %mwdebug(:,4) = conv (mwdebug(:,4), gaussFilter, 'same');
 
 
-%apply smoothing
-[sx,sP] = RTSSmoother(xhist,Phist,Qhist,Fhist);
-
-figure
-%inputs
-hold on
-plot(at,adat(2,:));
-plot(thist,sx(:,7));
-plot(thist,xhist(:,7));
-%plot(at,ax);
-hold off
-
-figure
-hold on
-plot(lx,ly);
-%plot(xhist(:,1),xhist(:,2));
-plot(sx(:,1),sx(:,2));
-daspect([1 1 1])
-hold off
+        %figure
+        %hold on
+        %plot(mwdebug(:,1),mwdebug(:,3));
+        %plot(mwdebug(:,1),mwdebug(:,4));
+        %hold off
+    end
 end
 

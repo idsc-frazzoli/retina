@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class VelodyneLocalizationTable implements OfflineTableSupplier {
+public class GokartPoseTable implements OfflineTableSupplier {
   //private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final String LIDAR = VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
@@ -38,29 +38,31 @@ public class VelodyneLocalizationTable implements OfflineTableSupplier {
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private VelodynePosEvent vpe;
+  private GokartPoseEvent gpe;
 
-  public VelodyneLocalizationTable(Scalar delta) {
+  public GokartPoseTable(Scalar delta) {
     this.delta = delta;
   }
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(LIDAR) && Scalars.lessThan(time_next, time)) {
-      vpe = VelodynePosEvent.vlp16(byteBuffer);
+    if (channel.equals(GokartLcmChannel.POSE_LIDAR) && Scalars.lessThan(time_next, time)) {
+      gpe = new GokartPoseEvent(byteBuffer);
       // if (Objects.nonNull(vpe))
       // System.out.println(vpe.nmea());
       // System.out.println("export " + time.number().doubleValue());
       time_next = time.add(delta);
-      Scalar degX = vpe.gpsX();
-      Scalar degY = vpe.gpsY();
-      Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
+      Tensor pose = gpe.getPose().extract(0, 2).map(Magnitude.METER);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           //degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
           //degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
-          metric.map(Magnitude.METER).map(Round._2), //
-          vpe.speed().map(Magnitude.VELOCITY).map(Round._3), //
-          vpe.course().map(Magnitude.ONE).map(Round._6)
+          //metric.map(Magnitude.METER).map(Round._2), //
+          Tensors.of( //
+              gpe.getQuality().map(Round._3), // 1
+              pose.map(Round._3), // 2
+              gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5)) // 1
+          
       );
       System.out.println(tableBuilder.getRowCount());
     }

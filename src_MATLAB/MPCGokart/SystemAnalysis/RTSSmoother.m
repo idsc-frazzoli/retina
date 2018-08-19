@@ -17,6 +17,9 @@ function [sx,sP] = RTSSmoother(hx,hP,hQ,hF)
     sx(N,:)=hx(N,:);
     sP(N,:,:)=hP(N,:,:);
     for i = N-1:-1:1
+        if i == 3
+            i
+        end
         F = squeeze(hF(i,:,:));
         P = squeeze(hP(i,:,:));
         x = squeeze(hx(i,:))';

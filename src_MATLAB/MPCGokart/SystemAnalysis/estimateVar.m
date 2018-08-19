@@ -7,7 +7,7 @@ function vars = estimateVar(dat)
     hpdat = highpass(dat,0.1,1);
     vars = zeros(n,n);
     for i = 1:n
-        pd=fitdist(hpdat(:,1),'Normal');
+        pd=fitdist(hpdat(:,i),'Normal');
         vars(i,i)=pd.sigma;
     end
 end

@@ -15,7 +15,7 @@ import ch.ethz.idsc.subare.util.UserHome;
     ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
     //
     List<File> files = new LinkedList<>();
-    files.add(UserHome.file("20180611T095800_851c404d.lcm.00"));
+    files.add(UserHome.file("20180430T104113_a5291af9.lcm.00"));
     //
     for (File inputFile : files)
       try {
