@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** wrapper for blob tracking algorithm visualization */
 public class BlobTrackViewer implements DavisDvsListener {
-  private final DavisDvsEventFilter filterInterface;
+  private final DavisDvsEventFilter davisDvsEventFilter;
   private final BlobTrackProvider blobTrackProvider;
   private final BlobTrackGUI blobTrackGUI;
   private final AccumulatedEventFrame[] eventFrames;
@@ -28,7 +28,7 @@ public class BlobTrackViewer implements DavisDvsListener {
   private int imageCount;
 
   public BlobTrackViewer(BlobTrackConfig blobTrackConfig, BlobTrackProvider blobTrackProvider) {
-    filterInterface = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
+    davisDvsEventFilter = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
     this.blobTrackProvider = blobTrackProvider;
     blobTrackGUI = new BlobTrackGUI();
     eventFrames = new AccumulatedEventFrame[3];
@@ -47,7 +47,7 @@ public class BlobTrackViewer implements DavisDvsListener {
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     double timeStamp = davisDvsEvent.time / 1000000.0;
     eventFrames[0].receiveEvent(davisDvsEvent);
-    if (filterInterface.filter(davisDvsEvent)) {
+    if (davisDvsEventFilter.filter(davisDvsEvent)) {
       eventFrames[1].receiveEvent(davisDvsEvent);
       eventFrames[2].receiveEvent(davisDvsEvent);
     }
@@ -57,7 +57,7 @@ public class BlobTrackViewer implements DavisDvsListener {
       lastImagingTimeStamp = timeStamp;
     }
     if (timeStamp - lastSavingTimeStamp > savingInterval) {
-      imageCount++;
+      ++imageCount;
       // VisGeneralUtil.saveFrame(eventFrames[1].getAccumulatedEvents(), parentFilePath, imagePrefix, timeStamp, imageCount);
       lastSavingTimeStamp = timeStamp;
     }

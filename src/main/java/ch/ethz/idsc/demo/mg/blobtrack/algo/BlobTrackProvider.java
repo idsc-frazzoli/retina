@@ -6,7 +6,6 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.eval.TrackingCollector;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
@@ -19,9 +18,6 @@ public class BlobTrackProvider implements DavisDvsListener {
   private final ImageBlobSelector imageBlobSelector;
   private final BlobTransform blobTransform; // default initialization if unused
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
-  // TODO JPH mental note class design
-  private final boolean collectEstimatedFeatures;
-  private TrackingCollector trackingCollector = null;
 
   public BlobTrackProvider(BlobTrackConfig blobTrackConfig) {
     davisDvsEventFilter = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
@@ -30,15 +26,10 @@ public class BlobTrackProvider implements DavisDvsListener {
     blobTransform = blobTrackConfig.isCalibrationAvailable() //
         ? new CalibratedBlobTransform(blobTrackConfig.davisConfig.createImageToGokartUtil())
         : EmptyBlobTransform.INSTANCE;
-    collectEstimatedFeatures = blobTrackConfig.collectEstimatedFeatures;
-    if (collectEstimatedFeatures)
-      trackingCollector = new TrackingCollector(blobTrackConfig);
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (collectEstimatedFeatures && trackingCollector.isGroundTruthAvailable(davisDvsEvent))
-      trackingCollector.setEstimatedFeatures(imageBlobSelector.getSelectedBlobs());
     if (davisDvsEventFilter.filter(davisDvsEvent)) {
       blobTracking.receiveEvent(davisDvsEvent);
       imageBlobSelector.receiveActiveBlobs(blobTracking.getActiveBlobs());

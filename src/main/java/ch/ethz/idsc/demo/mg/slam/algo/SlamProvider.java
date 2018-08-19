@@ -31,7 +31,7 @@ public class SlamProvider implements DavisDvsListener {
   private final Timer timer;
   private final SlamTimerTask slamTimedTask;
   // ---
-  private final DavisDvsEventFilter filteringPipeline;
+  private final DavisDvsEventFilter davisDvsEventFilter;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
   private final SlamMapProcessing slamMapProcessing;
@@ -48,7 +48,7 @@ public class SlamProvider implements DavisDvsListener {
     this.gokartPoseOdometry = gokartPoseOdometry;
     this.timer = timer;
     // ---
-    filteringPipeline = new BackgroundActivityFilter(slamConfig.davisConfig);
+    davisDvsEventFilter = new BackgroundActivityFilter(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
     slamMapProcessing = new SlamMapProcessing(slamConfig);
@@ -82,7 +82,7 @@ public class SlamProvider implements DavisDvsListener {
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
-      if (filteringPipeline.filter(davisDvsEvent)) {
+      if (davisDvsEventFilter.filter(davisDvsEvent)) {
         double currentTimeStamp = davisDvsEvent.time * 1E-6;
         double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
