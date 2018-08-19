@@ -45,9 +45,9 @@ public class SlamTimerTask {
     this.slamMapProcessing = slamMapProcessing;
     this.timer = timer;
     // ---
-    reactiveUpdateRate = Magnitude.MILLI_SECOND.toLong(slamConfig._reactiveUpdateRate);
+    reactiveUpdateRate = Magnitude.MILLI_SECOND.toLong(slamConfig.reactiveUpdateRate);
     reactiveMappingMode = slamConfig.reactiveMappingMode;
-    lookBehindDistance = Magnitude.METER.toDouble(slamConfig._lookBehindDistance);
+    lookBehindDistance = Magnitude.METER.toDouble(slamConfig.lookBehindDistance);
     reactiveOccurrenceMapTask = new TimerTask() {
       @Override
       public void run() {
@@ -55,8 +55,8 @@ public class SlamTimerTask {
       }
     };
     // ---
-    statePropagationRate = Magnitude.MILLI_SECOND.toLong(slamConfig._statePropagationRate);
-    dT = Magnitude.SECOND.toDouble(slamConfig._statePropagationRate);
+    statePropagationRate = Magnitude.MILLI_SECOND.toLong(slamConfig.statePropagationRate);
+    dT = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
     odometryStatePropagation = slamConfig.odometryStatePropagation;
     statePropagationTask = new TimerTask() {
       @Override
@@ -65,7 +65,7 @@ public class SlamTimerTask {
       }
     };
     // ---
-    wayPointUpdateRate = Magnitude.MILLI_SECOND.toLong(slamConfig._wayPointUpdateRate);
+    wayPointUpdateRate = Magnitude.MILLI_SECOND.toLong(slamConfig.wayPointUpdateRate);
     mapProcessingTask = new TimerTask() {
       @Override
       public void run() {

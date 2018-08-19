@@ -37,8 +37,8 @@ public class SlamViewer {
     parentFilePath = SlamFileLocations.mapFrames(logFilename);
     lidarMappingMode = slamConfig.lidarMappingMode;
     saveSlamFrame = slamConfig.saveSlamFrame;
-    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig._visualizationInterval);
-    savingInterval = Magnitude.MILLI_SECOND.toLong(slamConfig._savingInterval);
+    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
+    savingInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.savingInterval);
     slamMapGUI = new SlamMapGUI(slamConfig);
     slamMapFrames = new SlamMapFrame[3];
     for (int i = 0; i < slamMapFrames.length; i++)

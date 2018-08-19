@@ -37,11 +37,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   SlamMapProcessing(SlamConfig slamConfig) {
     onlineMode = slamConfig.onlineMode;
-    wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig._wayPointUpdateRate);
+    wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.wayPointUpdateRate);
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
-    cornerX = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
+    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 

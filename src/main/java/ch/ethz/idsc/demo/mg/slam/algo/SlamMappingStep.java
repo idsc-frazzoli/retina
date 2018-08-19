@@ -30,9 +30,9 @@ import ch.ethz.idsc.tensor.Tensor;
     localizationMode = slamConfig.localizationMode;
     reactiveMappingMode = slamConfig.reactiveMappingMode;
     onlineMode = slamConfig.onlineMode;
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
-    lookBehindDistance = Magnitude.METER.toDouble(slamConfig._lookBehindDistance);
-    reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig._reactiveUpdateRate);
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
+    lookBehindDistance = Magnitude.METER.toDouble(slamConfig.lookBehindDistance);
+    reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig.reactiveUpdateRate);
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
