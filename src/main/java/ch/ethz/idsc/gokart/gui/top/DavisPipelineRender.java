@@ -41,7 +41,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     if (!isSelected)
       return;
     // visualize detected features
-    List<PhysicalBlob> features = pipelineProvider.getPhysicalblobs();
+    List<PhysicalBlob> features = pipelineProvider.getPhysicalBlobs();
     features.forEach(blob -> accumulateBlobs(geometricLayer, graphics, blob));
     for (int i = 0; i < accumulatedFeaturePoints.getAccumulatedPoints().size(); i++) {
       int blobID = accumulatedFeaturePoints.getBlobIDList().get(i);
