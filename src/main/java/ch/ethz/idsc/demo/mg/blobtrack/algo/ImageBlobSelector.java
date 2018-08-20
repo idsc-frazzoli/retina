@@ -7,12 +7,9 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.tensor.Scalar;
 
-// this class incorporates prior knowledge to recognize the features we want to track.
-// TODO MG scope issue
+/** this class incorporates prior knowledge to recognize the features we want to track */
 public class ImageBlobSelector {
-  // parameters
-  private final int upperBoarder; // [pixel] blobs with larger pos[1] are neglected (probably wall features)
-  // fields
+  private final int upperBoarder;
   private List<ImageBlob> imageBlobs;
 
   public ImageBlobSelector(Scalar upperBoarder) {
@@ -20,22 +17,12 @@ public class ImageBlobSelector {
     imageBlobs = new ArrayList<>();
   }
 
-  public void receiveActiveBlobs(List<ImageBlob> imageblobs) {
+  public void receiveImageBlobs(List<ImageBlob> imageblobs) {
     this.imageBlobs = imageblobs;
-    // only consider region of interest, i.e. floor
     checkPosition();
-    // shape must correspond to prior knowledge
-    // checkShape();
   }
 
-  // compare aspect ratio between eigenvalues and also look at eigenvectors.
-  private void checkShape() {
-    for (int i = 0; i < imageBlobs.size(); i++) {
-      // imageBlobs.get(i).getEigenVectors();
-      // imageBlobs.get(i).getStandardDeviation();
-    }
-  }
-
+  /** checks if blob is in defined region of interest */
   private void checkPosition() {
     for (int i = 0; i < imageBlobs.size(); i++) {
       if (imageBlobs.get(i).getPos()[1] < upperBoarder) {
@@ -44,17 +31,19 @@ public class ImageBlobSelector {
     }
   }
 
-  // return both selected and neglected blobs for visualization
-  public List<ImageBlob> getProcessedBlobs() {
+  // TODO MG maybe use method in BlobTracking for that purpose
+  /** @return all detected imageBlobs */
+  public List<ImageBlob> getImageBlobs() {
     return imageBlobs;
   }
 
-  // return selected blobs for next module in pipeline
+  /** @return imageBlobs that lie within region of interest */
   public List<ImageBlob> getSelectedBlobs() {
     List<ImageBlob> selectedBlobs = new ArrayList<>();
-    for (int i = 0; i < imageBlobs.size(); ++i)
+    for (int i = 0; i < imageBlobs.size(); ++i) {
       if (imageBlobs.get(i).getIsRecognized())
         selectedBlobs.add(imageBlobs.get(i));
+    }
     return selectedBlobs;
   }
 }

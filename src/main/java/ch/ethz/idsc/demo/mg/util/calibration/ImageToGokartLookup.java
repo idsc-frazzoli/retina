@@ -6,7 +6,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** lookup table for {@link ImageToGokartUtil} */
-// TODO implement interpolation to handle floating input values
 public class ImageToGokartLookup implements ImageToGokartInterface {
   public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
     ImageToGokartUtil imageToGokartUtil = new ImageToGokartUtil(inputTensor, unitConversion, width);
@@ -30,15 +29,13 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
         lookupArray[++index] = this.transformUtil.imageToGokart(x, y);
   }
 
-  // from ImageToGokartInterface
-  @Override
+  @Override // from ImageToGokartInterface
   public double[] imageToGokart(int imagePosX, int imagePosY) {
     int index = imagePosX + imagePosY * width;
     return lookupArray[index];
   }
 
-  // from ImageToGokartInterface
-  @Override
+  @Override // from ImageToGokartInterface
   public Tensor imageToGokartTensor(int index) {
     return Tensors.vectorDouble(lookupArray[index]);
   }

@@ -83,7 +83,7 @@ public class SlamTimerTask {
   private void reactiveOccurrenceMapTask() {
     if (reactiveMappingMode)
       SlamMappingStepUtil.updateReactiveOccurrenceMap(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), //
-          slamMappingStep.getMap(0), lookBehindDistance);
+          slamMappingStep.getOccurrenceMap(), lookBehindDistance);
   }
 
   private void statePropagationTask() {
@@ -94,6 +94,6 @@ public class SlamTimerTask {
   }
 
   private void mapProcessingTask() {
-    slamMapProcessing.mapPostProcessing(slamMappingStep.getMap(0));
+    slamMapProcessing.mapPostProcessing(slamMappingStep.getOccurrenceMap());
   }
 }

@@ -6,7 +6,7 @@ import java.util.stream.DoubleStream;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** provides a grid map which is used by the SLAM algorithm */
+/** grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
   private final int mapWidth;
@@ -18,6 +18,7 @@ public class MapProvider {
   private final double cornerYLow;
   private final double cornerXHigh;
   private final double cornerYHigh;
+  // ---
   /** tracks max value of values in array */
   private double maxValue;
 

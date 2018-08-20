@@ -4,11 +4,11 @@ package ch.ethz.idsc.demo.mg.filter;
 import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** based on paper "Fast event-based corner detection".
+/** based on paper "Fast event-based corner detection"
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
  * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf
  * Event is always filtered if closer than {@link margin} to the boarder */
-public class CornerDetector implements DavisDvsEventFilter {
+public class CornerDetector extends AbstractFilterHandler implements DavisDvsEventFilter {
   /** hard coded circle parameters for corner detector */
   private static final int[][] CIRCLE3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //
@@ -34,8 +34,7 @@ public class CornerDetector implements DavisDvsEventFilter {
     SAE = new int[width][height][2];
   }
 
-  // from FilterInterface
-  @Override
+  @Override // from DavisDvsEventFilter
   public boolean filter(DavisDvsEvent e) {
     // update SAE
     int pol = e.i;

@@ -11,11 +11,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
 /** static methods to facilitate map and waypoint processing */
-/* package */ enum SlamTrajectoryPlanningUtil {
+public enum SlamTrajectoryPlanningUtil {
   ;
   /** get waypoint objects according to world frame waypoint positions
    * 
-   * @param worldWayPoints [m] in world frame
+   * @param worldWayPoints interpreted as [m] in world frame
    * @param currentPose unitless representation
    * @return gokartWayPoints */
   public static List<WayPoint> getGokartWayPoints(List<double[]> worldWayPoints, Tensor currentPose) {
@@ -54,10 +54,11 @@ import ch.ethz.idsc.tensor.mat.Inverse;
   /** finds visible way point that is farthest away
    * 
    * @param visibleGokartWayPoints */
-  // TODO function not used
+  // not used yet
   public static int choosePurePursuitPoint(List<WayPoint> visibleGokartWayPoints) {
     // TODO filter criteria also should consider corridor of steering:
     // ... a close point on the center line is better than a further point to the side that can't be reached
+    // idea: attention module that guesses position of next way point
     double maxDistance = 0;
     int purePursuitIndex = -1;
     for (int index = 0; index < visibleGokartWayPoints.size(); ++index) {
@@ -69,5 +70,4 @@ import ch.ethz.idsc.tensor.mat.Inverse;
     }
     return purePursuitIndex;
   }
-  // idea: attention module that guesses position of next way point
 }

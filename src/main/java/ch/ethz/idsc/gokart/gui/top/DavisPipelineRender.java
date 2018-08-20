@@ -55,7 +55,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
     Tensor mappedFeature = Tensors.vectorDouble(blob.getPos());
     if (mappedFeature.Get(0).number().doubleValue() < mapAheadDistance) {
       Point2D point2D = geometricLayer.toPoint2D(mappedFeature);
-      accumulatedFeaturePoints.addFeaturePoint(point2D, blob.getblobID());
+      accumulatedFeaturePoints.addFeaturePoint(point2D, blob.getBlobID());
     }
   }
 

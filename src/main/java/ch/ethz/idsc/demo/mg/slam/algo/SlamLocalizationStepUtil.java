@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
 /** collection of methods for the localization step of the SLAM algorithm */
-/* package */ enum SlamLocalizationStepUtil {
+public enum SlamLocalizationStepUtil {
   ;
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);

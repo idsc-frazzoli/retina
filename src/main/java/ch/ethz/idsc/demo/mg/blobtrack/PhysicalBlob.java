@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 /** blob object in physical space */
 public class PhysicalBlob {
   private final double[] pos; // [m] in gokart reference frame
-  private final double[] vel = new double[2];
   private final int blobID; // default blobID == 0
   private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
 
@@ -21,12 +20,7 @@ public class PhysicalBlob {
     return pos;
   }
 
-  // TODO MG function/vel is not used
-  public double[] getVel() {
-    return vel;
-  }
-
-  public int getblobID() {
+  public int getBlobID() {
     return blobID;
   }
 

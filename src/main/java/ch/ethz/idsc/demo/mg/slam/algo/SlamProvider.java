@@ -28,7 +28,6 @@ public class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartInterface;
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartPoseOdometry;
-  private final Timer timer;
   private final SlamTimerTask slamTimedTask;
   // ---
   private final DavisDvsEventFilter davisDvsEventFilter;
@@ -46,7 +45,6 @@ public class SlamProvider implements DavisDvsListener {
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
     this.gokartLidarPose = gokartLidarPose;
     this.gokartPoseOdometry = gokartPoseOdometry;
-    this.timer = timer;
     // ---
     davisDvsEventFilter = new BackgroundActivityFilter(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
@@ -89,10 +87,11 @@ public class SlamProvider implements DavisDvsListener {
           slamLocalizationStep.setPose(gokartLidarPose.getPose());
           slamMappingStep.mappingStepWithLidar(slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         } else {
-          slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartPoseOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
+          slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getOccurrenceMap(), gokartPoseOdometry.getVelocity(), eventGokartFrame,
+              currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         }
-        slamMapProcessing.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
+        slamMapProcessing.mapPostProcessing(slamMappingStep.getOccurrenceMap(), currentTimeStamp);
         slamTrajectoryPlanning.computeTrajectory(slamMapProcessing.getWorldWayPoints(), currentTimeStamp);
       }
     }
@@ -114,9 +113,8 @@ public class SlamProvider implements DavisDvsListener {
     return slamTrajectoryPlanning.getWayPoints();
   }
 
-  // mapID: 0 == occurrence map, 1 == normalization map, 2 == likelihood map
-  public MapProvider getMap(int mapID) {
-    return slamMappingStep.getMap(mapID);
+  public MapProvider getOccurrenceMap() {
+    return slamMappingStep.getOccurrenceMap();
   }
 
   public boolean getIsInitialized() {

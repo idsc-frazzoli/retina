@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @return array of length 3 containing frames */
   public static BufferedImage[] constructFrames( //
       SlamMapFrame[] slamMapFrames, SlamProvider slamProvider, GokartPoseInterface gokartLidarPose, boolean lidarMappingMode) {
-    paintRawMap(slamProvider.getMap(0), slamMapFrames[0].getBytes());
+    paintRawMap(slamProvider.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     if (!lidarMappingMode)
       drawParticlePoses(slamMapFrames, slamProvider, 5);

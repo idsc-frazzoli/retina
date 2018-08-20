@@ -20,8 +20,8 @@ import ch.ethz.idsc.tensor.Scalar;
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
-  // specific to slam
   private final Timer timer;
+  // specific to slam algorithm
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
 
@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.Scalar;
     return slamProvider;
   }
 
-  public void terminateTimer() {
+  public void cancelTimer() {
     timer.cancel();
   }
 }

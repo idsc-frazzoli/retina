@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** Implementation of background activity filter as presented in TODO MG find reference paper.
  * Events on the image boarders are always filtered. Smaller {@link filterConstant} results in more aggressive filtering */
-public class BackgroundActivityFilter implements DavisDvsEventFilter {
+public class BackgroundActivityFilter extends AbstractFilterHandler implements DavisDvsEventFilter {
   private final int width;
   private final int height;
   private final int[][] timestamps;
@@ -19,7 +19,7 @@ public class BackgroundActivityFilter implements DavisDvsEventFilter {
     filterConstant = davisConfig.filterConstant.number().doubleValue();
   }
 
-  @Override // from FilterInterface
+  @Override // from DavisDvsEventFilter
   public boolean filter(DavisDvsEvent davisDvsEvent) {
     updateNeighboursTimestamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
     return davisDvsEvent.time - timestamps[davisDvsEvent.x][davisDvsEvent.y] <= filterConstant;

@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 
 /** collection of methods for the mapping step of the SLAM algorithm */
-/* package */ enum SlamMappingStepUtil {
+public enum SlamMappingStepUtil {
   ;
   /** update occurrence map with particles. in v1.0, counting events in each cell
    * 

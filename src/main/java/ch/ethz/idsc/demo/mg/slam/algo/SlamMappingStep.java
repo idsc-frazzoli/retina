@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** executes the mapping step of the SLAM algorithm */
 /* package */ class SlamMappingStep {
   private final MapProvider[] eventMaps = new MapProvider[3];
-  private final String imagePrefix;
+  private final String logFilename;
   private final boolean localizationMode;
   private final boolean reactiveMappingMode;
   private final boolean onlineMode;
@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.Tensor;
   SlamMappingStep(SlamConfig slamConfig) {
     for (int i = 0; i < eventMaps.length; ++i)
       eventMaps[i] = new MapProvider(slamConfig);
-    imagePrefix = slamConfig.davisConfig.logFilename();
+    logFilename = slamConfig.davisConfig.logFilename();
     localizationMode = slamConfig.localizationMode;
     reactiveMappingMode = slamConfig.reactiveMappingMode;
     onlineMode = slamConfig.onlineMode;
@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.Tensor;
   public void initialize(double initTimeStamp) {
     lastReactiveUpdateTimeStamp = initTimeStamp;
     if (localizationMode) {
-      double[] mapArray = PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
+      double[] mapArray = PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(logFilename));
       if (mapArray.length != eventMaps[0].getNumberOfCells())
         throw new RuntimeException("FATAL: bad size");
       eventMaps[0].setMapArray(mapArray);
@@ -79,7 +79,7 @@ import ch.ethz.idsc.tensor.Tensor;
       SlamMappingStepUtil.updateOccurrenceMapLidar(gokartPose, eventMaps[0], eventGokartFrame);
   }
 
-  public MapProvider getMap(int mapID) {
-    return eventMaps[mapID];
+  public MapProvider getOccurrenceMap() {
+    return eventMaps[0];
   }
 }
