@@ -1,6 +1,7 @@
 // code by jph & ej
 package ch.ethz.idsc.retina.dev.rimo;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.red.Mean;
 
@@ -15,9 +16,10 @@ public class RimoRateControllerUno extends RimoRateControllerWrap {
     Scalar vel_avg = Mean.of(rimoGetEvent.getAngularRate_Y_pair()).Get(); // average of wheel rates
     Scalar vel_error = rate_target.subtract(vel_avg);
     Scalar torque = pi.iterate(vel_error);
-    short value_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
-    short armsL_raw = (short) -value_Yaxis; // negative sign LEFT
-    short armsR_raw = (short) +value_Yaxis; // positive sign RIGHT
-    return RimoPutHelper.operationTorque(armsL_raw, armsR_raw);
+    short value_Yaxis = Magnitude.ARMS.toShort(torque);
+    return RimoPutHelper.operationTorque( //
+        (short) -value_Yaxis, // negative sign LEFT
+        (short) +value_Yaxis // positive sign RIGHT
+    );
   }
 }

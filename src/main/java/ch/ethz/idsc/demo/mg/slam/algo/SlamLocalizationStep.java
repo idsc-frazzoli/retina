@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /* package */ class SlamLocalizationStep {
   private final SlamEstimatedPose slamEstimatedPose;
   private final boolean odometryStatePropagation;
+  private final boolean onlineMode;
   private final double resampleRate;
   private final double statePropagationRate;
   private final double rougheningLinAccelStd;
@@ -25,15 +26,16 @@ import ch.ethz.idsc.tensor.Tensor;
 
   SlamLocalizationStep(SlamConfig slamConfig) {
     slamEstimatedPose = new SlamEstimatedPose();
-    resampleRate = Magnitude.SECOND.toDouble(slamConfig._resampleRate);
+    resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
     odometryStatePropagation = slamConfig.odometryStatePropagation;
-    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig._statePropagationRate);
-    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig._rougheningLinAccelStd);
-    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig._rougheningAngAccelStd);
-    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
-    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
-    angVelStd = Magnitude.ANGULAR_RATE.toDouble(slamConfig._angVelStd);
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
+    onlineMode = slamConfig.onlineMode;
+    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
+    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);
+    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd);
+    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
+    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
+    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
     alpha = slamConfig.alpha.number().doubleValue();
   }
 
@@ -55,7 +57,10 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param eventGokartFrame event position in gokart frame interpreted as [m]
    * @param currentTimeStamp interpreted as [s] */
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
-    if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
+    if (eventGokartFrame[0] < lookAheadDistance)
+      SlamLocalizationStepUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
+    // ---
+    if (!onlineMode && (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate)) {
       double dT = currentTimeStamp - lastPropagationTimeStamp;
       if (odometryStatePropagation)
         SlamLocalizationStepUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
@@ -68,8 +73,6 @@ import ch.ethz.idsc.tensor.Tensor;
       SlamLocalizationStepUtil.resampleParticles(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
       lastResampleTimeStamp = currentTimeStamp;
     }
-    if (eventGokartFrame[0] < lookAheadDistance)
-      SlamLocalizationStepUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
     // ---
     slamEstimatedPose.setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamParticles, 1));
   }

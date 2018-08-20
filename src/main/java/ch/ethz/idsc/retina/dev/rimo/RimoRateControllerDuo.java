@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -40,14 +41,14 @@ public class RimoRateControllerDuo extends RimoRateControllerWrap {
       Scalar vel_targetL = pair.Get(0);
       Scalar vel_error = vel_targetL.subtract(rimoGetEvent.getTireL.getAngularRate_Y());
       Scalar torque = piL.iterate(vel_error);
-      short valueL_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
+      short valueL_Yaxis = Magnitude.ARMS.toShort(torque);
       armsL_raw = (short) -valueL_Yaxis; // negative sign LEFT
     }
     {
       Scalar vel_targetR = pair.Get(1);
       Scalar vel_error = vel_targetR.subtract(rimoGetEvent.getTireR.getAngularRate_Y());
       Scalar torque = piR.iterate(vel_error);
-      short valueR_Yaxis = RimoPutTire.MAGNITUDE_ARMS.apply(torque).number().shortValue();
+      short valueR_Yaxis = Magnitude.ARMS.toShort(torque);
       armsR_raw = (short) +valueR_Yaxis; // positive sign RIGHT
     }
     return RimoPutHelper.operationTorque(armsL_raw, armsR_raw);

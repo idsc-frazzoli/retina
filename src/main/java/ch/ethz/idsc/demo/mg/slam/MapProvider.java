@@ -22,13 +22,13 @@ public class MapProvider {
   private double maxValue;
 
   public MapProvider(SlamConfig slamConfig) {
-    cellDim = Magnitude.METER.toDouble(slamConfig._cellDim);
+    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     cellDimInv = 1 / cellDim;
     mapWidth = slamConfig.mapWidth();
     mapHeight = slamConfig.mapHeight();
     numberOfCells = mapWidth * mapHeight;
-    cornerXLow = Magnitude.METER.toDouble(slamConfig._corner.Get(0));
-    cornerYLow = Magnitude.METER.toDouble(slamConfig._corner.Get(1));
+    cornerXLow = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
+    cornerYLow = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
     Tensor cornerHigh = slamConfig.cornerHigh();
     cornerXHigh = Magnitude.METER.toDouble(cornerHigh.Get(0));
     cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));

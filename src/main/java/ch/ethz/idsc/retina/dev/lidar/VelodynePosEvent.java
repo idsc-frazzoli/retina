@@ -76,7 +76,7 @@ public class VelodynePosEvent {
 
   public Scalar course() {
     double value = Double.parseDouble(nmea.substring(47, 52));
-    return Quantity.of(value, "deg");
+    return Quantity.of(value, NonSI.DEGREE_ANGLE);
   }
 
   private static final double TO_DEGREE_ANGLE = 1E-2;

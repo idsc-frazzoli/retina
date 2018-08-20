@@ -27,7 +27,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
     maxDistance = pipelineConfig.maxDistance.number().floatValue();
     truePositiveThreshold = pipelineConfig.truePositiveThreshold.number().floatValue();
     // initialize distToClosestEstimate
-    for (int i = 0; i < groundTruthInstant.size(); i++) {
+    for (int i = 0; i < groundTruthInstant.size(); ++i) {
       distToClosestEstimate[i][0] = maxDistance;
       distToClosestEstimate[i][1] = estimatedInstant.size();
     }
@@ -41,23 +41,19 @@ import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
     recall = truePositiveCount / (truePositiveCount + falseNegativeCount);
     // avoid division by zero
     float denominator = truePositiveCount + falsePositiveCount;
-    if (denominator == 0)
-      precision = 0;
-    else
-      precision = truePositiveCount / denominator;
+    precision = denominator == 0 ? 0 : truePositiveCount / denominator;
   }
 
   private void computeDistances() {
     // iterate through all combinations
-    for (int i = 0; i < groundTruthInstant.size(); i++) {
-      for (int j = 0; j < estimatedInstant.size(); j++) {
-        float currentDist = groundTruthInstant.get(i).getDistanceTo(estimatedInstant.get(j));
+    for (int i = 0; i < groundTruthInstant.size(); ++i)
+      for (int j = 0; j < estimatedInstant.size(); ++j) {
+        float currentDist = groundTruthInstant.get(i).getDistanceTo(estimatedInstant.get(j).getPos());
         if (currentDist < distToClosestEstimate[i][0]) {
           distToClosestEstimate[i][0] = currentDist;
           distToClosestEstimate[i][1] = j;
         }
       }
-    }
   }
 
   // count Tp, Fn and Fp. V1.0: Only based on position of features.
@@ -66,20 +62,17 @@ import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
     // if distToClosestEstimate[i][0] is smaller than threshold, we have a Tp
     // if distToClosestEstimate[i][0] is larger than threshold, we have a Fn
     // all estimatedFeatures that are not assigned Tp are therefore Fp
-    for (int i = 0; i < groundTruthInstant.size(); i++) {
+    for (int i = 0; i < groundTruthInstant.size(); ++i) {
       if (distToClosestEstimate[i][0] < truePositiveThreshold) {
-        truePositiveCount++;
+        ++truePositiveCount;
         int assignedEstimatedFeature = (int) distToClosestEstimate[i][1];
         assignedEstimatedFeatures[assignedEstimatedFeature] = true;
-      } else {
-        falseNegativeCount++;
-      }
+      } else
+        ++falseNegativeCount;
     }
-    for (int i = 0; i < estimatedInstant.size(); i++) {
-      if (!assignedEstimatedFeatures[i]) {
-        falsePositiveCount++;
-      }
-    }
+    for (int i = 0; i < estimatedInstant.size(); ++i)
+      if (!assignedEstimatedFeatures[i])
+        ++falsePositiveCount;
   }
 
   public float getRecall() {

@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.Hue;
-import ch.ethz.idsc.tensor.lie.Rodriguez;
+import ch.ethz.idsc.tensor.lie.Rodrigues;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 class PerspectiveLidarRender extends LidarRender {
@@ -35,8 +35,8 @@ class PerspectiveLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      Tensor rot1 = Rodriguez.exp(SensorsConfig.GLOBAL.vlp16_davis_w1); // TODO magic const!!! arg
-      Tensor rot0 = Rodriguez.exp(SensorsConfig.GLOBAL.vlp16_davis_w0);
+      Tensor rot1 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w1); // TODO magic const!!! arg
+      Tensor rot0 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w0);
       Tensor rot = rot1.dot(rot0);
       for (Tensor x : points) {
         Tensor pw = rot.dot(x.add(SensorsConfig.GLOBAL.vlp16_davis_t)).append(NUMERIC_ONE);

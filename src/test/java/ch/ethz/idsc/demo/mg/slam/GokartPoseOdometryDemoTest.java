@@ -44,7 +44,7 @@ public class GokartPoseOdometryDemoTest extends TestCase {
     VectorQ.ofLength(velocity, 3);
     Magnitude.VELOCITY.apply(velocity.Get(0));
     Magnitude.VELOCITY.apply(velocity.Get(1));
-    Magnitude.ANGULAR_RATE.apply(velocity.Get(2));
+    Magnitude.PER_SECOND.apply(velocity.Get(2));
   }
 
   public void testInitial() {

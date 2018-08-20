@@ -155,7 +155,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   public HandLabeler(BlobTrackConfig pipelineConfig) {
     // set parameters
     imagePrefix = pipelineConfig.davisConfig.logFilename();
-    numberOfFiles = EvaluationFileLocations.images(imagePrefix).list().length;
+    numberOfFiles = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix).list().length;
     fileName = pipelineConfig.handLabelFileName.toString();
     positionDifference = pipelineConfig.positionDifference.number().intValue();
     sizeMultiplier = pipelineConfig.sizeMultiplier.number().intValue();
@@ -210,7 +210,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   private void setBufferedImage() {
     String imgNumberString = String.format("%04d", currentImgNumber);
     String fileName = imagePrefix + "_" + imgNumberString + "_" + timeStamps[currentImgNumber - 1] + ".png";
-    File pathToFile = new File(EvaluationFileLocations.images(imagePrefix), fileName);
+    File pathToFile = new File(MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {

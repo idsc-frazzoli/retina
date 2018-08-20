@@ -1,12 +1,9 @@
-// code by jph, mg
+// code by mg, jph
 package ch.ethz.idsc.demo.mg.filter;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-public interface FilterInterface {
+public interface DavisDvsEventFilter {
   /** @return true if event passes filter */
   boolean filter(DavisDvsEvent davisDvsEvent);
-
-  /** @return percentage of events that are filtered out */
-  double getFilteredPercentage();
 }

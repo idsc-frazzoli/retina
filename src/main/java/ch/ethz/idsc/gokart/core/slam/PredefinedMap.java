@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 public enum PredefinedMap implements LocalizationImage {
   /** image of known static obstacles */
   DUBILAB_OBSTACLES_20180423(7.5), //
-  /** image */
+  /** image, no tents, no aerotain */
   DUBILAB_LOCALIZATION_20180506(7.5), //
   /** image of known static obstacles
    * image with central tents, bus tent, and aerotain */
@@ -33,6 +33,8 @@ public enum PredefinedMap implements LocalizationImage {
   DUBILAB_OBSTACLES_20180703(7.5), //
   /** empty space with tents */
   DUBILAB_OBSTACLES_20180704(7.5), //
+  /** only the first tent */
+  DUBILAB_LOCALIZATION_20180705(7.5), //
   /** only front tent, four balloons in the aerotain area */
   DUBILAB_LOCALIZATION_20180813(7.5), //
   ;

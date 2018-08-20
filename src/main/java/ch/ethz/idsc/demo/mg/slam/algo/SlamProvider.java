@@ -2,11 +2,12 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.List;
+import java.util.Timer;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
-import ch.ethz.idsc.demo.mg.filter.FilterInterface;
+import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
@@ -27,42 +28,50 @@ public class SlamProvider implements DavisDvsListener {
   private final ImageToGokartInterface imageToGokartInterface;
   private final GokartPoseInterface gokartLidarPose;
   private final GokartPoseOdometryDemo gokartPoseOdometry;
+  private final Timer timer;
+  private final SlamTimerTask slamTimedTask;
   // ---
-  private final FilterInterface filteringPipeline;
+  private final DavisDvsEventFilter davisDvsEventFilter;
   private final SlamLocalizationStep slamLocalizationStep;
   private final SlamMappingStep slamMappingStep;
-  private final SlamMapProcessing slamWayPoints;
+  private final SlamMapProcessing slamMapProcessing;
   private final SlamTrajectoryPlanning slamTrajectoryPlanning;
-  private final boolean lidarMappingMode;
   private final SlamParticle[] slamParticles;
+  private final boolean lidarMappingMode;
+  private final boolean onlineMode;
   // ---
   private boolean isInitialized;
-  // --
 
-  public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose) {
+  public SlamProvider(SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry, GokartPoseInterface gokartLidarPose, Timer timer) {
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
     this.gokartLidarPose = gokartLidarPose;
     this.gokartPoseOdometry = gokartPoseOdometry;
+    this.timer = timer;
     // ---
-    filteringPipeline = new BackgroundActivityFilter(slamConfig.davisConfig);
+    davisDvsEventFilter = new BackgroundActivityFilter(slamConfig.davisConfig);
     slamLocalizationStep = new SlamLocalizationStep(slamConfig);
     slamMappingStep = new SlamMappingStep(slamConfig);
-    slamWayPoints = new SlamMapProcessing(slamConfig);
+    slamMapProcessing = new SlamMapProcessing(slamConfig);
     slamTrajectoryPlanning = new SlamTrajectoryPlanning(slamConfig, slamLocalizationStep.getSlamEstimatedPose());
     lidarMappingMode = slamConfig.lidarMappingMode;
+    onlineMode = slamConfig.onlineMode;
     // ---
     int numOfPart = slamConfig.numberOfParticles.number().intValue();
     slamParticles = new SlamParticle[numOfPart];
     for (int index = 0; index < numOfPart; ++index)
       slamParticles[index] = new SlamParticle();
+    slamTimedTask = new SlamTimerTask(timer, slamParticles, gokartPoseOdometry, //
+        slamConfig, slamMappingStep, slamLocalizationStep, slamMapProcessing);
   }
 
   public void initialize(Tensor pose, double timeStamp) {
     gokartPoseOdometry.setPose(pose);
     slamLocalizationStep.initialize(slamParticles, pose, timeStamp);
     slamMappingStep.initialize(timeStamp);
-    slamWayPoints.initialize(timeStamp);
+    slamMapProcessing.initialize(timeStamp);
     slamTrajectoryPlanning.initialize(timeStamp); // TODO need to call stop function
+    if (onlineMode)
+      slamTimedTask.scheduleTasks();
     isInitialized = true;
   }
 
@@ -73,7 +82,7 @@ public class SlamProvider implements DavisDvsListener {
       if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose())
         initialize(gokartLidarPose.getPose(), davisDvsEvent.time * 1E-6);
     } else {
-      if (filteringPipeline.filter(davisDvsEvent)) {
+      if (davisDvsEventFilter.filter(davisDvsEvent)) {
         double currentTimeStamp = davisDvsEvent.time * 1E-6;
         double[] eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
         if (lidarMappingMode) {
@@ -83,8 +92,8 @@ public class SlamProvider implements DavisDvsListener {
           slamLocalizationStep.localizationStep(slamParticles, slamMappingStep.getMap(0), gokartPoseOdometry.getVelocity(), eventGokartFrame, currentTimeStamp);
           slamMappingStep.mappingStep(slamParticles, slamLocalizationStep.getSlamEstimatedPose().getPoseUnitless(), eventGokartFrame, currentTimeStamp);
         }
-        slamWayPoints.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
-        slamTrajectoryPlanning.computeTrajectory(slamWayPoints.getWorldWayPoints(), currentTimeStamp);
+        slamMapProcessing.mapPostProcessing(slamMappingStep.getMap(0), currentTimeStamp);
+        slamTrajectoryPlanning.computeTrajectory(slamMapProcessing.getWorldWayPoints(), currentTimeStamp);
       }
     }
   }
@@ -98,7 +107,7 @@ public class SlamProvider implements DavisDvsListener {
   }
 
   public Mat getProcessedMat() {
-    return slamWayPoints.getProcessedMat();
+    return slamMapProcessing.getProcessedMat();
   }
 
   public List<WayPoint> getWayPoints() {

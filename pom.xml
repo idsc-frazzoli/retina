@@ -83,12 +83,12 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.5.7</version>
+			<version>0.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>ephemeral</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.1.6</version>
+			<version>0.1.7</version>
 		</dependency>
 
 		<dependency>

@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
  * http://rpg.ifi.uzh.ch/docs/BMVC17_Mueggler.pdf
  * Event is always filtered if closer than {@link margin} to the boarder */
-public class CornerDetector implements FilterInterface {
+public class CornerDetector implements DavisDvsEventFilter {
   /** hard coded circle parameters for corner detector */
   private static final int[][] CIRCLE3 = { //
       { 0, 3 }, { 1, 3 }, { 2, 2 }, { 3, 1 }, //
@@ -26,9 +26,6 @@ public class CornerDetector implements FilterInterface {
   private final int margin;
   /** surface of active events for both polarities */
   private final int[][][] SAE;
-  // ---
-  private double eventCount;
-  private double filteredEventCount;
 
   public CornerDetector(DavisConfig davisConfig) {
     width = davisConfig.width.number().intValue();
@@ -39,22 +36,13 @@ public class CornerDetector implements FilterInterface {
 
   // from FilterInterface
   @Override
-  public boolean filter(DavisDvsEvent davisDvsEvent) {
-    ++eventCount;
-    if (cornerDetector(davisDvsEvent))
-      return true;
-    ++filteredEventCount;
-    return false;
-  }
-
-  private boolean cornerDetector(DavisDvsEvent e) {
+  public boolean filter(DavisDvsEvent e) {
     // update SAE
     int pol = e.i;
     SAE[e.x][e.y][pol] = e.time;
     // check if not too close to boarder
-    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1) {
+    if (e.x < margin || e.x > width - margin - 1 || e.y < margin || e.y > height - margin - 1)
       return false;
-    }
     if (findStreak(CIRCLE3, 3, 6, e, pol))
       return findStreak(CIRCLE4, 4, 8, e, pol);
     return false;
@@ -100,11 +88,5 @@ public class CornerDetector implements FilterInterface {
       }
     }
     return false;
-  }
-
-  // from FilterInterface
-  @Override
-  public double getFilteredPercentage() {
-    return 100 * filteredEventCount / eventCount;
   }
 }

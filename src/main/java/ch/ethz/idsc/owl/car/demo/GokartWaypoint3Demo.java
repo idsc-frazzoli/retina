@@ -19,6 +19,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ani.GlcPlannerCallback;
 import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
+import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.planar.ConeRegion;
 import ch.ethz.idsc.owl.math.region.RegionWithDistance;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -28,8 +29,6 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** demo to simulate dubendorf hangar */
 class GokartWaypoint3Demo implements DemoInterface {
-  private static final Tensor ARROWHEAD = Tensors.matrixDouble( //
-      new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(2));
   private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
 
   @Override
@@ -57,7 +56,7 @@ class GokartWaypoint3Demo implements DemoInterface {
     owlyAnimationFrame.addBackground(RegionRenders.create(hangarMap.imageRegion));
     owlyAnimationFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     // ---
-    RenderInterface renderInterface = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 64));
+    RenderInterface renderInterface = new Se2WaypointRender(waypoints, Arrowhead.of(0.6), new Color(64, 192, 64, 64));
     owlyAnimationFrame.addBackground(renderInterface);
     GlcPlannerCallback glcPlannerCallback = new SimpleGlcPlannerCallback(gokartEntity);
     GlcWaypointFollowing wpf = new GlcWaypointFollowing( //

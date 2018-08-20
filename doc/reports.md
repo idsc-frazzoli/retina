@@ -27,7 +27,7 @@
 * [20180627_davis240c_polarity_imbalance.pdf](https://github.com/idsc-frazzoli/retina/files/2148391/20180627_davis240c_polarity_imbalance.pdf)
 * [20180720_trajectories_with_improved_curvature.pdf](https://github.com/idsc-frazzoli/retina/files/2213007/20180720_trajectories_with_improved_curvature.pdf)
 * [20180730_lidar_perception_for_autonomous_vehicles.pdf](https://github.com/idsc-frazzoli/retina/files/2263053/20180730_lidar_perception_for_autonomous_vehicles.pdf)
-
+* [20180818_datasets_track_w.pdf](https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf)
 
 ## Bug Reports
 

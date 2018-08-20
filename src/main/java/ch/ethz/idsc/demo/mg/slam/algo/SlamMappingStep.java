@@ -15,12 +15,12 @@ import ch.ethz.idsc.tensor.Tensor;
   private final String imagePrefix;
   private final boolean localizationMode;
   private final boolean reactiveMappingMode;
+  private final boolean onlineMode;
   private final double lookAheadDistance;
   private final double lookBehindDistance;
-  private final double normalizationUpdateRate;
   private final double reactiveUpdateRate;
   private final int relevantParticles;
-  private double lastNormalizationTimeStamp;
+  // ---
   private double lastReactiveUpdateTimeStamp;
 
   SlamMappingStep(SlamConfig slamConfig) {
@@ -29,15 +29,14 @@ import ch.ethz.idsc.tensor.Tensor;
     imagePrefix = slamConfig.davisConfig.logFilename();
     localizationMode = slamConfig.localizationMode;
     reactiveMappingMode = slamConfig.reactiveMappingMode;
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
-    lookBehindDistance = Magnitude.METER.toDouble(slamConfig._lookBehindDistance);
-    normalizationUpdateRate = Magnitude.SECOND.toDouble(slamConfig._normalizationUpdateRate);
-    reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig._reactiveUpdateRate);
+    onlineMode = slamConfig.onlineMode;
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
+    lookBehindDistance = Magnitude.METER.toDouble(slamConfig.lookBehindDistance);
+    reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig.reactiveUpdateRate);
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
   public void initialize(double initTimeStamp) {
-    lastNormalizationTimeStamp = initTimeStamp;
     lastReactiveUpdateTimeStamp = initTimeStamp;
     if (localizationMode) {
       double[] mapArray = PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(imagePrefix));
@@ -58,15 +57,13 @@ import ch.ethz.idsc.tensor.Tensor;
       if (!localizationMode)
         SlamMappingStepUtil.updateOccurrenceMap(slamParticles, eventMaps[0], eventGokartFrame, relevantParticles);
     }
-    if (reactiveMappingMode) {
+    if (!onlineMode && reactiveMappingMode) {
       if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
         SlamMappingStepUtil.updateReactiveOccurrenceMap(gokartPose, eventMaps[0], lookBehindDistance);
         lastReactiveUpdateTimeStamp = currentTimeStamp;
       }
     }
-    // normalization map currently unused
-    if (currentTimeStamp - lastNormalizationTimeStamp > normalizationUpdateRate)
-      lastNormalizationTimeStamp = currentTimeStamp;
+    // here we would update normalization map on a periodic basis (if implemented)
   }
 
   /** updates occurrence map using pose provided by lidar

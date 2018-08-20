@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
@@ -93,6 +93,6 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   protected abstract void assign(int delta, DavisDvsEvent davisDvsEvent);
 
   private void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    Arrays.fill(bytes, CLEAR_BYTE);
   }
 }

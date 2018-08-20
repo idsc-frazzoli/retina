@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -21,6 +22,7 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
+import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
@@ -29,9 +31,7 @@ import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
@@ -59,15 +59,14 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() throws Exception {
     {
+      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       RenderInterface renderInterface = //
-          new BufferedImageRender(LocalizationConfig.getPredefinedMap().getImage());
+          new BufferedImageRender(predefinedMap.getImage());
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
-      final Tensor ARROWHEAD = Tensors.matrixDouble( //
-          new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
-      RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));
+      RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {

@@ -15,6 +15,9 @@ import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -24,12 +27,19 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 
-/** the test matches 3 consecutive lidar scans to the dubendorf hangar map
- * the matching qualities are 51255, 43605, 44115 */
+/** localization that uses lidar in combination with gyro rate to rectify measurements
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class GyroOfflineLocalize extends OfflineLocalize {
-  private static final Scalar LIDAR_RATE = Quantity.of(20, "s^-1");
+  private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
-  private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  private static final int FAN = 4;
+  // good results 0.3, 3, 3, 5
+  private static final Se2MultiresGrids SE2MULTIRESGRIDS = new Se2MultiresGrids( //
+      RealScalar.of(0.8 / FAN), //
+      Magnitude.ONE.apply(Quantity.of(9.0 / FAN, NonSI.DEGREE_ANGLE)), //
+      FAN, //
+      4);
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
