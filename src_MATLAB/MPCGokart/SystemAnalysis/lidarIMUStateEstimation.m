@@ -1,10 +1,12 @@
 function [sx,sP] = lidarIMUStateEstimation(adat,ldat)
 x = zeros(10,1);
 dim = numel(x);
-P = eye(dim)*1;
+P = eye(dim)*10;
+P(9,9)=100000;
+P(10,10)=100000;
 IMUa = 0.01;
 IMUr = 1;
-DRIFT=0.01;
+DRIFT=0;
 Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa,DRIFT,DRIFT]);
 lt = ldat(:,1);
 at = adat(:,1);
@@ -19,7 +21,7 @@ aagg = 10;
 
 %use higher frequency for data
 lR = estimateVar(ldat);
-aR = estimateVar(adat)*4;
+aR = estimateVar(adat)*5;
 
 
 [~,lN]=size(ldat);
@@ -39,7 +41,7 @@ Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
     currentt
     maxt
-    %if currentt>540
+    %if currentt>530
     %    lR=eye(3)*1000000;
     %end
     if(lt(lcount)<at(acount))
@@ -113,6 +115,13 @@ Qhist = Qhist(1:tcount-1,:,:);
         hold on
         plot(thist,sx(:,7));
         plot(thist,sx(:,8));
+        hold off
+        
+        %acceleration sensor drift
+        figure
+        hold on
+        plot(thist,sx(:,9));
+        plot(thist,sx(:,10));
         hold off
 
         sigma = 20;

@@ -1,6 +1,6 @@
 startt = 500;
-%endt = startt+70;
-endt = startt+50;
+endt = startt+70;
+%endt = startt+50;
 %close all
 
 %gplocalization = csvread('gplocalization.csv');
