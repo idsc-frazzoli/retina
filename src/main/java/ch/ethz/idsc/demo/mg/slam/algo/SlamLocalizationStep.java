@@ -26,16 +26,16 @@ import ch.ethz.idsc.tensor.Tensor;
 
   SlamLocalizationStep(SlamConfig slamConfig) {
     slamEstimatedPose = new SlamEstimatedPose();
-    resampleRate = Magnitude.SECOND.toDouble(slamConfig._resampleRate);
+    resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
     odometryStatePropagation = slamConfig.odometryStatePropagation;
     onlineMode = slamConfig.onlineMode;
-    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig._statePropagationRate);
-    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig._rougheningLinAccelStd);
-    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig._rougheningAngAccelStd);
-    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig._linVelAvg);
-    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig._linVelStd);
-    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig._angVelStd);
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig._lookAheadDistance);
+    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
+    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);
+    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd);
+    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
+    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
+    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
+    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
     alpha = slamConfig.alpha.number().doubleValue();
   }
 

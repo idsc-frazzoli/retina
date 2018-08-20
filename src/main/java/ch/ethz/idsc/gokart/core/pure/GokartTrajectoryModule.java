@@ -75,6 +75,7 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Nest;
+import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
@@ -87,7 +88,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private static final Scalar SPEED = RealScalar.of(2.5);
   private static final FixedStateIntegrator FIXED_STATE_INTEGRATOR = //
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
-  private static final Se2Wrap SE2WRAP = new Se2Wrap(Tensors.vector(1, 1, 2));
+  private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(SE2WRAP::represent));
   // ---
@@ -179,12 +180,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         Scalar cutoffDist = TrajectoryConfig.GLOBAL.getCutoffDistance(tangentSpeed_);
         head = getTrajectoryUntil(trajectory, xya, Magnitude.METER.apply(cutoffDist));
       }
-      Tensor distances = Tensor.of(waypoints.stream().map(wp -> SE2WRAP.distance(wp, xya)));
+      Tensor distances = Tensor.of(waypoints.stream().map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, xya))));
       int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
       if (0 <= wpIdx && !head.isEmpty()) { // jan inserted check for non-empty
         Tensor goal = waypoints.get(wpIdx);
         // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
-        while (Scalars.lessThan(SE2WRAP.distance(xya, goal), TrajectoryConfig.GLOBAL.horizonDistance) || unionRegion.isMember(goal)) {
+        while (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), TrajectoryConfig.GLOBAL.horizonDistance) || unionRegion.isMember(goal)) {
           wpIdx = (wpIdx + 1) % waypoints.length();
           goal = waypoints.get(wpIdx);
         }
@@ -226,13 +227,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private static List<TrajectorySample> getTrajectoryUntil( //
       List<TrajectorySample> trajectory, Tensor pose, Scalar cutoffDistHead) {
     Sign.requirePositiveOrZero(cutoffDistHead);
-    Tensor distances = Tensor.of(trajectory.stream().map(st -> SE2WRAP.distance(st.stateTime().state(), pose)));
+    Tensor distances = Tensor.of(trajectory.stream().map(st -> Norm._2.ofVector(SE2WRAP.difference(st.stateTime().state(), pose))));
     int closestIdx = ArgMin.of(distances);
     Tensor closest = trajectory.get(closestIdx).stateTime().state();
     return trajectory.stream() //
         .skip(Math.max((closestIdx - 5), 0)) // TODO magic const
         .filter(trajectorySample -> Scalars.lessEquals( //
-            SE2WRAP.distance(closest, trajectorySample.stateTime().state()), cutoffDistHead)) //
+            Norm._2.ofVector(SE2WRAP.difference(closest, trajectorySample.stateTime().state())), cutoffDistHead)) //
         .collect(Collectors.toList());
   }
 

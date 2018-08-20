@@ -26,10 +26,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   SlamTrajectoryPlanning(SlamConfig slamConfig, SlamEstimatedPose estimatedPose) {
     this.estimatedPose = estimatedPose;
-    initialDelay = Magnitude.SECOND.toDouble(slamConfig._initialDelay);
-    trajectoryUpdateRate = Magnitude.SECOND.toDouble(slamConfig._trajectoryUpdateRate);
-    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig._visibleBoxXMin);
-    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig._visibleBoxXMax);
+    initialDelay = Magnitude.SECOND.toDouble(slamConfig.initialDelay);
+    trajectoryUpdateRate = Magnitude.SECOND.toDouble(slamConfig.trajectoryUpdateRate);
+    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
     visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
     gokartWayPoints = new ArrayList<>();
   }

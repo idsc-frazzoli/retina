@@ -15,14 +15,12 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 
 /** blob object for blob tracking algorithm. position in the image plane is tracked */
 public class ImageBlob implements Serializable {
-  private static final long serialVersionUID = 1L;
-  // ---
   private final float[] pos;
   private final int timeStamp;
   private final int blobID; // == 0 for hidden blobs
   private double[][] covariance;
+  private final boolean isHidden;
   private boolean isRecognized;
-  private boolean isHidden;
 
   /** @param pos array of length 2
    * @param covariance array of size 2 x 2
@@ -43,28 +41,14 @@ public class ImageBlob implements Serializable {
     return Primitives.toFloatArray(stD);
   }
 
-  /** @return eigenvectors of the covariance matrix - not necessarily scaled to unit length */
-  public float[][] getEigenVectors() {
-    float[][] eigenVectors = new float[2][2];
-    Tensor covarianceMatrix = Tensors.matrixDouble(getCovariance());
-    Eigensystem eigensystem = Eigensystem.ofSymmetric(covarianceMatrix);
-    eigenVectors[0][0] = eigensystem.vectors().Get(0, 0).number().floatValue();
-    eigenVectors[1][0] = eigensystem.vectors().Get(0, 1).number().floatValue();
-    eigenVectors[0][1] = eigensystem.vectors().Get(1, 0).number().floatValue();
-    eigenVectors[1][1] = eigensystem.vectors().Get(1, 1).number().floatValue();
-    return eigenVectors;
-  }
-
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public double getRotAngle() {
-    float[][] eigenVec = getEigenVectors();
+    float[][] eigenVec = StaticHelper.getEigenVectors(getCovariance());
     return Math.atan2(eigenVec[1][0], eigenVec[0][0]);
   }
 
-  public float getDistanceTo(ImageBlob blob) {
-    return (float) Math.hypot( //
-        pos[0] - blob.getPos()[0], //
-        pos[1] - blob.getPos()[1]);
+  public float getDistanceTo(float[] otherPos) {
+    return (float) Math.hypot(pos[0] - otherPos[0], pos[1] - otherPos[1]);
   }
 
   public float[] getPos() {

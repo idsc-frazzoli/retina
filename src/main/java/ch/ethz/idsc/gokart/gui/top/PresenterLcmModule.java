@@ -2,11 +2,14 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Objects;
 
+import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
@@ -29,6 +32,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
+import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
@@ -36,9 +40,7 @@ import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 
@@ -99,9 +101,7 @@ public class PresenterLcmModule extends AbstractModule {
     // }
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
-      final Tensor ARROWHEAD = Tensors.matrixDouble( //
-          new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(2));
-      RenderInterface waypointRender = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 128));
+      RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.6), new Color(64, 192, 64, 128));
       timerFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
@@ -131,6 +131,17 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    {
+      JButton jButton = new JButton("show matrix");
+      jButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          Tensor model2Pixel = timerFrame.geometricComponent.getModel2Pixel();
+          System.out.println("model2Pixel=\n" + model2Pixel);
+        }
+      });
+      timerFrame.jToolBar.add(jButton);
+    }
     if (SHOW_DAVIS) {
       {
         AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);

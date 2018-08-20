@@ -103,13 +103,14 @@ public class BlobTracking {
 
   private void calcScoreAndParams(DavisDvsEvent davisDvsEvent) {
     float highScore = 0;
-    float hiddenHighScore = 0;
+    // float hiddenHighScore = 0;
     int highScoreBlob = 0;
-    int hiddenHighScoreBlob = 0;
+    // int hiddenHighScoreBlob = 0;
     // calculate score for all blobs
-    for (int i = 0; i < blobs.size(); i++) {
+    for (int i = 0; i < blobs.size(); ++i) {
       // if (blobs.get(i).getLayerID()) {
-      float score = blobs.get(i).gaussianBlobScore(davisDvsEvent);
+      float score = (float) GaussianBlobScore.INSTANCE.evaluate(blobs.get(i), davisDvsEvent);
+      blobs.get(i).setCurrentScore(score);
       // store highest score and which blob it belongs to
       if (score > highScore) {
         highScore = score;
@@ -121,9 +122,8 @@ public class BlobTracking {
     // if (highScore > scoreThreshold) {
     blobs.get(highScoreBlob).updateBlobParameters(davisDvsEvent, alphaOne, alphaTwo);
     matchingBlob = highScoreBlob;
-    if (blobs.get(matchingBlob).getLayerID()) {
-      hitthreshold++;
-    }
+    if (blobs.get(matchingBlob).getLayerID())
+      ++hitthreshold;
     // } else {
     // for (int i = 0; i < blobs.size(); i++) {
     // if (!blobs.get(i).getLayerID()) {
@@ -147,11 +147,9 @@ public class BlobTracking {
     float exponent = deltaT / tau;
     float exponential = (float) Math.exp(-exponent);
     isPromoted = blobs.get(matchingBlob).updateBlobActivity(true, aUp, exponential);
-    for (int i = 0; i < blobs.size(); i++) {
-      if (i != matchingBlob) {
+    for (int i = 0; i < blobs.size(); ++i)
+      if (i != matchingBlob)
         blobs.get(i).updateBlobActivity(false, aUp, exponential);
-      }
-    }
     return isPromoted;
   }
 
@@ -188,21 +186,17 @@ public class BlobTracking {
     Iterator<BlobTrackObj> iterator = blobs.iterator();
     while (iterator.hasNext()) {
       BlobTrackObj davisSingleBlob = iterator.next();
-      if (davisSingleBlob.getLayerID()) {
-        if (davisSingleBlob.getActivity() < aDown) {
+      if (davisSingleBlob.getLayerID())
+        if (davisSingleBlob.getActivity() < aDown)
           iterator.remove();
-        }
-      }
     }
   }
 
   // apply attraction equation
   private void hiddenBlobAttraction() {
-    for (int i = 0; i < blobs.size(); i++) {
-      if (!blobs.get(i).getLayerID()) {
+    for (int i = 0; i < blobs.size(); ++i)
+      if (!blobs.get(i).getLayerID())
         blobs.get(i).updateAttractionEquation(alphaAttr, dAttr);
-      }
-    }
   }
 
   // merge closest pair of active blobs if distance is less than dMerge
@@ -211,16 +205,15 @@ public class BlobTracking {
     int firstBlob = 0; // no active blob at 0 so its safe to assign 0
     int secondBlob = 0;
     // find pair of active blobs that is closest to each other
-    for (int i = initNumberOfBlobs; i < (blobs.size() - 1); i++) {
-      for (int j = i + 1; j < blobs.size(); j++) {
-        double distance = blobs.get(i).getDistanceTo(blobs.get(j));
+    for (int i = initNumberOfBlobs; i < blobs.size() - 1; ++i)
+      for (int j = i + 1; j < blobs.size(); ++j) {
+        double distance = blobs.get(i).getDistanceTo(blobs.get(j).getPos());
         if (distance < minDistance) {
           firstBlob = i;
           secondBlob = j;
           minDistance = distance;
         }
       }
-    }
     // if blobs are closer than dMerge, one blob eats the other
     if (minDistance < dMerge) {
       blobs.get(firstBlob).eat(blobs.get(secondBlob));
@@ -229,52 +222,60 @@ public class BlobTracking {
   }
 
   public void printStatusUpdate(DavisDvsEvent davisDvsEvent) {
-    if (matchingBlob >= blobs.size()) {
+    if (matchingBlob >= blobs.size())
       System.out.println("Matching blob was deleted");
-    } else {
+    else {
       // number and activities of active blobs
       System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(1) + " being in active layer.");
-      for (int i = 0; i < blobs.size(); i++) {
+      for (int i = 0; i < blobs.size(); ++i)
         System.out.println("Blob #" + i + " with pos " + blobs.get(i).getPos()[0] + "/" + blobs.get(i).getPos()[1] + " and ID " + blobs.get(i).getLayerID());
-      }
     }
   }
 
+  // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getActiveBlobs() {
-    List<ImageBlob> activeBlobs = new ArrayList<>();
-    for (int i = 0; i < blobs.size(); i++) {
+    List<ImageBlob> list = new ArrayList<>();
+    for (int i = 0; i < blobs.size(); ++i)
       if (blobs.get(i).getLayerID()) {
-        ImageBlob activeBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), false, blobs.get(i).getBlobID());
-        activeBlobs.add(activeBlob);
+        ImageBlob activeBlob = new ImageBlob( //
+            blobs.get(i).getPos(), //
+            blobs.get(i).getCovariance(), //
+            getEventTimestamp(), //
+            false, //
+            blobs.get(i).getBlobID());
+        list.add(activeBlob);
       }
-    }
-    return activeBlobs;
+    return list;
   }
 
+  // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getHiddenBlobs() {
-    List<ImageBlob> hiddenBlobs = new ArrayList<>();
-    for (int i = 0; i < blobs.size(); i++) {
+    List<ImageBlob> list = new ArrayList<>();
+    for (int i = 0; i < blobs.size(); ++i)
       if (!blobs.get(i).getLayerID()) {
-        ImageBlob hiddenBlob = new ImageBlob(blobs.get(i).getPos(), blobs.get(i).getCovariance(), getEventTimestamp(), true, defaultBlobID);
-        hiddenBlobs.add(hiddenBlob);
+        ImageBlob hiddenBlob = new ImageBlob( //
+            blobs.get(i).getPos(), //
+            blobs.get(i).getCovariance(), //
+            getEventTimestamp(), //
+            true, //
+            defaultBlobID);
+        list.add(hiddenBlob);
       }
-    }
-    return hiddenBlobs;
+    return list;
   }
 
   // return number of blobs. layerId=0: hidden blobs, layerId=1: active blobs, layerId=2: all blobs
+  // TODO MG provide 3 separate functions, so far only getNumberOfActiveBlobs is used
   public int getNumberOfBlobs(int layerId) {
-    int quantity = 0;
-    if (layerId == 2) {
+    if (layerId == 2)
       return blobs.size();
-    }
-    for (int i = 0; i < blobs.size(); i++) {
-      if (layerId == 1 && blobs.get(i).getLayerID()) {
-        quantity++;
-      }
-      if (layerId == 0 && !blobs.get(i).getLayerID()) {
-        quantity++;
-      }
+    int quantity = 0;
+    for (int i = 0; i < blobs.size(); ++i) {
+      if (layerId == 1 && blobs.get(i).getLayerID())
+        ++quantity;
+      else //
+      if (layerId == 0 && !blobs.get(i).getLayerID())
+        ++quantity;
     }
     return quantity;
   }

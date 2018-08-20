@@ -33,8 +33,8 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
 
   EvaluatorSingleRun(BlobTrackConfig pipelineConfig) {
     logFileName = pipelineConfig.davisConfig.logFilename();
-    numberOfFiles = EvaluationFileLocations.images(logFileName).list().length;
-    evaluationImagesFilePath = EvaluationFileLocations.evaluatedImages(logFileName);
+    numberOfFiles = MgEvaluationFolders.HANDLABEL.subfolder(logFileName).list().length;
+    evaluationImagesFilePath = MgEvaluationFolders.EVALUATED.subfolder(logFileName);
     handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
     groundTruthTimeStamps = EvalUtil.getTimestampsFromImages(numberOfFiles, logFileName);
     groundTruthFeatures = EvalUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
@@ -42,43 +42,40 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
     estimatedFeatures = EvalUtil.loadFromCSV(estimatedLabelFile, groundTruthTimeStamps);
     evaluatorInstants = new EvaluatorInstant[numberOfFiles];
-    for (int i = 0; i < numberOfFiles; i++)
+    for (int i = 0; i < numberOfFiles; ++i)
       evaluatorInstants[i] = new EvaluatorInstant(pipelineConfig, groundTruthFeatures.get(i), estimatedFeatures.get(i));
     saveEvaluationFrame = pipelineConfig.saveEvaluationFrame;
   }
 
   public void runEvaluation() {
-    for (int i = 0; i < numberOfFiles; i++) {
+    for (int i = 0; i < numberOfFiles; ++i) {
       currentLabelInstant = i;
       evaluatorInstants[i].compareFeatures();
-      if (saveEvaluationFrame) {
+      if (saveEvaluationFrame)
         saveEvaluationFrame();
-      }
     }
     computePerformance();
   }
 
-  // accumulatedEventFrame with estimated and ground truth features
+  /** accumulatedEventFrame with estimated and ground truth features */
   private void saveEvaluationFrame() {
     BufferedImage rawEventsFrame = loadImage();
     // overlay groundtruthFeatures
-    for (int i = 0; i < groundTruthFeatures.get(currentLabelInstant).size(); i++) {
+    for (int i = 0; i < groundTruthFeatures.get(currentLabelInstant).size(); ++i)
       VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), groundTruthFeatures.get(currentLabelInstant).get(i), Color.GREEN);
-    }
     // overlay estimatedFeatures
-    for (int i = 0; i < estimatedFeatures.get(currentLabelInstant).size(); i++) {
+    for (int i = 0; i < estimatedFeatures.get(currentLabelInstant).size(); ++i)
       VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
-    }
     saveImage(rawEventsFrame);
   }
 
-  // load hand-labeled image of the current evaluation instant
+  /** @return hand-labeled image of the current evaluation instant */
   private BufferedImage loadImage() {
-    BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     // load matching accumulatedEventFrame (very similar as in HandLabeler)
     String imgNumberString = String.format("%04d", currentLabelInstant + 1);
     String fileName = logFileName + "_" + imgNumberString + "_" + groundTruthTimeStamps[currentLabelInstant] + ".png";
-    File pathToFile = new File(EvaluationFileLocations.images(logFileName), fileName);
+    File pathToFile = new File(MgEvaluationFolders.HANDLABEL.subfolder(logFileName), fileName);
+    BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     try {
       bufferedImage = ImageIO.read(pathToFile);
     } catch (IOException e) {
@@ -87,19 +84,19 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     return bufferedImage;
   }
 
-  // TODO mg replace with saveFrame method in VisGeneralUtil
+  // TODO MG replace with saveFrame method in VisGeneralUtil
   private void saveImage(BufferedImage bufferedImage) {
-    String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
     try {
+      String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
       ImageIO.write(bufferedImage, "png", new File(evaluationImagesFilePath, toBeSaved));
+      System.out.printf("Evaluation frame saved as %s\n", toBeSaved);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.printf("Evaluation frame saved as %s\n", toBeSaved);
   }
 
   private void computePerformance() {
-    for (int i = 0; i < numberOfFiles; i++) {
+    for (int i = 0; i < numberOfFiles; ++i) {
       averageRecall += evaluatorInstants[i].getRecall() / numberOfFiles;
       averagePrecision += evaluatorInstants[i].getPrecision() / numberOfFiles;
     }
