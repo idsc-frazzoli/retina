@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamTrajectoryPlanningUtil;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -23,7 +22,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final Thread thread = new Thread(this);
   // ---
   private List<double[]> worldWayPoints;
-  private List<WayPoint> gokartWayPoints;
   private double lastComputationTimeStamp;
   private boolean isLaunched;
 
@@ -38,6 +36,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    if (!isLaunched) {
+      isLaunched = true;
+      thread.start();
+    }
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
     if (currentTimeStamp - lastComputationTimeStamp > trajectoryUpdateRate) {
       worldWayPoints = slamMapProcessingListener.getWorldWayPoints();
@@ -50,8 +52,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   public void run() {
     while (isLaunched)
       if (Objects.nonNull(worldWayPoints)) {
-        gokartWayPoints = SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless());
-        SlamTrajectoryPlanningUtil.checkVisibility(gokartWayPoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
+        trajectoryPlanning();
         worldWayPoints = null;
       } else
         try {
@@ -59,5 +60,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         } catch (InterruptedException e) {
           // ---
         }
+  }
+
+  private void trajectoryPlanning() {
+    slamContainer.setWayPoints(SlamTrajectoryPlanningUtil.getGokartWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
+    SlamTrajectoryPlanningUtil.checkVisibility(slamContainer.getWayPoints(), visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
   }
 }

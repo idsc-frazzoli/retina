@@ -33,7 +33,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final double cornerY;
   private final double cellDim;
   // ---
-  private List<double[]> worldWayPoints = new ArrayList<>(); // world frame
+  private List<double[]> worldWayPoints = new ArrayList<>();
   private MapProvider occurrenceMap;
   private Mat labels;
   private boolean isLaunched;
@@ -49,19 +49,12 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
-  public void start() {
-    isLaunched = true;
-    thread.start();
-  }
-
-  public void stop() {
-    // TODO need to cleanly stop operations
-    isLaunched = false;
-    thread.interrupt();
-  }
-
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    if (!isLaunched) {
+      isLaunched = true;
+      thread.start();
+    }
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       occurrenceMap = slamContainer.getOccurrenceMap();
@@ -74,7 +67,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   public void run() {
     while (isLaunched)
       if (Objects.nonNull(occurrenceMap)) {
-        worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, dilateKernel, erodeKernel, mapThreshold, cornerX, cornerY, cellDim);
+        mapProcessing();
         occurrenceMap = null;
       } else
         try {
@@ -84,6 +77,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         }
   }
 
+  private void mapProcessing() {
+    worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, dilateKernel, erodeKernel, mapThreshold, cornerX, cornerY, cellDim);
+  }
+
+  // currently unused
   public Mat getProcessedMat() {
     labels.convertTo(labels, opencv_core.CV_8UC1);
     return labels;

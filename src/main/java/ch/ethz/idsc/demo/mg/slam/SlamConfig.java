@@ -33,8 +33,8 @@ public class SlamConfig {
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(20); // [-]
-  public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
+  public final Scalar numberOfParticles = RealScalar.of(5); // [-]
+  public final Scalar relevantParticles = RealScalar.of(2); // only these particles are used for occurrence map update
   /** [m] events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** [m] for reactive mapping mode */

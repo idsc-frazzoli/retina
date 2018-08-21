@@ -15,17 +15,21 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
+    initializeTimeStamps(currentTimeStamp);
     updateLikelihoods();
-    propagateStateEstimate(currentTimeStamp, lastPropagationTimeStamp);
-    resampleParticles(currentTimeStamp, lastResampleTimeStamp);
+    if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
+      propagateStateEstimate(currentTimeStamp, lastPropagationTimeStamp);
+      lastPropagationTimeStamp = currentTimeStamp;
+    }
+    if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
+      resampleParticles(currentTimeStamp, lastResampleTimeStamp);
+      lastResampleTimeStamp = currentTimeStamp;
+    }
   }
 
   private void propagateStateEstimate(double currentTimeStamp, double lastPropagationTimeStamp) {
-    if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
-      double dT = currentTimeStamp - lastPropagationTimeStamp;
-      SlamLocalizationStepUtil.propagateStateEstimate(slamContainer.getSlamParticles(), dT);
-      slamContainer.getSlamEstimatedPose().setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamContainer.getSlamParticles(), 1));
-      lastPropagationTimeStamp = currentTimeStamp;
-    }
+    double dT = currentTimeStamp - lastPropagationTimeStamp;
+    SlamLocalizationStepUtil.propagateStateEstimate(slamContainer.getSlamParticles(), dT);
+    slamContainer.getSlamEstimatedPose().setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamContainer.getSlamParticles(), 1));
   }
 }

@@ -57,7 +57,7 @@ public enum SlamLocalizationStepUtil {
   /** propagate the particles' state estimates with the velocity provided by odometry
    * 
    * @param slamParticles
-   * @param velocity {[m/s],[m/s],[-]} provided by odometry
+   * @param velocity {[m*s^-1],[m*s^-1],[s^-1]} provided by odometry
    * @param dT interpreted as [s] */
   public static void propagateStateEstimateOdometry(SlamParticle[] slamParticles, Tensor velocity, double dT) {
     for (int i = 0; i < slamParticles.length; i++)

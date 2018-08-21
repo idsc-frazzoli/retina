@@ -25,6 +25,7 @@ public class SlamViewer {
   private final boolean saveSlamFrame;
   private final long visualizationInterval;
   private final long savingInterval;
+  // ---
   private int imageCount;
   // ---
   private final TimerTask visualizationTask;

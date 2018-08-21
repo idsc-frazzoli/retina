@@ -19,7 +19,7 @@ public class SlamEstimatedPose implements GokartPoseInterface {
 
   /** sets pose with when input argument is not unitless
    * 
-   * @param pose {x[m], y[m], heading[]} */
+   * @param pose {x[m], y[m], angle[]} */
   public void setPose(Tensor pose) {
     this.poseUnitless = GokartPoseHelper.toUnitless(pose);
   }

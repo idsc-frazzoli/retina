@@ -10,10 +10,10 @@ import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
-/** static methods to facilitate map and waypoint processing */
+/** static methods to facilitate map and way point processing */
 public enum SlamTrajectoryPlanningUtil {
   ;
-  /** get waypoint objects according to world frame waypoint positions
+  /** get way point objects according to world frame way point positions
    * 
    * @param worldWayPoints interpreted as [m] in world frame
    * @param currentPose unitless representation

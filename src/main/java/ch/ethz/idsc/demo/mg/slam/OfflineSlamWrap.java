@@ -34,15 +34,12 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+    if (channel.equals(GokartLcmChannel.POSE_LIDAR))
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
-    }
-    if (channel.equals("davis240c.overview.dvs")) {
+    if (channel.equals("davis240c.overview.dvs"))
       davisDvsDatagramDecoder.decode(byteBuffer);
-    }
-    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
+    if (channel.equals(RimoLcmServer.CHANNEL_GET))
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
-    }
   }
 
   public SlamProvider getSlamProvider() {

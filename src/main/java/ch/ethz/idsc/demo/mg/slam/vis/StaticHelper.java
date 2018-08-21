@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.slam.WayPoint;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
@@ -50,6 +51,19 @@ import ch.ethz.idsc.tensor.Tensor;
     // setProcessedMat(slamProvider.getProcessedMat(),slamMapFrames[1].getBytes());
     slamMapFrames[1].drawWayPoints(slamProvider.getWayPoints());
     slamMapFrames[1].addGokartPose(slamProvider.getGokartPoseInterface().getPose(), Color.BLUE);
+    BufferedImage[] combinedFrames = new BufferedImage[3];
+    for (int i = 0; i < 3; i++)
+      combinedFrames[i] = slamMapFrames[i].getFrame();
+    return combinedFrames;
+  }
+
+  // NEW method
+  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
+    paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
+    slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
+    slamMapFrames[0].addGokartPose(slamContainer.getSlamEstimatedPose().getPose(), Color.BLUE);
+    slamMapFrames[1].drawWayPoints(slamContainer.getWayPoints());
+    slamMapFrames[1].addGokartPose(slamContainer.getSlamEstimatedPose().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < 3; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();

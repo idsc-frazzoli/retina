@@ -56,7 +56,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param slamParticles
    * @param map occurrence map used for localization
    * @param odometryVel {[m/s],[m/s],[-]} provided by odometry
-   * @param eventGokartFrame event position in gokart frame interpreted as [m]
+   * @param eventGokartFrame event position in go kart frame interpreted as [m]
    * @param currentTimeStamp interpreted as [s] */
   public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
     if (eventGokartFrame[0] < lookAheadDistance)

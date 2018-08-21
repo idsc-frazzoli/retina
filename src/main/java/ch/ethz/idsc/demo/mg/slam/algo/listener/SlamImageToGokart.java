@@ -24,7 +24,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
   }
 
-  // TODO MG when calling method use Objects.nonNull()
   /** @return null if eventGokartFrame[0] > lookaheadDistance */
   public double[] getEventGokartFrame() {
     return eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame;
