@@ -30,4 +30,9 @@ public class GokartLogAdapter implements GokartLogInterface {
   public File file() {
     return new File(folder, "log.lcm");
   }
+
+  @Override
+  public String driver() {
+    return gokartLogConfig.driver;
+  }
 }

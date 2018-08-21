@@ -11,4 +11,7 @@ public interface GokartLogInterface {
 
   /** @return pose {x[m], y[m], heading} at start of log */
   Tensor model();
+
+  /** @return name or initials of driver, or empty string if unknown */
+  String driver();
 }
