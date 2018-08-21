@@ -13,11 +13,11 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    file = DatahakiLogFileLocator.file(GokartLogFile._20180813T115544_26cfbbca);
-    file = new File("/media/datahaki/media/ethz/gokart/topic/track_white/20180705T101944_3/log.lcm");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180820T165637_568f9954);
+    file = new File("/media/datahaki/media/ethz/gokart/topic/track_red/20180820T165637_5/log.lcm");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
-    cfg.speed_denominator = 16;
+    cfg.speed_denominator = 8;
     LogPlayer.create(cfg);
   }
 }
