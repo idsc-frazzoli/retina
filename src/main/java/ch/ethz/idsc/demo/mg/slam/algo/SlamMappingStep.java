@@ -11,8 +11,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 /* package */ class SlamMappingStep extends AbstractSlamMappingStep {
   private final int relevantParticles;
 
-  protected SlamMappingStep(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
-    super(slamContainer, slamImageToGokart);
+  protected SlamMappingStep(SlamConfig slamConfig, SlamContainer slamContainer) {
+    super(slamContainer);
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
@@ -23,8 +23,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
   @Override // from AbstractSlamMappingStep
   protected void updateOccurrenceMap() {
-    if (Objects.nonNull(slamImageToGokart.getEventGokartFrame()))
+    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
       SlamMappingStepUtil.updateOccurrenceMap(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
-          slamImageToGokart.getEventGokartFrame(), relevantParticles);
+          slamContainer.getEventGokartFrame(), relevantParticles);
   }
 }

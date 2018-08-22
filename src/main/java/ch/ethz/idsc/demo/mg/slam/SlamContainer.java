@@ -17,7 +17,8 @@ public class SlamContainer {
   private final double linVelStd;
   private final double angVelStd;
   // ---
-  private List<WayPoint> wayPoints;
+  private List<SlamWayPoint> wayPoints;
+  private double[] eventGokartFrame;
   private boolean active;
 
   public SlamContainer(SlamConfig slamConfig) {
@@ -31,10 +32,12 @@ public class SlamContainer {
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
     angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
     wayPoints = new ArrayList<>();
+    eventGokartFrame = null;
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */
   public void initialize(Tensor initPose) {
+    active = true;
     SlamContainerUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     slamEstimatedPose.setPose(initPose);
   }
@@ -51,19 +54,25 @@ public class SlamContainer {
     return slamEstimatedPose;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
   public boolean getActive() {
     return active;
   }
 
-  public void setWayPoints(List<WayPoint> wayPoints) {
+  public void setWayPoints(List<SlamWayPoint> wayPoints) {
     this.wayPoints = wayPoints;
   }
 
-  public List<WayPoint> getWayPoints() {
+  public List<SlamWayPoint> getWayPoints() {
     return wayPoints;
+  }
+
+  /** @param eventGokartFrame null is allowed input */
+  public void setEventGokartFrame(double[] eventGokartFrame) {
+    this.eventGokartFrame = eventGokartFrame;
+  }
+
+  /** @return can be null if event is further away than lookAheadDistance */
+  public double[] getEventGokartFrame() {
+    return eventGokartFrame;
   }
 }

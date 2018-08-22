@@ -7,8 +7,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
-/** way point object */
-public class WayPoint {
+/** way point object for SLAM algorithm */
+public class SlamWayPoint {
   private final double[] worldPosition;
   private Tensor gokartPosition;
   /** visibility given the current pose of the go kart */
@@ -16,7 +16,7 @@ public class WayPoint {
 
   /** @param worldPosition interpreted as [m]
    * @param pose unitless representation */
-  public WayPoint(double[] worldPosition, Tensor pose) {
+  public SlamWayPoint(double[] worldPosition, Tensor pose) {
     this.worldPosition = worldPosition;
     computeGokartPosition(pose);
   }
@@ -32,7 +32,7 @@ public class WayPoint {
   }
 
   /** @param pose unitless representation
-   * @return */
+   * @return position of event in go kart frame given the pose */
   public double[] getGokartPosition(Tensor pose) {
     computeGokartPosition(pose);
     return Primitives.toDoubleArray(gokartPosition);
@@ -40,10 +40,6 @@ public class WayPoint {
 
   public boolean getVisibility() {
     return visibility;
-  }
-
-  public void setGokartPosition(Tensor gokartPosition) {
-    this.gokartPosition = gokartPosition;
   }
 
   public void setVisibility(boolean visibility) {

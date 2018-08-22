@@ -2,30 +2,29 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-/** transforms events to go kart frame */
-/* package */ class SlamImageToGokart implements DavisDvsListener {
+/** transforms events from image plane to go kart frame */
+/* package */ class SlamImageToGokart extends AbstractSlamStep {
   private final ImageToGokartInterface imageToGokartInterface;
   private final double lookAheadDistance;
-  // ---
-  private double[] eventGokartFrame;
 
-  SlamImageToGokart(SlamConfig slamConfig) {
+  SlamImageToGokart(SlamConfig slamConfig, SlamContainer slamContainer) {
+    super(slamContainer);
     imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
     lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    eventGokartFrame = imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y);
+    setEventGokartFrame(imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y));
   }
 
-  /** @return null if eventGokartFrame[0] > lookaheadDistance */
-  public double[] getEventGokartFrame() {
-    return eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame;
+  /** sets eventGokartFrame field in SlamContainer. It is set null if eventGokartFrame[0] > lookAheadDistance */
+  private void setEventGokartFrame(double[] eventGokartFrame) {
+    slamContainer.setEventGokartFrame(eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame);
   }
 }

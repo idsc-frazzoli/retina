@@ -13,17 +13,14 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final String logFilename;
   private final File logFile;
   private final boolean saveSlamMap;
-  private final boolean localizationMode;
   private final long logFileDuration;
 
   SlamSetup(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
-    slamConfig.onlineMode = false; // just to make sure
     logFilename = slamConfig.davisConfig.logFilename();
     logFile = slamConfig.davisConfig.getLogFile();
     logFileDuration = Magnitude.MICRO_SECOND.toLong(slamConfig.davisConfig.logFileDuration);
     saveSlamMap = slamConfig.saveSlamMap;
-    localizationMode = slamConfig.localizationMode;
   }
 
   private void runAlgo() {

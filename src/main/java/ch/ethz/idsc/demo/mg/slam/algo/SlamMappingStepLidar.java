@@ -6,9 +6,10 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-public class SlamMappingStepLidar extends AbstractSlamMappingStep {
-  protected SlamMappingStepLidar(SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
-    super(slamContainer, slamImageToGokart);
+/** executes the mapping step of the SLAM algorithm with the provided lidar pose */
+/* package */ class SlamMappingStepLidar extends AbstractSlamMappingStep {
+  protected SlamMappingStepLidar(SlamContainer slamContainer) {
+    super(slamContainer);
   }
 
   @Override // from DavisDvsListener
@@ -18,8 +19,8 @@ public class SlamMappingStepLidar extends AbstractSlamMappingStep {
 
   @Override // from AbstractSlamMappingStep
   protected void updateOccurrenceMap() {
-    if (Objects.nonNull(slamImageToGokart.getEventGokartFrame()))
+    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
       SlamMappingStepUtil.updateOccurrenceMapLidar(slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
-          slamContainer.getOccurrenceMap(), slamImageToGokart.getEventGokartFrame());
+          slamContainer.getOccurrenceMap(), slamContainer.getEventGokartFrame());
   }
 }

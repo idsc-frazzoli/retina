@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
+/** wrapper to run SLAM algorithm with offline log files */
 public class OfflineSlamWrap implements OfflineLogListener {
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -35,9 +36,8 @@ public class OfflineSlamWrap implements OfflineLogListener {
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     if (slamProvider.getSlamContainer().getActive() && channel.equals("davis240c.overview.dvs"))
       davisDvsDatagramDecoder.decode(byteBuffer);
-    // TODO HAAAACK
+    // TODO triggering module required
     if (!slamProvider.getSlamContainer().getActive() && gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose()) {
-      slamProvider.getSlamContainer().setActive(true);
       slamProvider.getSlamContainer().initialize(gokartLidarPose.getPose());
     }
   }

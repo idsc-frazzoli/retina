@@ -8,7 +8,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /* package */ abstract class AbstractSlamLocalizationStep extends AbstractSlamStep {
-  private final SlamImageToGokart slamImageToGokart;
   protected final double resampleRate;
   protected final double statePropagationRate;
   protected final double rougheningLinAccelStd;
@@ -18,9 +17,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   protected Double lastPropagationTimeStamp = null;
   protected Double lastResampleTimeStamp = null;
 
-  protected AbstractSlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
+  protected AbstractSlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
-    this.slamImageToGokart = slamImageToGokart;
     resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
     statePropagationRate = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
     rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);
@@ -36,9 +34,9 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   protected void updateLikelihoods() {
-    if (Objects.nonNull(slamImageToGokart.getEventGokartFrame()))
+    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
       SlamLocalizationStepUtil.updateLikelihoods(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
-          slamImageToGokart.getEventGokartFrame(), alpha);
+          slamContainer.getEventGokartFrame(), alpha);
   }
 
   protected void resampleParticles(double currentTimeStamp, double lastResampleTimeStamp) {

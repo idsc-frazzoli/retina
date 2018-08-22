@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +26,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final double visibleBoxXMax;
   private final double visibleBoxHalfWidth;
   // ---
-  private List<double[]> worldWayPoints = new ArrayList<>();
   private MapProvider occurrenceMap;
   private Mat labels;
   private boolean isLaunched;
@@ -75,7 +73,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void mapProcessing() {
-    worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
+    List<double[]> worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
     slamContainer.setWayPoints(SlamMapProcessingUtil.getWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
     SlamMapProcessingUtil.checkVisibility(slamContainer.getWayPoints(), slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin, visibleBoxXMax,
         visibleBoxHalfWidth);

@@ -6,26 +6,17 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.slam.WayPoint;
-import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
 import ch.ethz.idsc.demo.mg.util.slam.SlamOpenCVUtil;
-import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** SLAM algorithm visualization static methods
- * 
- * if a function from this enum is needed in the public scope,
- * that function can be extracted to another public class */
 /* package */ enum StaticHelper {
   ;
   private static final byte CLEAR_BYTE = -1; // white
@@ -34,7 +25,12 @@ import ch.ethz.idsc.tensor.Tensor;
   private static final byte BLUE = (byte) 5;
   private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
 
-  // NEW method
+  /** sets all frames for the visualization
+   * 
+   * @param slamMapFrames
+   * @param slamContainer
+   * @param gokartLidarPose provided by lidar
+   * @return array of BufferedImages of length 3 */
   public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
     paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
@@ -132,7 +128,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param cornerX interpreted as [m]
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m] */
-  public static void drawWayPoint(Graphics2D graphics, WayPoint wayPoint, double radius, double cornerX, double cornerY, double cellDim) {
+  public static void drawWayPoint(Graphics2D graphics, SlamWayPoint wayPoint, double radius, double cornerX, double cornerY, double cellDim) {
     double[] framePos = worldToFrame(wayPoint.getWorldPosition(), cornerX, cornerY, cellDim);
     Ellipse2D ellipse = new Ellipse2D.Double( //
         framePos[0] - radius, //

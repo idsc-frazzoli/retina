@@ -10,9 +10,9 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 /* package */ class SlamLocalizationStepOdometry extends AbstractSlamLocalizationStep {
   private final GokartPoseOdometryDemo gokartPoseOdometry;
 
-  protected SlamLocalizationStepOdometry(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart, //
+  protected SlamLocalizationStepOdometry(SlamConfig slamConfig, SlamContainer slamContainer, //
       GokartPoseOdometryDemo gokartPoseOdometry) {
-    super(slamConfig, slamContainer, slamImageToGokart);
+    super(slamConfig, slamContainer);
     this.gokartPoseOdometry = gokartPoseOdometry;
   }
 

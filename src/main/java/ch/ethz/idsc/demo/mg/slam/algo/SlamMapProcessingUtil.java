@@ -11,10 +11,10 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.WayPoint;
+import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
 import ch.ethz.idsc.tensor.Tensor;
 
-public enum SlamMapProcessingUtil {
+/* package */ enum SlamMapProcessingUtil {
   ;
   private static final Mat dilateKernel = //
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
@@ -91,10 +91,10 @@ public enum SlamMapProcessingUtil {
   /** @param worldWayPoints
    * @param pose unitless representation
    * @return */
-  public static List<WayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose) {
-    List<WayPoint> wayPoints = new ArrayList<>();
+  public static List<SlamWayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose) {
+    List<SlamWayPoint> wayPoints = new ArrayList<>();
     for (int i = 0; i < worldWayPoints.size(); i++) {
-      WayPoint wayPoint = new WayPoint(worldWayPoints.get(i), pose);
+      SlamWayPoint wayPoint = new SlamWayPoint(worldWayPoints.get(i), pose);
       wayPoints.add(wayPoint);
     }
     return wayPoints;
@@ -107,8 +107,9 @@ public enum SlamMapProcessingUtil {
    * @param visibleBoxXMin [m] in go kart frame
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
-  public static void checkVisibility(List<WayPoint> gokartWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax, double visibleBoxHalfWidth) {
-    for (WayPoint wayPoint : gokartWayPoints) {
+  public static void checkVisibility(List<SlamWayPoint> gokartWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
+      double visibleBoxHalfWidth) {
+    for (SlamWayPoint wayPoint : gokartWayPoints) {
       double[] gokartPosition = wayPoint.getGokartPosition(pose);
       // TODO JPH simplify
       if (gokartPosition[0] > visibleBoxXMin && gokartPosition[0] < visibleBoxXMax && //

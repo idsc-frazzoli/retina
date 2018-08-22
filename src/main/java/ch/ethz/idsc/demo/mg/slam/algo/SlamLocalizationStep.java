@@ -7,8 +7,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** localization step of slam algorithm using standard state propagation */
 /* package */ class SlamLocalizationStep extends AbstractSlamLocalizationStep {
-  SlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
-    super(slamConfig, slamContainer, slamImageToGokart);
+  SlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer) {
+    super(slamConfig, slamContainer);
   }
 
   @Override // from DavisDvsListener

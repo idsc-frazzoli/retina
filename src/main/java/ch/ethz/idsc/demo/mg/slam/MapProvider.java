@@ -37,7 +37,12 @@ public class MapProvider {
     maxValue = 0;
   }
 
-  /** divides the provided maps and saves into targMap */
+  /** divides the provided maps and saves into targMap
+   * 
+   * @param numerator
+   * @param denominator
+   * @param targetMap */
+  // currently unused
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
     // TODO loop can be done in parallel
     for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
@@ -47,7 +52,7 @@ public class MapProvider {
       }
   }
 
-  // returns coordinates of cell middle point
+  /** @return coordinates of cell middle point */
   public double[] getCellCoord(int cellIndex) {
     if (cellIndex >= numberOfCells) {
       System.out.println("FATAL: should not access that");

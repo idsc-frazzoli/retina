@@ -12,12 +12,14 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 public class SlamViewer {
   private final GokartPoseInterface gokartLidarPose;
   private final SlamContainer slamContainer;
-  private final SlamMapGUI slamMapGUI;
   private final SlamMapFrame[] slamMapFrames;
+  private final SlamMapGUI slamMapGUI;
   // ---
   private final Timer timer;
   private final TimerTask visualizationTask;
+  private final TimerTask saveFrameTask;
   private final long visualizationInterval;
+  private final long savingInterval;
 
   public SlamViewer(SlamConfig slamConfig, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
@@ -28,13 +30,20 @@ public class SlamViewer {
       slamMapFrames[i] = new SlamMapFrame(slamConfig);
     // ---
     timer = new Timer();
+    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
+    savingInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.savingInterval);
     visualizationTask = new TimerTask() {
       @Override
       public void run() {
         visualizationTask();
       }
     };
-    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
+    saveFrameTask = new TimerTask() {
+      @Override
+      public void run() {
+        saveFrameTask();
+      }
+    };
     timer.schedule(visualizationTask, 0, visualizationInterval);
   }
 
@@ -42,5 +51,9 @@ public class SlamViewer {
     if (slamContainer.getActive()) {
       slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamContainer, gokartLidarPose));
     }
+  }
+
+  private void saveFrameTask() {
+    // TODO Auto-generated method stub
   }
 }

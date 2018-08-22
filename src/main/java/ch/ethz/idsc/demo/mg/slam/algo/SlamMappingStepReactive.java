@@ -8,15 +8,16 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-public class SlamMappingStepReactive extends AbstractSlamMappingStep {
+/** executes the mapping step of the SLAM algorithm in reactiveMapMode */
+/* package */ class SlamMappingStepReactive extends AbstractSlamMappingStep {
   private final double reactiveUpdateRate;
   private final double lookBehindDistance;
   private final int relevantParticles;
   // ---
   private Double lastReactiveUpdateTimeStamp = null;
 
-  protected SlamMappingStepReactive(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
-    super(slamContainer, slamImageToGokart);
+  protected SlamMappingStepReactive(SlamConfig slamConfig, SlamContainer slamContainer) {
+    super(slamContainer);
     reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig.reactiveUpdateRate);
     lookBehindDistance = Magnitude.METER.toDouble(slamConfig.lookBehindDistance);
     relevantParticles = slamConfig.relevantParticles.number().intValue();
@@ -35,9 +36,9 @@ public class SlamMappingStepReactive extends AbstractSlamMappingStep {
 
   @Override // from AbstractSlamMappingStep
   protected void updateOccurrenceMap() {
-    if (Objects.nonNull(slamImageToGokart.getEventGokartFrame()))
+    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
       SlamMappingStepUtil.updateOccurrenceMap(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
-          slamImageToGokart.getEventGokartFrame(), relevantParticles);
+          slamContainer.getEventGokartFrame(), relevantParticles);
   }
 
   private void initializeTimeStamps(double currentTimeStamp) {
