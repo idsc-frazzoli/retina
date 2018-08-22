@@ -8,6 +8,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -87,5 +89,10 @@ public class ChassisGeometryTest extends TestCase {
     assertEquals(Units.of(rate), Unit.of("s^-1"));
     Scalar ome = Magnitude.PER_SECOND.apply(rate);
     assertTrue(Chop._04.close(ome, RealScalar.of(0.18518518518518517)));
+  }
+
+  public void testAckermann() {
+    Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(RealScalar.of(0.3));
+    assertTrue(Chop._10.close(pair, Tensors.vector(0.3397325320025735, 0.2683854870479421)));
   }
 }

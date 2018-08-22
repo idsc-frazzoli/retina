@@ -9,7 +9,10 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ArcTan;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 /** formula to convert steering angle to (front-)wheel angle
@@ -20,6 +23,8 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * see also
  * <a href="https://en.wikipedia.org/wiki/Ackermann_steering_geometry">Ackermann steering geometry</a> */
 public class AckermannSteering implements Serializable {
+  private static final ScalarUnaryOperator ONE = QuantityMagnitude.SI().in(Unit.ONE);
+  // ---
   private final Scalar factor;
 
   /** @param x_front non-zero distance from rear to front axis
@@ -27,9 +32,11 @@ public class AckermannSteering implements Serializable {
   public AckermannSteering(Scalar x_front, Scalar y_offset) {
     if (Scalars.isZero(x_front))
       throw TensorRuntimeException.of(x_front, y_offset);
-    factor = y_offset.divide(x_front);
+    factor = ONE.apply(y_offset.divide(x_front));
   }
 
+  /** @param delta
+   * @return steering angle for two wheels located at (x_front, y_offset) */
   public Scalar angle(Scalar delta) {
     Scalar tan = Tan.of(delta);
     return ArcTan.of(tan.divide(RealScalar.ONE.subtract(tan.multiply(factor))));

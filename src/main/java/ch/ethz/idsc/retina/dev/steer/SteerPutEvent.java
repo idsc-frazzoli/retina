@@ -23,8 +23,8 @@ public class SteerPutEvent extends DataEvent {
   /** imaginary unit that encodes angular/rotational position of steer column */
   public static final Unit UNIT_ENCODER = Unit.of("SCE");
   public static final Unit UNIT_RTORQUE = Unit.of("SCT"); // relative torque, not quite N*m but stronger
-  public static final ScalarUnaryOperator RTORQUE = QuantityMagnitude.singleton(UNIT_RTORQUE);
   public static final ScalarUnaryOperator ENCODER = QuantityMagnitude.singleton(UNIT_ENCODER);
+  public static final ScalarUnaryOperator RTORQUE = QuantityMagnitude.singleton(UNIT_RTORQUE);
   public static final List<Word> COMMANDS = Arrays.asList(MOT_TRQ_0, MOT_TRQ_1);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_0 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_0, 0);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_1 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_1, 0);
