@@ -28,10 +28,10 @@ enum BrakeDistanceAnalysis {
   static void brakeAnalysis() throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/BrakeDistanceAnalysis"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(olr);
-      OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
+      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(gokartLogInterface);
+      OfflineLogPlayer.process(gokartLogInterface.file(), brakeDistanceAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), brakeDistanceAnalysis.getTable().map(CsvFormat.strict()));
     }
   }

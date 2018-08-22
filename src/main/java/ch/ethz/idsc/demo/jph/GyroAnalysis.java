@@ -26,10 +26,10 @@ enum GyroAnalysis {
   public static void main(String[] args) throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalQuick"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
       DavisImuTable davisImuTable = new DavisImuTable(Quantity.of(0, SI.SECOND));
-      OfflineLogPlayer.process(olr.file(), davisImuTable);
+      OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
       Export.of(UserHome.file(folder.getName() + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }
   }

@@ -23,10 +23,10 @@ enum GpsAnalysis {
   public static void main(String[] args) throws IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/GpsAnalysis"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
       LocalizationTable localizationAnalysis = new LocalizationTable(Quantity.of(0.5, SI.SECOND), true);
-      OfflineLogPlayer.process(olr.file(), localizationAnalysis);
+      OfflineLogPlayer.process(gokartLogInterface.file(), localizationAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), localizationAnalysis.getTable().map(CsvFormat.strict()));
     }
   }

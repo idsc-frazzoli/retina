@@ -78,6 +78,7 @@ public class TrackDriving implements RenderInterface {
     geometricLayer.pushMatrix(matrix);
     {
       Path2D path2d = geometricLayer.toPath2D(FOOTPRINT);
+      path2d.closePath();
       graphics.setColor(COLOR_DATA_INDEXED2.getColor(id));
       graphics.fill(path2d);
       graphics.setColor(COLOR_DATA_INDEXED1.getColor(id));
@@ -102,7 +103,8 @@ public class TrackDriving implements RenderInterface {
     }
     graphics.setStroke(new BasicStroke(2.5f));
     {
-      Scalar angle = row.Get(8).multiply(RealScalar.of(0.6));
+      // SteerConfig.GLOBAL.column2steer == 0.6[...]
+      Scalar angle = row.Get(8).multiply(RealScalar.of(0.6)); // angle
       Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor v1 = AngleVector.of(pair.Get(0)).multiply(RealScalar.of(.2));

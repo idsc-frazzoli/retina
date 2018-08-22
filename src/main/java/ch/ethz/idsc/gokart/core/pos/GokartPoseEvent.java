@@ -12,7 +12,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** class design is similar to {@link GokartStatusEvent} */
+/** class design is similar to {@link GokartStatusEvent}
+ * 
+ * an instance of {@link GokartPoseEvent} is immutable */
 public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   static final int LENGTH = 8 * 3 + 4;
   // ---

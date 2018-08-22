@@ -80,10 +80,7 @@ public class ChassisGeometry implements Serializable {
   }
 
   public AckermannSteering getAckermannSteering() {
-    // TODO JPH use scalars with units
-    return new AckermannSteering( //
-        xAxleDistanceMeter(), //
-        yTireFrontMeter());
+    return new AckermannSteering(xAxleRtoF, yTireFront);
   }
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r

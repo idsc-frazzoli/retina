@@ -22,7 +22,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -120,7 +120,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
         speed.map(Magnitude.VELOCITY), //
         rate.map(Magnitude.PER_SECOND), //
         davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
-        SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent), //
+        SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
         linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
         localizationResult.pose_xyt.extract(0, 2).map(Round._3), //
         localizationResult.pose_xyt.Get(2).map(Round._6), //
