@@ -1,11 +1,14 @@
-function [sx,sP] = lidarIMUStateEstimation(adat,ldat)
+function [st,sx,sP] = lidarIMUStateEstimation(adat,ldat)
 x = zeros(10,1);
+%first state estimation
+x(1:3)=ldat(1,2:4);
+x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
-P(9,9)=100000;
-P(10,10)=100000;
-IMUa = 0.01;
-IMUr = 1;
+P(9,9)=1000;
+P(10,10)=1000;
+IMUa = 100;
+IMUr = 30;
 DRIFT=0;
 Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa,DRIFT,DRIFT]);
 lt = ldat(:,1);
@@ -21,7 +24,7 @@ aagg = 10;
 
 %use higher frequency for data
 lR = estimateVar(ldat);
-aR = estimateVar(adat)*5;
+aR = estimateVar(adat)*100000;
 
 
 [~,lN]=size(ldat);
@@ -82,7 +85,7 @@ Qhist = Qhist(1:tcount-1,:,:);
     [sx,sP] = RTSSmoother(xhist,Phist,Qhist,Fhist);
     %sx = xhist;
     %sP = Phist;
-
+    st = thist;
     show = 1;
     if(show)
         close all
@@ -132,7 +135,13 @@ Qhist = Qhist(1:tcount-1,:,:);
         %mwdebug(:,3) = conv (mwdebug(:,3), gaussFilter, 'same');
         %mwdebug(:,4) = conv (mwdebug(:,4), gaussFilter, 'same');
 
-
+        %rdat = rotate([sx(:,7),sx(:,8)],-sx(:,3))';
+        %figure
+        %hold on
+        %plot(thist,rdat(:,1));
+        %plot(thist,rdat(:,2));
+        %hold off
+        
         %figure
         %hold on
         %plot(mwdebug(:,1),mwdebug(:,3));

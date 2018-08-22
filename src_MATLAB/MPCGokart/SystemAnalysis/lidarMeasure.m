@@ -5,6 +5,8 @@ function [nx,nP] = lidarMeasure(x,P,dt,dmt,m1,m2,m3,R,Q)
 %m1-3: last 3 measurements
 
 %compute variance and values for position and acceleration
+fullm = [m1;m2;m3];
+
 p = m1;
 R1 = R;
 v = (m1-m2)/dmt;

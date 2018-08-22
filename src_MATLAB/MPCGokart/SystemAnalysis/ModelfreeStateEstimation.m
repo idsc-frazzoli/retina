@@ -1,18 +1,31 @@
-startt = 500;
-endt = startt+70;
+%startt = 500;
+%endt = startt+70;
 %endt = startt+50;
 %close all
 
-%gplocalization = csvread('gplocalization.csv');
-%davisIMU = csvread('davisIMU.csv');
+%folder = 'retina_out/20180820T1438522.lcm/';
+gplocalization = csvread(strcat(folder,'gplocalization.csv'));
+davisIMU = csvread(strcat(folder,'davisIMU.csv'));
 
 %absolute lidar estimation
-lx = table2array(gplocalization(:,3));
-ly = table2array(gplocalization(:,4));
-lt = table2array(gplocalization(:,1));
-lq = table2array(gplocalization(:,2));
-lo = table2array(gplocalization(:,5));
+lx = gplocalization(:,3);
+ly = gplocalization(:,4);
+lt = gplocalization(:,1);
+lq = gplocalization(:,2);
+lo = gplocalization(:,5);
 lo = unwrap(lo,2*pi);
+
+%accelerometer data
+at = davisIMU(:,1);
+ax = davisIMU(:,3);
+ay = davisIMU(:,5);
+az = davisIMU(:,4);
+ar = davisIMU(:,8);
+%ax = ax - mean(ax);
+%ay = ay - mean(ay);
+
+startt = max(min(lt),min(at))+0.1;
+endt = min(max(lt),max(at))-1;
 
 lfirst = find(lt>startt,1)
 llast = find(lt>endt,1)
@@ -23,15 +36,6 @@ ly = ly(lfirst:llast);
 lt = lt(lfirst:llast);
 lq = lq(lfirst:llast);
 lo = lo(lfirst:llast);
-
-%accelerometer data
-at = table2array(davisIMU(:,1));
-ax = table2array(davisIMU(:,3));
-ay = table2array(davisIMU(:,5));
-az = table2array(davisIMU(:,4));
-ar = table2array(davisIMU(:,8));
-%ax = ax - mean(ax);
-%ay = ay - mean(ay);
 
 afirst = find(at>startt,1)
 alast = find(at>endt,1)
@@ -46,4 +50,10 @@ ar = ar(afirst:alast);
 ldat = [lt,lx,ly,lo];
 adat = [at,ar,ay,-ax];%switched axes so that it works
 
-[sx,sP] = lidarIMUStateEstimation(adat,ldat);
+[st,sx,sP] = lidarIMUStateEstimation(adat,ldat);
+
+sst = min(st):0.01:max(st);
+ssx = interp1(st, sx,sst);
+M = [sst',ssx];
+%plot(ssx(1,:),ssx(2,:))
+csvwrite(strcat(folder,'RTSData.csv'), M);

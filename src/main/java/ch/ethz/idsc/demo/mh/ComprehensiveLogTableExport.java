@@ -23,6 +23,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * export data for system identification */
 public class ComprehensiveLogTableExport {
   private static final Scalar PERIOD = Quantity.of(0, SI.SECOND);
+  private static final Scalar STEERINGPERIOD = Quantity.of(0.01, SI.SECOND);
+  private static final Scalar POWERPERIOD = Quantity.of(0.01, SI.SECOND);
   // private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);
   // ---
   private final File outputFolder;
@@ -39,10 +41,10 @@ public class ComprehensiveLogTableExport {
   public void process(File file) throws IOException {
     DavisImuTable davisImuTable = new DavisImuTable(PERIOD);
     // LinmotStatusTable linmotStatusTable = new LinmotStatusTable(OFFSET);
-    PowerSteerTable powerSteerTable = new PowerSteerTable(PERIOD);
+    PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
-    PowerRimoAnalysis powerRimoAnalysis = new PowerRimoAnalysis(PERIOD);
-    RimoRateTable rimoRateTable = new RimoRateTable(PERIOD);
+    PowerRimoAnalysis powerRimoAnalysis = new PowerRimoAnalysis(POWERPERIOD);
+    RimoRateTable rimoRateTable = new RimoRateTable(POWERPERIOD);
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     //LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
     VelodyneLocalizationTable velodyneLocalizationTable = new VelodyneLocalizationTable(PERIOD);
@@ -51,10 +53,10 @@ public class ComprehensiveLogTableExport {
     OfflineLogPlayer.process(file, //
         davisImuTable, //
         // linmotStatusTable);
-        //powerSteerTable, //
+        powerSteerTable, //
         //rimoOdometryTable, //
-        //powerRimoAnalysis, //
-        //rimoRateTable, //
+        powerRimoAnalysis, //
+        rimoRateTable, //
         // rimoSlipTable);
         //localizationTable);
         //velodyneLocalizationTable);
@@ -64,10 +66,10 @@ public class ComprehensiveLogTableExport {
     // ---
     Export.of(new File(folder, "davisIMU.csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     // Export.of(UserHome.file("linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
-    //Export.of(new File(folder, "powersteer.csv"), powerSteerTable.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "powersteer.csv"), powerSteerTable.getTable().map(CsvFormat.strict()));
     //Export.of(new File(folder, "rimoodom.csv"), rimoOdometryTable.getTable().map(CsvFormat.strict()));
-    //Export.of(new File(folder, "powerrimo.csv"), powerRimoAnalysis.getTable().map(CsvFormat.strict()));
-    //Export.of(new File(folder, "rimorate.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "powerrimo.csv"), powerRimoAnalysis.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "rimorate.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
     // Export.of(UserHome.file("rimoslip.csv"), rimoSlipTable.getTable().map(CsvFormat.strict()));
     //Export.of(new File(folder, "localization.csv"), localizationTable.getTable().map(CsvFormat.strict()));
     //Export.of(new File(folder, "vlocalization.csv"), velodyneLocalizationTable.getTable().map(CsvFormat.strict()));

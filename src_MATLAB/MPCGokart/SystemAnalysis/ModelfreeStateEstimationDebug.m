@@ -2,7 +2,6 @@ startt = 500;
 endt = startt+100;
 %close all
 
-%gplocalization = csvread('gplocalization.csv');
 %davisIMU = csvread('davisIMU.csv');
 
 %absolute lidar estimation
@@ -68,11 +67,11 @@ ay = ay(afirst:alast);
 az = az(afirst:alast);
 ar = ar(afirst:alast);
 
-figure
-hold on
-plot(lt,lo)
-plot(at,ar)
-hold off
+%figure
+%hold on
+%plot(lt,lo)
+%plot(at,ar)
+%hold off
 
 sigma = 180;
 sz = sigma*10;    % length of gaussFilter vector
@@ -101,11 +100,17 @@ gaussFilter = gaussFilter / sum (gaussFilter); % normalize
 lsax = conv (lya, gaussFilter, 'same');
 lsay = conv (lxa, gaussFilter, 'same');
 
+%figure
+%hold on
+%plot(at,-asx);%asx is acceleration towards the right
+%plot(at,-asy);%-asy is forward acceleration
+%plot(at,asz);
+%hold off
+
 figure
 hold on
-plot(at,-asx);%asx is acceleration towards the right
-plot(at,-asy);%-asy is forward acceleration
-%plot(at,asz);
+plot(at,asx);%asx is acceleration towards the right
+plot(at,asy);%-asy is forward acceleration
 hold off
 
 figure
@@ -119,4 +124,4 @@ hold off
 ldat = [lt,lx,ly,lo];
 adat = [at,ar,ay,-ax];%switched axes so that it works
 
-[sx,sP] = lidarIMUStateEstimation(adat,ldat);
+%[sx,sP] = lidarIMUStateEstimation(adat,ldat);
