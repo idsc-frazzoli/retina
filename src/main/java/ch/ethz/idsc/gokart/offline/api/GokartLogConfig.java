@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.api;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -14,9 +13,4 @@ public class GokartLogConfig {
   public Tensor pose = null;
   /** name or initials of driver */
   public String driver = "";
-
-  /***************************************************/
-  public Tensor model() {
-    return GokartPoseHelper.toSE2Matrix(pose);
-  }
 }

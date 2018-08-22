@@ -34,7 +34,7 @@ public class GyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private static final int FAN = 4;
-  // good results 0.3, 3, 3, 5
+  // TODO JPH provide constructor with parameters, max speed, max rate, lidar rate, and fan resolution
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = new Se2MultiresGrids( //
       RealScalar.of(0.8 / FAN), //
       Magnitude.ONE.apply(Quantity.of(9.0 / FAN, NonSI.DEGREE_ANGLE)), //

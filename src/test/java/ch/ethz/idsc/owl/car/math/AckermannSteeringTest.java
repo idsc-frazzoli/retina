@@ -7,7 +7,9 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import junit.framework.TestCase;
 
 public class AckermannSteeringTest extends TestCase {
@@ -37,7 +39,8 @@ public class AckermannSteeringTest extends TestCase {
   }
 
   public void testUnits() {
-    AckermannSteering asL = new AckermannSteering(Quantity.of(1, "m"), Quantity.of(+40, "cm"));
+    ScalarUnaryOperator suo = UnitSystem.SI();
+    AckermannSteering asL = new AckermannSteering(suo.apply(Quantity.of(1, "m")), suo.apply(Quantity.of(+40, "cm")));
     Scalar delta = RealScalar.of(.2);
     Tensor pair = asL.pair(delta);
     assertTrue(Chop._12.close(pair, Tensors.vector(0.21711959572073944, 0.1853540110207382)));
