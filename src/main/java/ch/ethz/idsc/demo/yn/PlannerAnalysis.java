@@ -94,9 +94,9 @@ class PlannerAnalysis implements OfflineLogListener {
   public static void main(String[] args) throws FileNotFoundException, IOException {
     File file = UserHome.file("gokart/logs");
     System.out.println(file.getName());
-    GokartLogInterface olr = GokartLogAdapter.of(file);
+    GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
     OfflineLogListener oll = new PlannerAnalysis();
-    OfflineLogPlayer.process(olr.file(), oll);
+    OfflineLogPlayer.process(gokartLogInterface.file(), oll);
     System.out.print("Done.");
   }
 }

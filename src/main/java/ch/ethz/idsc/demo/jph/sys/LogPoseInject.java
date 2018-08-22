@@ -43,7 +43,7 @@ enum LogPoseInject {
       while (true) {
         // TODO code redundant to OfflineLogPlayer
         Event event = log.readNext();
-        System.out.println("here");
+        // System.out.println("here");
         {
           if (Objects.isNull(tic))
             tic = event.utime;
@@ -80,11 +80,14 @@ enum LogPoseInject {
   }
 
   public static void main(String[] args) throws Exception {
-    File folder = new File("/media/datahaki/media/ethz/gokart/topic/track_red/20180820T143852_1");
-    GokartLogInterface olr = GokartLogAdapter.of(folder);
-    OfflinePoseEstimator offlinePoseEstimator = new LidarGyroPoseEstimator(olr);
-    File dst = UserHome.file("lidargyropose.lcm");
-    dst.delete();
-    process(olr.file(), dst, offlinePoseEstimator);
+    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_red");
+    for (File folder : root.listFiles()) {
+      System.out.println(folder);
+      // OfflinePoseEstimator offlinePoseEstimator = ;
+      File dst = UserHome.file("export_red/" + folder.getName() + ".lcm");
+      dst.delete();
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
+      process(gokartLogInterface.file(), dst, new LidarGyroPoseEstimator(gokartLogInterface));
+    }
   }
 }
