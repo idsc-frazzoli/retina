@@ -6,7 +6,7 @@ import java.util.stream.DoubleStream;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** provides a grid map which is used by the SLAM algorithm */
+/** grid map which is used by the SLAM algorithm */
 public class MapProvider {
   private final int numberOfCells;
   private final int mapWidth;
@@ -18,6 +18,7 @@ public class MapProvider {
   private final double cornerYLow;
   private final double cornerXHigh;
   private final double cornerYHigh;
+  // ---
   /** tracks max value of values in array */
   private double maxValue;
 
@@ -36,7 +37,12 @@ public class MapProvider {
     maxValue = 0;
   }
 
-  /** divides the provided maps and saves into targMap */
+  /** divides the provided maps and saves into targMap
+   * 
+   * @param numerator
+   * @param denominator
+   * @param targetMap */
+  // currently unused
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
     // TODO loop can be done in parallel
     for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
@@ -46,7 +52,7 @@ public class MapProvider {
       }
   }
 
-  // returns coordinates of cell middle point
+  /** @return coordinates of cell middle point */
   public double[] getCellCoord(int cellIndex) {
     if (cellIndex >= numberOfCells) {
       System.out.println("FATAL: should not access that");

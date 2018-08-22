@@ -8,7 +8,7 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.WayPoint;
+import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.ImageReflect;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.Tensor;
     StaticHelper.addGokartPose(pose, color, graphics, cornerX, cornerY, cellDim, kartLength);
   }
 
-  public void drawWayPoints(List<WayPoint> wayPoints) {
+  public void drawWayPoints(List<SlamWayPoint> wayPoints) {
     VisGeneralUtil.clearFrame(bytes);
     for (int i = 0; i < wayPoints.size(); i++)
       StaticHelper.drawWayPoint(graphics, wayPoints.get(i), wayPointRadius, cornerX, cornerY, cellDim);

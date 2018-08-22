@@ -11,12 +11,16 @@ import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** implements the object detection and tracking algorithm as described in TODO MG find reference */
+/** implementation of the tracking algorithm
+ * " asynchronous event-based multikernel algorithm for high-speed visual features tracking"
+ * by Xavier Lagorce et al.
+ * https://ieeexplore.ieee.org/document/6899691 */
 public class BlobTrackProvider implements DavisDvsListener {
   private final DavisDvsEventFilter davisDvsEventFilter;
+  private final BlobTransform blobTransform;
   private final BlobTracking blobTracking;
   private final ImageBlobSelector imageBlobSelector;
-  private final BlobTransform blobTransform; // default initialization if unused
+  // ---
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
 
   public BlobTrackProvider(BlobTrackConfig blobTrackConfig) {
@@ -32,7 +36,7 @@ public class BlobTrackProvider implements DavisDvsListener {
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (davisDvsEventFilter.filter(davisDvsEvent)) {
       blobTracking.receiveEvent(davisDvsEvent);
-      imageBlobSelector.receiveActiveBlobs(blobTracking.getActiveBlobs());
+      imageBlobSelector.receiveImageBlobs(blobTracking.getActiveBlobs());
       physicalBlobs = blobTransform.transform(imageBlobSelector.getSelectedBlobs());
     }
   }
@@ -45,7 +49,7 @@ public class BlobTrackProvider implements DavisDvsListener {
     return blobTracking;
   }
 
-  public ImageBlobSelector getBlobSelector() {
+  public ImageBlobSelector getImageBlobSelector() {
     return imageBlobSelector;
   }
 }

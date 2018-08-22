@@ -10,7 +10,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 
 /** blob tracking algorithm visualization static methods */
-public enum VisPipelineUtil {
+public enum VisBlobTrackUtil {
   ;
   /** draw ellipses for image based on list of blobs for the image.
    *

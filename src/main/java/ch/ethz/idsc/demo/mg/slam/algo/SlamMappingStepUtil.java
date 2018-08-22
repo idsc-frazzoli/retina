@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
    * @param gokartPose unitless representation
    * @param occurrenceMap
    * @param lookBehindDistance [m] */
-  public static void updateReactiveOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
+  public static void clearNonvisibleOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
     GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(gokartPose)));
     double[] mapArray = occurrenceMap.getMapArray();
     for (int i = 0; i < mapArray.length; i++) {

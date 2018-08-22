@@ -21,7 +21,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
       boolean calibrationAvailable) {
     BufferedImage[] combinedFrames = new BufferedImage[6];
     combinedFrames[0] = eventFrames[0].getAccumulatedEvents();
-    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobTrackProvider.getBlobSelector().getProcessedBlobs(), Color.GREEN, Color.RED);
+    combinedFrames[1] = eventFrames[1].overlayActiveBlobs(blobTrackProvider.getImageBlobSelector().getImageBlobs(), Color.GREEN, Color.RED);
     combinedFrames[2] = eventFrames[2].overlayHiddenBlobs(blobTrackProvider.getBlobTracking().getHiddenBlobs(), Color.GRAY);
     if (calibrationAvailable) {
       combinedFrames[3] = physicalFrames[0].overlayPhysicalBlobs((blobTrackProvider.getPhysicalBlobs()));

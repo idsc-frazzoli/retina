@@ -7,12 +7,19 @@ import java.util.List;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Point;
+import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
+import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum SlamMapProcessingUtil {
   ;
+  private static final Mat dilateKernel = //
+      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
+  private static final Mat erodeKernel = //
+      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private static final Point POINT = new Point(-1, -1);
 
   /** finds way points through threshold operation, morphological processing and connected component labeling
@@ -29,7 +36,7 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
    * @param cellDim [m]
    * @return worldWayPoints [m] detected way points in world frame */
   public static List<double[]> findWayPoints( //
-      MapProvider thresholdMap, Mat labels, Mat dilateKernel, Mat erodeKernel, double mapThreshold, double cornerX, double cornerY, double cellDim) {
+      MapProvider thresholdMap, Mat labels, double mapThreshold, double cornerX, double cornerY, double cellDim) {
     Mat processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, dilateKernel, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -79,6 +86,38 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
     return new double[] { //
         cornerX + framePos[0] * cellDim, //
         cornerY + framePos[1] * cellDim };
+  }
+
+  /** @param worldWayPoints
+   * @param pose unitless representation
+   * @return */
+  public static List<SlamWayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose) {
+    List<SlamWayPoint> wayPoints = new ArrayList<>();
+    for (int i = 0; i < worldWayPoints.size(); i++) {
+      SlamWayPoint wayPoint = new SlamWayPoint(worldWayPoints.get(i), pose);
+      wayPoints.add(wayPoint);
+    }
+    return wayPoints;
+  }
+
+  /** sets visibility field of way points
+   * 
+   * @param gokartWayPoints
+   * @param pose unitless representation
+   * @param visibleBoxXMin [m] in go kart frame
+   * @param visibleBoxXMax [m] in go kart frame
+   * @param visibleBoxHalfWidth [m] in go kart frame */
+  public static void checkVisibility(List<SlamWayPoint> gokartWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
+      double visibleBoxHalfWidth) {
+    for (SlamWayPoint wayPoint : gokartWayPoints) {
+      double[] gokartPosition = wayPoint.getGokartPosition(pose);
+      // TODO JPH simplify
+      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[0] < visibleBoxXMax && //
+          gokartPosition[1] > -visibleBoxHalfWidth && gokartPosition[1] < visibleBoxHalfWidth)
+        wayPoint.setVisibility(true);
+      else
+        wayPoint.setVisibility(false);
+    }
   }
 
   /** @param inputMap

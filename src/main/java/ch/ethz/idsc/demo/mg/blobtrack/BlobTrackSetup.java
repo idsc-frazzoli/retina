@@ -6,19 +6,20 @@ import java.io.File;
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 
 /** sets up the blob tracking algorithm for offline processing of a log file */
 /* package */ class BlobTrackSetup {
   private final BlobTrackConfig blobTrackConfig;
+  private final String logFilename;
   private final File logFile;
-  private final Scalar logFileDuration;
+  private final long logFileDuration;
   private final int iterationLength;
 
   BlobTrackSetup(BlobTrackConfig blobTrackConfig) {
     this.blobTrackConfig = blobTrackConfig;
+    logFilename = blobTrackConfig.davisConfig.logFilename();
     logFile = blobTrackConfig.davisConfig.getLogFile();
-    logFileDuration = blobTrackConfig.davisConfig.logFileDuration;
+    logFileDuration = Magnitude.MICRO_SECOND.toLong(blobTrackConfig.davisConfig.logFileDuration);
     iterationLength = blobTrackConfig.iterationLength.number().intValue();
   }
 
@@ -26,7 +27,7 @@ import ch.ethz.idsc.tensor.Scalar;
     for (int i = 0; i < iterationLength; i++) {
       System.out.println("******** Iteration nr " + (i + 1));
       double aUp = 0.08 + i * 0.01;
-      String newEstimatedLabelFileName = blobTrackConfig.davisConfig.logFilename() + "_aUp_" + aUp;
+      String newEstimatedLabelFileName = logFilename + "_aUp_" + aUp;
       blobTrackConfig.aUp = RealScalar.of(aUp);
       blobTrackConfig.estimatedLabelFileName = newEstimatedLabelFileName;
       runAlgo();
@@ -38,7 +39,7 @@ import ch.ethz.idsc.tensor.Scalar;
       OfflineBlobTrackWrap offlinePipelineWrap = new OfflineBlobTrackWrap(blobTrackConfig);
       BoundedOfflineLogPlayer.process( //
           logFile, //
-          Magnitude.MICRO_SECOND.toLong(logFileDuration), //
+          logFileDuration, //
           offlinePipelineWrap);
     } catch (Exception exception) {
       exception.printStackTrace();

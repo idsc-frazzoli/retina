@@ -75,9 +75,6 @@ public class BlobTracking {
   }
 
   // general todo list
-  // TODO instead of exponential, use a lookup table or an approximation
-  // TODO attraction equation: calculate on an evenbasis or time interval basis?
-  // TODO implement merging operation and test it --> implemented
   public void receiveEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
     calcScoreAndParams(davisDvsEvent);

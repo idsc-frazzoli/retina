@@ -27,24 +27,6 @@ import ch.ethz.idsc.tensor.alg.Array;
   private static final double ANGACCEL_MIN = -6; // "rad/s²"
   private static final double ANGACCEL_MAX = 6; // "rad/s²"
 
-  /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
-   * 
-   * @param slamParticles
-   * @param pose {[m],[m],[-]} initial pose which is identical for all particles
-   * @param linVelAvg [m/s] average initial linear velocity
-   * @param linVelStd [m/s] standard deviation of linear velocity
-   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
-  public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, double linVelAvg, double linVelStd, double angVelStd) {
-    double initLikelihood = 1.0 / slamParticles.length;
-    for (int index = 0; index < slamParticles.length; ++index) {
-      double linVel = SlamRandomUtil.getTruncatedGaussian(linVelAvg, linVelStd, LINVEL_MIN, LINVEL_MAX);
-      double maxAngVel = TURN_RATE_PER_METER * linVel;
-      double minAngVel = -maxAngVel;
-      double angVel = SlamRandomUtil.getTruncatedGaussian(0, angVelStd, minAngVel, maxAngVel);
-      slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
-    }
-  }
-
   /** propagate the particles' state estimates with their estimated velocity
    * 
    * @param slamParticles
@@ -57,7 +39,7 @@ import ch.ethz.idsc.tensor.alg.Array;
   /** propagate the particles' state estimates with the velocity provided by odometry
    * 
    * @param slamParticles
-   * @param velocity {[m/s],[m/s],[-]} provided by odometry
+   * @param velocity {[m*s^-1],[m*s^-1],[s^-1]} provided by odometry
    * @param dT interpreted as [s] */
   public static void propagateStateEstimateOdometry(SlamParticle[] slamParticles, Tensor velocity, double dT) {
     for (int i = 0; i < slamParticles.length; i++)

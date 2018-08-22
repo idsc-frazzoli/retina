@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisBlobTrackUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
  * is compared in a TrackingEvaluatorInstant object. */
@@ -62,10 +62,10 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     BufferedImage rawEventsFrame = loadImage();
     // overlay groundtruthFeatures
     for (int i = 0; i < groundTruthFeatures.get(currentLabelInstant).size(); ++i)
-      VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), groundTruthFeatures.get(currentLabelInstant).get(i), Color.GREEN);
+      VisBlobTrackUtil.drawImageBlob(rawEventsFrame.createGraphics(), groundTruthFeatures.get(currentLabelInstant).get(i), Color.GREEN);
     // overlay estimatedFeatures
     for (int i = 0; i < estimatedFeatures.get(currentLabelInstant).size(); ++i)
-      VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
+      VisBlobTrackUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
     saveImage(rawEventsFrame);
   }
 

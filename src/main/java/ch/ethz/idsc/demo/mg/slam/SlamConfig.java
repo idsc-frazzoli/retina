@@ -17,24 +17,20 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
-  // SLAM algorithm configuration
-  /* in onlineMode, periodic tasks run as timedTasks while in offline mode they run periodic relative to event stream timestamps */
-  public Boolean onlineMode = false;
-  // SlamMappingStep
-  /** in localization mode, a previously saved map is used */
-  public final Boolean localizationMode = false;
-  /** in reactive mode, only the part of the map around the go kart is kept */
-  public final Boolean reactiveMappingMode = true;
-  /** pose provided by lidar instead of particle filter */
-  public final Boolean lidarMappingMode = false; //
+  /** SLAM algorithm configuration. Options are as below:
+   * standardConfig
+   * lidarMappingMode
+   * reactiveMapMode
+   * localizationMode */
+  public String slamAlgoConfig = "standardConfig";
   /** state propagation using odometry instead of estimated velocities */
   public final Boolean odometryStatePropagation = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(20); // [-]
-  public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
+  public final Scalar numberOfParticles = RealScalar.of(5); // [-]
+  public final Scalar relevantParticles = RealScalar.of(2); // only these particles are used for occurrence map update
   /** [m] events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** [m] for reactive mapping mode */

@@ -10,7 +10,7 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisBlobTrackUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageRotate;
@@ -52,7 +52,7 @@ import ch.ethz.idsc.retina.util.img.ImageRotate;
    * @return BufferedImage for visualization */
   public BufferedImage overlayActiveBlobs(List<ImageBlob> activeBlobs, Color selectedBlobColor, Color rejectedBlobColor) {
     for (int i = 0; i < activeBlobs.size(); ++i)
-      VisPipelineUtil.drawImageBlob(graphics, activeBlobs.get(i), //
+      VisBlobTrackUtil.drawImageBlob(graphics, activeBlobs.get(i), //
           activeBlobs.get(i).getIsRecognized() ? selectedBlobColor : rejectedBlobColor);
     return getFrame();
   }
@@ -64,7 +64,7 @@ import ch.ethz.idsc.retina.util.img.ImageRotate;
    * @return BufferedImage for visualization */
   public BufferedImage overlayHiddenBlobs(List<ImageBlob> hiddenBlobs, Color blobColor) {
     for (int i = 0; i < hiddenBlobs.size(); ++i)
-      VisPipelineUtil.drawImageBlob(graphics, hiddenBlobs.get(i), blobColor);
+      VisBlobTrackUtil.drawImageBlob(graphics, hiddenBlobs.get(i), blobColor);
     return getFrame();
   }
 

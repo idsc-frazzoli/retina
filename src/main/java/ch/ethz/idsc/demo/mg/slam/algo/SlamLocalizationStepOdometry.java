@@ -1,14 +1,19 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
+import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** localization step of slam algorithm using standard state propagation */
-/* package */ class SlamLocalizationStep extends AbstractSlamLocalizationStep {
-  SlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer) {
+/** localization step of slam algorithm using odometry data */
+/* package */ class SlamLocalizationStepOdometry extends AbstractSlamLocalizationStep {
+  private final GokartPoseOdometryDemo gokartPoseOdometry;
+
+  protected SlamLocalizationStepOdometry(SlamConfig slamConfig, SlamContainer slamContainer, //
+      GokartPoseOdometryDemo gokartPoseOdometry) {
     super(slamConfig, slamContainer);
+    this.gokartPoseOdometry = gokartPoseOdometry;
   }
 
   @Override // from DavisDvsListener
@@ -17,7 +22,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     initializeTimeStamps(currentTimeStamp);
     updateLikelihoods();
     if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
-      propagateStateEstimate(currentTimeStamp, lastPropagationTimeStamp);
+      propagateStateEstimateOdometry(currentTimeStamp, lastPropagationTimeStamp);
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
@@ -26,9 +31,9 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     }
   }
 
-  private void propagateStateEstimate(double currentTimeStamp, double lastPropagationTimeStamp) {
+  private void propagateStateEstimateOdometry(double currentTimeStamp, double lastPropagationTimeStamp) {
     double dT = currentTimeStamp - lastPropagationTimeStamp;
-    SlamLocalizationStepUtil.propagateStateEstimate(slamContainer.getSlamParticles(), dT);
+    SlamLocalizationStepUtil.propagateStateEstimateOdometry(slamContainer.getSlamParticles(), gokartPoseOdometry.getVelocity(), dT);
     slamContainer.getSlamEstimatedPose().setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamContainer.getSlamParticles(), 1));
   }
 }
