@@ -107,7 +107,6 @@ import ch.ethz.idsc.tensor.Tensor;
   // for (int i = 0; i < particleNumber; i++)
   // slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
   // }
-
   /** draws a Mat object
    * 
    * @param processedMat mat object containing e.g. labels of feature extraction

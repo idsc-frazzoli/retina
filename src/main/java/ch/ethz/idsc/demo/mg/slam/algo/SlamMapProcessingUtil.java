@@ -99,7 +99,7 @@ public enum SlamMapProcessingUtil {
     }
     return wayPoints;
   }
-  
+
   /** sets visibility field of way points
    * 
    * @param gokartWayPoints

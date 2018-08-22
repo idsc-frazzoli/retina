@@ -77,7 +77,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private void mapProcessing() {
     worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
     slamContainer.setWayPoints(SlamMapProcessingUtil.getWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
-    SlamMapProcessingUtil.checkVisibility(slamContainer.getWayPoints(), slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
+    SlamMapProcessingUtil.checkVisibility(slamContainer.getWayPoints(), slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin, visibleBoxXMax,
+        visibleBoxHalfWidth);
   }
 
   // currently unused
