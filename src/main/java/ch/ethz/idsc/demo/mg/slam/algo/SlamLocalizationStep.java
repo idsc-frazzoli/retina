@@ -1,92 +1,34 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamEstimatedPose;
-import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** executes the localization step of the SLAM algorithm */
-/* package */ class SlamLocalizationStep {
-  private final SlamEstimatedPose slamEstimatedPose;
-  private final boolean odometryStatePropagation;
-  private final boolean onlineMode;
-  private final double resampleRate;
-  private final double statePropagationRate;
-  private final double rougheningLinAccelStd;
-  private final double rougheningAngAccelStd;
-  private final double linVelAvg;
-  private final double linVelStd;
-  private final double angVelStd;
-  private final double lookAheadDistance;
-  private final double alpha;
-  // ---
-  private double lastResampleTimeStamp;
-  private double lastPropagationTimeStamp;
-
-  SlamLocalizationStep(SlamConfig slamConfig) {
-    slamEstimatedPose = new SlamEstimatedPose();
-    resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
-    odometryStatePropagation = slamConfig.odometryStatePropagation;
-    onlineMode = slamConfig.onlineMode;
-    statePropagationRate = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
-    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);
-    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd);
-    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
-    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
-    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
-    alpha = slamConfig.alpha.number().doubleValue();
+/** localization step of slam algorithm using standard state propagation */
+/* package */ class SlamLocalizationStep extends AbstractSlamLocalizationStep {
+  SlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
+    super(slamConfig, slamContainer, slamImageToGokart);
   }
 
-  /** @param slamParticles
-   * @param initPose {[m],[m],[-]} provided by lidar
-   * @param initTimeStamp [s] */
-  public void initialize(SlamParticle[] slamParticles, Tensor initPose, double initTimeStamp) {
-    SlamLocalizationStepUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
-    slamEstimatedPose.setPose(initPose);
-    lastResampleTimeStamp = initTimeStamp;
-    lastPropagationTimeStamp = initTimeStamp;
-  }
-
-  /** propagates the state of the particles and updates their likelihoods
-   * 
-   * @param slamParticles
-   * @param map occurrence map used for localization
-   * @param odometryVel {[m/s],[m/s],[-]} provided by odometry
-   * @param eventGokartFrame event position in go kart frame interpreted as [m]
-   * @param currentTimeStamp interpreted as [s] */
-  public void localizationStep(SlamParticle[] slamParticles, MapProvider map, Tensor odometryVel, double[] eventGokartFrame, double currentTimeStamp) {
-    if (eventGokartFrame[0] < lookAheadDistance)
-      SlamLocalizationStepUtil.updateLikelihoods(slamParticles, map, eventGokartFrame, alpha);
-    // ---
-    if (!onlineMode && (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate)) {
-      double dT = currentTimeStamp - lastPropagationTimeStamp;
-      if (odometryStatePropagation)
-        SlamLocalizationStepUtil.propagateStateEstimateOdometry(slamParticles, odometryVel, dT);
-      else
-        SlamLocalizationStepUtil.propagateStateEstimate(slamParticles, dT);
+  @Override // from DavisDvsListener
+  public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    double currentTimeStamp = davisDvsEvent.time * 1E-6;
+    initializeTimeStamps(currentTimeStamp);
+    updateLikelihoods();
+    if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {
+      propagateStateEstimate(currentTimeStamp, lastPropagationTimeStamp);
       lastPropagationTimeStamp = currentTimeStamp;
     }
     if (currentTimeStamp - lastResampleTimeStamp > resampleRate) {
-      double dT = currentTimeStamp - lastResampleTimeStamp;
-      SlamLocalizationStepUtil.resampleParticles(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
+      resampleParticles(currentTimeStamp, lastResampleTimeStamp);
       lastResampleTimeStamp = currentTimeStamp;
     }
-    // ---
-    slamEstimatedPose.setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamParticles, 1));
   }
 
-  /** used to set pose using lidar ground truth
-   * 
-   * @param pose {[m],[m],[-]} provided by lidar */
-  public void setPose(Tensor pose) {
-    slamEstimatedPose.setPose(pose);
-  }
-
-  public SlamEstimatedPose getSlamEstimatedPose() {
-    return slamEstimatedPose;
+  private void propagateStateEstimate(double currentTimeStamp, double lastPropagationTimeStamp) {
+    double dT = currentTimeStamp - lastPropagationTimeStamp;
+    SlamLocalizationStepUtil.propagateStateEstimate(slamContainer.getSlamParticles(), dT);
+    slamContainer.getSlamEstimatedPose().setPoseUnitless(SlamLocalizationStepUtil.getAveragePose(slamContainer.getSlamParticles(), 1));
   }
 }

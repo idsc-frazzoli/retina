@@ -1,26 +1,41 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Primitives;
+import ch.ethz.idsc.tensor.mat.Inverse;
 
-/** waypoint object */
+/** way point object */
 public class WayPoint {
   private final double[] worldPosition;
-  private double[] gokartPosition;
+  private Tensor gokartPosition;
   /** visibility given the current pose of the go kart */
   private boolean visibility;
 
-  public WayPoint(double[] worldPosition) {
+  /** @param worldPosition interpreted as [m]
+   * @param pose unitless representation */
+  public WayPoint(double[] worldPosition, Tensor pose) {
     this.worldPosition = worldPosition;
-    gokartPosition = new double[2];
+    computeGokartPosition(pose);
+  }
+
+  /** @param pose unitless representation */
+  private void computeGokartPosition(Tensor pose) {
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(pose)));
+    gokartPosition = worldToGokartLayer.toVector(worldPosition[0], worldPosition[1]);
   }
 
   public double[] getWorldPosition() {
     return worldPosition;
   }
 
-  public double[] getGokartPosition() {
-    return gokartPosition;
+  /** @param pose unitless representation
+   * @return */
+  public double[] getGokartPosition(Tensor pose) {
+    computeGokartPosition(pose);
+    return Primitives.toDoubleArray(gokartPosition);
   }
 
   public boolean getVisibility() {
@@ -28,8 +43,7 @@ public class WayPoint {
   }
 
   public void setGokartPosition(Tensor gokartPosition) {
-    this.gokartPosition[0] = gokartPosition.Get(0).number().doubleValue();
-    this.gokartPosition[1] = gokartPosition.Get(1).number().doubleValue();
+    this.gokartPosition = gokartPosition;
   }
 
   public void setVisibility(boolean visibility) {

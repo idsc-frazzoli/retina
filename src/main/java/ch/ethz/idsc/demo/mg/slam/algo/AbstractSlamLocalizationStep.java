@@ -1,14 +1,14 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo.listener;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.algo.SlamLocalizationStepUtil;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /* package */ abstract class AbstractSlamLocalizationStep extends AbstractSlamStep {
+  private final SlamImageToGokart slamImageToGokart;
   protected final double resampleRate;
   protected final double statePropagationRate;
   protected final double rougheningLinAccelStd;
@@ -19,7 +19,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   protected Double lastResampleTimeStamp = null;
 
   protected AbstractSlamLocalizationStep(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart) {
-    super(slamContainer, slamImageToGokart);
+    super(slamContainer);
+    this.slamImageToGokart = slamImageToGokart;
     resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
     statePropagationRate = Magnitude.SECOND.toDouble(slamConfig.statePropagationRate);
     rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);

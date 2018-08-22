@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo.listener;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;

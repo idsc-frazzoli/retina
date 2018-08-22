@@ -1,17 +1,16 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo.listener;
+package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.algo.SlamLocalizationStepUtil;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** localization step of slam algorithm using odometry data */
-/* package */ class SlamLocalizationStepOdometryListener extends AbstractSlamLocalizationStep {
+/* package */ class SlamLocalizationStepOdometry extends AbstractSlamLocalizationStep {
   private final GokartPoseOdometryDemo gokartPoseOdometry;
 
-  protected SlamLocalizationStepOdometryListener(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart, //
+  protected SlamLocalizationStepOdometry(SlamConfig slamConfig, SlamContainer slamContainer, SlamImageToGokart slamImageToGokart, //
       GokartPoseOdometryDemo gokartPoseOdometry) {
     super(slamConfig, slamContainer, slamImageToGokart);
     this.gokartPoseOdometry = gokartPoseOdometry;

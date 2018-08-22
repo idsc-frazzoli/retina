@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mg.slam;
 import java.io.File;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.slam.algo.listener.OfflineSlamWrapNew;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
@@ -28,7 +27,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void runAlgo() {
-    OfflineSlamWrapNew offlineSlamWrap = new OfflineSlamWrapNew(slamConfig);
+    OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
     try {
       BoundedOfflineLogPlayer.process( //
           logFile, //
@@ -40,7 +39,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
       // offlineSlamWrap.getSlamProvider().getOccurrenceMap().getMapArray());
       // System.out.println("Slam map successfully saved");
       // }
-      // offlineSlamWrap.cancelTimer();
     } catch (Exception exception) {
       exception.printStackTrace();
     }

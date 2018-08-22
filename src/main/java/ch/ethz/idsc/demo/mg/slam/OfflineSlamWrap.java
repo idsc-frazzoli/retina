@@ -2,51 +2,43 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import java.nio.ByteBuffer;
-import java.util.Timer;
 
+import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** wrapper to run the event-based SLAM algorithm offline */
-/* package */ class OfflineSlamWrap implements OfflineLogListener {
+public class OfflineSlamWrap implements OfflineLogListener {
   private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
-  private final Timer timer;
-  // specific to slam algorithm
+  private final AbstractFilterHandler filterHandler;
   private final SlamProvider slamProvider;
   private final SlamViewer slamViewer;
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
-    timer = new Timer();
-    slamProvider = new SlamProvider(slamConfig, gokartOdometryPose, gokartLidarPose, timer);
-    davisDvsDatagramDecoder.addDvsListener(slamProvider);
-    slamViewer = new SlamViewer(slamConfig, slamProvider, gokartLidarPose, timer);
+    filterHandler = new BackgroundActivityFilter(slamConfig.davisConfig);
+    davisDvsDatagramDecoder.addDvsListener(filterHandler);
+    slamProvider = new SlamProvider(slamConfig, filterHandler, gokartLidarPose);
+    slamViewer = new SlamViewer(slamConfig, slamProvider.getSlamContainer(), gokartLidarPose);
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR))
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
-    if (channel.equals("davis240c.overview.dvs"))
+    if (slamProvider.getSlamContainer().getActive() && channel.equals("davis240c.overview.dvs"))
       davisDvsDatagramDecoder.decode(byteBuffer);
-    if (channel.equals(RimoLcmServer.CHANNEL_GET))
-      gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
-  }
-
-  public SlamProvider getSlamProvider() {
-    return slamProvider;
-  }
-
-  public void cancelTimer() {
-    timer.cancel();
+    // TODO HAAAACK
+    if (!slamProvider.getSlamContainer().getActive() && gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose()) {
+      slamProvider.getSlamContainer().setActive(true);
+      slamProvider.getSlamContainer().initialize(gokartLidarPose.getPose());
+    }
   }
 }
