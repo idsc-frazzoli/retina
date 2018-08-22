@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -127,9 +126,7 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      Tensor pair = new AckermannSteering( //
-          ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
-          ChassisGeometry.GLOBAL.yTireFrontMeter()).pair(angle);
+      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
       Scalar angleL = pair.Get(0);
       Scalar angleR = pair.Get(1);
       graphics.setStroke(new BasicStroke(2));

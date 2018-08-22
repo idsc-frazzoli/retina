@@ -32,17 +32,17 @@ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-    for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_process.properties"))) {
+    for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_red.properties"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // System.out.println(olr.model());
-      // // ---
+      // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
       scatterImage = new WallScatterImage(predefinedMap);
-      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), olr.model(), scatterImage);
+      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.model(), scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
-      OfflineLogPlayer.process(olr.file(), offlineTableSupplier);
-      Export.of(UserHome.file(folder.getName() + "_gyro.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+      OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
+      Export.of(UserHome.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
       ImageIO.write(scatterImage.getImage(), "png", UserHome.Pictures(folder.getName() + ".png"));
     }
   }

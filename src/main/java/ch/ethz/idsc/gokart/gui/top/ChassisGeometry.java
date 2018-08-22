@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -76,6 +77,10 @@ public class ChassisGeometry implements Serializable {
 
   public DifferentialSpeed getDifferentialSpeed() {
     return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRearMeter());
+  }
+
+  public AckermannSteering getAckermannSteering() {
+    return new AckermannSteering(xAxleRtoF, yTireFront);
   }
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
