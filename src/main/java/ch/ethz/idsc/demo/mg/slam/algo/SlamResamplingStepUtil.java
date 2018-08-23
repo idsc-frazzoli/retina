@@ -2,22 +2,15 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
 import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Array;
 
-/** collection of methods for the localization step of the SLAM algorithm */
-// TODO MG file is quite long. is it possible to divide it into 2 files?
-/* package */ enum SlamLocalizationStepUtil {
+/* package */ enum SlamResamplingStepUtil {
   ;
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
@@ -28,46 +21,6 @@ import ch.ethz.idsc.tensor.alg.Array;
   private static final double ANGACCEL_MIN = -6; // "rad/s²"
   private static final double ANGACCEL_MAX = 6; // "rad/s²"
 
-  /** propagate the particles' state estimates with their estimated velocity
-   * 
-   * @param slamParticles
-   * @param dT [s] */
-  public static void propagateStateEstimate(SlamParticle[] slamParticles, double dT) {
-    for (int index = 0; index < slamParticles.length; ++index)
-      slamParticles[index].propagateStateEstimate(dT);
-  }
-
-  /** propagate the particles' state estimates with the velocity provided by odometry
-   * 
-   * @param slamParticles
-   * @param velocity {[m*s^-1],[m*s^-1],[s^-1]} provided by odometry
-   * @param dT interpreted as [s] */
-  public static void propagateStateEstimateOdometry(SlamParticle[] slamParticles, Tensor velocity, double dT) {
-    for (int i = 0; i < slamParticles.length; i++)
-      slamParticles[i].propagateStateEstimateOdometry(velocity, dT);
-  }
-
-  /** updates particle likelihoods by referring to a map
-   * 
-   * @param slamParticles
-   * @param map
-   * @param gokartFramePos [m] event position in go kart frame
-   * @param alpha [-] update equation parameter */
-  public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
-    double sumOfLikelihoods = 0;
-    double maxValue = map.getMaxValue();
-    for (int index = 0; index < slamParticles.length; ++index) {
-      Tensor worldCoord = slamParticles[index].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
-      double updatedParticleLikelihood = //
-          slamParticles[index].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
-      slamParticles[index].setParticleLikelihood(updatedParticleLikelihood);
-      sumOfLikelihoods += updatedParticleLikelihood;
-    }
-    // normalize particle likelihoods to sum up to 1
-    for (int index = 0; index < slamParticles.length; ++index)
-      slamParticles[index].setParticleLikelihood(slamParticles[index].getParticleLikelihood() / sumOfLikelihoods);
-  }
-
   /** particle resampling. multinominal sampling and neglect_low_likelihood method are available. particle roughening is also provided
    * 
    * @param slamParticles
@@ -76,32 +29,9 @@ import ch.ethz.idsc.tensor.alg.Array;
    * @param rougheningAngAccelStd interpreted as [rad/s²] standard deviation of additive Gaussian noise for particle roughening */
   public static void resampleParticles(SlamParticle[] slamParticles, double dT, double rougheningLinAccelStd, double rougheningAngAccelStd) {
     // SlamParticleUtil.multinomialSampling(slamParticles);
-    SlamLocalizationStepUtil.neglectLowLikelihoods(slamParticles);
+    SlamResamplingStepUtil.neglectLowLikelihoods(slamParticles);
     // depending on resampling method, roughening might be used
-    SlamLocalizationStepUtil.particleRoughening(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
-  }
-
-  /** get average pose of the particles with highest likelihood
-   * 
-   * @param slamParticles
-   * @param particleRange [-] >0 number of particles with highest likelihood that is employed
-   * @return averagePose unitless representation */
-  public static Tensor getAveragePose(SlamParticle[] slamParticles, int particleRange) {
-    Stream.of(slamParticles) //
-        .parallel() //
-        .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
-        .limit(particleRange) //
-        .collect(Collectors.toList());
-    double likelihoodSum = 0;
-    Tensor expectedPose = Array.zeros(3);
-    for (int i = 0; i < particleRange; ++i) {
-      double likelihood = slamParticles[i].getParticleLikelihood();
-      likelihoodSum += likelihood;
-      Tensor pose = slamParticles[i].getPoseUnitless();
-      expectedPose = expectedPose.add(pose.multiply(RealScalar.of(likelihood)));
-    }
-    // likelihoods always sum up to 1 --> sum of highest likelihoods will never be zero
-    return expectedPose.divide(RealScalar.of(likelihoodSum));
+    SlamResamplingStepUtil.particleRoughening(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
   }
 
   /** standard multinominal resampling method
@@ -202,12 +132,5 @@ import ch.ethz.idsc.tensor.alg.Array;
     if (newAngVel > maxVel)
       return maxVel;
     return newAngVel;
-  }
-
-  public static void printStatusInfo(SlamParticle[] slamParticles) {
-    Arrays.parallelSort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
-    System.out.println("**** new status info **********");
-    for (int i = 0; i < slamParticles.length; i++)
-      System.out.println("Particle likelihood " + slamParticles[i].getParticleLikelihood());
   }
 }

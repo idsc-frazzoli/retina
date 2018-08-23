@@ -14,12 +14,11 @@ public class SlamViewer {
   private final SlamContainer slamContainer;
   private final SlamMapFrame[] slamMapFrames;
   private final SlamMapGUI slamMapGUI;
+  private final SlamMapFrameSave slamMapFrameSave;
   // ---
   private final Timer timer;
   private final TimerTask visualizationTask;
-  private final TimerTask saveFrameTask;
   private final long visualizationInterval;
-  private final long savingInterval;
 
   public SlamViewer(SlamConfig slamConfig, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
     this.gokartLidarPose = gokartLidarPose;
@@ -31,29 +30,17 @@ public class SlamViewer {
     // ---
     timer = new Timer();
     visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
-    savingInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.savingInterval);
     visualizationTask = new TimerTask() {
       @Override
       public void run() {
         visualizationTask();
       }
     };
-    saveFrameTask = new TimerTask() {
-      @Override
-      public void run() {
-        saveFrameTask();
-      }
-    };
     timer.schedule(visualizationTask, 0, visualizationInterval);
+    slamMapFrameSave = slamConfig.saveSlamFrame ? new SlamMapFrameSave(slamConfig, timer, slamMapFrames) : null;
   }
 
   private void visualizationTask() {
-    if (slamContainer.getActive()) {
-      slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamContainer, gokartLidarPose));
-    }
-  }
-
-  private void saveFrameTask() {
-    // ---
+    slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamContainer, gokartLidarPose));
   }
 }

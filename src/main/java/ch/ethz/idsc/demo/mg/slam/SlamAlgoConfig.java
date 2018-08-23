@@ -2,9 +2,10 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 public enum SlamAlgoConfig {
-  standardConfig, //
-  lidarMappingMode, //
+  standardMode, //
+  lidarMode, //
   reactiveMapMode, //
+  odometryMode, //
   localizationMode, //
   ;
 }

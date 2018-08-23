@@ -1,12 +1,9 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.online;
 
-import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
-import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
+import ch.ethz.idsc.demo.mg.slam.SlamTrigger;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -20,18 +17,13 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
-  private final AbstractFilterHandler filterHandler;
-  private final SlamConfig slamConfig;
-  private final SlamProvider slamProvider;
-  private final SlamViewer slamViewer;
+  private final SlamTrigger slamTrigger;
 
   OnlineSlamWrap() {
-    slamConfig = new SlamConfig();
-    filterHandler = new BackgroundActivityFilter(slamConfig.davisConfig);
-    slamProvider = new SlamProvider(slamConfig, filterHandler, gokartLidarPose);
-    slamViewer = new SlamViewer(slamConfig, slamProvider.getSlamContainer(), gokartLidarPose);
     rimoGetLcmClient.addListener(gokartOdometryPose);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(filterHandler);
+    SlamConfig slamConfig = new SlamConfig();
+    slamTrigger = new SlamTrigger(slamConfig, gokartLidarPose, davisLcmClient.davisDvsDatagramDecoder, gokartOdometryPose);
+    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamTrigger);
   }
 
   @Override

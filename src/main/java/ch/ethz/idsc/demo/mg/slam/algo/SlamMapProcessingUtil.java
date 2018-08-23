@@ -12,7 +12,11 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Primitives;
+import ch.ethz.idsc.tensor.mat.Inverse;
 
 /* package */ enum SlamMapProcessingUtil {
   ;
@@ -87,36 +91,37 @@ import ch.ethz.idsc.tensor.Tensor;
         cornerY + framePos[1] * cellDim };
   }
 
-  /** @param worldWayPoints
-   * @param pose unitless representation
-   * @return */
-  public static List<SlamWayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose) {
-    List<SlamWayPoint> wayPoints = new ArrayList<>();
-    for (int i = 0; i < worldWayPoints.size(); i++) {
-      SlamWayPoint wayPoint = new SlamWayPoint(worldWayPoints.get(i), pose);
-      wayPoints.add(wayPoint);
-    }
-    return wayPoints;
-  }
-
-  /** sets visibility field of way points
+  /** creates SlamWayPoint objects based on worldWayPoints
    * 
-   * @param gokartWayPoints
+   * @param worldWayPoints
    * @param pose unitless representation
    * @param visibleBoxXMin [m] in go kart frame
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
-  public static void checkVisibility(List<SlamWayPoint> gokartWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
+  public static List<SlamWayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
       double visibleBoxHalfWidth) {
-    for (SlamWayPoint wayPoint : gokartWayPoints) {
-      double[] gokartPosition = wayPoint.getGokartPosition(pose);
+    List<SlamWayPoint> slamWayPoints = new ArrayList<>();
+    for (double[] worldWayPoint : worldWayPoints) {
+      double[] gokartWayPoint = computeGokartPosition(worldWayPoint, pose);
       // TODO JPH simplify
-      if (gokartPosition[0] > visibleBoxXMin && gokartPosition[0] < visibleBoxXMax && //
-          gokartPosition[1] > -visibleBoxHalfWidth && gokartPosition[1] < visibleBoxHalfWidth)
-        wayPoint.setVisibility(true);
+      if (gokartWayPoint[0] > visibleBoxXMin && gokartWayPoint[0] < visibleBoxXMax && //
+          gokartWayPoint[1] > -visibleBoxHalfWidth && gokartWayPoint[1] < visibleBoxHalfWidth)
+        slamWayPoints.add(new SlamWayPoint(worldWayPoint, true));
       else
-        wayPoint.setVisibility(false);
+        slamWayPoints.add(new SlamWayPoint(worldWayPoint, false));
     }
+    return slamWayPoints;
+  }
+
+  /** transforms between world and go kart frame
+   * 
+   * @param worldPosition position of point in world frame
+   * @param pose unitless representation go kart pose
+   * @return position in go kart frame */
+  private static double[] computeGokartPosition(double[] worldPosition, Tensor pose) {
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(pose)));
+    Tensor gokartPosition = worldToGokartLayer.toVector(worldPosition[0], worldPosition[1]);
+    return Primitives.toDoubleArray(gokartPosition);
   }
 
   /** @param inputMap

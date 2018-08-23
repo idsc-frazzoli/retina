@@ -19,20 +19,18 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  public String slamAlgoConfig = SlamAlgoConfig.standardConfig.name();
+  public String slamAlgoConfig = SlamAlgoConfig.odometryMode.name();
 
   public SlamAlgoConfig slamAlgoConfig() {
     return SlamAlgoConfig.valueOf(slamAlgoConfig);
   }
 
-  /** state propagation using odometry instead of estimated velocities */
-  public final Boolean odometryStatePropagation = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(5); // [-]
-  public final Scalar relevantParticles = RealScalar.of(2); // only these particles are used for occurrence map update
+  public final Scalar numberOfParticles = RealScalar.of(20); // [-]
+  public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** [m] events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** [m] for reactive mapping mode */
@@ -71,15 +69,15 @@ public class SlamConfig {
   public final Tensor corner = Tensors.of( //
       Quantity.of(30, SI.METER), Quantity.of(30, SI.METER)).map(UnitSystem.SI());
 
+  /** @return [m] coordinates of upper right point in map */
   public Tensor cornerHigh() {
     return corner.add(Tensors.of(dimX, dimY).map(UnitSystem.SI()));
   }
 
-  // SLAM visualization parameters
+  // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
-  // SlamViewer
-  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND); // [s]
+  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.2, SI.SECOND); // [s]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER); // [m]
 
