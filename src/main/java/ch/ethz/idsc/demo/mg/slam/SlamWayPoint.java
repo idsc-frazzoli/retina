@@ -10,21 +10,22 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 /** way point object for SLAM algorithm */
 public class SlamWayPoint {
   private final double[] worldPosition;
-  private Tensor gokartPosition;
   /** visibility given the current pose of the go kart */
+  // TODO MG make class design so that visibility is final
   private boolean visibility;
 
   /** @param worldPosition interpreted as [m]
    * @param pose unitless representation */
+  // TODO MG parameter Tensor pose currently not needed... talk to Jan
   public SlamWayPoint(double[] worldPosition, Tensor pose) {
     this.worldPosition = worldPosition;
-    computeGokartPosition(pose);
   }
 
-  /** @param pose unitless representation */
-  private void computeGokartPosition(Tensor pose) {
+  /** @param pose unitless representation
+   * @return */
+  private Tensor computeGokartPosition(Tensor pose) {
     GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(pose)));
-    gokartPosition = worldToGokartLayer.toVector(worldPosition[0], worldPosition[1]);
+    return worldToGokartLayer.toVector(worldPosition[0], worldPosition[1]);
   }
 
   public double[] getWorldPosition() {
@@ -34,7 +35,7 @@ public class SlamWayPoint {
   /** @param pose unitless representation
    * @return position of event in go kart frame given the pose */
   public double[] getGokartPosition(Tensor pose) {
-    computeGokartPosition(pose);
+    Tensor gokartPosition = computeGokartPosition(pose);
     return Primitives.toDoubleArray(gokartPosition);
   }
 

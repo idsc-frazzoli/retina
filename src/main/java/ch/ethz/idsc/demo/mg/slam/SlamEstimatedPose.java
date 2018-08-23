@@ -6,6 +6,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** SLAM algorithm uses a unitless pose representation */
+// TODO MG this class is not doing much, and pose is not final... talk to jan
 public class SlamEstimatedPose implements GokartPoseInterface {
   private Tensor poseUnitless;
 

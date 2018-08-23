@@ -73,7 +73,7 @@ public class MapProvider {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
       // unreasonable number to indicate that we dont have this location
-      return numberOfCells; // TODO unconventional
+      return numberOfCells; // TODO unconventional, typical would be to return -1
     }
     int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
     int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);

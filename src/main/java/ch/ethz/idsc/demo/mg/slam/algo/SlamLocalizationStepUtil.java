@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
 /** collection of methods for the localization step of the SLAM algorithm */
+// TODO MG file is quite long. is it possible to divide it into 2 files?
 /* package */ enum SlamLocalizationStepUtil {
   ;
   private static final double TURN_RATE_PER_METER = //

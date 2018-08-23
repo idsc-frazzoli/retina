@@ -9,5 +9,5 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
     super(slamContainer);
   }
 
-  abstract protected void updateOccurrenceMap();
+  protected abstract void updateOccurrenceMap();
 }
