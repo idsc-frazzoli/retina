@@ -34,9 +34,8 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   // Tensor displayEventCount = Array.zeros(3);
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
-    public void columnTimedImage(ColumnTimedImage columnTimedImage) { // TODO
-      // store
-      // reference
+    public void columnTimedImage(ColumnTimedImage columnTimedImage) {
+      // TODO store reference
       if (!columnTimedImage.isComplete)
         System.err.println("rst incomplete");
       rstImage = columnTimedImage.bufferedImage;

@@ -22,9 +22,8 @@ import ch.ethz.idsc.tensor.Tensor;
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private static final Point POINT = new Point(-1, -1);
 
-  /** finds way points through threshold operation, morphological processing and connected component labeling
-   * 
-   * calls
+  /** finds way points through threshold operation, morphological processing and
+   * connected component labeling calls
    * opencv_imgproc#connectedComponentsWithStats
    * 
    * @param thresholdMap input object containing binary map

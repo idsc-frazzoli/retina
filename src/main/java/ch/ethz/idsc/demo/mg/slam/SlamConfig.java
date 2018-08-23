@@ -17,12 +17,14 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
-  /** SLAM algorithm configuration. Options are as below:
-   * standardConfig
-   * lidarMappingMode
-   * reactiveMapMode
-   * localizationMode */
-  public String slamAlgoConfig = "standardConfig";
+  /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
+   * access via member function below */
+  public String slamAlgoConfig = SlamAlgoConfig.standardConfig.name();
+
+  public SlamAlgoConfig slamAlgoConfig() {
+    return SlamAlgoConfig.valueOf(slamAlgoConfig);
+  }
+
   /** state propagation using odometry instead of estimated velocities */
   public final Boolean odometryStatePropagation = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */

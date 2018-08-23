@@ -54,6 +54,6 @@ public class SlamViewer {
   }
 
   private void saveFrameTask() {
-    // TODO Auto-generated method stub
+    // ---
   }
 }

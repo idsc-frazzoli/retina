@@ -15,18 +15,17 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
   ;
   public static final List<DavisDvsListener> getListeners(SlamConfig slamConfig, SlamContainer slamContainer, //
       GokartPoseInterface gokartLidarPose) {
-    switch (slamConfig.slamAlgoConfig) {
-    case "standardConfig":
+    switch (slamConfig.slamAlgoConfig()) {
+    case standardConfig:
       return standardConfig(slamConfig, slamContainer);
-    case "lidarMappingMode":
+    case lidarMappingMode:
       return lidarMappingMode(slamConfig, slamContainer, gokartLidarPose);
-    case "reactiveMapMode":
+    case reactiveMapMode:
       return reactiveMapMode(slamConfig, slamContainer);
-    case "localizationMode":
+    case localizationMode:
       return localizationMode(slamConfig, slamContainer);
-    default:
-      return standardConfig(slamConfig, slamContainer);
     }
+    throw new RuntimeException();
   }
 
   /** standardConfig: the particle velocity state is used for state propagation */
