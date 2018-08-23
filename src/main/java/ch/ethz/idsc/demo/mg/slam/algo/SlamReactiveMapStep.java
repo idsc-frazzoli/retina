@@ -8,37 +8,27 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-/** executes the mapping step of the SLAM algorithm in reactiveMapMode */
-/* package */ class SlamMappingStepReactive extends AbstractSlamMappingStep {
+/** clears parts of occurrence map that is not visible by current vehicle pose */
+/* package */ class SlamReactiveMapStep extends AbstractSlamStep {
   private final double reactiveUpdateRate;
   private final double lookBehindDistance;
-  private final int relevantParticles;
   // ---
   private Double lastReactiveUpdateTimeStamp = null;
 
-  protected SlamMappingStepReactive(SlamConfig slamConfig, SlamContainer slamContainer) {
+  protected SlamReactiveMapStep(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
     reactiveUpdateRate = Magnitude.SECOND.toDouble(slamConfig.reactiveUpdateRate);
     lookBehindDistance = Magnitude.METER.toDouble(slamConfig.lookBehindDistance);
-    relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
     initializeTimeStamps(currentTimeStamp);
-    updateOccurrenceMap();
     if (currentTimeStamp - lastReactiveUpdateTimeStamp > reactiveUpdateRate) {
       clearNonvisibleOccurrenceMap();
       lastReactiveUpdateTimeStamp = currentTimeStamp;
     }
-  }
-
-  @Override // from AbstractSlamMappingStep
-  protected void updateOccurrenceMap() {
-    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
-      SlamMappingStepUtil.updateOccurrenceMap(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame(), relevantParticles);
   }
 
   private void initializeTimeStamps(double currentTimeStamp) {
@@ -47,7 +37,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void clearNonvisibleOccurrenceMap() {
-    SlamMappingStepUtil.clearNonvisibleOccurrenceMap(slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
+    SlamReactiveMapStepUtil.clearNonvisibleOccurrenceMap(slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
         slamContainer.getOccurrenceMap(), lookBehindDistance);
   }
 }

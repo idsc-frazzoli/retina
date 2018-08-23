@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
+import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -19,9 +20,10 @@ public class SlamProvider {
   private final SlamContainer slamContainer;
   private final List<DavisDvsListener> listeners;
 
-  public SlamProvider(SlamConfig slamConfig, AbstractFilterHandler filterHandler, GokartPoseInterface gokartLidarPose) {
+  public SlamProvider(SlamConfig slamConfig, AbstractFilterHandler filterHandler, GokartPoseInterface gokartLidarPose, //
+      GokartPoseOdometryDemo gokartPoseOdometry) {
     slamContainer = new SlamContainer(slamConfig);
-    listeners = SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose);
+    listeners = SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose, gokartPoseOdometry);
     listeners.forEach(filterHandler::addListener);
   }
 

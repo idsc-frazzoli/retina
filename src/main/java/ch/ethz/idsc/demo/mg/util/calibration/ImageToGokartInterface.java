@@ -10,6 +10,7 @@ public interface ImageToGokartInterface {
    * @return position in go kart frame */
   double[] imageToGokart(int imagePosX, int imagePosY);
 
-  /** @param index = imagePosX + width*imagePosY. standard index when BufferedImage content is represented by 1D array */
+  /** @param index = imagePosX + width*imagePosY. standard index when BufferedImage content is represented by 1D array
+   * @return position in go kart frame */
   Tensor imageToGokartTensor(int index);
 }
