@@ -48,6 +48,7 @@ import ch.ethz.idsc.tensor.sca.Round;
  * localization pose y [m]
  * localization pose theta [rad]
  * localization pose quality */
+// TODO JPH this class does 2 things in one -> split, see BasicTrackReplayTable
 public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationResultListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
