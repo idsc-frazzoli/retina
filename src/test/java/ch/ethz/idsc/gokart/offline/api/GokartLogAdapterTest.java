@@ -15,12 +15,12 @@ public class GokartLogAdapterTest extends TestCase {
 
   public void testSimple() {
     assertTrue(SIMPLE.file().exists());
-    assertEquals(Dimensions.of(SIMPLE.model()), Arrays.asList(3, 3));
+    assertEquals(Dimensions.of(SIMPLE.pose()), Arrays.asList(3));
   }
 
   public void testFull() {
     assertTrue(FULL.file().exists());
-    assertEquals(Dimensions.of(FULL.model()), Arrays.asList(3, 3));
+    assertEquals(Dimensions.of(FULL.pose()), Arrays.asList(3));
     assertEquals(FULL.driver(), "abc");
   }
 }

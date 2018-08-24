@@ -29,9 +29,11 @@ public class SlamOfflineLocalize extends OfflineLocalize {
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
 
-  /** @param model */
-  public SlamOfflineLocalize(BufferedImage map_image, Tensor model, ScatterImage scatterImage) {
-    super(map_image, model);
+  /** @param map_image
+   * @param pose {x[m], y[m], angle}
+   * @param scatterImage */
+  public SlamOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
+    super(map_image, pose);
     this.scatterImage = scatterImage;
   }
 
