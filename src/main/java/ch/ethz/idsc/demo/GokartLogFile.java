@@ -613,7 +613,7 @@ public enum GokartLogFile implements LogFile {
   /* 2018-08-20 */
   /** joystick driving, precursor for track red */
   _20180820T135013_568f9954, //
-  /** desiging and testing track red
+  /** designing and testing track red
    * several stops for map building */
   _20180820T140707_568f9954, //
   /** track red, [jh mg yn jh mg yn]
@@ -621,6 +621,22 @@ public enum GokartLogFile implements LogFile {
   _20180820T143852_568f9954, //
   /** track red, [jh mg yn jh yn] */
   _20180820T165637_568f9954, //
+  /***************************************************/
+  /* 2018-08-23 system identification */
+  /** manual driving track red, [mh, az, mh, az, az] */
+  _20180823T115959_2693c28e, //
+  /** manual driving track red, [mh, az] */
+  _20180823T134242_2693c28e, //
+  /** slow manual driving */
+  _20180823T135656_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T152218_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T162001_2693c28e, //
+  /** manual driving track red, [mh, az, jh] */
+  _20180823T163738_2693c28e, //
   ;
   // ---
   @Override // from LogFile

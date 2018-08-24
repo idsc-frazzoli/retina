@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.offline.api;
 
 import java.io.File;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -35,10 +34,5 @@ public class GokartLogAdapter implements GokartLogInterface {
   @Override // from GokartLogInterface
   public Tensor pose() {
     return gokartLogConfig.pose.unmodifiable();
-  }
-
-  @Override // from GokartLogInterface
-  public Tensor model() {
-    return GokartPoseHelper.toSE2Matrix(gokartLogConfig.pose);
   }
 }

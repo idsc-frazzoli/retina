@@ -32,7 +32,7 @@ class LidarGyroPoseEstimator implements OfflinePoseEstimator, LocalizationResult
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
     scatterImage = new WallScatterImage(predefinedMap);
-    OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.model(), scatterImage);
+    OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
     // TODO using the wrap here is an overkill because a table is collected!
     offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
     offlineLocalize.addListener(this);
