@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** lookup table for {@link ImageToGokartUtil} */
 public class ImageToGokartLookup implements ImageToGokartInterface {
-  public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
+  public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, int width, int height) {
     ImageToGokartUtil imageToGokartUtil = new ImageToGokartUtil(inputTensor, unitConversion, width);
     return new ImageToGokartLookup(imageToGokartUtil, width, height);
   }
@@ -18,9 +18,9 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
   private final int width;
   private final int height;
 
-  private ImageToGokartLookup(ImageToGokartUtil transformUtil, Scalar width, Scalar height) {
-    this.width = width.number().intValue();
-    this.height = height.number().intValue();
+  private ImageToGokartLookup(ImageToGokartUtil transformUtil, int width, int height) {
+    this.width = width;
+    this.height = height;
     lookupArray = new double[this.width * this.height][];
     this.transformUtil = transformUtil;
     int index = -1;

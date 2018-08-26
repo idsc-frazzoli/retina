@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   SlamImageToGokart(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
-    imageToGokartInterface = slamConfig.davisConfig.createImageToGokartUtilLookup();
+    imageToGokartInterface = slamConfig.davisConfig.createImageToGokartInterface();
     lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
   }
 

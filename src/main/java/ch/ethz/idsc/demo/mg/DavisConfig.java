@@ -26,11 +26,13 @@ public class DavisConfig {
   /** maxDuration */
   public final Scalar logFileDuration = Quantity.of(60, SI.SECOND);
   // general parameters
+  /** width of image is required to be an integer */
   public final Scalar width = RealScalar.of(240);
+  /** height of image is required to be an integer */
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
   /** [us] for background activity filter */
-  public Scalar _filterConstant = Quantity.of(1000, NonSI.MICRO_SECOND);
+  public Scalar filterConstant = Quantity.of(1000, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 
@@ -38,7 +40,7 @@ public class DavisConfig {
     return new BackgroundActivityFilter( //
         Scalars.intValueExact(width), //
         Scalars.intValueExact(height), //
-        Magnitude.MICRO_SECOND.toInt(_filterConstant));
+        Magnitude.MICRO_SECOND.toInt(filterConstant));
   }
 
   public String logFilename() {
@@ -55,12 +57,16 @@ public class DavisConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, width);
+    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, Scalars.intValueExact(width));
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
-  public ImageToGokartInterface createImageToGokartUtilLookup() {
-    return ImageToGokartLookup.fromMatrix(logFileLocations.calibration(), unitConversion, width, height);
+  public ImageToGokartInterface createImageToGokartInterface() {
+    return ImageToGokartLookup.fromMatrix( //
+        logFileLocations.calibration(), //
+        unitConversion, //
+        Scalars.intValueExact(width), //
+        Scalars.intValueExact(height));
   }
 
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */

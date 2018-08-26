@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -94,8 +95,9 @@ public class SlamConfig {
   public final Scalar visibleBoxXMax = Quantity.of(10, SI.METER); // [m] in go kart frame
 
   /** @return new instance of {@link GokartToImageLookup} */
-  public GokartToImageLookup createGokartToImageUtilLookup() {
+  // TODO MG function is not used in any relevant place, can we remove it?
+  public GokartToImageLookup createGokartToImageLookup() {
     return GokartToImageLookup.fromMatrix(davisConfig.logFileLocations.calibration(), //
-        davisConfig.unitConversion, cellDim, lookAheadDistance, davisConfig.width);
+        davisConfig.unitConversion, cellDim, lookAheadDistance, Scalars.intValueExact(davisConfig.width));
   }
 }

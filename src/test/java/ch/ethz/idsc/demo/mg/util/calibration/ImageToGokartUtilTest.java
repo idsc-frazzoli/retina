@@ -9,7 +9,7 @@ public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
     SlamConfig slamConfig = new SlamConfig();
     slamConfig.davisConfig.logFileLocations = LogFileLocations.DUBI15a;
-    ImageToGokartLookup test = (ImageToGokartLookup) slamConfig.davisConfig.createImageToGokartUtilLookup();
+    ImageToGokartLookup test = (ImageToGokartLookup) slamConfig.davisConfig.createImageToGokartInterface();
     test.printInfo();
     System.out.println("---");
     int x = 170;

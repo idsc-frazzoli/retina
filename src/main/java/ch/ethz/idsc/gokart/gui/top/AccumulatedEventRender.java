@@ -44,7 +44,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     abstractAccumulatedImage.setInterval(25_000);
     abstractAccumulatedImage.addListener(this);
     pipelineConfig = new BlobTrackConfig();
-    imageToWorldLookup = pipelineConfig.davisConfig.createImageToGokartUtilLookup();
+    imageToWorldLookup = pipelineConfig.davisConfig.createImageToGokartInterface();
     width = pipelineConfig.davisConfig.width.number().intValue();
     height = pipelineConfig.davisConfig.height.number().intValue();
     imageCopy = new ImageCopy();
