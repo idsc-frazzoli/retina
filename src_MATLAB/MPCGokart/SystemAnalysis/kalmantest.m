@@ -1,3 +1,5 @@
+%code by mheim
+
 x = zeros(8,1);
 x = [1,0,0,0,2,0,0,0]';
 dim = numel(x);

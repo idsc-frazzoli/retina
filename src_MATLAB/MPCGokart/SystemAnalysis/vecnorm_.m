@@ -1,4 +1,5 @@
 %helper code/only needed if MATLAB is older than 2017
+% https://github.com/lemonzi/matlab/blob/master/custom/vecnorm.m
 function n = vecnorm(x, dim)
 % VECNORM(x, dim)
 % Norm of a vector

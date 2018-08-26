@@ -1,3 +1,4 @@
+%code by jelavice
 function [ x] = fullmodelsimulator( x0, u, times, carParams)
 % forward integrates the car model in time
 % params: -x0[in] - initial state

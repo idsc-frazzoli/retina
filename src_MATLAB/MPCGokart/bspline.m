@@ -1,4 +1,5 @@
 %code by mheim
+% TODO state reference for equations
 function r = bspline(points, u, order, der, circ)
     %equally spaced bspline
     %delivers also derivativs

@@ -1,3 +1,6 @@
+%adapted by mheim
+% TODO if this file is not related to the gokart, move it to another folder
+
 clear;
 
 BEGIN_ACADO;                                % Always start with "BEGIN_ACADO". 

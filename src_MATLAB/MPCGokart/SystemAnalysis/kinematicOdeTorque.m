@@ -1,4 +1,5 @@
 %code by mheim
+% TODO is the implementation unfinished?
 function [ dx ] = kinematicOdeTorque( t, x, u, p, w)
     %simplest form: input is acceleration at back axle
     %assuming no slip
