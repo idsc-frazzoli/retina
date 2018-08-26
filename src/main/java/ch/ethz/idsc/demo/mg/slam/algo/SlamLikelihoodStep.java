@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.Scalar;
       SlamLikelihoodStepUtil.updateLikelihoods( //
           slamContainer.getSlamParticles(), //
           slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame(), alpha);
+          slamContainer.getEventGokartFrame(), //
+          alpha);
   }
 }

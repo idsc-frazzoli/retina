@@ -38,7 +38,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamLikelihoodStep(slamContainer, slamConfig.alpha), //
         new SlamPropagationStep(slamConfig, slamContainer), //
         new SlamResamplingStep(slamConfig, slamContainer), //
-        new SlamOccurrenceMapStep(slamConfig, slamContainer), //
+        new SlamOccurrenceMapStep(slamContainer, slamConfig.relevantParticles.number().intValue()), //
         new SlamMapProcessing(slamConfig, slamContainer));
   }
 
@@ -61,7 +61,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamLikelihoodStep(slamContainer, slamConfig.alpha), //
         new SlamPropagationStep(slamConfig, slamContainer), //
         new SlamResamplingStep(slamConfig, slamContainer), //
-        new SlamOccurrenceMapStep(slamConfig, slamContainer), //
+        new SlamOccurrenceMapStep(slamContainer, slamConfig.relevantParticles.number().intValue()), //
         new SlamReactiveMapStep(slamConfig, slamContainer), //
         new SlamMapProcessing(slamConfig, slamContainer));
   }

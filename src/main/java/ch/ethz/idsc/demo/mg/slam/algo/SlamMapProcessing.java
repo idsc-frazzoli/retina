@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * morphological processing and connected component labeling */
 /* package */ class SlamMapProcessing extends AbstractSlamStep implements Runnable {
   private final Thread thread = new Thread(this);
-  private final double wayPointUpdateRate;
+  private final double waypointUpdateRate;
   private final double mapThreshold;
   private final double cornerX;
   private final double cornerY;
@@ -33,7 +33,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   public SlamMapProcessing(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
-    wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.wayPointUpdateRate);
+    waypointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.waypointUpdateRate);
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
     cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
     cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
@@ -52,7 +52,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     }
     // TODO use int for checking
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
-    if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
+    if (currentTimeStamp - lastComputationTimeStamp > waypointUpdateRate) {
       occurrenceMap = slamContainer.getOccurrenceMap();
       thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;
@@ -74,8 +74,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void mapProcessing() {
-    List<double[]> worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
-    slamContainer.setWayPoints(SlamMapProcessingUtil.getWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin,
+    List<double[]> worldWaypoints = SlamMapProcessingUtil.findWaypoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
+    slamContainer.setWaypoints(SlamMapProcessingUtil.getWaypoints(worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin,
         visibleBoxXMax, visibleBoxHalfWidth));
   }
 

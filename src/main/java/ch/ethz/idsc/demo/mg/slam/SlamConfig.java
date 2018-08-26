@@ -42,7 +42,7 @@ public class SlamConfig {
   public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar normalizationUpdateRate = Quantity.of(0.05, SI.SECOND);
-  public final Scalar wayPointUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
   public final Scalar trajectoryUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(3, SI.VELOCITY); // [m/s] for initial particle distribution
@@ -86,7 +86,7 @@ public class SlamConfig {
     return Magnitude.ONE.toInt(kartSize.divide(cellDim));
   }
 
-  public final Scalar wayPointRadius = RealScalar.of(10); // [pixel]
+  public final Scalar waypointRadius = RealScalar.of(10); // [pixel]
   // map processing parameters
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters

@@ -15,7 +15,9 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
   @Override
   void davisDvsAction() { // updateOccurrenceMap
     if (Objects.nonNull(slamContainer.getEventGokartFrame()))
-      SlamMappingStepUtil.updateOccurrenceMap(slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
-          slamContainer.getOccurrenceMap(), slamContainer.getEventGokartFrame());
+      SlamMappingStepUtil.updateOccurrenceMap( //
+          slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
+          slamContainer.getOccurrenceMap(), //
+          slamContainer.getEventGokartFrame());
   }
 }

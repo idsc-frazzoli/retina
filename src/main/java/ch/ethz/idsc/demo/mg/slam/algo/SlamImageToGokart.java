@@ -20,6 +20,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    // TODO create more sophisticated filter: distance along x axis is not only criteria,
+    // ... but the pure pursuit look ahead should be approximately inside a cone. \/
     setEventGokartFrame(imageToGokartInterface.imageToGokart(davisDvsEvent.x, davisDvsEvent.y));
   }
 

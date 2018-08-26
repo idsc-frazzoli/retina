@@ -11,7 +11,7 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
+import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
@@ -37,8 +37,8 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param cornerX [m]
    * @param cornerY [m]
    * @param cellDim [m]
-   * @return worldWayPoints [m] detected way points in world frame */
-  public static List<double[]> findWayPoints( //
+   * @return worldWaypoints [m] detected way points in world frame */
+  public static List<double[]> findWaypoints( //
       MapProvider thresholdMap, Mat labels, double mapThreshold, double cornerX, double cornerY, double cellDim) {
     Mat processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
     // opening
@@ -48,18 +48,18 @@ import ch.ethz.idsc.tensor.mat.Inverse;
     Mat centroid = new Mat(opencv_core.CV_64F);
     Mat stats = new Mat();
     opencv_imgproc.connectedComponentsWithStats(processedMap, labels, stats, centroid, 8, opencv_core.CV_16UC1);
-    List<double[]> worldWayPoints = new ArrayList<>(centroid.rows() - 1);
+    List<double[]> worldWaypoints = new ArrayList<>(centroid.rows() - 1);
     // start at 1 because 0 is background label
     for (int index = 1; index < centroid.rows(); ++index) {
-      double[] newWayPoint = { //
+      double[] newWaypoint = { //
           centroid.row(index).arrayData().getDouble(0), //
           centroid.row(index).arrayData().getDouble(Double.BYTES) };
-      worldWayPoints.add(index - 1, frameToWorld(newWayPoint, cornerX, cornerY, cellDim));
+      worldWaypoints.add(index - 1, frameToWorld(newWaypoint, cornerX, cornerY, cellDim));
     }
     processedMap.release(); // probably obsolete because underlying array was created in java
     centroid.release();
     stats.release();
-    return worldWayPoints;
+    return worldWaypoints;
   }
 
   /** convert mapProvider to binary Mat object by invoking threshold operation.
@@ -91,26 +91,26 @@ import ch.ethz.idsc.tensor.mat.Inverse;
         cornerY + framePos[1] * cellDim };
   }
 
-  /** creates SlamWayPoint objects based on worldWayPoints
+  /** creates SlamWaypoint objects based on worldWaypoints
    * 
-   * @param worldWayPoints
+   * @param worldWaypoints
    * @param pose unitless representation
    * @param visibleBoxXMin [m] in go kart frame
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
-  public static List<SlamWayPoint> getWayPoints(List<double[]> worldWayPoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
+  public static List<SlamWaypoint> getWaypoints(List<double[]> worldWaypoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
       double visibleBoxHalfWidth) {
-    List<SlamWayPoint> slamWayPoints = new ArrayList<>();
-    for (double[] worldWayPoint : worldWayPoints) {
-      double[] gokartWayPoint = computeGokartPosition(worldWayPoint, pose);
+    List<SlamWaypoint> slamWaypoints = new ArrayList<>();
+    for (double[] worldWaypoint : worldWaypoints) {
+      double[] gokartWaypoint = computeGokartPosition(worldWaypoint, pose);
       // TODO JPH simplify
-      if (gokartWayPoint[0] > visibleBoxXMin && gokartWayPoint[0] < visibleBoxXMax && //
-          gokartWayPoint[1] > -visibleBoxHalfWidth && gokartWayPoint[1] < visibleBoxHalfWidth)
-        slamWayPoints.add(new SlamWayPoint(worldWayPoint, true));
+      if (gokartWaypoint[0] > visibleBoxXMin && gokartWaypoint[0] < visibleBoxXMax && //
+          gokartWaypoint[1] > -visibleBoxHalfWidth && gokartWaypoint[1] < visibleBoxHalfWidth)
+        slamWaypoints.add(new SlamWaypoint(worldWaypoint, true));
       else
-        slamWayPoints.add(new SlamWayPoint(worldWayPoint, false));
+        slamWaypoints.add(new SlamWaypoint(worldWaypoint, false));
     }
-    return slamWayPoints;
+    return slamWaypoints;
   }
 
   /** transforms between world and go kart frame
