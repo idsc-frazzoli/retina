@@ -5,10 +5,9 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** update of occurrence map using the particles */
-/* package */ class SlamOccurrenceMapStep extends AbstractSlamStep {
+/* package */ class SlamOccurrenceMapStep extends EventActionSlamStep {
   private final int relevantParticles;
 
   protected SlamOccurrenceMapStep(SlamConfig slamConfig, SlamContainer slamContainer) {
@@ -16,12 +15,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
     relevantParticles = slamConfig.relevantParticles.number().intValue();
   }
 
-  @Override // from DavisDvsListener
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    updateOccurrenceMap();
-  }
-
-  protected void updateOccurrenceMap() {
+  @Override
+  void davisDvsAction() {
     if (Objects.nonNull(slamContainer.getEventGokartFrame()))
       SlamOccurrenceMapStepUtil.updateOccurrenceMap(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
           slamContainer.getEventGokartFrame(), relevantParticles);

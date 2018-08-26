@@ -50,6 +50,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
       isLaunched = true;
       thread.start();
     }
+    // TODO use int for checking
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
     if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
       occurrenceMap = slamContainer.getOccurrenceMap();

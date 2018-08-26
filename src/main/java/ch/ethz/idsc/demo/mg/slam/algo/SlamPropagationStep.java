@@ -21,6 +21,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
+    // TODO use int for checking
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
     initializeTimeStamps(currentTimeStamp);
     if (currentTimeStamp - lastPropagationTimeStamp > statePropagationRate) {

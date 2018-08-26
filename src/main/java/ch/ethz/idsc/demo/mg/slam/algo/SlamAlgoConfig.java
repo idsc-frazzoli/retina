@@ -35,7 +35,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
   private static final List<DavisDvsListener> standardMode(SlamConfig slamConfig, SlamContainer slamContainer) {
     return Arrays.asList( //
         new SlamImageToGokart(slamConfig, slamContainer), //
-        new SlamLikelihoodStep(slamConfig, slamContainer), //
+        new SlamLikelihoodStep(slamContainer, slamConfig.alpha), //
         new SlamPropagationStep(slamConfig, slamContainer), //
         new SlamResamplingStep(slamConfig, slamContainer), //
         new SlamOccurrenceMapStep(slamConfig, slamContainer), //
@@ -58,7 +58,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
   private static final List<DavisDvsListener> reactiveMapMode(SlamConfig slamConfig, SlamContainer slamContainer) {
     return Arrays.asList( //
         new SlamImageToGokart(slamConfig, slamContainer), //
-        new SlamLikelihoodStep(slamConfig, slamContainer), //
+        new SlamLikelihoodStep(slamContainer, slamConfig.alpha), //
         new SlamPropagationStep(slamConfig, slamContainer), //
         new SlamResamplingStep(slamConfig, slamContainer), //
         new SlamOccurrenceMapStep(slamConfig, slamContainer), //
@@ -70,7 +70,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
   private static List<DavisDvsListener> localizationMode(SlamConfig slamConfig, SlamContainer slamContainer) {
     return Arrays.asList( //
         new SlamImageToGokart(slamConfig, slamContainer), //
-        new SlamLikelihoodStep(slamConfig, slamContainer), //
+        new SlamLikelihoodStep(slamContainer, slamConfig.alpha), //
         new SlamPropagationStep(slamConfig, slamContainer), //
         new SlamResamplingStep(slamConfig, slamContainer));
   }
