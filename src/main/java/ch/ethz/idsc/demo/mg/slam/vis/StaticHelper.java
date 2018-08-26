@@ -11,7 +11,7 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
+import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.demo.mg.util.slam.SlamOpenCVUtil;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.Tensor;
     paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose.getPose(), Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getSlamEstimatedPose().getPose(), Color.BLUE);
-    slamMapFrames[1].drawWayPoints(slamContainer.getWayPoints());
+    slamMapFrames[1].drawWaypoints(slamContainer.getWaypoints());
     slamMapFrames[1].addGokartPose(slamContainer.getSlamEstimatedPose().getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[3];
     for (int i = 0; i < 3; i++)
@@ -123,18 +123,18 @@ import ch.ethz.idsc.tensor.Tensor;
   /** draws a way point object onto the graphics object
    * 
    * @param graphics
-   * @param wayPoint
+   * @param waypoint
    * @param radius interpreted as [pixel]
    * @param cornerX interpreted as [m]
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m] */
-  public static void drawWayPoint(Graphics2D graphics, SlamWayPoint wayPoint, double radius, double cornerX, double cornerY, double cellDim) {
-    double[] framePos = worldToFrame(wayPoint.getWorldPosition(), cornerX, cornerY, cellDim);
+  public static void drawWaypoint(Graphics2D graphics, SlamWaypoint waypoint, double radius, double cornerX, double cornerY, double cellDim) {
+    double[] framePos = worldToFrame(waypoint.getWorldPosition(), cornerX, cornerY, cellDim);
     Ellipse2D ellipse = new Ellipse2D.Double( //
         framePos[0] - radius, //
         framePos[1] - radius, //
         2 * radius, 2 * radius);
-    graphics.setColor(wayPoint.getVisibility() ? Color.GREEN : Color.ORANGE);
+    graphics.setColor(waypoint.getVisibility() ? Color.GREEN : Color.ORANGE);
     graphics.fill(ellipse);
   }
 }

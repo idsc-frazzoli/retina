@@ -10,8 +10,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 
-/* package */ enum SlamResamplingStepUtil {
-  ;
+/* package */ class SlamResamplingStepUtil {
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
   private static final double LINVEL_MIN = 0; // "m/s"
@@ -20,47 +19,24 @@ import ch.ethz.idsc.tensor.RealScalar;
   private static final double LINACCEL_MAX = 2.5; // "m/s²"
   private static final double ANGACCEL_MIN = -6; // "rad/s²"
   private static final double ANGACCEL_MAX = 6; // "rad/s²"
+  // ---
+  private final double rougheningLinAccelStd;
+  private final double rougheningAngAccelStd;
+
+  public SlamResamplingStepUtil(double rougheningLinAccelStd, double rougheningAngAccelStd) {
+    this.rougheningLinAccelStd = rougheningLinAccelStd;
+    this.rougheningAngAccelStd = rougheningAngAccelStd;
+  }
 
   /** particle resampling. multinominal sampling and neglect_low_likelihood method are available. particle roughening is also provided
    * 
    * @param slamParticles
-   * @param dT interpreted as [s]
-   * @param rougheningLinAccelStd interpreted as [m/s²] standard deviation of additive Gaussian noise for particle roughening
-   * @param rougheningAngAccelStd interpreted as [rad/s²] standard deviation of additive Gaussian noise for particle roughening */
-  public static void resampleParticles(SlamParticle[] slamParticles, double dT, double rougheningLinAccelStd, double rougheningAngAccelStd) {
+   * @param dT interpreted as [s] */
+  public void resampleParticles(SlamParticle[] slamParticles, double dT) {
     // SlamParticleUtil.multinomialSampling(slamParticles);
     SlamResamplingStepUtil.neglectLowLikelihoods(slamParticles);
     // depending on resampling method, roughening might be used
-    SlamResamplingStepUtil.particleRoughening(slamParticles, dT, rougheningLinAccelStd, rougheningAngAccelStd);
-  }
-
-  /** standard multinominal resampling method
-   * 
-   * @param slamParticles */
-  @SuppressWarnings("unused")
-  private static void multinomialResampling(SlamParticle[] slamParticles) {
-    int numbOfPart = slamParticles.length;
-    // assigned particle numbers start at zero
-    int[] assignedPart = new int[slamParticles.length];
-    // generate array with cumulative particle probabilities
-    double[] particleCDF = new double[numbOfPart];
-    for (int i = 1; i < numbOfPart; i++)
-      particleCDF[i] = particleCDF[i - 1] + slamParticles[i].getParticleLikelihood();
-    // draw as many random numbers as particles and find corresponding CDF number
-    double[] randomNumbers = new double[numbOfPart];
-    SlamRandomUtil.setUniformRVArray(randomNumbers);
-    for (int i = 0; i < numbOfPart; i++)
-      for (int j = 1; j < numbOfPart; j++) {
-        if (randomNumbers[i] <= particleCDF[j]) {
-          assignedPart[i] = j - 1;
-          break;
-        }
-        assignedPart[i] = numbOfPart - 1;
-      }
-    // set state once assignedPart array is determined
-    double initLikelihood = (double) 1 / slamParticles.length;
-    for (int i = 0; i < slamParticles.length; i++)
-      slamParticles[i].setStateFromParticle(slamParticles[assignedPart[i]], initLikelihood);
+    particleRoughening(slamParticles, dT);
   }
 
   /** non-standard resampling method
@@ -82,13 +58,11 @@ import ch.ethz.idsc.tensor.RealScalar;
   /** disturbs the particle states with trunctuated Gaussian noise
    * 
    * @param slamParticles
-   * @param dT interpreted as [s]
-   * @param rougheningLinAccelStd interpreted as [m/s²] standard deviation of additive Gaussian noise
-   * @param rougheningAngAccelStd interpreted as [rad/s²] standard deviation of additive Gaussian noise */
-  private static void particleRoughening(SlamParticle[] slamParticles, double dT, double rougheningLinAccelStd, double rougheningAngAccelStd) {
+   * @param dT interpreted as [s] */
+  private void particleRoughening(SlamParticle[] slamParticles, double dT) {
     for (int i = 0; i < slamParticles.length; i++) {
-      double linVel = limitLinAccel(slamParticles[i].getLinVelDouble(), rougheningLinAccelStd, dT);
-      double angVel = limitAngAccel(slamParticles[i].getAngVelDouble(), slamParticles[i].getLinVelDouble(), rougheningAngAccelStd, dT);
+      double linVel = limitLinAccel(slamParticles[i].getLinVelDouble(), dT);
+      double angVel = limitAngAccel(slamParticles[i].getAngVelDouble(), slamParticles[i].getLinVelDouble(), dT);
       slamParticles[i].setLinVel(RealScalar.of(linVel));
       slamParticles[i].setAngVel(RealScalar.of(angVel));
     }
@@ -100,10 +74,9 @@ import ch.ethz.idsc.tensor.RealScalar;
    * function uses hard-coded acceleration and velocity limits
    * 
    * @param oldLinVel current linVel state
-   * @param rougheningLinAccelStd interpreted as [m/s²] standard deviation of additive Gaussian noise
    * @param dT interpreted as [s]
    * @return updated disturbed linVel */
-  private static double limitLinAccel(double oldLinVel, double rougheningLinAccelStd, double dT) {
+  private double limitLinAccel(double oldLinVel, double dT) {
     double linAccel = SlamRandomUtil.getTruncatedGaussian(0, rougheningLinAccelStd, LINACCEL_MIN, LINACCEL_MAX);
     double newLinVel = oldLinVel + linAccel * dT;
     if (LINVEL_MAX < newLinVel)
@@ -119,10 +92,9 @@ import ch.ethz.idsc.tensor.RealScalar;
    * 
    * @param oldAngVel current angVel state
    * @param oldLinVel current linVel state
-   * @param rougheningAngAccelStd interpreted as [rad/s²] standard deviation of additive Gaussian noise
    * @param dT interpreted as [s]
    * @return updated disturbed angVel */
-  private static double limitAngAccel(double oldAngVel, double oldLinVel, double rougheningAngAccelStd, double dT) {
+  private double limitAngAccel(double oldAngVel, double oldLinVel, double dT) {
     double maxVel = TURN_RATE_PER_METER * oldLinVel;
     double minVel = -maxVel;
     double angAccel = SlamRandomUtil.getTruncatedGaussian(0, rougheningAngAccelStd, ANGACCEL_MIN, ANGACCEL_MAX);

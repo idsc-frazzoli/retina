@@ -17,6 +17,11 @@ public class SlamConfigTest extends TestCase {
     // assertEquals(high, Tensors.fromString("{70[m], 70[m]}"));
   }
 
+  public void testMapThreshold() {
+    SlamConfig slamConfig = new SlamConfig();
+    Clip.unit().requireInside(slamConfig.mapThreshold);
+  }
+
   public void testSlamAlgo() {
     SlamAlgoConfig slamAlgoConfig = new SlamConfig().slamAlgoConfig();
     assertNotNull(slamAlgoConfig);

@@ -13,11 +13,11 @@ public abstract class AbstractFilterHandler implements DavisDvsListener, DavisDv
 
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (filter(davisDvsEvent)) {
-      listeners.forEach(l -> l.davisDvs(davisDvsEvent));
-    }
+    if (filter(davisDvsEvent))
+      listeners.forEach(listener -> listener.davisDvs(davisDvsEvent));
   }
 
+  /** @param davisDvsListener */
   public final void addListener(DavisDvsListener davisDvsListener) {
     listeners.add(davisDvsListener);
   }

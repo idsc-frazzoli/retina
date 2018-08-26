@@ -17,41 +17,31 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * morphological processing and connected component labeling */
 /* package */ class SlamMapProcessing extends AbstractSlamStep implements Runnable {
   private final Thread thread = new Thread(this);
-  private final double wayPointUpdateRate;
-  private final double mapThreshold;
-  private final double cornerX;
-  private final double cornerY;
-  private final double cellDim;
-  private final double visibleBoxXMin;
-  private final double visibleBoxXMax;
-  private final double visibleBoxHalfWidth;
+  private final double waypointUpdateRate; // [s]
+  private final SlamMapProcessingUtil slamMapProcessingUtil;
+  // TODO MG can labels be moved to SlamMapProcessingUtil?
+  private final Mat labels;
   // ---
   private MapProvider occurrenceMap;
-  private Mat labels;
   private boolean isLaunched;
   private double lastComputationTimeStamp;
 
   public SlamMapProcessing(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
-    wayPointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.wayPointUpdateRate);
-    mapThreshold = slamConfig.mapThreshold.number().doubleValue();
-    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
-    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
-    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
-    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
+    waypointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.waypointUpdateRate);
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+    slamMapProcessingUtil = new SlamMapProcessingUtil(slamConfig);
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (!isLaunched) {
+    if (!isLaunched) { // TODO MG launch thread elsewhere, talk to jan
       isLaunched = true;
       thread.start();
     }
+    // TODO use int for checking
     double currentTimeStamp = davisDvsEvent.time * 1E-6;
-    if (currentTimeStamp - lastComputationTimeStamp > wayPointUpdateRate) {
+    if (currentTimeStamp - lastComputationTimeStamp > waypointUpdateRate) {
       occurrenceMap = slamContainer.getOccurrenceMap();
       thread.interrupt();
       lastComputationTimeStamp = currentTimeStamp;
@@ -73,12 +63,12 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void mapProcessing() {
-    List<double[]> worldWayPoints = SlamMapProcessingUtil.findWayPoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
-    slamContainer.setWayPoints(SlamMapProcessingUtil.getWayPoints(worldWayPoints, slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin,
-        visibleBoxXMax, visibleBoxHalfWidth));
+    List<double[]> worldWaypoints = slamMapProcessingUtil.findWaypoints(occurrenceMap, labels);
+    slamContainer.setWaypoints(slamMapProcessingUtil.getWaypoints( //
+        worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
   }
 
-  // currently unused
+  // TODO MG currently unused, if planned to used in the future, create comment for function
   public Mat getProcessedMat() {
     labels.convertTo(labels, opencv_core.CV_8UC1);
     return labels;

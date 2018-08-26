@@ -8,7 +8,7 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamWayPoint;
+import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.ImageReflect;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensor;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final byte[] bytes;
-  private final double wayPointRadius;
+  private final double waypointRadius;
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.Tensor;
   SlamMapFrame(SlamConfig slamConfig) {
     mapWidth = slamConfig.mapWidth();
     mapHeight = slamConfig.mapHeight();
-    wayPointRadius = slamConfig.wayPointRadius.number().doubleValue();
+    waypointRadius = slamConfig.waypointRadius.number().doubleValue();
     cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
     cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
@@ -45,10 +45,10 @@ import ch.ethz.idsc.tensor.Tensor;
     StaticHelper.addGokartPose(pose, color, graphics, cornerX, cornerY, cellDim, kartLength);
   }
 
-  public void drawWayPoints(List<SlamWayPoint> wayPoints) {
+  public void drawWaypoints(List<SlamWaypoint> waypoints) {
     VisGeneralUtil.clearFrame(bytes);
-    for (int i = 0; i < wayPoints.size(); i++)
-      StaticHelper.drawWayPoint(graphics, wayPoints.get(i), wayPointRadius, cornerX, cornerY, cellDim);
+    for (int i = 0; i < waypoints.size(); i++)
+      StaticHelper.drawWaypoint(graphics, waypoints.get(i), waypointRadius, cornerX, cornerY, cellDim);
   }
 
   /** @return frame such that x axis points right and y axis points upwards of underlying map object */

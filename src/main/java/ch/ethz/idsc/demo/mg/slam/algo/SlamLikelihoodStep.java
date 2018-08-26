@@ -3,28 +3,27 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.Scalar;
 
 /** updates the particle's likelihoods. When using the particle filter, the localization step of
  * the SLAM algorithm usually consists of likelihood update, state propagation and particle resampling */
-/* package */ class SlamLikelihoodStep extends AbstractSlamStep {
+/* package */ class SlamLikelihoodStep extends EventActionSlamStep {
   private final double alpha;
 
-  protected SlamLikelihoodStep(SlamConfig slamConfig, SlamContainer slamContainer) {
+  protected SlamLikelihoodStep(SlamContainer slamContainer, Scalar alpha) {
     super(slamContainer);
-    alpha = slamConfig.alpha.number().doubleValue();
+    this.alpha = Magnitude.ONE.toDouble(alpha);
   }
 
-  @Override // from DavisDvsListener
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    updateLikelihoods();
-  }
-
-  private void updateLikelihoods() {
+  @Override
+  void davisDvsAction() {
     if (Objects.nonNull(slamContainer.getEventGokartFrame()))
-      SlamLikelihoodStepUtil.updateLikelihoods(slamContainer.getSlamParticles(), slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame(), alpha);
+      SlamLikelihoodStepUtil.updateLikelihoods( //
+          slamContainer.getSlamParticles(), //
+          slamContainer.getOccurrenceMap(), //
+          slamContainer.getEventGokartFrame(), //
+          alpha);
   }
 }

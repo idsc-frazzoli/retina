@@ -69,4 +69,14 @@ public class MagnitudeTest extends TestCase {
       // ---
     }
   }
+
+  public void testFailToDouble() {
+    Scalar scalar = Quantity.of(100, "s*knots");
+    try {
+      Magnitude.MICRO_SECOND.toDouble(scalar);
+      assertTrue(false);
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }

@@ -17,7 +17,7 @@ public class SlamContainer {
   private final double linVelStd;
   private final double angVelStd;
   // ---
-  private List<SlamWayPoint> wayPoints;
+  private List<SlamWaypoint> waypoints = new ArrayList<>();
   private double[] eventGokartFrame;
   private boolean active;
 
@@ -31,7 +31,6 @@ public class SlamContainer {
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
     angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
-    wayPoints = new ArrayList<>();
     eventGokartFrame = null;
   }
 
@@ -50,6 +49,7 @@ public class SlamContainer {
     return occurrenceMap;
   }
 
+  /** @return */
   public SlamEstimatedPose getSlamEstimatedPose() {
     return slamEstimatedPose;
   }
@@ -58,15 +58,17 @@ public class SlamContainer {
     return active;
   }
 
-  public void setWayPoints(List<SlamWayPoint> wayPoints) {
-    this.wayPoints = wayPoints;
+  public void setWaypoints(List<SlamWaypoint> waypoints) {
+    this.waypoints = waypoints;
   }
 
-  public List<SlamWayPoint> getWayPoints() {
-    return wayPoints;
+  public List<SlamWaypoint> getWaypoints() {
+    return waypoints;
   }
 
-  /** @param eventGokartFrame null is allowed input */
+  /** TODO MG define what this function does, i.e. what eventGokartFrame encodes
+   * 
+   * @param eventGokartFrame null is allowed input */
   public void setEventGokartFrame(double[] eventGokartFrame) {
     this.eventGokartFrame = eventGokartFrame;
   }

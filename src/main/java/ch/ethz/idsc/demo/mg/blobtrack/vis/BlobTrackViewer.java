@@ -6,7 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.demo.mg.blobtrack.eval.MgEvaluationFolders;
-import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -28,7 +27,7 @@ public class BlobTrackViewer implements DavisDvsListener {
   private int imageCount;
 
   public BlobTrackViewer(BlobTrackConfig blobTrackConfig, BlobTrackProvider blobTrackProvider) {
-    davisDvsEventFilter = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
+    davisDvsEventFilter = blobTrackConfig.davisConfig.createBackgroundActivityFilter();
     this.blobTrackProvider = blobTrackProvider;
     blobTrackGUI = new BlobTrackGUI();
     eventFrames = new AccumulatedEventFrame[3];

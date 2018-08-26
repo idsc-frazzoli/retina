@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
-public class SlamWayPointTest extends TestCase {
+public class SlamWaypointTest extends TestCase {
   public void testSimple() {
     Tensor element = Tensors.fromString("{5.3[m],-10.9[m],1.34}");
     Se2CoveringGroupAction se2CoveringGroupAction = //

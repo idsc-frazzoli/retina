@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Tensor;
 // seen by the ImageTogokartUtil. Discretize with the cellDim parameter. Include interpolation method.
 // TODO unused and unfinished code
 public class GokartToImageLookup implements GokartToImageInterface {
-  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, Scalar width) {
+  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, int width) {
     return new GokartToImageLookup(new ImageToGokartUtil(inputTensor, unitConversion, width), //
         new GokartToImageUtil(inputTensor, unitConversion), cellDim, lookAheadDistance);
   }
@@ -68,7 +68,8 @@ public class GokartToImageLookup implements GokartToImageInterface {
   }
 
   // testing
+  // TODO MG conduct tests in test area
   public static void main(String[] args) {
-    GokartToImageLookup test = new SlamConfig().createGokartToImageUtilLookup();
+    GokartToImageLookup test = new SlamConfig().createGokartToImageLookup();
   }
 }
