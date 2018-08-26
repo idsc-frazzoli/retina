@@ -17,36 +17,24 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * morphological processing and connected component labeling */
 /* package */ class SlamMapProcessing extends AbstractSlamStep implements Runnable {
   private final Thread thread = new Thread(this);
-  private final double waypointUpdateRate;
-  private final double mapThreshold;
-  private final double cornerX;
-  private final double cornerY;
-  private final double cellDim;
-  private final double visibleBoxXMin;
-  private final double visibleBoxXMax;
-  private final double visibleBoxHalfWidth;
+  private final double waypointUpdateRate; // [s]
+  private final SlamMapProcessingUtil slamMapProcessingUtil;
+  private final Mat labels;
   // ---
   private MapProvider occurrenceMap;
-  private Mat labels;
   private boolean isLaunched;
   private double lastComputationTimeStamp;
 
   public SlamMapProcessing(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
     waypointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.waypointUpdateRate);
-    mapThreshold = slamConfig.mapThreshold.number().doubleValue();
-    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
-    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
-    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
-    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+    slamMapProcessingUtil = new SlamMapProcessingUtil(slamConfig);
   }
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (!isLaunched) {
+    if (!isLaunched) { // TODO MG launch thread elsewhere, talk to jan
       isLaunched = true;
       thread.start();
     }
@@ -74,9 +62,9 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   private void mapProcessing() {
-    List<double[]> worldWaypoints = SlamMapProcessingUtil.findWaypoints(occurrenceMap, labels, mapThreshold, cornerX, cornerY, cellDim);
-    slamContainer.setWaypoints(SlamMapProcessingUtil.getWaypoints(worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless(), visibleBoxXMin,
-        visibleBoxXMax, visibleBoxHalfWidth));
+    List<double[]> worldWaypoints = slamMapProcessingUtil.findWaypoints(occurrenceMap, labels);
+    slamContainer.setWaypoints(slamMapProcessingUtil.getWaypoints( //
+        worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
   }
 
   // currently unused

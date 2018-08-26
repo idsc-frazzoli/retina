@@ -12,12 +12,13 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
     super(slamContainer);
   }
 
-  @Override
+  @Override // from EventActionSlamStep
   void davisDvsAction() { // updateOccurrenceMap
-    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
+    double[] eventGokartFrame = slamContainer.getEventGokartFrame();
+    if (Objects.nonNull(eventGokartFrame))
       SlamMappingStepUtil.updateOccurrenceMap( //
           slamContainer.getSlamEstimatedPose().getPoseUnitless(), //
           slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame());
+          eventGokartFrame);
   }
 }

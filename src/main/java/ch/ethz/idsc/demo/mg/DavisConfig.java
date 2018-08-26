@@ -31,8 +31,13 @@ public class DavisConfig {
   /** height of image is required to be an integer */
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
-  /** [us] for background activity filter */
-  public Scalar filterConstant = Quantity.of(1000, NonSI.MICRO_SECOND);
+  /** time threshold for background activity filter
+   * the report 20180225_davis240c_event_distribution concludes:
+   * 1) a 4[s] recording of rapid turning contains 975 intervals
+   * of duration at least 1[ms] during which no events occur
+   * 2) for a bin of width 500[us] chances are p=0.30283 that the bin is empty
+   * 3) for a bin size of 2397[us] there is a 99% chance that it’s non-empty */
+  public Scalar filterConstant = Quantity.of(2400, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 

@@ -11,20 +11,40 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
-/* package */ enum SlamMapProcessingUtil {
-  ;
+// TODO MG file contains a lot of functionality => class deserves a better name
+/* package */ class SlamMapProcessingUtil {
   private static final Mat dilateKernel = //
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
   private static final Mat erodeKernel = //
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private static final Point POINT = new Point(-1, -1);
+  // ---
+  private final double mapThreshold;
+  private final double cornerX; // [m]
+  private final double cornerY; // [m]
+  private final double cellDim; // [m]
+  private final double visibleBoxXMin; // [m]
+  private final double visibleBoxXMax; // [m]
+  private final double visibleBoxHalfWidth; // [m]
+
+  public SlamMapProcessingUtil(SlamConfig slamConfig) {
+    mapThreshold = slamConfig.mapThreshold.number().doubleValue();
+    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
+    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
+    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
+  }
 
   /** finds way points through threshold operation, morphological processing and
    * connected component labeling calls
@@ -38,8 +58,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param cornerY [m]
    * @param cellDim [m]
    * @return worldWaypoints [m] detected way points in world frame */
-  public static List<double[]> findWaypoints( //
-      MapProvider thresholdMap, Mat labels, double mapThreshold, double cornerX, double cornerY, double cellDim) {
+  public List<double[]> findWaypoints(MapProvider thresholdMap, Mat labels) {
     Mat processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, dilateKernel, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -98,17 +117,17 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param visibleBoxXMin [m] in go kart frame
    * @param visibleBoxXMax [m] in go kart frame
    * @param visibleBoxHalfWidth [m] in go kart frame */
-  public static List<SlamWaypoint> getWaypoints(List<double[]> worldWaypoints, Tensor pose, double visibleBoxXMin, double visibleBoxXMax,
-      double visibleBoxHalfWidth) {
+  public List<SlamWaypoint> getWaypoints(List<double[]> worldWaypoints, Tensor pose) {
     List<SlamWaypoint> slamWaypoints = new ArrayList<>();
     for (double[] worldWaypoint : worldWaypoints) {
       double[] gokartWaypoint = computeGokartPosition(worldWaypoint, pose);
       // TODO JPH simplify
-      if (gokartWaypoint[0] > visibleBoxXMin && gokartWaypoint[0] < visibleBoxXMax && //
-          gokartWaypoint[1] > -visibleBoxHalfWidth && gokartWaypoint[1] < visibleBoxHalfWidth)
-        slamWaypoints.add(new SlamWaypoint(worldWaypoint, true));
-      else
-        slamWaypoints.add(new SlamWaypoint(worldWaypoint, false));
+      boolean status = gokartWaypoint[0] > visibleBoxXMin && gokartWaypoint[0] < visibleBoxXMax && //
+          gokartWaypoint[1] > -visibleBoxHalfWidth && gokartWaypoint[1] < visibleBoxHalfWidth;
+      // if ()
+      slamWaypoints.add(new SlamWaypoint(worldWaypoint, status));
+      // else
+      // slamWaypoints.add(new SlamWaypoint(worldWaypoint, false));
     }
     return slamWaypoints;
   }

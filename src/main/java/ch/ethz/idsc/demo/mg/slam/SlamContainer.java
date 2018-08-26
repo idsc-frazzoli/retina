@@ -49,6 +49,7 @@ public class SlamContainer {
     return occurrenceMap;
   }
 
+  /** @return */
   public SlamEstimatedPose getSlamEstimatedPose() {
     return slamEstimatedPose;
   }

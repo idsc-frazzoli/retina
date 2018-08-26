@@ -6,7 +6,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
 /** executes the localization step of the SLAM algorithm for the case that the pose is provided from another module,
  * e.g. lidar or odometry */
-// TODO maybe not required to set pose for each event since pose update rate depends on input module
+// TODO MG maybe not required to set pose for each event since pose update rate depends on input module
 /* package */ class SlamLocalizationStep extends EventActionSlamStep {
   private final GokartPoseInterface gokartPoseInterface;
 
@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
     this.gokartPoseInterface = gokartPoseInterface;
   }
 
-  @Override
+  @Override // from EventActionSlamStep
   void davisDvsAction() {
     slamContainer.getSlamEstimatedPose().setPose(gokartPoseInterface.getPose()); // set pose
   }
