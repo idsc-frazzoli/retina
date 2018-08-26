@@ -7,7 +7,8 @@ public class SlamWaypoint {
   /** visibility given the current pose of the go kart */
   private final boolean visibility;
 
-  /** @param worldPosition interpreted as [m] */
+  /** @param worldPosition interpreted as [m]
+   * @param visibility */
   public SlamWaypoint(double[] worldPosition, boolean visibility) {
     this.worldPosition = worldPosition;
     this.visibility = visibility;

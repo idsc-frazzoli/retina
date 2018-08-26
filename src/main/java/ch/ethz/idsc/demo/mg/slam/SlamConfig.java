@@ -88,6 +88,7 @@ public class SlamConfig {
 
   public final Scalar waypointRadius = RealScalar.of(10); // [pixel]
   // map processing parameters
+  // TODO MG state valid range for mapThreshold. is it [0, 1]?
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters
   public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // [s] initial delay before waypoints are extracted

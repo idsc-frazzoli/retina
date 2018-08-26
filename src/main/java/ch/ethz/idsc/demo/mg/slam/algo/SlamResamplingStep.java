@@ -11,16 +11,16 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 /** resamples particles of SLAM algorithm */
 /* package */ class SlamResamplingStep extends AbstractSlamStep {
   private final double resampleRate;
-  private final double rougheningLinAccelStd;
-  private final double rougheningAngAccelStd;
+  private final SlamResamplingStepUtil slamResamplingStepUtil;
   // ---
   private Double lastResampleTimeStamp = null;
 
   public SlamResamplingStep(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
     resampleRate = Magnitude.SECOND.toDouble(slamConfig.resampleRate);
-    rougheningLinAccelStd = Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd);
-    rougheningAngAccelStd = Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd);
+    slamResamplingStepUtil = new SlamResamplingStepUtil( //
+        Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd), //
+        Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd));
   }
 
   @Override // from DavisDvsListener
@@ -41,6 +41,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   private void resampleParticles(double currentTimeStamp, Double lastResampleTimeStamp2) {
     double dT = currentTimeStamp - lastResampleTimeStamp;
-    SlamResamplingStepUtil.resampleParticles(slamContainer.getSlamParticles(), dT, rougheningLinAccelStd, rougheningAngAccelStd);
+    slamResamplingStepUtil.resampleParticles(slamContainer.getSlamParticles(), dT);
   }
 }

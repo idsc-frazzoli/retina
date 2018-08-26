@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final Thread thread = new Thread(this);
   private final double waypointUpdateRate; // [s]
   private final SlamMapProcessingUtil slamMapProcessingUtil;
+  // TODO MG can labels be moved to SlamMapProcessingUtil?
   private final Mat labels;
   // ---
   private MapProvider occurrenceMap;
@@ -67,7 +68,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
   }
 
-  // currently unused
+  // TODO MG currently unused, if planned to used in the future, create comment for function
   public Mat getProcessedMat() {
     labels.convertTo(labels, opencv_core.CV_8UC1);
     return labels;
