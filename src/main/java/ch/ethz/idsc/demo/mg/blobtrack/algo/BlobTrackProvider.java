@@ -6,7 +6,6 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -24,7 +23,7 @@ public class BlobTrackProvider implements DavisDvsListener {
   private List<PhysicalBlob> physicalBlobs = new ArrayList<>();
 
   public BlobTrackProvider(BlobTrackConfig blobTrackConfig) {
-    davisDvsEventFilter = new BackgroundActivityFilter(blobTrackConfig.davisConfig);
+    davisDvsEventFilter = blobTrackConfig.davisConfig.createBackgroundActivityFilter();
     blobTracking = new BlobTracking(blobTrackConfig);
     imageBlobSelector = blobTrackConfig.createImageBlobSelector();
     blobTransform = blobTrackConfig.isCalibrationAvailable() //

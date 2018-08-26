@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.slam.algo.SlamProvider;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -31,7 +30,7 @@ public class SlamTrigger implements DavisDvsListener {
     this.gokartPoseInterface = gokartPoseInterface;
     this.davisDvsDatagramDecoder = davisDvsdatagramDecoder;
     this.gokartPoseOdometryDemo = gokartPoseOdometryDemo;
-    abstractFilterHandler = new BackgroundActivityFilter(slamConfig.davisConfig);
+    abstractFilterHandler = slamConfig.davisConfig.createBackgroundActivityFilter();
     slamProvider = new SlamProvider(slamConfig, abstractFilterHandler, gokartPoseInterface, gokartPoseOdometryDemo);
   }
 
@@ -41,6 +40,7 @@ public class SlamTrigger implements DavisDvsListener {
       if (!gokartPoseInterface.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         setupSlamAlgorithm();
         triggered = true;
+        // TODO JPH find a way to unsubscribe this slam trigger from dvs events
       }
   }
 

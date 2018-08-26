@@ -4,13 +4,18 @@ package ch.ethz.idsc.demo.mg;
 import java.io.File;
 import java.util.Objects;
 
+import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** provides general parameters not specific to SLAM or object detection algorithms */
@@ -25,9 +30,16 @@ public class DavisConfig {
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
   /** [us] for background activity filter */
-  public Scalar filterConstant = RealScalar.of(1000);
+  public Scalar _filterConstant = Quantity.of(1000, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
+
+  public AbstractFilterHandler createBackgroundActivityFilter() {
+    return new BackgroundActivityFilter( //
+        Scalars.intValueExact(width), //
+        Scalars.intValueExact(height), //
+        Magnitude.MICRO_SECOND.toInt(_filterConstant));
+  }
 
   public String logFilename() {
     return logFileLocations.name();
