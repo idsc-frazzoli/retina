@@ -13,39 +13,42 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 
 /** triggers the initialization of the SLAM algorithm */
 public class SlamTrigger implements DavisDvsListener {
-  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
-  private final GokartPoseOdometryDemo gokartPoseOdometry;
-  private final GokartPoseInterface gokartLidarPose;
-  private final AbstractFilterHandler filterHandler;
-  private final SlamProvider slamProvider;
   private final SlamConfig slamConfig;
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder;
+  private final GokartPoseOdometryDemo gokartPoseOdometryDemo;
+  private final GokartPoseInterface gokartPoseInterface;
+  private final AbstractFilterHandler abstractFilterHandler;
+  private final SlamProvider slamProvider;
   // ---
   private boolean triggered;
 
-  public SlamTrigger(SlamConfig slamConfig, GokartPoseInterface gokartLidarPose, DavisDvsDatagramDecoder davisDvsdatagramDecoder, //
-      GokartPoseOdometryDemo gokartPoseOdometry) {
-    this.davisDvsDatagramDecoder = davisDvsdatagramDecoder;
-    this.gokartPoseOdometry = gokartPoseOdometry;
+  public SlamTrigger( //
+      SlamConfig slamConfig, //
+      GokartPoseInterface gokartPoseInterface, //
+      DavisDvsDatagramDecoder davisDvsdatagramDecoder, //
+      GokartPoseOdometryDemo gokartPoseOdometryDemo) {
     this.slamConfig = slamConfig;
-    this.gokartLidarPose = gokartLidarPose;
-    filterHandler = new BackgroundActivityFilter(slamConfig.davisConfig);
-    slamProvider = new SlamProvider(slamConfig, filterHandler, gokartLidarPose, gokartPoseOdometry);
+    this.gokartPoseInterface = gokartPoseInterface;
+    this.davisDvsDatagramDecoder = davisDvsdatagramDecoder;
+    this.gokartPoseOdometryDemo = gokartPoseOdometryDemo;
+    abstractFilterHandler = new BackgroundActivityFilter(slamConfig.davisConfig);
+    slamProvider = new SlamProvider(slamConfig, abstractFilterHandler, gokartPoseInterface, gokartPoseOdometryDemo);
   }
 
   @Override // from DavisDvsListener
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (!triggered) {
-      if (gokartLidarPose.getPose() != GokartPoseLocal.INSTANCE.getPose()) {
+  public final void davisDvs(DavisDvsEvent davisDvsEvent) {
+    if (!triggered)
+      if (!gokartPoseInterface.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         setupSlamAlgorithm();
         triggered = true;
       }
-    }
   }
 
   private void setupSlamAlgorithm() {
-    davisDvsDatagramDecoder.addDvsListener(filterHandler);
-    slamProvider.getSlamContainer().initialize(gokartLidarPose.getPose());
-    gokartPoseOdometry.setPose(gokartLidarPose.getPose());
-    SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider.getSlamContainer(), gokartLidarPose);
+    davisDvsDatagramDecoder.addDvsListener(abstractFilterHandler);
+    slamProvider.getSlamContainer().initialize(gokartPoseInterface.getPose());
+    gokartPoseOdometryDemo.setPose(gokartPoseInterface.getPose());
+    // SlamViewer slamViewer =
+    new SlamViewer(slamConfig, slamProvider.getSlamContainer(), gokartPoseInterface);
   }
 }

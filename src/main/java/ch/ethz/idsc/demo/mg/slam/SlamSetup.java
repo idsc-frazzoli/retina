@@ -25,10 +25,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private void runAlgo() {
     OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
     try {
-      BoundedOfflineLogPlayer.process( //
-          logFile, //
-          logFileDuration, //
-          offlineSlamWrap);
+      BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
       // if (saveSlamMap && !localizationMode) {
       // PrimitivesIO.saveToCSV( //
       // SlamFileLocations.recordedMaps(logFilename), //

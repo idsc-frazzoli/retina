@@ -14,23 +14,26 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** wrapper to run SLAM algorithm with offline log files */
 public class OfflineSlamWrap implements OfflineLogListener {
-  private final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
+  private static final String CHANNEL_DVS = "davis240c.overview.dvs";
+  // ---
+  private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  private final GokartPoseOdometryDemo gokartPoseOdometry = GokartPoseOdometryDemo.create();
-  private final SlamTrigger slamTrigger;
+  private final GokartPoseOdometryDemo gokartPoseOdometryDemo = GokartPoseOdometryDemo.create();
 
   public OfflineSlamWrap(SlamConfig slamConfig) {
-    slamTrigger = new SlamTrigger(slamConfig, gokartLidarPose, davisDvsDatagramDecoder, gokartPoseOdometry);
+    SlamTrigger slamTrigger = new SlamTrigger(slamConfig, gokartPoseLcmLidar, davisDvsDatagramDecoder, gokartPoseOdometryDemo);
     davisDvsDatagramDecoder.addDvsListener(slamTrigger);
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR))
-      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
-    if (channel.equals("davis240c.overview.dvs"))
+      gokartPoseLcmLidar.getEvent(new GokartPoseEvent(byteBuffer));
+    else //
+    if (channel.equals(CHANNEL_DVS))
       davisDvsDatagramDecoder.decode(byteBuffer);
+    else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
-      gokartPoseOdometry.getEvent(new RimoGetEvent(byteBuffer));
+      gokartPoseOdometryDemo.getEvent(new RimoGetEvent(byteBuffer));
   }
 }

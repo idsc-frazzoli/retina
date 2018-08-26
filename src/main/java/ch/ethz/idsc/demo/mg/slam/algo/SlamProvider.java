@@ -18,13 +18,16 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
  * in the field listeners */
 public class SlamProvider {
   private final SlamContainer slamContainer;
-  private final List<DavisDvsListener> listeners;
 
-  public SlamProvider(SlamConfig slamConfig, AbstractFilterHandler filterHandler, GokartPoseInterface gokartLidarPose, //
-      GokartPoseOdometryDemo gokartPoseOdometry) {
+  public SlamProvider( //
+      SlamConfig slamConfig, //
+      AbstractFilterHandler abstractFilterHandler, //
+      GokartPoseInterface gokartLidarPose, //
+      GokartPoseOdometryDemo gokartPoseOdometryDemo) {
     slamContainer = new SlamContainer(slamConfig);
-    listeners = SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose, gokartPoseOdometry);
-    listeners.forEach(filterHandler::addListener);
+    List<DavisDvsListener> listeners = //
+        SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose, gokartPoseOdometryDemo);
+    listeners.forEach(abstractFilterHandler::addListener);
   }
 
   public SlamContainer getSlamContainer() {
