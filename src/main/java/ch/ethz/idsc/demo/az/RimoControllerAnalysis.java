@@ -7,8 +7,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -20,6 +22,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
 class RimoControllerAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
+  private final TableBuilder tableBuilder2 = new TableBuilder();
   private final ByteOrder byteOrder;
 
   public RimoControllerAnalysis(ByteOrder byteOrder) {
@@ -32,6 +35,10 @@ class RimoControllerAnalysis implements OfflineTableSupplier {
       byteBuffer.order(byteOrder);
       Tensor tensor = VectorFloatBlob.decode(byteBuffer);
       tableBuilder.appendRow(time.map(Magnitude.SECOND), tensor);
+    } else //
+    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
+      RimoGetEvent rge = new RimoGetEvent(byteBuffer);
+      tableBuilder2.appendRow(time.map(Magnitude.SECOND), rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE));
     }
   }
 
@@ -40,11 +47,18 @@ class RimoControllerAnalysis implements OfflineTableSupplier {
     return tableBuilder.toTable();
   }
 
+  public Tensor getTable2() {
+    return tableBuilder2.toTable();
+  }
+
   public static void main(String[] args) throws IOException {
-    String string = "20180528T161753_bb8cdede";
+    String string = "20180814T175821_2c569ed8";
     File file = UserHome.file("/datasets/gokartlogs/" + string + ".lcm.00");
-    OfflineTableSupplier offlineTableSupplier = new RimoControllerAnalysis(ByteOrder.BIG_ENDIAN);
+    RimoControllerAnalysis offlineTableSupplier = new RimoControllerAnalysis(ByteOrder.LITTLE_ENDIAN);
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(UserHome.file(string + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_pi" + ".csv"),
+        offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_rimo" + ".csv"),
+        offlineTableSupplier.getTable2().map(CsvFormat.strict()));
   }
 }
