@@ -4,15 +4,10 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
 
-// TODO MG don't delete class, just explain why it's not used
-/**
- * 
- */
+/** standard multinominal resampling method for the SLAM algorithm */
 /* package */ enum MultinomialResampling {
   ;
-  /** standard multinominal resampling method
-   * 
-   * @param slamParticles */
+  /** @param slamParticles */
   static void multinomialResampling(SlamParticle[] slamParticles) {
     int numbOfPart = slamParticles.length;
     // assigned particle numbers start at zero

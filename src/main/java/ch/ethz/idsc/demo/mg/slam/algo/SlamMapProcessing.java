@@ -4,9 +4,6 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 import java.util.List;
 import java.util.Objects;
 
-import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_core.Mat;
-
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
@@ -17,19 +14,16 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * morphological processing and connected component labeling */
 /* package */ class SlamMapProcessing extends AbstractSlamStep implements Runnable {
   private final Thread thread = new Thread(this);
-  private final double waypointUpdateRate; // [s]
+  private final int waypointUpdateRate; // [us]
   private final SlamMapProcessingUtil slamMapProcessingUtil;
-  // TODO MG can labels be moved to SlamMapProcessingUtil?
-  private final Mat labels;
   // ---
   private MapProvider occurrenceMap;
   private boolean isLaunched;
-  private double lastComputationTimeStamp;
+  private Integer lastComputationTimeStamp = null;
 
   public SlamMapProcessing(SlamConfig slamConfig, SlamContainer slamContainer) {
     super(slamContainer);
-    waypointUpdateRate = Magnitude.SECOND.toDouble(slamConfig.waypointUpdateRate);
-    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+    waypointUpdateRate = Magnitude.MICRO_SECOND.toInt(slamConfig.waypointUpdateRate);
     slamMapProcessingUtil = new SlamMapProcessingUtil(slamConfig);
   }
 
@@ -39,12 +33,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
       isLaunched = true;
       thread.start();
     }
-    // TODO use int for checking
-    double currentTimeStamp = davisDvsEvent.time * 1E-6;
-    if (currentTimeStamp - lastComputationTimeStamp > waypointUpdateRate) {
+    initializeTimeStamps(davisDvsEvent.time);
+    if (davisDvsEvent.time - lastComputationTimeStamp > waypointUpdateRate) {
       occurrenceMap = slamContainer.getOccurrenceMap();
       thread.interrupt();
-      lastComputationTimeStamp = currentTimeStamp;
+      lastComputationTimeStamp = davisDvsEvent.time;
     }
   }
 
@@ -62,15 +55,14 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         }
   }
 
-  private void mapProcessing() {
-    List<double[]> worldWaypoints = slamMapProcessingUtil.findWaypoints(occurrenceMap, labels);
-    slamContainer.setWaypoints(slamMapProcessingUtil.getWaypoints( //
-        worldWaypoints, slamContainer.getSlamEstimatedPose().getPoseUnitless()));
+  private void initializeTimeStamps(int initTimeStamp) {
+    if (Objects.isNull(lastComputationTimeStamp))
+      lastComputationTimeStamp = initTimeStamp;
   }
 
-  // TODO MG currently unused, if planned to used in the future, create comment for function
-  public Mat getProcessedMat() {
-    labels.convertTo(labels, opencv_core.CV_8UC1);
-    return labels;
+  private void mapProcessing() {
+    List<double[]> worldWaypoints = slamMapProcessingUtil.findWaypoints(occurrenceMap);
+    slamContainer.setWaypoints(slamMapProcessingUtil.getWaypoints( //
+        worldWaypoints, slamContainer.getPoseUnitless()));
   }
 }

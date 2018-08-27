@@ -7,14 +7,16 @@ import java.util.TimerTask;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
+// TODO MG implement DavisDvsListener here instead of SlamSaveFrame --> and use it only for timestamp
 public class SlamViewer {
   private final GokartPoseInterface gokartLidarPose;
   private final SlamContainer slamContainer;
   private final SlamMapFrame[] slamMapFrames;
   private final SlamMapGUI slamMapGUI;
-  private final SlamMapFrameSave slamMapFrameSave;
+  private final SlamSaveFrame slamSaveFrame;
   // ---
   private final Timer timer;
   private final TimerTask visualizationTask;
@@ -37,10 +39,15 @@ public class SlamViewer {
       }
     };
     timer.schedule(visualizationTask, 0, visualizationInterval);
-    slamMapFrameSave = slamConfig.saveSlamFrame ? new SlamMapFrameSave(slamConfig, timer, slamMapFrames) : null;
+    slamSaveFrame = new SlamSaveFrame(slamConfig, slamContainer, slamMapFrames);
   }
 
   private void visualizationTask() {
     slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamContainer, gokartLidarPose));
+  }
+
+  // slamSaveFrame requires a DavsDvsEvent stream
+  public DavisDvsListener getSlamSaveFrame() {
+    return slamSaveFrame;
   }
 }

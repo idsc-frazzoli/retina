@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.alg.Array;
   /** propagate the particles' state estimates with their estimated velocity
    * 
    * @param slamParticles
-   * @param dT [s] */
+   * @param dT interpreted as [s] */
   public static void propagateStateEstimate(SlamParticle[] slamParticles, double dT) {
     for (int index = 0; index < slamParticles.length; ++index)
       slamParticles[index].propagateStateEstimate(dT);

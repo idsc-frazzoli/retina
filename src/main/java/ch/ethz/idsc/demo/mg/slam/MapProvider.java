@@ -42,7 +42,7 @@ public class MapProvider {
    * @param numerator
    * @param denominator
    * @param targetMap */
-  // currently unused
+  // currently unused, requires normalization map
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
     // TODO loop can be done in parallel
     for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
@@ -68,12 +68,12 @@ public class MapProvider {
 
   /** @param posX [m]
    * @param posY [m]
-   * @return cellIndex or numberOfCells if position is outside map */
+   * @return cellIndex or -1 if position is outside map */
   public int getCellIndex(double posX, double posY) {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
       // unreasonable number to indicate that we dont have this location
-      return numberOfCells; // TODO unconventional, typical would be to return -1
+      return -1;
     }
     int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
     int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);
@@ -98,7 +98,7 @@ public class MapProvider {
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells)
+    if (cellIndex == -1)
       return;
     mapArray[cellIndex] += value;
     if (mapArray[cellIndex] > maxValue)
@@ -135,7 +135,7 @@ public class MapProvider {
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells)
+    if (cellIndex == -1)
       return 0;
     return mapArray[cellIndex];
   }

@@ -28,14 +28,12 @@ import ch.ethz.idsc.tensor.RealScalar;
     this.rougheningAngAccelStd = rougheningAngAccelStd;
   }
 
-  /** particle resampling. multinominal sampling and neglect_low_likelihood method are available. particle roughening is also provided
+  /** particle resampling using neglect_low_likelihood method. After resampling, a particle roughening step is executed.
    * 
    * @param slamParticles
    * @param dT interpreted as [s] */
   public void resampleParticles(SlamParticle[] slamParticles, double dT) {
-    // SlamParticleUtil.multinomialSampling(slamParticles);
     SlamResamplingStepUtil.neglectLowLikelihoods(slamParticles);
-    // depending on resampling method, roughening might be used
     particleRoughening(slamParticles, dT);
   }
 

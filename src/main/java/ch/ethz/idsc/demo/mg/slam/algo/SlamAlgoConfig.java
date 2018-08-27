@@ -48,7 +48,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
       SlamConfig slamConfig, SlamContainer slamContainer, GokartPoseInterface gokartPoseInterface) {
     return Arrays.asList( //
         new SlamImageToGokart(slamConfig, slamContainer), //
-        new SlamLocalizationStep(slamContainer, gokartPoseInterface), //
+        new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface), //
         new SlamMappingStep(slamContainer), //
         new SlamMapProcessing(slamConfig, slamContainer));
   }
