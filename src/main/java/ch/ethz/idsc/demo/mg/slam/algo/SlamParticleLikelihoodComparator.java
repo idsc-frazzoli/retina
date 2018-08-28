@@ -6,7 +6,7 @@ import java.util.Comparator;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 
 /** helps to sort {@link SlamParticle}s with descending likelihood */
-public enum SlamParticleLikelihoodComparator implements Comparator<SlamParticle> {
+/* package */ enum SlamParticleLikelihoodComparator implements Comparator<SlamParticle> {
   INSTANCE;
   // ---
   @Override
