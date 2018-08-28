@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -14,11 +14,12 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    file = UserHome.file("gokart/pedestrian/20180604T150508/log.lcm");
-    file = DatahakiLogFileLocator.file(GokartLogFile._20180705T154948_b01c2886);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20180820T165637_568f9954);
+    file = new File("/media/datahaki/media/ethz/gokart/topic/track_red/20180820T165637_5/log.lcm");
+    file = UserHome.file("export_red/copy20180820T143852_1.lcm");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
-    cfg.speed_denominator = 2;
+    cfg.speed_denominator = 8;
     LogPlayer.create(cfg);
   }
 }

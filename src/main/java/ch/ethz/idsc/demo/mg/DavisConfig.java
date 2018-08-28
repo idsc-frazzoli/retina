@@ -4,49 +4,78 @@ package ch.ethz.idsc.demo.mg;
 import java.io.File;
 import java.util.Objects;
 
+import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
+import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
+import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** provides general parameters not specific to SLAM or object detection algorithms */
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public String logFileName = "DUBI15a";
-  /** maxDuration [ms] */
-  public final Scalar maxDuration = RealScalar.of(15000);
-  /** relative to src/main/resources/ */
-  // TODO assignment of calibrationFileName is prone to error. is is possible to implement as member function?
-  public final String calibrationFileName = "/demo/mg/" + logFileName.substring(0, logFileName.length() - 1) + ".csv";
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16b;
+  /** maxDuration */
+  public final Scalar logFileDuration = Quantity.of(60, SI.SECOND);
   // general parameters
+  /** width of image is required to be an integer */
   public final Scalar width = RealScalar.of(240);
+  /** height of image is required to be an integer */
   public final Scalar height = RealScalar.of(180);
   public final Scalar unitConversion = RealScalar.of(1000);
-  /** event filtering
-   * 0 == background activity filter, 1 == FAST corner filter */
-  public final Scalar filterConfig = RealScalar.of(0);
-  /** [us] for background activity filter */
-  public Scalar filterConstant = RealScalar.of(1000);
+  /** time threshold for background activity filter
+   * the report 20180225_davis240c_event_distribution concludes:
+   * 1) a 4[s] recording of rapid turning contains 975 intervals
+   * of duration at least 1[ms] during which no events occur
+   * 2) for a bin of width 500[us] chances are p=0.30283 that the bin is empty
+   * 3) for a bin size of 2397[us] there is a 99% chance that it’s non-empty */
+  public Scalar filterConstant = Quantity.of(2400, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 
+  public AbstractFilterHandler createBackgroundActivityFilter() {
+    return new BackgroundActivityFilter( //
+        Scalars.intValueExact(width), //
+        Scalars.intValueExact(height), //
+        Magnitude.MICRO_SECOND.toInt(filterConstant));
+  }
+
+  public String logFilename() {
+    return logFileLocations.name();
+  }
+
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFileName);
+    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFilename());
     if (Objects.isNull(logFileLocations))
-      throw new RuntimeException("invalid logFileName: " + logFileName);
+      throw new RuntimeException("invalid logFileName: " + logFilename());
     return logFileLocations.getFile();
   }
 
+  /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
+  public ImageToGokartUtil createImageToGokartUtil() {
+    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, Scalars.intValueExact(width));
+  }
+
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
-  public ImageToGokartLookup createImageToGokartUtilLookup() {
-    return ImageToGokartLookup.fromMatrix(ResourceData.of(calibrationFileName), unitConversion, width, height);
+  public ImageToGokartInterface createImageToGokartInterface() {
+    return ImageToGokartLookup.fromMatrix( //
+        logFileLocations.calibration(), //
+        unitConversion, //
+        Scalars.intValueExact(width), //
+        Scalars.intValueExact(height));
   }
 
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
   public GokartToImageUtil createGokartToImageUtil() {
-    return GokartToImageUtil.fromMatrix(ResourceData.of(calibrationFileName), unitConversion);
+    return GokartToImageUtil.fromMatrix(logFileLocations.calibration(), unitConversion);
   }
 }

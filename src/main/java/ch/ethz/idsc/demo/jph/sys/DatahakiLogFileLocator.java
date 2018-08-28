@@ -21,9 +21,8 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
       ARCHIVE, //
       UserHome.file("gokartlogs"));
 
-  @Override
+  @Override // from LogFileLocator
   public File getAbsoluteFile(LogFile logFile) {
-    // TODO string input would be sufficient
     String title = logFile.getFilename();
     String date = title.substring(0, 8);
     for (File dir : LOG_ROOT) {

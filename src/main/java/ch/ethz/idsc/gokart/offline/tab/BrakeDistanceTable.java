@@ -41,7 +41,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
   private RimoGetEvent rge;
   private LinmotGetEvent lge;
 
-  public BrakeDistanceTable(GokartLogInterface olr) {
+  public BrakeDistanceTable(GokartLogInterface gokartLogInterface) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
@@ -52,7 +52,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), olr.model(), scatterImage);
+    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
     lidarAngularFiringCollector.addListener(offlineLocalize);
   }
 
@@ -70,7 +70,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
             offlineLocalize.getPositionVector(), //
             lge.getActualPosition().map(Magnitude.METER), //
             lge.getDemandPosition().map(Magnitude.METER), //
-            rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE), //
+            rge.getAngularRate_Y_pair().map(Magnitude.PER_SECOND), //
             ChassisGeometry.GLOBAL.odometryTangentSpeed(rge).map(Magnitude.VELOCITY) //
         );
       }

@@ -19,16 +19,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** Post processing to determine emergency braking distance.
  * 
- * https://github.com/idsc-frazzoli/retina/files/1801717/20180217_emergency_braking.pdf */
+ * https://github.com/idsc-frazzoli/retina/files/1801717/20180217_emergency_braking.pdf
+ * 
+ * The analysis led to the development of the lidar based emergency braking logic
+ * https://www.youtube.com/watch?v=b_Sqy2TmKIk */
 enum BrakeDistanceAnalysis {
   ;
   static void brakeAnalysis() throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(UserHome.file("gokart/BrakeDistanceAnalysis"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(olr);
-      OfflineLogPlayer.process(olr.file(), brakeDistanceAnalysis);
+      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(gokartLogInterface);
+      OfflineLogPlayer.process(gokartLogInterface.file(), brakeDistanceAnalysis);
       Export.of(UserHome.file(folder.getName() + ".csv"), brakeDistanceAnalysis.getTable().map(CsvFormat.strict()));
     }
   }

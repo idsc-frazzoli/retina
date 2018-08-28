@@ -15,17 +15,12 @@ enum GioeleLogFileLocator implements LogFileLocator {
   // ---
   /** the archive of all log files is kept on an external hard-drive */
   private static final File ARCHIVE = new File("/home/gio/gokartlogs");
-  private static final List<File> LOG_ROOT = Arrays.asList( //
-      ARCHIVE //
-  );
+  private static final List<File> LOG_ROOT = Arrays.asList(ARCHIVE);
 
   @Override
   public File getAbsoluteFile(LogFile logFile) {
-    // TODO string input would be sufficient
     String title = logFile.getFilename();
-    String date = title.substring(0, 8);
     for (File dir : LOG_ROOT) {
-      // File file = new File(new File(dir, date), title);
       File file = new File(dir, title);
       if (file.isFile())
         return file;

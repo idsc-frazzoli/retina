@@ -21,13 +21,18 @@ public class GokartLogAdapter implements GokartLogInterface {
         new File(folder, "GokartLogConfig.properties"), new GokartLogConfig());
   }
 
-  @Override
-  public Tensor model() {
-    return gokartLogConfig.model();
-  }
-
-  @Override
+  @Override // from GokartLogInterface
   public File file() {
     return new File(folder, "log.lcm");
+  }
+
+  @Override // from GokartLogInterface
+  public String driver() {
+    return gokartLogConfig.driver;
+  }
+
+  @Override // from GokartLogInterface
+  public Tensor pose() {
+    return gokartLogConfig.pose.unmodifiable();
   }
 }

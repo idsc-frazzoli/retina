@@ -83,12 +83,12 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>tensor</artifactId>
-			<version>0.5.7</version>
+			<version>0.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>ephemeral</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
@@ -98,13 +98,18 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.1.5</version>
+			<version>0.1.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.lmu.ifi.dbs.elki</groupId>
 			<artifactId>elki-bundle</artifactId>
 			<version>0.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.humble</groupId>
+			<artifactId>humble-video-all</artifactId>
+			<version>0.2.1</version>
 		</dependency>
 
 		<dependency>

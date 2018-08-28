@@ -56,7 +56,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     }
   };
   // ---
-  // TODO JAN due to the special remove logic, the providers data structure should be in a separate class
+  // TODO JPH due to the special remove logic, the providers data structure should be in a separate class
   private final Set<PutProvider<PE>> providers = //
       new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();

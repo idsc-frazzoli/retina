@@ -25,6 +25,8 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
+/** the test matches 3 consecutive lidar scans to the dubendorf hangar map
+ * the matching qualities are 51255, 43605, 44115 */
 public class SlamDunkTest extends TestCase {
   private static void _checkSimple(LidarSpacialProvider lidarSpacialProvider) throws Exception {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -36,7 +38,7 @@ public class SlamDunkTest extends TestCase {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-    OfflineLocalize offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), GokartLogAdapterTest.SIMPLE.model(), scatterImage);
+    OfflineLocalize offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), GokartLogAdapterTest.SIMPLE.pose(), scatterImage);
     TableBuilder tb = new TableBuilder();
     LocalizationResultListener lrl = new LocalizationResultListener() {
       @Override

@@ -25,10 +25,10 @@ enum ImuTimingsAnalysis {
       String parent = folder.getParentFile().getName();
       final String name = parent + "_" + folder.getName();
       System.out.println(name);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
       DavisImuTable davisImuTable = new DavisImuTable(Quantity.of(0, SI.SECOND));
-      OfflineLogPlayer.process(olr.file(), davisImuTable);
+      OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
       Export.of(UserHome.file("csv/" + name + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }
   }

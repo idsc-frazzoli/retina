@@ -11,7 +11,11 @@ import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.red.Hypot;
 import ch.ethz.idsc.tensor.red.Norm;
 
-/** robust computation of slip */
+/** robust computation of slip
+ * 
+ * Important: {@link Pacejka3} is not continuous for several input
+ * Tensors.vector(0, 1);
+ * Tensors.vector(0, 0); */
 public class RobustSlip implements SlipInterface, Serializable {
   private final Tensor mu;
 

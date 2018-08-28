@@ -2,57 +2,103 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageLookup;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 /** defines all parameters of the SLAM algorithm and optionally saves them to a .properties file */
 public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
-  // SLAM algorithm configuration
-  public final Boolean localizationMode = false; // in localization mode, a previously saved map is used
-  public final Boolean lidarMappingMode = false; // pose provided by lidar instead of particle filter
-  public final Boolean reactiveMappingMode = false; // in reactive mode, only the part of the map around the go kart is kept
-  public final Boolean odometryStatePropagation = false; // state propagation using odometry instead of estimated velocities
-  public final Boolean saveSlamMap = false; // saves the final map. to be used for saving ground truth maps
+  /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
+   * access via member function below */
+  public String slamAlgoConfig = SlamAlgoConfig.odometryMode.name();
+
+  public SlamAlgoConfig slamAlgoConfig() {
+    return SlamAlgoConfig.valueOf(slamAlgoConfig);
+  }
+
+  /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
+  public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(20); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
-  public final Scalar lookAheadDistance = RealScalar.of(13); // [m] events further away are neglected
-  public final Scalar lookBehindDistance = RealScalar.of(-3); // [m] for reactive mapping mode
+  /** [m] events further away are neglected */
+  public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
+  /** [m] for reactive mapping mode */
+  public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
+  // SlamLocalizationStep
   // update rates
-  public final Scalar resampleRate = RealScalar.of(0.05); // [s]
-  public final Scalar statePropagationRate = RealScalar.of(0.005); // [s]
-  public final Scalar reactiveUpdateRate = RealScalar.of(0.5); // [s]
-  public final Scalar normalizationUpdateRate = RealScalar.of(0.05); // [s]
-  public final Scalar wayPointUpdateRate = RealScalar.of(0.1); // [s]
-  public final Scalar trajectoryUpdateRate = RealScalar.of(0.1); // [s]
+  public final Scalar resampleRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
+  public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
+  public final Scalar normalizationUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar trajectoryUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
-  public final Scalar linVelAvg = RealScalar.of(3); // [m/s] for initial particle distribution
-  public final Scalar linVelStd = RealScalar.of(1); // [m/s] for initial particle distribution
-  public final Scalar angVelStd = RealScalar.of(0.1); // [rad/s] for initial particle distribution
+  public final Scalar linVelAvg = Quantity.of(3, SI.VELOCITY); // [m/s] for initial particle distribution
+  public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // [m/s] for initial particle distribution
+  public final Scalar angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
-  public final Scalar rougheningLinAccelStd = RealScalar.of(8); // [m/s²]
-  public final Scalar rougheningAngAccelStd = RealScalar.of(10); // [rad/s²]
+  public final Scalar rougheningLinAccelStd = Quantity.of(8, SI.ACCELERATION); // [m/s²]
+  public final Scalar rougheningAngAccelStd = Quantity.of(10, "rad*s^-2"); // [rad/s²]
   // SLAM map parameters
-  public final Scalar cellDim = RealScalar.of(0.025); // [m] single cell dimension
-  public final Scalar dimX = RealScalar.of(35); // [m] x 'width' of map
-  public final Scalar dimY = RealScalar.of(35); // [m] y 'height' of map
-  public final Tensor corner = Tensors.vector(35, 35); // [m] coordinates of lower left point in map
-  // SLAM visualization parameters
+  public final Scalar cellDim = Quantity.of(0.025, SI.METER); // [m] single cell dimension
+  /** [m] x 'width' of map */
+  public final Scalar dimX = Quantity.of(35, SI.METER);
+  /** [m] y 'height' of map */
+  public final Scalar dimY = Quantity.of(35, SI.METER);
+
+  public final int mapWidth() {
+    return Magnitude.ONE.toInt(dimX.divide(cellDim));
+  }
+
+  public final int mapHeight() {
+    return Magnitude.ONE.toInt(dimY.divide(cellDim));
+  }
+
+  // [m] coordinates of lower left point in map
+  public final Tensor corner = Tensors.of( //
+      Quantity.of(30, SI.METER), Quantity.of(30, SI.METER)).map(UnitSystem.SI());
+
+  /** @return [m] coordinates of upper right point in map */
+  public Tensor cornerHigh() {
+    return corner.add(Tensors.of(dimX, dimY).map(UnitSystem.SI()));
+  }
+
+  // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = RealScalar.of(0.2); // [s]
-  public final Scalar visualizationInterval = RealScalar.of(0.2); // [s]
-  public final Scalar kartSize = RealScalar.of(1.5); // [m]
-  public final Scalar wayPointRadius = RealScalar.of(10); // [pixel]
+  public final Scalar frameWidth = RealScalar.of(600); // [pixel]
+  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND);
+  public final Scalar visualizationInterval = Quantity.of(0.2, SI.SECOND); // [s]
+  public final Scalar kartSize = Quantity.of(1.5, SI.METER); // [m]
+
+  public final int kartLength() {
+    return Magnitude.ONE.toInt(kartSize.divide(cellDim));
+  }
+
+  public final Scalar waypointRadius = RealScalar.of(10); // [pixel]
   // map processing parameters
+  // TODO MG state valid range for mapThreshold. is it [0, 1]?
   public final Scalar mapThreshold = RealScalar.of(0.3); // [-]
   // trajectory planning parameters
-  public final Scalar initialDelay = RealScalar.of(0.5); // [s] initial delay before waypoints are extracted
-  public final Scalar visibleBoxXMin = RealScalar.of(2); // [s] in go kart frame
-  public final Scalar visibleBoxXMax = RealScalar.of(10); // [m] in go kart frame
-  public final Scalar visibleBoxHalfWidth = RealScalar.of(5); // [m]
+  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // [s] initial delay before waypoints are extracted
+  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // [m] in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(10, SI.METER); // [m] in go kart frame
+
+  /** @return new instance of {@link GokartToImageLookup} */
+  // TODO MG function is not used in any relevant place, can we remove it?
+  public GokartToImageLookup createGokartToImageLookup() {
+    return GokartToImageLookup.fromMatrix(davisConfig.logFileLocations.calibration(), //
+        davisConfig.unitConversion, cellDim, lookAheadDistance, Scalars.intValueExact(davisConfig.width));
+  }
 }

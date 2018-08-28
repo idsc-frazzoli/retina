@@ -31,13 +31,13 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.retina.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.subare.util.UserHome;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -48,11 +48,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 class PlannerAnalysis implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  private static final Tensor ARROWHEAD = Tensors.matrixDouble( //
-      new double[][] { { .3, 0 }, { -.1, -.1 }, { -.1, +.1 } }).multiply(RealScalar.of(3));
   // ---
   private final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180425.csv");
-  private RenderInterface wr = new Se2WaypointRender(waypoints, ARROWHEAD, new Color(64, 192, 64, 255));
+  private RenderInterface wr = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private TrajectoryRender tr = new TrajectoryRender();
   private GokartPoseEvent gpe;
   private ScatterImage scatterImage;
@@ -96,9 +94,9 @@ class PlannerAnalysis implements OfflineLogListener {
   public static void main(String[] args) throws FileNotFoundException, IOException {
     File file = UserHome.file("gokart/logs");
     System.out.println(file.getName());
-    GokartLogInterface olr = GokartLogAdapter.of(file);
+    GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
     OfflineLogListener oll = new PlannerAnalysis();
-    OfflineLogPlayer.process(olr.file(), oll);
+    OfflineLogPlayer.process(gokartLogInterface.file(), oll);
     System.out.print("Done.");
   }
 }

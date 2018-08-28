@@ -30,7 +30,7 @@ public class EmergencyBrakeManeuver {
   }
 
   public long getDuration_ms() {
-    return Magnitude.MILLI_SECOND.apply(duration).number().longValue();
+    return Magnitude.MILLI_SECOND.toLong(duration);
   }
 
   /** @param contact with unit "m"

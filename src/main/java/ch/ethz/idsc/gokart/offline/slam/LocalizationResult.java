@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public class LocalizationResult {
   public final Scalar time;
-  public final Tensor pose_xyt;
+  public final Tensor pose_xyt; // {x, y, theta} without units
   public final Scalar ratio;
 
   public LocalizationResult(Scalar time, Tensor pose_xyt, Scalar ratio) {

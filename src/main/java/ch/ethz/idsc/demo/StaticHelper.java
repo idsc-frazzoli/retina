@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo;
 
 import java.io.File;
 
-enum StaticHelper {
+/* package */ enum StaticHelper {
   ;
   private static final String SUFFIX = ".lcm.00";
 

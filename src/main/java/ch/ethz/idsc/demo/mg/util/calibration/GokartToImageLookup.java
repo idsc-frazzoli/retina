@@ -1,17 +1,18 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.util.calibration;
 
-import ch.ethz.idsc.demo.mg.pipeline.PipelineConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 // provides a lookup table for the world to image transform
 // idea: create lookup table for a rectangular area in front of the go kart that encloses the field of view as
 // seen by the ImageTogokartUtil. Discretize with the cellDim parameter. Include interpolation method.
+// TODO unused and unfinished code
 public class GokartToImageLookup implements GokartToImageInterface {
-  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance) {
-    return new GokartToImageLookup(new ImageToGokartUtil(inputTensor, unitConversion), new GokartToImageUtil(inputTensor, unitConversion), cellDim,
-        lookAheadDistance);
+  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, int width) {
+    return new GokartToImageLookup(new ImageToGokartUtil(inputTensor, unitConversion, width), //
+        new GokartToImageUtil(inputTensor, unitConversion), cellDim, lookAheadDistance);
   }
 
   // ---
@@ -63,13 +64,12 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   @Override
   public Tensor gokartToImage(Tensor gokartPos) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new RuntimeException();
   }
 
   // testing
+  // TODO MG conduct tests in test area
   public static void main(String[] args) {
-    PipelineConfig pipelineConfig = new PipelineConfig();
-    GokartToImageLookup test = pipelineConfig.createGokartToImageLookup();
+    GokartToImageLookup test = new SlamConfig().createGokartToImageLookup();
   }
 }

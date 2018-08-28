@@ -528,6 +528,115 @@ public enum GokartLogFile implements LogFile {
   _20180705T151140_b01c2886, //
   /** manual driving along blue track with steering failure */
   _20180705T154948_b01c2886, //
+  /***************************************************/
+  /* 2018-07-09 */
+  /** two aerotain balloons present
+   * manual driving */
+  _20180709T114750_7838f4d6, //
+  /** manual driving */
+  _20180709T145359_c3f2f23c, //
+  /** autonomous driving */
+  _20180709T151010_c3f2f23c, //
+  /** autonomous driving */
+  _20180709T160438_c3f2f23c, //
+  /** autonomous driving */
+  _20180709T162136_c3f2f23c, //
+  /***************************************************/
+  /* 2018-07-16 */
+  // micro autobox not responding due to can
+  /***************************************************/
+  /* 2018-07-19 */
+  /** stationary gokart parked in front of the container */
+  _20180719T155247_c3f2f23c, //
+  /** manual driving */
+  _20180719T160007_c3f2f23c, //
+  /***************************************************/
+  /* 2018-07-23 */
+  /** autonomous figure 8 but localization failure
+   * due to many aerotain balloons present */
+  _20180723T133113_c3f2f23c, //
+  /** manual driving */
+  _20180723T151006_c3f2f23c, //
+  /** manual driving */
+  _20180723T152836_c3f2f23c, //
+  /***************************************************/
+  /* 2018-08-08 */
+  // no davis240c
+  /** manual driving */
+  _20180808T100727_61778dc4, //
+  /** manual driving */
+  _20180808T121708_61778dc4, //
+  /** manual driving */
+  _20180808T150227_61778dc4, //
+  /** manual driving */
+  _20180808T155907_61778dc4, //
+  /***************************************************/
+  /* 2018-08-13 */
+  // davis240c on
+  /** collecting lidar data for localization map update */
+  _20180813T115544_26cfbbca, //
+  /** slow pure pursuit figure 8 reverse */
+  _20180813T131746_2c569ed8, //
+  /** slow pure pursuit figure 8 reverse */
+  _20180813T134234_2c569ed8, //
+  /** pure pursuit figure 8 reverse with varying speeds
+   * with davis240c but upside down */
+  _20180813T151442_2c569ed8, //
+  /** pure pursuit figure 8 reverse with varying speeds
+   * davis240c with correct orientation */
+  _20180813T165630_2c569ed8, //
+  /***************************************************/
+  /* 2018-08-14 */
+  /** autonomous figure 8 reverse with varying speeds
+   * along stripes for davis240c */
+  _20180814T111143_2c569ed8, //
+  /** autonomous figure 8 forward with varying speeds
+   * along stripes for davis240c */
+  _20180814T112249_2c569ed8, //
+  /** manual figure 8 forward with varying speeds
+   * along stripes for davis240c */
+  _20180814T112843_2c569ed8, //
+  /** manual driving, davis240c off */
+  _20180814T145725_2c569ed8, //
+  /** autonomous figure 8 reverse with varying speeds
+   * along stripes for davis240c */
+  _20180814T170407_2c569ed8, //
+  /** autonomous figure 8 reverse
+   * pi-controller experiments resulting in backwards motion */
+  _20180814T173757_2c569ed8, //
+  /** autonomous figure 8 reverse
+   * pi-controller experiments resulting in backwards motion */
+  _20180814T174943_2c569ed8, //
+  /** manual driving, davis240c on */
+  _20180814T175821_2c569ed8, //
+  /***************************************************/
+  /* 2018-08-20 */
+  /** joystick driving, precursor for track red */
+  _20180820T135013_568f9954, //
+  /** designing and testing track red
+   * several stops for map building */
+  _20180820T140707_568f9954, //
+  /** track red, [jh mg yn jh mg yn]
+   * last driving stopped early */
+  _20180820T143852_568f9954, //
+  /** track red, [jh mg yn jh yn] */
+  _20180820T165637_568f9954, //
+  /***************************************************/
+  /* 2018-08-23 system identification */
+  /** manual driving track red, [mh, az, mh, az, az] */
+  _20180823T115959_2693c28e, //
+  /** manual driving track red, [mh, az] */
+  _20180823T134242_2693c28e, //
+  /** slow manual driving */
+  _20180823T135656_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T152218_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T162001_2693c28e, //
+  /** manual driving track red, [mh, az, jh] */
+  _20180823T163738_2693c28e, //
   ;
   // ---
   @Override // from LogFile

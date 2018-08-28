@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg;
 
+// TODO MG some functions are not called, or not part of the "real" API
+// ...  can they be used in BlobTrackObj ?
 enum StaticHelper {
   ;
   // testing

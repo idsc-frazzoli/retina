@@ -22,16 +22,33 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** class produces table with the following columns:
+ * 
+ * time [s]
+ * rimo torque left [ARMS]
+ * rimo torque right [ARMS]
+ * rimo rate left [rad*s^-1]
+ * rimo rate right [rad*s^-1]
+ * tangent speed [m*s^-1]
+ * rotational rate [rad*s^-1]
+ * gyro rate around gokart z-axis [rad*s^-1]
+ * steering column encoder [SCE]
+ * brake position [m]
+ * localization pose x [m]
+ * localization pose y [m]
+ * localization pose theta [rad]
+ * localization pose quality */
+// TODO JPH this class does 2 things in one -> split, see BasicTrackReplayTable
 public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationResultListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
@@ -92,18 +109,19 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
         Objects.isNull(rimoPutEvent) || //
         Objects.isNull(gokartStatusEvent))
       return;
-    System.out.println(localizationResult.time + " " + localizationResult.ratio);
+    Tensor info = Tensors.of(localizationResult.time, localizationResult.ratio);
+    System.out.println("locCall " + info.map(Round._3));
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
     Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
     Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
-        rimoPutEvent.getTorque_Y_pair().map(RimoPutTire.MAGNITUDE_ARMS), //
-        rates.map(Magnitude.ANGULAR_RATE), //
+        rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS), //
+        rates.map(Magnitude.PER_SECOND), //
         speed.map(Magnitude.VELOCITY), //
-        rate.map(Magnitude.ANGULAR_RATE), //
-        davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.ANGULAR_RATE), //
-        SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent), //
+        rate.map(Magnitude.PER_SECOND), //
+        davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
+        SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
         linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
         localizationResult.pose_xyt.extract(0, 2).map(Round._3), //
         localizationResult.pose_xyt.Get(2).map(Round._6), //

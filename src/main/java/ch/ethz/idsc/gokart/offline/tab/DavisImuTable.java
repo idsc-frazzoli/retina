@@ -51,8 +51,8 @@ public class DavisImuTable implements OfflineTableSupplier {
             dif.getTimeRelativeTo(time_zero).map(Magnitude.SECOND), // m2
             dif.accelImageFrame().map(Magnitude.ACCELERATION), // m3
             dif.temperature().map(Magnitude.DEGREE_CELSIUS), // m4
-            dif.gyroImageFrame().map(Magnitude.ANGULAR_RATE), // m5
-            rge.getAngularRate_Y_pair().map(Magnitude.ANGULAR_RATE) // m6,7
+            dif.gyroImageFrame().map(Magnitude.PER_SECOND), // m5
+            rge.getAngularRate_Y_pair().map(Magnitude.PER_SECOND) // m6,7
         );
       }
     }

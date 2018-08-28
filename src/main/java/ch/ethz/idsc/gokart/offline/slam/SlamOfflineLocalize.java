@@ -21,8 +21,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.N;
 
-/** the test matches 3 consecutive lidar scans to the dubendorf hangar map
- * the matching qualities are 51255, 43605, 44115 */
+/** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
@@ -30,9 +29,11 @@ public class SlamOfflineLocalize extends OfflineLocalize {
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
 
-  /** @param model */
-  public SlamOfflineLocalize(BufferedImage map_image, Tensor model, ScatterImage scatterImage) {
-    super(map_image, model);
+  /** @param map_image
+   * @param pose {x[m], y[m], angle}
+   * @param scatterImage */
+  public SlamOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
+    super(map_image, pose);
     this.scatterImage = scatterImage;
   }
 

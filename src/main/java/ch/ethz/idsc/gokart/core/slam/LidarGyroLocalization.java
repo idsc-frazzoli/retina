@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization implements DavisImuFrameListener {
-  private static final Scalar ZERO_RATE = Quantity.of(0, SI.ANGULAR_RATE);
+  private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
@@ -77,10 +77,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart
       Tensor result = Se2Utils.fromSE2Matrix(model);
-      Tensor vector = Tensors.of( //
-          Quantity.of(result.Get(0), SI.METER), //
-          Quantity.of(result.Get(1), SI.METER), //
-          result.Get(2));
+      Tensor vector = GokartPoseHelper.attachUnits(result);
       // TODO bad style to repurpose SlamResult
       return Optional.of(new SlamResult(vector, slamResult.getMatchRatio()));
     }

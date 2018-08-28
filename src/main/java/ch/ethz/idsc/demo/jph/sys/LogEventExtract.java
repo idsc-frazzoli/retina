@@ -6,7 +6,6 @@ import java.io.File;
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.subare.util.UserHome;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
@@ -15,18 +14,20 @@ import lcm.logging.LogEventWriter;
 enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
-    File src = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T113153_9e1d3699.lcm.00");
-    src = UserHome.file("temp/20180108T165210_manual.lcm");
-    src = UserHome.file("gokartlogs/20180418/20180418T132333_bca165ae.lcm.00");
-    src = DatahakiLogFileLocator.file(GokartLogFile._20180607T095321_e5ca0ea5);
-    File dst = null;
-    dst = UserHome.file("20180607T095321_a.lcm");
+    File src = DatahakiLogFileLocator.file(GokartLogFile._20180705T101944_b01c2886);
+    final File folder = new File("/media/datahaki/media/ethz/gokart/topic/track_white", //
+        "20180705T101944_2");
+    folder.mkdir();
+    if (!folder.isDirectory())
+      throw new RuntimeException();
+    new File(folder, "GokartLogConfig.properties").createNewFile();
+    File dst = new File(folder, "log.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 4294571;
-    int hi = 4294571 + 1000000;
+    int lo = 3715260;
+    int hi = 3986070;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

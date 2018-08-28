@@ -5,52 +5,42 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** precomputes the TransformUtil for integer values of x, y.
- * TODO how to proceed for float values of x,y? maybe interpolate */
+/** lookup table for {@link ImageToGokartUtil} */
 public class ImageToGokartLookup implements ImageToGokartInterface {
-  public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width, Scalar height) {
-    return new ImageToGokartLookup(new ImageToGokartUtil(inputTensor, unitConversion), width, height);
+  public static ImageToGokartLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, int width, int height) {
+    ImageToGokartUtil imageToGokartUtil = new ImageToGokartUtil(inputTensor, unitConversion, width);
+    return new ImageToGokartLookup(imageToGokartUtil, width, height);
   }
 
   // ---
-  private final ImageToGokartUtil transformUtil;
-  private final double[] lookupArray;
+  private final ImageToGokartUtil imageToGokartUtil;
+  private final double[][] lookupArray;
   private final int width;
   private final int height;
 
-  private ImageToGokartLookup(ImageToGokartUtil transformUtil, Scalar widthInput, Scalar heightInput) {
-    width = widthInput.number().intValue();
-    height = heightInput.number().intValue();
-    lookupArray = new double[2 * width * height];
-    this.transformUtil = transformUtil;
-    int index = 0;
-    for (int y = 0; y < height; ++y)
-      for (int x = 0; x < width; ++x) {
-        double[] transformedPoint = this.transformUtil.imageToGokart(x, y);
-        lookupArray[2 * index] = transformedPoint[0];
-        lookupArray[2 * index + 1] = transformedPoint[1];
-        index++;
-      }
+  private ImageToGokartLookup(ImageToGokartUtil transformUtil, int width, int height) {
+    this.width = width;
+    this.height = height;
+    lookupArray = new double[this.width * this.height][];
+    this.imageToGokartUtil = transformUtil;
+    int index = -1;
+    for (int y = 0; y < this.height; ++y)
+      for (int x = 0; x < this.width; ++x)
+        lookupArray[++index] = this.imageToGokartUtil.imageToGokart(x, y);
   }
 
-  /** @param imagePosX [pixel]
-   * @param imagePosY [pixel]
-   * @return physicalCoordinates [m] in go kart reference frame */
-  @Override
+  @Override // from ImageToGokartInterface
   public double[] imageToGokart(int imagePosX, int imagePosY) {
     int index = imagePosX + imagePosY * width;
-    index <<= 1;
-    return new double[] { lookupArray[index], lookupArray[index + 1] };
+    return lookupArray[index];
   }
 
-  /** @param index of pixel
-   * @return physicalCoordinates [m] in go kart reference frame */
+  @Override // from ImageToGokartInterface
   public Tensor imageToGokartTensor(int index) {
-    index <<= 1;
-    return Tensors.vector(lookupArray[index], lookupArray[index + 1]);
+    return Tensors.vectorDouble(lookupArray[index]);
   }
 
   public void printInfo() {
-    transformUtil.printInfo();
+    imageToGokartUtil.printInfo();
   }
 }

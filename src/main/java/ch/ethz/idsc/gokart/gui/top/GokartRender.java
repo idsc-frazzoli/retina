@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -24,7 +23,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -98,7 +96,7 @@ public class GokartRender extends AbstractGokartRender {
       final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
-      Tensor rateY_draw = rateY_pair.map(Magnitude.ANGULAR_RATE).multiply(RealScalar.of(0.1));
+      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.1));
       graphics.draw(geometricLayer.toVector( //
           vehicleModel.wheel(2).lever(), //
           Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));
@@ -109,8 +107,8 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(rimoPutEvent)) {
       double factor = 5E-4;
-      double trqL = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireL.getTorque()).number().doubleValue() * factor;
-      double trqR = -RimoPutTire.MAGNITUDE_ARMS.apply(rimoPutEvent.putTireR.getTorque()).number().doubleValue() * factor;
+      double trqL = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor;
+      double trqR = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor;
       graphics.setColor(Color.BLUE);
       graphics.setStroke(new BasicStroke(2));
       graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));
@@ -128,9 +126,7 @@ public class GokartRender extends AbstractGokartRender {
     }
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      Tensor pair = new AckermannSteering( //
-          ChassisGeometry.GLOBAL.xAxleDistanceMeter(), //
-          ChassisGeometry.GLOBAL.yTireFrontMeter()).pair(angle);
+      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
       Scalar angleL = pair.Get(0);
       Scalar angleR = pair.Get(1);
       graphics.setStroke(new BasicStroke(2));

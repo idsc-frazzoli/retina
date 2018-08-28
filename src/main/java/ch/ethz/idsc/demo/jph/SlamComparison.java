@@ -24,20 +24,25 @@ import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
+/** aggregation of lidar scans relative to pose into single image
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf
+ * https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf */
 enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-    for (File folder : OfflineIndex.folders(UserHome.file("gokart/LocalQuick"))) {
+    for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_red.properties"))) {
       System.out.println(folder);
-      GokartLogInterface olr = GokartLogAdapter.of(folder);
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
+      // System.out.println(olr.model());
       // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
       scatterImage = new WallScatterImage(predefinedMap);
-      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), olr.model(), scatterImage);
+      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
-      OfflineLogPlayer.process(olr.file(), offlineTableSupplier);
-      Export.of(UserHome.file(folder.getName() + "_gyro.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+      OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
+      Export.of(UserHome.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
       ImageIO.write(scatterImage.getImage(), "png", UserHome.Pictures(folder.getName() + ".png"));
     }
   }

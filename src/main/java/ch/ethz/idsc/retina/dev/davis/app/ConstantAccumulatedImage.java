@@ -3,10 +3,10 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 /** synthesizes grayscale images based on incoming events during intervals of
  * fixed duration positive events appear in white color negative events appear
  * in black color */
-// TODO JAN contains a lot of redundancy
+// TODO JPH contains a lot of redundancy
 public final class ConstantAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
   public static final int INTERVAL_DEFAULT_US = 1_000;
@@ -82,6 +82,6 @@ public final class ConstantAccumulatedImage implements DavisDvsListener {
   }
 
   private void clearImage() {
-    IntStream.range(0, bytes.length).forEach(i -> bytes[i] = CLEAR_BYTE);
+    Arrays.fill(bytes, CLEAR_BYTE);
   }
 }

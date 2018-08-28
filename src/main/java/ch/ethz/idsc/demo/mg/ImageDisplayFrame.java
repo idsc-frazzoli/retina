@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.pipeline.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.demo.mg.util.vis.VisBlobTrackUtil;
 
 /** demo to test ellipse merging */
 class ImageDisplayFrame {
@@ -51,11 +51,11 @@ class ImageDisplayFrame {
     // first blob
     ImageBlob firstBlob = new ImageBlob(new float[] { 150, 150 }, null, 0, false, 0);
     firstBlob.setCovariance(1500, 1800, 0.3);
-    VisPipelineUtil.drawImageBlob(graphics, firstBlob, Color.BLUE);
+    VisBlobTrackUtil.drawImageBlob(graphics, firstBlob, Color.BLUE);
     // second blob
     ImageBlob secondBlob = new ImageBlob(new float[] { 250, 250 }, null, 0, false, 0);
     secondBlob.setCovariance(500, 1300, 0.6);
-    VisPipelineUtil.drawImageBlob(graphics, secondBlob, Color.BLUE);
+    VisBlobTrackUtil.drawImageBlob(graphics, secondBlob, Color.BLUE);
     // merge for third blob
     float[] mergedPos = StaticHelper.mergePos(firstBlob.getPos(), firstActivity, secondBlob.getPos(), secondActivity);
     double[][] mergedCov = StaticHelper.mergeCovB(firstBlob.getCovariance(), firstActivity, secondBlob.getCovariance(), secondActivity);
@@ -66,7 +66,7 @@ class ImageDisplayFrame {
     double[][] secondMergedCovSteiner = StaticHelper.steinerCov(secondBlob.getCovariance(), secondDisplacement, secondActivity);
     double[][] mergedCovSteiner = StaticHelper.addCov(firstmergedCovSteiner, secondMergedCovSteiner);
     ImageBlob mergedBlob = new ImageBlob(mergedPos, mergedCovSteiner, 0, false, 0);
-    VisPipelineUtil.drawImageBlob(graphics, mergedBlob, Color.RED);
+    VisBlobTrackUtil.drawImageBlob(graphics, mergedBlob, Color.RED);
     imageDisplayFrame.setImage(bufferedImage);
   }
 }

@@ -60,7 +60,7 @@ public class LocalizationConfig implements Serializable {
     int bits = bitShift.number().intValue();
     double angle_offset = sensorsConfig.vlp16_twist.number().doubleValue();
     double tiltY = sensorsConfig.vlp16_incline.number().doubleValue();
-    double emulation_deg = Magnitude.DEGREE_ANGLE.apply(horizon).number().doubleValue();
+    double emulation_deg = Magnitude.DEGREE_ANGLE.toDouble(horizon);
     return new Vlp16TiltedPlanarEmulator(bits, angle_offset, tiltY, emulation_deg);
   }
 
@@ -71,7 +71,7 @@ public class LocalizationConfig implements Serializable {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBILAB_LOCALIZATION_20180702;
+    return PredefinedMap.DUBILAB_LOCALIZATION_20180705;
   }
 
   /** @return new instance of LidarGyroLocalization method */

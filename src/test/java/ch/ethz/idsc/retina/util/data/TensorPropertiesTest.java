@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-// TODO JAN more tests!
+// TODO JPH more tests!
 public class TensorPropertiesTest extends TestCase {
   public void testListSize1() throws Exception {
     ParamContainer ori = new ParamContainer();

@@ -11,10 +11,8 @@ public class IntDisjointSet {
   private final int[] rank;
 
   public IntDisjointSet(int size) {
-    parent = new int[size];
+    parent = IntStream.range(0, size).toArray();
     rank = new int[size];
-    IntStream.range(0, size) //
-        .forEach(index -> parent[index] = index);
   }
 
   /** @param index
