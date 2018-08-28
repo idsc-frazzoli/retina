@@ -21,6 +21,7 @@ public class RimoConfig implements Serializable {
   public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
   public Scalar Kp = Quantity.of(40, "ARMS*rad^-1*s"); // 40
   public Scalar Ki = Quantity.of(10, "ARMS*rad^-1"); // 15
+  public Scalar Kawu = Quantity.of(10, "ARMS*rad^-1"); // constant for anti wind-up
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in RimoTorqueJoystickModule */
   public Scalar torqueLimit = Quantity.of(1500, NonSI.ARMS);
