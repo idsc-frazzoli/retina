@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.util.slam;
+package ch.ethz.idsc.demo.mg.slam.vis;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 

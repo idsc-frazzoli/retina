@@ -4,10 +4,9 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 import java.util.Arrays;
 
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.slam.SlamParticleLikelihoodComparator;
-import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.TruncatedGaussian;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /* package */ class SlamResamplingStepUtil {
@@ -20,12 +19,13 @@ import ch.ethz.idsc.tensor.RealScalar;
   private static final double ANGACCEL_MIN = -6; // "rad/s²"
   private static final double ANGACCEL_MAX = 6; // "rad/s²"
   // ---
-  private final double rougheningLinAccelStd;
-  private final double rougheningAngAccelStd;
+  private final TruncatedGaussian tgLinAccel;
+  private final TruncatedGaussian tgAngAccel;
 
   public SlamResamplingStepUtil(double rougheningLinAccelStd, double rougheningAngAccelStd) {
-    this.rougheningLinAccelStd = rougheningLinAccelStd;
-    this.rougheningAngAccelStd = rougheningAngAccelStd;
+    tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, LINACCEL_MIN, LINACCEL_MAX);
+    // TODO MG should the ang accel also allow for negative values?
+    tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, ANGACCEL_MIN, ANGACCEL_MAX);
   }
 
   /** particle resampling using neglect_low_likelihood method. After resampling, a particle roughening step is executed.
@@ -53,7 +53,7 @@ import ch.ethz.idsc.tensor.RealScalar;
       slamParticles[index].setParticleLikelihood(initLikelihood);
   }
 
-  /** disturbs the particle states with trunctuated Gaussian noise
+  /** disturbs the particle states with truncated Gaussian noise
    * 
    * @param slamParticles
    * @param dT interpreted as [s] */
@@ -75,7 +75,7 @@ import ch.ethz.idsc.tensor.RealScalar;
    * @param dT interpreted as [s]
    * @return updated disturbed linVel */
   private double limitLinAccel(double oldLinVel, double dT) {
-    double linAccel = SlamRandomUtil.getTruncatedGaussian(0, rougheningLinAccelStd, LINACCEL_MIN, LINACCEL_MAX);
+    double linAccel = tgLinAccel.nextValue();
     double newLinVel = oldLinVel + linAccel * dT;
     if (LINVEL_MAX < newLinVel)
       return LINVEL_MAX;
@@ -95,7 +95,7 @@ import ch.ethz.idsc.tensor.RealScalar;
   private double limitAngAccel(double oldAngVel, double oldLinVel, double dT) {
     double maxVel = TURN_RATE_PER_METER * oldLinVel;
     double minVel = -maxVel;
-    double angAccel = SlamRandomUtil.getTruncatedGaussian(0, rougheningAngAccelStd, ANGACCEL_MIN, ANGACCEL_MAX);
+    double angAccel = tgAngAccel.nextValue();
     double newAngVel = oldAngVel + angAccel * dT;
     if (newAngVel < minVel)
       return minVel;
