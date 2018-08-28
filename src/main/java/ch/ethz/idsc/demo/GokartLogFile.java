@@ -637,6 +637,17 @@ public enum GokartLogFile implements LogFile {
   _20180823T162001_2693c28e, //
   /** manual driving track red, [mh, az, jh] */
   _20180823T163738_2693c28e, //
+  /***************************************************/
+  /* 2018-08-27 system identification */
+  /** track azure driving [jh, yn, mg, az] */
+  _20180827T150209_db899976, //
+  /** slow manual driving along track
+   * with frequent stops for gathering map */
+  _20180827T155655_db899976, //
+  /** track azure driving [jh, az, yn, mg, az, yn, yn] */
+  _20180827T170643_db899976, //
+  /** track azure driving [] */
+  _20180827T175941_db899976, //
   ;
   // ---
   @Override // from LogFile
