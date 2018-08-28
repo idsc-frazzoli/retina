@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -19,8 +20,10 @@ public class RimoConfig implements Serializable {
   /** parameters for {@link RimoRateController}
    * rateLimit, Kp, Ki */
   public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
-  public Scalar Kp = Quantity.of(40, "ARMS*rad^-1*s"); // 40
+  public Scalar Kp = Quantity.of(30, "ARMS*rad^-1*s"); // 40
   public Scalar Ki = Quantity.of(10, "ARMS*rad^-1"); // 15
+  /** constant for anti wind-up used by revised rimo rate controller */
+  public Scalar Kawu = RealScalar.of(10);
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in RimoTorqueJoystickModule */
   public Scalar torqueLimit = Quantity.of(1500, NonSI.ARMS);

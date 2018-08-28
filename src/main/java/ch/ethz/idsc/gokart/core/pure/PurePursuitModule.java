@@ -145,7 +145,7 @@ public final class PurePursuitModule extends AbstractClockedModule implements Go
   }
 
   @Override // from GokartPoseListener
-  public void getEvent(GokartPoseEvent gokartPoseEvent) { // arrives at 50[Hz]
+  public void getEvent(GokartPoseEvent gokartPoseEvent) { // arrives at 20[Hz]
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
