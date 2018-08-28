@@ -28,8 +28,8 @@ import ch.ethz.idsc.tensor.Tensor;
  * The consequence of that observation is the implementation of
  * {@link RimoRateControllerUno} */
 public class RimoRateControllerDuo extends RimoRateControllerWrap {
-  private final RimoRateController piL = new RimoRateController();
-  private final RimoRateController piR = new RimoRateController();
+  private final RimoRateController piL = new SimpleRimoRateController();
+  private final RimoRateController piR = new SimpleRimoRateController();
 
   @Override // from RimoRateControllerWrap
   protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {

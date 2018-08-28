@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class RimoConfig implements Serializable {
   public static final RimoConfig GLOBAL = AppResources.load(new RimoConfig());
   /***************************************************/
-  /** parameters for {@link RimoRateController}
+  /** parameters for {@link SimpleRimoRateController}
    * rateLimit, Kp, Ki */
   public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
   public Scalar Kp = Quantity.of(30, "ARMS*rad^-1*s"); // 40

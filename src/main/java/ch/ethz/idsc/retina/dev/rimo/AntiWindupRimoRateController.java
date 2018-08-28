@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1"
  * Kawu with unit "ARMS*rad^-1" */
-/* package */ class AntiWindupRimoRateController {
+/* package */ class AntiWindupRimoRateController implements RimoRateController {
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_AW);
@@ -24,8 +24,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Scalar lastWindUp = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
   private Scalar lastIPart = Quantity.of(0, NonSI.ARMS);
 
-  /** @param vel_error with unit "rad*s^-1"
-   * @return value with unit "ARMS" */
+  @Override // from RimoRateController
   public Scalar iterate(final Scalar vel_error) {
     final Scalar pPart = vel_error.multiply(RimoConfig.GLOBAL.Kp);
     // System.out.println("pPart=" + pPart);
