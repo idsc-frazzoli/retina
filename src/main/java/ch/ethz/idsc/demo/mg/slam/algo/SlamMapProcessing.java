@@ -21,7 +21,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private boolean isLaunched;
   private Integer lastComputationTimeStamp = null;
 
-  public SlamMapProcessing(SlamConfig slamConfig, SlamContainer slamContainer) {
+  public SlamMapProcessing(SlamContainer slamContainer, SlamConfig slamConfig) {
     super(slamContainer);
     waypointUpdateRate = Magnitude.MICRO_SECOND.toInt(slamConfig.waypointUpdateRate);
     slamMapProcessingUtil = new SlamMapProcessingUtil(slamConfig);

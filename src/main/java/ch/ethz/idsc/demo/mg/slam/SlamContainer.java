@@ -57,7 +57,7 @@ public class SlamContainer implements GokartPoseInterface {
     this.waypoints = waypoints;
   }
 
-  public List<SlamWaypoint> getWaypoints() {
+  public List<SlamWaypoint> getSlamWaypoints() {
     return waypoints;
   }
 
@@ -81,6 +81,10 @@ public class SlamContainer implements GokartPoseInterface {
 
   public void setSelectedSlamWaypoint(SlamWaypoint selectedSlamWaypoint) {
     this.selectedSlamWaypoint = selectedSlamWaypoint;
+  }
+
+  public SlamWaypoint getSelectedSlamWaypoint() {
+    return selectedSlamWaypoint;
   }
 
   /** sets pose with when input argument is not unitless

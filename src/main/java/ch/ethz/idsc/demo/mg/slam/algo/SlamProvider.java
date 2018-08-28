@@ -26,7 +26,7 @@ public class SlamProvider {
       GokartPoseOdometryDemo gokartPoseOdometryDemo) {
     slamContainer = new SlamContainer(slamConfig);
     List<DavisDvsListener> listeners = //
-        SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose, gokartPoseOdometryDemo);
+        SlamAlgoConfig.getListeners(slamContainer, slamConfig, gokartLidarPose, gokartPoseOdometryDemo);
     listeners.forEach(abstractFilterHandler::addListener);
   }
 

@@ -19,7 +19,7 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.reactiveMapMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -31,9 +31,9 @@ public class SlamConfig {
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(20); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
-  /** [m] events further away are neglected */
+  /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
-  /** [m] for reactive mapping mode */
+  /** for reactive mapping mode */
   public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
   // update rates
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
@@ -41,6 +41,8 @@ public class SlamConfig {
   public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar poseMapUpdateRate = Quantity.of(0.2, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(3, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -63,7 +65,7 @@ public class SlamConfig {
     return Magnitude.ONE.toInt(dimY.divide(cellDim));
   }
 
-  // [m] coordinates of lower left point in map
+  // coordinates of lower left point in map
   public final Tensor corner = Tensors.of( //
       Quantity.of(30, SI.METER), Quantity.of(30, SI.METER)).map(UnitSystem.SI());
 
@@ -76,12 +78,16 @@ public class SlamConfig {
     return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps((davisConfig.logFilename())));
   }
 
+  // SlamPoseReset
+  public final Scalar resetPoseX = RealScalar.of(50); // [m]
+  public final Scalar resetPoseY = RealScalar.of(50); // [m]
+  public final Scalar padding = Quantity.of(5, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
-  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND);
-  public final Scalar visualizationInterval = Quantity.of(0.2, SI.SECOND);
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);
+  public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
+  public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
 
   public final int kartLength() {
     return Magnitude.ONE.toInt(kartSize.divide(cellDim));

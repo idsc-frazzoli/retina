@@ -6,7 +6,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 
 /** particle's state propagation which should be followed by a resampling step */
 /* package */ class SlamPropagationStep extends PeriodicSlamStep {
-  SlamPropagationStep(SlamConfig slamConfig, SlamContainer slamContainer) {
+  SlamPropagationStep(SlamContainer slamContainer, SlamConfig slamConfig) {
     super(slamContainer, slamConfig.statePropagationRate);
   }
 

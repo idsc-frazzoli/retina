@@ -80,7 +80,7 @@ public class MapProvider {
     return gridPosX + mapWidth * gridPosY;
   }
 
-  /** adds value in grid cell corresponding to coordinates
+  /** adds value in grid cell corresponding to coordinates. does nothing if pose is outside map domain
    * 
    * @param worldCoord [m] map position
    * @param value */
@@ -90,7 +90,7 @@ public class MapProvider {
         worldCoord.Get(1).number().doubleValue(), value);
   }
 
-  /** adds value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose. does nothing if pose is outside map domain
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
@@ -124,14 +124,16 @@ public class MapProvider {
   /** value of grid cell which correspond to worldCoord
    * 
    * @param worldCoord [m]
-   * @return map value */
+   * @return value at the position of 0 if coordinates are outside map domain */
   public double getValue(Tensor worldCoord) {
     return getValue( //
         worldCoord.Get(0).number().doubleValue(), //
         worldCoord.Get(1).number().doubleValue());
   }
 
-  // gets value of cell in which the coordinates are
+  /** @param posX world frame x coordinate
+   * @param posY world frame y coordinate
+   * @return value at the position or 0 if coordinates are outside map domain */
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
@@ -140,7 +142,7 @@ public class MapProvider {
     return mapArray[cellIndex];
   }
 
-  // for recorded maps
+  /** @param mapArray must have same length as original mapArray */
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);

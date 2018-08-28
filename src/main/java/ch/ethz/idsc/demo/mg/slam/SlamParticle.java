@@ -37,6 +37,14 @@ public class SlamParticle implements GokartPoseInterface {
     setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
+  /** subtracts pose vector from pose
+   * 
+   * @param pose unitless representation */
+  public void subtractPose(Tensor subtractPose) {
+    pose = pose.subtract(subtractPose);
+    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
+  }
+
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
     setPoseUnitless(particle.getPoseUnitless());
     linVel = particle.getLinVel();
@@ -45,7 +53,7 @@ public class SlamParticle implements GokartPoseInterface {
   }
 
   /** @param unitlessPose {x,y,heading} without units */
-  private void setPoseUnitless(Tensor unitlessPose) {
+  public void setPoseUnitless(Tensor unitlessPose) {
     pose = unitlessPose;
     geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }

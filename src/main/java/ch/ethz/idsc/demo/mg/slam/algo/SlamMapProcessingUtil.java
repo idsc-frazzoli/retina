@@ -15,11 +15,8 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypointUtil;
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.Primitives;
 
 // TODO MG file contains a lot of functionality => class deserves a better, more specific name
 /* package */ class SlamMapProcessingUtil {
