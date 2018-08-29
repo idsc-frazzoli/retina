@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param cornerX interpreted as [m]
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m]
-   * @param kartLength interpreted as [m] */
+   * @param kartLength interpreted as [pixel] */
   public static void addGokartPose(Tensor pose, Color color, Graphics2D graphics, double cornerX, //
       double cornerY, double cellDim, double kartLength) {
     double[] worldPos = { pose.Get(0).number().doubleValue(), pose.Get(1).number().doubleValue() };

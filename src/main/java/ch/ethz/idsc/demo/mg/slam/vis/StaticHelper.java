@@ -54,17 +54,6 @@ import ch.ethz.idsc.tensor.Tensor;
         bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
   }
 
-  // /** overlays poses of particles with highest likelihood onto slamMapFrame */
-  // private static void drawParticlePoses(SlamMapFrame[] slamMapFrames, SlamProvider slamProvider, int particleNumber) {
-  // SlamParticle[] slamParticles = slamProvider.getParticles();
-  // Stream.of(slamParticles) //
-  // .parallel() //
-  // .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
-  // .limit(particleNumber) //
-  // .collect(Collectors.toList());
-  // for (int i = 0; i < particleNumber; i++)
-  // slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
-  // }
   /** draws a Mat object
    * 
    * @param processedMat mat object containing e.g. labels of feature extraction

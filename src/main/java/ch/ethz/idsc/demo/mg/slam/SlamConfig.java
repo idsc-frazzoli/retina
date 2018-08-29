@@ -19,7 +19,7 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.reactiveMapMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -29,12 +29,12 @@ public class SlamConfig {
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(20); // [-]
+  public final Scalar numberOfParticles = RealScalar.of(32); // [-]
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** for reactive mapping mode */
-  public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
+  public final Scalar lookBehindDistance = Quantity.of(-1, SI.METER);
   // update rates
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
   public final Scalar resampleRate = Quantity.of(0.05, SI.SECOND);
@@ -44,14 +44,14 @@ public class SlamConfig {
   public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.2, SI.SECOND);
   // particle initialization
-  public final Scalar linVelAvg = Quantity.of(3, SI.VELOCITY); // for initial particle distribution
+  public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
-  public final Scalar rougheningLinAccelStd = Quantity.of(8, SI.ACCELERATION);
-  public final Scalar rougheningAngAccelStd = Quantity.of(10, "rad*s^-2");
+  public final Scalar rougheningLinAccelStd = Quantity.of(5, SI.ACCELERATION);
+  public final Scalar rougheningAngAccelStd = Quantity.of(12, "rad*s^-2");
   // SLAM map parameters
-  public final Scalar cellDim = Quantity.of(0.025, SI.METER); // single cell dimension
+  public final Scalar cellDim = Quantity.of(0.05, SI.METER); // single cell dimension
   /** [m] x 'width' of map */
   public final Scalar dimX = Quantity.of(35, SI.METER);
   /** [m] y 'height' of map */
@@ -85,15 +85,19 @@ public class SlamConfig {
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
-  public final Scalar kartSize = Quantity.of(1.5, SI.METER);
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
+  public final Scalar kartSize = Quantity.of(1.5, SI.METER);
+  public final Scalar waypointRadius = Quantity.of(0.25, SI.METER);
 
   public final int kartLength() {
     return Magnitude.ONE.toInt(kartSize.divide(cellDim));
   }
 
-  public final Scalar waypointRadius = RealScalar.of(10); // [pixel]
+  public final int waypointRadius() {
+    return Magnitude.ONE.toInt(waypointRadius.divide(cellDim));
+  }
+
   // map processing parameters
   public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
   // trajectory planning parameters

@@ -16,15 +16,14 @@ import ch.ethz.idsc.tensor.RealScalar;
   private static final double LINVEL_MAX = 8; // "m/s"
   private static final double LINACCEL_MIN = -2.5; // "m/s²"
   private static final double LINACCEL_MAX = 2.5; // "m/s²"
-  private static final double ANGACCEL_MIN = -6; // "rad/s²"
-  private static final double ANGACCEL_MAX = 6; // "rad/s²"
+  private static final double ANGACCEL_MIN = -10; // "rad/s²"
+  private static final double ANGACCEL_MAX = 10; // "rad/s²"
   // ---
   private final TruncatedGaussian tgLinAccel;
   private final TruncatedGaussian tgAngAccel;
 
   public SlamResamplingStepUtil(double rougheningLinAccelStd, double rougheningAngAccelStd) {
     tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, LINACCEL_MIN, LINACCEL_MAX);
-    // TODO MG should the ang accel also allow for negative values?
     tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, ANGACCEL_MIN, ANGACCEL_MAX);
   }
 
@@ -33,7 +32,7 @@ import ch.ethz.idsc.tensor.RealScalar;
    * @param slamParticles
    * @param dT interpreted as [s] */
   public void resampleParticles(SlamParticle[] slamParticles, double dT) {
-    SlamResamplingStepUtil.neglectLowLikelihoods(slamParticles);
+    neglectLowLikelihoods(slamParticles);
     particleRoughening(slamParticles, dT);
   }
 
@@ -69,8 +68,6 @@ import ch.ethz.idsc.tensor.RealScalar;
   /** disturbs the linVel state with Gaussian noise while not violating
    * the linear acceleration limits of the vehicle
    * 
-   * function uses hard-coded acceleration and velocity limits
-   * 
    * @param oldLinVel current linVel state
    * @param dT interpreted as [s]
    * @return updated disturbed linVel */
@@ -85,8 +82,6 @@ import ch.ethz.idsc.tensor.RealScalar;
   }
 
   /** disturbs the angVel state with Gaussian noise while not violating the angular acceleration limits of the vehicle
-   * 
-   * function used hard-coded acceleration limits
    * 
    * @param oldAngVel current angVel state
    * @param oldLinVel current linVel state

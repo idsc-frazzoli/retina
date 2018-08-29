@@ -135,7 +135,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   private final ActionListener loadListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.handlabels(fileName), timeStamps);
+      labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(fileName), timeStamps);
       System.out.println("Successfully loaded from file " + fileName + ".csv");
       // repaint such that saved blobs of current image are displayed
       jComponent.repaint();
@@ -146,7 +146,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     public void actionPerformed(ActionEvent e) {
       // avoid overwriting the original labeledFeatures csv
       String currentFileName = fileName + saveCount;
-      EvalUtil.saveToCSV(EvaluationFileLocations.handlabels(currentFileName), labeledFeatures, timeStamps);
+      EvalUtil.saveToCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(currentFileName), labeledFeatures, timeStamps);
       System.out.println("Successfully saved to file " + currentFileName + ".csv");
       saveCount++;
     }

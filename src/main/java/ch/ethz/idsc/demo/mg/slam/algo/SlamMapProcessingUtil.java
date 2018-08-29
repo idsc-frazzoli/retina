@@ -99,8 +99,8 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
   /** coordinate transformation between pixel coordinates and world frame coordinates
    * 
-   * @param framePos [pixel] way point position in frame
-   * @return worldPos [m] way point position in world coordinate system */
+   * @param framePos interpreted as [pixel] way point position in frame
+   * @return worldPos interpreted as [m] way point position in world coordinate system */
   private double[] frameToWorld(double[] framePos) {
     return new double[] { //
         cornerX + framePos[0] * cellDim, //

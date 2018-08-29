@@ -19,7 +19,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
   EvaluatorMultiRun(BlobTrackConfig pipelineConfig) {
     this.pipelineConfig = pipelineConfig;
     evaluationResultFileName = pipelineConfig.evaluationResultFileName.toString();
-    evaluationResultFile = EvaluationFileLocations.evalResults(evaluationResultFileName);
+    evaluationResultFile = EvaluationFileLocations.EVALRESULTS_CSV.subfolder(evaluationResultFileName);
     iterationLength = pipelineConfig.iterationLength.number().intValue();
     collectedResults = new ArrayList<>(iterationLength);
   }

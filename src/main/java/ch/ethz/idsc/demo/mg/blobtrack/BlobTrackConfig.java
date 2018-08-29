@@ -36,7 +36,6 @@ public class BlobTrackConfig {
   public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
-  // TransformUtil
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool

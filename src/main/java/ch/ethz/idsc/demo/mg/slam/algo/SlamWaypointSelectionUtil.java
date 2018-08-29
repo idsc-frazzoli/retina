@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.red.ArgMax;
 
 /* package */ enum SlamWaypointSelectionUtil {
   ;
-  // TODO MG idea for v1.0: selected way point that is farthest away
+  /** v1.0: choose way point that is farthest away */
   public static void selectWaypoint(SlamContainer slamContainer) {
     List<SlamWaypoint> slamWaypoints = slamContainer.getSlamWaypoints();
     if (slamWaypoints.isEmpty())
