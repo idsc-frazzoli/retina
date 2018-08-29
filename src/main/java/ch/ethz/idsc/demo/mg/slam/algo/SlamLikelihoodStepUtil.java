@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * 
    * @param slamParticles
    * @param map
-   * @param gokartFramePos [m] event position in go kart frame
+   * @param gokartFramePos interpreted as [m] event position in go kart frame
    * @param alpha [-] update equation parameter */
   public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
     double sumOfLikelihoods = 0;

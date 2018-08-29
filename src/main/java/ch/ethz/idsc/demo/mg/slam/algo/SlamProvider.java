@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
  * "simultaneous localization and mapping for event-based vision systems"
  * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf
- * all modules of the algorithm implement {@link DavisDvsListener} and are contained
+ * all modules of the SLAM algorithm implement {@link DavisDvsListener} and are contained
  * in the field listeners */
 public class SlamProvider {
   private final SlamContainer slamContainer;
@@ -26,7 +26,7 @@ public class SlamProvider {
       GokartPoseOdometryDemo gokartPoseOdometryDemo) {
     slamContainer = new SlamContainer(slamConfig);
     List<DavisDvsListener> listeners = //
-        SlamAlgoConfig.getListeners(slamConfig, slamContainer, gokartLidarPose, gokartPoseOdometryDemo);
+        SlamAlgoConfig.getListeners(slamContainer, slamConfig, gokartLidarPose, gokartPoseOdometryDemo);
     listeners.forEach(abstractFilterHandler::addListener);
   }
 

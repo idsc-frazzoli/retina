@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
-// TODO MG scope issue
 public class BlobTracking {
   // camera parameters
   private final int width;

@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 /** GUI to display SLAM algorithm */
 /* package */ class SlamMapGUI {
   private final JFrame jFrame = new JFrame();
-  private final BufferedImage[] bufferedImage = new BufferedImage[3];
+  private final BufferedImage[] bufferedImage = new BufferedImage[2];
   private final double scaling;
   private final int frameWidth;
   private final JComponent jComponent = new JComponent() {
@@ -34,7 +34,6 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     scaling = frameWidth / (double) mapWidth;
     bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    bufferedImage[2] = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
     jFrame.setBounds(100, 100, 1320, 700);

@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Primitives;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 // TODO MG file contains a lot of functionality => class deserves a better, more specific name
 /* package */ class SlamMapProcessingUtil {
@@ -35,6 +36,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private final double visibleBoxXMin; // [m]
   private final double visibleBoxXMax; // [m]
   private final double visibleBoxHalfWidth; // [m]
+  // ---
+  private final Mat labels;
 
   public SlamMapProcessingUtil(SlamConfig slamConfig) {
     mapThreshold = slamConfig.mapThreshold.number().doubleValue();
@@ -44,16 +47,16 @@ import ch.ethz.idsc.tensor.io.Primitives;
     visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
     visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
     visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
+    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   /** finds way points through threshold operation, morphological processing and
-   * connected component labeling calls
-   * opencv_imgproc#connectedComponentsWithStats
+   * connected component labeling.
+   * calls opencv_imgproc#connectedComponentsWithStats
    * 
    * @param thresholdMap input object containing binary map
-   * @param labels map with labeled connected components
    * @return worldWaypoints [m] detected way points in world frame */
-  public List<double[]> findWaypoints(MapProvider thresholdMap, Mat labels) {
+  public List<double[]> findWaypoints(MapProvider thresholdMap) {
     Mat processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, KERNEL_DILATE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -110,8 +113,10 @@ import ch.ethz.idsc.tensor.io.Primitives;
    * @param pose unitless representation */
   public List<SlamWaypoint> getWaypoints(List<double[]> worldWaypoints, Tensor pose) {
     List<SlamWaypoint> slamWaypoints = new ArrayList<>();
+    TensorUnaryOperator world2local = new Se2Bijection(pose).inverse(); //
     for (double[] worldWaypoint : worldWaypoints) {
-      double[] gokartWaypoint = computeGokartPosition(worldWaypoint, pose);
+      double[] gokartWaypoint = Primitives.toDoubleArray( //
+          world2local.apply(Tensors.vectorDouble(worldWaypoint)));
       boolean visibility = visibleBoxXMin < gokartWaypoint[0] && gokartWaypoint[0] < visibleBoxXMax //
           && -visibleBoxHalfWidth < gokartWaypoint[1] && gokartWaypoint[1] < visibleBoxHalfWidth;
       slamWaypoints.add(new SlamWaypoint(worldWaypoint, visibility));
@@ -119,23 +124,16 @@ import ch.ethz.idsc.tensor.io.Primitives;
     return slamWaypoints;
   }
 
-  /** transforms between world and go kart frame
-   * 
-   * @param worldPosition position of point in world frame
-   * @param pose unitless representation go kart pose
-   * @return position in go kart frame */
-  private static double[] computeGokartPosition(double[] worldPosition, Tensor pose) {
-    // TODO MG the waypoint previously existed in local gokart coordinates, right?
-    // ... we can look for a way to preserve the local coordinates instead of inverting the transform.
-    Tensor gokartPosition = new Se2Bijection(pose).inverse() //
-        .apply(Tensors.vectorDouble(worldPosition));
-    return Primitives.toDoubleArray(gokartPosition);
+  // could be used for visualization of the processed occurrence map
+  public Mat getProcessedMat() {
+    labels.convertTo(labels, opencv_core.CV_8UC1);
+    return labels;
   }
 
   /** @param inputMap
    * @param resizeFactor [-]
    * @return outputMap same type as inputMap */
-  // TODO could be used in the future to reduce computational load
+  // could be used in the future to reduce computational load
   private static Mat resizeMat(Mat inputMap, double resizeFactor) {
     int newHeight = (int) (inputMap.rows() / resizeFactor);
     int newWidth = (int) (inputMap.cols() / resizeFactor);

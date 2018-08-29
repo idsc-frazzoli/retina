@@ -42,7 +42,7 @@ public class MapProvider {
    * @param numerator
    * @param denominator
    * @param targetMap */
-  // currently unused
+  // currently unused, requires normalization map
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
     // TODO loop can be done in parallel
     for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
@@ -68,19 +68,19 @@ public class MapProvider {
 
   /** @param posX [m]
    * @param posY [m]
-   * @return cellIndex or numberOfCells if position is outside map */
+   * @return cellIndex or -1 if position is outside map */
   public int getCellIndex(double posX, double posY) {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
       // unreasonable number to indicate that we dont have this location
-      return numberOfCells; // TODO unconventional, typical would be to return -1
+      return -1;
     }
     int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);
     int gridPosY = (int) ((posY - cornerYLow) * cellDimInv);
     return gridPosX + mapWidth * gridPosY;
   }
 
-  /** adds value in grid cell corresponding to coordinates
+  /** adds value in grid cell corresponding to coordinates. does nothing if pose is outside map domain
    * 
    * @param worldCoord [m] map position
    * @param value */
@@ -90,7 +90,7 @@ public class MapProvider {
         worldCoord.Get(1).number().doubleValue(), value);
   }
 
-  /** adds value in grid cell corresponding to pose
+  /** adds value in grid cell corresponding to pose. does nothing if pose is outside map domain
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
@@ -98,7 +98,7 @@ public class MapProvider {
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells)
+    if (cellIndex == -1)
       return;
     mapArray[cellIndex] += value;
     if (mapArray[cellIndex] > maxValue)
@@ -124,23 +124,25 @@ public class MapProvider {
   /** value of grid cell which correspond to worldCoord
    * 
    * @param worldCoord [m]
-   * @return map value */
+   * @return value at the position of 0 if coordinates are outside map domain */
   public double getValue(Tensor worldCoord) {
     return getValue( //
         worldCoord.Get(0).number().doubleValue(), //
         worldCoord.Get(1).number().doubleValue());
   }
 
-  // gets value of cell in which the coordinates are
+  /** @param posX world frame x coordinate
+   * @param posY world frame y coordinate
+   * @return value at the position or 0 if coordinates are outside map domain */
   public double getValue(double posX, double posY) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
-    if (cellIndex == numberOfCells)
+    if (cellIndex == -1)
       return 0;
     return mapArray[cellIndex];
   }
 
-  // for recorded maps
+  /** @param mapArray must have same length as original mapArray */
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);

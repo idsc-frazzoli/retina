@@ -2,17 +2,11 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
-import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
 
-// TODO MG don't delete class, just explain why it's not used
-/**
- * 
- */
+/** standard multinominal resampling method for the SLAM algorithm */
 /* package */ enum MultinomialResampling {
   ;
-  /** standard multinominal resampling method
-   * 
-   * @param slamParticles */
+  /** @param slamParticles */
   static void multinomialResampling(SlamParticle[] slamParticles) {
     int numbOfPart = slamParticles.length;
     // assigned particle numbers start at zero
@@ -23,7 +17,7 @@ import ch.ethz.idsc.demo.mg.util.slam.SlamRandomUtil;
       particleCDF[i] = particleCDF[i - 1] + slamParticles[i].getParticleLikelihood();
     // draw as many random numbers as particles and find corresponding CDF number
     double[] randomNumbers = new double[numbOfPart];
-    SlamRandomUtil.setUniformRVArray(randomNumbers);
+    StaticHelper.setUniformRVArray(randomNumbers);
     for (int i = 0; i < numbOfPart; i++)
       for (int j = 1; j < numbOfPart; j++) {
         if (randomNumbers[i] <= particleCDF[j]) {

@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-/** waypoint object for SLAM algorithm */
+/** way point object for SLAM algorithm */
 public class SlamWaypoint {
   private final double[] worldPosition;
   /** visibility given the current pose of the go kart */
