@@ -9,23 +9,23 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
 import junit.framework.TestCase;
 
-public class RimoRateControllerTest extends TestCase {
+public class SimpleRimoRateControllerTest extends TestCase {
   public void testSimple() {
-    RimoRateController rimoRateController = new RimoRateController();
+    RimoRateController rimoRateController = new SimpleRimoRateController();
     Scalar vel_error = Quantity.of(31, SIDerived.RADIAN_PER_SECOND); // rad*s^-1
     Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
   }
 
   public void testDt() {
-    assertEquals(RimoRateController.DT, Quantity.of(0.02, "s"));
+    assertEquals(SimpleRimoRateController.DT, Quantity.of(0.02, "s"));
   }
 
   public void testErrorZero() {
     System.out.println("Kp   =" + RimoConfig.GLOBAL.Kp);
     System.out.println("Ki   =" + RimoConfig.GLOBAL.Ki);
     System.out.println("Kawu =" + RimoConfig.GLOBAL.Kawu);
-    RimoRateController srrc = new RimoRateController();
+    RimoRateController srrc = new SimpleRimoRateController();
     {
       Scalar scalar = srrc.iterate(Quantity.of(10, "rad*s^-1")); // initially large error
       Magnitude.ARMS.apply(scalar);
