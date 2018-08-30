@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1" */
+// TODO introduce constructor for easier testing
 /* package */ class SimpleRimoRateController implements RimoRateController {
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
