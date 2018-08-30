@@ -51,4 +51,8 @@ public class SlamTrigger implements DavisDvsListener {
     SlamViewer slamViewer = new SlamViewer(slamConfig, slamProvider.getSlamContainer(), gokartPoseInterface);
     davisDvsDatagramDecoder.addDvsListener(slamViewer);
   }
+
+  public SlamContainer getSlamContainer() {
+    return slamProvider.getSlamContainer();
+  }
 }

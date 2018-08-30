@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import ch.ethz.idsc.demo.mg.slam.online.DavisSlamModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
@@ -78,6 +79,7 @@ enum RunTabbedTaskGui {
       FigureEightModule.class, //
       FigureEightReverseModule.class, //
       FigureOvalModule.class, //
+      DavisSlamModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class //
   );

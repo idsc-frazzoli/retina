@@ -31,8 +31,8 @@ import ch.ethz.idsc.tensor.Tensor;
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
     slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
-    if (Objects.nonNull(slamContainer.getSelectedSlamWaypoint()))
-      slamMapFrames[1].drawSelectedSlamWaypoint(slamContainer.getSelectedSlamWaypoint());
+    if (slamContainer.getSelectedSlamWaypoint().isPresent())
+      slamMapFrames[1].drawSelectedSlamWaypoint(slamContainer.getSelectedSlamWaypoint().get());
     slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
