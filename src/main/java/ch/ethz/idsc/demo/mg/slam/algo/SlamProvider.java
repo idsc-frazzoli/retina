@@ -9,7 +9,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.tensor.Scalar;
 
 /** implementation of the SLAM algorithm
  * "simultaneous localization and mapping for event-based vision systems"

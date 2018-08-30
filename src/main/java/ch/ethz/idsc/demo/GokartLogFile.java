@@ -648,6 +648,29 @@ public enum GokartLogFile implements LogFile {
   _20180827T170643_db899976, //
   /** track azure driving [] */
   _20180827T175941_db899976, //
+  /***************************************************/
+  /* 2018-08-30 */
+  /** manual driving track azure */
+  _20180830T101537_db899976, //
+  /** manual driving track azure */
+  _20180830T111749_db899976, //
+  /** recording with silicon eye
+   * while manual driving track azure */
+  _20180830T123206_db899976, //
+  /** recording with silicon eye
+   * while manual driving track azure */
+  _20180830T134222_db899976, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T141843_21b2e8ae, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T150618_21b2e8ae, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T151854_21b2e8ae, //
+  /** slam and waypoint following based on davis240c */
+  _20180830T160739_30e51fa2, //
   ;
   // ---
   @Override // from LogFile

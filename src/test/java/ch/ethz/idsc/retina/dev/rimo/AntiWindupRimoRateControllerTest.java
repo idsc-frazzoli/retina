@@ -11,7 +11,7 @@ public class AntiWindupRimoRateControllerTest extends TestCase {
     System.out.println("Kp   =" + RimoConfig.GLOBAL.Kp);
     System.out.println("Ki   =" + RimoConfig.GLOBAL.Ki);
     System.out.println("Kawu =" + RimoConfig.GLOBAL.Kawu);
-    AntiWindupRimoRateController srrc = new AntiWindupRimoRateController();
+    AntiWindupRimoRateController srrc = new AntiWindupRimoRateController(RimoConfig.GLOBAL);
     {
       Scalar scalar = srrc.iterate(Quantity.of(10, "rad*s^-1")); // initially large error
       Magnitude.ARMS.apply(scalar);

@@ -14,29 +14,35 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1"
- * Kawu with unit "ARMS*rad^-1" */
+ * Kawu with unit "" */
 /* package */ class AntiWindupRimoRateController implements RimoRateController {
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_AW);
+  private final RimoConfig rimoConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastIPart = Quantity.of(0, NonSI.ARMS);
 
+  /** @param rimoConfig for instance RimoConfig.GLOBAL */
+  public AntiWindupRimoRateController(RimoConfig rimoConfig) {
+    this.rimoConfig = rimoConfig;
+  }
+
   @Override // from RimoRateController
   public Scalar iterate(final Scalar vel_error) {
-    final Scalar pPart = vel_error.multiply(RimoConfig.GLOBAL.Kp);
+    final Scalar pPart = vel_error.multiply(rimoConfig.Kp);
     // System.out.println("pPart=" + pPart);
-    final Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT).add(lastIPart);
+    final Scalar iPart = vel_error.multiply(rimoConfig.Ki).multiply(DT).add(lastIPart);
     // System.out.println("iPart=" + iPart);
     // System.out.println("lastW=" + lastWindUp);
     // final Scalar TEMP_LWU = lastWindUp.multiply(RimoConfig.GLOBAL.Kawu);
     // System.out.println("teLwu=" + TEMP_LWU);
     final Scalar tor_value = pPart.add(iPart);
     // System.out.println(tor_value);
-    final Scalar satTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // actuator-saturation
+    final Scalar satTor_value = rimoConfig.torqueLimitClip().apply(tor_value); // actuator-saturation
     // update integral and anti-wind-up reset
-    final Scalar windupPart = RimoConfig.GLOBAL.Kawu.multiply(satTor_value.subtract(tor_value));
+    final Scalar windupPart = rimoConfig.Kawu.multiply(satTor_value.subtract(tor_value));
     // integral part plus anti-windup reset
     lastIPart = iPart.add(windupPart);
     // TODO preliminary for debugging: publish ctrl internals

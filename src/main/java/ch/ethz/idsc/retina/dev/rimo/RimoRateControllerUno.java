@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.red.Mean;
  * that compares the average wheels rate with a target velocity.
  * the steering wheel angle is not used. */
 public class RimoRateControllerUno extends RimoRateControllerWrap {
-  private final RimoRateController pi = new SimpleRimoRateController();
+  private final RimoRateController pi = new SimpleRimoRateController(RimoConfig.GLOBAL);
 
   @Override // from RimoRateControllerWrap
   protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {

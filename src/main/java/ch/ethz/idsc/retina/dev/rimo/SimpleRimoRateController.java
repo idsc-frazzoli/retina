@@ -16,25 +16,29 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * Kp with unit "ARMS*rad^-1*s"
  * Ki with unit "ARMS*rad^-1" */
-// TODO introduce constructor for easier testing
 /* package */ class SimpleRimoRateController implements RimoRateController {
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_PI);
+  private final RimoConfig rimoConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
   private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
 
+  public SimpleRimoRateController(RimoConfig rimoConfig) {
+    this.rimoConfig = rimoConfig;
+  }
+
   @Override // from RimoRateController
   public Scalar iterate(final Scalar vel_error) {
-    final Scalar pPart = vel_error.subtract(lastVel_error).multiply(RimoConfig.GLOBAL.Kp);
-    final Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT);
+    final Scalar pPart = vel_error.subtract(lastVel_error).multiply(rimoConfig.Kp);
+    final Scalar iPart = vel_error.multiply(rimoConfig.Ki).multiply(DT);
     final Scalar TEMP_LVE = lastVel_error; // TODO removal pending
     lastVel_error = vel_error;
     final Scalar TEMP_LTV = lastTor_value;
     final Scalar tor_value = lastTor_value.add(pPart).add(iPart);
-    lastTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // anti-windup
+    lastTor_value = rimoConfig.torqueLimitClip().apply(tor_value); // anti-windup
     // TODO preliminary for debugging: publish ctrl internals
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
         vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value)));
