@@ -31,8 +31,8 @@ import ch.ethz.idsc.tensor.Tensors;
     if (SlamPoseMapResetUtil.checkBoarders(slamContainer.getPose(), corner, cornerHigh, padding)) {
       Tensor resetPose = Tensors.of(resetPoseX, resetPoseY, slamContainer.getPoseUnitless().Get(2));
       Tensor poseDifference = slamContainer.getPoseUnitless().subtract(resetPose);
-      SlamPoseMapResetUtil.resetPose(slamContainer, poseDifference);
-      SlamPoseMapResetUtil.resetMap(slamContainer, poseDifference);
+      SlamPoseMapResetUtil.resetPose(slamContainer.getSlamParticles(), poseDifference);
+      SlamPoseMapResetUtil.resetMap(slamContainer.getOccurrenceMap(), poseDifference);
       slamContainer.setPoseUnitless(resetPose);
     }
   }

@@ -19,7 +19,7 @@ public enum VisGeneralUtil {
    * @param bufferedImage
    * @param parentFilePath
    * @param logFilename
-   * @param timeStamp
+   * @param timeStamp is converted to int for saving
    * @param imageCount */
   public static void saveFrame(BufferedImage bufferedImage, File parentFilePath, String logFilename, double timeStamp, int imageCount) {
     try {

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum SlamPoseMapResetUtil {
@@ -26,31 +26,30 @@ import ch.ethz.idsc.tensor.Tensor;
     return false;
   }
 
-  /** resets the pose estimated by the slamContainer to resetPose
+  /** subtracts the same poseDifference vector from all SLAM particles
    * 
-   * @param slamContainer
-   * @param poseDifference difference between current and desired pose after resetting */
-  public static void resetPose(SlamContainer slamContainer, Tensor poseDifference) {
-    for (int i = 0; i < slamContainer.getSlamParticles().length; i++) {
-      slamContainer.getSlamParticles()[i].subtractPose(poseDifference);
+   * @param slamParticles
+   * @param poseDifference pose vector to be subtracted */
+  public static void resetPose(SlamParticle[] slamParticles, Tensor poseDifference) {
+    for (int i = 0; i < slamParticles.length; i++) {
+      slamParticles[i].subtractPose(poseDifference);
     }
   }
 
   /** resets the map according to the moved vehicle pose
    * 
-   * @param slamContainer
+   * @param occurrenceMap
    * @param poseDifference difference between current and desired pose after resetting */
   // TODO for loop could be done in parallel
-  public static void resetMap(SlamContainer slamContainer, Tensor poseDifference) {
-    MapProvider mapProvider = slamContainer.getOccurrenceMap();
-    int numberOfCells = mapProvider.getNumberOfCells();
+  public static void resetMap(MapProvider occurrenceMap, Tensor poseDifference) {
+    int numberOfCells = occurrenceMap.getNumberOfCells();
     double[] mapArray = new double[numberOfCells];
     for (int i = 0; i < numberOfCells; i++) {
-      double[] newCoord = mapProvider.getCellCoord(i);
+      double[] newCoord = occurrenceMap.getCellCoord(i);
       double[] oldCoord = new double[] { newCoord[0] + poseDifference.Get(0).number().doubleValue(), //
           newCoord[1] + poseDifference.Get(1).number().doubleValue() };
-      mapArray[i] = mapProvider.getValue(oldCoord[0], oldCoord[1]);
+      mapArray[i] = occurrenceMap.getValue(oldCoord[0], oldCoord[1]);
     }
-    mapProvider.setMapArray(mapArray);
+    occurrenceMap.setMapArray(mapArray);
   }
 }

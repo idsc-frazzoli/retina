@@ -19,22 +19,22 @@ import ch.ethz.idsc.tensor.Tensor;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final byte[] bytes;
-  private final double waypointRadius;
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
   private final int kartLength;
+  private final int waypointRadius;
   private final int mapWidth;
   private final int mapHeight;
 
   SlamMapFrame(SlamConfig slamConfig) {
     mapWidth = slamConfig.mapWidth();
     mapHeight = slamConfig.mapHeight();
-    waypointRadius = slamConfig.waypointRadius.number().doubleValue();
     cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
     cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     kartLength = slamConfig.kartLength();
+    waypointRadius = slamConfig.waypointRadius();
     bufferedImage = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();

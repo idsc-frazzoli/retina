@@ -19,14 +19,16 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
     switch (slamConfig.slamAlgoConfig()) {
     case standardMode:
       return standardMode(slamContainer, slamConfig);
+    case standardReactiveMode:
+      return reactiveMapMode(slamContainer, slamConfig);
     case lidarMode:
       return externalPoseMode(slamContainer, slamConfig, gokartLidarPose);
     case lidarReactiveMode:
       return externalPoseReactiveMode(slamContainer, slamConfig, gokartLidarPose);
-    case reactiveMapMode:
-      return reactiveMapMode(slamContainer, slamConfig);
     case odometryMode:
       return externalPoseMode(slamContainer, slamConfig, gokartPoseOdometry);
+    case odometryReactiveMode:
+      return externalPoseReactiveMode(slamContainer, slamConfig, gokartPoseOdometry);
     case localizationMode:
       return localizationMode(slamContainer, slamConfig);
     }
@@ -41,7 +43,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamPropagationStep(slamContainer, slamConfig), //
         new SlamResamplingStep(slamContainer, slamConfig), //
         new SlamOccurrenceMapStep(slamContainer, slamConfig.relevantParticles), //
-        new SlamMapProcessing(slamContainer, slamConfig));
+        new SlamMapProcessing(slamContainer, slamConfig), //
+        new SlamPoseMapReset(slamContainer, slamConfig));
   }
 
   /** externalPoseMode: Instead of using a particle filter, the pose is provided by an external module like the lidar

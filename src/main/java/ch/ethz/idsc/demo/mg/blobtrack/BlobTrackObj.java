@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** provides blob object for the tracking algorithm */
+/** blob object for the tracking algorithm */
 public class BlobTrackObj {
   private static int WIDTH;
   private static int HEIGHT;
@@ -110,7 +110,7 @@ public class BlobTrackObj {
     // position merge
     pos[0] = (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]) / totActivity;
     pos[1] = (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]) / totActivity;
-    // covariance merge TODO find out which is the correct way to do that
+    // covariance merge
     covariance[0][0] = 0.5 * (covariance[0][0] + otherBlob.getCovariance()[0][0]);
     covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
     covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);

@@ -222,7 +222,7 @@ public class BlobTracking {
       System.out.println("Matching blob was deleted");
     else {
       // number and activities of active blobs
-      System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(1) + " being in active layer.");
+      System.out.println(blobs.size() + " blobs, with " + getNumberOfActiveBlobs() + " being in active layer.");
       for (int i = 0; i < blobs.size(); ++i)
         System.out.println("Blob #" + i + " with pos " + blobs.get(i).getPos()[0] + "/" + blobs.get(i).getPos()[1] + " and ID " + blobs.get(i).getLayerID());
     }
@@ -244,7 +244,6 @@ public class BlobTracking {
     return list;
   }
 
-  // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getHiddenBlobs() {
     List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)
@@ -260,20 +259,13 @@ public class BlobTracking {
     return list;
   }
 
-  // return number of blobs. layerId=0: hidden blobs, layerId=1: active blobs, layerId=2: all blobs
-  // TODO MG provide 3 separate functions, so far only getNumberOfActiveBlobs is used
-  public int getNumberOfBlobs(int layerId) {
-    if (layerId == 2)
-      return blobs.size();
-    int quantity = 0;
-    for (int i = 0; i < blobs.size(); ++i) {
-      if (layerId == 1 && blobs.get(i).getLayerID())
-        ++quantity;
-      else //
-      if (layerId == 0 && !blobs.get(i).getLayerID())
-        ++quantity;
+  private int getNumberOfActiveBlobs() {
+    int numberOfActiveBlobs = 0;
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getLayerID())
+        ++numberOfActiveBlobs;
     }
-    return quantity;
+    return numberOfActiveBlobs;
   }
 
   private void setEventTimestamp(int timestamp) {

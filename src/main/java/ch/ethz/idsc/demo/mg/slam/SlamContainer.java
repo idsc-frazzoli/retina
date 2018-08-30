@@ -3,11 +3,13 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** container for the objects that are modified by the SLAM algorithm */
 // TODO MG initialization for localization mode
@@ -23,9 +25,9 @@ public class SlamContainer implements GokartPoseInterface {
   /** most recent detected waypoints */
   private List<SlamWaypoint> waypoints = new ArrayList<>();
   /** way point to be followed by pure pursuit algorithm */
-  private SlamWaypoint selectedSlamWaypoint;
+  private Optional<SlamWaypoint> selectedSlamWaypoint = Optional.empty();
   /** position of most recent event in go kart frame */
-  private double[] eventGokartFrame;
+  private double[] eventGokartFrame = null;
 
   public SlamContainer(SlamConfig slamConfig) {
     int numOfPart = slamConfig.numberOfParticles.number().intValue();
@@ -36,13 +38,25 @@ public class SlamContainer implements GokartPoseInterface {
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
     angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
-    eventGokartFrame = null;
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */
   public void initialize(Tensor initPose) {
     SlamContainerUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     setPose(initPose);
+  }
+
+  // interface to pure pursuit
+  public Optional<Tensor> getLookAhead() {
+    Optional<SlamWaypoint> refWaypnt = selectedSlamWaypoint;
+    // TODO when tested try alternative design
+    // return refWaypnt.map(r->Tensors.vectorDouble(r.getWorldPosition()));
+    if (refWaypnt.isPresent()) {
+      Tensor lookAhead = //
+          Tensors.vectorDouble(refWaypnt.get().getWorldPosition());
+      return Optional.of(lookAhead);
+    }
+    return Optional.empty();
   }
 
   public SlamParticle[] getSlamParticles() {
@@ -79,11 +93,11 @@ public class SlamContainer implements GokartPoseInterface {
     return poseUnitless;
   }
 
-  public void setSelectedSlamWaypoint(SlamWaypoint selectedSlamWaypoint) {
+  public void setSelectedSlamWaypoint(Optional<SlamWaypoint> selectedSlamWaypoint) {
     this.selectedSlamWaypoint = selectedSlamWaypoint;
   }
 
-  public SlamWaypoint getSelectedSlamWaypoint() {
+  public Optional<SlamWaypoint> getSelectedSlamWaypoint() {
     return selectedSlamWaypoint;
   }
 

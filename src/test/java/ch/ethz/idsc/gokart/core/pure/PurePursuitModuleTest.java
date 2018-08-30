@@ -25,7 +25,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testFirstLast() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     purePursuitModule.runAlgo();
     purePursuitModule.last();
@@ -37,14 +37,14 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testSome() {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     Scalar period = purePursuitModule.getPeriod();
     Clip clip = Clip.function(Quantity.of(0.01, "s"), Quantity.of(0.2, "s"));
     assertTrue(clip.isInside(period));
   }
 
   public void testSimple() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
@@ -57,7 +57,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testClose() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -78,7 +78,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseInfeasible() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
@@ -94,7 +94,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseInfeasibleInvalid() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
@@ -110,7 +110,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseOther() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -130,7 +130,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseEnd() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -150,7 +150,7 @@ public class PurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseEndNoQuality() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
@@ -164,7 +164,7 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testSpecific1() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
@@ -174,7 +174,7 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
@@ -184,13 +184,13 @@ public class PurePursuitModuleTest extends TestCase {
 
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
     assertFalse(optional.isPresent());
   }
 
   public void testLookAheadDistanceFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
     assertFalse(optional.isPresent());
   }
 }

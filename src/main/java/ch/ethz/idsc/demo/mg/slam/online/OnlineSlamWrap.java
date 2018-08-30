@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.online;
 
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamTrigger;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -38,5 +39,9 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
     rimoGetLcmClient.stopSubscriptions();
     gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
+  }
+
+  public SlamContainer getSlamContainer() {
+    return slamTrigger.getSlamContainer();
   }
 }

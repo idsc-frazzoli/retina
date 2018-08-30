@@ -104,7 +104,9 @@ public enum LogFileLocations {
   /** one faster round, different starting point */
   DUBI16c("20180813T165630_2c569ed8Extracted3.lcm"),
   /** one round with aprupt acceleration and braking */
-  DUBI16d("20180813T165630_2c569ed8Extracted4.lcm");
+  DUBI16d("20180813T165630_2c569ed8Extracted4.lcm"),
+  /** six rounds with varying speed */
+  DUBI16e("20180813T165630_2c569ed8Extracted5.lcm");
   // ---
   private final String filename;
 

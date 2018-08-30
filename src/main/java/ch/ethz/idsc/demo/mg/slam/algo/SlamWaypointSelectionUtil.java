@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import java.util.List;
+import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
@@ -13,14 +14,16 @@ import ch.ethz.idsc.tensor.red.ArgMax;
 
 /* package */ enum SlamWaypointSelectionUtil {
   ;
-  // TODO MG idea for v1.0: selected way point that is farthest away
+  /** v1.0: choose way point that is farthest away */
   public static void selectWaypoint(SlamContainer slamContainer) {
     List<SlamWaypoint> slamWaypoints = slamContainer.getSlamWaypoints();
-    if (slamWaypoints.isEmpty())
+    if (slamWaypoints.isEmpty()) {
+      slamContainer.setSelectedSlamWaypoint(Optional.empty());
       return;
+    }
     TensorUnaryOperator world2local = new Se2Bijection(slamContainer.getPoseUnitless()).inverse();
     Tensor distances = Tensor.of(slamWaypoints.stream() //
         .map(waypoint -> world2local.apply(Tensors.vectorDouble(waypoint.getWorldPosition())).Get(0)));
-    slamContainer.setSelectedSlamWaypoint(slamWaypoints.get(ArgMax.of(distances)));
+    slamContainer.setSelectedSlamWaypoint(Optional.of(slamWaypoints.get(ArgMax.of(distances))));
   }
 }

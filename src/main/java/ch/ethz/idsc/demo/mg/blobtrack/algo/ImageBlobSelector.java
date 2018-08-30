@@ -31,7 +31,6 @@ public class ImageBlobSelector {
     }
   }
 
-  // TODO MG maybe use method in BlobTracking for that purpose
   /** @return all detected imageBlobs */
   public List<ImageBlob> getImageBlobs() {
     return imageBlobs;

@@ -22,9 +22,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI16a;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16e;
   /** maxDuration */
-  public final Scalar logFileDuration = Quantity.of(60, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(600, SI.SECOND);
   // general parameters
   /** width of image is required to be an integer */
   public final Scalar width = RealScalar.of(240);
@@ -37,7 +37,7 @@ public class DavisConfig {
    * of duration at least 1[ms] during which no events occur
    * 2) for a bin of width 500[us] chances are p=0.30283 that the bin is empty
    * 3) for a bin size of 2397[us] there is a 99% chance that it’s non-empty */
-  public Scalar filterConstant = Quantity.of(500, NonSI.MICRO_SECOND);
+  public Scalar filterConstant = Quantity.of(300, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 

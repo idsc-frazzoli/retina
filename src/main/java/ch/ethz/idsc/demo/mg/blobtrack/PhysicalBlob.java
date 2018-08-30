@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 /** blob object in physical space */
 public class PhysicalBlob {
-  private final double[] pos; // [m] in gokart reference frame
+  private final double[] pos; // interpreted as [m] in gokart reference frame
   private final int blobID; // default blobID == 0
-  private double[] imageCoord; // [pixel] position in PhysicalBlobFrame
+  private double[] imageCoord; // interpreted as [pixel] position in PhysicalBlobFrame
 
   public PhysicalBlob(double[] pos, int blobID) {
     this.pos = pos;

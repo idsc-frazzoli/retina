@@ -31,8 +31,8 @@ import ch.ethz.idsc.tensor.Tensor;
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
     slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
-    if (Objects.nonNull(slamContainer.getSelectedSlamWaypoint()))
-      slamMapFrames[1].drawSelectedSlamWaypoint(slamContainer.getSelectedSlamWaypoint());
+    if (slamContainer.getSelectedSlamWaypoint().isPresent())
+      slamMapFrames[1].drawSelectedSlamWaypoint(slamContainer.getSelectedSlamWaypoint().get());
     slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
@@ -54,17 +54,6 @@ import ch.ethz.idsc.tensor.Tensor;
         bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
   }
 
-  // /** overlays poses of particles with highest likelihood onto slamMapFrame */
-  // private static void drawParticlePoses(SlamMapFrame[] slamMapFrames, SlamProvider slamProvider, int particleNumber) {
-  // SlamParticle[] slamParticles = slamProvider.getParticles();
-  // Stream.of(slamParticles) //
-  // .parallel() //
-  // .sorted(SlamParticleLikelihoodComparator.INSTANCE) //
-  // .limit(particleNumber) //
-  // .collect(Collectors.toList());
-  // for (int i = 0; i < particleNumber; i++)
-  // slamMapFrames[0].addGokartPose(slamParticles[i].getPose(), Color.RED);
-  // }
   /** draws a Mat object
    * 
    * @param processedMat mat object containing e.g. labels of feature extraction
