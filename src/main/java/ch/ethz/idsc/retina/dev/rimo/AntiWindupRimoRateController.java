@@ -21,7 +21,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_AW);
   // ---
   /** pos error initially incorrect in the first iteration */
-  private Scalar lastWindUp = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
   private Scalar lastIPart = Quantity.of(0, NonSI.ARMS);
 
   @Override // from RimoRateController
@@ -31,17 +30,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar iPart = vel_error.multiply(RimoConfig.GLOBAL.Ki).multiply(DT).add(lastIPart);
     // System.out.println("iPart=" + iPart);
     // System.out.println("lastW=" + lastWindUp);
-    final Scalar TEMP_LWU = lastWindUp.multiply(RimoConfig.GLOBAL.Kawu);
+    // final Scalar TEMP_LWU = lastWindUp.multiply(RimoConfig.GLOBAL.Kawu);
     // System.out.println("teLwu=" + TEMP_LWU);
-    final Scalar tor_value = pPart.add(iPart).add(TEMP_LWU);
+    final Scalar tor_value = pPart.add(iPart);
     // System.out.println(tor_value);
     final Scalar satTor_value = RimoConfig.GLOBAL.torqueLimitClip().apply(tor_value); // actuator-saturation
     // update integral and anti-wind-up reset
-    lastIPart = iPart;
-    lastWindUp = satTor_value.subtract(tor_value);
+    final Scalar windupPart = RimoConfig.GLOBAL.Kawu.multiply(satTor_value.subtract(tor_value));
+    // integral part plus anti-windup reset
+    lastIPart = iPart.add(windupPart);
     // TODO preliminary for debugging: publish ctrl internals
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
-        vel_error, pPart, iPart, TEMP_LWU, satTor_value)));
+        vel_error, pPart, iPart, windupPart, tor_value, satTor_value)));
     return satTor_value;
   }
 }
