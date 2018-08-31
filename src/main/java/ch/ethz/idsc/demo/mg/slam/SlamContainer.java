@@ -7,11 +7,13 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-/** container for the objects that are modified by the SLAM algorithm */
+/** container for the objects that are passed between different modules of the SLAM algorithm */
 // TODO MG initialization for localization mode
 public class SlamContainer implements GokartPoseInterface {
   private final SlamParticle[] slamParticles;
@@ -22,8 +24,8 @@ public class SlamContainer implements GokartPoseInterface {
   // ---
   /** unitless pose estimated by algorithm */
   private Tensor poseUnitless;
-  /** most recent detected waypoints */
-  private List<SlamWaypoint> waypoints = new ArrayList<>();
+  /** most recent detected way points */
+  private List<SlamWaypoint> slamWaypoints = new ArrayList<>();
   /** way point to be followed by pure pursuit algorithm */
   private Optional<SlamWaypoint> selectedSlamWaypoint = Optional.empty();
   /** position of most recent event in go kart frame */
@@ -46,17 +48,27 @@ public class SlamContainer implements GokartPoseInterface {
     setPose(initPose);
   }
 
-  // interface to pure pursuit
+  /** for interfacing the pure pursuit controller
+   * 
+   * @return lookAhead [x,y] in go kart frame coordinates */
   public Optional<Tensor> getLookAhead() {
-    Optional<SlamWaypoint> refWaypnt = selectedSlamWaypoint;
-    // TODO when tested try alternative design
-    // return refWaypnt.map(r->Tensors.vectorDouble(r.getWorldPosition()));
-    if (refWaypnt.isPresent()) {
-      Tensor lookAhead = //
-          Tensors.vectorDouble(refWaypnt.get().getWorldPosition());
+    Optional<SlamWaypoint> selectedWaypoint = selectedSlamWaypoint;
+    if (selectedWaypoint.isPresent()) {
+      TensorUnaryOperator world2local = new Se2Bijection(poseUnitless).inverse();
+      Tensor lookAhead = world2local.apply(Tensors.vectorDouble(selectedWaypoint.get().getWorldPosition()));
       return Optional.of(lookAhead);
     }
     return Optional.empty();
+  }
+
+  /** @return list of SlamWaypoints that are visible */
+  public List<SlamWaypoint> getVisibleWaypoints() {
+    List<SlamWaypoint> visibleWaypoints = new ArrayList<>();
+    for (int i = 0; i < slamWaypoints.size(); i++) {
+      if (slamWaypoints.get(i).isVisible())
+        visibleWaypoints.add(slamWaypoints.get(i));
+    }
+    return visibleWaypoints;
   }
 
   public SlamParticle[] getSlamParticles() {
@@ -68,11 +80,11 @@ public class SlamContainer implements GokartPoseInterface {
   }
 
   public void setWaypoints(List<SlamWaypoint> waypoints) {
-    this.waypoints = waypoints;
+    this.slamWaypoints = waypoints;
   }
 
   public List<SlamWaypoint> getSlamWaypoints() {
-    return waypoints;
+    return slamWaypoints;
   }
 
   /** @param eventGokartFrame null is allowed input */

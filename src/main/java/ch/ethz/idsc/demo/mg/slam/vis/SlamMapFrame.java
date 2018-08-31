@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.Tensor;
   public void drawSlamWaypoints(List<SlamWaypoint> slamWaypoints) {
     VisGeneralUtil.clearFrame(bytes);
     for (int i = 0; i < slamWaypoints.size(); i++) {
-      Color color = slamWaypoints.get(i).getVisibility() ? Color.GREEN : Color.ORANGE;
+      Color color = slamWaypoints.get(i).isVisible() ? Color.GREEN : Color.ORANGE;
       SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoints.get(i), color, waypointRadius, cornerX, cornerY, cellDim);
     }
   }

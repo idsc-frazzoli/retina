@@ -55,7 +55,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamImageToGokart(slamContainer, slamConfig), //
         new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface), //
         new SlamMappingStep(slamContainer), //
-        new SlamMapProcessing(slamContainer, slamConfig));
+        new SlamMapProcessing(slamContainer, slamConfig), //
+        new SlamWaypointSelection(slamContainer, slamConfig));
   }
 
   /** reactiveMapMode: In comparison with standardConfig, the part of the map which is currently not seen by the vehicle

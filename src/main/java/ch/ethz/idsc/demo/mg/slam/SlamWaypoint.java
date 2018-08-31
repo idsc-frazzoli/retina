@@ -18,7 +18,7 @@ public class SlamWaypoint {
     return worldPosition;
   }
 
-  public boolean getVisibility() {
+  public boolean isVisible() {
     return visibility;
   }
 }
