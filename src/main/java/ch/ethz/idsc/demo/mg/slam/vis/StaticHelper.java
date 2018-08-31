@@ -3,7 +3,6 @@ package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
