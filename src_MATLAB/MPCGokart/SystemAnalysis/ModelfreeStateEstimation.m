@@ -56,4 +56,4 @@ sst = min(st):0.01:max(st);
 ssx = interp1(st, sx,sst);
 M = [sst',ssx];
 %plot(ssx(1,:),ssx(2,:))
-csvwrite(strcat(folder,'RTSData.csv'), M);
+%csvwrite(strcat(folder,'RTSData.csv'), M);
