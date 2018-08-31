@@ -13,13 +13,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 
-/** defines all parameters of the SLAM algorithm and optionally saves them to a .properties file */
+/** defines all parameters of the SLAM algorithm */
 public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -78,6 +78,12 @@ public class SlamConfig {
     return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps((davisConfig.logFilename())));
   }
 
+  // SlamMapProcessing
+  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
+  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
+  public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
   // SlamPoseReset
   public final Scalar resetPoseX = RealScalar.of(50); // [m]
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
@@ -97,11 +103,4 @@ public class SlamConfig {
   public final int waypointRadius() {
     return Magnitude.ONE.toInt(waypointRadius.divide(cellDim));
   }
-
-  // map processing parameters
-  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
-  // trajectory planning parameters
-  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before waypoints are extracted
-  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(10, SI.METER); // in go kart frame
 }

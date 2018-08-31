@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class PurePursuitReverseTest extends TestCase {
+public class CurvePurePursuitReverseTest extends TestCase {
   public void testSimple() throws Exception {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();

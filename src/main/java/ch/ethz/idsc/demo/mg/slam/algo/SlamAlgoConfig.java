@@ -10,7 +10,15 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 
-/** SLAM algorithm module configuration. The order in the list is the order of the respective callback method calls */
+/** SLAM algorithm module configuration.
+ * The order in the list is the order of the respective callback method calls
+ * 
+ * implementation of the SLAM algorithm
+ * "simultaneous localization and mapping for event-based vision systems"
+ * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+ * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf
+ * all modules of the SLAM algorithm implement {@link DavisDvsListener} and are contained
+ * in the field listeners */
 /* package */ enum SlamAlgoConfig {
   ;
   public static final List<DavisDvsListener> getListeners(SlamContainer slamContainer, SlamConfig slamConfig, //
@@ -55,7 +63,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamImageToGokart(slamContainer, slamConfig), //
         new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface), //
         new SlamMappingStep(slamContainer), //
-        new SlamMapProcessing(slamContainer, slamConfig));
+        new SlamMapProcessing(slamContainer, slamConfig), //
+        new SlamWaypointSelection(slamContainer, slamConfig));
   }
 
   /** reactiveMapMode: In comparison with standardConfig, the part of the map which is currently not seen by the vehicle

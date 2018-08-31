@@ -3,32 +3,45 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-public class WaypointPurePursuitModule extends PurePursuitModule {
+public final class WaypointPurePursuitModule extends PurePursuitModule {
   private Optional<Tensor> lookAhead = Optional.empty();
 
+  @Override
+  protected void protected_first() throws Exception {
+    // ---
+  }
+
+  @Override
+  protected void protected_last() {
+    // ---
+  }
+
   @Override // from PurePursuitModule
-  Optional<Scalar> getRatio(Tensor pose, boolean isForward) {
-    Optional<Tensor> lookAhead = this.lookAhead;
-    if (lookAhead.isPresent() && isForward) {
-      TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
-      Tensor tensor = toLocal.apply(lookAhead.get());
-      Optional<Scalar> ratio = PurePursuit.ratioPositiveX(tensor);
-      System.out.println(ratio);
-      return ratio;
+  protected Optional<Scalar> deriveHeading() {
+    Optional<Scalar> ratio = getRatio();
+    if (ratio.isPresent()) { // is look ahead beacon available?
+      Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
+      if (angleClip.isInside(angle)) // is look ahead beacon within steering range?
+        return Optional.of(angle);
+      System.err.println("beacon outside steering range");
     }
+    return Optional.empty();
+  }
+
+  /* package */ Optional<Scalar> getRatio() {
+    Optional<Tensor> lookAhead = this.lookAhead;
+    if (lookAhead.isPresent())
+      return PurePursuit.ratioPositiveX(lookAhead.get());
     System.err.println("no valid ratio");
     return Optional.empty();
   }
 
-  // TODO use quantity and meters
-  /** @param lookAhead {x, y} in world frame coordinates */
+  /** @param lookAhead {x, y} unitless in go kart frame coordinates */
   public void setLookAhead(Optional<Tensor> lookAhead) {
     this.lookAhead = lookAhead;
   }

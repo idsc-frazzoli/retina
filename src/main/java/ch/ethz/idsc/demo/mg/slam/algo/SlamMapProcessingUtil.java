@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private static final Point POINT = new Point(-1, -1);
   // ---
-  private final double mapThreshold;
+  private final double mapThreshold; // in [0,1]
   private final double cornerX; // [m]
   private final double cornerY; // [m]
   private final double cellDim; // [m]
@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
     visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
-    visibleBoxHalfWidth = (visibleBoxXMax - visibleBoxXMin) * 0.5;
+    visibleBoxHalfWidth = Magnitude.METER.toDouble(slamConfig.visibleBoxHalfWidth);
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
@@ -107,10 +107,11 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
         cornerY + framePos[1] * cellDim };
   }
 
-  /** creates SlamWaypoint objects based on worldWaypoints
+  /** creates SlamWaypoint objects based on worldWaypoints. sets visibility field of slamWaypoints
    * 
    * @param worldWaypoints
-   * @param pose unitless representation */
+   * @param pose unitless representation
+   * @return slamWaypoints List of SlamWaypoint objects */
   public List<SlamWaypoint> getWaypoints(List<double[]> worldWaypoints, Tensor pose) {
     List<SlamWaypoint> slamWaypoints = new ArrayList<>();
     TensorUnaryOperator world2local = new Se2Bijection(pose).inverse(); //
