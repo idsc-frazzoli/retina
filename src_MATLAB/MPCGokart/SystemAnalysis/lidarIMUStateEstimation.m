@@ -1,23 +1,23 @@
 function [st,sx,sP] = lidarIMUStateEstimation(adat,ldat)
-x = zeros(10,1);
+%definitive state model (all in world frame):
+%[x,y,psi,dotx,doty,dotpsi,dotdotx,dotdoty,dotdotpsi]
+x = zeros(9,1);
 %first state estimation
 x(1:3)=ldat(1,2:4);
 x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
-P(9,9)=1000;
-P(10,10)=1000;
 IMUa = 100;
 IMUr = 30;
-DRIFT=0;
-Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa,DRIFT,DRIFT]);
+Q = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
 lt = ldat(:,1);
 at = adat(:,1);
 ldat = ldat(:,2:4);
 adat = adat(:,2:4);
 
-%debugging
-mwdebug = [];
+%I don't use IMU data at the moment :(
+useIMU;
+maxStep = 0.01;
 
 %aggregate accelerationdata
 aagg = 10;
@@ -34,7 +34,7 @@ totalN = lN+lA;
 currentt = min(lt(1),at(1));
 acount = aagg;
 lcount = 3;
-tcount = 1;
+tcount = 2;
 maxt = max(at)-0.1;
 thist = zeros(totalN,1);
 xhist = zeros(totalN,dim);
@@ -47,25 +47,42 @@ while(currentt < maxt)
     %if currentt>530
     %    lR=eye(3)*1000000;
     %end
-    if(lt(lcount)<at(acount))
-        %update with lidar
-        dt = lt(lcount)-currentt;
-        currentt = lt(lcount);
-        dmt = lt(lcount)-lt(lcount-1);
-        [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,Q);
-        lcount = lcount+1;
+    if(useIMU)
+        if(lt(lcount)<at(acount))
+            %update with lidar
+            dt = lt(lcount)-currentt;
+            currentt = lt(lcount);
+            dmt = lt(lcount)-lt(lcount-1);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,Q);
+            lcount = lcount+1;
+        else
+            %update with IMU
+            dt = at(acount)-currentt;
+            currentt = at(acount);
+            m = mean(adat(acount-aagg+1:acount,:));
+            [x,P]=IMUMeasure(x,P,dt,m', aR,Q);
+            acount = acount+aagg;
+
+            %debugging
+            %Rot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
+            %mw = Rot(x(3))*m';
+            %mwdebug = [mwdebug;currentt,mw'];
+        end
     else
-        %update with IMU
-        dt = at(acount)-currentt;
-        currentt = at(acount);
-        m = mean(adat(acount-aagg+1:acount,:));
-        [x,P]=IMUMeasure(x,P,dt,m', aR,Q);
-        acount = acount+aagg;
-        
-        %debugging
-        %Rot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
-        %mw = Rot(x(3))*m';
-        %mwdebug = [mwdebug;currentt,mw'];
+        if(lt(lcount)>currentt+maxStep)
+            %update with lidar
+            dt = lt(lcount)-currentt;
+            currentt = lt(lcount);
+            dmt = lt(lcount)-lt(lcount-1);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-2,:)',ldat(lcount-1,:)',ldat(lcount,:)',lR,Q);
+            lcount = lcount+1;
+        else
+            dt = maxStep;
+            currentt = currentt+maxStep;
+            Fx = getEvolution(x);
+            dotx = Fx*x;
+            [x,P]=Predict(x,P,dotx,Fx,dt,Q);
+        end
     end
     thist(tcount)=currentt;
     xhist(tcount,:) = x;
@@ -118,13 +135,6 @@ Qhist = Qhist(1:tcount-1,:,:);
         hold on
         plot(thist,sx(:,7));
         plot(thist,sx(:,8));
-        hold off
-        
-        %acceleration sensor drift
-        figure
-        hold on
-        plot(thist,sx(:,9));
-        plot(thist,sx(:,10));
         hold off
 
         sigma = 20;

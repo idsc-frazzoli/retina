@@ -2,19 +2,26 @@ function [nx,nP] = lidarMeasure(x,P,dt,dmt,m1,m2,m3,R,Q)
 %measure lidar
 %R: estimated lidar variance
 %m = [posx,posy,theta]'
-%m1-3: last 3 measurements
+%m1-3: last 3 measurements [m1,m2,(m3)] -> m3 is current measurement
 
 %compute variance and values for position and acceleration
-fullm = [m1;m2;m3];
 
-p = m1;
-R1 = R;
-v = (m1-m2)/dmt;
-R2 = 2*R*(1/dmt);
-a = (m1(1:2)-2*m2(1:2)+m3(1:2))/(dmt^2);
-R3 = 4*R(1:2,1:2)*(1/dmt^2);
-fullz = [p;v;a];
-fullR = blkdiag(R1,R2,R3);
+%p = m1;
+%R1 = R;
+%v = (m1-m2)/dmt;
+%R2 = 2*R*(1/dmt);
+%a = (m1-2*m2+m3)/(dmt^2);
+%R3 = 4*R*(1/dmt^2);
+%vector M
+M = [m1;m2;m3];
+%measurementF:
+F = [zeros(3,6),eye(3);...
+    zeros(3,3),-eye(3)/(dmt),eye(3)/(dmt);...
+    eye(3)*(1/dmt^2),-eye(3)*(2/dmt^2),eye(3)*(1/dmt^2)];
+fullz = F*M;
+%measurment variance (7 because each measurement is used 7 times)
+V = 7*blkdiag(R,R,R);
+fullR = F*V*F';
 Fx = getEvolution(x);
 dotx = Fx*x;
 if(dt > 0.00001)
