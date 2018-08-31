@@ -8,6 +8,6 @@ public class DavisConfigTest extends TestCase {
   public void testSimple() {
     DavisConfig davisConfig = new DavisConfig();
     int delta = Magnitude.MICRO_SECOND.toInt(davisConfig.filterConstant);
-    assertTrue(500 <= delta && delta <= 5000);
+    assertTrue(200 <= delta && delta <= 5000);
   }
 }

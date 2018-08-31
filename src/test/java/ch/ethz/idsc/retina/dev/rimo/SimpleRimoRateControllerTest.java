@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class SimpleRimoRateControllerTest extends TestCase {
   public void testSimple() {
-    RimoRateController rimoRateController = new SimpleRimoRateController();
+    RimoRateController rimoRateController = new SimpleRimoRateController(RimoConfig.GLOBAL);
     Scalar vel_error = Quantity.of(31, SIDerived.RADIAN_PER_SECOND); // rad*s^-1
     Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
@@ -25,7 +25,7 @@ public class SimpleRimoRateControllerTest extends TestCase {
     System.out.println("Kp   =" + RimoConfig.GLOBAL.Kp);
     System.out.println("Ki   =" + RimoConfig.GLOBAL.Ki);
     System.out.println("Kawu =" + RimoConfig.GLOBAL.Kawu);
-    RimoRateController srrc = new SimpleRimoRateController();
+    RimoRateController srrc = new SimpleRimoRateController(RimoConfig.GLOBAL);
     {
       Scalar scalar = srrc.iterate(Quantity.of(10, "rad*s^-1")); // initially large error
       Magnitude.ARMS.apply(scalar);
