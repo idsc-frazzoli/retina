@@ -13,7 +13,6 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
  * BlobTrackObj objects are used internally by the tracking algorithm. For further processing, ImageBlob objects are used. */
-// TODO MG scope issue
 public class BlobTracking {
   // camera parameters
   private final int width;
@@ -75,9 +74,6 @@ public class BlobTracking {
   }
 
   // general todo list
-  // TODO instead of exponential, use a lookup table or an approximation
-  // TODO attraction equation: calculate on an evenbasis or time interval basis?
-  // TODO implement merging operation and test it --> implemented
   public void receiveEvent(DavisDvsEvent davisDvsEvent) {
     // associate the event with matching blob
     calcScoreAndParams(davisDvsEvent);
@@ -226,7 +222,7 @@ public class BlobTracking {
       System.out.println("Matching blob was deleted");
     else {
       // number and activities of active blobs
-      System.out.println(blobs.size() + " blobs, with " + getNumberOfBlobs(1) + " being in active layer.");
+      System.out.println(blobs.size() + " blobs, with " + getNumberOfActiveBlobs() + " being in active layer.");
       for (int i = 0; i < blobs.size(); ++i)
         System.out.println("Blob #" + i + " with pos " + blobs.get(i).getPos()[0] + "/" + blobs.get(i).getPos()[1] + " and ID " + blobs.get(i).getLayerID());
     }
@@ -248,7 +244,6 @@ public class BlobTracking {
     return list;
   }
 
-  // TODO helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getHiddenBlobs() {
     List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)
@@ -264,20 +259,13 @@ public class BlobTracking {
     return list;
   }
 
-  // return number of blobs. layerId=0: hidden blobs, layerId=1: active blobs, layerId=2: all blobs
-  // TODO MG provide 3 separate functions, so far only getNumberOfActiveBlobs is used
-  public int getNumberOfBlobs(int layerId) {
-    if (layerId == 2)
-      return blobs.size();
-    int quantity = 0;
-    for (int i = 0; i < blobs.size(); ++i) {
-      if (layerId == 1 && blobs.get(i).getLayerID())
-        ++quantity;
-      else //
-      if (layerId == 0 && !blobs.get(i).getLayerID())
-        ++quantity;
+  private int getNumberOfActiveBlobs() {
+    int numberOfActiveBlobs = 0;
+    for (int i = 0; i < blobs.size(); i++) {
+      if (blobs.get(i).getLayerID())
+        ++numberOfActiveBlobs;
     }
-    return quantity;
+    return numberOfActiveBlobs;
   }
 
   private void setEventTimestamp(int timestamp) {

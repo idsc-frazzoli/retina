@@ -84,14 +84,13 @@ public class GokartToImageUtil implements GokartToImageInterface {
     // compute distorted normalized image coordinates
     Tensor distortedImgCoord = normalizedImgCoord.multiply(distortionCoeff);
     // unnormalize distorted image coordinates
-    Tensor imgCoord = distortedImgCoord.pmul(focalLength).add(principalPoint);
-    return imgCoord;
+    return distortedImgCoord.pmul(focalLength).add(principalPoint);
   }
 
   // testing
   public static void main(String[] args) {
     GokartToImageUtil test = new DavisConfig().createGokartToImageUtil();
     double[] imgPos = test.gokartToImage(3.4386292832405725, -0.4673008409796591);
-    System.out.println(imgPos[0] + "/" + imgPos[1]);
+    System.out.println(imgPos[0] + " , " + imgPos[1]);
   }
 }

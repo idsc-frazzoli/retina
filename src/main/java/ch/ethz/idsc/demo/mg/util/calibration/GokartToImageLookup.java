@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.util.calibration;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -10,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 // seen by the ImageTogokartUtil. Discretize with the cellDim parameter. Include interpolation method.
 // TODO unused and unfinished code
 public class GokartToImageLookup implements GokartToImageInterface {
-  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, Scalar width) {
+  public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, int width) {
     return new GokartToImageLookup(new ImageToGokartUtil(inputTensor, unitConversion, width), //
         new GokartToImageUtil(inputTensor, unitConversion), cellDim, lookAheadDistance);
   }
@@ -55,20 +54,15 @@ public class GokartToImageLookup implements GokartToImageInterface {
     }
   }
 
-  @Override
+  @Override // from GokartToImageInterface
   public double[] gokartToImage(double gokartPosX, double gokartPosY) {
     // find nearest position for which we have a lookup value
     // then return that value
     return null;
   }
 
-  @Override
+  @Override // from GokartToImageInterface
   public Tensor gokartToImage(Tensor gokartPos) {
     throw new RuntimeException();
-  }
-
-  // testing
-  public static void main(String[] args) {
-    GokartToImageLookup test = new SlamConfig().createGokartToImageUtilLookup();
   }
 }

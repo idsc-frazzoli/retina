@@ -17,13 +17,13 @@ enum LogEventExtract {
     File src = LogFileLocations.DUBI16.getFile();
     System.out.println(src.toString());
     File dst = null;
-    dst = UserHome.file("logs/20180813T165630_2c569ed8Extracted4.lcm");
+    dst = UserHome.file("logs/20180813T165630_2c569ed8Extracted5.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();
     }
-    int lo = 1540981;
-    int hi = 1688409;
+    int lo = 606798;
+    int hi = 1587353;
     // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);

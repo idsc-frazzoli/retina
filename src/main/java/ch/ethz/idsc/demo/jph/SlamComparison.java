@@ -39,7 +39,7 @@ enum SlamComparison {
       // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
       scatterImage = new WallScatterImage(predefinedMap);
-      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.model(), scatterImage);
+      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
       Export.of(UserHome.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));

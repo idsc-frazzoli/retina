@@ -6,12 +6,10 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** single particle for the SLAM algorithm */
 public class SlamParticle implements GokartPoseInterface {
@@ -39,9 +37,12 @@ public class SlamParticle implements GokartPoseInterface {
     setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
-  public void propagateStateEstimateOdometry(Tensor velocity, double dT) {
-    Tensor deltaPose = velocity.multiply(Quantity.of(dT, SI.SECOND));
-    setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), GokartPoseHelper.toUnitless(deltaPose)));
+  /** subtracts pose vector from pose
+   * 
+   * @param pose unitless representation */
+  public void subtractPose(Tensor subtractPose) {
+    pose = pose.subtract(subtractPose);
+    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }
 
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
@@ -52,7 +53,7 @@ public class SlamParticle implements GokartPoseInterface {
   }
 
   /** @param unitlessPose {x,y,heading} without units */
-  private void setPoseUnitless(Tensor unitlessPose) {
+  public void setPoseUnitless(Tensor unitlessPose) {
     pose = unitlessPose;
     geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }

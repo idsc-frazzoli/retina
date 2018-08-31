@@ -7,7 +7,9 @@ import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 
 interface BlobTransform {
-  /** @param imageBlobs
-   * @return */
+  /** transform between image plane and go kart frame
+   * 
+   * @param imageBlobs
+   * @return list of PhysicalBlob objects */
   List<PhysicalBlob> transform(List<ImageBlob> imageBlobs);
 }

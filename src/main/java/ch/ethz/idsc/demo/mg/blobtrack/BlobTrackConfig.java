@@ -12,7 +12,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
-// TODO MG lot of parameters redundant to BlobTracking
 public class BlobTrackConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig();
@@ -37,7 +36,6 @@ public class BlobTrackConfig {
   public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
-  // TransformUtil
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool

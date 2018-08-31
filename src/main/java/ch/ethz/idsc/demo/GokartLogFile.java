@@ -613,7 +613,7 @@ public enum GokartLogFile implements LogFile {
   /* 2018-08-20 */
   /** joystick driving, precursor for track red */
   _20180820T135013_568f9954, //
-  /** desiging and testing track red
+  /** designing and testing track red
    * several stops for map building */
   _20180820T140707_568f9954, //
   /** track red, [jh mg yn jh mg yn]
@@ -621,6 +621,56 @@ public enum GokartLogFile implements LogFile {
   _20180820T143852_568f9954, //
   /** track red, [jh mg yn jh yn] */
   _20180820T165637_568f9954, //
+  /***************************************************/
+  /* 2018-08-23 system identification */
+  /** manual driving track red, [mh, az, mh, az, az] */
+  _20180823T115959_2693c28e, //
+  /** manual driving track red, [mh, az] */
+  _20180823T134242_2693c28e, //
+  /** slow manual driving */
+  _20180823T135656_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T152218_2693c28e, //
+  /** pure pursuit figure eight reverse
+   * forward/reverse with emergency stops */
+  _20180823T162001_2693c28e, //
+  /** manual driving track red, [mh, az, jh] */
+  _20180823T163738_2693c28e, //
+  /***************************************************/
+  /* 2018-08-27 system identification */
+  /** track azure driving [jh, yn, mg, az] */
+  _20180827T150209_db899976, //
+  /** slow manual driving along track
+   * with frequent stops for gathering map */
+  _20180827T155655_db899976, //
+  /** track azure driving [jh, az, yn, mg, az, yn, yn] */
+  _20180827T170643_db899976, //
+  /** track azure driving [] */
+  _20180827T175941_db899976, //
+  /***************************************************/
+  /* 2018-08-30 */
+  /** manual driving track azure */
+  _20180830T101537_db899976, //
+  /** manual driving track azure */
+  _20180830T111749_db899976, //
+  /** recording with silicon eye
+   * while manual driving track azure */
+  _20180830T123206_db899976, //
+  /** recording with silicon eye
+   * while manual driving track azure */
+  _20180830T134222_db899976, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T141843_21b2e8ae, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T150618_21b2e8ae, //
+  /** testing new "anti-windup" controller
+   * along figure eight reverse */
+  _20180830T151854_21b2e8ae, //
+  /** slam and waypoint following based on davis240c */
+  _20180830T160739_30e51fa2, //
   ;
   // ---
   @Override // from LogFile

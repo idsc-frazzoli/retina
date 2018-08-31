@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 public class PurePursuitReverseTest extends TestCase {
   public void testSimple() throws Exception {
-    PurePursuitModule purePursuitModule = new PurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
     purePursuitModule.first();
     assertTrue(purePursuitModule.isForward());
     purePursuitModule.rimoGetListener.getEvent(RimoGetEvents.create(1000, 1000));
@@ -27,28 +27,28 @@ public class PurePursuitReverseTest extends TestCase {
 
   public void testSpecificHLE() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true);
     Scalar lookAhead = optional.get();
     assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.0627054558616751)));
   }
 
   public void testSpecificHLE_R() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false);
     Scalar lookAhead = optional.get();
     assertTrue(Chop._08.close(lookAhead, RealScalar.of(0.009685440563639316)));
   }
 
   public void testSpecificHLER() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true);
     Scalar lookAhead = optional.get();
     assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.009685440563639316)));
   }
 
   public void testSpecificHLER_R() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = PurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false);
     Scalar lookAhead = optional.get();
     assertTrue(Chop._08.close(lookAhead, RealScalar.of(-0.0627054558616751)));
   }

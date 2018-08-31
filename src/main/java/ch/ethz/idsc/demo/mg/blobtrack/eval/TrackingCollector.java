@@ -30,10 +30,9 @@ public class TrackingCollector implements DavisDvsListener {
     numberOfLabelInstants = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix).list().length;
     timeStamps = EvalUtil.getTimestampsFromImages(numberOfLabelInstants, imagePrefix);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
-    estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
+    estimatedLabelFile = EvaluationFileLocations.ESTIMATED_CSV.subfolder(estimatedLabelFileName);
     // set up empty list of estimated features
-    // TODO MG numberOfLabelInstants vs. timeStamps.length ?
-    estimatedFeatures = new ArrayList<>(numberOfLabelInstants);
+    estimatedFeatures = new ArrayList<>();
     for (int i = 0; i < timeStamps.length; ++i)
       estimatedFeatures.add(new ArrayList<>());
   }

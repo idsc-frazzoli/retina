@@ -11,7 +11,8 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisBlobTrackUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 
 /** loads estimated features from a CSV file and provides functions to run an evaluation. A single evaluation instant
  * is compared in a TrackingEvaluatorInstant object. */
@@ -35,11 +36,11 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     logFileName = pipelineConfig.davisConfig.logFilename();
     numberOfFiles = MgEvaluationFolders.HANDLABEL.subfolder(logFileName).list().length;
     evaluationImagesFilePath = MgEvaluationFolders.EVALUATED.subfolder(logFileName);
-    handLabelFile = EvaluationFileLocations.handlabels(pipelineConfig.handLabelFileName.toString());
+    handLabelFile = EvaluationFileLocations.HANDLABEL_CSV.subfolder(pipelineConfig.handLabelFileName.toString());
     groundTruthTimeStamps = EvalUtil.getTimestampsFromImages(numberOfFiles, logFileName);
     groundTruthFeatures = EvalUtil.loadFromCSV(handLabelFile, groundTruthTimeStamps);
     estimatedLabelFileName = pipelineConfig.estimatedLabelFileName.toString();
-    estimatedLabelFile = EvaluationFileLocations.estimatedlabels(estimatedLabelFileName);
+    estimatedLabelFile = EvaluationFileLocations.ESTIMATED_CSV.subfolder(estimatedLabelFileName);
     estimatedFeatures = EvalUtil.loadFromCSV(estimatedLabelFile, groundTruthTimeStamps);
     evaluatorInstants = new EvaluatorInstant[numberOfFiles];
     for (int i = 0; i < numberOfFiles; ++i)
@@ -62,11 +63,13 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     BufferedImage rawEventsFrame = loadImage();
     // overlay groundtruthFeatures
     for (int i = 0; i < groundTruthFeatures.get(currentLabelInstant).size(); ++i)
-      VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), groundTruthFeatures.get(currentLabelInstant).get(i), Color.GREEN);
+      VisBlobTrackUtil.drawImageBlob(rawEventsFrame.createGraphics(), groundTruthFeatures.get(currentLabelInstant).get(i), Color.GREEN);
     // overlay estimatedFeatures
     for (int i = 0; i < estimatedFeatures.get(currentLabelInstant).size(); ++i)
-      VisPipelineUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
-    saveImage(rawEventsFrame);
+      VisBlobTrackUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
+    // TODO MG test if same result
+    VisGeneralUtil.saveFrame(rawEventsFrame, evaluationImagesFilePath, logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant]);
+    // saveImage(rawEventsFrame);
   }
 
   /** @return hand-labeled image of the current evaluation instant */
@@ -84,17 +87,15 @@ import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
     return bufferedImage;
   }
 
-  // TODO MG replace with saveFrame method in VisGeneralUtil
-  private void saveImage(BufferedImage bufferedImage) {
-    try {
-      String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
-      ImageIO.write(bufferedImage, "png", new File(evaluationImagesFilePath, toBeSaved));
-      System.out.printf("Evaluation frame saved as %s\n", toBeSaved);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
+  // private void saveImage(BufferedImage bufferedImage) {
+  // try {
+  // String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
+  // ImageIO.write(bufferedImage, "png", new File(evaluationImagesFilePath, toBeSaved));
+  // System.out.printf("Evaluation frame saved as %s\n", toBeSaved);
+  // } catch (IOException e) {
+  // e.printStackTrace();
+  // }
+  // }
   private void computePerformance() {
     for (int i = 0; i < numberOfFiles; ++i) {
       averageRecall += evaluatorInstants[i].getRecall() / numberOfFiles;

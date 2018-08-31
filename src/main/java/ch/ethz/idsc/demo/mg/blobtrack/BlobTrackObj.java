@@ -3,9 +3,8 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-/** provides blob object for the tracking algorithm */
+/** blob object for the tracking algorithm */
 public class BlobTrackObj {
-  // camera parameters
   private static int WIDTH;
   private static int HEIGHT;
   private static int DEFAULT_BLOB_ID;
@@ -19,17 +18,15 @@ public class BlobTrackObj {
     DEFAULT_BLOB_ID = blobTrackConfig.defaultBlobID.number().intValue();
   }
 
-  // ---
-  // blob parameters
   private final double[][] covariance;
   private final float[] initPos;
   private final float[] pos;
+  // ---
   private boolean layerID; // true for active layer, false for hidden layer
   private float currentScore;
   private float activity;
   private int blobID;
 
-  // initialize with position and covariance
   public BlobTrackObj(float initialX, float initialY, float initVariance) {
     initPos = new float[] { initialX, initialY };
     pos = new float[] { initialX, initialY };
@@ -45,13 +42,12 @@ public class BlobTrackObj {
   /** updates the activity of a blob
    * 
    * @param hasHighestScore
-   * @param aUp
-   * @param exponential
-   * @return */
+   * @param aUp score threshold for active layer
+   * @param exponential activity update parameter
+   * @return true if blob is promoted to active layer */
   public boolean updateBlobActivity(boolean hasHighestScore, float aUp, float exponential) {
     boolean isPromoted;
     if (hasHighestScore) {
-      // if hidden layer blob hits threshold it should be promoted
       float potentialActivity = activity * exponential + currentScore;
       isPromoted = !layerID && potentialActivity > aUp;
       activity = potentialActivity;
@@ -87,24 +83,6 @@ public class BlobTrackObj {
     covariance[1][1] = alphaTwo * covariance[1][1] + (1 - alphaTwo) * deltaCovariance[1][1];
   }
 
-  // public float gaborBlobScore(DavisDvsEvent davisDvsEvent) {
-  // double sigma = 3;
-  // double gamma = sigma / 15;
-  // double lambda = 4 * sigma;
-  // double theta = Math.PI / 2;
-  // double cos_t = Math.cos(theta);
-  // double sin_t = Math.sin(theta);
-  // double xU = +(davisDvsEvent.x - pos[0]) * cos_t + (davisDvsEvent.y - pos[1]) * sin_t;
-  // double yU = -(davisDvsEvent.x - pos[0]) * sin_t + (davisDvsEvent.y - pos[1]) * cos_t;
-  // currentScore = (float) Math.exp((xU * xU + gamma * gamma * yU * yU) / (2 * sigma * sigma) * Math.cos(2 * Math.PI * xU / lambda));
-  // return currentScore = (float) GaborBlobScore.INSTANCE.evaluate(this, davisDvsEvent);
-  // }
-  // // maybe use also Manhattan distance?
-  // public double geometricBlobScore(DavisDvsEvent davisDvsEvent) {
-  // double distance = Math.sqrt((davisDvsEvent.x - pos[0]) * (davisDvsEvent.x - pos[0]) + (davisDvsEvent.y - pos[1]) * (davisDvsEvent.y - pos[1]));
-  // // somehow normalize the distance
-  // return distance;
-  // }
   public void updateAttractionEquation(float alphaAttr, float dRep) {
     double posDiff = getDistanceTo(initPos);
     if (dRep < posDiff) {
@@ -132,7 +110,7 @@ public class BlobTrackObj {
     // position merge
     pos[0] = (activity * pos[0] + otherBlob.getActivity() * otherBlob.getPos()[0]) / totActivity;
     pos[1] = (activity * pos[1] + otherBlob.getActivity() * otherBlob.getPos()[1]) / totActivity;
-    // covariance merge TODO find out which is the correct way to do that
+    // covariance merge
     covariance[0][0] = 0.5 * (covariance[0][0] + otherBlob.getCovariance()[0][0]);
     covariance[0][1] = 0.5 * (covariance[0][1] + otherBlob.getCovariance()[0][1]);
     covariance[1][0] = 0.5 * (covariance[1][0] + otherBlob.getCovariance()[1][0]);
@@ -181,7 +159,7 @@ public class BlobTrackObj {
     return blobID;
   }
 
-  public void setCurrentScore(float score) {
-    currentScore = score;
+  public void setCurrentScore(float currentScore) {
+    this.currentScore = currentScore;
   }
 }

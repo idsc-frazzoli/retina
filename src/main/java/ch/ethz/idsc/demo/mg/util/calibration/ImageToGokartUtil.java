@@ -25,7 +25,7 @@ public class ImageToGokartUtil implements ImageToGokartInterface {
   /** @param inputTensor of the form {transformationMatrix, principal point, radDistortion, focalLength}
    * @param unitConversion
    * @param width */
-  public static ImageToGokartUtil fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar width) {
+  public static ImageToGokartUtil fromMatrix(Tensor inputTensor, Scalar unitConversion, int width) {
     return new ImageToGokartUtil(inputTensor, unitConversion, width);
   }
 
@@ -44,9 +44,9 @@ public class ImageToGokartUtil implements ImageToGokartInterface {
   private final Tensor focalLengthInv; // [mm]
 
   // constructor is private so that API can extend/be modified easier in the future if needed
-  /* package */ ImageToGokartUtil(Tensor inputTensor, Scalar unitConversion, Scalar width) {
+  /* package */ ImageToGokartUtil(Tensor inputTensor, Scalar unitConversion, int width) {
     this.unitConversion = unitConversion;
-    this.width = width.number().intValue();
+    this.width = width;
     transformationMatrix = inputTensor.extract(0, 3);
     principalPoint = inputTensor.get(3); // vector of length 2
     radDistortionPoly = Series.of(Join.of(Tensors.vector(1.0), inputTensor.get(4)));

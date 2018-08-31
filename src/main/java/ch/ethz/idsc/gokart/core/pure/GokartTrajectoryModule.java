@@ -97,7 +97,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  final PurePursuitModule purePursuitModule = new PurePursuitModule();
+  final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
   private final GokartMappingModule gokartMappingModule = new GokartMappingModule();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;

@@ -31,7 +31,7 @@ import javax.swing.event.ChangeListener;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.demo.mg.util.vis.VisPipelineUtil;
+import ch.ethz.idsc.demo.mg.util.vis.VisBlobTrackUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** GUI for hand labeling of features. Left click adds a feature, right click deletes most recent feature.
@@ -66,7 +66,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      VisPipelineUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
+      VisBlobTrackUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(BufferedImageResize.of(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
@@ -135,7 +135,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   private final ActionListener loadListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.handlabels(fileName), timeStamps);
+      labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(fileName), timeStamps);
       System.out.println("Successfully loaded from file " + fileName + ".csv");
       // repaint such that saved blobs of current image are displayed
       jComponent.repaint();
@@ -146,7 +146,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     public void actionPerformed(ActionEvent e) {
       // avoid overwriting the original labeledFeatures csv
       String currentFileName = fileName + saveCount;
-      EvalUtil.saveToCSV(EvaluationFileLocations.handlabels(currentFileName), labeledFeatures, timeStamps);
+      EvalUtil.saveToCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(currentFileName), labeledFeatures, timeStamps);
       System.out.println("Successfully saved to file " + currentFileName + ".csv");
       saveCount++;
     }
