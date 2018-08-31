@@ -655,7 +655,8 @@ public enum GokartLogFile implements LogFile {
   /** manual driving track azure */
   _20180830T111749_db899976, //
   /** recording with silicon eye
-   * while manual driving track azure */
+   * while manual driving track azure
+   * no Davis240c */
   _20180830T123206_db899976, //
   /** recording with silicon eye
    * while manual driving track azure */

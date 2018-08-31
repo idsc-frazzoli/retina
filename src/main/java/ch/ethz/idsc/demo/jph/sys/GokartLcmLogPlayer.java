@@ -14,7 +14,7 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
     file = DatahakiLogFileLocator.file(GokartLogFile._20180830T160739_30e51fa2);
-    // file = new File("/media/datahaki/media/ethz/gokart/topic/track_red/20180820T165637_5/log.lcm");
+    file = new File("/media/datahaki/media/ethz/gokart/topic/track_azure/20180827T150209_1/log.lcm");
     // file = UserHome.file("export_red/copy20180820T143852_1.lcm");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
