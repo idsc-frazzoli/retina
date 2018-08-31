@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-class GokartLogFileIndexer implements OfflineLogListener {
+public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer lcmLogFileIndexer = new GokartLogFileIndexer(file);
     System.out.print("building index... ");

@@ -27,8 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -36,7 +34,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-class GokartLcmLogCutter {
+public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
   public static final String GOKART_LOG_CONFIG = "GokartLogConfig.properties";
   // ---
@@ -162,15 +160,5 @@ class GokartLcmLogCutter {
     Tensor tensor = Tensors.of(Tensor.of(gokartLogFileIndexer.raster2speed() //
         .map(clip::rescale).map(ColorDataGradients.CLASSIC)));
     return ImageFormat.of(tensor);
-  }
-
-  public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20180823T135656_2693c28e;
-    File file = DatahakiLogFileLocator.file(gokartLogFile);
-    GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
-    new GokartLcmLogCutter( //
-        gokartLogFileIndexer, //
-        new File("/media/datahaki/media/ethz/gokart/topic/track_azure"), //
-        gokartLogFile.getTitle());
   }
 }
