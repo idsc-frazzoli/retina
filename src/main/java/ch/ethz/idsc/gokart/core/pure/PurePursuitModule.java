@@ -14,17 +14,48 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public abstract class PurePursuitModule extends AbstractClockedModule {
-  protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
-  final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
+  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
-  protected final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
+  protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
+
+  @Override // from AbstractModule
+  protected final void first() throws Exception {
+    protected_first();
+    joystickLcmProvider.startSubscriptions();
+    purePursuitRimo.start();
+    purePursuitSteer.start();
+  }
+
+  @Override // from AbstractModule
+  protected final void last() {
+    purePursuitRimo.stop();
+    purePursuitSteer.stop();
+    joystickLcmProvider.stopSubscriptions();
+    protected_last();
+  }
+
+  protected abstract void protected_first() throws Exception;
+
+  protected abstract void protected_last();
 
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
-    boolean status = isOperational();
-    purePursuitSteer.setOperational(status);
-    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    final boolean isAutonomousPressed;
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      isAutonomousPressed = gokartJoystickInterface.isAutonomousPressed();
+    } else
+      isAutonomousPressed = false;
+    // ---
+    Optional<Scalar> heading = deriveHeading();
+    if (heading.isPresent())
+      purePursuitSteer.setHeading(heading.get());
+    // ---
+    final boolean status = isAutonomousPressed && heading.isPresent();
+    purePursuitSteer.setOperational(status);
+    if (status) {
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
       // ante 20180604: the ahead average was used in combination with Ramp
       Scalar ratio = gokartJoystickInterface.getAheadAverage(); // in [-1, 1]
@@ -42,5 +73,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     return PursuitConfig.GLOBAL.updatePeriod;
   }
 
-  abstract protected boolean isOperational();
+  /** @return heading with unit "rad"
+   * Optional.empty() if autonomous pure pursuit control is not warranted */
+  protected abstract Optional<Scalar> deriveHeading();
 }

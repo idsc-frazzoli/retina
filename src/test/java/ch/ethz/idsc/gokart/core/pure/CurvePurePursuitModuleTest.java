@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
-public class PurePursuitModuleTest extends TestCase {
+public class CurvePurePursuitModuleTest extends TestCase {
   static void _checkFallback(Optional<SteerPutEvent> fallback) {
     SteerPutEvent steerPutEvent = fallback.get();
     assertEquals(steerPutEvent.getTorque(), Quantity.of(0, SteerPutEvent.UNIT_RTORQUE));
