@@ -11,7 +11,7 @@ enum BlobTrackConfigDemo {
   // for testing
   public static void main(String[] args) throws IOException {
     BlobTrackConfig test = new BlobTrackConfig();
-    TensorProperties.manifest(UserHome.file("config2.properties"), test);
+    TensorProperties.wrap(test).save(UserHome.file("config2.properties"));
     // private final PipelineConfig pipelineConfig = TensorProperties.retrieve(UserHome.file("config.properties"), new PipelineConfig());
   }
 }

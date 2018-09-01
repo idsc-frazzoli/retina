@@ -22,12 +22,13 @@ public enum AppCustomization {
   }
 
   public static <T> T load(Class<?> cls, T object) {
-    return TensorProperties.retrieve(file(cls), object);
+    return TensorProperties.wrap(object).tryLoad(file(cls));
+    // return object;
   }
 
   public static void save(Class<?> cls, Object object) {
     try {
-      TensorProperties.manifest(file(cls), object);
+      TensorProperties.wrap(object).save(file(cls));
     } catch (Exception exception) {
       exception.printStackTrace();
     }

@@ -25,63 +25,85 @@ import junit.framework.TestCase;
 public class TensorPropertiesTest extends TestCase {
   public void testListSize1() throws Exception {
     ParamContainer ori = new ParamContainer();
+    TensorProperties tensorProperties = TensorProperties.wrap(ori);
     ori.string = "some string, no new line please";
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
-    List<String> list = TensorProperties.strings(ori);
+    List<String> list = tensorProperties.strings();
     assertEquals(list.size(), 2);
   }
 
   public void testListSize2() throws Exception {
     ParamContainer ori = new ParamContainer();
+    TensorProperties tensorProperties = TensorProperties.wrap(ori);
     ori.shape = Tensors.fromString("{1,2,3}");
     ori.abc = RealScalar.ONE;
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
-    List<String> list = TensorProperties.strings(ori);
+    List<String> list = tensorProperties.strings();
     assertEquals(list.size(), 3);
   }
 
   public void testBoolean() throws Exception {
     ParamContainer ori = new ParamContainer();
+    TensorProperties tensorProperties = TensorProperties.wrap(ori);
     ori.status = true;
-    assertEquals(TensorProperties.strings(ori).size(), 1);
-    Properties properties = TensorProperties.extract(ori);
+    assertEquals(tensorProperties.strings().size(), 1);
+    Properties properties = tensorProperties.get();
     assertEquals(properties.getProperty("status"), "true");
     properties.setProperty("status", "corrupt");
-    TensorProperties.insert(properties, ori);
+    tensorProperties.set(properties);
     assertNull(ori.status);
-    assertEquals(TensorProperties.strings(ori).size(), 0);
+    assertEquals(tensorProperties.strings().size(), 0);
     // ---
     properties.setProperty("status", "true");
-    TensorProperties.insert(properties, ori);
+    tensorProperties.set(properties);
     assertTrue(ori.status);
-    assertEquals(TensorProperties.strings(ori).size(), 1);
+    assertEquals(tensorProperties.strings().size(), 1);
     // ---
     properties.setProperty("status", "false");
-    TensorProperties.insert(properties, ori);
+    tensorProperties.set(properties);
     assertFalse(ori.status);
-    assertEquals(TensorProperties.strings(ori).size(), 1);
+    assertEquals(tensorProperties.strings().size(), 1);
+  }
+
+  public void testLoadFail() {
+    // try {
+    // TensorProperties.set(null, new ParamContainer());
+    // assertTrue(false);
+    // } catch (Exception exception) {
+    // // ---
+    // }
+    // try {
+    // TensorProperties.set(new Properties(), null);
+    // assertTrue(false);
+    // } catch (Exception exception) {
+    // // ---
+    // }
   }
 
   public void testStore() throws Exception {
     ParamContainer ori = new ParamContainer();
+    TensorProperties tensorProperties = TensorProperties.wrap(ori);
     ori.string = "some string, no new line please";
-    assertEquals(TensorProperties.strings(ori).size(), 1);
+    assertEquals(tensorProperties.strings().size(), 1);
     ori.maxTor = Scalars.fromString("3.13[m*s^2]");
     ori.shape = Tensors.fromString("{1,2,3}");
-    assertEquals(TensorProperties.strings(ori).size(), 3);
+    assertEquals(tensorProperties.strings().size(), 3);
     ori.abc = RealScalar.ONE;
-    assertEquals(TensorProperties.strings(ori).size(), 4);
-    Properties properties = TensorProperties.extract(ori);
+    assertEquals(tensorProperties.strings().size(), 4);
+    Properties properties = tensorProperties.get();
     {
       ParamContainer pc = new ParamContainer();
-      TensorProperties.insert(properties, pc);
+      TensorProperties tensorProperties2 = TensorProperties.wrap(pc);
+      tensorProperties2.set(properties);
       assertEquals(ori.string, pc.string);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
       assertEquals(ori.abc, pc.abc);
     }
     {
-      ParamContainer pc = TensorProperties.newInstance(properties, ParamContainer.class);
+      ParamContainer pc = new ParamContainer();
+      TensorProperties tensorProperties2 = TensorProperties.wrap(pc);
+      tensorProperties2.set(properties);
       assertEquals(ori.string, pc.string);
       assertEquals(ori.maxTor, pc.maxTor);
       assertEquals(ori.shape, pc.shape);
@@ -127,16 +149,23 @@ public class TensorPropertiesTest extends TestCase {
   public void testManifest() throws IOException {
     File file = UserHome.file("TensorProperties_testfile.properties");
     assertFalse(file.exists());
-    TensorProperties.manifest(file, SensorsConfig.GLOBAL);
+    TensorProperties tensorProperties = TensorProperties.wrap(SensorsConfig.GLOBAL);
+    tensorProperties.save(file);
     assertTrue(file.exists());
-    SensorsConfig sc = TensorProperties.retrieve(file, new SensorsConfig());
+    SensorsConfig sc = new SensorsConfig();
+    TensorProperties.wrap(sc).load(file);
     assertEquals(sc.urg04lx, SensorsConfig.GLOBAL.urg04lx);
     assertEquals(sc.vlp16Height, SensorsConfig.GLOBAL.vlp16Height);
     file.delete();
   }
 
   public void testRetrieveFail() {
-    GokartLogConfig sc = TensorProperties.retrieve(new File("asd"), new GokartLogConfig());
-    assertTrue(sc != null);
+    TensorProperties tensorProperties = TensorProperties.wrap(new GokartLogConfig());
+    try {
+      tensorProperties.load(new File("asd"));
+      assertTrue(false);
+    } catch (Exception exception) {
+      // ---
+    }
   }
 }
