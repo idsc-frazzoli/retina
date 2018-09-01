@@ -1,4 +1,4 @@
-%code by mh
+%code by mheim
 %load steering, braking and wheelspeed
 %steering
 %powersteer = csvread

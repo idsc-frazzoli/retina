@@ -1,4 +1,6 @@
+%code by mheim
 function [nx,nP] = IMUMeasure(x,P,dt,m, R,Q)
+% TODO define input parameters
 %measurement m = [ax,ay,dottheta]
 %rotate measurement into world frame
 Rot = @(theta)[cos(theta),-sin(theta);sin(theta),cos(theta)];

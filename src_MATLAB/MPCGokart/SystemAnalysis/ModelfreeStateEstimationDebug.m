@@ -1,3 +1,4 @@
+%code by mheim
 startt = 500;
 endt = startt+100;
 %close all

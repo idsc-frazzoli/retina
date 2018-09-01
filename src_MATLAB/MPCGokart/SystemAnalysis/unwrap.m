@@ -1,3 +1,6 @@
+%code by mheim
+% TODO is this related or consistent with
+% https://ch.mathworks.com/help/matlab/ref/unwrap.html
 function nx = unwrap(x, d)
 %unwrap data (for example angles that wrap aroun +/-180°
 %d is the unwrapping distance eg.: 360°
