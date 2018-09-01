@@ -1,5 +1,7 @@
 tic;
-for i = 1:1000
-    myNeuralNetworkFunction(0.1);
+nn = 10000;
+for i = 1:nn
+    modelApprox(0.1);
 end
-toc
+tt=toc
+tt/nn

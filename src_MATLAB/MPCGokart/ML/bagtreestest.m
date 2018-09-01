@@ -20,19 +20,16 @@ Ypred = predict(B,Xpred');
 %SVM = fitrsvm(X,Y,'OptimizeHyperparameters','auto',...
 %    'HyperparameterOptimizationOptions',struct('AcquisitionFunctionName',...
 %    'expected-improvement-plus'))
-SVM = fitrsvm(X,Y,'Standardize',true,'KernelFunction','rbf')
+%SVM = fitrsvm(X,Y,'Standardize',true,'KernelFunction','rbf')
 
 %%
-SMVYpred = predict(SVM,Xpred');
-
+%SMVYpred = predict(SVM,Xpred');
+NNYpred = modelApprox(Xpred);
 figure
 hold on
 plot(Xpred,Ypred);
-plot(Xpred,SMVYpred);
+plot(Xpred,NNYpred);
+%plot(Xpred,SMVYpred);
 plot(Xpred,sin(Xpred));
 x = 0.1;
-legend('BagTrees', 'SVM','ground truth')
-
-tic;
-predict(SVM, x);
-toc;
+legend('BagTrees', 'neuralnet', 'ground truth')
