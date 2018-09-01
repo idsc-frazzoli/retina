@@ -21,16 +21,16 @@ public enum AppCustomization {
     return new File(dir2, filename);
   }
 
+  /** @param cls
+   * @param object
+   * @return */
   public static <T> T load(Class<?> cls, T object) {
     return TensorProperties.wrap(object).tryLoad(file(cls));
-    // return object;
   }
 
+  /** @param cls
+   * @param object */
   public static void save(Class<?> cls, Object object) {
-    try {
-      TensorProperties.wrap(object).save(file(cls));
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+    TensorProperties.wrap(object).trySave(file(cls));
   }
 }

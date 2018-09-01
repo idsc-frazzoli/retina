@@ -68,30 +68,29 @@ import ch.ethz.idsc.tensor.io.StringScalarQ;
       }
     }
     addSeparator();
-    for (Field field : object.getClass().getFields()) {
-      if (TensorProperties.isTracked(field))
-        try {
-          Object value = field.get(object);
-          JTextField jTextField = createEditing(field.getName());
-          jTextField.setFont(FONT);
-          jTextField.setText("" + value);
-          jTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-              updateBackground(jTextField, field);
-              checkFields();
-            }
-          });
-          jTextField.addActionListener(e -> {
-            if (checkFields())
-              updateInstance();
-          });
-          updateBackground(jTextField, field);
-          map.put(field, jTextField);
-        } catch (Exception exception) {
-          // ---
-        }
-    }
+    TensorProperties.wrap(object).fields().forEach(field -> {
+      try {
+        Object value = field.get(object);
+        JTextField jTextField = createEditing(field.getName());
+        jTextField.setFont(FONT);
+        jTextField.setText("" + value);
+        jTextField.addKeyListener(new KeyAdapter() {
+          @Override
+          public void keyReleased(KeyEvent keyEvent) {
+            updateBackground(jTextField, field);
+            checkFields();
+          }
+        });
+        jTextField.addActionListener(e -> {
+          if (checkFields())
+            updateInstance();
+        });
+        updateBackground(jTextField, field);
+        map.put(field, jTextField);
+      } catch (Exception exception) {
+        // ---
+      }
+    });
   }
 
   private void updateBackground(JTextField jTextField, Field field) {

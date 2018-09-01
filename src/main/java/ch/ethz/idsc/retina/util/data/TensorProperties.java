@@ -5,17 +5,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Import;
 
 /** manages configurable parameters by introspection of a given instance
@@ -24,61 +23,48 @@ import ch.ethz.idsc.tensor.io.Import;
  * {@link Tensor}, {@link Scalar}, {@link String}, {@link Boolean}
  * are stored in, and retrieved from files in the {@link Properties} format */
 public class TensorProperties {
-  private static final int MASK_FILTER = Modifier.PUBLIC;
-  private static final int MASK_TESTED = //
-      Modifier.FINAL | Modifier.STATIC | Modifier.TRANSIENT | MASK_FILTER;
-
-  /** Hint: function is used to create a GUI to edit the tracked fields
-   * <pre>
-   * for (Field field : object.getClass().getFields())
-   * if (TensorProperties.isTracked(field))
-   * ...
-   * </pre>
-   * 
-   * @param field
+  /** @param object
    * @return */
-  public static boolean isTracked(Field field) {
-    if ((field.getModifiers() & MASK_TESTED) == MASK_FILTER) {
-      Class<?> type = field.getType();
-      return type.equals(Tensor.class) //
-          || type.equals(Scalar.class) //
-          || type.equals(String.class) //
-          || type.equals(Boolean.class);
-    }
-    return false;
+  public static TensorProperties wrap(Object object) {
+    return new TensorProperties(object);
   }
 
   /** @param field
    * @param string
    * @return object with content parsed from given string */
   public static Object parse(Field field, String string) {
-    return parse(field.getType(), string);
-  }
-
-  /* package */ static Object parse(Class<?> type, String string) {
-    if (type.equals(Tensor.class))
-      return Tensors.fromString(string);
-    else //
-    if (type.equals(Scalar.class))
-      return Scalars.fromString(string);
-    else //
-    if (type.equals(String.class))
-      return string;
-    else //
-    if (type.equals(Boolean.class))
-      return BooleanParser.orNull(string);
-    return null;
+    return StaticHelper.parse(field.getType(), string);
   }
 
   /***************************************************/
-  public static TensorProperties wrap(Object object) {
-    return new TensorProperties(object);
-  }
-
   private final Object object;
 
   private TensorProperties(Object object) {
-    this.object = object;
+    this.object = Objects.requireNonNull(object);
+  }
+
+  /** @return stream of tracked fields of given object */
+  public Stream<Field> fields() {
+    return Stream.of(object.getClass().getFields()) //
+        .filter(StaticHelper::isTracked);
+  }
+
+  /** @param properties
+   * @param object with fields to be assigned according to given properties
+   * @return given object
+   * @throws Exception if either of the input parameters is null */
+  @SuppressWarnings("unchecked")
+  public <T> T set(Properties properties) {
+    fields().forEach(field -> {
+      String string = properties.getProperty(field.getName());
+      if (Objects.nonNull(string))
+        try {
+          field.set(object, parse(field, string));
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+    });
+    return (T) object;
   }
 
   /** @param object
@@ -88,34 +74,8 @@ public class TensorProperties {
   }
 
   private Properties get(Properties properties) {
-    for (Field field : object.getClass().getFields())
-      if (isTracked(field))
-        try {
-          Object value = field.get(object);
-          if (Objects.nonNull(value))
-            properties.setProperty(field.getName(), value.toString());
-        } catch (Exception exception) {
-          exception.printStackTrace();
-        }
+    consume(properties::setProperty);
     return properties;
-  }
-
-  /** @param properties
-   * @param object with fields to be assigned according to given properties
-   * @return given object
-   * @throws Exception if either of the input parameters is null */
-  public void set(Properties properties) {
-    for (Field field : object.getClass().getFields())
-      if (isTracked(field)) {
-        String string = properties.getProperty(field.getName());
-        if (Objects.nonNull(string))
-          try {
-            field.set(object, parse(field, string));
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
-      }
-    // return null;
   }
 
   /***************************************************/
@@ -126,42 +86,54 @@ public class TensorProperties {
    * @return object with fields updated from properties file
    * @throws IOException
    * @throws FileNotFoundException */
-  @SuppressWarnings("unchecked")
-  public <T> T load(File file) throws FileNotFoundException, IOException {
+  public void load(File file) throws FileNotFoundException, IOException {
     set(Import.properties(file));
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T tryLoad(File file) {
+    try {
+      load(file);
+    } catch (Exception exception) {
+      // ---
+    }
     return (T) object;
   }
 
-  /** store tracked fields of given object in file
+  /** store tracked fields of given object in given file
    * 
-   * @param file
+   * @param file properties
    * @param object
    * @throws IOException */
   public void save(File file) throws IOException {
     Files.write(file.toPath(), (Iterable<String>) strings()::iterator);
   }
 
-  /* package */ List<String> strings() {
-    List<String> list = new LinkedList<>();
-    for (Field field : object.getClass().getFields())
-      if (isTracked(field))
-        try {
-          Object value = field.get(object);
-          if (Objects.nonNull(value))
-            list.add(field.getName() + "=" + value.toString());
-        } catch (Exception exception) {
-          exception.printStackTrace();
-        }
-    return list;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T tryLoad(File file) {
+  /** @param file */
+  public void trySave(File file) {
     try {
-      return load(file);
+      save(file);
     } catch (Exception exception) {
       // ---
     }
-    return (T) object;
+  }
+
+  /* package */ List<String> strings() {
+    List<String> list = new LinkedList<>();
+    consume((field, value) -> list.add(field + "=" + value));
+    return list;
+  }
+
+  // helper function
+  private void consume(BiConsumer<String, String> biConsumer) {
+    fields().forEach(field -> {
+      try {
+        Object value = field.get(object); // may throw Exception
+        if (Objects.nonNull(value))
+          biConsumer.accept(field.getName(), value.toString());
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+    });
   }
 }

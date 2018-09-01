@@ -6,11 +6,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 class ParamContainer {
-  public static final ParamContainer INSTANCE = new ParamContainer();
-  static {
-    TensorProperties.wrap(INSTANCE) //
-        .set(ResourceData.properties("/properties/ParamContainer.properties"));
-  }
+  public static final ParamContainer INSTANCE = TensorProperties.wrap(new ParamContainer()) //
+      .set(ResourceData.properties("/properties/ParamContainer.properties"));
   // ---
   public String string;
   public Scalar maxTor;
