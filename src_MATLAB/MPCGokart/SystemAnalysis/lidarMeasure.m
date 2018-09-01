@@ -18,10 +18,10 @@ M = [m1;m2;m3];
 F = [zeros(3,6),eye(3);...
     zeros(3,3),-eye(3)/(dmt),eye(3)/(dmt);...
     eye(3)*(1/dmt^2),-eye(3)*(2/dmt^2),eye(3)*(1/dmt^2)];
-fullz = F*M;
+z = F*M;
 %measurment variance (7 because each measurement is used 7 times)
 V = 7*blkdiag(R,R,R);
-fullR = F*V*F';
+R = F*V*F';
 Fx = getEvolution(x);
 dotx = Fx*x;
 if(dt > 0.00001)
@@ -30,8 +30,8 @@ else
     px = x;
     pP = P;
 end
-h = x(1:8);
-Hx = [eye(8),zeros(8,2)];
-[nx,nP]=kmeasure(px,pP,h,Hx,fullz,fullR);
+h = x;
+Hx = eye(9);
+[nx,nP]=kmeasure(px,pP,h,Hx,z,R);
 end
 
