@@ -80,14 +80,18 @@ enum LogPoseInject {
   }
 
   public static void main(String[] args) throws Exception {
-    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_red");
-    for (File folder : root.listFiles()) {
-      System.out.println(folder);
-      // OfflinePoseEstimator offlinePoseEstimator = ;
-      File dst = UserHome.file("export_red/" + folder.getName() + ".lcm");
-      dst.delete();
-      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-      process(gokartLogInterface.file(), dst, new LidarGyroPoseEstimator(gokartLogInterface));
-    }
+    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_azure");
+    for (File folder : root.listFiles())
+      if (folder.isDirectory()) {
+        System.out.println(folder);
+        File dst = UserHome.file("export_azure/" + folder.getName() + ".lcm");
+        if (dst.isFile()) {
+          System.out.println("skipping " + dst);
+        } else {
+          // dst.delete();
+          GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
+          process(gokartLogInterface.file(), dst, new LidarGyroPoseEstimator(gokartLogInterface));
+        }
+      }
   }
 }

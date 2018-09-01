@@ -4,9 +4,13 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -34,9 +38,11 @@ public enum PredefinedMap implements LocalizationImage {
   /** empty space with tents */
   DUBILAB_OBSTACLES_20180704(7.5), //
   /** only the first tent */
-  DUBILAB_LOCALIZATION_20180705(7.5), //
+  // DUBILAB_LOCALIZATION_20180705(7.5), //
   /** only front tent, four balloons in the aerotain area */
-  DUBILAB_LOCALIZATION_20180813(7.5), //
+  // DUBILAB_LOCALIZATION_20180813(7.5), //
+  /** only front tent, aerotain poster shifted, no balloons */
+  DUBILAB_LOCALIZATION_20180901(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -124,5 +130,9 @@ public enum PredefinedMap implements LocalizationImage {
   /** @return meter to pixel */
   public Scalar scale() {
     return scale;
+  }
+
+  public static void main(String[] args) throws IOException {
+    ImageIO.write(DUBILAB_LOCALIZATION_20180901.bufferedImage, "png", UserHome.file("map.png"));
   }
 }
