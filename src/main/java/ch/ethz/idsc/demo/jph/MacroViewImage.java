@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.img.ImageResize;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -55,7 +56,7 @@ class SpeedClip implements ScalarUnaryOperator {
   private static final ScalarUnaryOperator SPEED_CLIP = new SpeedClip();
   private static final ColorDataIndexed COLODATAINDEXED = ColorDataLists._003.cyclic();
   private static final ScalarTensorFunction GRADIENT = ColorDataGradients.AVOCADO;
-  private static final File BACKGROUND = UserHome.Pictures("keyvisual.png");
+  // private static final File BACKGROUND = UserHome.Pictures("keyvisual.png");
   private static final TensorUnaryOperator BLACK_TO_YELLOW = rgba -> {
     if (Scalars.isZero(rgba.Get(0)))
       return Tensors.vector(255, 248, 198, 255);
@@ -132,8 +133,8 @@ class SpeedClip implements ScalarUnaryOperator {
       BufferedImage bufferedImage = ImageFormat.of(image);
       Graphics2D graphics = bufferedImage.createGraphics();
       GraphicsUtil.setQualityHigh(graphics);
-      if (BACKGROUND.isFile()) {
-        Tensor keyvisual = Import.of(BACKGROUND);
+      {
+        Tensor keyvisual = ResourceData.of("/eth/marketing/keyvisual.png");
         keyvisual = TensorMap.of(BLACK_TO_YELLOW, keyvisual, 2);
         BufferedImage background = ImageFormat.of(keyvisual);
         graphics.drawImage(background, 0, 0, null);

@@ -14,11 +14,11 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
     file = DatahakiLogFileLocator.file(GokartLogFile._20180830T160739_30e51fa2);
-    file = new File("/media/datahaki/media/ethz/gokart/topic/track_azure/20180827T150209_1/log.lcm");
+    file = new File("/media/datahaki/media/ethz/gokart/topic/track_azure/20180827T175941_6/log.lcm");
     // file = UserHome.file("export_red/copy20180820T143852_1.lcm");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
-    cfg.speed_denominator = 1;
+    cfg.speed_denominator = 8;
     LogPlayer.create(cfg);
   }
 }

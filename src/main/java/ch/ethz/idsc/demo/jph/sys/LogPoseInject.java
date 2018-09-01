@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobs;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NonSI;
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
@@ -81,10 +80,11 @@ enum LogPoseInject {
 
   public static void main(String[] args) throws Exception {
     File root = new File("/media/datahaki/media/ethz/gokart/topic/track_azure");
+    File targ = new File("/media/datahaki/data/ethz/export_azure");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         System.out.println(folder);
-        File dst = UserHome.file("export_azure/" + folder.getName() + ".lcm");
+        File dst = new File(targ, folder.getName() + ".lcm");
         if (dst.isFile()) {
           System.out.println("skipping " + dst);
         } else {
