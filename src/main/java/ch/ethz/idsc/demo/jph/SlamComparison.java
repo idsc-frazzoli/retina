@@ -32,7 +32,7 @@ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-    for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_red.properties"))) {
+    for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_azure.properties"))) {
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // System.out.println(olr.model());

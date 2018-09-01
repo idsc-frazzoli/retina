@@ -13,10 +13,11 @@ enum GokartLogCutter {
   /** azure:
    * _20180827T150209_db899976
    * _20180827T170643_db899976
+   * _20180827T175941_db899976
    * _20180830T101537_db899976
    * _20180830T111749_db899976 */
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20180830T111749_db899976;
+    GokartLogFile gokartLogFile = GokartLogFile._20180823T135656_2693c28e;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //

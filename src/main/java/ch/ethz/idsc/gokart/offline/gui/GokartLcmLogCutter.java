@@ -29,7 +29,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -156,9 +157,10 @@ public class GokartLcmLogCutter {
   }
 
   static BufferedImage speedProfile(GokartLogFileIndexer gokartLogFileIndexer) {
-    Clip clip = Clip.function(0, 4);
-    Tensor tensor = Tensors.of(Tensor.of(gokartLogFileIndexer.raster2speed() //
-        .map(clip::rescale).map(ColorDataGradients.CLASSIC)));
-    return ImageFormat.of(tensor);
+    Clip clip = Clip.function(0, 40);
+    Tensor tensor = Transpose.of( //
+        Tensor.of(gokartLogFileIndexer.raster2speed()).map(clip::rescale));
+    System.out.println(Dimensions.of(tensor));
+    return ImageFormat.of(tensor.map(ColorDataGradients.CLASSIC));
   }
 }

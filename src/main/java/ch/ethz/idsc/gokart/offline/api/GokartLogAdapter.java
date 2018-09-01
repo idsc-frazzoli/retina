@@ -13,12 +13,12 @@ public class GokartLogAdapter implements GokartLogInterface {
 
   // ---
   private final File folder;
-  private final GokartLogConfig gokartLogConfig;
+  private final GokartLogConfig gokartLogConfig = new GokartLogConfig();
 
   private GokartLogAdapter(File folder) {
     this.folder = folder;
-    gokartLogConfig = TensorProperties.retrieve( //
-        new File(folder, "GokartLogConfig.properties"), new GokartLogConfig());
+    TensorProperties.wrap(gokartLogConfig) //
+        .tryLoad(new File(folder, "GokartLogConfig.properties"));
   }
 
   @Override // from GokartLogInterface

@@ -12,7 +12,7 @@ public class BlobTrackConfigTest extends TestCase {
   public void testSimple() throws IOException {
     BlobTrackConfig test = new BlobTrackConfig();
     File file = UserHome.file("__" + BlobTrackConfigTest.class.getSimpleName() + "__.properties");
-    TensorProperties.manifest(file, test);
+    TensorProperties.wrap(test).save(file);
     assertTrue(file.isFile());
     file.delete();
   }
