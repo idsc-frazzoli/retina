@@ -32,19 +32,23 @@ lR = diag([0.2,0.2,0.1]);
 [~,lA]=size(adat);
 totalN = lN+lA;
 
-currentt = min(lt(1),at(1));
+if(useIMU)
+    currentt = min(lt(1),at(1));
+else
+    currentt = lt(1);
+end
 acount = aagg;
 lcount = 3;
-tcount = 2;
-maxt = max(at)-0.1;
+tcount = 1;
+maxt = max(lt)-0.1;
 thist = zeros(totalN,1);
 xhist = zeros(totalN,dim);
 Phist = zeros(totalN,dim,dim);
 Fhist = zeros(totalN,dim,dim);
 Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
-    currentt
-    maxt
+    currentt;
+    maxt;
     if currentt>25
         %lR=eye(3)*1000000;
         a = 1;
