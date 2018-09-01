@@ -7,8 +7,8 @@ x(1:3)=ldat(1,2:4);
 x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
-IMUa = 100;
-IMUr = 30;
+IMUa = 200;
+IMUr = 1000000;
 Q = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
 lt = ldat(:,1);
 at = adat(:,1);
@@ -16,15 +16,16 @@ ldat = ldat(:,2:4);
 adat = adat(:,2:4);
 
 %I don't use IMU data at the moment :(
-useIMU;
+useIMU = false;
 maxStep = 0.01;
 
 %aggregate accelerationdata
 aagg = 10;
 
 %use higher frequency for data
-lR = estimateVar(ldat);
-aR = estimateVar(adat)*100000;
+%lR = estimateVar(ldat);
+lR = diag([0.2,0.2,0.1]);
+%aR = estimateVar(adat)*100000;
 
 
 [~,lN]=size(ldat);
@@ -44,9 +45,10 @@ Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
     currentt
     maxt
-    %if currentt>530
-    %    lR=eye(3)*1000000;
-    %end
+    if currentt>25
+        %lR=eye(3)*1000000;
+        a = 1;
+    end
     if(useIMU)
         if(lt(lcount)<at(acount))
             %update with lidar
@@ -70,6 +72,7 @@ while(currentt < maxt)
         end
     else
         if(lt(lcount)>currentt+maxStep)
+        %if(1)
             %update with lidar
             dt = lt(lcount)-currentt;
             currentt = lt(lcount);
@@ -78,10 +81,10 @@ while(currentt < maxt)
             lcount = lcount+1;
         else
             dt = maxStep;
-            currentt = currentt+maxStep;
+            currentt = currentt+dt;
             Fx = getEvolution(x);
             dotx = Fx*x;
-            [x,P]=Predict(x,P,dotx,Fx,dt,Q);
+            [x,P]=Predict(x,P,dotx,Fx,dt,dt*Q);
         end
     end
     thist(tcount)=currentt;
