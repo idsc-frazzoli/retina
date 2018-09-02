@@ -28,17 +28,17 @@ import ch.ethz.idsc.tensor.Tensors;
     return false;
   }
 
-  /* package */ static Object parse(Class<?> type, String string) {
-    if (type.equals(Tensor.class))
+  /** @param cls
+   * @param string
+   * @return new instance of class that was constructed from given string */
+  /* package */ static Object parse(Class<?> cls, String string) {
+    if (cls.equals(Tensor.class))
       return Tensors.fromString(string);
-    else //
-    if (type.equals(Scalar.class))
+    if (cls.equals(Scalar.class))
       return Scalars.fromString(string);
-    else //
-    if (type.equals(String.class))
+    if (cls.equals(String.class))
       return string;
-    else //
-    if (type.equals(Boolean.class))
+    if (cls.equals(Boolean.class))
       return BooleanParser.orNull(string);
     return null;
   }
