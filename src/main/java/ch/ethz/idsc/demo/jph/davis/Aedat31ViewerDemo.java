@@ -11,7 +11,7 @@ enum Aedat31ViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
     try (AnimatedGifWriter agw2 = AnimatedGifWriter.of(UserHome.file("events.gif"), 100)) {
-      Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage();
+      Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(8);
       aedat31PolarityImage.listeners.add(new TimedImageListener() {
         int count = 0;
 
