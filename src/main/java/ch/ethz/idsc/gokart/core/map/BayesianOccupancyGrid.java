@@ -53,15 +53,18 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
-   * @param cellDim non-negative dimension of cell in [m]
+   * @param cellDim non-negative dimension of cell with unit SI.METER
+   * @param obstacleRadius with unit SI.METER
+   * cells within this radius of an occupied cell will also be labeled as occupied.
+   * If not set or below cellDim, only the occupied cell is labeled as an obstacle
    * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
-  public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim) {
+  public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius) {
     // sizeCeil is for instance {200[m^-1], 200[m^-1]}
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
     return new BayesianOccupancyGrid(lbounds, rangeCeil, new Dimension( //
         Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
-        Magnitude.PER_METER.toInt(sizeCeil.Get(1))));
+        Magnitude.PER_METER.toInt(sizeCeil.Get(1))), obstacleRadius);
   }
 
   // ---
@@ -80,7 +83,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   /** forgetting factor for previous classifications */
   private final double lambda = MappingConfig.GLOBAL.getLambda();
   // ---
-  private Tensor lbounds;
   private final Scalar cellDim; // [m] per cell
   private final Tensor cellDimHalfVec;
   private final Scalar cellDimInv; // cells per [m]
@@ -88,15 +90,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final int dimx;
   private final int dimy;
   // ---
-  /** from gokart frame to world frame */
-  private Tensor gokart2world = null;
   private final GeometricLayer lidar2cellLayer;
   private final GeometricLayer world2cellLayer;
-  @SuppressWarnings("unused")
-  private double poseQuality;
-  // ---
-  /** array containing current log odds of each cell */
-  private double[] logOdds;
   /** maximum likelihood obstacle map */
   private final BufferedImage obstacleImage;
   private final byte[] imagePixels;
@@ -104,14 +99,23 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   /** set of occupied cells */
   private final Set<Tensor> hset = new HashSet<>();
   // ---
-  private Scalar obsDilationRadius;
+  private final Scalar obsDilationRadius;
   private final Tensor scaling;
   private final double lFactor;
+  // ---
+  private Tensor lbounds;
+  /** from gokart frame to world frame */
+  private Tensor gokart2world = null;
+  @SuppressWarnings("unused")
+  private double poseQuality;
+  // ---
+  /** array containing current log odds of each cell */
+  private double[] logOdds;
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space of the form {value, value}
    * @param dimension of grid in cell space */
-  private BayesianOccupancyGrid(Tensor lbounds, Tensor range, Dimension dimension) {
+  private BayesianOccupancyGrid(Tensor lbounds, Tensor range, Dimension dimension, Scalar obstacleRadius) {
     VectorQ.requireLength(range, 2);
     System.out.print("Grid range: " + range + "\n");
     System.out.print("Grid size: " + dimension + "\n");
@@ -129,6 +133,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     imagePixels = dataBufferByte.getData();
     imageGraphics = obstacleImage.createGraphics();
+    // FIXME
     obsDilationRadius = cellDim.divide(RealScalar.of(2)); // Jan moved this line before genObstacleMap()
     genObstacleMap();
     Scalar ratio = MappingConfig.GLOBAL.minObsHeight.divide(SensorsConfig.GLOBAL.vlp16Height);
@@ -235,14 +240,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
           drawSphere(cell, obsDilationRadius);
       }
     }
-  }
-
-  /** cells within this radius of an occupied cell will also be labeled as occupied.
-   * If not set or below cellDim, only the occupied cell is labeled as an obstacle
-   * @param radius */
-  public void setObstacleRadius(Scalar radius) {
-    System.out.println("Radius: " + radius);
-    obsDilationRadius = radius;
   }
 
   /** Updates the grid lbounds. Grid range and size remain unchanged.

@@ -7,6 +7,8 @@ import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** parameters for the mapping of the gokart surroundings and obstacles */
@@ -55,5 +57,13 @@ public class MappingConfig implements Serializable {
 
   public double getLambda() {
     return lambda.number().doubleValue();
+  }
+
+  /** @return Dubilab specific BayesianOccupancyGrid */
+  public BayesianOccupancyGrid createBayesianOccupancyGrid() {
+    // TODO comment on magic const 640/7.5
+    Tensor LOWER_BOUND = Tensors.vector(30, 30);
+    Tensor GRID_RANGE = Tensors.vector(40, 40);
+    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, obsRadius);
   }
 }

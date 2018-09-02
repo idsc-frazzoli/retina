@@ -33,16 +33,13 @@ public class GokartMappingModule implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, RenderInterface {
   /** ferry for visualizing grid in presenter lcm module */
   public static RenderInterface GRID_RENDER;
-  private static final Tensor GRID_RANGE = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
-  private static final Tensor LOWER_BOUND = Tensors.vector(30, 30);
   // ---
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(10000, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
   private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = //
-      BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, MappingConfig.GLOBAL.cellDim);
+  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -61,7 +58,6 @@ public class GokartMappingModule implements //
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    bayesianOccupancyGrid.setObstacleRadius(obstacleRadius);
     GRID_RENDER = bayesianOccupancyGrid;
   }
 

@@ -1,10 +1,9 @@
 // code by ynager
-package ch.ethz.idsc.demo.yn;
+package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -24,8 +23,6 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
-import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
@@ -40,11 +37,8 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -52,8 +46,16 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
+public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  private static final String CHANNEL_LIDAR = //
+      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+  // ---
+  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
+  private final BayesianOccupancyGrid grid;
+  private final Tensor gridRange = Tensors.vector(40, 40);
+  private final Tensor lbounds = Tensors.vector(30, 30);
+  private final File folder = UserHome.Pictures("log/mapper");
   // ---
   private GokartPoseEvent gpe;
   private ScatterImage scatterImage;
@@ -61,16 +63,10 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
-  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private static final String CHANNEL_LIDAR = //
-      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private final BayesianOccupancyGrid grid;
-  private final Tensor gridRange = Tensors.vector(40, 40);
-  private final Tensor lbounds;
-  // private boolean flag = false;
+  private int image_count = 0;
 
-  public MappingAnalysis() {
+  public MappingAnalysisOffline() {
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
@@ -82,13 +78,15 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     // ---
-    lbounds = Tensors.vector(30, 30);
-    grid = BayesianOccupancyGrid.of(lbounds, gridRange.extract(0, 2), DoubleScalar.of(0.2));
-    grid.setObstacleRadius(DoubleScalar.of(0.4));
+    grid = BayesianOccupancyGrid.of(lbounds, gridRange, //
+        Quantity.of(0.2, SI.METER), //
+        Quantity.of(0.4, SI.METER));
+    folder.mkdirs();
+    if (!folder.isDirectory())
+      throw new RuntimeException();
   }
 
-  // ---
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
@@ -115,24 +113,16 @@ class MappingAnalysis implements OfflineLogListener, LidarRayBlockListener {
       // ---
       // grid.genObstacleMap();
       // System.out.println(time);
+      grid.genObstacleMap();
       try {
-        grid.genObstacleMap();
-        ImageIO.write(image, "png", UserHome.Pictures("/log/mapper/" + Magnitude.SECOND.apply(time).toString() + ".png"));
+        ImageIO.write(image, "png", new File(folder, String.format("%06d.png", image_count++)));
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
   }
 
-  public static void main(String[] args) throws FileNotFoundException, IOException {
-    // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
-    File file = new File("/home/ynager/gokart/logs/20180503/20180503T160522_short.lcm");
-    OfflineLogListener oll = new MappingAnalysis();
-    OfflineLogPlayer.process(file, oll);
-    System.out.print("Done.");
-  }
-
-  @Override
+  @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     if (Objects.nonNull(grid))
