@@ -27,14 +27,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** class interprets sensor data from lidar information */
+/** class interprets sensor data from lidar */
 // TODO since this class does not (yet) extend from AbstractModule, the class name is not good
 public class GokartMappingModule implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, RenderInterface {
   /** ferry for visualizing grid in presenter lcm module */
-  public static RenderInterface gridRender;
-  private static final Tensor gridRange = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
-  private static final Tensor lbounds = Tensors.vector(30, 30);
+  public static RenderInterface GRID_RENDER;
+  private static final Tensor GRID_RANGE = Tensors.vector(40, 40); // TODO comment on magic const 640/7.5
+  private static final Tensor LOWER_BOUND = Tensors.vector(30, 30);
   // ---
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(10000, 3);
@@ -42,7 +42,7 @@ public class GokartMappingModule implements //
   private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final BayesianOccupancyGrid bayesianOccupancyGrid = //
-      BayesianOccupancyGrid.of(lbounds, gridRange, MappingConfig.GLOBAL.cellDim);
+      BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, MappingConfig.GLOBAL.cellDim);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -62,7 +62,7 @@ public class GokartMappingModule implements //
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
     bayesianOccupancyGrid.setObstacleRadius(obstacleRadius);
-    gridRender = bayesianOccupancyGrid;
+    GRID_RENDER = bayesianOccupancyGrid;
   }
 
   @Override // from StartAndStoppable

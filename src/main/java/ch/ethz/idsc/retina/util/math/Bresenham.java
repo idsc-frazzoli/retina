@@ -1,11 +1,12 @@
 // code by ynager
-// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 package ch.ethz.idsc.retina.util.math;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+/** Reference:
+ * https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm */
 public enum Bresenham {
   ;
   /** @param x0 coordinate of starting point
@@ -13,8 +14,10 @@ public enum Bresenham {
    * @param x1 coordinate of final point
    * @param y1 coordinate of final point
    * @return list of points in cell coordinates */
-  public static List<Point> line(int x0, int y0, int x1, int y1) {
-    List<Point> line = new ArrayList<>();
+  public static List<Point> line( //
+      final int x0, final int y0, //
+      final int x1, final int y1) {
+    List<Point> line = new LinkedList<>();
     int dx = Math.abs(x1 - x0);
     int dy = Math.abs(y1 - y0);
     int sx = x0 < x1 ? 1 : -1;
@@ -22,12 +25,10 @@ public enum Bresenham {
     int err = dx - dy;
     int xi = x0;
     int yi = y0;
-    while (true) {
-      line.add(new Point(xi, yi));
-      if (xi == x1 && yi == y1)
-        break;
+    line.add(new Point(xi, yi));
+    while (xi != x1 || yi != y1) {
       int e2 = 2 * err;
-      if (e2 > -dy) {
+      if (-dy < e2) {
         err -= dy;
         xi += sx;
       }
@@ -35,6 +36,7 @@ public enum Bresenham {
         err += dx;
         yi += sy;
       }
+      line.add(new Point(xi, yi));
     }
     return line;
   }

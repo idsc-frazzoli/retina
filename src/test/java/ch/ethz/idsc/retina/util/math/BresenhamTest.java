@@ -42,4 +42,11 @@ public class BresenhamTest extends TestCase {
     assertEquals(line.get(line.size() - 1).x, 30);
     assertEquals(line.get(line.size() - 1).y, 10);
   }
+
+  public void testSingle() {
+    List<Point> line = Bresenham.line(11, 40, 11, 40);
+    assertEquals(line.size(), 1);
+    assertEquals(line.get(0).x, 11);
+    assertEquals(line.get(0).y, 40);
+  }
 }

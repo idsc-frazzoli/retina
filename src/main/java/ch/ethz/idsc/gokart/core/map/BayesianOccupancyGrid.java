@@ -25,6 +25,7 @@ import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.Bresenham;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -47,18 +48,23 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private static final short MASK_UNKNOWN = 0xDD;
   @SuppressWarnings("unused")
   private static final short MASK_EMPTY = 0xFF;
+  private static final Color COLOR_OCCUPIED = //
+      new Color(MASK_OCCUPIED, MASK_OCCUPIED, MASK_OCCUPIED);
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
    * @param cellDim non-negative dimension of cell in [m]
    * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
   public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim) {
+    // sizeCeil is for instance {200[m^-1], 200[m^-1]}
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
-    return new BayesianOccupancyGrid(lbounds, rangeCeil, //
-        new Dimension(sizeCeil.Get(0).number().intValue(), sizeCeil.Get(1).number().intValue()));
+    return new BayesianOccupancyGrid(lbounds, rangeCeil, new Dimension( //
+        Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
+        Magnitude.PER_METER.toInt(sizeCeil.Get(1))));
   }
 
+  // ---
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
   // ---
   /** prior */
@@ -123,8 +129,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     imagePixels = dataBufferByte.getData();
     imageGraphics = obstacleImage.createGraphics();
+    obsDilationRadius = cellDim.divide(RealScalar.of(2)); // Jan moved this line before genObstacleMap()
     genObstacleMap();
-    obsDilationRadius = cellDim.divide(RealScalar.of(2));
     Scalar ratio = MappingConfig.GLOBAL.minObsHeight.divide(SensorsConfig.GLOBAL.vlp16Height);
     lFactor = RealScalar.ONE.subtract(ratio).number().doubleValue();
     // ---
@@ -180,11 +186,10 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
                 cell0.Get(0).number().intValue(), //
                 cell0.Get(1).number().intValue(), //
                 pix, piy);
-            line.remove(line.size() - 1);
-            for (Point p : line) {
-              idx = p.y * dimx + p.x;
+            for (Point point : line.subList(0, line.size() - 1)) {
+              idx = point.y * dimx + point.x;
               logOddPrev = logOdds[idx];
-              updateCellLogOdd(p.x, p.y, PREDEFINED_P[2]);
+              updateCellLogOdd(point.x, point.y, PREDEFINED_P[2]);
               logOdd = logOdds[idx];
               // Max likelihood estimation
               synchronized (hset) {
@@ -221,8 +226,14 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     imageGraphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     synchronized (hset) {
-      for (Tensor cell : hset)
-        drawSphere(cell, obsDilationRadius, MASK_OCCUPIED);
+      if (Scalars.lessEquals(obsDilationRadius, cellDim))
+        for (Tensor cell : hset)
+          drawCell(cell, (byte) MASK_OCCUPIED);
+      else {
+        imageGraphics.setColor(COLOR_OCCUPIED);
+        for (Tensor cell : hset)
+          drawSphere(cell, obsDilationRadius);
+      }
     }
   }
 
@@ -245,6 +256,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
       lidar2cellLayer.popMatrix();
       lidar2cellLayer.popMatrix();
       lidar2cellLayer.popMatrix();
+      // ---
       lidar2cellLayer.pushMatrix(getWorld2grid()); // updated world to grid
       double[] logOddsNew = new double[dimx * dimy];
       Arrays.fill(logOddsNew, StaticHelper.pToLogOdd(P_M));
@@ -292,9 +304,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * @param pos vector of the form {px, py, ...}; only the first two entries are considered
    * @return */
   private Tensor lidarToCell(Tensor pos) {
-    Point2D point2D = lidar2cellLayer.toPoint2D(pos);
-    Tensor point = Tensors.vector(point2D.getX(), point2D.getY());
-    return Floor.of(point); // TODO investigate if class with 2 int's is an attractive replacement as key type
+    // TODO investigate if class with 2 int's is an attractive replacement as key type
+    return Floor.of(lidar2cellLayer.toVector(pos));
   }
 
   /** Remark: values in the open interval (-1, 0) are now incorrectly ceil'ed to 0.
@@ -321,20 +332,15 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     imagePixels[cellToIdx(cell)] = grayScale;
   }
 
-  private void drawSphere(Tensor cell, Scalar radius, short grayScale) {
-    if (Scalars.lessEquals(obsDilationRadius, cellDim))
-      drawCell(cell, (byte) grayScale);
-    else {
-      Tensor pos = toPos(cell);
-      Scalar radiusScaled = radius.multiply(cellDimInv);
-      double dim = radiusScaled.number().doubleValue();
-      Ellipse2D sphere = new Ellipse2D.Double( //
-          pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-          pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-          2 * dim, 2 * dim);
-      imageGraphics.setColor(new Color(grayScale, grayScale, grayScale));
-      imageGraphics.fill(sphere);
-    }
+  private void drawSphere(Tensor cell, Scalar radius) {
+    Tensor pos = toPos(cell);
+    Scalar radiusScaled = radius.multiply(cellDimInv);
+    double dim = radiusScaled.number().doubleValue();
+    Ellipse2D sphere = new Ellipse2D.Double( //
+        pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+        pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+        2 * dim, 2 * dim);
+    imageGraphics.fill(sphere);
   }
 
   @Override // from Region<Tensor>
