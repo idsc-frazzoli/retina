@@ -23,7 +23,6 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -46,8 +45,7 @@ public class GokartMappingModule implements //
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
   public GokartMappingModule() {
-    final Scalar obstacleRadius = Magnitude.METER.apply(MappingConfig.GLOBAL.obsRadius);
-    lidarSpacialProvider.setLimitLo(obstacleRadius.number().doubleValue() + 0.5); // TODO comment on 0.5
+    lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
     lidarRotationProvider.addListener(lidarAngularFiringCollector);

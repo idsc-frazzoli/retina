@@ -30,8 +30,11 @@ public class MappingConfig implements Serializable {
   /** Forgetting factor lambda in (0,1). Lambda equal to one
    * results in past and current measurements being equally important. */
   public Scalar lambda = DoubleScalar.of(1);
-  /** Occupied cells are dilated with this radius before generating
-   * the obstacle map */
+  /** any obstacle closer than minDistance not mapped,
+   * otherwise the driver is put in the map. */
+  // TODO param should be obsolete if the mapping is started when the driver is already seated
+  public Scalar minDistance = Quantity.of(2, SI.METER);
+  /** Occupied cells are dilated with this radius before generating the obstacle map */
   public Scalar obsRadius = Quantity.of(1.5, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public Scalar cellDim = Quantity.of(0.2, SI.METER);

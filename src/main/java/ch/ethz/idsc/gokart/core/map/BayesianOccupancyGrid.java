@@ -133,8 +133,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     DataBufferByte dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
     imagePixels = dataBufferByte.getData();
     imageGraphics = obstacleImage.createGraphics();
-    // FIXME
-    obsDilationRadius = cellDim.divide(RealScalar.of(2)); // Jan moved this line before genObstacleMap()
+    obsDilationRadius = Magnitude.METER.apply(obstacleRadius);
     genObstacleMap();
     Scalar ratio = MappingConfig.GLOBAL.minObsHeight.divide(SensorsConfig.GLOBAL.vlp16Height);
     lFactor = RealScalar.ONE.subtract(ratio).number().doubleValue();
