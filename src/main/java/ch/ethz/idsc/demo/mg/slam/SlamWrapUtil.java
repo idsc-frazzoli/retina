@@ -1,16 +1,14 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.algo.SlamAlgoConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 
-public enum SlamWrapUtil {
+/* package */ enum SlamWrapUtil {
   ;
   /** initializes the modules of the SLAM algorithm according to the configuration set in
    * slamConfig
