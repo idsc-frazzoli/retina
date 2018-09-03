@@ -11,6 +11,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** runs the SLAM algorithm and a pure pursuit module which gets a lookAhead point in the go kart frame
+ * from the SLAM algorithm */
 public class DavisSlamModule extends AbstractClockedModule {
   private final OnlineSlamWrap onlineSlamWrap = new OnlineSlamWrap(new SlamConfig());
   private final WaypointPurePursuitModule waypointPurePursuitModule = new WaypointPurePursuitModule();

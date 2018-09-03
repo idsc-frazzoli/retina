@@ -35,6 +35,9 @@ public class MapProvider {
     cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));
     mapArray = new double[numberOfCells];
     maxValue = 0;
+    /** when in localization mode, we load a prior map */
+    if (slamConfig.slamAlgoConfig() == SlamAlgoConfig.localizationMode)
+      setMapArray(slamConfig.getMapArray());
   }
 
   /** divides the provided maps and saves into targMap

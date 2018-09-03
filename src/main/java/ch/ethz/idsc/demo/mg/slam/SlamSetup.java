@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mg.slam;
 import java.io.File;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
+import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** sets up the SLAM algorithm for offline processing of a log file */
@@ -26,15 +27,18 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
     try {
       BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
-      // if (saveSlamMap && !localizationMode) {
-      // PrimitivesIO.saveToCSV( //
-      // SlamFileLocations.recordedMaps(logFilename), //
-      // offlineSlamWrap.getSlamProvider().getOccurrenceMap().getMapArray());
-      // System.out.println("Slam map successfully saved");
-      // }
+      if (saveSlamMap)
+        saveOccurrenceMap(offlineSlamWrap);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
+  }
+
+  private void saveOccurrenceMap(OfflineSlamWrap offlineSlamWrap) {
+    PrimitivesIO.saveToCSV( //
+        SlamFileLocations.recordedMaps(logFilename), //
+        offlineSlamWrap.getSlamContainer().getOccurrenceMap().getMapArray());
+    System.out.println("Slam map successfully saved");
   }
 
   public static void main(String[] args) {

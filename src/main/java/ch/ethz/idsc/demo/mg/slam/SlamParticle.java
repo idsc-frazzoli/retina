@@ -3,9 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -14,7 +12,6 @@ import ch.ethz.idsc.tensor.Tensors;
 /** single particle for the SLAM algorithm */
 public class SlamParticle implements GokartPoseInterface {
   private Tensor pose; // unitless representation
-  private GeometricLayer geometricLayer;
   private Scalar linVel; // in direction of go kart x axis
   private Scalar angVel; // around go kart z axis
   private double particleLikelihood;
@@ -39,10 +36,9 @@ public class SlamParticle implements GokartPoseInterface {
 
   /** subtracts pose vector from pose
    * 
-   * @param pose unitless representation */
+   * @param subtractPose unitless representation */
   public void subtractPose(Tensor subtractPose) {
     pose = pose.subtract(subtractPose);
-    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }
 
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
@@ -52,10 +48,9 @@ public class SlamParticle implements GokartPoseInterface {
     particleLikelihood = updatedLikelihood;
   }
 
-  /** @param unitlessPose {x,y,heading} without units */
+  /** @param pose {x,y,heading} without units */
   public void setPoseUnitless(Tensor unitlessPose) {
     pose = unitlessPose;
-    geometricLayer = GeometricLayer.of(Se2Utils.toSE2Matrix(pose));
   }
 
   public Tensor getPoseUnitless() {
@@ -92,10 +87,6 @@ public class SlamParticle implements GokartPoseInterface {
 
   public double getParticleLikelihood() {
     return particleLikelihood;
-  }
-
-  public GeometricLayer getGeometricLayer() {
-    return geometricLayer;
   }
 
   /** sets pose when input argument is not unitless

@@ -18,8 +18,8 @@ import ch.ethz.idsc.tensor.alg.Array;
    * @param slamParticles
    * @param dT interpreted as [s] */
   public static void propagateStateEstimate(SlamParticle[] slamParticles, double dT) {
-    for (int index = 0; index < slamParticles.length; ++index)
-      slamParticles[index].propagateStateEstimate(dT);
+    for (int i = 0; i < slamParticles.length; ++i)
+      slamParticles[i].propagateStateEstimate(dT);
   }
 
   /** get average pose of the particles with highest likelihood

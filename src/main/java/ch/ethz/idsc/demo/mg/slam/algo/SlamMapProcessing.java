@@ -7,38 +7,34 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
-/* package */ class SlamMapProcessing extends AbstractSlamStep implements Runnable {
+/* package */ class SlamMapProcessing extends PeriodicSlamStep implements Runnable {
   private final Thread thread = new Thread(this);
-  private final int waypointUpdateRate; // [us]
-  private final SlamMapProcessingUtil slamMapProcessingUtil;
+  private final SlamWaypointDetection slamWaypointDetection;
+  private double visibleBoxXMin;
+  private double visibleBoxXMax;
+  private double visibleBoxHalfWidth;
   // ---
   private MapProvider occurrenceMap;
   private boolean isLaunched;
-  private Integer lastComputationTimeStamp = null;
 
   public SlamMapProcessing(SlamContainer slamContainer, SlamConfig slamConfig) {
-    super(slamContainer);
-    waypointUpdateRate = Magnitude.MICRO_SECOND.toInt(slamConfig.waypointUpdateRate);
-    slamMapProcessingUtil = new SlamMapProcessingUtil(slamConfig);
+    super(slamContainer, slamConfig.waypointUpdateRate);
+    slamWaypointDetection = new SlamWaypointDetection(slamConfig);
+    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
+    visibleBoxHalfWidth = Magnitude.METER.toDouble(slamConfig.visibleBoxHalfWidth);
+    isLaunched = true;
+    thread.start();
   }
 
-  @Override // from DavisDvsListener
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    if (!isLaunched) { // TODO MG launch thread elsewhere, talk to jan
-      isLaunched = true;
-      thread.start();
-    }
-    initializeTimeStamps(davisDvsEvent.time);
-    if (davisDvsEvent.time - lastComputationTimeStamp > waypointUpdateRate) {
-      occurrenceMap = slamContainer.getOccurrenceMap();
-      thread.interrupt();
-      lastComputationTimeStamp = davisDvsEvent.time;
-    }
+  @Override // from PeriodicSlamStep
+  protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
+    occurrenceMap = slamContainer.getOccurrenceMap();
+    thread.interrupt();
   }
 
   @Override // from Runnable
@@ -55,14 +51,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         }
   }
 
-  private void initializeTimeStamps(int initTimeStamp) {
-    if (Objects.isNull(lastComputationTimeStamp))
-      lastComputationTimeStamp = initTimeStamp;
-  }
-
   private void mapProcessing() {
-    List<double[]> worldWaypoints = slamMapProcessingUtil.findWaypoints(occurrenceMap);
-    slamContainer.setWaypoints(slamMapProcessingUtil.getWaypoints( //
-        worldWaypoints, slamContainer.getPoseUnitless()));
+    List<double[]> worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
+    slamContainer.setWaypoints(SlamMapProcessingUtil.getWaypoints( //
+        worldWaypoints, slamContainer.getPoseUnitless(), //
+        visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth));
   }
 }

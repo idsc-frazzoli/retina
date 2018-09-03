@@ -3,7 +3,9 @@ package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ enum SlamLikelihoodStepUtil {
   ;
@@ -16,15 +18,16 @@ import ch.ethz.idsc.tensor.Tensor;
   public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
     double sumOfLikelihoods = 0;
     double maxValue = map.getMaxValue();
-    for (int index = 0; index < slamParticles.length; ++index) {
-      Tensor worldCoord = slamParticles[index].getGeometricLayer().toVector(gokartFramePos[0], gokartFramePos[1]);
+    for (int i = 0; i < slamParticles.length; ++i) {
+      Tensor worldCoord = new Se2Bijection(slamParticles[i].getPoseUnitless()).forward() //
+          .apply(Tensors.vectorDouble(gokartFramePos));
       double updatedParticleLikelihood = //
-          slamParticles[index].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
-      slamParticles[index].setParticleLikelihood(updatedParticleLikelihood);
+          slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
+      slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
     }
     // normalize particle likelihoods to sum up to 1
-    for (int index = 0; index < slamParticles.length; ++index)
-      slamParticles[index].setParticleLikelihood(slamParticles[index].getParticleLikelihood() / sumOfLikelihoods);
+    for (int i = 0; i < slamParticles.length; ++i)
+      slamParticles[i].setParticleLikelihood(slamParticles[i].getParticleLikelihood() / sumOfLikelihoods);
   }
 }

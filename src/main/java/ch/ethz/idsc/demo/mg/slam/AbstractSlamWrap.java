@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.slam.algo.SlamWrapUtil;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;

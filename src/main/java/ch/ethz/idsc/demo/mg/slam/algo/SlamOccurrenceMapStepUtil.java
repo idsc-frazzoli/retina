@@ -12,7 +12,9 @@ import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 
@@ -34,7 +36,8 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
         .limit(relevantParticles) //
         .collect(Collectors.toList());
     for (int i = 0; i < relevantParticles; i++) {
-      Tensor worldCoord = slamParticles[i].getGeometricLayer().toVector(eventGokartFrame[0], eventGokartFrame[1]);
+      Tensor worldCoord = new Se2Bijection(slamParticles[i].getPoseUnitless()).forward() //
+          .apply(Tensors.vectorDouble(eventGokartFrame));
       occurrenceMap.addValue(worldCoord, adaptiveWeightFactor * slamParticles[i].getParticleLikelihood());
     }
   }
