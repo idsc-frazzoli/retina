@@ -39,7 +39,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     VisGeneralUtil.clearFrame(bufferedImage[1]);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
-    jFrame.setBounds(100, 100, 1320, 700);
+    jFrame.setBounds(100, 100, 1320, 670);
     jFrame.setVisible(true);
   }
 

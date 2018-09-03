@@ -14,14 +14,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 /** container for the objects that are passed between different modules of the SLAM algorithm */
-// TODO MG initialization for localization mode
 public class SlamContainer implements GokartPoseInterface {
   private final SlamParticle[] slamParticles;
-  private final MapProvider occurrenceMap;
   private final double linVelAvg;
   private final double linVelStd;
   private final double angVelStd;
   // ---
+  private MapProvider occurrenceMap;
   /** unitless pose estimated by algorithm */
   private Tensor poseUnitless;
   /** most recent detected way points */
@@ -32,7 +31,7 @@ public class SlamContainer implements GokartPoseInterface {
   private double[] eventGokartFrame = null;
 
   public SlamContainer(SlamConfig slamConfig) {
-    int numOfPart = slamConfig.numberOfParticles.number().intValue();
+    int numOfPart = Magnitude.ONE.toInt(slamConfig.numberOfParticles);
     slamParticles = new SlamParticle[numOfPart];
     for (int index = 0; index < numOfPart; ++index)
       slamParticles[index] = new SlamParticle();

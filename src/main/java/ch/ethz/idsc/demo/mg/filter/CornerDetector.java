@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.filter;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.tensor.Scalars;
 
 /** based on paper "Fast event-based corner detection"
  * C++ code is available under https://github.com/uzh-rpg/rpg_corner_events
@@ -28,9 +29,9 @@ public class CornerDetector extends AbstractFilterHandler {
   private final int[][][] SAE;
 
   public CornerDetector(DavisConfig davisConfig) {
-    width = davisConfig.width.number().intValue();
-    height = davisConfig.height.number().intValue();
-    margin = davisConfig.margin.number().intValue();
+    width = Scalars.intValueExact(davisConfig.width);
+    height = Scalars.intValueExact(davisConfig.height);
+    margin = Scalars.intValueExact(davisConfig.margin);
     SAE = new int[width][height][2];
   }
 

@@ -27,8 +27,6 @@ public enum VisBlobTrackUtil {
    * @param color desired */
   public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
-    // TODO MG not efficient, eigensystem is computed twice (in rotAngle & stdDev)
-    // ... can make helper class e.g. "Covariance2D"
     double rotAngle = blob.getRotAngle();
     float[] semiAxes = blob.getStandardDeviation();
     float leftCornerX = blob.getPos()[0] - semiAxes[0];

@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.Tensor;
   /** subtracts the same poseDifference vector from all SLAM particles
    * 
    * @param slamParticles
-   * @param poseDifference pose vector to be subtracted */
+   * @param poseDifference unitless pose vector to be subtracted */
   public static void resetPose(SlamParticle[] slamParticles, Tensor poseDifference) {
     for (int i = 0; i < slamParticles.length; i++) {
       slamParticles[i].subtractPose(poseDifference);

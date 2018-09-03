@@ -11,12 +11,12 @@ import ch.ethz.idsc.tensor.Tensor;
 public final class WaypointPurePursuitModule extends PurePursuitModule {
   private Optional<Tensor> lookAhead = Optional.empty();
 
-  @Override
+  @Override // from PurePursuitModule
   protected void protected_first() throws Exception {
     // ---
   }
 
-  @Override
+  @Override // from PurePursuitModule
   protected void protected_last() {
     // ---
   }

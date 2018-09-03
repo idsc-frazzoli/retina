@@ -5,9 +5,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
-/** executes the localization step of the SLAM algorithm for the case that the pose is provided from another module,
- * e.g. lidar or odometry */
-// TODO instead of periodic calls, incorporate a GokartPoseListener
+/** directly sets the pose estimate of the SLAM algorithm. Can be used if an accurate external pose is available, e.g. through lidar */
 /* package */ class SlamLocalizationStep extends PeriodicSlamStep {
   private final GokartPoseInterface gokartPoseInterface;
 
