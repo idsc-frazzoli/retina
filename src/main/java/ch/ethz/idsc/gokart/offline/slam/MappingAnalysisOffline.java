@@ -38,17 +38,17 @@ import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO contains redundancies with GokartMappingModule 
 public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final BayesianOccupancyGrid grid;
+  private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final Consumer<BufferedImage> consumer;
   // ---
   private GokartPoseEvent gpe;
@@ -61,6 +61,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
 
   public MappingAnalysisOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
+    bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
@@ -71,15 +72,13 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
-    // ---
-    grid = mappingConfig.createBayesianOccupancyGrid();
   }
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
-      grid.setPose(gpe.getPose(), gpe.getQuality());
+      bayesianOccupancyGrid.setPose(gpe.getPose(), gpe.getQuality());
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -92,7 +91,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      grid.render(gl, graphics);
+      bayesianOccupancyGrid.render(gl, graphics);
       gr.render(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
       // grid.setNewlBound(Tensors.vector(20, 20));
@@ -101,7 +100,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       // ---
       // grid.genObstacleMap();
       // System.out.println(time);
-      grid.genObstacleMap();
+      bayesianOccupancyGrid.genObstacleMap();
       consumer.accept(image);
     }
   }
@@ -109,17 +108,16 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    if (Objects.nonNull(grid))
-      if (lidarRayBlockEvent.dimensions == 3)
-        while (floatBuffer.hasRemaining()) {
-          float x = floatBuffer.get();
-          float y = floatBuffer.get();
-          float z = floatBuffer.get();
-          //
-          boolean isObstacle = predicate.isObstacle(x, z);
-          Tensor planarPoint = Tensors.vectorDouble(x, y, 1);
-          int type = isObstacle ? 1 : 0;
-          grid.processObservation(planarPoint, type);
-        }
+    if (lidarRayBlockEvent.dimensions == 3)
+      while (floatBuffer.hasRemaining()) {
+        float x = floatBuffer.get();
+        float y = floatBuffer.get();
+        float z = floatBuffer.get();
+        //
+        boolean isObstacle = predicate.isObstacle(x, z);
+        bayesianOccupancyGrid.processObservation( //
+            Tensors.vectorDouble(x, y), //
+            isObstacle ? 1 : 0);
+      }
   }
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
 
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
@@ -16,15 +17,16 @@ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
   static final int HEIGHT = 264;
   // ---
   static final Dimension DIMENSION = new Dimension(WIDTH * 2, HEIGHT);
+  // ---
+  private final Consumer<BufferedImage> consumer;
   final BufferedImage bufferedImage = //
       new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_3BYTE_BGR);
   final Graphics2D graphics = bufferedImage.createGraphics();
   int count = 0;
-  Aedat31FrameEvent frameEvent;
-  private final TimedImageListener timedImageListener;
+  private Aedat31FrameEvent frameEvent;
 
-  public SiliconEyeVideoFrame(TimedImageListener timedImageListener) {
-    this.timedImageListener = timedImageListener;
+  public SiliconEyeVideoFrame(Consumer<BufferedImage> consumer) {
+    this.consumer = consumer;
   }
 
   @Override
@@ -41,7 +43,7 @@ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
     graphics.drawString(string, WIDTH + 1, 12);
     graphics.setColor(Color.WHITE);
     graphics.drawString(string, WIDTH, 11);
-    timedImageListener.timedImage(new TimedImageEvent(count, bufferedImage));
+    consumer.accept(bufferedImage);
     ++count;
   }
 
