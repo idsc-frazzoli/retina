@@ -69,8 +69,8 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
     {
-      if (Objects.nonNull(GokartMappingModule.gridRender))
-        timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.gridRender);
+      if (Objects.nonNull(GokartMappingModule.GRID_RENDER))
+        timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.GRID_RENDER);
     }
     {
       PathRender pathRender = new PathRender(gokartPoseInterface);

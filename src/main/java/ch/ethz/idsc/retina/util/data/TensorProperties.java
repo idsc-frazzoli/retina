@@ -43,7 +43,8 @@ public class TensorProperties {
     this.object = Objects.requireNonNull(object);
   }
 
-  /** @return stream of tracked fields of given object */
+  /** @return stream of tracked fields of given object
+   * in the order in which they appear top to bottom in the class */
   public Stream<Field> fields() {
     return Stream.of(object.getClass().getFields()) //
         .filter(StaticHelper::isTracked);
@@ -52,7 +53,7 @@ public class TensorProperties {
   /** @param properties
    * @param object with fields to be assigned according to given properties
    * @return given object
-   * @throws Exception if either of the input parameters is null */
+   * @throws Exception if properties is null */
   @SuppressWarnings("unchecked")
   public <T> T set(Properties properties) {
     fields().forEach(field -> {
@@ -70,10 +71,7 @@ public class TensorProperties {
   /** @param object
    * @return properties with fields of given object as keys mapping to values as string expression */
   /* package */ Properties get() {
-    return get(new Properties());
-  }
-
-  private Properties get(Properties properties) {
+    Properties properties = new Properties();
     consume(properties::setProperty);
     return properties;
   }

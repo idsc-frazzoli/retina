@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
@@ -125,9 +126,15 @@ public class TensorPropertiesTest extends TestCase {
     assertEquals(paramContainer.shape.length(), 2);
   }
 
-  public void testUsername() {
-    String name = System.getProperty("user.name");
-    assertFalse(name.isEmpty());
+  public void testFields() {
+    ParamContainer paramContainer = new ParamContainer();
+    TensorProperties tensorProperties = TensorProperties.wrap(paramContainer);
+    List<String> list = tensorProperties.fields().map(Field::getName).collect(Collectors.toList());
+    assertEquals(list.get(0), "string");
+    assertEquals(list.get(1), "maxTor");
+    assertEquals(list.get(2), "shape");
+    assertEquals(list.get(3), "abc");
+    assertEquals(list.get(4), "status");
   }
 
   public void testManifest() throws IOException {

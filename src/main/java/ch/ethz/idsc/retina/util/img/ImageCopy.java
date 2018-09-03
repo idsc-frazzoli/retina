@@ -8,6 +8,13 @@ import ch.ethz.idsc.owl.data.GlobalAssert;
 
 public class ImageCopy {
   private static final BufferedImage DUMMY = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);
+
+  public static BufferedImage of(BufferedImage bufferedImage) {
+    ImageCopy imageCopy = new ImageCopy();
+    imageCopy.update(bufferedImage);
+    return imageCopy.get();
+  }
+
   // ---
   private BufferedImage copy = null;
 
