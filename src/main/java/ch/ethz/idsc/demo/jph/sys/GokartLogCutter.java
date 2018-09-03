@@ -17,12 +17,12 @@ enum GokartLogCutter {
    * _20180830T101537_db899976
    * _20180830T111749_db899976 */
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20180823T135656_2693c28e;
+    GokartLogFile gokartLogFile = GokartLogFile._20180827T155655_db899976;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        new File("/media/datahaki/media/ethz/gokart/topic/track_azure"), //
+        new File("/media/datahaki/media/ethz/gokart/topic/mapping"), //
         gokartLogFile.getTitle());
   }
 }

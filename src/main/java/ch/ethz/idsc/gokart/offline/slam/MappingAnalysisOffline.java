@@ -3,16 +3,14 @@ package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
-
-import javax.imageio.ImageIO;
+import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
+import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
@@ -23,7 +21,6 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -44,7 +41,6 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -53,9 +49,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final BayesianOccupancyGrid grid;
-  private final Tensor gridRange = Tensors.vector(40, 40);
-  private final Tensor lbounds = Tensors.vector(30, 30);
-  private final File folder = UserHome.Pictures("log/mapper");
+  private final Consumer<BufferedImage> consumer;
   // ---
   private GokartPoseEvent gpe;
   private ScatterImage scatterImage;
@@ -64,9 +58,9 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
   private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private int image_count = 0;
 
-  public MappingAnalysisOffline() {
+  public MappingAnalysisOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
+    this.consumer = consumer;
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
@@ -78,12 +72,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     // ---
-    grid = BayesianOccupancyGrid.of(lbounds, gridRange, //
-        Quantity.of(0.2, SI.METER), //
-        Quantity.of(0.4, SI.METER));
-    folder.mkdirs();
-    if (!folder.isDirectory())
-      throw new RuntimeException();
+    grid = mappingConfig.createBayesianOccupancyGrid();
   }
 
   @Override // from OfflineLogListener
@@ -96,7 +85,6 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
     }
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe)) {
       time_next = time.add(delta);
-      System.out.print("Extracting log at " + time.map(Round._2) + "\n");
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage image = scatterImage.getImage();
@@ -114,11 +102,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       // grid.genObstacleMap();
       // System.out.println(time);
       grid.genObstacleMap();
-      try {
-        ImageIO.write(image, "png", new File(folder, String.format("%06d.png", image_count++)));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      consumer.accept(image);
     }
   }
 
