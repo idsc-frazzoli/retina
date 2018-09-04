@@ -62,14 +62,16 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     // sizeCeil is for instance {200[m^-1], 200[m^-1]}
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
-    return new BayesianOccupancyGrid(lbounds, rangeCeil, new Dimension( //
+    Dimension dimension = new Dimension( //
         Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
-        Magnitude.PER_METER.toInt(sizeCeil.Get(1))), obstacleRadius);
+        Magnitude.PER_METER.toInt(sizeCeil.Get(1)));
+    return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius);
   }
 
   // ---
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
   // ---
+  // TODO assign all constants in constructor using a reference to a MappingConfig instance
   /** prior */
   private final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
   private final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);
@@ -82,6 +84,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT, P_M_PASS };
   /** forgetting factor for previous classifications */
   private final double lambda = MappingConfig.GLOBAL.getLambda();
+  private final boolean alongLine = MappingConfig.GLOBAL.alongLine;
   // ---
   private final Scalar cellDim; // [m] per cell
   private final Tensor cellDimHalfVec;
@@ -113,17 +116,17 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private double[] logOdds;
 
   /** @param lbounds vector of length 2
-   * @param range effective size of grid in coordinate space of the form {value, value}
+   * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
    * @param dimension of grid in cell space */
-  private BayesianOccupancyGrid(Tensor lbounds, Tensor range, Dimension dimension, Scalar obstacleRadius) {
-    VectorQ.requireLength(range, 2);
-    System.out.print("Grid range: " + range + "\n");
+  private BayesianOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius) {
+    VectorQ.requireLength(rangeCeil, 2);
+    System.out.print("Grid range: " + rangeCeil + "\n");
     System.out.print("Grid size: " + dimension + "\n");
     this.lbounds = VectorQ.requireLength(lbounds, 2);
     gridSize = Tensors.vector(dimension.width, dimension.height).unmodifiable();
     dimx = dimension.width;
     dimy = dimension.height;
-    cellDim = RadiusXY.requireSame(range).divide(gridSize.Get(0));
+    cellDim = RadiusXY.requireSame(rangeCeil).divide(gridSize.Get(0));
     cellDimInv = cellDim.reciprocal();
     cellDimHalfVec = Tensors.of(cellDim, cellDim).divide(RealScalar.of(2)).unmodifiable();
     scaling = DiagonalMatrix.of(cellDim, cellDim, RealScalar.ONE).unmodifiable();
@@ -183,7 +186,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
               hset.remove(cell);
           }
           // ---
-          if (type == 0 && lFactor != 1.0) {
+          if (type == 0 && alongLine) {
             Tensor pos0 = pos.multiply(DoubleScalar.of(lFactor));
             Tensor cell0 = lidarToCell(pos0);
             List<Point> line = Bresenham.line( //

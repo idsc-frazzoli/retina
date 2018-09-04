@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -54,7 +55,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class OfflineHud implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Dimension DIMENSION = new Dimension(1920, 480);
-  public static final PredefinedMap PREDEFINED_MAP = PredefinedMap.DUBILAB_LOCALIZATION_20180506;
+  public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   // ---
   private final Scalar delta;
   private final GokartPoseInterface gokartPoseInterface = new GokartPoseInterface() {
