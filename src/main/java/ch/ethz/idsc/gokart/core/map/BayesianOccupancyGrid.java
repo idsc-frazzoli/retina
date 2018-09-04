@@ -44,6 +44,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
 public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
+  // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
   private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
@@ -106,8 +107,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   private Tensor lbounds;
   /** from gokart frame to world frame */
   private Tensor gokart2world = null;
-  @SuppressWarnings("unused")
-  private double poseQuality;
   // ---
   /** array containing current log odds of each cell */
   private double[] logOdds;
@@ -216,8 +215,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * 
    * @param pose vector of the form {px, py, heading}
    * @param quality */
-  public void setPose(Tensor pose, Scalar quality) {
-    poseQuality = quality.number().doubleValue();
+  public void setPose(Tensor pose) {
     gokart2world = GokartPoseHelper.toSE2Matrix(pose);
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
@@ -227,7 +225,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
-  // TODO this function should return a new region object
+  // TODO this function should return, or update a region object created here, or provided from the outside!
   public void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());

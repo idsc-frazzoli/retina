@@ -109,7 +109,8 @@ public class GokartMappingModule implements //
       Tensor points = points3d_ferry;
       if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
-        bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
+        // TODO pose quality is not considered yet
+        bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) {
           boolean isObstacle = predicate.isObstacle(point); // only x and z are used
           bayesianOccupancyGrid.processObservation( //
