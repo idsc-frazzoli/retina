@@ -78,7 +78,7 @@ public class SlamConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps((davisConfig.logFilename())));
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(davisConfig.logFilename()));
   }
 
   // SlamMapProcessing

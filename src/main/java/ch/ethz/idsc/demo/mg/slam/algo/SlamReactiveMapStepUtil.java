@@ -17,15 +17,13 @@ import ch.ethz.idsc.tensor.mat.Inverse;
   public static void clearNonvisibleOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
     GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(gokartPose)));
     double[] mapArray = occurrenceMap.getMapArray();
-    for (int i = 0; i < mapArray.length; i++) {
+    for (int i = 0; i < mapArray.length; i++)
       if (mapArray[i] != 0) {
         double[] worldCoord = occurrenceMap.getCellCoord(i);
         Tensor gokartCoordTensor = worldToGokartLayer.toVector(worldCoord[0], worldCoord[1]);
         double gokartCoordXPos = gokartCoordTensor.Get(0).number().doubleValue();
-        if (gokartCoordXPos < lookBehindDistance) {
+        if (gokartCoordXPos < lookBehindDistance)
           occurrenceMap.setValue(i, 0);
-        }
       }
-    }
   }
 }
