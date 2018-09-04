@@ -11,4 +11,3 @@ function F = getEvolution(x)
     F(5,8) = 1; % dotdoty*t adds to doty
     F(6,9) = 1; % dottheta*t adds to dottheta
 end
->>>>>>> c4fc653285100d385f50054a2062886e38d6e958

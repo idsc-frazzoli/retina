@@ -49,10 +49,10 @@ M = [cRTSM,...%t x y dotx_b doty_b dotKsi Ksi dotdotx_b dotdoty_b dotdotKsi
 
 show = 1;
 
-    if(show)
-        figure;
-        subplot(
+    %if(show)
+        %figure;
+        %subplot(
 
-    end
+    %end
 
 end
