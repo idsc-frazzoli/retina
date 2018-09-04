@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.lcm;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
-import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -18,18 +17,12 @@ import idsc.BinaryBlob;
 /** encode and decode tensors with array structure of arbitrary rank with float precision */
 public enum ArrayFloatBlob {
   ;
-  private static final BinaryOperator<Integer> PRODUCT = (a, b) -> a * b;
-
-  private static int numel(Stream<Integer> stream) {
-    return stream.reduce(PRODUCT).orElse(1);
-  }
-
   /** @param tensor of arbitrary rank with array structure
    * @return
    * @throws Exception if given tensor does not have array structure */
   public static BinaryBlob encode(Tensor tensor) {
     List<Integer> dims = Dimensions.of(tensor);
-    int numel = numel(dims.stream());
+    int numel = StaticHelper.numel(dims.stream());
     BinaryBlob binaryBlob = BinaryBlobs.create(Byte.BYTES + dims.size() * Integer.BYTES + numel * Float.BYTES);
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -46,7 +39,7 @@ public enum ArrayFloatBlob {
     int rank = byteBuffer.get() & 0xff;
     Integer[] dims = new Integer[rank];
     IntStream.range(0, rank).forEach(i -> dims[i] = byteBuffer.getInt());
-    int numel = numel(Stream.of(dims));
+    int numel = StaticHelper.numel(Stream.of(dims));
     return ArrayReshape.of( //
         IntStream.range(0, numel).mapToObj(i -> DoubleScalar.of(byteBuffer.getFloat())), dims);
   }

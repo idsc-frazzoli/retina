@@ -1,13 +1,14 @@
+%code by mheim
 function F = getEvolution(x)
     %get state matrix
     %states (everything is in global frame)
-    %[x,y,theta,dotx, doty, dottheta, dotdotx, dotdoty,driftx,drifty]
-    %do it for every line
+    %[x,y,theta,dotx, doty, dottheta, dotdotx, dotdoty,dotdottheta]
     F = zeros(9);
-    F(1,4) = 1;
-    F(2,5) = 1;
-    F(3,6) = 1;
-    F(4,7) = 1;
-    F(5,8) = 1;
-    F(6,9) = 1;
+    F(1,4) = 1; % dotx*t adds to x
+    F(2,5) = 1; % doty*t adds to y
+    F(3,6) = 1; % dottheta*t adds to theta
+    F(4,7) = 1; % dotdotx*t adds to dotx
+    F(5,8) = 1; % dotdoty*t adds to doty
+    F(6,9) = 1; % dottheta*t adds to dottheta
 end
+>>>>>>> c4fc653285100d385f50054a2062886e38d6e958

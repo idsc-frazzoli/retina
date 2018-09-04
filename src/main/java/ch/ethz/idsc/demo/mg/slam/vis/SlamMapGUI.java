@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** GUI to display SLAM algorithm */
@@ -34,9 +35,11 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     scaling = frameWidth / (double) mapWidth;
     bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
+    VisGeneralUtil.clearFrame(bufferedImage[0]);
+    VisGeneralUtil.clearFrame(bufferedImage[1]);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
-    jFrame.setBounds(100, 100, 1320, 700);
+    jFrame.setBounds(100, 100, 1320, 670);
     jFrame.setVisible(true);
   }
 
@@ -44,5 +47,11 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     for (int i = 0; i < bufferedImages.length; i++)
       bufferedImage[i] = bufferedImages[i];
     jComponent.repaint();
+  }
+
+  /** sets visibility of jFrame to false and disposes it */
+  public void dispose() {
+    jFrame.setVisible(false);
+    jFrame.dispose();
   }
 }

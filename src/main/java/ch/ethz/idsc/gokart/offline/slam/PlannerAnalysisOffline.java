@@ -1,11 +1,9 @@
 // code by ynager
-package ch.ethz.idsc.demo.yn;
+package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -22,10 +20,6 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
-import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
-import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
-import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -34,7 +28,6 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.retina.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.subare.util.UserHome;
@@ -46,57 +39,51 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-class PlannerAnalysis implements OfflineLogListener {
+public class PlannerAnalysisOffline implements OfflineLogListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
   private final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180425.csv");
-  private RenderInterface wr = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
-  private TrajectoryRender tr = new TrajectoryRender();
+  private final RenderInterface renderInterface = //
+      new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
+  private final TrajectoryRender trajectoryRender = new TrajectoryRender();
+  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
+  private final Scalar delta = Quantity.of(0.1, SI.SECOND);
+  // ---
   private GokartPoseEvent gpe;
   private ScatterImage scatterImage;
-  private GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
-  private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private Scalar delta = Quantity.of(0.1, SI.SECOND);
 
-  // ---
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
-    } else if (channel.equals(GokartLcmChannel.TRAJECTORY_STATETIME)) {
+    } else //
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_STATETIME)) {
       Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);
-      tr.trajectory(PlannerPublish.getTrajectory(trajTensor));
+      trajectoryRender.trajectory(PlannerPublish.getTrajectory(trajTensor));
     }
-    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe) && Objects.nonNull(tr)) {
+    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe)) {
       time_next = time.add(delta);
       System.out.print("Extracting log at " + time.map(Round._2) + "\n");
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       // ---
-      GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
+      GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       BufferedImage image = scatterImage.getImage();
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
-      GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      tr.render(gl, graphics);
-      wr.render(gl, graphics);
-      gr.render(gl, graphics);
+      GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      trajectoryRender.render(geometricLayer, graphics);
+      renderInterface.render(geometricLayer, graphics);
+      gokartRender.render(geometricLayer, graphics);
       // ---
       try {
+        // TODO different filename
         ImageIO.write(image, "png", UserHome.Pictures("/log/" + Magnitude.SECOND.apply(time).toString() + ".png"));
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
-  }
-
-  public static void main(String[] args) throws FileNotFoundException, IOException {
-    File file = UserHome.file("gokart/logs");
-    System.out.println(file.getName());
-    GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
-    OfflineLogListener oll = new PlannerAnalysis();
-    OfflineLogPlayer.process(gokartLogInterface.file(), oll);
-    System.out.print("Done.");
   }
 }

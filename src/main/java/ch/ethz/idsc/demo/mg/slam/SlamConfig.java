@@ -13,13 +13,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 
-/** defines all parameters of the SLAM algorithm and optionally saves them to a .properties file */
+/** defines all parameters of the SLAM algorithm */
 public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -29,8 +29,10 @@ public class SlamConfig {
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(32); // [-]
+  public final Scalar numberOfParticles = Quantity.of(30, SI.ONE);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
+  /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
+  public final Scalar particleRange = Quantity.of(3, SI.ONE);
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** for reactive mapping mode */
@@ -42,9 +44,9 @@ public class SlamConfig {
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
   public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND);
-  public final Scalar poseMapUpdateRate = Quantity.of(0.2, SI.SECOND);
+  public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   // particle initialization
-  public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
+  public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
@@ -65,7 +67,7 @@ public class SlamConfig {
     return Magnitude.ONE.toInt(dimY.divide(cellDim));
   }
 
-  // coordinates of lower left point in map
+  /** @return [m] coordinates of lower left point in map */
   public final Tensor corner = Tensors.of( //
       Quantity.of(30, SI.METER), Quantity.of(30, SI.METER)).map(UnitSystem.SI());
 
@@ -74,10 +76,17 @@ public class SlamConfig {
     return corner.add(Tensors.of(dimX, dimY).map(UnitSystem.SI()));
   }
 
-  public double[] getRecordedMap() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps((davisConfig.logFilename())));
+  /** @return mapArray containing ground truth occurrence map */
+  public double[] getMapArray() {
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(davisConfig.logFilename()));
   }
 
+  // SlamMapProcessing
+  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
+  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
+  public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
   // SlamPoseReset
   public final Scalar resetPoseX = RealScalar.of(50); // [m]
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
@@ -97,11 +106,4 @@ public class SlamConfig {
   public final int waypointRadius() {
     return Magnitude.ONE.toInt(waypointRadius.divide(cellDim));
   }
-
-  // map processing parameters
-  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
-  // trajectory planning parameters
-  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before waypoints are extracted
-  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(10, SI.METER); // in go kart frame
 }

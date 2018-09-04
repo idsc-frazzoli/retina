@@ -1,3 +1,4 @@
+%code by mheim
 function [st,sx,sP] = lidarIMUStateEstimation(adat,ldat)
 %definitive state model (all in world frame):
 %[x,y,psi,dotx,doty,dotpsi,dotdotx,dotdoty,dotdotpsi]

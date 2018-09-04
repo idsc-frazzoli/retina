@@ -3,7 +3,12 @@ package ch.ethz.idsc.retina.util.math;
 
 import java.util.Random;
 
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
+
 public class TruncatedGaussian {
+  // TODO MG limit of 50 was insufficient, but that means the mean, stdDev, lower-, and upper-bound are not chosen well !
+  // -> check all uses of TruncatedGaussian for instance in SlamContainerUtil and argue that values are reasonable!
   private static final int LIMIT = 50;
   private static final Random RANDOM = new Random();
   // ---
@@ -34,7 +39,8 @@ public class TruncatedGaussian {
       if (lowerBound <= value && value <= upperBound)
         return value;
     }
-    throw new RuntimeException();
+    System.err.println("fallback (should never happen)");
+    return RandomVariate.of(UniformDistribution.of(lowerBound, upperBound)).number().doubleValue();
   }
 
   /** Gaussian distributed random variable with given mean and standard deviation

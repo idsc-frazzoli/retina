@@ -1,5 +1,5 @@
 function M = loadinternalstates(RTSM,folder)
-%code by mh
+%code by mheim
 %load steering, braking and wheelspeed and match to RTS State matrix
 
 close all

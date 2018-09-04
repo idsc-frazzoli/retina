@@ -27,8 +27,8 @@ public class Mp4AnimationWriter implements AnimationWriter {
   private final MediaPicture picture;
   private final MediaPacket packet;
 
-  public Mp4AnimationWriter(String filename, //
-      Dimension dimension, int snapsPerSecond) throws InterruptedException, IOException {
+  public Mp4AnimationWriter(String filename, Dimension dimension, int snapsPerSecond) //
+      throws InterruptedException, IOException {
     final Rectangle screenbounds = new Rectangle(dimension);
     final Rational framerate = Rational.make(1, snapsPerSecond);
     /** First we create a muxer using the passed in filename and formatname if given. */
@@ -84,7 +84,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   int count = 0;
 
   @Override // from AnimationWriter
-  public void append(BufferedImage bufferedImage) throws Exception {
+  public void append(BufferedImage bufferedImage) {
     /** This is LIKELY not in YUV420P format, so we're going to convert it using some handy utilities. */
     if (converter == null)
       converter = MediaPictureConverterFactory.createConverter(bufferedImage, picture);
@@ -94,7 +94,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   }
 
   @Override // from AnimationWriter
-  public void append(Tensor tensor) throws Exception {
+  public void append(Tensor tensor) {
     throw new UnsupportedOperationException();
   }
 

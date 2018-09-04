@@ -1,5 +1,6 @@
 function M = ModelfreeStateEstimation(folder)
     tic;
+    %code by mheim
     %folder = 'retina_out/20180820T1438522.lcm/';
     gplocalization = csvread(strcat(folder,'gplocalization.csv'));
     %davisIMU = csvread(strcat(folder,'davisIMU.csv'));

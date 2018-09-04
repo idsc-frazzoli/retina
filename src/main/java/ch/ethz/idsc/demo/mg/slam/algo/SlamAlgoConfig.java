@@ -10,8 +10,16 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 
-/** SLAM algorithm module configuration. The order in the list is the order of the respective callback method calls */
-/* package */ enum SlamAlgoConfig {
+/** SLAM algorithm module configuration.
+ * The order in the list is the order of the respective callback method calls
+ * 
+ * implementation of the SLAM algorithm
+ * "simultaneous localization and mapping for event-based vision systems"
+ * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+ * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf
+ * all modules of the SLAM algorithm implement {@link DavisDvsListener} and are contained
+ * in the field listeners */
+public enum SlamAlgoConfig {
   ;
   public static final List<DavisDvsListener> getListeners(SlamContainer slamContainer, SlamConfig slamConfig, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
@@ -23,12 +31,12 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
       return reactiveMapMode(slamContainer, slamConfig);
     case lidarMode:
       return externalPoseMode(slamContainer, slamConfig, gokartLidarPose);
-    case lidarReactiveMode:
-      return externalPoseReactiveMode(slamContainer, slamConfig, gokartLidarPose);
     case odometryMode:
       return externalPoseMode(slamContainer, slamConfig, gokartPoseOdometry);
+    case lidarReactiveMode:
+      return lidarPoseReactiveMode(slamContainer, slamConfig, gokartLidarPose);
     case odometryReactiveMode:
-      return externalPoseReactiveMode(slamContainer, slamConfig, gokartPoseOdometry);
+      return odometryPoseReactiveMode(slamContainer, slamConfig, gokartPoseOdometry);
     case localizationMode:
       return localizationMode(slamContainer, slamConfig);
     }
@@ -55,7 +63,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamImageToGokart(slamContainer, slamConfig), //
         new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface), //
         new SlamMappingStep(slamContainer), //
-        new SlamMapProcessing(slamContainer, slamConfig));
+        new SlamMapProcessing(slamContainer, slamConfig), //
+        new SlamWaypointSelection(slamContainer, slamConfig));
   }
 
   /** reactiveMapMode: In comparison with standardConfig, the part of the map which is currently not seen by the vehicle
@@ -73,13 +82,25 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
         new SlamPoseMapReset(slamContainer, slamConfig));
   }
 
-  /** externalPoseReactiveMode: Identical to externalPose mode but the part of the map behind the vehicle is cleared. This allows the addition
-   * of a way point selection module */
-  private static final List<DavisDvsListener> externalPoseReactiveMode( //
+  /** lidarPoseReactiveMode doesnt drift thats why we dont use slamPoseMapReset */
+  private static final List<DavisDvsListener> lidarPoseReactiveMode( //
       SlamContainer slamContainer, SlamConfig slamConfig, GokartPoseInterface gokartPoseInterface) {
     return Arrays.asList( //
         new SlamImageToGokart(slamContainer, slamConfig), //
         new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface), //
+        new SlamMappingStep(slamContainer), //
+        new SlamReactiveMapStep(slamConfig, slamContainer), //
+        new SlamMapProcessing(slamContainer, slamConfig), //
+        new SlamWaypointSelection(slamContainer, slamConfig));
+  }
+
+  /** odometryPoseReactiveMode: Identical to externalPose mode but the part of the map behind the vehicle is cleared. This allows the addition
+   * of a way point selection module. The poseMapReset module is also included because the pose tends to drift away */
+  private static final List<DavisDvsListener> odometryPoseReactiveMode( //
+      SlamContainer slamContainer, SlamConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry) {
+    return Arrays.asList( //
+        new SlamImageToGokart(slamContainer, slamConfig), //
+        new SlamLocalizationOdometryStep(slamContainer, slamConfig, gokartPoseOdometry), //
         new SlamMappingStep(slamContainer), //
         new SlamReactiveMapStep(slamConfig, slamContainer), //
         new SlamMapProcessing(slamContainer, slamConfig), //

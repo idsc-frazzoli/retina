@@ -19,6 +19,10 @@ import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 
+/** Remark:
+ * the timestamps of the lcm event sequence as recorded are NOT guaranteed to be monotonous.
+ * occasionally, the event that follows another may have a smaller timestamp.
+ * Observed "step backs" are 1[us], 18[us], or 70[us]. */
 public enum OfflineLogPlayer {
   ;
   public static final String END_OF_FILE = "EOF";

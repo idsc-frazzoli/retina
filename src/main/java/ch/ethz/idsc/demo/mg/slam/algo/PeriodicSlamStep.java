@@ -33,5 +33,9 @@ public abstract class PeriodicSlamStep extends AbstractSlamStep {
       lastComputationTimeStamp = initTimeStamp;
   }
 
+  /** function invoked on a periodic basis given by {@link updatePeriod}, time stamps are provided
+   * by the davis dvs event stream
+   * @param currentTimeStamp of current davisDvsEvent
+   * @param lastComputationTimeStamp of davisDvsEvent for which function has been executed the last time */
   abstract protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp);
 }

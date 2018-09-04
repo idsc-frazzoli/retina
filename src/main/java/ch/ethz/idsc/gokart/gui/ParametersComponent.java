@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.io.StringScalarQ;
 /** component that generically inspects a given object for fields of type
  * {@link Tensor} and {@link Scalar}. For each such field, a text field
  * is provided that allows the modification of the value. */
-class ParametersComponent extends ToolbarsComponent {
+/* package */ class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 14);
   private static final Color FAIL = new Color(255, 192, 192);
   private static final Color SYNC = new Color(255, 255, 192);
@@ -40,7 +40,7 @@ class ParametersComponent extends ToolbarsComponent {
     Properties properties = new Properties();
     for (Entry<Field, JTextField> entry : map.entrySet())
       properties.setProperty(entry.getKey().getName(), entry.getValue().getText());
-    TensorProperties.insert(properties, object);
+    TensorProperties.wrap(object).set(properties);
   }
 
   public ParametersComponent(Object object) {
@@ -68,30 +68,29 @@ class ParametersComponent extends ToolbarsComponent {
       }
     }
     addSeparator();
-    for (Field field : object.getClass().getFields()) {
-      if (TensorProperties.isTracked(field))
-        try {
-          Object value = field.get(object);
-          JTextField jTextField = createEditing(field.getName());
-          jTextField.setFont(FONT);
-          jTextField.setText("" + value);
-          jTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-              updateBackground(jTextField, field);
-              checkFields();
-            }
-          });
-          jTextField.addActionListener(e -> {
-            if (checkFields())
-              updateInstance();
-          });
-          updateBackground(jTextField, field);
-          map.put(field, jTextField);
-        } catch (Exception exception) {
-          // ---
-        }
-    }
+    TensorProperties.wrap(object).fields().forEach(field -> {
+      try {
+        Object value = field.get(object);
+        JTextField jTextField = createEditing(field.getName());
+        jTextField.setFont(FONT);
+        jTextField.setText("" + value);
+        jTextField.addKeyListener(new KeyAdapter() {
+          @Override
+          public void keyReleased(KeyEvent keyEvent) {
+            updateBackground(jTextField, field);
+            checkFields();
+          }
+        });
+        jTextField.addActionListener(e -> {
+          if (checkFields())
+            updateInstance();
+        });
+        updateBackground(jTextField, field);
+        map.put(field, jTextField);
+      } catch (Exception exception) {
+        // ---
+      }
+    });
   }
 
   private void updateBackground(JTextField jTextField, Field field) {

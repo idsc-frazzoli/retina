@@ -16,14 +16,10 @@ public enum AppResources {
   }
 
   public static <T> T load(T object) {
-    return TensorProperties.retrieve(file(object), object);
+    return TensorProperties.wrap(object).tryLoad(file(object));
   }
 
   public static void save(Object object) {
-    try {
-      TensorProperties.manifest(file(object), object);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
+    TensorProperties.wrap(object).trySave(file(object));
   }
 }

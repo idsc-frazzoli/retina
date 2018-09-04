@@ -14,16 +14,16 @@ import ch.ethz.idsc.tensor.red.ArgMax;
 
 /* package */ enum SlamWaypointSelectionUtil {
   ;
-  /** v1.0: choose way point that is farthest away */
+  /** v1.1: choose visible way point that is farthest away */
   public static void selectWaypoint(SlamContainer slamContainer) {
-    List<SlamWaypoint> slamWaypoints = slamContainer.getSlamWaypoints();
-    if (slamWaypoints.isEmpty()) {
+    List<SlamWaypoint> visibleSlamWaypoints = slamContainer.getVisibleWaypoints();
+    if (visibleSlamWaypoints.isEmpty()) {
       slamContainer.setSelectedSlamWaypoint(Optional.empty());
       return;
     }
     TensorUnaryOperator world2local = new Se2Bijection(slamContainer.getPoseUnitless()).inverse();
-    Tensor distances = Tensor.of(slamWaypoints.stream() //
+    Tensor distances = Tensor.of(visibleSlamWaypoints.stream() //
         .map(waypoint -> world2local.apply(Tensors.vectorDouble(waypoint.getWorldPosition())).Get(0)));
-    slamContainer.setSelectedSlamWaypoint(Optional.of(slamWaypoints.get(ArgMax.of(distances))));
+    slamContainer.setSelectedSlamWaypoint(Optional.of(visibleSlamWaypoints.get(ArgMax.of(distances))));
   }
 }

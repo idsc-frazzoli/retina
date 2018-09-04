@@ -35,6 +35,9 @@ public class MapProvider {
     cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));
     mapArray = new double[numberOfCells];
     maxValue = 0;
+    /** when in localization mode, we load a prior map */
+    if (slamConfig.slamAlgoConfig() == SlamAlgoConfig.localizationMode)
+      setMapArray(slamConfig.getMapArray());
   }
 
   /** divides the provided maps and saves into targMap
@@ -72,7 +75,7 @@ public class MapProvider {
   public int getCellIndex(double posX, double posY) {
     // check if position is inside map
     if (posX <= cornerXLow || posX >= cornerXHigh || posY <= cornerYLow || posY >= cornerYHigh) {
-      // unreasonable number to indicate that we dont have this location
+      // unreasonable number to indicate that we don't have this location
       return -1;
     }
     int gridPosX = (int) ((posX - cornerXLow) * cellDimInv);

@@ -1,3 +1,4 @@
+%code by mheim
 function [nx,nP] = lidarMeasure(x,P,dt,dmt,m1,m2,m3,R,Q)
 %measure lidar
 %R: estimated lidar variance

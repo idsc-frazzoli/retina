@@ -8,6 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
+import ch.ethz.idsc.tensor.io.Primitives;
 
 /** blob tracking algorithm visualization static methods */
 public enum VisBlobTrackUtil {
@@ -27,10 +28,8 @@ public enum VisBlobTrackUtil {
    * @param color desired */
   public static void drawImageBlob(Graphics2D graphics, ImageBlob blob, Color color) {
     AffineTransform old = graphics.getTransform();
-    // TODO MG not efficient, eigensystem is computed twice (in rotAngle & stdDev)
-    // ... can make helper class e.g. "Covariance2D"
     double rotAngle = blob.getRotAngle();
-    float[] semiAxes = blob.getStandardDeviation();
+    float[] semiAxes = Primitives.toFloatArray(blob.getStandardDeviation());
     float leftCornerX = blob.getPos()[0] - semiAxes[0];
     float leftCornerY = blob.getPos()[1] - semiAxes[1];
     // draw ellipse with first eigenvalue aligned with x axis
