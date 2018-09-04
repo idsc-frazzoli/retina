@@ -672,6 +672,30 @@ public enum GokartLogFile implements LogFile {
   _20180830T151854_21b2e8ae, //
   /** slam and waypoint following based on davis240c */
   _20180830T160739_30e51fa2, //
+  /***************************************************/
+  /* 2018-09-04 demoday */
+  /** pure pursuit figure 8 reverse */
+  _20180904T113548_c4fc6532, //
+  /** planning around changing obstacles
+   * using bayesian mapping in separate thread */
+  _20180904T115211_d1142faa, //
+  /** davis240c based waypoint following without lidar pose */
+  _20180904T133123_e84a7b76, //
+  /** davis240c based waypoint following using lidar pose */
+  _20180904T133718_e84a7b76, //
+  /** davis240c based waypoint following without lidar pose */
+  _20180904T134507_e84a7b76, //
+  /** planning around changing obstacles */
+  _20180904T150939_e84a7b76, //
+  /** driving on a straight line forward and reverse */
+  _20180904T165639_b00c893a, //
+  /** planning around changing obstacles */
+  _20180904T171628_b00c893a, //
+  /** planning around changing obstacles */
+  _20180904T172719_b00c893a, //
+  /** planning around changing obstacles
+   * visitors near the container and tables */
+  _20180904T183437_b00c893a, //
   ;
   // ---
   @Override // from LogFile
