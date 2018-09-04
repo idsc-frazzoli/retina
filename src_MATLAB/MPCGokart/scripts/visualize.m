@@ -19,6 +19,11 @@ w2L = zeros(m,n);
 w2R = zeros(m,n);
 for i = 4:nargin
     xhist = varargin{i};
+    [~,nn] = size(xhist);
+    if(nn ~= 8)
+       %is in form:  [t x y dotx_b doty_b dotKsi Ksi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
+        
+    end
     xhist = xhist(1:stride:end,:);
     Ux(:,i)=xhist(:,1);
     Uy(:,i)=xhist(:,2);

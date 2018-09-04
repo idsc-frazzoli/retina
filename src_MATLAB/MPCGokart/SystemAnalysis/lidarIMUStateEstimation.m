@@ -8,8 +8,8 @@ x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
 IMUa = 200;
-IMUr = 1000000;
-Q = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
+IMUr = 2000;
+dQ = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
 lt = ldat(:,1);
 at = adat(:,1);
 ldat = ldat(:,2:4);
@@ -17,7 +17,7 @@ adat = adat(:,2:4);
 
 %I don't use IMU data at the moment :(
 useIMU = false;
-maxStep = 0.01;
+maxStep = 1;
 
 %aggregate accelerationdata
 aagg = 10;
@@ -28,9 +28,6 @@ lR = diag([0.2,0.2,0.1]);
 %aR = estimateVar(adat)*100000;
 
 
-[~,lN]=size(ldat);
-[~,lA]=size(adat);
-totalN = lN+lA;
 
 if(useIMU)
     currentt = min(lt(1),at(1));
@@ -41,6 +38,10 @@ acount = aagg;
 lcount = 3;
 tcount = 1;
 maxt = max(lt)-0.1;
+
+[lN,~]=size(ldat);
+[lA,~]=size(adat);
+totalN = lN+lA+int32(maxt/maxStep);
 thist = zeros(totalN,1);
 xhist = zeros(totalN,dim);
 Phist = zeros(totalN,dim,dim);
@@ -59,14 +60,14 @@ while(currentt < maxt)
             dt = lt(lcount)-currentt;
             currentt = lt(lcount);
             dmt = lt(lcount)-lt(lcount-1);
-            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,Q);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,dQ);
             lcount = lcount+1;
         else
             %update with IMU
             dt = at(acount)-currentt;
             currentt = at(acount);
             m = mean(adat(acount-aagg+1:acount,:));
-            [x,P]=IMUMeasure(x,P,dt,m', aR,Q);
+            [x,P]=IMUMeasure(x,P,dt,m', aR,dQ);
             acount = acount+aagg;
 
             %debugging
@@ -75,27 +76,27 @@ while(currentt < maxt)
             %mwdebug = [mwdebug;currentt,mw'];
         end
     else
-        if(lt(lcount)>currentt+maxStep)
+        if(lt(lcount)<currentt+maxStep)
         %if(1)
             %update with lidar
             dt = lt(lcount)-currentt;
             currentt = lt(lcount);
             dmt = lt(lcount)-lt(lcount-1);
-            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-2,:)',ldat(lcount-1,:)',ldat(lcount,:)',lR,Q);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-2,:)',ldat(lcount-1,:)',ldat(lcount,:)',lR,dQ);
             lcount = lcount+1;
         else
             dt = maxStep;
             currentt = currentt+dt;
             Fx = getEvolution(x);
             dotx = Fx*x;
-            [x,P]=Predict(x,P,dotx,Fx,dt,dt*Q);
+            [x,P]=Predict(x,P,dotx,Fx,dt,dQ);
         end
     end
     thist(tcount)=currentt;
     xhist(tcount,:) = x;
     Phist(tcount,:,:) = P;
     Fhist(tcount,:,:) = getEvolution(x)*dt+eye(dim);
-    Qhist(tcount,:,:) = Q*dt;
+    Qhist(tcount,:,:) = dQ*dt;
     tcount = tcount + 1;
 end
 
@@ -110,7 +111,7 @@ Qhist = Qhist(1:tcount-1,:,:);
     %sx = xhist;
     %sP = Phist;
     st = thist;
-    show = 1;
+    show = 0;
     if(show)
         close all
 

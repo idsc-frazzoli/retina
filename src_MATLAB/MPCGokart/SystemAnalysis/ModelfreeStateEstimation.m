@@ -1,4 +1,5 @@
 function M = ModelfreeStateEstimation(folder)
+    tic;
     %folder = 'retina_out/20180820T1438522.lcm/';
     gplocalization = csvread(strcat(folder,'gplocalization.csv'));
     %davisIMU = csvread(strcat(folder,'davisIMU.csv'));
@@ -53,8 +54,9 @@ function M = ModelfreeStateEstimation(folder)
 
     sst = min(st):0.01:max(st);
     ssx = interp1(st, sx,sst);
-    disp(strcat('finished ',folder,'gplocalization.csv'));
     M = [sst',ssx];
+    t = toc;
+    disp(strcat("finished ",folder, " in ",num2str(t)," seconds"));
 end
 %plot(ssx(1,:),ssx(2,:))
 %csvwrite(strcat(folder,'RTSData.csv'), M);

@@ -25,7 +25,7 @@ R = F*V*F';
 Fx = getEvolution(x);
 dotx = Fx*x;
 if(dt > 0.00001)
-    [px,pP]=Predict(x,P,dotx,Fx,dt,Q*dt);
+    [px,pP]=Predict(x,P,dotx,Fx,dt,Q);
 else
     px = x;
     pP = P;
