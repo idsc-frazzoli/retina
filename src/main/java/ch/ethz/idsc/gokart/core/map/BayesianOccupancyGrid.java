@@ -44,12 +44,9 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
 public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
-  private static final short MASK_OCCUPIED = 0x00;
-  private static final short MASK_UNKNOWN = 0xDD;
-  @SuppressWarnings("unused")
-  private static final short MASK_EMPTY = 0xFF;
-  private static final Color COLOR_OCCUPIED = //
-      new Color(MASK_OCCUPIED, MASK_OCCUPIED, MASK_OCCUPIED);
+  private static final byte MASK_OCCUPIED = 0;
+  private static final Color COLOR_OCCUPIED = Color.BLACK;
+  private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
@@ -228,14 +225,16 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     lidar2cellLayer.pushMatrix(lidar2gokart);
   }
 
+  /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
+  // TODO this function should return a new region object
   public void genObstacleMap() {
-    imageGraphics.setColor(new Color(MASK_UNKNOWN, MASK_UNKNOWN, MASK_UNKNOWN));
+    imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     synchronized (hset) {
       if (Scalars.lessEquals(obsDilationRadius, cellDim))
         for (Tensor cell : hset)
-          drawCell(cell, (byte) MASK_OCCUPIED);
+          drawCell(cell, MASK_OCCUPIED);
       else {
         imageGraphics.setColor(COLOR_OCCUPIED);
         for (Tensor cell : hset)
@@ -244,10 +243,27 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     }
   }
 
+  private void drawCell(Tensor cell, byte grayScale) {
+    imagePixels[cellToIdx(cell)] = grayScale;
+  }
+
+  private void drawSphere(Tensor cell, Scalar radius) {
+    Tensor pos = toPos(cell);
+    Scalar radiusScaled = radius.multiply(cellDimInv);
+    double dim = radiusScaled.number().doubleValue();
+    Ellipse2D sphere = new Ellipse2D.Double( //
+        pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+        pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
+        2 * dim, 2 * dim);
+    imageGraphics.fill(sphere);
+  }
+
+  /***************************************************/
   /** Updates the grid lbounds. Grid range and size remain unchanged.
    * Overlapping segment is copied.
    * 
    * @param lbounds */
+  // TODO function not used yet
   public void setNewlBound(Tensor lbounds) {
     if (Objects.nonNull(gokart2world)) {
       this.lbounds = VectorQ.requireLength(lbounds, 2);
@@ -325,21 +341,6 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   private int cellToIdx(Tensor cell) {
     return cell.Get(1).multiply(gridSize.Get(0)).add(cell.Get(0)).number().intValue();
-  }
-
-  private void drawCell(Tensor cell, byte grayScale) {
-    imagePixels[cellToIdx(cell)] = grayScale;
-  }
-
-  private void drawSphere(Tensor cell, Scalar radius) {
-    Tensor pos = toPos(cell);
-    Scalar radiusScaled = radius.multiply(cellDimInv);
-    double dim = radiusScaled.number().doubleValue();
-    Ellipse2D sphere = new Ellipse2D.Double( //
-        pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-        pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
-        2 * dim, 2 * dim);
-    imageGraphics.fill(sphere);
   }
 
   @Override // from Region<Tensor>

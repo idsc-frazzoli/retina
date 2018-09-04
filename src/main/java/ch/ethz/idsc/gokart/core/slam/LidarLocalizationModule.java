@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.Tensors;
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements LidarRayBlockListener, Runnable {
-  // TODO bad design
+  // TODO JAN bad design
   public static boolean TRACKING = false;
   public static boolean FLAGSNAP = false;
   // ---
@@ -38,7 +38,10 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
   private final Thread thread = new Thread(this);
-  private Tensor points_ferry = null;
+  /** points_ferry is null or a matrix with dimension Nx2
+   * containing the cross-section of the static geometry
+   * with the horizontal plane at height of the lidar */
+  private Tensor points2d_ferry = null;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -70,7 +73,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     if (FLAGSNAP || TRACKING) {
       FLAGSNAP = false;
       FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-      points_ferry = Tensors.vector(i -> Tensors.of( //
+      points2d_ferry = Tensors.vector(i -> Tensors.of( //
           DoubleScalar.of(floatBuffer.get()), //
           DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
       thread.interrupt();
@@ -80,9 +83,9 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
-      Tensor points = points_ferry;
+      Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
-        points_ferry = null;
+        points2d_ferry = null;
         Tensor state = gokartPoseOdometry.getPose(); // {x[m],y[m],angle[]}
         // System.out.println("tracking");
         lidarGyroLocalization.setState(state);
