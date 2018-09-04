@@ -3,12 +3,15 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.retina.util.math.Covariance2D;
+import ch.ethz.idsc.tensor.Tensor;
+
 /** blob object for blob tracking algorithm. position in the image plane is tracked */
 public class ImageBlob implements Serializable {
   private final float[] pos;
   private final int timeStamp;
   private final int blobID; // == 0 for hidden blobs
-  private Covariance2D covariance2D;
+  private Covariance2D covariance2D = null;
   private final boolean isHidden;
   // ---
   private boolean isRecognized;
@@ -22,11 +25,12 @@ public class ImageBlob implements Serializable {
     this.timeStamp = timeStamp;
     this.blobID = blobID;
     this.isHidden = isHidden;
+    // TODO constructor of Covariance2D is ineffective, i.e. doesn't do anything with the data
     covariance2D = new Covariance2D(covariance);
   }
 
   /** @return square roots of the eigenvalues of the covariance matrix */
-  public float[] getStandardDeviation() {
+  public Tensor getStandardDeviation() {
     return covariance2D.stdDev();
   }
 
@@ -69,7 +73,7 @@ public class ImageBlob implements Serializable {
   }
 
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
-    covariance2D.setCovariance(firstAxis, secondAxis, rotAngle);
+    covariance2D = Covariance2D.of(firstAxis, secondAxis, rotAngle);
   }
 
   public void setIsRecognized(boolean isRecognized) {

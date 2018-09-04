@@ -26,6 +26,8 @@ import ch.ethz.idsc.tensor.Tensor;
       double linVel = truncatedGaussian.nextValue();
       double maxAngVel = TURN_RATE_PER_METER * linVel;
       double minAngVel = -maxAngVel;
+      // FIXME MG if angVelStd is large and minAngVel, maxAngVel are very small then
+      // ... the next line cannot find a solution:
       double angVel = new TruncatedGaussian(0, angVelStd, minAngVel, maxAngVel).nextValue();
       slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
     }
