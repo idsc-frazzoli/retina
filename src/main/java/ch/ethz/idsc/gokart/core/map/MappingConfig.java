@@ -27,18 +27,22 @@ public class MappingConfig implements Serializable {
    * with occupancy probability larger than P_THRESH are classified
    * as occupied */
   public Scalar P_THRESH = DoubleScalar.of(0.5);
-  /** Forgetting factor lambda in (0,1). Lambda equal to one
-   * results in past and current measurements being equally important. */
-  public Scalar lambda = DoubleScalar.of(1);
+  /** Forgetting factor lambda in (0,1] TODO check interval
+   * Lambda == 1 results in past and current measurements being equally important.
+   * Lambda == 0.4 was a choice in the past */
+  public Scalar lambda = DoubleScalar.of(0.8);
   /** any obstacle closer than minDistance not mapped,
    * otherwise the driver is put in the map. */
   // TODO param should be obsolete if the mapping is started when the driver is already seated
   public Scalar minDistance = Quantity.of(2, SI.METER);
-  /** Occupied cells are dilated with this radius before generating the obstacle map */
-  public Scalar obsRadius = Quantity.of(1.5, SI.METER);
+  /** Occupied cells are dilated with this radius before generating the obstacle map
+   * 1.5[m] was a choice in the past */
+  public Scalar obsRadius = Quantity.of(1.2, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public Scalar cellDim = Quantity.of(0.2, SI.METER);
-  /** Minimal obstacle height. Used for inverse sensor model */
+  public Boolean alongLine = false;
+  /** Minimal obstacle height. Used for inverse sensor model
+   * only relevant when alongLine == true */
   public Scalar minObsHeight = Quantity.of(0, SI.METER);
 
   /***************************************************/
