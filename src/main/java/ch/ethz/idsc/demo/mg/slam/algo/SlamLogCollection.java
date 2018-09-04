@@ -7,10 +7,11 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** to be used for saving data during SLAM algorithm runs. Should save csv files */
-/* package */ class SlamLogCollection extends PeriodicSlamStep {
+/** to save logs when testing the SLAM algorithm offline. For online testing, LCM publishing should be used */
+/* package */ class SlamLogCollection extends PeriodicSlamStep implements StartAndStoppable {
   private final GokartPoseInterface gokartPoseInterface;
   private final List<double[]> logData;
 
@@ -35,5 +36,15 @@ import ch.ethz.idsc.tensor.Tensor;
     for (int i = 0; i < 3; i++)
       logInstant[i + 4] = estimatedPose.Get(i).number().doubleValue();
     logData.add(logInstant);
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    // ---
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    // save the logData field
   }
 }

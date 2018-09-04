@@ -16,9 +16,9 @@ import ch.ethz.idsc.tensor.Tensor;
    * 
    * @param slamParticles
    * @param pose {[m],[m],[-]} initial pose which is identical for all particles
-   * @param linVelAvg [m/s] average initial linear velocity
-   * @param linVelStd [m/s] standard deviation of linear velocity
-   * @param angVelStd [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
+   * @param linVelAvg interpreted as [m/s] average initial linear velocity
+   * @param linVelStd interpreted as [m/s] standard deviation of linear velocity
+   * @param angVelStd interpreted as [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */
   public static void setInitialDistribution(SlamParticle[] slamParticles, Tensor pose, final double linVelAvg, final double linVelStd, double angVelStd) {
     final TruncatedGaussian truncatedGaussian = new TruncatedGaussian(linVelAvg, linVelStd, VehicleConfig.LINVEL_MIN, VehicleConfig.LINVEL_MAX);
     final double initLikelihood = 1.0 / slamParticles.length;
@@ -26,9 +26,13 @@ import ch.ethz.idsc.tensor.Tensor;
       double linVel = truncatedGaussian.nextValue();
       double maxAngVel = TURN_RATE_PER_METER * linVel;
       double minAngVel = -maxAngVel;
-      // FIXME MG if angVelStd is large and minAngVel, maxAngVel are very small then
-      // ... the next line cannot find a solution:
-      double angVel = new TruncatedGaussian(0, angVelStd, minAngVel, maxAngVel).nextValue();
+      // handle the case that maxAngVel is very close to zero
+      // TODO instead of 0.2, use a value that guarantees with high probability that TruncatedGaussian will find value (probably smaller)
+      double angVel;
+      if (maxAngVel < 0.2 * angVelStd)
+        angVel = 0;
+      else
+        angVel = new TruncatedGaussian(0, angVelStd, minAngVel, maxAngVel).nextValue();
       slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
     }
   }

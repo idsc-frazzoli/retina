@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 public class TruncatedGaussian {
   // TODO MG limit of 50 was insufficient, but that means the mean, stdDev, lower-, and upper-bound are not chosen well !
   // -> check all uses of TruncatedGaussian for instance in SlamContainerUtil and argue that values are reasonable!
-  private static final int LIMIT = 50;
+  private static final int LIMIT = 20;
   private static final Random RANDOM = new Random();
   // ---
   private final double mean;
@@ -22,7 +22,7 @@ public class TruncatedGaussian {
    * 
    * @param mean
    * @param standardDeviation
-   * @param lowerBound
+   * @param lowerBound < upperBound
    * @param upperBound */
   public TruncatedGaussian(double mean, double standardDeviation, double lowerBound, double upperBound) {
     this.mean = mean;

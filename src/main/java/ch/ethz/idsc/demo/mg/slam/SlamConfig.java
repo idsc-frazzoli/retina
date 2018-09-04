@@ -19,12 +19,14 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
   }
 
+  /** when true, SLAM module SlamLogCollection is invoked */
+  public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   // further parameters

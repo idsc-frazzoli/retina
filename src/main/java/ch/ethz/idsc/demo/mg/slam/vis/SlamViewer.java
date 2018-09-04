@@ -21,8 +21,6 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   private final Timer timer;
   private final TimerTask visualizationTask;
   private final long visualizationInterval;
-  // ---
-  private boolean started;
 
   public SlamViewer(SlamConfig slamConfig, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
     super(slamContainer, slamConfig.savingInterval);
@@ -46,13 +44,12 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   @Override // from StartAndStoppable
   public void start() {
     timer.schedule(visualizationTask, 0, visualizationInterval);
-    started = true;
   }
 
   @Override // from StartAndStoppable
   public void stop() {
+    timer.cancel();
     slamMapGUI.dispose();
-    started = false;
   }
 
   private void visualizationTask() {
@@ -61,7 +58,6 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    if (started)
-      slamSaveFrame.saveFrame(currentTimeStamp);
+    slamSaveFrame.saveFrame(currentTimeStamp);
   }
 }
