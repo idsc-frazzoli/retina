@@ -11,10 +11,10 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
-// TODO publish worldWaypoints for listeners
 /* package */ class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
   private final Thread thread = new Thread(this);
   private final SlamWaypointDetection slamWaypointDetection;
+  private final WorldWaypointListener worldWaypointListener;
   // ---
   private MapProvider occurrenceMap;
   private boolean isLaunched;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
   public SlamMapProcessing(SlamContainer slamContainer, SlamConfig slamConfig) {
     super(slamContainer, slamConfig.waypointUpdateRate);
     slamWaypointDetection = new SlamWaypointDetection(slamConfig);
-    // TODO maybe call start() method from somewhere else
+    worldWaypointListener = new SlamWaypointSelection(slamContainer, slamConfig);
     start();
   }
 
@@ -48,6 +48,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
   private void mapProcessing() {
     List<double[]> worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
+    worldWaypointListener.worldWaypoints(worldWaypoints);
   }
 
   @Override // from StartAndStoppable

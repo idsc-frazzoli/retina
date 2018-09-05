@@ -60,11 +60,11 @@ import ch.ethz.idsc.tensor.Tensor;
     }
   }
 
-  /** draws the way point selected to be followed in blue color
+  /** draws the lookAhead point to be followed in blue color
    * 
-   * @param slamWaypoint */
-  public void drawSelectedSlamWaypoint(SlamWaypoint slamWaypoint) {
-    SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoint, Color.BLUE, waypointRadius, cornerX, cornerY, cellDim);
+   * @param lookAheadWorldFrame */
+  public void drawLookAhead(double[] lookAheadWorldFrame) {
+    SlamMapFrameUtil.drawLookAhead(graphics, lookAheadWorldFrame, Color.BLUE, waypointRadius, cornerX, cornerY, cellDim);
   }
 
   /** @return frame such that x axis points right and y axis points upwards of underlying map object */

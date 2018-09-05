@@ -72,7 +72,6 @@ public enum SlamAlgoConfig {
     standardLocalizationStep(listeners, slamContainer, slamConfig);
     standardMappingStep(listeners, slamContainer, slamConfig);
     listeners.add(new SlamReactiveMapStep(slamConfig, slamContainer));
-    listeners.add(new SlamWaypointSelection(slamContainer, slamConfig));
   }
 
   /** externalPoseMode: Instead of using a particle filter, the pose is provided by an external module like the lidar
@@ -82,7 +81,6 @@ public enum SlamAlgoConfig {
     listeners.add(new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface));
     listeners.add(new SlamMappingStep(slamContainer));
     listeners.add(new SlamMapProcessing(slamContainer, slamConfig));
-    listeners.add(new SlamWaypointSelection(slamContainer, slamConfig));
   }
 
   /** lidarPoseReactiveMode: reactive map mode with lidar pose. Since the lidar pose does not drift, we do not need a SlamMapPoseReset */
@@ -100,7 +98,6 @@ public enum SlamAlgoConfig {
     listeners.add(new SlamMappingStep(slamContainer));
     listeners.add(new SlamReactiveMapStep(slamConfig, slamContainer));
     listeners.add(new SlamMapProcessing(slamContainer, slamConfig));
-    listeners.add(new SlamWaypointSelection(slamContainer, slamConfig));
     listeners.add(new SlamPoseMapReset(slamContainer, slamConfig));
   }
 

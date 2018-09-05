@@ -19,7 +19,7 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -45,8 +45,9 @@ public class SlamConfig {
   public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
-  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND); // TODO remove once we got it running on listener
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
+  public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -80,7 +81,7 @@ public class SlamConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(davisConfig.logFilename()));
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder((davisConfig.logFilename())));
   }
 
   // SlamMapProcessing

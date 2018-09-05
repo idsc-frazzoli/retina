@@ -8,19 +8,14 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** wrapper to run SLAM algorithm with offline log files and saving occurrence maps after completion */
+/** wrapper to run SLAM algorithm with offline log files */
 /* package */ class OfflineSlamWrap extends AbstractSlamWrap implements OfflineLogListener {
   private static final String CHANNEL_DVS = "davis240c.overview.dvs";
-  private final boolean saveSlamMap;
-  private final String logFilename;
 
   OfflineSlamWrap(SlamConfig slamConfig) {
     super(slamConfig);
-    saveSlamMap = slamConfig.saveSlamMap;
-    logFilename = slamConfig.davisConfig.logFilename();
     this.start();
   }
 
@@ -43,16 +38,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from AbstractSlamWrap
   protected void protected_stop() {
-    saveOccurrenceMap();
-  }
-
-  // TODO move method to MapProvider
-  private void saveOccurrenceMap() {
-    if (saveSlamMap) {
-      PrimitivesIO.saveToCSV( //
-          SlamFileLocations.recordedMaps(logFilename), //
-          slamContainer.getOccurrenceMap().getMapArray());
-      System.out.println("Slam map successfully saved");
-    }
+    slamContainer.stop();
   }
 }
