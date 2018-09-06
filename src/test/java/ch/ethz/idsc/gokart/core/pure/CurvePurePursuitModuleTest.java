@@ -167,9 +167,12 @@ public class CurvePurePursuitModuleTest extends TestCase {
     Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
+    // assertTrue(Clip.function( // for look ahead 3.9[m]
+    // Quantity.of(-0.018, "rad"), //
+    // Quantity.of(-0.016, "rad")).isInside(angle));
     assertTrue(Clip.function( //
-        Quantity.of(-0.018, "rad"), //
-        Quantity.of(-0.016, "rad")).isInside(angle));
+        Quantity.of(-0.014, "rad"), //
+        Quantity.of(-0.013, "rad")).isInside(angle));
   }
 
   public void testSpecific2() throws Exception {

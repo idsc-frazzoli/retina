@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
+// TODO do not use the static reference PursuitConfig.GLOBAL but an instance
 public final class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
   private Optional<Tensor> optionalCurve = Optional.empty();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
