@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf
  * all modules of the SLAM algorithm implement {@link DavisDvsListener} and are contained
  * in the field listeners */
-public enum SlamAlgoConfig {
+public enum SlamAlgoConfiguration {
   ;
   public static final List<DavisDvsListener> getListeners(SlamContainer slamContainer, SlamConfig slamConfig, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {

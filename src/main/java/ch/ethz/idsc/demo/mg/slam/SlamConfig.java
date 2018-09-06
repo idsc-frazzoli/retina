@@ -19,7 +19,7 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -29,7 +29,7 @@ public class SlamConfig {
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
-  // further parameters
+  // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
   public final Scalar numberOfParticles = RealScalar.of(30);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
@@ -90,6 +90,8 @@ public class SlamConfig {
   public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
   public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
+  // SlamWaypointSelection
+  public final Scalar offset = Quantity.of(-0.5, SI.METER);
   // SlamPoseReset
   public final Scalar resetPoseX = RealScalar.of(50); // [m]
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
