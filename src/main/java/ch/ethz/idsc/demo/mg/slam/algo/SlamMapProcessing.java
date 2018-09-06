@@ -7,16 +7,14 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
-/* package */ class SlamMapProcessing extends PeriodicSlamStep implements Runnable {
+/* package */ class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
   private final Thread thread = new Thread(this);
   private final SlamWaypointDetection slamWaypointDetection;
-  private double visibleBoxXMin;
-  private double visibleBoxXMax;
-  private double visibleBoxHalfWidth;
+  private final WorldWaypointListener worldWaypointListener;
   // ---
   private MapProvider occurrenceMap;
   private boolean isLaunched;
@@ -24,11 +22,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   public SlamMapProcessing(SlamContainer slamContainer, SlamConfig slamConfig) {
     super(slamContainer, slamConfig.waypointUpdateRate);
     slamWaypointDetection = new SlamWaypointDetection(slamConfig);
-    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
-    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
-    visibleBoxHalfWidth = Magnitude.METER.toDouble(slamConfig.visibleBoxHalfWidth);
-    isLaunched = true;
-    thread.start();
+    worldWaypointListener = new SlamWaypointSelection(slamContainer, slamConfig);
+    start();
   }
 
   @Override // from PeriodicSlamStep
@@ -41,6 +36,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   public void run() {
     while (isLaunched)
       if (Objects.nonNull(occurrenceMap)) {
+        // TODO JAN check thread safety
         mapProcessing();
         occurrenceMap = null;
       } else
@@ -53,8 +49,17 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   private void mapProcessing() {
     List<double[]> worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
-    slamContainer.setWaypoints(SlamMapProcessingUtil.getWaypoints( //
-        worldWaypoints, slamContainer.getPoseUnitless(), //
-        visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth));
+    worldWaypointListener.worldWaypoints(worldWaypoints);
+  }
+
+  @Override // from StartAndStoppable
+  public void start() {
+    isLaunched = true;
+    thread.start();
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    isLaunched = false;
   }
 }

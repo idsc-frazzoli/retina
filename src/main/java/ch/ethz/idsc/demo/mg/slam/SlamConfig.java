@@ -19,20 +19,22 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
   }
 
+  /** when true, SLAM module SlamLogCollection is invoked */
+  public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = Quantity.of(30, SI.ONE);
+  public final Scalar numberOfParticles = RealScalar.of(30);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
-  public final Scalar particleRange = Quantity.of(3, SI.ONE);
+  public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** for reactive mapping mode */
@@ -43,8 +45,9 @@ public class SlamConfig {
   public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
-  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND); // TODO remove once we got it running on listener
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
+  public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -78,7 +81,7 @@ public class SlamConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.recordedMaps(davisConfig.logFilename()));
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(davisConfig.logFilename()));
   }
 
   // SlamMapProcessing

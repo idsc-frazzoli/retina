@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   OfflineSlamWrap(SlamConfig slamConfig) {
     super(slamConfig);
+    start();
   }
 
   @Override // from OfflineLogListener
@@ -28,5 +29,15 @@ import ch.ethz.idsc.tensor.Scalar;
     else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
+  }
+
+  @Override // from AbstractSlamWrap
+  protected void protected_start() {
+    // ---
+  }
+
+  @Override // from AbstractSlamWrap
+  protected void protected_stop() {
+    slamContainer.stop();
   }
 }

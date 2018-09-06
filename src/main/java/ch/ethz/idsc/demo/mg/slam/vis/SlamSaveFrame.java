@@ -19,7 +19,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
   public SlamSaveFrame(SlamConfig slamConfig, SlamMapFrame[] slamMapFrames) {
     this.slamMapFrames = slamMapFrames;
     logFilename = slamConfig.davisConfig.logFilename();
-    parentFilePath = SlamFileLocations.mapFrames(logFilename);
+    parentFilePath = SlamFileLocations.MAP_FRAMES.subfolder(logFilename);
     saveSlamFrame = slamConfig.saveSlamFrame;
   }
 
