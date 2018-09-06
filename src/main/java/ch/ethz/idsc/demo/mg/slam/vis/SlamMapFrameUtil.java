@@ -41,6 +41,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m]
    * @return framePos interpreted as [pixel] */
+  // TODO MG talk to JH about GeometricLayer
   private static double[] worldToFrame(double[] worldPos, double cornerX, double cornerY, double cellDim) {
     return new double[] { //
         (worldPos[0] - cornerX) / cellDim, //

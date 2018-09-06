@@ -31,8 +31,9 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param velocity unitless
    * @param dT interpreted as [s]
    * @return propagated pose */
-  private Tensor propagatePose(Tensor oldPose, Tensor velocity, double dT) {
+  private static Tensor propagatePose(Tensor oldPose, Tensor velocity, double dT) {
     Tensor deltaPose = velocity.multiply(RealScalar.of(dT));
+    // TODO document why Se2CoveringIntegrator vs. Se2Integrator ? is this really intended ?
     return Se2CoveringIntegrator.INSTANCE.spin(oldPose, deltaPose);
   }
 }

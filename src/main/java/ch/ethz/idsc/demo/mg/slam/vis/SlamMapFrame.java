@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.List;
+import java.util.Collection;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
@@ -52,11 +52,11 @@ import ch.ethz.idsc.tensor.Tensor;
   /** draws all detected way points. Visible way points are drawn green and non visible ones orange
    * 
    * @param slamWaypoints */
-  public void drawSlamWaypoints(List<SlamWaypoint> slamWaypoints) {
+  public void drawSlamWaypoints(Collection<SlamWaypoint> slamWaypoints) {
     VisGeneralUtil.clearFrame(bytes);
-    for (int i = 0; i < slamWaypoints.size(); i++) {
-      Color color = slamWaypoints.get(i).isVisible() ? Color.GREEN : Color.ORANGE;
-      SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoints.get(i), color, waypointRadius, cornerX, cornerY, cellDim);
+    for (SlamWaypoint slamWaypoint : slamWaypoints) {
+      Color color = slamWaypoint.isVisible() ? Color.GREEN : Color.ORANGE;
+      SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoint, color, waypointRadius, cornerX, cornerY, cellDim);
     }
   }
 

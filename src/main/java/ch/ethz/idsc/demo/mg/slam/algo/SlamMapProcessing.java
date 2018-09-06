@@ -36,6 +36,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
   public void run() {
     while (isLaunched)
       if (Objects.nonNull(occurrenceMap)) {
+        // TODO JAN check thread safety
         mapProcessing();
         occurrenceMap = null;
       } else

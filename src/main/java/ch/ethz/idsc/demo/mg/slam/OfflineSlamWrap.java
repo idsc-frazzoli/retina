@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
   OfflineSlamWrap(SlamConfig slamConfig) {
     super(slamConfig);
-    this.start();
+    start();
   }
 
   @Override // from OfflineLogListener

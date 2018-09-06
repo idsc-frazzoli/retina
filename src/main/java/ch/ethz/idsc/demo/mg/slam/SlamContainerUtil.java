@@ -25,14 +25,11 @@ import ch.ethz.idsc.tensor.Tensor;
     for (int index = 0; index < slamParticles.length; ++index) {
       double linVel = truncatedGaussian.nextValue();
       double maxAngVel = TURN_RATE_PER_METER * linVel;
-      double minAngVel = -maxAngVel;
       // handle the case that maxAngVel is very close to zero
       // TODO instead of 0.2, use a value that guarantees with high probability that TruncatedGaussian will find value (probably smaller)
-      double angVel;
-      if (maxAngVel < 0.2 * angVelStd)
-        angVel = 0;
-      else
-        angVel = new TruncatedGaussian(0, angVelStd, minAngVel, maxAngVel).nextValue();
+      final double angVel = maxAngVel < 0.2 * angVelStd //
+          ? 0.0
+          : new TruncatedGaussian(0, angVelStd, -maxAngVel, maxAngVel).nextValue();
       slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
     }
   }

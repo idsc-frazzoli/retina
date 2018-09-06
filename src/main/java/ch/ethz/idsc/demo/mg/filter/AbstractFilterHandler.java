@@ -29,6 +29,6 @@ public abstract class AbstractFilterHandler implements DavisDvsListener, DavisDv
     listeners.stream() //
         .filter(StartAndStoppable.class::isInstance) //
         .map(StartAndStoppable.class::cast) //
-        .forEach(listener -> listener.stop());
+        .forEach(StartAndStoppable::stop);
   }
 }

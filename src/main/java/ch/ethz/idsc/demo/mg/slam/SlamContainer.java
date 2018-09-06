@@ -35,9 +35,7 @@ public class SlamContainer implements GokartPoseInterface {
 
   public SlamContainer(SlamConfig slamConfig) {
     int numOfPart = Magnitude.ONE.toInt(slamConfig.numberOfParticles);
-    slamParticles = new SlamParticle[numOfPart];
-    for (int index = 0; index < numOfPart; ++index)
-      slamParticles[index] = new SlamParticle();
+    slamParticles = SlamParticles.allocate(numOfPart);
     saveSlamMap = slamConfig.saveSlamMap;
     logFilename = slamConfig.davisConfig.logFilename();
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);

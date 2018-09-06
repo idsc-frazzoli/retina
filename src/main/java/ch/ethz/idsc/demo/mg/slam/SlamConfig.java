@@ -31,10 +31,10 @@ public class SlamConfig {
   public final Boolean saveSlamMap = false;
   // further parameters
   public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = Quantity.of(30, SI.ONE);
+  public final Scalar numberOfParticles = RealScalar.of(30);
   public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
-  public final Scalar particleRange = Quantity.of(3, SI.ONE);
+  public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
   /** for reactive mapping mode */
@@ -81,7 +81,7 @@ public class SlamConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder((davisConfig.logFilename())));
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(davisConfig.logFilename()));
   }
 
   // SlamMapProcessing

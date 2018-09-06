@@ -69,7 +69,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   }
 
   /** @return {vx[m*s^-1], 0[m*s^-1], omega[s^-1]} */
-  public Tensor getVelocity() {
+  /* package */ Tensor getVelocity() {
     return velocity;
   }
 

@@ -43,12 +43,12 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   }
 
   @Override // from StartAndStoppable
-  public void stop() {
-    protected_stop();
+  public final void stop() {
     gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     davisLcmClient.stopSubscriptions();
     slamViewer.stop();
     abstractFilterHandler.stopStoppableListeners();
+    protected_stop(); // <- Jan moved call here, because it's custom to reverse order of start()
   }
 
   protected abstract void protected_start();
@@ -58,7 +58,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   /** the SLAM algorithm is initialized only if the DAVIS publishes the event stream and the gokartLidarPose is available.
    * visualization task is initialized as well at this instant */
   @Override // from DavisDvsListener
-  public void davisDvs(DavisDvsEvent davisDvsEvent) {
+  public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!triggered)
       if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractFilterHandler);
