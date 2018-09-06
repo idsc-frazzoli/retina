@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.List;
 
@@ -29,5 +29,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         worldWaypoints, slamContainer, //
         visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
     SlamLookAheadComputation.selectLookAhead(slamContainer, visibleWaypoints, offset);
+    SlamCurveInterpolate.interpolateWaypoints(slamContainer, visibleWaypoints);
   }
 }

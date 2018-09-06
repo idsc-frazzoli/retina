@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam.log;
 
 import java.util.List;
 

@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,14 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 /** compute visible way points based on detected way points in world frame coordinates and estimated vehicle pose */
 /* package */ enum SlamWaypointSelectionUtil {
   ;
-  /** creates SlamWaypoint objects based on worldWaypoints. sets visibility field of slamWaypoints
+  /** selects visible way points and sets way point field in slamContainer
    * 
-   * @param worldWaypoints
-   * @param pose unitless representation */
+   * @param worldWaypoints in world frame coordinates
+   * @param slamContainer
+   * @param visibleBoxXMin
+   * @param visibleBoxXMax
+   * @param visibleBoxHalfWidth
+   * @return visibleWaypoints in go kart coordinates */
   public static List<double[]> selectWaypoints(List<double[]> worldWaypoints, SlamContainer slamContainer, double visibleBoxXMin, //
       double visibleBoxXMax, double visibleBoxHalfWidth) {
     List<double[]> gokartWaypoints = computeGokartCoordinates(worldWaypoints, slamContainer.getPoseUnitless());
@@ -61,6 +65,9 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     return visibilities;
   }
 
+  /** @param gokartWaypoints in go kart frame coordinates
+   * @param visibilities
+   * @return visibleWaypoints in go kart frame coordinates */
   private static List<double[]> getVisibleWaypoints(List<double[]> gokartWaypoints, List<Boolean> visibilities) {
     List<double[]> visibleWaypoints = new ArrayList<>();
     for (int i = 0; i < gokartWaypoints.size(); i++) {

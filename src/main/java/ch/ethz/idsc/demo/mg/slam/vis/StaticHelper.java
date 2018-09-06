@@ -8,7 +8,6 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum StaticHelper {
@@ -46,11 +45,11 @@ import ch.ethz.idsc.tensor.Tensor;
   private static void paintRawMap(MapProvider map, byte[] bytes) {
     double[] mapArray = map.getMapArray();
     double maxValue = map.getMaxValue();
-    if (maxValue == 0)
-      VisGeneralUtil.clearFrame(bytes);
-    else
-      for (int i = 0; i < bytes.length; i++)
-        bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
+    for (int i = 0; i < bytes.length; i++)
+      bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
+  }
+
+  private static void drawInterpolate(SlamContainer slamContainer, SlamMapFrame slamMapFrame, Tensor refinedWaypointCurve) {
   }
 
   /** draws a Mat object

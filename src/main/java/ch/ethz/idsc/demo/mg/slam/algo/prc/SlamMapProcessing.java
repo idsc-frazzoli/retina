@@ -1,5 +1,5 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,11 +7,12 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.algo.PeriodicSlamStep;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
-/* package */ class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
+public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
   private final Thread thread = new Thread(this);
   private final SlamWaypointDetection slamWaypointDetection;
   private final WorldWaypointListener worldWaypointListener;
