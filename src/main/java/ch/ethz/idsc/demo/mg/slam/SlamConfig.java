@@ -15,11 +15,12 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 /** defines all parameters of the SLAM algorithm */
 public class SlamConfig {
+  public static final SlamConfig GLOBAL = new SlamConfig();
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
+  private SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
 
   public SlamAlgoConfig slamAlgoConfig() {
     return slamAlgoConfig;
@@ -91,7 +92,7 @@ public class SlamConfig {
   public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
   // SlamWaypointSelection
-  public final Scalar offset = Quantity.of(-0.5, SI.METER);
+  public Scalar offset = Quantity.of(-0.7, SI.METER);
   // SlamPoseReset
   public final Scalar resetPoseX = RealScalar.of(50); // [m]
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
