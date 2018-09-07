@@ -17,10 +17,10 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.sys.AppResources;
-import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.StringScalarQ;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 
 /** component that generically inspects a given object for fields of type
  * {@link Tensor} and {@link Scalar}. For each such field, a text field

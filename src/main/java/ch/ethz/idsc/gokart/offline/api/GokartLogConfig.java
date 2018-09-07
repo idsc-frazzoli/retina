@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.api;
 
-import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 
 /** an instance is typically constructed using {@link TensorProperties} */
 public class GokartLogConfig {

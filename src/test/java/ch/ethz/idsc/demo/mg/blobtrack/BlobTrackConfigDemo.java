@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 import java.io.IOException;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 
 enum BlobTrackConfigDemo {
   ;
