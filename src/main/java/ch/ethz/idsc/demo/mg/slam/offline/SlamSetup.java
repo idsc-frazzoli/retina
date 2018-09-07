@@ -1,9 +1,10 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.offline;
 
 import java.io.File;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
+import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** sets up the SLAM algorithm for offline processing of a log file */

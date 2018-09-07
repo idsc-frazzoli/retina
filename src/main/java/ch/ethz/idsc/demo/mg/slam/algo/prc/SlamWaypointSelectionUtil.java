@@ -1,9 +1,8 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam.algo;
+package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
@@ -12,40 +11,25 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
-import ch.ethz.idsc.tensor.red.ArgMax;
 
-// TODO MG work in progress, refactor and implement lookAhead with offset
+/** compute visible way points based on detected way points in world frame coordinates and estimated vehicle pose */
 /* package */ enum SlamWaypointSelectionUtil {
   ;
-  /** creates SlamWaypoint objects based on worldWaypoints. sets visibility field of slamWaypoints
+  /** selects visible way points and sets way point field in slamContainer
    * 
-   * @param worldWaypoints
-   * @param pose unitless representation */
-  public static void getWaypoints(List<double[]> worldWaypoints, SlamContainer slamContainer, double visibleBoxXMin, //
+   * @param worldWaypoints in world frame coordinates
+   * @param slamContainer
+   * @param visibleBoxXMin
+   * @param visibleBoxXMax
+   * @param visibleBoxHalfWidth
+   * @return visibleWaypoints in go kart coordinates */
+  public static List<double[]> selectWaypoints(List<double[]> worldWaypoints, SlamContainer slamContainer, double visibleBoxXMin, //
       double visibleBoxXMax, double visibleBoxHalfWidth) {
     List<double[]> gokartWaypoints = computeGokartCoordinates(worldWaypoints, slamContainer.getPoseUnitless());
     List<Boolean> visibilities = computeVisibility(gokartWaypoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-    List<double[]> visibleWaypoints = getVisibleWaypoints(gokartWaypoints, visibilities);
     setWaypoints(slamContainer, worldWaypoints, visibilities);
-    selectWaypoints(slamContainer, visibleWaypoints);
-  }
-
-  private static void selectWaypoints(SlamContainer slamContainer, List<double[]> visibleWaypoints) {
-    if (visibleWaypoints.isEmpty()) {
-      slamContainer.setLookAhead(Optional.empty());
-      return;
-    }
-    Tensor distances = Tensor.of((visibleWaypoints.stream()//
-        .map(waypoint -> Tensors.vector(waypoint[0]).Get(0))));
-    double[] lookAheadGokartFrame = visibleWaypoints.get(ArgMax.of(distances));
-    setLookAheadWorldFrame(slamContainer, lookAheadGokartFrame);
-  }
-
-  private static void setLookAheadWorldFrame(SlamContainer slamContainer, double[] lookAheadGokartFrame) {
-    TensorUnaryOperator local2world = new Se2Bijection(slamContainer.getPoseUnitless()).forward();
-    Optional<double[]> lookAheadWorldFrame = Optional.of(Primitives.toDoubleArray( //
-        local2world.apply(Tensors.vectorDouble(lookAheadGokartFrame))));
-    slamContainer.setLookAhead(lookAheadWorldFrame);
+    List<double[]> visibleWaypoints = getVisibleWaypoints(gokartWaypoints, visibilities);
+    return visibleWaypoints;
   }
 
   /** computes the go kart frame coordinates of the detected world frame way points
@@ -81,6 +65,9 @@ import ch.ethz.idsc.tensor.red.ArgMax;
     return visibilities;
   }
 
+  /** @param gokartWaypoints in go kart frame coordinates
+   * @param visibilities
+   * @return visibleWaypoints in go kart frame coordinates */
   private static List<double[]> getVisibleWaypoints(List<double[]> gokartWaypoints, List<Boolean> visibilities) {
     List<double[]> visibleWaypoints = new ArrayList<>();
     for (int i = 0; i < gokartWaypoints.size(); i++) {

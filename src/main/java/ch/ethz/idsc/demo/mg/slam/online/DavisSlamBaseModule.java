@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.online;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.gokart.core.pure.WaypointPurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
@@ -13,9 +14,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** runs the SLAM algorithm and a pure pursuit module which gets a lookAhead point in the go kart frame
  * from the SLAM algorithm */
-public class DavisSlamModule extends AbstractClockedModule {
-  private final OnlineSlamWrap onlineSlamWrap = new OnlineSlamWrap(new SlamConfig());
+/* package */ class DavisSlamBaseModule extends AbstractClockedModule {
   private final WaypointPurePursuitModule waypointPurePursuitModule = new WaypointPurePursuitModule();
+  private final OnlineSlamWrap onlineSlamWrap;
+
+  DavisSlamBaseModule(SlamAlgoConfig slamAlgoConfig) {
+    SlamConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
+    onlineSlamWrap = new OnlineSlamWrap(SlamConfig.GLOBAL);
+  }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -40,15 +46,5 @@ public class DavisSlamModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return Quantity.of(0.1, SI.SECOND);
-  }
-
-  /***************************************************/
-  public static void standalone() throws Exception {
-    DavisSlamModule davisSlamModule = new DavisSlamModule();
-    davisSlamModule.launch();
-  }
-
-  public static void main(String[] args) throws Exception {
-    standalone();
   }
 }

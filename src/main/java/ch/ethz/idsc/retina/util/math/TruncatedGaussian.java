@@ -7,8 +7,6 @@ import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 
 public class TruncatedGaussian {
-  // TODO MG limit of 50 was insufficient, but that means the mean, stdDev, lower-, and upper-bound are not chosen well !
-  // -> check all uses of TruncatedGaussian for instance in SlamContainerUtil and argue that values are reasonable!
   private static final int LIMIT = 20;
   private static final Random RANDOM = new Random();
   // ---
