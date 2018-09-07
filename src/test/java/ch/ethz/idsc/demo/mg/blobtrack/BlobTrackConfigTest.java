@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 import junit.framework.TestCase;
 
 public class BlobTrackConfigTest extends TestCase {

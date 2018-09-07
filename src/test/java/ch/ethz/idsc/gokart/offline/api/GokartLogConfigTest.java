@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.offline.api;
 
 import java.util.Properties;
 
-import ch.ethz.idsc.retina.util.data.TensorProperties;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 import junit.framework.TestCase;
 
 public class GokartLogConfigTest extends TestCase {
