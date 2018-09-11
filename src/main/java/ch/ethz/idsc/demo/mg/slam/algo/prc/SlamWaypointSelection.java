@@ -29,6 +29,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         worldWaypoints, slamContainer, //
         visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
     SlamLookAheadComputation.selectLookAhead(slamContainer, visibleWaypoints, offset);
-    SlamCurveInterpolate.interpolateWaypoints(slamContainer, visibleWaypoints);
+    SlamCurveInterpolate.interpolateFeaturePoints(slamContainer, visibleWaypoints);
+    // SlamCenterLineFinder.offSetCurve(slamContainer.getRefinedWaypointCurve().get(), Tensors.vector(0, 0));
   }
 }

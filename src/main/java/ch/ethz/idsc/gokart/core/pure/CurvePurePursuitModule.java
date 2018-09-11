@@ -85,6 +85,10 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
     return Optional.empty();
   }
 
+  /** @param pose of vehicle
+   * @param curve world frame coordinates
+   * @param isForward driving direction
+   * @return ratio rate with interpretation rad*m^-1 */
   static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));
@@ -101,12 +105,12 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
     return Optional.empty();
   }
 
-  /** @param curve */
+  /** @param curve world frame coordinates */
   public void setCurve(Optional<Tensor> curve) {
     optionalCurve = curve;
   }
 
-  /** @return curve */
+  /** @return curve world frame coordinates */
   /* package */ Optional<Tensor> getCurve() {
     return optionalCurve;
   }

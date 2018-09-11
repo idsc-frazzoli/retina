@@ -31,7 +31,7 @@ public class SlamContainer implements GokartPoseInterface {
   /** lookahead to be followed by pure pursuit algorithm */
   private Optional<double[]> lookAheadWorldFrame = Optional.empty();
   /** experimental field for curve interpolation */
-  private Tensor refinedWaypointCurve;
+  private Optional<Tensor> refinedWaypointCurve = Optional.empty();
   /** position of most recent event in go kart frame */
   private double[] eventGokartFrame = null;
 
@@ -101,11 +101,11 @@ public class SlamContainer implements GokartPoseInterface {
     return eventGokartFrame;
   }
 
-  public void setRefinedWaypointCurve(Tensor refinedWaypointCurve) {
+  public void setRefinedWaypointCurve(Optional<Tensor> refinedWaypointCurve) {
     this.refinedWaypointCurve = refinedWaypointCurve;
   }
 
-  public Tensor getRefinedWaypointCurve() {
+  public Optional<Tensor> getRefinedWaypointCurve() {
     return refinedWaypointCurve;
   }
 
