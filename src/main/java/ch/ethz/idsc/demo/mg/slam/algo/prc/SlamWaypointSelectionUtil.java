@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
@@ -17,19 +18,18 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   ;
   /** selects visible way points and sets way point field in slamContainer
    * 
-   * @param worldWaypoints in world frame coordinates
+   * @param worldWaypoints in world frame
    * @param slamContainer
    * @param visibleBoxXMin
    * @param visibleBoxXMax
    * @param visibleBoxHalfWidth
-   * @return visibleWaypoints in go kart coordinates */
+   * @return visibleWaypoints in go kart frame */
   public static List<double[]> selectWaypoints(List<double[]> worldWaypoints, SlamContainer slamContainer, double visibleBoxXMin, //
       double visibleBoxXMax, double visibleBoxHalfWidth) {
     List<double[]> gokartWaypoints = computeGokartCoordinates(worldWaypoints, slamContainer.getPoseUnitless());
     List<Boolean> visibilities = computeVisibility(gokartWaypoints, visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-    setWaypoints(slamContainer, worldWaypoints, visibilities);
-    List<double[]> visibleWaypoints = getVisibleWaypoints(gokartWaypoints, visibilities);
-    return visibleWaypoints;
+    setWorldWaypoints(slamContainer, worldWaypoints, visibilities);
+    return getVisibleWaypoints(gokartWaypoints, visibilities);
   }
 
   /** computes the go kart frame coordinates of the detected world frame way points
@@ -65,24 +65,26 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     return visibilities;
   }
 
-  /** @param gokartWaypoints in go kart frame coordinates
+  /** creates visibleWaypoints list ordered by distance and adds a way point at [0,0]
+   * 
+   * @param gokartWaypoints in go kart frame
    * @param visibilities
-   * @return visibleWaypoints in go kart frame coordinates */
+   * @return visibleWaypoints in go kart frame */
   private static List<double[]> getVisibleWaypoints(List<double[]> gokartWaypoints, List<Boolean> visibilities) {
     List<double[]> visibleWaypoints = new ArrayList<>();
-    for (int i = 0; i < gokartWaypoints.size(); i++) {
+    for (int i = 0; i < gokartWaypoints.size(); i++)
       if (visibilities.get(i))
         visibleWaypoints.add(gokartWaypoints.get(i));
-    }
+    visibleWaypoints.add(new double[] { 0, 0 });
+    Collections.sort(visibleWaypoints, WaypointXComparator.INSTANCE);
     return visibleWaypoints;
   }
 
   /** sets the slamWaypoints field in the slamContainer based on world frame coordinates and current visibilities */
-  private static void setWaypoints(SlamContainer slamContainer, List<double[]> worldWaypoints, List<Boolean> visibilities) {
+  private static void setWorldWaypoints(SlamContainer slamContainer, List<double[]> worldWaypoints, List<Boolean> visibilities) {
     List<SlamWaypoint> slamWaypoints = new ArrayList<>();
-    for (int i = 0; i < worldWaypoints.size(); i++) {
+    for (int i = 0; i < worldWaypoints.size(); i++)
       slamWaypoints.add(new SlamWaypoint(worldWaypoints.get(i), visibilities.get(i)));
-    }
     slamContainer.setWaypoints(slamWaypoints);
   }
 }

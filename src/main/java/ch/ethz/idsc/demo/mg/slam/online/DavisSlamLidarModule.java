@@ -8,9 +8,4 @@ public class DavisSlamLidarModule extends DavisSlamBaseModule {
   public DavisSlamLidarModule() {
     super(SlamAlgoConfig.lidarReactiveMode);
   }
-
-  public static void standalone() throws Exception {
-    DavisSlamLidarModule davisSlamLidarModule = new DavisSlamLidarModule();
-    davisSlamLidarModule.launch();
-  }
 }

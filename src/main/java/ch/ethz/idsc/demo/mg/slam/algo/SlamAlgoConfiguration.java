@@ -25,13 +25,13 @@ public enum SlamAlgoConfiguration {
   ;
   public static final List<DavisDvsListener> getListeners(SlamContainer slamContainer, SlamConfig slamConfig, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
-    System.out.println(slamConfig.slamAlgoConfig());
+    System.out.println(slamConfig.slamAlgoConfig);
     List<DavisDvsListener> listeners = new ArrayList<>();
     /** image plane to go kart frame mapping is used by every configuration
      * and always the first module to be called */
     listeners.add(new SlamImageToGokart(slamContainer, slamConfig));
     /** further modules depend on config */
-    switch (slamConfig.slamAlgoConfig()) {
+    switch (slamConfig.slamAlgoConfig) {
     case standardMode:
       standardMode(listeners, slamContainer, slamConfig);
       break;

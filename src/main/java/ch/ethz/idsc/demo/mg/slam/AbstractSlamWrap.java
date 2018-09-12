@@ -48,7 +48,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
     davisLcmClient.stopSubscriptions();
     slamViewer.stop();
     abstractFilterHandler.stopStoppableListeners();
-    protected_stop(); // <- Jan moved call here, because it's custom to reverse order of start()
+    protected_stop();
   }
 
   protected abstract void protected_start();

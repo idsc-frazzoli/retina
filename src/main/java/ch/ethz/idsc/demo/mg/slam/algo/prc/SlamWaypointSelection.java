@@ -2,10 +2,12 @@
 package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
 import java.util.List;
+import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.Tensor;
 
 /** finds currently visible way points and computes lookAhead to be followed by the pure pursuit algorithm */
 /* package */ class SlamWaypointSelection implements WorldWaypointListener {
@@ -29,6 +31,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
         worldWaypoints, slamContainer, //
         visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
     SlamLookAheadComputation.selectLookAhead(slamContainer, visibleWaypoints, offset);
-    SlamCurveInterpolate.interpolateWaypoints(slamContainer, visibleWaypoints);
+    Tensor refinedWaypointCurve = SlamCurveInterpolate.refineFeaturePoints(visibleWaypoints);
+    slamContainer.setRefinedWaypointCurve(Optional.of(refinedWaypointCurve));
+    // SlamCenterLineFinder.offSetCurve(slamContainer.getRefinedWaypointCurve().get(), Tensors.vector(0, 0));
   }
 }

@@ -10,9 +10,4 @@ public class DavisSlamVisualModule extends DavisSlamBaseModule {
   public DavisSlamVisualModule() {
     super(SlamAlgoConfig.standardReactiveMode);
   }
-
-  public static void standalone() throws Exception {
-    DavisSlamVisualModule davisSlamVisualModule = new DavisSlamVisualModule();
-    davisSlamVisualModule.launch();
-  }
 }

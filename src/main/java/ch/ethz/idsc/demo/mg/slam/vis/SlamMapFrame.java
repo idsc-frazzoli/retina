@@ -22,8 +22,8 @@ import ch.ethz.idsc.tensor.Tensor;
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
-  private final int kartLength;
-  private final int waypointRadius;
+  private final double waypointRadius;
+  private final double kartLength;
   private final int mapWidth;
   private final int mapHeight;
 
@@ -60,11 +60,12 @@ import ch.ethz.idsc.tensor.Tensor;
     }
   }
 
-  /** draws the lookAhead point to be followed in blue color
-   * 
-   * @param lookAheadWorldFrame */
-  public void drawLookAhead(double[] lookAheadWorldFrame) {
-    SlamMapFrameUtil.drawLookAhead(graphics, lookAheadWorldFrame, Color.BLUE, waypointRadius, cornerX, cornerY, cellDim);
+  /** @param pointCoord world frame
+   * @param color
+   * @param radius [m] */
+  public void drawPoint(double[] pointCoord, Color color, double radius) {
+    radius /= cellDim;
+    SlamMapFrameUtil.drawPoint(graphics, pointCoord, color, radius, cornerX, cornerY, cellDim);
   }
 
   /** @return frame such that x axis points right and y axis points upwards of underlying map object */

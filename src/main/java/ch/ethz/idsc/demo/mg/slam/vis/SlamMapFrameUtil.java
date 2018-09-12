@@ -68,9 +68,9 @@ import ch.ethz.idsc.tensor.Tensor;
     graphics.fill(circle);
   }
 
-  public static void drawLookAhead(Graphics2D graphics, double[] lookAheadWorldFrame, Color color, double radius, //
+  public static void drawPoint(Graphics2D graphics, double[] pointCoord, Color color, double radius, //
       double cornerX, double cornerY, double cellDim) {
-    double[] framePos = worldToFrame(lookAheadWorldFrame, cornerX, cornerY, cellDim);
+    double[] framePos = worldToFrame(pointCoord, cornerX, cornerY, cellDim);
     Ellipse2D circle = new Ellipse2D.Double( //
         framePos[0] - radius, //
         framePos[1] - radius, //

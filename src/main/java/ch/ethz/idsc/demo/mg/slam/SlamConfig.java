@@ -20,12 +20,7 @@ public class SlamConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
    * access via member function below */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
-
-  public SlamAlgoConfig slamAlgoConfig() {
-    return slamAlgoConfig;
-  }
-
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -38,7 +33,7 @@ public class SlamConfig {
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
-  /** for reactive mapping mode */
+  /** for reactive mapping modes */
   public final Scalar lookBehindDistance = Quantity.of(-1, SI.METER);
   // update rates
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
@@ -85,31 +80,33 @@ public class SlamConfig {
     return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(davisConfig.logFilename()));
   }
 
-  // SlamMapProcessing
-  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
-  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
-  public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMin = Quantity.of(0, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
-  // SlamWaypointSelection
-  public Scalar offset = Quantity.of(-0.7, SI.METER);
   // SlamPoseReset
   public final Scalar resetPoseX = RealScalar.of(50); // [m]
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
   public final Scalar padding = Quantity.of(5, SI.METER);
+  // SlamMapProcessing
+  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
+  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
+  public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMin = Quantity.of(-4, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
+  // SlamWaypointSelection
+  public Scalar offset = Quantity.of(-0.7, SI.METER);
+  // SlamCurvePurePursuitModule
+  public Scalar lookAhead = RealScalar.of(1); // [m]
   // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
+  public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);
-  public final Scalar waypointRadius = Quantity.of(0.25, SI.METER);
+  public final Scalar waypointRadius = Quantity.of(0.17, SI.METER);
 
-  public final int kartLength() {
-    return Magnitude.ONE.toInt(kartSize.divide(cellDim));
+  public final double kartLength() {
+    return Magnitude.ONE.toDouble(kartSize.divide(cellDim));
   }
 
-  public final int waypointRadius() {
-    return Magnitude.ONE.toInt(waypointRadius.divide(cellDim));
+  public final double waypointRadius() {
+    return Magnitude.ONE.toDouble(waypointRadius.divide(cellDim));
   }
 }
