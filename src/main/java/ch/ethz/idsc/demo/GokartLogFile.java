@@ -696,6 +696,17 @@ public enum GokartLogFile implements LogFile {
   /** planning around changing obstacles
    * visitors near the container and tables */
   _20180904T183437_b00c893a, //
+  /***************************************************/
+  /* 2018-09-06 */
+  // TODO
+  /***************************************************/
+  /* 2018-09-12 */
+  /** measurement of front wheel inclination
+   * using laser distance measurement */
+  _20180912T110653_76cef406, //
+  /** slow joystick driving to collect mapping information
+   * with vehicle and house tents */
+  _20180912T142434_76cef406, //
   ;
   // ---
   @Override // from LogFile
