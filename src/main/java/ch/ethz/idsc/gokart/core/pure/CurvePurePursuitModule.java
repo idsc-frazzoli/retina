@@ -23,11 +23,11 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 // TODO do not use the static reference PursuitConfig.GLOBAL but an instance
-public final class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
-  private Optional<Tensor> optionalCurve = Optional.empty();
+public class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
+  Optional<Tensor> optionalCurve = Optional.empty();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private GokartPoseEvent gokartPoseEvent = null;
+  GokartPoseEvent gokartPoseEvent = null;
   /** forward motion is determined by odometry:
    * noise in the measurements around zero are also mapped to "forward" */
   private boolean isForward = true;
@@ -106,7 +106,7 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
   }
 
   /** @param curve world frame coordinates */
-  public void setCurve(Optional<Tensor> curve) {
+  public final void setCurve(Optional<Tensor> curve) {
     optionalCurve = curve;
   }
 

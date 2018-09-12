@@ -9,8 +9,10 @@ import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;
+import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public abstract class PurePursuitModule extends AbstractClockedModule {
@@ -63,9 +65,14 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
       Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
-      purePursuitRimo.setSpeed(PursuitConfig.GLOBAL.rateFollower.multiply(speed));
+      purePursuitRimo.setSpeed(Times.of( //
+          PursuitConfig.GLOBAL.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);
+  }
+
+  protected Scalar getSpeedMultiplier() {
+    return DoubleScalar.of(1.0);
   }
 
   @Override // from AbstractClockedModule

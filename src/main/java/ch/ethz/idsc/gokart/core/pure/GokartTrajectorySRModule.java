@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
@@ -73,7 +74,7 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public class GokartTrajectorySRModule extends AbstractClockedModule {
-  static final Scalar MAX_SPEED = RealScalar.of(8); // 8
+  public static final Scalar MAX_SPEED = RealScalar.of(8); // 8
   static final Scalar MAX_TURNING_PLAN = Degree.of(20); // 45
   static final Tensor ACCELERATIONS = Tensors.vector(-2, 0, 2);
   static final int FLOWRES = 9;
@@ -105,7 +106,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+  private final Tse2CurvePurePursuitModule purePursuitModule = new Tse2CurvePurePursuitModule();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private List<PlannerConstraint> constraints;
@@ -224,14 +225,12 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      Tensor curve = Tensor.of(trajectory.stream() //
-          .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2)));
-      purePursuitModule.setCurve(Optional.of(curve));
-      PlannerPublish.publishTrajectory(trajectory);
+      purePursuitModule.setCurveTse2(trajectory);
+      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       purePursuitModule.setCurve(Optional.empty());
-      PlannerPublish.publishTrajectory(new ArrayList<>());
+      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, new ArrayList<>());
     }
   }
 }

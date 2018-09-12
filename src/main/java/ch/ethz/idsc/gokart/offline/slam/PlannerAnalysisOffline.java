@@ -59,7 +59,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
     } else //
-    if (channel.equals(GokartLcmChannel.TRAJECTORY_STATETIME)) {
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
       Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);
       trajectoryRender.trajectory(PlannerPublish.getTrajectory(trajTensor));
     }

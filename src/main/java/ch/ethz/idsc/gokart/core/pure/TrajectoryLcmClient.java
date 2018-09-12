@@ -22,6 +22,6 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
 
   @Override // from BinaryLcmClient
   protected String channel() {
-    return GokartLcmChannel.TRAJECTORY_STATETIME;
+    return GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME;
   }
 }

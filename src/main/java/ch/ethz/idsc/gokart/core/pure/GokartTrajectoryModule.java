@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
@@ -251,11 +252,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       Tensor curve = Tensor.of(trajectory.stream() //
           .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2)));
       purePursuitModule.setCurve(Optional.of(curve));
-      PlannerPublish.publishTrajectory(trajectory);
+      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       purePursuitModule.setCurve(Optional.empty());
-      PlannerPublish.publishTrajectory(new ArrayList<>());
+      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
     }
   }
 }
