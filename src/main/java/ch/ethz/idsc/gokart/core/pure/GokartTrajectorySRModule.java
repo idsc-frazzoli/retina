@@ -15,9 +15,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
+import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.se2.LidarEmulator;
 import ch.ethz.idsc.owl.bot.se2.Se2PointsVsRegions;
 import ch.ethz.idsc.owl.bot.se2.glc.SimpleShadowConstraintCV;
@@ -73,9 +73,9 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public class GokartTrajectorySRModule extends AbstractClockedModule {
-  static final Scalar MAX_SPEED = RealScalar.of(4); // 8
+  static final Scalar MAX_SPEED = RealScalar.of(8); // 8
   static final Scalar MAX_TURNING_PLAN = Degree.of(20); // 45
-  static final Tensor ACCELERATIONS = Tensors.vector(-1, 0, 1);
+  static final Tensor ACCELERATIONS = Tensors.vector(-2, 0, 2);
   static final int FLOWRES = 9;
   static final float CAR_RAD = 1.1f; // [m]
   // ---
@@ -123,8 +123,11 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   public GokartTrajectorySRModule() {
     MinMax minMax = MinMax.of(STANDARD.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
-    ImageRegion irLid = predefinedMap.getImageRegion(); // LIDAR MAP
+    //
+    Tensor imageLid = ResourceData.of("/dubilab/sr/lidar_obs.png");
+    imageLid = ImageEdges.extrusion(imageLid, 3);
+    Tensor range = LocalizationConfig.getPredefinedMapObstacles().range();
+    ImageRegion irLid = new ImageRegion(imageLid, range, false);
     // ---
     final Scalar goalRadius_xy = DoubleScalar.of(1.2);
     final Scalar goalRadius_theta = Sqrt.of(RealScalar.of(2)).divide(RealScalar.of(20));
@@ -136,10 +139,9 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     // ---
     Tensor imageCar = ResourceData.of("/dubilab/sr/car_obs.png");
     Tensor imagePedLegal = ResourceData.of("/dubilab/sr/ped_obs_legal.png");
-    Tensor imagePedIllegal = ResourceData.of("/dubilab/sr/ped_obs_illegal.png");
-    ImageRegion irCar = new ImageRegion(imageCar, predefinedMap.range(), false);
-    ImageRegion irPedLegal = new ImageRegion(imagePedLegal, predefinedMap.range(), false);
-    ImageRegion irPedIllegal = new ImageRegion(imagePedIllegal, predefinedMap.range(), false);
+    ImageRegion irCar = new ImageRegion(imageCar, range, false);
+    ImageRegion irPedLegal = new ImageRegion(imagePedLegal, range, false);
+    ImageRegion irPedIllegal = new ImageRegion(imageLid, range, false);
     this.carConstraint = RegionConstraints.timeInvariant(Se2PointsVsRegions.line(x_samples, irCar));
     // ---
     TrajectoryRegionQuery lidarRay = SimpleTrajectoryRegionQuery.timeInvariant(irLid);
