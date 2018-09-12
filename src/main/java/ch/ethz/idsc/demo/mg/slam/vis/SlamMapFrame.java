@@ -53,7 +53,6 @@ import ch.ethz.idsc.tensor.Tensor;
    * 
    * @param slamWaypoints */
   public void drawSlamWaypoints(Collection<SlamWaypoint> slamWaypoints) {
-    VisGeneralUtil.clearFrame(bytes);
     for (SlamWaypoint slamWaypoint : slamWaypoints) {
       Color color = slamWaypoint.isVisible() ? Color.GREEN : Color.ORANGE;
       SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoint, color, waypointRadius, cornerX, cornerY, cellDim);

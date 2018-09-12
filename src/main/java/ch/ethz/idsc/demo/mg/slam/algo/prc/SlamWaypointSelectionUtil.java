@@ -75,7 +75,8 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     for (int i = 0; i < gokartWaypoints.size(); i++)
       if (visibilities.get(i))
         visibleWaypoints.add(gokartWaypoints.get(i));
-    visibleWaypoints.add(new double[] { 0, 0 });
+    // adding this point makes curvature calculation difficult
+    // visibleWaypoints.add(new double[] { 0, 0 });
     Collections.sort(visibleWaypoints, WaypointXComparator.INSTANCE);
     return visibleWaypoints;
   }

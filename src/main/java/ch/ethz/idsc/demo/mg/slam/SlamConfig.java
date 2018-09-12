@@ -18,9 +18,8 @@ public class SlamConfig {
   public static final SlamConfig GLOBAL = new SlamConfig();
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
-  /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig}
-   * access via member function below */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardMode;
+  /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -85,15 +84,18 @@ public class SlamConfig {
   public final Scalar resetPoseY = RealScalar.of(50); // [m]
   public final Scalar padding = Quantity.of(5, SI.METER);
   // SlamMapProcessing
-  public final Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
+  public Scalar mapThreshold = RealScalar.of(0.25); // valid range [0,1]
   public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
   public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
   public final Scalar visibleBoxXMin = Quantity.of(-4, SI.METER); // in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
   // SlamWaypointSelection
   public Scalar offset = Quantity.of(-0.7, SI.METER);
+  // SlamCurveExtrapolate
+  public Scalar extrapolationDistance = Quantity.of(3, SI.METER);
+  public final Scalar numberOfPoints = RealScalar.of(10).multiply(extrapolationDistance);
   // SlamCurvePurePursuitModule
-  public Scalar lookAhead = RealScalar.of(1); // [m]
+  public Scalar lookAhead = RealScalar.of(2); // [m]
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

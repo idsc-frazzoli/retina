@@ -8,6 +8,7 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
@@ -32,12 +33,13 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
-    slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
-    if (slamContainer.getlookAheadWorldFrame().isPresent())
-      // slamMapFrames[1].drawPoint(slamContainer.getlookAheadWorldFrame().get(), Color.BLUE, 0.2);
-      slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
+    VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
     if (slamContainer.getRefinedWaypointCurve().isPresent())
       drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamContainer.getRefinedWaypointCurve().get());
+    slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
+    slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
+    // if (slamContainer.getlookAheadWorldFrame().isPresent())
+    // slamMapFrames[1].drawPoint(slamContainer.getlookAheadWorldFrame().get(), Color.BLUE, 0.2);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();

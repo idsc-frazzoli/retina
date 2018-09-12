@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
-import ch.ethz.idsc.gokart.core.pure.WaypointPurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,7 +15,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** runs the SLAM algorithm and a pure pursuit module which gets a lookAhead point in the go kart frame
  * from the SLAM algorithm */
 public class DavisSlamBaseModule extends AbstractClockedModule {
-  private final WaypointPurePursuitModule waypointPurePursuitModule = new WaypointPurePursuitModule();
   private final SlamCurvePurePursuitModule slamCurvePurePursuitModule;
   private final OnlineSlamWrap onlineSlamWrap;
 
@@ -30,7 +28,6 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   protected void first() throws Exception {
     onlineSlamWrap.start();
     // ---
-    waypointPurePursuitModule.launch();
     slamCurvePurePursuitModule.launch();
   }
 
@@ -38,16 +35,13 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   protected void last() {
     onlineSlamWrap.stop();
     // ---
-    waypointPurePursuitModule.terminate();
     slamCurvePurePursuitModule.terminate();
   }
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    Optional<Tensor> lookAhead = onlineSlamWrap.getSlamContainer().getLookAhead();
     Optional<Tensor> curve = onlineSlamWrap.getSlamContainer().getRefinedWaypointCurve();
-    waypointPurePursuitModule.setLookAhead(lookAhead);
-    // slamCurvePurePursuitModule.setCurve(curve);
+    slamCurvePurePursuitModule.setCurve(curve);
   }
 
   @Override // from AbstractClockedModule
