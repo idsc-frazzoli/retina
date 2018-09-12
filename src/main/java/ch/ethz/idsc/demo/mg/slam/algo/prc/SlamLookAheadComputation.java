@@ -38,8 +38,9 @@ import ch.ethz.idsc.tensor.red.ArgMax;
   private static void selectFartestWaypoint(List<double[]> visibleWaypoints, double[] farthestWaypoint) {
     Tensor distances = Tensor.of((visibleWaypoints.stream()//
         .map(waypoint -> Tensors.vector(waypoint[0]).Get(0))));
-    farthestWaypoint[0] = visibleWaypoints.get(ArgMax.of(distances))[0];
-    farthestWaypoint[1] = visibleWaypoints.get(ArgMax.of(distances))[1];
+    int argMax = ArgMax.of(distances);
+    farthestWaypoint[0] = visibleWaypoints.get(argMax)[0];
+    farthestWaypoint[1] = visibleWaypoints.get(argMax)[1];
   }
 
   /** sets lookAheadGokartFrame at an offset in y coordinate of farthestWayPoint

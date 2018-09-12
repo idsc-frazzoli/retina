@@ -87,7 +87,7 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
 
   /** @param pose of vehicle
    * @param curve world frame coordinates
-   * @param isForward driving direction
+   * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return ratio rate with interpretation rad*m^-1 */
   static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();

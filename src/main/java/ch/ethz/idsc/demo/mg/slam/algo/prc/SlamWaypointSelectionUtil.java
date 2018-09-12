@@ -76,7 +76,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       if (visibilities.get(i))
         visibleWaypoints.add(gokartWaypoints.get(i));
     visibleWaypoints.add(new double[] { 0, 0 });
-    Collections.sort(visibleWaypoints, WaypointComparator.INSTANCE);
+    Collections.sort(visibleWaypoints, WaypointXComparator.INSTANCE);
     return visibleWaypoints;
   }
 

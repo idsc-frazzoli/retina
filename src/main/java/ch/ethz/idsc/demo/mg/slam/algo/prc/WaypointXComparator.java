@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.algo.prc;
 import java.util.Comparator;
 
 /** compares way point in go kart frame based on x coordinate */
-/* package */ enum WaypointComparator implements Comparator<double[]> {
+/* package */ enum WaypointXComparator implements Comparator<double[]> {
   INSTANCE;
   // ---
   @Override // from Comparator
