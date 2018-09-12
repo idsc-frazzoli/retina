@@ -20,8 +20,8 @@ F = [zeros(3,6),eye(3);...
     zeros(3,3),-eye(3)/(dmt),eye(3)/(dmt);...
     eye(3)*(1/dmt^2),-eye(3)*(2/dmt^2),eye(3)*(1/dmt^2)];
 z = F*M;
-%measurment variance (7 because each measurement is used 7 times)
-V = 7*blkdiag(R,R,R);
+%measurment variance (3 because each measurement is used 3 times)
+V = 3*blkdiag(R,R,R);
 R = F*V*F';
 Fx = getEvolution(x);
 dotx = Fx*x;

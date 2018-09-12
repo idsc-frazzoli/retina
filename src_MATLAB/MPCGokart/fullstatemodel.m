@@ -148,8 +148,8 @@ function [torques] = motorTorques(u)
 
 global params;
 
-leftThrottle = saturation(u(3),0,1);
-rightThrottle = saturation(u(4),0,1);
+leftThrottle = saturation(u(3),0,params.maxThrottle)*0.1;
+rightThrottle = saturation(u(4),0,params.maxThrottle)*0.1;
 
 Tm2L = leftThrottle;
 Tm2R = rightThrottle;

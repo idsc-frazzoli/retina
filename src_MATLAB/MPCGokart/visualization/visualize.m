@@ -1,14 +1,15 @@
 function visualize(varargin)
-global param
-
+%arguments: (stride, [start, end], [data1 name, data2 name,...], times, data1, data2,...)
+%each data item is of the form [t, data]
 stride = varargin{1};
-names = varargin({2});
-time = varargin{3};
+limits = varargin{2};%limits are only for the positoin diagram
+names = varargin{3};
+time = varargin{4};
 time = time(1:stride:end);
-[m,~]=size(varargin{4});
+[m,~]=size(varargin{5});
 
-%state vector [Ux Uy r Ksi x y w2L w2R]'
-n = nargin-3;
+%state vector [(t) Ux Uy r Ksi x y w2L w2R]'
+n = nargin-4;
 x = zeros(m,n);
 y = zeros(m,n);
 ksi = zeros(m,n);
@@ -17,14 +18,18 @@ Uy = zeros(m,n);
 r = zeros(m,n);
 w2L = zeros(m,n);
 w2R = zeros(m,n);
-for i = 4:nargin
-    xhist = varargin{i};
+for i = 1:nargin-4
+    xhist = varargin{i+4};
     [~,nn] = size(xhist);
-    if(nn ~= 8)
-       %is in form:  [t x y dotx_b doty_b dotKsi Ksi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
-        
+    if(nn ~= 9)
+       %is in form:  [t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
+        %convert to [Ux Uy r Ksi x y w2L w2R]
+        fxhist = xhist;
+        xhist = [fxhist(:,1),fxhist(:,5:7),fxhist(:,4),fxhist(:,2:3), fxhist(:,15:16)];
     end
-    xhist = xhist(1:stride:end,:);
+    %interpolate
+    xhist = interp1(xhist(:,1),xhist(:,2:end),time,'linear','extrap');
+    
     Ux(:,i)=xhist(:,1);
     Uy(:,i)=xhist(:,2);
     r(:,i)=xhist(:,3);
@@ -39,19 +44,48 @@ end
 close all
 clc
 
+% front axle distance from pivot point
+lF = 1.4;
+
+% rear axle distanc from pivot point
+lR = 0.2;
+
+% lateral distance of wheels from pivot point
+lw = 1.2/2;
+
+%all x
+fullx = x(:);
+fully = y(:);
+xmid = mean(fullx);
+ymid = mean(fully);
+adiffx = abs(fullx-xmid);
+adiffy = abs(fully-ymid);
+far = max([adiffx;adiffy])*1.1;
+
+plot(x,y);
+
 translucency = 0.1;
 axis equal
 grid on
 hold on
-xLimDown = -20;
-xLimUp = 50;
-yLimDown = xLimDown;
-yLimUp = xLimUp;
+if(numel(limits)==2)
+    startt = limits(1);
+    endt = limits(2);
+    first = find(time>startt,1);
+    last = find(time>endt,1);
+else
+    first = 1;
+    last = N;
+end
+xLimDown = xmid-far;
+xLimUp = xmid+far;
+yLimDown = ymid-far;
+yLimUp = ymid+far;
+xlim([xLimDown xLimUp])
+ylim([yLimDown yLimUp])
 for in=1:n
-    for i=1:100:N
-        draw_car(x(i,in),y(i,in),ksi(i,in),params.frontL, params.rearL, params.width,1,translucency);
-        xlim([xLimDown xLimUp])
-        ylim([yLimDown yLimUp])   
+    for i=first:30:last
+        draw_car(x(i,in),y(i,in),ksi(i,in),lF, lR, lw,1,translucency); 
     end
 end
 %h1 = draw_car( x(end),y(end),ksi(end),params.frontL, params.rearL, params.width,1,translucency);
@@ -89,6 +123,7 @@ plot(time,Ux)
 end
 grid on
 ylabel('U_x [m/s]')
+legend(names);
 
 subplot(4,1,2)
 hold on
@@ -97,6 +132,7 @@ plot(time,Uy)
 end
 grid on
 ylabel('U_y [m/s]')
+legend(names);
 
 subplot(4,1,3)
 hold on
@@ -105,6 +141,7 @@ plot(time,r*180/pi)
 end
 grid on
 ylabel('r [deg/s]')
+legend(names);
 
 subplot(4,1,4)
 hold on

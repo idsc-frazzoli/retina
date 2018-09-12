@@ -35,9 +35,9 @@ wrr = gaussfilter(wrr,10);
 cRTSM = convertM(RTSM);
 
 t = cRTSM(:,1);
-% whole table: [t x y dotx_b doty_b dotKsi Ksi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
+% whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
 
-M = [cRTSM,...%t x y dotx_b doty_b dotKsi Ksi dotdotx_b dotdoty_b dotdotKsi
+M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(st,sa,t),...%sa
     interp1(st,sdota,t),...%sdota
     interp1(pt,pcl,t),...%pcl

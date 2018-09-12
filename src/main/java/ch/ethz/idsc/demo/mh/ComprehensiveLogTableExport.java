@@ -39,7 +39,7 @@ public class ComprehensiveLogTableExport {
    * @throws IOException for instance, if given file does not exist */
   public void process(File file) throws IOException {
     DavisImuTable davisImuTable = new DavisImuTable(PERIOD);
-    // LinmotStatusTable linmotStatusTable = new LinmotStatusTable(OFFSET);
+    LinmotStatusTable linmotStatusTable = new LinmotStatusTable(OFFSET);
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
     PowerRimoAnalysis powerRimoAnalysis = new PowerRimoAnalysis(POWERPERIOD);
@@ -51,7 +51,7 @@ public class ComprehensiveLogTableExport {
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //
-        // linmotStatusTable);
+        linmotStatusTable,
         powerSteerTable, //
         // rimoOdometryTable, //
         powerRimoAnalysis, //
@@ -64,7 +64,7 @@ public class ComprehensiveLogTableExport {
     File folder = createTableFolder(file);
     // ---
     Export.of(new File(folder, "davisIMU.csv"), davisImuTable.getTable().map(CsvFormat.strict()));
-    // Export.of(UserHome.file("linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
+    Export.of(UserHome.file("linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powersteer.csv"), powerSteerTable.getTable().map(CsvFormat.strict()));
     // Export.of(new File(folder, "rimoodom.csv"), rimoOdometryTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powerrimo.csv"), powerRimoAnalysis.getTable().map(CsvFormat.strict()));
