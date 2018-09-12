@@ -23,7 +23,7 @@ public class SlamConfigTest extends TestCase {
   }
 
   public void testSlamAlgo() {
-    SlamAlgoConfig slamAlgoConfig = new SlamConfig().slamAlgoConfig();
+    SlamAlgoConfig slamAlgoConfig = new SlamConfig().slamAlgoConfig;
     assertNotNull(slamAlgoConfig);
   }
 }

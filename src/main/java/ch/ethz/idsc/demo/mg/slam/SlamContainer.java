@@ -8,6 +8,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -16,6 +17,8 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 /** container for the objects that are passed between different modules of the SLAM algorithm */
 public class SlamContainer implements GokartPoseInterface {
   private final SlamParticle[] slamParticles;
+  private final String logFilename;
+  private final boolean saveSlamMap;
   private final double linVelAvg;
   private final double linVelStd;
   private final double angVelStd;
@@ -25,20 +28,22 @@ public class SlamContainer implements GokartPoseInterface {
   private Tensor poseUnitless;
   /** most recent detected way points */
   private List<SlamWaypoint> slamWaypoints = new ArrayList<>();
-  /** way point to be followed by pure pursuit algorithm */
-  private Optional<SlamWaypoint> selectedSlamWaypoint = Optional.empty();
+  /** lookahead to be followed by pure pursuit algorithm */
+  private Optional<double[]> lookAheadWorldFrame = Optional.empty();
+  /** experimental field for curve interpolation */
+  private Optional<Tensor> refinedWaypointCurve = Optional.empty();
   /** position of most recent event in go kart frame */
   private double[] eventGokartFrame = null;
 
   public SlamContainer(SlamConfig slamConfig) {
     int numOfPart = Magnitude.ONE.toInt(slamConfig.numberOfParticles);
-    slamParticles = new SlamParticle[numOfPart];
-    for (int index = 0; index < numOfPart; ++index)
-      slamParticles[index] = new SlamParticle();
-    occurrenceMap = new MapProvider(slamConfig);
+    slamParticles = SlamParticles.allocate(numOfPart);
+    saveSlamMap = slamConfig.saveSlamMap;
+    logFilename = slamConfig.davisConfig.logFilename();
     linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
     angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
+    occurrenceMap = new MapProvider(slamConfig);
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */
@@ -49,25 +54,25 @@ public class SlamContainer implements GokartPoseInterface {
 
   /** for interfacing the pure pursuit controller
    * 
-   * @return lookAhead [x,y] in go kart frame coordinates */
+   * @return lookAhead {x,y} in go kart frame coordinates */
   public Optional<Tensor> getLookAhead() {
-    Optional<SlamWaypoint> selectedWaypoint = selectedSlamWaypoint;
-    if (selectedWaypoint.isPresent()) {
+    Optional<double[]> lookAheadWorldFrame = this.lookAheadWorldFrame;
+    if (lookAheadWorldFrame.isPresent()) {
       TensorUnaryOperator world2local = new Se2Bijection(poseUnitless).inverse();
-      Tensor lookAhead = world2local.apply(Tensors.vectorDouble(selectedWaypoint.get().getWorldPosition()));
+      Tensor lookAhead = world2local.apply(Tensors.vectorDouble(lookAheadWorldFrame.get()));
       return Optional.of(lookAhead);
     }
     return Optional.empty();
   }
 
-  /** @return list of SlamWaypoints that are visible */
-  public List<SlamWaypoint> getVisibleWaypoints() {
-    List<SlamWaypoint> visibleWaypoints = new ArrayList<>();
-    for (int i = 0; i < slamWaypoints.size(); i++) {
-      if (slamWaypoints.get(i).isVisible())
-        visibleWaypoints.add(slamWaypoints.get(i));
+  /** saves the occurrence map after log file is completed if required by algorithm configuration */
+  public void stop() {
+    if (saveSlamMap) {
+      PrimitivesIO.saveToCSV( //
+          SlamFileLocations.RECORDED_MAP.inFolder(logFilename), //
+          occurrenceMap.getMapArray());
+      System.out.println("Slam map successfully saved");
     }
-    return visibleWaypoints;
   }
 
   public SlamParticle[] getSlamParticles() {
@@ -96,6 +101,14 @@ public class SlamContainer implements GokartPoseInterface {
     return eventGokartFrame;
   }
 
+  public void setRefinedWaypointCurve(Optional<Tensor> refinedWaypointCurve) {
+    this.refinedWaypointCurve = refinedWaypointCurve;
+  }
+
+  public Optional<Tensor> getRefinedWaypointCurve() {
+    return refinedWaypointCurve;
+  }
+
   public void setPoseUnitless(Tensor unitlessPose) {
     poseUnitless = unitlessPose;
   }
@@ -104,12 +117,14 @@ public class SlamContainer implements GokartPoseInterface {
     return poseUnitless;
   }
 
-  public void setSelectedSlamWaypoint(Optional<SlamWaypoint> selectedSlamWaypoint) {
-    this.selectedSlamWaypoint = selectedSlamWaypoint;
+  /** @param lookAheadWorldFrame in world frame coordinates */
+  public void setLookAhead(Optional<double[]> lookAheadWorldFrame) {
+    this.lookAheadWorldFrame = lookAheadWorldFrame;
   }
 
-  public Optional<SlamWaypoint> getSelectedSlamWaypoint() {
-    return selectedSlamWaypoint;
+  /** for visualization */
+  public Optional<double[]> getlookAheadWorldFrame() {
+    return lookAheadWorldFrame;
   }
 
   /** sets pose with when input argument is not unitless

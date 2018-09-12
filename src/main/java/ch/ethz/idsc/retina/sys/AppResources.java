@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.sys;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.util.data.TensorProperties;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 
 /** system specific customization
  * for instance safety thresholds, and control parameters */

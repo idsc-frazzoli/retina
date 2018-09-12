@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -68,8 +69,16 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   }
 
   /** @return {vx[m*s^-1], 0[m*s^-1], omega[s^-1]} */
-  public Tensor getVelocity() {
+  /* package */ Tensor getVelocity() {
     return velocity;
+  }
+
+  /** @return velocity unitless representation */
+  public Tensor getVelocityUnitless() {
+    return Tensors.of( //
+        Magnitude.VELOCITY.apply(velocity.Get(0)), //
+        Magnitude.VELOCITY.apply(velocity.Get(1)), //
+        Magnitude.PER_SECOND.apply(velocity.Get(2)));
   }
 
   @Override // from GokartPoseInterface

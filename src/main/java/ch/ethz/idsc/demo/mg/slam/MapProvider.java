@@ -36,7 +36,7 @@ public class MapProvider {
     mapArray = new double[numberOfCells];
     maxValue = 0;
     /** when in localization mode, we load a prior map */
-    if (slamConfig.slamAlgoConfig() == SlamAlgoConfig.localizationMode)
+    if (slamConfig.slamAlgoConfig == SlamAlgoConfig.localizationMode)
       setMapArray(slamConfig.getMapArray());
   }
 

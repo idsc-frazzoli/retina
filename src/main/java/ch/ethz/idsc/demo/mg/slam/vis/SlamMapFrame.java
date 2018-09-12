@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.List;
+import java.util.Collection;
 
 import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
@@ -22,8 +22,8 @@ import ch.ethz.idsc.tensor.Tensor;
   private final double cornerX;
   private final double cornerY;
   private final double cellDim;
-  private final int kartLength;
-  private final int waypointRadius;
+  private final double waypointRadius;
+  private final double kartLength;
   private final int mapWidth;
   private final int mapHeight;
 
@@ -52,19 +52,20 @@ import ch.ethz.idsc.tensor.Tensor;
   /** draws all detected way points. Visible way points are drawn green and non visible ones orange
    * 
    * @param slamWaypoints */
-  public void drawSlamWaypoints(List<SlamWaypoint> slamWaypoints) {
+  public void drawSlamWaypoints(Collection<SlamWaypoint> slamWaypoints) {
     VisGeneralUtil.clearFrame(bytes);
-    for (int i = 0; i < slamWaypoints.size(); i++) {
-      Color color = slamWaypoints.get(i).isVisible() ? Color.GREEN : Color.ORANGE;
-      SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoints.get(i), color, waypointRadius, cornerX, cornerY, cellDim);
+    for (SlamWaypoint slamWaypoint : slamWaypoints) {
+      Color color = slamWaypoint.isVisible() ? Color.GREEN : Color.ORANGE;
+      SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoint, color, waypointRadius, cornerX, cornerY, cellDim);
     }
   }
 
-  /** draws the way point selected to be followed in blue color
-   * 
-   * @param slamWaypoint */
-  public void drawSelectedSlamWaypoint(SlamWaypoint slamWaypoint) {
-    SlamMapFrameUtil.drawWaypoint(graphics, slamWaypoint, Color.BLUE, waypointRadius, cornerX, cornerY, cellDim);
+  /** @param pointCoord world frame
+   * @param color
+   * @param radius [m] */
+  public void drawPoint(double[] pointCoord, Color color, double radius) {
+    radius /= cellDim;
+    SlamMapFrameUtil.drawPoint(graphics, pointCoord, color, radius, cornerX, cornerY, cellDim);
   }
 
   /** @return frame such that x axis points right and y axis points upwards of underlying map object */

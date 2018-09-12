@@ -26,23 +26,27 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 // TODO not necessary to mix localization and obstacles, for instance extrusion only required in one case
 public enum PredefinedMap implements LocalizationImage {
   /** image of known static obstacles */
-  DUBILAB_OBSTACLES_20180423(7.5), //
+  // DUBILAB_OBSTACLES_20180423(7.5), //
   /** image, no tents, no aerotain */
-  DUBILAB_LOCALIZATION_20180506(7.5), //
+  // DUBILAB_LOCALIZATION_20180506(7.5), //
   /** image of known static obstacles
    * image with central tents, bus tent, and aerotain */
-  DUBILAB_OBSTACLES_20180610(7.5), //
-  DUBILAB_LOCALIZATION_20180702(7.5), //
+  // DUBILAB_OBSTACLES_20180610(7.5), //
+  // DUBILAB_LOCALIZATION_20180702(7.5), //
   /** empty space */
   DUBILAB_OBSTACLES_20180703(7.5), //
   /** empty space with tents */
-  DUBILAB_OBSTACLES_20180704(7.5), //
+  // DUBILAB_OBSTACLES_20180704(7.5), //
   /** only the first tent */
   // DUBILAB_LOCALIZATION_20180705(7.5), //
   /** only front tent, four balloons in the aerotain area */
   // DUBILAB_LOCALIZATION_20180813(7.5), //
   /** only front tent, aerotain poster shifted, no balloons */
   DUBILAB_LOCALIZATION_20180901(7.5), //
+  /** no tents, aerotain poster shifted, no balloons */
+  DUBILAB_LOCALIZATION_20180904(7.5), //
+  /** car and house tents in new positions for tse2 planning */
+  DUBILAB_LOCALIZATION_20180912(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -133,6 +137,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_LOCALIZATION_20180901.bufferedImage, "png", UserHome.file("map.png"));
+    ImageIO.write(DUBILAB_LOCALIZATION_20180912.bufferedImage, "png", UserHome.file("20180912.png"));
   }
 }

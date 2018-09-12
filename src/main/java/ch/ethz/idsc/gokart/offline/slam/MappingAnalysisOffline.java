@@ -78,7 +78,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
-      bayesianOccupancyGrid.setPose(gpe.getPose(), gpe.getQuality());
+      bayesianOccupancyGrid.setPose(gpe.getPose());
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }

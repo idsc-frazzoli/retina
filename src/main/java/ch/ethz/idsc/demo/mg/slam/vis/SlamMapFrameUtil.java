@@ -41,6 +41,7 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m]
    * @return framePos interpreted as [pixel] */
+  // TODO MG talk to JH about GeometricLayer
   private static double[] worldToFrame(double[] worldPos, double cornerX, double cornerY, double cellDim) {
     return new double[] { //
         (worldPos[0] - cornerX) / cellDim, //
@@ -59,6 +60,17 @@ import ch.ethz.idsc.tensor.Tensor;
   public static void drawWaypoint(Graphics2D graphics, SlamWaypoint waypoint, Color color, double radius, //
       double cornerX, double cornerY, double cellDim) {
     double[] framePos = worldToFrame(waypoint.getWorldPosition(), cornerX, cornerY, cellDim);
+    Ellipse2D circle = new Ellipse2D.Double( //
+        framePos[0] - radius, //
+        framePos[1] - radius, //
+        2 * radius, 2 * radius);
+    graphics.setColor(color);
+    graphics.fill(circle);
+  }
+
+  public static void drawPoint(Graphics2D graphics, double[] pointCoord, Color color, double radius, //
+      double cornerX, double cornerY, double cellDim) {
+    double[] framePos = worldToFrame(pointCoord, cornerX, cornerY, cellDim);
     Ellipse2D circle = new Ellipse2D.Double( //
         framePos[0] - radius, //
         framePos[1] - radius, //

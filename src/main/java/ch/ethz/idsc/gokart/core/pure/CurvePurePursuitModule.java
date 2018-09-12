@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
+// TODO do not use the static reference PursuitConfig.GLOBAL but an instance
 public final class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
   private Optional<Tensor> optionalCurve = Optional.empty();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
@@ -84,6 +85,10 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
     return Optional.empty();
   }
 
+  /** @param pose of vehicle
+   * @param curve world frame coordinates
+   * @param isForward driving direction, true when forward or stopped, false when driving backwards
+   * @return ratio rate with interpretation rad*m^-1 */
   static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));
@@ -100,12 +105,12 @@ public final class CurvePurePursuitModule extends PurePursuitModule implements G
     return Optional.empty();
   }
 
-  /** @param curve */
+  /** @param curve world frame coordinates */
   public void setCurve(Optional<Tensor> curve) {
     optionalCurve = curve;
   }
 
-  /** @return curve */
+  /** @return curve world frame coordinates */
   /* package */ Optional<Tensor> getCurve() {
     return optionalCurve;
   }

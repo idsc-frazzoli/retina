@@ -18,41 +18,36 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   private final SlamMapGUI slamMapGUI;
   private final SlamSaveFrame slamSaveFrame;
   // ---
-  private final Timer timer;
-  private final TimerTask visualizationTask;
+  private final Timer timer = new Timer();
+  private final TimerTask visualizationTask = new TimerTask() {
+    @Override
+    public void run() {
+      visualizationTask();
+    }
+  };
   private final long visualizationInterval;
-  // ---
-  private boolean started;
 
   public SlamViewer(SlamConfig slamConfig, SlamContainer slamContainer, GokartPoseInterface gokartLidarPose) {
     super(slamContainer, slamConfig.savingInterval);
     this.gokartLidarPose = gokartLidarPose;
     slamMapGUI = new SlamMapGUI(slamConfig);
     slamMapFrames = new SlamMapFrame[2];
-    for (int i = 0; i < slamMapFrames.length; i++)
+    for (int i = 0; i < slamMapFrames.length; ++i)
       slamMapFrames[i] = new SlamMapFrame(slamConfig);
-    // ---
-    timer = new Timer();
-    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
-    visualizationTask = new TimerTask() {
-      @Override
-      public void run() {
-        visualizationTask();
-      }
-    };
     slamSaveFrame = new SlamSaveFrame(slamConfig, slamMapFrames);
+    // ---
+    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
   }
 
   @Override // from StartAndStoppable
   public void start() {
     timer.schedule(visualizationTask, 0, visualizationInterval);
-    started = true;
   }
 
   @Override // from StartAndStoppable
   public void stop() {
+    timer.cancel();
     slamMapGUI.dispose();
-    started = false;
   }
 
   private void visualizationTask() {
@@ -61,7 +56,6 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    if (started)
-      slamSaveFrame.saveFrame(currentTimeStamp);
+    slamSaveFrame.saveFrame(currentTimeStamp);
   }
 }

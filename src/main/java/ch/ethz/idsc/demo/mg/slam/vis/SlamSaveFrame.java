@@ -19,14 +19,14 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
   public SlamSaveFrame(SlamConfig slamConfig, SlamMapFrame[] slamMapFrames) {
     this.slamMapFrames = slamMapFrames;
     logFilename = slamConfig.davisConfig.logFilename();
-    parentFilePath = SlamFileLocations.mapFrames(logFilename);
+    parentFilePath = SlamFileLocations.MAP_FRAMES.subfolder(logFilename);
     saveSlamFrame = slamConfig.saveSlamFrame;
   }
 
   public void saveFrame(int currentTimeStamp) {
     if (saveSlamFrame) {
       ++imageCount;
-      VisGeneralUtil.saveFrame(slamMapFrames[0].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
+      VisGeneralUtil.saveFrame(slamMapFrames[1].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
     }
   }
 }

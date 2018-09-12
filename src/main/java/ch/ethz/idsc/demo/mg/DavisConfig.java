@@ -24,7 +24,7 @@ public class DavisConfig {
   /** must match name in LogFileLocations and be an extract of a recording */
   public LogFileLocations logFileLocations = LogFileLocations.DUBI16e;
   /** maxDuration */
-  public final Scalar logFileDuration = Quantity.of(600, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(100, SI.SECOND);
   // general parameters
   /** width of image is required to be an integer */
   public final Scalar width = RealScalar.of(240);

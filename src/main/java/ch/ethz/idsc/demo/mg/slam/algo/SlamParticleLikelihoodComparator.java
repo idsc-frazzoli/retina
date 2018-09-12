@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 /* package */ enum SlamParticleLikelihoodComparator implements Comparator<SlamParticle> {
   INSTANCE;
   // ---
-  @Override
+  @Override // form Comparator
   public int compare(SlamParticle o1, SlamParticle o2) {
     return Double.compare(o2.getParticleLikelihood(), o1.getParticleLikelihood());
   }

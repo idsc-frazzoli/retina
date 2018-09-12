@@ -28,8 +28,9 @@ public class SafetyConfig implements Serializable {
    * gokart to deactivate motor torque
    * 20171218: changed from 3.3[m] to 4.3[m]
    * 20180607: changed from 4.3[m] to 7.0[m]
+   * 20180904: changed from 7.0[m] to 4.5[m]
    * @see Vlp16ClearanceModule */
-  public Scalar clearance_XHi = Quantity.of(7.0, SI.METER);
+  public Scalar clearance_XHi = Quantity.of(4.5, SI.METER);
   /** 20180226: changed from -1.0[m] to -0.9[m] because the sensor rack was lowered by ~8[cm] */
   public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
