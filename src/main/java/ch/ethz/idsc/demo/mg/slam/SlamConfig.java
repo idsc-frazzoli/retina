@@ -19,7 +19,7 @@ public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -90,10 +90,11 @@ public class SlamConfig {
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // in go kart frame
   // SlamWaypointSelection
   public Scalar extrapolationDistance = Quantity.of(4, SI.METER);
-  public Scalar curveFactor = RealScalar.of(1.6);
+  public Scalar curveFactor = RealScalar.of(1.3);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
   // SlamCurvatureObserver
-  public Scalar deltaCurvatureThreshold = RealScalar.of(0.2);
+  public Scalar deltaCurvatureUpThreshold = RealScalar.of(0.1);
+  public Scalar deltaCurvatureDownthreshold = RealScalar.of(0.2);
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = RealScalar.of(3); // [m]
   // SlamViewer

@@ -39,14 +39,14 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   // transforms curve to world frame
   public static Tensor curveLocal2World(Tensor curve, Tensor poseUnitless) {
     TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
-    curve.forEach(local2World::apply);
+    curve = Tensor.of(curve.stream().map(local2World::apply));
     return curve;
   }
 
   // transforms curve to go kart frame
   public static Tensor curveWorld2Local(Tensor curve, Tensor poseUnitless) {
     TensorUnaryOperator world2Local = new Se2Bijection(poseUnitless).inverse();
-    curve.forEach(world2Local::apply);
+    curve = Tensor.of(curve.stream().map(world2Local::apply));
     return curve;
   }
 }
