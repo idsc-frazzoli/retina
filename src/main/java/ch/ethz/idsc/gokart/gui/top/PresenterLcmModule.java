@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.swing.JButton;
@@ -56,7 +58,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
-  private final TrajectoryLcmClient trajectoryLcmClient = new TrajectoryLcmClient();
+  private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
+      TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
@@ -158,7 +161,7 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
-      trajectoryLcmClient.addListener(trajectoryRender);
+      trajectoryLcmClients.forEach(trajectoryLcmClient -> trajectoryLcmClient.addListener(trajectoryRender));
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
@@ -175,7 +178,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     joystickLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
-    trajectoryLcmClient.startSubscriptions();
+    trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     davisLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
@@ -214,7 +217,7 @@ public class PresenterLcmModule extends AbstractModule {
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
     joystickLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
-    trajectoryLcmClient.stopSubscriptions();
+    trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
   }
 
