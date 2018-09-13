@@ -71,7 +71,7 @@ public class LocalizationConfig implements Serializable {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBILAB_LOCALIZATION_20180901;
+    return PredefinedMap.DUBILAB_LOCALIZATION_20180912; // with car and house tents for tse2 planning
   }
 
   /** @return new instance of LidarGyroLocalization method */
@@ -80,7 +80,7 @@ public class LocalizationConfig implements Serializable {
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {
-    // return PredefinedMap.DUBILAB_OBSTACLES_20180703; // without tents
-    return PredefinedMap.DUBILAB_OBSTACLES_20180704; // with tents
+    return PredefinedMap.DUBILAB_OBSTACLES_20180703; // without tents
+    // return PredefinedMap.DUBILAB_OBSTACLES_20180704; // with tents
   }
 }
