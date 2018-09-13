@@ -65,7 +65,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     return visibilities;
   }
 
-  /** creates visibleWaypoints list ordered by distance and adds a way point at [0,0]
+  /** creates visibleWaypoints list ordered by distance
    * 
    * @param gokartWaypoints in go kart frame
    * @param visibilities
@@ -75,8 +75,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     for (int i = 0; i < gokartWaypoints.size(); i++)
       if (visibilities.get(i))
         visibleWaypoints.add(gokartWaypoints.get(i));
-    // adding this point makes curvature calculation difficult
-    // visibleWaypoints.add(new double[] { 0, 0 });
     Collections.sort(visibleWaypoints, WaypointXComparator.INSTANCE);
     return visibleWaypoints;
   }

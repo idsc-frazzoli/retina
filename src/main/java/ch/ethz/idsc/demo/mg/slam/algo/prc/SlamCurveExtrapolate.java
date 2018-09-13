@@ -18,16 +18,20 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
   // constant is equal to maximum path curvature that the vehicle can drive
   private static final Scalar MAX_PATH_CURVATURE = RealScalar.of(SteerConfig.GLOBAL.turningRatioMax.number().doubleValue());
 
-  /** extrapolates last point of curve with a circle segment of corresponding curvature
+  /** extrapolates last point of curve with a circle segment of curvature multiplied with curveFactor
    * 
    * @param curve
+   * @param localCurvature curvature at the second last point of curve
+   * @param curveFactor factor with which localcurvature is multiplied
    * @param distance length of extrapolated circle segment
    * @param numberOfPoints number of points along extrapolated segment
    * @return extrapolatedCurve */
-  public static Tensor extrapolateCurve(Tensor curve, Scalar localCurvature, Scalar distance, Scalar numberOfPoints) {
+  public static Tensor extrapolateCurve(Tensor curve, Scalar localCurvature, Scalar curveFactor, Scalar distance, Scalar numberOfPoints) {
     Tensor endPose = getEndPose(curve);
     Tensor extrapolatedCurve = Tensors.of(endPose.extract(0, 2));
-    localCurvature = localCurvature.negate();
+    // negate to extrapolate to inner side of curve
+    localCurvature = localCurvature.multiply(curveFactor).negate();
+    localCurvature = limitCurvature(localCurvature);
     Tensor circleParam = Tensors.vector(1, 0, localCurvature.number().doubleValue());
     Se2CoveringGroupAction se2CoveringGroupAction = new Se2CoveringGroupAction(endPose);
     Scalar stepSize = distance.divide(numberOfPoints);
@@ -47,6 +51,14 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return endPose;
   }
 
+  private static Scalar limitCurvature(Scalar curvature) {
+    if (Scalars.lessEquals(curvature, MAX_PATH_CURVATURE.negate()))
+      return MAX_PATH_CURVATURE.negate();
+    if (Scalars.lessEquals(MAX_PATH_CURVATURE, curvature))
+      return MAX_PATH_CURVATURE;
+    return curvature;
+  }
+
   /** @param curve
    * @return curvature of second last point of curve, clipped by MAX_PATH_CURVATURE */
   public static Scalar getLocalCurvature(Tensor curve) {
@@ -55,10 +67,6 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     Tensor current = curve.get(curvaturePoint);
     Tensor next = curve.get(curvaturePoint + 1);
     Scalar localCurvature = SignedCurvature2D.of(prev, current, next).get();
-    if (Scalars.lessEquals(localCurvature, MAX_PATH_CURVATURE.negate()))
-      return MAX_PATH_CURVATURE.negate();
-    if (Scalars.lessEquals(MAX_PATH_CURVATURE, localCurvature))
-      return MAX_PATH_CURVATURE;
-    return localCurvature;
+    return limitCurvature(localCurvature);
   }
 }

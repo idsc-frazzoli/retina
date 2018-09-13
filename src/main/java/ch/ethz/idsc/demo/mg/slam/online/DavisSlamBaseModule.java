@@ -21,7 +21,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   DavisSlamBaseModule(SlamAlgoConfig slamAlgoConfig) {
     SlamConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
     onlineSlamWrap = new OnlineSlamWrap(SlamConfig.GLOBAL);
-    slamCurvePurePursuitModule = new SlamCurvePurePursuitModule(SlamConfig.GLOBAL.lookAhead);
+    slamCurvePurePursuitModule = new SlamCurvePurePursuitModule(SlamConfig.GLOBAL);
   }
 
   @Override // from AbstractModule

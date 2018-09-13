@@ -24,7 +24,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
   private static final Point POINT = new Point(-1, -1);
   // ---
-  private final double mapThreshold; // in [0,1]
+  private final SlamConfig slamConfig;
   private final double cornerX; // [m]
   private final double cornerY; // [m]
   private final double cellDim; // [m]
@@ -32,7 +32,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final Mat labels;
 
   public SlamWaypointDetection(SlamConfig slamConfig) {
-    mapThreshold = slamConfig.mapThreshold.number().doubleValue();
+    this.slamConfig = slamConfig;
     cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
     cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
@@ -46,7 +46,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
    * @param thresholdMap input object containing binary map
    * @return worldWaypoints [m] detected way points in world frame */
   public List<double[]> detectWaypoints(MapProvider thresholdMap) {
-    Mat processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
+    Mat processedMap = mapProviderToBinaryMat(thresholdMap, slamConfig.mapThreshold.number().doubleValue());
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, KERNEL_DILATE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
     opencv_imgproc.erode(processedMap, processedMap, KERNEL_ERODE, POINT, 1, opencv_core.BORDER_CONSTANT, null);

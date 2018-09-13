@@ -20,6 +20,6 @@ import ch.ethz.idsc.tensor.red.Nest;
    * @param featurePoints in go kart frame */
   public static Tensor refineFeaturePoints(List<double[]> featurePoints) {
     Tensor visibleWaypoints = Tensor.of(featurePoints.stream().map(Tensors::vectorDouble));
-    return Nest.of(CURVE_SUBDIVISION::string, visibleWaypoints, 3);
+    return Nest.of(CURVE_SUBDIVISION::string, visibleWaypoints, 2);
   }
 }

@@ -19,28 +19,27 @@ public class SlamConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   // particle filter parameters
-  public final Scalar alpha = RealScalar.of(0.4); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(30);
-  public final Scalar relevantParticles = RealScalar.of(5); // only these particles are used for occurrence map update
+  public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
+  public final Scalar numberOfParticles = RealScalar.of(15);
+  public final Scalar relevantParticles = RealScalar.of(3); // only these particles are used for occurrence map update
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
-  public final Scalar lookAheadDistance = Quantity.of(8, SI.METER);
+  public final Scalar lookAheadDistance = Quantity.of(5, SI.METER);
   /** for reactive mapping modes */
-  public final Scalar lookBehindDistance = Quantity.of(-1, SI.METER);
+  public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
   // update rates
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
-  public final Scalar resampleRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar resampleRate = Quantity.of(50, NonSI.MILLI_SECOND);
   public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar waypointUpdateRate = Quantity.of(0.1, SI.SECOND);
-  public final Scalar waypointSelectionUpdateRate = Quantity.of(0.1, SI.SECOND); // TODO remove once we got it running on listener
+  public final Scalar waypointUpdateRate = Quantity.of(0.05, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
@@ -87,15 +86,16 @@ public class SlamConfig {
   public Scalar mapThreshold = RealScalar.of(0.25); // valid range [0,1]
   public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
   public final Scalar visibleBoxHalfWidth = Quantity.of(2, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMin = Quantity.of(-4, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(6, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // in go kart frame
   // SlamWaypointSelection
-  public Scalar offset = Quantity.of(-0.7, SI.METER);
-  // SlamCurveExtrapolate
-  public Scalar extrapolationDistance = Quantity.of(3, SI.METER);
-  public final Scalar numberOfPoints = RealScalar.of(10).multiply(extrapolationDistance);
+  public Scalar extrapolationDistance = Quantity.of(4, SI.METER);
+  public Scalar curveFactor = RealScalar.of(1.6);
+  public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
+  // SlamCurvatureObserver
+  public Scalar deltaCurvatureThreshold = RealScalar.of(0.2);
   // SlamCurvePurePursuitModule
-  public Scalar lookAhead = RealScalar.of(2); // [m]
+  public Scalar lookAhead = RealScalar.of(3); // [m]
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

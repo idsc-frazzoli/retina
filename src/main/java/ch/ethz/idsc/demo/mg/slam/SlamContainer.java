@@ -7,12 +7,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 /** container for the objects that are passed between different modules of the SLAM algorithm */
 public class SlamContainer implements GokartPoseInterface {
@@ -28,8 +25,6 @@ public class SlamContainer implements GokartPoseInterface {
   private Tensor poseUnitless;
   /** most recent detected way points */
   private List<SlamWaypoint> slamWaypoints = new ArrayList<>();
-  /** lookahead to be followed by pure pursuit algorithm */
-  private Optional<double[]> lookAheadWorldFrame = Optional.empty();
   /** experimental field for curve interpolation */
   private Optional<Tensor> refinedWaypointCurve = Optional.empty();
   /** position of most recent event in go kart frame */
@@ -50,19 +45,6 @@ public class SlamContainer implements GokartPoseInterface {
   public void initialize(Tensor initPose) {
     SlamContainerUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
     setPose(initPose);
-  }
-
-  /** for interfacing the pure pursuit controller
-   * 
-   * @return lookAhead {x,y} in go kart frame coordinates */
-  public Optional<Tensor> getLookAhead() {
-    Optional<double[]> lookAheadWorldFrame = this.lookAheadWorldFrame;
-    if (lookAheadWorldFrame.isPresent()) {
-      TensorUnaryOperator world2local = new Se2Bijection(poseUnitless).inverse();
-      Tensor lookAhead = world2local.apply(Tensors.vectorDouble(lookAheadWorldFrame.get()));
-      return Optional.of(lookAhead);
-    }
-    return Optional.empty();
   }
 
   /** saves the occurrence map after log file is completed if required by algorithm configuration */
@@ -101,12 +83,19 @@ public class SlamContainer implements GokartPoseInterface {
     return eventGokartFrame;
   }
 
-  public void setRefinedWaypointCurve(Optional<Tensor> refinedWaypointCurve) {
-    this.refinedWaypointCurve = refinedWaypointCurve;
+  /** @param refinedWaypointCurve in go kart frame coordinates */
+  public void setRefinedWaypointCurve(Tensor curve) {
+    Tensor worldCurve = SlamContainerUtil.curveLocal2World(curve, poseUnitless);
+    this.refinedWaypointCurve = Optional.of(worldCurve);
   }
 
+  /** @return refinedWaypointCurve in go kart frame coordinates */
   public Optional<Tensor> getRefinedWaypointCurve() {
-    return refinedWaypointCurve;
+    if (refinedWaypointCurve.isPresent()) {
+      Tensor localCurve = SlamContainerUtil.curveWorld2Local(refinedWaypointCurve.get(), poseUnitless);
+      return Optional.of(localCurve);
+    }
+    return Optional.empty();
   }
 
   public void setPoseUnitless(Tensor unitlessPose) {
@@ -115,16 +104,6 @@ public class SlamContainer implements GokartPoseInterface {
 
   public Tensor getPoseUnitless() {
     return poseUnitless;
-  }
-
-  /** @param lookAheadWorldFrame in world frame coordinates */
-  public void setLookAhead(Optional<double[]> lookAheadWorldFrame) {
-    this.lookAheadWorldFrame = lookAheadWorldFrame;
-  }
-
-  /** for visualization */
-  public Optional<double[]> getlookAheadWorldFrame() {
-    return lookAheadWorldFrame;
   }
 
   /** sets pose with when input argument is not unitless

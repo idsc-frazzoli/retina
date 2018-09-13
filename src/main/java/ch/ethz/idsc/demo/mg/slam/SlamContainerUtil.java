@@ -1,11 +1,13 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TruncatedGaussian;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 /* package */ enum SlamContainerUtil {
   ;
@@ -32,5 +34,19 @@ import ch.ethz.idsc.tensor.Tensor;
           : new TruncatedGaussian(0, angVelStd, -maxAngVel, maxAngVel).nextValue();
       slamParticles[index].initialize(pose, RealScalar.of(linVel), RealScalar.of(angVel), initLikelihood);
     }
+  }
+
+  // transforms curve to world frame
+  public static Tensor curveLocal2World(Tensor curve, Tensor poseUnitless) {
+    TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
+    curve.forEach(local2World::apply);
+    return curve;
+  }
+
+  // transforms curve to go kart frame
+  public static Tensor curveWorld2Local(Tensor curve, Tensor poseUnitless) {
+    TensorUnaryOperator world2Local = new Se2Bijection(poseUnitless).inverse();
+    curve.forEach(world2Local::apply);
+    return curve;
   }
 }
