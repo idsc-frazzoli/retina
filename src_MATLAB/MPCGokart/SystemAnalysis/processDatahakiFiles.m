@@ -27,6 +27,9 @@ for i = 1:3
     targetfiles{end+1}= num2str(i, '20180705T101944_%d.csv');
 end
 
+folders{end+1} = 'retina_out/fab.lcm/';
+targetfiles{end+1}= 'fab.csv';
+
 RTSTargetFolder = 'RTS_out/';
 MLTargetFolder = 'ML_out/';
 

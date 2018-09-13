@@ -55,6 +55,8 @@ import ch.ethz.idsc.subare.util.UserHome;
     files.add(UserHome.file("Racing/0w/20180705T1019441.lcm"));
     files.add(UserHome.file("Racing/0w/20180705T1019442.lcm"));
     files.add(UserHome.file("Racing/0w/20180705T1019443.lcm"));
+    
+    files.add(UserHome.file("forthandback/fab.lcm"));
 
     
     for (File inputFile : files)

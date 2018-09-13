@@ -27,7 +27,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     OfflineLogPlayer.process(file, lcmLogFileIndexer);
     System.out.println("done.");
     return lcmLogFileIndexer;
-  }
+  } 
 
   // ---
   private static final Scalar resolution = Quantity.of(0.25, SI.SECOND);

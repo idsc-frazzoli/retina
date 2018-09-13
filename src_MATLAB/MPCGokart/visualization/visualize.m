@@ -22,7 +22,7 @@ for i = 1:nargin-4
     xhist = varargin{i+4};
     [~,nn] = size(xhist);
     if(nn ~= 9)
-       %is in form:  [t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr]
+       %is in form:  [t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp]
         %convert to [Ux Uy r Ksi x y w2L w2R]
         fxhist = xhist;
         xhist = [fxhist(:,1),fxhist(:,5:7),fxhist(:,4),fxhist(:,2:3), fxhist(:,15:16)];
