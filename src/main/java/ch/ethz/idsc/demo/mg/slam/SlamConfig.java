@@ -26,8 +26,8 @@ public class SlamConfig {
   public final Boolean saveSlamMap = false;
   // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(15);
-  public final Scalar relevantParticles = RealScalar.of(3); // only these particles are used for occurrence map update
+  public final Scalar numberOfParticles = RealScalar.of(20);
+  public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
@@ -90,11 +90,12 @@ public class SlamConfig {
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // in go kart frame
   // SlamWaypointSelection
   public Scalar extrapolationDistance = Quantity.of(4, SI.METER);
-  public Scalar curveFactor = RealScalar.of(1.3);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
+  public Scalar curveFactor = RealScalar.of(1.5);
   // SlamCurvatureObserver
-  public Scalar deltaCurvatureUpThreshold = RealScalar.of(0.1);
-  public Scalar deltaCurvatureDownthreshold = RealScalar.of(0.2);
+  public Scalar deltaCurvatureUpThreshold = RealScalar.of(0.2);
+  public Scalar deltaCurvatureDownthreshold = RealScalar.of(0.3);
+  public Scalar deltaHeadingThreshold = RealScalar.of(0.5); // [rad]
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = RealScalar.of(3); // [m]
   // SlamViewer

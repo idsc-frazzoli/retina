@@ -37,12 +37,14 @@ import ch.ethz.idsc.tensor.Tensor;
     Tensor refinedFeaturePointCurve = SlamCurveInterpolate.refineFeaturePoints(featurePoints);
     if (refinedFeaturePointCurve.length() >= 3) {
       Scalar localCurvature = SlamCurveExtrapolate.getLocalCurvature(refinedFeaturePointCurve);
-      if (slamCurvatureObserver.curvatureContinuous(localCurvature)) {
+      Scalar endHeading = SlamCurveExtrapolate.getEndHeading(refinedFeaturePointCurve);
+      slamCurvatureObserver.initialize(endHeading);
+      if (slamCurvatureObserver.curvatureContinuous(localCurvature, endHeading)) {
         Tensor extrapolatedCurve = SlamCurveExtrapolate.extrapolateCurve(refinedFeaturePointCurve, localCurvature, //
             slamConfig.curveFactor, slamConfig.extrapolationDistance, numberOfPoints);
         extrapolatedCurve.stream() //
             .forEach(refinedFeaturePointCurve::append);
-        slamContainer.setRefinedWaypointCurve(refinedFeaturePointCurve);
+        slamContainer.setCurve(refinedFeaturePointCurve);
       }
     }
   }

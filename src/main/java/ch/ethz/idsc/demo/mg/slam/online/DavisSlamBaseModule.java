@@ -40,7 +40,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    Optional<Tensor> curve = onlineSlamWrap.getSlamContainer().getRefinedWaypointCurve();
+    Optional<Tensor> curve = onlineSlamWrap.getSlamContainer().getCurve();
     slamCurvePurePursuitModule.setCurve(curve);
   }
 

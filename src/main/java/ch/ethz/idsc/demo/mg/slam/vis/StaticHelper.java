@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
   private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
-  private static final double curveRadius = 0.1;
+  private static final double radius = 0.1; // [m]
 
   /** sets all frames for the visualization
    * 
@@ -34,12 +34,10 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
     VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
-    if (slamContainer.getRefinedWaypointCurve().isPresent())
-      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamContainer.getRefinedWaypointCurve().get());
+    if (slamContainer.getCurve().isPresent())
+      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamContainer.getCurve().get());
     slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
     slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
-    // if (slamContainer.getlookAheadWorldFrame().isPresent())
-    // slamMapFrames[1].drawPoint(slamContainer.getlookAheadWorldFrame().get(), Color.BLUE, 0.2);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
@@ -68,7 +66,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     Tensor globalCurve = Tensor.of(refinedWaypointCurve.stream().map(local2World));
     for (int i = 0; i < globalCurve.length(); ++i) {
       double[] point = Primitives.toDoubleArray(globalCurve.get(i));
-      slamMapFrame.drawPoint(point, Color.BLACK, curveRadius);
+      slamMapFrame.drawPoint(point, Color.BLACK, radius);
     }
   }
 

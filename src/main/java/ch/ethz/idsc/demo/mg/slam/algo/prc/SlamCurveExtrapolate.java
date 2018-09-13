@@ -46,9 +46,14 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
   /** @param curve
    * @return pose of last point of curve looking in tangent direction */
   private static Tensor getEndPose(Tensor curve) {
-    Tensor direction = curve.get(curve.length() - 1).subtract(curve.get(curve.length() - 2));
-    Tensor endPose = curve.get(curve.length() - 1).append(ArcTan.of(direction.Get(0), direction.Get(1)));
+    Tensor endHeading = getEndHeading(curve);
+    Tensor endPose = curve.get(curve.length() - 1).append(endHeading);
     return endPose;
+  }
+
+  public static Scalar getEndHeading(Tensor curve) {
+    Tensor direction = curve.get(curve.length() - 1).subtract(curve.get(curve.length() - 2));
+    return ArcTan.of(direction.Get(0), direction.Get(1));
   }
 
   private static Scalar limitCurvature(Scalar curvature) {

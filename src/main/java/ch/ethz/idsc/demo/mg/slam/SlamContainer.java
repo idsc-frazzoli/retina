@@ -25,8 +25,8 @@ public class SlamContainer implements GokartPoseInterface {
   private Tensor poseUnitless;
   /** most recent detected way points */
   private List<SlamWaypoint> slamWaypoints = new ArrayList<>();
-  /** experimental field for curve interpolation */
-  private Optional<Tensor> refinedWaypointCurve = Optional.empty();
+  /** curve in world frame */
+  private Optional<Tensor> curve = Optional.empty();
   /** position of most recent event in go kart frame */
   private double[] eventGokartFrame = null;
 
@@ -83,16 +83,16 @@ public class SlamContainer implements GokartPoseInterface {
     return eventGokartFrame;
   }
 
-  /** @param refinedWaypointCurve in go kart frame coordinates */
-  public void setRefinedWaypointCurve(Tensor curve) {
+  /** @param curve in go kart frame */
+  public void setCurve(Tensor curve) {
     Tensor worldCurve = SlamContainerUtil.curveLocal2World(curve, poseUnitless);
-    this.refinedWaypointCurve = Optional.of(worldCurve);
+    this.curve = Optional.of(worldCurve);
   }
 
-  /** @return refinedWaypointCurve in go kart frame coordinates */
-  public Optional<Tensor> getRefinedWaypointCurve() {
-    if (refinedWaypointCurve.isPresent()) {
-      Tensor localCurve = SlamContainerUtil.curveWorld2Local(refinedWaypointCurve.get(), poseUnitless);
+  /** @return refinedWaypointCurve in go kart frame */
+  public Optional<Tensor> getCurve() {
+    if (curve.isPresent()) {
+      Tensor localCurve = SlamContainerUtil.curveWorld2Local(curve.get(), poseUnitless);
       return Optional.of(localCurve);
     }
     return Optional.empty();
