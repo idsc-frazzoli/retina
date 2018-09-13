@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.PlanSRConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -47,6 +48,7 @@ public class ParametersModule extends AbstractModule {
     addTab(PursuitConfig.GLOBAL);
     addTab(ClusterConfig.GLOBAL);
     addTab(TrajectoryConfig.GLOBAL);
+    addTab(PlanSRConfig.GLOBAL);
     addTab(MappingConfig.GLOBAL);
     addTab(SlamConfig.GLOBAL);
     jFrame.setContentPane(jTabbedPane);
