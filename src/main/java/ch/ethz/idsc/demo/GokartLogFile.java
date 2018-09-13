@@ -742,6 +742,16 @@ public enum GokartLogFile implements LogFile {
   _20180913T143824_b0c36115, //
   /** xyavt trajectory planning */
   _20180913T155444_b0c36115, //
+  /** several xyavt trajectory planning, driving along */
+  _20180913T160707_b0c36115, //
+  /** event-based marker following with davis240c along circle */
+  _20180913T164921_34b3470d, //
+  /** event-based marker following with davis240c along eight */
+  _20180913T172039_34b3470d, //
+  /** event-based marker following with davis240c straight */
+  _20180913T174600_34b3470d, //
+  /** system id track plastic [mh yn jh mh yn jh] */
+  _20180913T183146_34b3470d, //
   ;
   // ---
   @Override // from LogFile
