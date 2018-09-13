@@ -698,7 +698,14 @@ public enum GokartLogFile implements LogFile {
   _20180904T183437_b00c893a, //
   /***************************************************/
   /* 2018-09-06 */
-  // TODO
+  /** event-based driving using davis240c */
+  _20180906T134345_6cd480f5, //
+  /** event-based driving using davis240c */
+  _20180906T134939_6cd480f5, //
+  /** event-based driving using davis240c */
+  _20180906T140237_6cd480f5, //
+  /** event-based driving using davis240c, no localization */
+  _20180906T141146_6cd480f5, //
   /***************************************************/
   /* 2018-09-12 */
   /** measurement of front wheel inclination
