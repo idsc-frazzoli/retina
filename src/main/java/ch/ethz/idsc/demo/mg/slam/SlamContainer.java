@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_core.Mat;
+
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
@@ -29,6 +32,8 @@ public class SlamContainer implements GokartPoseInterface {
   private Optional<Tensor> curve = Optional.empty();
   /** position of most recent event in go kart frame */
   private double[] eventGokartFrame = null;
+  // ---
+  private Mat labels;
 
   public SlamContainer(SlamConfig slamConfig) {
     int numOfPart = Magnitude.ONE.toInt(slamConfig.numberOfParticles);
@@ -39,6 +44,8 @@ public class SlamContainer implements GokartPoseInterface {
     linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
     angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
     occurrenceMap = new MapProvider(slamConfig);
+    // ---
+    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */
@@ -116,5 +123,13 @@ public class SlamContainer implements GokartPoseInterface {
   @Override // from GokartPoseInterface
   public Tensor getPose() {
     return GokartPoseHelper.attachUnits(poseUnitless);
+  }
+
+  public void setMat(Mat labels) {
+    this.labels = labels;
+  }
+
+  public Mat getMat() {
+    return labels;
   }
 }

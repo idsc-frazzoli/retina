@@ -56,22 +56,11 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return ArcTan.of(direction.Get(0), direction.Get(1));
   }
 
-  private static Scalar limitCurvature(Scalar curvature) {
+  public static Scalar limitCurvature(Scalar curvature) {
     if (Scalars.lessEquals(curvature, MAX_PATH_CURVATURE.negate()))
       return MAX_PATH_CURVATURE.negate();
     if (Scalars.lessEquals(MAX_PATH_CURVATURE, curvature))
       return MAX_PATH_CURVATURE;
     return curvature;
-  }
-
-  /** @param curve
-   * @return curvature of second last point of curve, clipped by MAX_PATH_CURVATURE */
-  public static Scalar getLocalCurvature(Tensor curve) {
-    int curvaturePoint = curve.length() - 2;
-    Tensor prev = curve.get(curvaturePoint - 1);
-    Tensor current = curve.get(curvaturePoint);
-    Tensor next = curve.get(curvaturePoint + 1);
-    Scalar localCurvature = SignedCurvature2D.of(prev, current, next).get();
-    return limitCurvature(localCurvature);
   }
 }

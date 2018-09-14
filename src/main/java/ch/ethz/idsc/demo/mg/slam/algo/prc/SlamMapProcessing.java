@@ -50,6 +50,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
 
   private void mapProcessing() {
     List<double[]> worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
+    slamContainer.setMat(slamWaypointDetection.getProcessedMat());
     worldWaypointListener.worldWaypoints(worldWaypoints);
   }
 

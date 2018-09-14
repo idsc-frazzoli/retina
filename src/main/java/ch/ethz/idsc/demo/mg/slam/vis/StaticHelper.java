@@ -20,7 +20,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
-  private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
   private static final double radius = 0.1; // [m]
 
   /** sets all frames for the visualization
@@ -34,6 +33,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
     VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
+    // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
     if (slamContainer.getCurve().isPresent())
       drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamContainer.getCurve().get());
     slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
@@ -82,8 +82,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       if (processedByteArray[i] == 0)
         bytes[i] = CLEAR_BYTE;
       else {
-        int labelID = processedByteArray[i] % 3;
-        bytes[i] = LOOKUP[labelID];
+        bytes[i] = BLUE;
       }
     }
   }

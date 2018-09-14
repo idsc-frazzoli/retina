@@ -19,9 +19,9 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
  * the centroids of the remaining connected components are detected as way points */
 /* package */ class SlamWaypointDetection {
   private static final Mat KERNEL_DILATE = //
-      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(8, 8));
-  private static final Mat KERNEL_ERODE = //
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(3, 3));
+  private static final Mat KERNEL_ERODE = //
+      opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(2, 2));
   private static final Point POINT = new Point(-1, -1);
   // ---
   private final SlamConfig slamConfig;
@@ -30,6 +30,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final double cellDim; // [m]
   // ---
   private final Mat labels;
+  private Mat processedMap;
 
   public SlamWaypointDetection(SlamConfig slamConfig) {
     this.slamConfig = slamConfig;
@@ -37,6 +38,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+    processedMap = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   /** finds way points through threshold operation, morphological processing and
@@ -46,7 +48,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
    * @param thresholdMap input object containing binary map
    * @return worldWaypoints [m] detected way points in world frame */
   public List<double[]> detectWaypoints(MapProvider thresholdMap) {
-    Mat processedMap = mapProviderToBinaryMat(thresholdMap, slamConfig.mapThreshold.number().doubleValue());
+    processedMap = mapProviderToBinaryMat(thresholdMap, slamConfig.mapThreshold.number().doubleValue());
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, KERNEL_DILATE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
     opencv_imgproc.erode(processedMap, processedMap, KERNEL_ERODE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -64,7 +66,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
           arrayData.getDouble(Double.BYTES) };
       worldWaypoints.add(index - 1, frameToWorld(newWaypoint));
     }
-    processedMap.release(); // probably obsolete because underlying array was created in java
+    // processedMap.release(); // probably obsolete because underlying array was created in java
     centroid.release();
     stats.release();
     return worldWaypoints;
@@ -80,8 +82,9 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     byte[] byteArray = new byte[mapArray.length];
     double maxValueScaled = mapProvider.getMaxValue() * mapThreshold;
     Mat mat = new Mat(mapProvider.getMapWidth(), mapProvider.getMapHeight(), opencv_core.CV_8UC1);
-    for (int index = 0; index < byteArray.length; ++index)
+    for (int index = 0; index < byteArray.length; ++index) {
       byteArray[index] = mapArray[index] >= maxValueScaled ? (byte) 1 : 0;
+    }
     mat.data().put(byteArray);
     return mat;
   }
@@ -99,7 +102,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   // could be used for visualization of the processed occurrence map
   public Mat getProcessedMat() {
     labels.convertTo(labels, opencv_core.CV_8UC1);
-    return labels;
+    return processedMap;
   }
 
   /** @param inputMap

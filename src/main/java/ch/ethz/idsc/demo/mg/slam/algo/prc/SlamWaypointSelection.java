@@ -8,6 +8,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.red.Mean;
 
 /** finds currently visible way points and computes lookAhead to be followed by the pure pursuit algorithm */
 /* package */ class SlamWaypointSelection implements WorldWaypointListener {
@@ -31,21 +32,21 @@ import ch.ethz.idsc.tensor.Tensor;
 
   @Override // from WorldWaypointListener
   public void worldWaypoints(List<double[]> worldWaypoints) {
-    List<double[]> featurePoints = SlamWaypointSelectionUtil.selectWaypoints( //
+    Tensor featurePoints = SlamWaypointSelectionUtil.selectWaypoints( //
         worldWaypoints, slamContainer, //
         visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-    Tensor refinedFeaturePointCurve = SlamCurveInterpolate.refineFeaturePoints(featurePoints);
-    if (refinedFeaturePointCurve.length() >= 3) {
-      Scalar localCurvature = SlamCurveExtrapolate.getLocalCurvature(refinedFeaturePointCurve);
-      Scalar endHeading = SlamCurveExtrapolate.getEndHeading(refinedFeaturePointCurve);
+    Tensor curve = SlamCurveInterpolate.refineFeaturePoints(featurePoints);
+    if (curve.length() >= 6) {
+      Scalar localCurvature = (Scalar) Mean.of(SlamCurveUtil.localCurvature(curve.extract(curve.length() - 6, curve.length())));
+      Scalar endHeading = SlamCurveExtrapolate.getEndHeading(curve);
       slamCurvatureObserver.initialize(endHeading);
-      if (slamCurvatureObserver.curvatureContinuous(localCurvature, endHeading)) {
-        Tensor extrapolatedCurve = SlamCurveExtrapolate.extrapolateCurve(refinedFeaturePointCurve, localCurvature, //
-            slamConfig.curveFactor, slamConfig.extrapolationDistance, numberOfPoints);
-        extrapolatedCurve.stream() //
-            .forEach(refinedFeaturePointCurve::append);
-        slamContainer.setCurve(refinedFeaturePointCurve);
-      }
+      localCurvature = slamCurvatureObserver.getAvgCurvature(localCurvature);
+      endHeading = slamCurvatureObserver.getAvgHeading(endHeading);
+      Tensor extrapolatedCurve = SlamCurveExtrapolate.extrapolateCurve(curve, localCurvature, //
+          slamConfig.curveFactor, slamConfig.extrapolationDistance, numberOfPoints);
+      extrapolatedCurve.stream() //
+          .forEach(curve::append);
+      slamContainer.setCurve(curve);
     }
   }
 }

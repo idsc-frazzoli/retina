@@ -106,7 +106,21 @@ public enum LogFileLocations {
   /** one round with aprupt acceleration and braking */
   DUBI16d("20180813T165630_2c569ed8Extracted4.lcm"),
   /** six rounds with varying speed */
-  DUBI16e("20180813T165630_2c569ed8Extracted5.lcm");
+  DUBI16e("20180813T165630_2c569ed8Extracted5.lcm"),
+  /** autonomously driving around circle shape with lots of way points */
+  DUBI17("20180913T164921_34b3470d.lcm.00"),
+  /** 2.5 laps autonomously driving around */
+  DUBI17a("20180913T164921_34b3470dExtracted1.lcm"),
+  /** 2 laps autonomously driving around */
+  DUBI17b("20180913T164921_34b3470dExtracted2.lcm"),
+  /** 2 laps autonomously driving around */
+  DUBI17c("20180913T164921_34b3470dExtracted3.lcm"),
+  /** 1.5 laps autonomously Jan driving around */
+  DUBI17d("20180913T164921_34b3470dExtracted4.lcm"),
+  /** autonomously Jan driving around */
+  DUBI17e("20180913T164921_34b3470dExtracted5.lcm"),
+  /** autonomously driving along straight line in center of hangar */
+  DUBI18("20180913T174600_34b3470d.lcm.00");
   // ---
   private final String filename;
 
