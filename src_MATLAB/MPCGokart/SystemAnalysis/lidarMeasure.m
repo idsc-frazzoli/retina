@@ -3,7 +3,7 @@ function [nx,nP] = lidarMeasure(x,P,dt,dmt,m1,m2,m3,R,Q)
 %measure lidar
 %R: estimated lidar variance
 %m = [posx,posy,theta]'
-%m1-3: last 3 measurements [m1,m2,(m3)] -> m3 is current measurement
+%m1-3: last 3 measurements [m1,(m2),m3] -> m2 is current measurement
 
 %compute variance and values for position and acceleration
 
@@ -16,8 +16,12 @@ function [nx,nP] = lidarMeasure(x,P,dt,dmt,m1,m2,m3,R,Q)
 %vector M
 M = [m1;m2;m3];
 %measurementF:
-F = [zeros(3,6),eye(3);...
-    zeros(3,3),-eye(3)/(dmt),eye(3)/(dmt);...
+%F = [zeros(3,6),eye(3);...
+%    zeros(3,3),-eye(3)/(dmt),eye(3)/(dmt);...
+%   eye(3)*(1/dmt^2),-eye(3)*(2/dmt^2),eye(3)*(1/dmt^2)];
+%use other F if EKF is used in online state estimation
+F = [zeros(3,3),eye(3),zeros(3,3);...
+    -eye(3)/(2*dmt),zeros(3,3),eye(3)/(2*dmt);...
     eye(3)*(1/dmt^2),-eye(3)*(2/dmt^2),eye(3)*(1/dmt^2)];
 z = F*M;
 %measurment variance (3 because each measurement is used 3 times)

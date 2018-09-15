@@ -25,8 +25,10 @@ sdota = gaussfilter(sdota,10);
 
 %load power
 pt = powerrimo(:,1);
-pcl = powerrimo(:,3);
-pcr = powerrimo(:,10);
+pcl = powerrimo(:,16);
+pcr = powerrimo(:,17);
+
+plot(pt,pcl);
 
 %load wheelspeeds
 wt = rimorate(:,1);

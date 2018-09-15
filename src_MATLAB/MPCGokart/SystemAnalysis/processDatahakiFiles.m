@@ -2,6 +2,7 @@ addpath('..')
 
 folders = {};
 targetfiles = {};
+if(0)
 for i = 1:6
     folders{end+1} = num2str(i, 'retina_out/20180820T143852%d.lcm/');
     targetfiles{end+1}= num2str(i, '20180820T143852_%d.csv');
@@ -25,6 +26,7 @@ end
 for i = 1:3
     folders{end+1} = num2str(i, 'retina_out/20180705T101944%d.lcm/');
     targetfiles{end+1}= num2str(i, '20180705T101944_%d.csv');
+end
 end
 
 folders{end+1} = 'retina_out/fab.lcm/';

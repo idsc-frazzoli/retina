@@ -8,7 +8,7 @@ x(1:3)=ldat(1,2:4);
 x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
-IMUa = 20;
+IMUa = 10;
 IMUr = 2000;
 dQ = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
 lt = ldat(:,1);
@@ -61,7 +61,7 @@ while(currentt < maxt)
             dt = lt(lcount)-currentt;
             currentt = lt(lcount);
             dmt = lt(lcount)-lt(lcount-1);
-            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,dQ);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount+1,:)',ldat(lcount,:)',ldat(lcount-1,:)',lR,dQ);
             lcount = lcount+1;
         else
             %update with IMU
@@ -83,7 +83,7 @@ while(currentt < maxt)
             dt = lt(lcount)-currentt;
             currentt = lt(lcount);
             dmt = lt(lcount)-lt(lcount-1);
-            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-2,:)',ldat(lcount-1,:)',ldat(lcount,:)',lR,dQ);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-1,:)',ldat(lcount,:)',ldat(lcount+1,:)',lR,dQ);
             lcount = lcount+1;
         else
             dt = maxStep;
