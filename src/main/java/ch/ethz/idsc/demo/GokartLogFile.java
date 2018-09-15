@@ -698,7 +698,16 @@ public enum GokartLogFile implements LogFile {
   _20180904T183437_b00c893a, //
   /***************************************************/
   /* 2018-09-06 */
-  // TODO
+  /** event-based driving using davis240c */
+  _20180906T134345_6cd480f5, //
+  /** event-based driving using davis240c */
+  _20180906T134939_6cd480f5, //
+  /** event-based driving using davis240c */
+  _20180906T140237_6cd480f5, //
+  /** event-based driving using davis240c, no localization */
+  _20180906T141146_6cd480f5, //
+  /** trajectory planning */
+  _20180906T165741_cf500306, //
   /***************************************************/
   /* 2018-09-12 */
   /** measurement of front wheel inclination
@@ -707,6 +716,42 @@ public enum GokartLogFile implements LogFile {
   /** slow joystick driving to collect mapping information
    * with vehicle and house tents */
   _20180912T142434_76cef406, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T172503_c2615078, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T172801_c2615078, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T173408_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T174110_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T175114_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T180817_c2615078, //
+  /***************************************************/
+  /* 2018-09-13 */
+  /** testing if linmot maintains position even when in non-operational mode */
+  _20180913T110848_c2615078, //
+  /** event-based marker following with davis240c */
+  _20180913T115450_52e28a08, //
+  /** event-based marker following with davis240c */
+  _20180913T120042_52e28a08, //
+  /** event-based marker following with davis240c */
+  _20180913T121258_52e28a08, //
+  /** visitor joystick driving; trajectory planning */
+  _20180913T143824_b0c36115, //
+  /** xyavt trajectory planning */
+  _20180913T155444_b0c36115, //
+  /** several xyavt trajectory planning, driving along */
+  _20180913T160707_b0c36115, //
+  /** event-based marker following with davis240c along circle */
+  _20180913T164921_34b3470d, //
+  /** event-based marker following with davis240c along eight */
+  _20180913T172039_34b3470d, //
+  /** event-based marker following with davis240c straight */
+  _20180913T174600_34b3470d, //
+  /** system id track plastic [mh yn jh mh yn jh] */
+  _20180913T183146_34b3470d, //
   ;
   // ---
   @Override // from LogFile

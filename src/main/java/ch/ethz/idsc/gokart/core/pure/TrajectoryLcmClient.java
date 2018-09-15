@@ -13,6 +13,21 @@ import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
+  public static TrajectoryLcmClient xyat() {
+    return new TrajectoryLcmClient(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME);
+  }
+
+  public static TrajectoryLcmClient xyavt() {
+    return new TrajectoryLcmClient(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME);
+  }
+
+  // ---
+  private final String channel;
+
+  private TrajectoryLcmClient(String channel) {
+    this.channel = channel;
+  }
+
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
@@ -22,6 +37,6 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
 
   @Override // from BinaryLcmClient
   protected String channel() {
-    return GokartLcmChannel.TRAJECTORY_STATETIME;
+    return channel;
   }
 }

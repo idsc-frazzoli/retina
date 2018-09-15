@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.WindowConstants;
 
@@ -49,7 +51,8 @@ abstract class ViewLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  private final TrajectoryLcmClient trajectoryLcmClient = new TrajectoryLcmClient();
+  private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
+      TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private MappedPoseInterface mappedPoseInterface;
@@ -110,7 +113,7 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
-      trajectoryLcmClient.addListener(trajectoryRender);
+      trajectoryLcmClients.forEach(trajectoryLcmClient -> trajectoryLcmClient.addListener(trajectoryRender));
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
@@ -129,7 +132,7 @@ abstract class ViewLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
-    trajectoryLcmClient.startSubscriptions();
+    trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     // ---
     // odometryLcmClient.startSubscriptions();
     // ---
@@ -160,7 +163,7 @@ abstract class ViewLcmModule extends AbstractModule {
     // ---
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
-    trajectoryLcmClient.stopSubscriptions();
+    trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     // ---
     viewLcmFrame.close();
   }
