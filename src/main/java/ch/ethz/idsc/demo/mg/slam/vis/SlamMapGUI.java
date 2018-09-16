@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
@@ -28,7 +28,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     }
   };
 
-  SlamMapGUI(SlamConfig slamConfig) {
+  SlamMapGUI(SlamCoreConfig slamConfig) {
     frameWidth = slamConfig.frameWidth.number().intValue();
     int mapWidth = slamConfig.mapWidth();
     int mapHeight = slamConfig.mapHeight();

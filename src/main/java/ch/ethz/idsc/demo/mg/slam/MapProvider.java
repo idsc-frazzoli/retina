@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -23,7 +23,7 @@ public class MapProvider {
   /** tracks max value of values in array */
   private double maxValue;
 
-  public MapProvider(SlamConfig slamConfig) {
+  public MapProvider(SlamCoreConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     cellDimInv = 1 / cellDim;
     mapWidth = slamConfig.mapWidth();

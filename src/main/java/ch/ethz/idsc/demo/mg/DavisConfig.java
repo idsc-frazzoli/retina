@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI16e;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI17e;
   /** maxDuration */
   public final Scalar logFileDuration = Quantity.of(100, SI.SECOND);
   // general parameters

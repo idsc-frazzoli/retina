@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamContainer;
-import ch.ethz.idsc.demo.mg.slam.algo.prc.SlamCurveContainer;
+import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
+import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,16 +29,16 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @param slamContainer
    * @param gokartLidarPose pose with units provided by lidar
    * @return array of BufferedImages of length 2 */
-  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamContainer slamContainer, //
-      SlamCurveContainer slamCurveContainer, Tensor gokartLidarPose) {
+  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamContainer, //
+      SlamPrcContainer slamPrcContainer, Tensor gokartLidarPose) {
     paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
     VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
     // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
-    if (slamCurveContainer.getCurve().isPresent())
-      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamCurveContainer.getCurve().get());
-    slamMapFrames[1].drawSlamWaypoints(slamCurveContainer.getSlamWaypoints());
+    if (slamPrcContainer.getCurve().isPresent())
+      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamPrcContainer.getCurve().get());
+    slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
     slamMapFrames[1].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)

@@ -4,16 +4,16 @@ package ch.ethz.idsc.demo.mg.slam.offline;
 import java.io.File;
 
 import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** sets up the SLAM algorithm for offline processing of a log file */
 /* package */ class SlamSetup {
-  private final SlamConfig slamConfig;
+  private final SlamCoreConfig slamConfig;
   private final File logFile;
   private final long logFileDuration;
 
-  SlamSetup(SlamConfig slamConfig) {
+  SlamSetup(SlamCoreConfig slamConfig) {
     this.slamConfig = slamConfig;
     logFile = slamConfig.davisConfig.getLogFile();
     logFileDuration = Magnitude.MICRO_SECOND.toLong(slamConfig.davisConfig.logFileDuration);
@@ -30,7 +30,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   public static void main(String[] args) {
-    SlamSetup slamSetup = new SlamSetup(new SlamConfig());
+    SlamSetup slamSetup = new SlamSetup(new SlamCoreConfig());
     slamSetup.runAlgo();
   }
 }

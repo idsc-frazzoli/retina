@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.online;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -19,8 +19,8 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   private final OnlineSlamWrap onlineSlamWrap;
 
   DavisSlamBaseModule(SlamAlgoConfig slamAlgoConfig) {
-    SlamConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
-    onlineSlamWrap = new OnlineSlamWrap(SlamConfig.GLOBAL);
+    SlamCoreConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
+    onlineSlamWrap = new OnlineSlamWrap(SlamCoreConfig.GLOBAL);
     slamCurvePurePursuitModule = new SlamCurvePurePursuitModule();
   }
 
@@ -50,7 +50,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   }
 
   public static void standalone() throws Exception {
-    DavisSlamBaseModule davisSlamBaseModule = new DavisSlamBaseModule(SlamConfig.GLOBAL.slamAlgoConfig);
+    DavisSlamBaseModule davisSlamBaseModule = new DavisSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig);
     davisSlamBaseModule.launch();
   }
 }

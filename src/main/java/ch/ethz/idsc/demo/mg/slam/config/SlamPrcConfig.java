@@ -6,22 +6,30 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// contains parameters for map processing steps of SLAM algorithm
+/** parameters for the map processing steps of the SLAM algorithm */
 public class SlamPrcConfig {
   public static final SlamPrcConfig GLOBAL = new SlamPrcConfig();
-  // SlamWaypointSelection
-  public final Scalar visibleBoxHalfWidth = Quantity.of(1.5, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // in go kart frame
+  // RegionOfInterestFilter
+  public final Scalar visibleBoxHalfWidth = RealScalar.of(1.5); // [m] in go kart frame
+  public final Scalar visibleBoxXMin = RealScalar.of(-3); // [m] in go kart frame
+  public final Scalar visibleBoxXMax = RealScalar.of(5); // [m] in go kart frame
+  // YPosDiffFilter
+  public Scalar deltaYThreshold = RealScalar.of(1); // [m] in go kart frame
+  // AbsPosDiffFilter
+  public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
   // SlamCurveInterpolate
   public final Scalar iterations = RealScalar.of(2);
-  // SlamWaypointFilter
-  public final Scalar deltaYDistance = Quantity.of(0.3, SI.METER);
-  public final Scalar deltaPos = Quantity.of(0.4, SI.METER);
   // SlamCurveExtrapolate
   public Scalar curveFactor = RealScalar.of(1.5);
   public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
+  // SlamCurvatureFilter
+  public final Scalar alphaCurvature = RealScalar.of(0.9);
+  public final Scalar betaCurvature = RealScalar.of(1).subtract(alphaCurvature);
+  public final Scalar extractionLength = RealScalar.of(6);
+  // SlamHeadingFilter
+  public final Scalar alphaHeading = RealScalar.of(0.9);
+  public final Scalar beataHeading = RealScalar.of(1).subtract(alphaHeading);
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = RealScalar.of(3.5); // [m]
 }

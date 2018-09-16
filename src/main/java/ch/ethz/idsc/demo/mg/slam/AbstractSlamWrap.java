@@ -2,8 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.slam.algo.prc.SlamCurveContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
@@ -22,19 +21,19 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   protected final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
   // SLAM modules below
-  protected final SlamConfig slamConfig;
-  protected final SlamContainer slamContainer;
-  protected final SlamCurveContainer slamCurveContainer;
+  protected final SlamCoreConfig slamConfig;
+  protected final SlamCoreContainer slamContainer;
+  protected final SlamPrcContainer slamCurveContainer;
   protected final AbstractFilterHandler abstractFilterHandler;
   protected final SlamViewer slamViewer;
   // ---
   protected boolean triggered;
 
-  protected AbstractSlamWrap(SlamConfig slamConfig) {
+  protected AbstractSlamWrap(SlamCoreConfig slamConfig) {
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(this);
     this.slamConfig = slamConfig;
-    slamContainer = new SlamContainer(slamConfig);
-    slamCurveContainer = new SlamCurveContainer(slamContainer);
+    slamContainer = new SlamCoreContainer(slamConfig);
+    slamCurveContainer = new SlamPrcContainer(slamContainer);
     abstractFilterHandler = slamConfig.davisConfig.createBackgroundActivityFilter();
     slamViewer = new SlamViewer(slamConfig, slamContainer, slamCurveContainer, gokartLidarPose);
   }
@@ -78,7 +77,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   // public SlamContainer getSlamContainer() {
   // return slamContainer;
   // }
-  public SlamCurveContainer getSlamCurveContainer() {
+  public SlamPrcContainer getSlamCurveContainer() {
     return slamCurveContainer;
   }
 }
