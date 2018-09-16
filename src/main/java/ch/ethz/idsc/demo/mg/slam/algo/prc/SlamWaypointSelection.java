@@ -1,52 +1,29 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
-import java.util.List;
-
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.red.Mean;
 
 /** finds currently visible way points and computes lookAhead to be followed by the pure pursuit algorithm */
-/* package */ class SlamWaypointSelection implements WorldWaypointListener {
-  private final SlamContainer slamContainer;
-  private final SlamConfig slamConfig;
-  private final SlamCurvatureObserver slamCurvatureObserver;
-  private final Scalar numberOfPoints;
+/* package */ class SlamWaypointSelection extends AbstractSlamCurveStep {
   private final double visibleBoxXMin;
   private final double visibleBoxXMax;
   private final double visibleBoxHalfWidth;
 
-  SlamWaypointSelection(SlamContainer slamContainer, SlamConfig slamConfig) {
-    this.slamContainer = slamContainer;
-    this.slamConfig = slamConfig;
-    slamCurvatureObserver = new SlamCurvatureObserver(slamConfig);
-    visibleBoxXMin = Magnitude.METER.toDouble(slamConfig.visibleBoxXMin);
-    visibleBoxXMax = Magnitude.METER.toDouble(slamConfig.visibleBoxXMax);
-    visibleBoxHalfWidth = Magnitude.METER.toDouble(slamConfig.visibleBoxHalfWidth);
-    numberOfPoints = slamConfig.numberOfPoints;
+  SlamWaypointSelection(SlamCurveContainer slamCurveContainer) {
+    super(slamCurveContainer);
+    visibleBoxXMin = Magnitude.METER.toDouble(SlamPrcConfig.GLOBAL.visibleBoxXMin);
+    visibleBoxXMax = Magnitude.METER.toDouble(SlamPrcConfig.GLOBAL.visibleBoxXMax);
+    visibleBoxHalfWidth = Magnitude.METER.toDouble(SlamPrcConfig.GLOBAL.visibleBoxHalfWidth);
   }
 
-  @Override // from WorldWaypointListener
-  public void worldWaypoints(List<double[]> worldWaypoints) {
+  @Override // from CurveListener
+  public void process() {
+    Tensor worldWaypoints = slamCurveContainer.getWorldWaypoints();
     Tensor featurePoints = SlamWaypointSelectionUtil.selectWaypoints( //
-        worldWaypoints, slamContainer, //
+        worldWaypoints, slamCurveContainer, //
         visibleBoxXMin, visibleBoxXMax, visibleBoxHalfWidth);
-    Tensor curve = SlamCurveInterpolate.refineFeaturePoints(featurePoints);
-    if (curve.length() >= 6) {
-      Scalar localCurvature = (Scalar) Mean.of(SlamCurveUtil.localCurvature(curve.extract(curve.length() - 6, curve.length())));
-      Scalar endHeading = SlamCurveExtrapolate.getEndHeading(curve);
-      slamCurvatureObserver.initialize(endHeading);
-      localCurvature = slamCurvatureObserver.getAvgCurvature(localCurvature);
-      endHeading = slamCurvatureObserver.getAvgHeading(endHeading);
-      Tensor extrapolatedCurve = SlamCurveExtrapolate.extrapolateCurve(curve, localCurvature, //
-          slamConfig.curveFactor, slamConfig.extrapolationDistance, numberOfPoints);
-      extrapolatedCurve.stream() //
-          .forEach(curve::append);
-      slamContainer.setCurve(curve);
-    }
+    slamCurveContainer.setSelectedPoints(featurePoints);
   }
 }

@@ -2,8 +2,8 @@
 package ch.ethz.idsc.demo.mg.slam.algo;
 
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;

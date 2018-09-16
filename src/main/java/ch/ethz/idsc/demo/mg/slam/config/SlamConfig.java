@@ -1,7 +1,9 @@
 // code by mg
-package ch.ethz.idsc.demo.mg.slam;
+package ch.ethz.idsc.demo.mg.slam.config;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
+import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -84,20 +86,6 @@ public class SlamConfig {
   public final Scalar padding = Quantity.of(5, SI.METER);
   // SlamMapProcessing
   public Scalar mapThreshold = RealScalar.of(0.2); // valid range [0,1]
-  public final Scalar initialDelay = Quantity.of(0.5, SI.SECOND); // initial delay before way points are extracted
-  public final Scalar visibleBoxHalfWidth = Quantity.of(1.5, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // in go kart frame
-  public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // in go kart frame
-  // SlamWaypointSelection
-  public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
-  public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
-  public Scalar curveFactor = RealScalar.of(1.5);
-  // SlamCurvatureObserver
-  public Scalar deltaCurvatureUpThreshold = RealScalar.of(1);
-  public Scalar deltaCurvatureDownthreshold = RealScalar.of(1);
-  public Scalar deltaHeadingThreshold = RealScalar.of(10); // [rad]
-  // SlamCurvePurePursuitModule
-  public Scalar lookAhead = RealScalar.of(3.5); // [m]
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

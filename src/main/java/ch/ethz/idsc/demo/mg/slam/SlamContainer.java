@@ -1,21 +1,17 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** container for the objects that are passed between different modules of the SLAM algorithm */
-public class SlamContainer implements GokartPoseInterface {
+public class SlamContainer implements GokartPoseUnitlessInterface {
   private final SlamParticle[] slamParticles;
   private final String logFilename;
   private final boolean saveSlamMap;
@@ -26,10 +22,6 @@ public class SlamContainer implements GokartPoseInterface {
   private MapProvider occurrenceMap;
   /** unitless pose estimated by algorithm */
   private Tensor poseUnitless;
-  /** most recent detected way points */
-  private List<SlamWaypoint> slamWaypoints = new ArrayList<>();
-  /** curve in world frame */
-  private Optional<Tensor> curve = Optional.empty();
   /** position of most recent event in go kart frame */
   private double[] eventGokartFrame = null;
   // ---
@@ -72,14 +64,6 @@ public class SlamContainer implements GokartPoseInterface {
     return occurrenceMap;
   }
 
-  public void setWaypoints(List<SlamWaypoint> waypoints) {
-    this.slamWaypoints = waypoints;
-  }
-
-  public List<SlamWaypoint> getSlamWaypoints() {
-    return slamWaypoints;
-  }
-
   /** @param eventGokartFrame null is allowed input */
   public void setEventGokartFrame(double[] eventGokartFrame) {
     this.eventGokartFrame = eventGokartFrame;
@@ -90,25 +74,11 @@ public class SlamContainer implements GokartPoseInterface {
     return eventGokartFrame;
   }
 
-  /** @param curve in go kart frame */
-  public void setCurve(Tensor curve) {
-    Tensor worldCurve = SlamContainerUtil.curveLocal2World(curve, poseUnitless);
-    this.curve = Optional.of(worldCurve);
-  }
-
-  /** @return refinedWaypointCurve in go kart frame */
-  public Optional<Tensor> getCurve() {
-    if (curve.isPresent()) {
-      Tensor localCurve = SlamContainerUtil.curveWorld2Local(curve.get(), poseUnitless);
-      return Optional.of(localCurve);
-    }
-    return Optional.empty();
-  }
-
   public void setPoseUnitless(Tensor unitlessPose) {
     poseUnitless = unitlessPose;
   }
 
+  @Override // from GokartPoseUnitlessInterface
   public Tensor getPoseUnitless() {
     return poseUnitless;
   }
@@ -118,11 +88,6 @@ public class SlamContainer implements GokartPoseInterface {
    * @param pose {x[m], y[m], angle[]} */
   public void setPose(Tensor pose) {
     this.poseUnitless = GokartPoseHelper.toUnitless(pose);
-  }
-
-  @Override // from GokartPoseInterface
-  public Tensor getPose() {
-    return GokartPoseHelper.attachUnits(poseUnitless);
   }
 
   public void setMat(Mat labels) {

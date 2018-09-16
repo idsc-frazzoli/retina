@@ -2,6 +2,8 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
+import ch.ethz.idsc.demo.mg.slam.algo.prc.SlamCurveContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
@@ -22,6 +24,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   // SLAM modules below
   protected final SlamConfig slamConfig;
   protected final SlamContainer slamContainer;
+  protected final SlamCurveContainer slamCurveContainer;
   protected final AbstractFilterHandler abstractFilterHandler;
   protected final SlamViewer slamViewer;
   // ---
@@ -31,8 +34,9 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
     davisLcmClient.davisDvsDatagramDecoder.addDvsListener(this);
     this.slamConfig = slamConfig;
     slamContainer = new SlamContainer(slamConfig);
+    slamCurveContainer = new SlamCurveContainer(slamContainer);
     abstractFilterHandler = slamConfig.davisConfig.createBackgroundActivityFilter();
-    slamViewer = new SlamViewer(slamConfig, slamContainer, gokartLidarPose);
+    slamViewer = new SlamViewer(slamConfig, slamContainer, slamCurveContainer, gokartLidarPose);
   }
 
   @Override // from StartAndStoppable
@@ -63,14 +67,18 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
       if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractFilterHandler);
         davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
-        SlamWrapUtil.initialize(slamConfig, slamContainer, abstractFilterHandler, gokartLidarPose, gokartOdometryPose);
+        SlamWrapUtil.initialize(slamConfig, slamContainer, slamCurveContainer, //
+            abstractFilterHandler, gokartLidarPose, gokartOdometryPose);
         slamViewer.start();
         triggered = true;
         // TODO JPH find a way to unsubscribe once it has been triggered
       }
   }
 
-  public SlamContainer getSlamContainer() {
-    return slamContainer;
+  // public SlamContainer getSlamContainer() {
+  // return slamContainer;
+  // }
+  public SlamCurveContainer getSlamCurveContainer() {
+    return slamCurveContainer;
   }
 }

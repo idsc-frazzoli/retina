@@ -1,8 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** clears parts of occurrence map that is not visible by current vehicle pose */

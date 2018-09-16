@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.Collection;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.ImageReflect;
 import ch.ethz.idsc.retina.util.math.Magnitude;

@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 

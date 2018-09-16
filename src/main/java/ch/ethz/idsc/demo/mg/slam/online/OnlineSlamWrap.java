@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.online;
 
 import ch.ethz.idsc.demo.mg.slam.AbstractSlamWrap;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 
 /** wrapper to run SLAM algorithm with live event stream */

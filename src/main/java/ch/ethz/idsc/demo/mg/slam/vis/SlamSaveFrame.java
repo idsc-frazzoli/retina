@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 
 /** saves slamMapFrame objects using the time stamps provided by event stream */

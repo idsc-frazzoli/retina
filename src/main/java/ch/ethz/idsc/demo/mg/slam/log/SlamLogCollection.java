@@ -4,10 +4,10 @@ package ch.ethz.idsc.demo.mg.slam.log;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.algo.PeriodicSlamStep;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.demo.mg.util.io.CsvIO;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;

@@ -1,8 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    if (SlamPoseMapResetUtil.checkBoarders(slamContainer.getPose(), corner, cornerHigh, padding)) {
+    if (SlamPoseMapResetUtil.checkBoarders(slamContainer.getPoseUnitless(), corner, cornerHigh, padding)) {
       Tensor resetPose = Tensors.of(resetPoseX, resetPoseY, slamContainer.getPoseUnitless().Get(2));
       Tensor poseDifference = slamContainer.getPoseUnitless().subtract(resetPose);
       slamContainer.setPoseUnitless(resetPose);

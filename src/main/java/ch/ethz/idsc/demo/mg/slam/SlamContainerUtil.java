@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-/* package */ enum SlamContainerUtil {
+public enum SlamContainerUtil {
   ;
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
@@ -36,17 +36,19 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     }
   }
 
-  // transforms curve to world frame
-  public static Tensor curveLocal2World(Tensor curve, Tensor poseUnitless) {
+  /** @param points in go kart frame
+   * @param poseUnitless
+   * @return points in world frame */
+  public static Tensor local2World(Tensor points, Tensor poseUnitless) {
     TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
-    curve = Tensor.of(curve.stream().map(local2World::apply));
-    return curve;
+    return Tensor.of(points.stream().map(local2World::apply));
   }
 
-  // transforms curve to go kart frame
-  public static Tensor curveWorld2Local(Tensor curve, Tensor poseUnitless) {
+  /** @param points in world frame
+   * @param poseUnitless
+   * @return points in go kart frame */
+  public static Tensor world2Local(Tensor points, Tensor poseUnitless) {
     TensorUnaryOperator world2Local = new Se2Bijection(poseUnitless).inverse();
-    curve = Tensor.of(curve.stream().map(world2Local::apply));
-    return curve;
+    return Tensor.of(points.stream().map(world2Local::apply));
   }
 }

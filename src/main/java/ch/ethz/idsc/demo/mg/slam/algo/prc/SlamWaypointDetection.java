@@ -12,8 +12,10 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** extracts the way points through thresholding and morphological processing for noise removal.
  * the centroids of the remaining connected components are detected as way points */
@@ -24,21 +26,21 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
       opencv_imgproc.getStructuringElement(opencv_imgproc.MORPH_RECT, new Size(2, 2));
   private static final Point POINT = new Point(-1, -1);
   // ---
-  private final SlamConfig slamConfig;
-  private final double cornerX; // [m]
-  private final double cornerY; // [m]
-  private final double cellDim; // [m]
+  private final double mapThreshold;
+  private final double cornerX;
+  private final double cornerY;
+  private final double cellDim;
   // ---
   private final Mat labels;
   private Mat processedMap;
 
-  public SlamWaypointDetection(SlamConfig slamConfig) {
-    this.slamConfig = slamConfig;
-    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
-    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
-    processedMap = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+  public SlamWaypointDetection() {
+    mapThreshold = Magnitude.ONE.toDouble(SlamConfig.GLOBAL.mapThreshold);
+    cornerX = Magnitude.METER.toDouble(SlamConfig.GLOBAL.corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(SlamConfig.GLOBAL.corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(SlamConfig.GLOBAL.cellDim);
+    labels = new Mat(SlamConfig.GLOBAL.mapWidth(), SlamConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
+    processedMap = new Mat(SlamConfig.GLOBAL.mapWidth(), SlamConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
   }
 
   /** finds way points through threshold operation, morphological processing and
@@ -47,8 +49,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
    * 
    * @param thresholdMap input object containing binary map
    * @return worldWaypoints [m] detected way points in world frame */
-  public List<double[]> detectWaypoints(MapProvider thresholdMap) {
-    processedMap = mapProviderToBinaryMat(thresholdMap, slamConfig.mapThreshold.number().doubleValue());
+  public Tensor detectWaypoints(MapProvider thresholdMap) {
+    processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, KERNEL_DILATE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
     opencv_imgproc.erode(processedMap, processedMap, KERNEL_ERODE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -69,7 +71,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
     // processedMap.release(); // probably obsolete because underlying array was created in java
     centroid.release();
     stats.release();
-    return worldWaypoints;
+    Tensor worldWaypointsTensor = Tensor.of(worldWaypoints.stream().map(Tensors::vectorDouble));
+    return worldWaypointsTensor;
   }
 
   /** convert mapProvider to binary Mat object by invoking threshold operation.

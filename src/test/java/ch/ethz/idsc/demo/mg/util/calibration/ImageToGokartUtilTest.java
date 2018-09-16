@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import junit.framework.TestCase;
 
 public class ImageToGokartUtilTest extends TestCase {

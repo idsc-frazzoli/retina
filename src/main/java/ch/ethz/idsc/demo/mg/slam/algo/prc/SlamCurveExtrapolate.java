@@ -1,22 +1,29 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.owl.math.map.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2CoveringGroupAction;
-import ch.ethz.idsc.owl.math.planar.SignedCurvature2D;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.ArcTan;
+import ch.ethz.idsc.tensor.red.Mean;
 
 /** methods for curve extrapolation in SLAM algorithm */
-/* package */ enum SlamCurveExtrapolate {
-  ;
-  // constant is equal to maximum path curvature that the vehicle can drive
-  private static final Scalar MAX_PATH_CURVATURE = RealScalar.of(SteerConfig.GLOBAL.turningRatioMax.number().doubleValue());
+/* package */ class SlamCurveExtrapolate extends AbstractSlamCurveStep {
+  private final SlamCurvatureObserver slamCurvatureObserver;
+  private final Scalar numberOfPoints;
+  private final Scalar curveFactor;
+  private final Scalar extrapolationDistance;
+
+  SlamCurveExtrapolate(SlamCurveContainer slamCurveContainer) {
+    super(slamCurveContainer);
+    slamCurvatureObserver = new SlamCurvatureObserver();
+    numberOfPoints = SlamPrcConfig.GLOBAL.numberOfPoints;
+    curveFactor = SlamPrcConfig.GLOBAL.curveFactor;
+    extrapolationDistance = SlamPrcConfig.GLOBAL.extrapolationDistance;
+  }
 
   /** extrapolates last point of curve with a circle segment of curvature multiplied with curveFactor
    * 
@@ -27,11 +34,11 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
    * @param numberOfPoints number of points along extrapolated segment
    * @return extrapolatedCurve */
   public static Tensor extrapolateCurve(Tensor curve, Scalar localCurvature, Scalar curveFactor, Scalar distance, Scalar numberOfPoints) {
-    Tensor endPose = getEndPose(curve);
+    Tensor endPose = SlamCurveUtil.getEndPose(curve);
     Tensor extrapolatedCurve = Tensors.of(endPose.extract(0, 2));
     // negate to extrapolate to inner side of curve
     localCurvature = localCurvature.multiply(curveFactor).negate();
-    localCurvature = limitCurvature(localCurvature);
+    localCurvature = SlamCurveUtil.limitCurvature(localCurvature);
     Tensor circleParam = Tensors.vector(1, 0, localCurvature.number().doubleValue());
     Se2CoveringGroupAction se2CoveringGroupAction = new Se2CoveringGroupAction(endPose);
     Scalar stepSize = distance.divide(numberOfPoints);
@@ -43,24 +50,20 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return extrapolatedCurve;
   }
 
-  /** @param curve
-   * @return pose of last point of curve looking in tangent direction */
-  private static Tensor getEndPose(Tensor curve) {
-    Tensor endHeading = getEndHeading(curve);
-    Tensor endPose = curve.get(curve.length() - 1).append(endHeading);
-    return endPose;
-  }
-
-  public static Scalar getEndHeading(Tensor curve) {
-    Tensor direction = curve.get(curve.length() - 1).subtract(curve.get(curve.length() - 2));
-    return ArcTan.of(direction.Get(0), direction.Get(1));
-  }
-
-  public static Scalar limitCurvature(Scalar curvature) {
-    if (Scalars.lessEquals(curvature, MAX_PATH_CURVATURE.negate()))
-      return MAX_PATH_CURVATURE.negate();
-    if (Scalars.lessEquals(MAX_PATH_CURVATURE, curvature))
-      return MAX_PATH_CURVATURE;
-    return curvature;
+  @Override // from CurveListener
+  public void process() {
+    Tensor curve = slamCurveContainer.getInterpolated();
+    if (curve.length() >= 6) {
+      Scalar localCurvature = (Scalar) Mean.of(SlamCurveUtil.localCurvature(curve.extract(curve.length() - 6, curve.length())));
+      Scalar endHeading = SlamCurveUtil.getEndHeading(curve);
+      slamCurvatureObserver.initialize(endHeading);
+      localCurvature = slamCurvatureObserver.getAvgCurvature(localCurvature);
+      endHeading = slamCurvatureObserver.getAvgHeading(endHeading);
+      Tensor extrapolatedCurve = SlamCurveExtrapolate.extrapolateCurve(curve, localCurvature, //
+          curveFactor, extrapolationDistance, numberOfPoints);
+      extrapolatedCurve.stream() //
+          .forEach(curve::append);
+      slamCurveContainer.setCurve(curve);
+    }
   }
 }

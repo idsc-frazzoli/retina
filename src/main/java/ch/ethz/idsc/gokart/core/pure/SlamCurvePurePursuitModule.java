@@ -3,23 +3,17 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** extension of WaypointPurePursuitModule: Instead of a way point, we set a curve in go kart frame
- * coordinates */
+/** pure pursuit controller for SLAM algorithm */
 // TODO CurvePurePusuitModule should extend this class with the extension that it listens to go kart pose and
 // transforms world frame coordinate curve to go kart coordinates
 public final class SlamCurvePurePursuitModule extends PurePursuitModule {
-  private final SlamConfig slamConfig;
   private Optional<Tensor> optionalCurve = Optional.empty();
-
-  public SlamCurvePurePursuitModule(SlamConfig slamConfig) {
-    this.slamConfig = slamConfig;
-  }
 
   @Override // form AbstractModule
   protected void protected_first() throws Exception {
@@ -48,7 +42,7 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
       if (optionalCurve.isPresent()) {
-        PurePursuit purePursuit = PurePursuit.fromTrajectory(optionalCurve.get(), slamConfig.lookAhead);
+        PurePursuit purePursuit = PurePursuit.fromTrajectory(optionalCurve.get(), SlamPrcConfig.GLOBAL.lookAhead);
         return purePursuit.ratio();
       }
       return Optional.empty();

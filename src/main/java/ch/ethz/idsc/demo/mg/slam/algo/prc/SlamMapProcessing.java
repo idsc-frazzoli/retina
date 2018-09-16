@@ -1,29 +1,29 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.algo.prc;
 
-import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamContainer;
 import ch.ethz.idsc.demo.mg.slam.algo.PeriodicSlamStep;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.tensor.Tensor;
 
 /** extracts way points from a map using threshold operation,
  * morphological processing and connected component labeling */
 public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
   private final Thread thread = new Thread(this);
   private final SlamWaypointDetection slamWaypointDetection;
-  private final WorldWaypointListener worldWaypointListener;
+  private final SlamCurveProcessingHandler handler;
   // ---
   private MapProvider occurrenceMap;
   private boolean isLaunched;
 
-  public SlamMapProcessing(SlamContainer slamContainer, SlamConfig slamConfig) {
-    super(slamContainer, slamConfig.waypointUpdateRate);
-    slamWaypointDetection = new SlamWaypointDetection(slamConfig);
-    worldWaypointListener = new SlamWaypointSelection(slamContainer, slamConfig);
+  public SlamMapProcessing(SlamContainer slamContainer, SlamCurveContainer slamCurveContainer) {
+    super(slamContainer, SlamConfig.GLOBAL.waypointUpdateRate);
+    slamWaypointDetection = new SlamWaypointDetection();
+    handler = new SlamCurveProcessingHandler(slamCurveContainer);
     start();
   }
 
@@ -49,9 +49,9 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
   }
 
   private void mapProcessing() {
-    List<double[]> worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
+    Tensor worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
     slamContainer.setMat(slamWaypointDetection.getProcessedMat());
-    worldWaypointListener.worldWaypoints(worldWaypoints);
+    handler.invoke(worldWaypoints);
   }
 
   @Override // from StartAndStoppable

@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;

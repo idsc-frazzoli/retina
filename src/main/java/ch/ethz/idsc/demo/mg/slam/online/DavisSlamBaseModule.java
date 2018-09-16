@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.online;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamConfig;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -21,7 +21,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   DavisSlamBaseModule(SlamAlgoConfig slamAlgoConfig) {
     SlamConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
     onlineSlamWrap = new OnlineSlamWrap(SlamConfig.GLOBAL);
-    slamCurvePurePursuitModule = new SlamCurvePurePursuitModule(SlamConfig.GLOBAL);
+    slamCurvePurePursuitModule = new SlamCurvePurePursuitModule();
   }
 
   @Override // from AbstractModule
@@ -40,7 +40,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    Optional<Tensor> curve = onlineSlamWrap.getSlamContainer().getCurve();
+    Optional<Tensor> curve = onlineSlamWrap.getSlamCurveContainer().getCurve();
     slamCurvePurePursuitModule.setCurve(curve);
   }
 
