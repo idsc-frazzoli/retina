@@ -9,6 +9,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** parameters for the map processing steps of the SLAM algorithm */
 public class SlamPrcConfig {
   public static final SlamPrcConfig GLOBAL = new SlamPrcConfig();
+  // SlamWaypointDetection
+  public Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
   // RegionOfInterestFilter
   public final Scalar visibleBoxHalfWidth = RealScalar.of(1.5); // [m] in go kart frame
   public final Scalar visibleBoxXMin = RealScalar.of(-3); // [m] in go kart frame
@@ -16,11 +18,11 @@ public class SlamPrcConfig {
   // YPosDiffFilter
   public Scalar deltaYThreshold = RealScalar.of(1); // [m] in go kart frame
   // AbsPosDiffFilter
-  public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
+  public Scalar deltaPosThreshold = RealScalar.of(0.6); // [m] in go kart frame
   // SlamCurveInterpolate
   public final Scalar iterations = RealScalar.of(2);
   // SlamCurveExtrapolate
-  public Scalar curveFactor = RealScalar.of(1.5);
+  public Scalar curveFactor = RealScalar.of(1);
   public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
   // SlamCurvatureFilter

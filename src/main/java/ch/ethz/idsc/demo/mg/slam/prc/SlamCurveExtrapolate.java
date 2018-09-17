@@ -28,10 +28,12 @@ import ch.ethz.idsc.tensor.Tensor;
     Tensor interpolatedCurve = slamPrcContainer.getInterpolatedCurve();
     Scalar localCurvature = slamCurvatureFilter.filterCurvature(interpolatedCurve);
     localCurvature = localCurvature.multiply(curveFactor);
-    Tensor endPose = slamHeadingFilter.filterHeading(interpolatedCurve);
-    Tensor extrapolatedCurve = SlamCurveExtrapolateUtil.extrapolateCurve(endPose, localCurvature, //
-        extrapolationDistance, numberOfPoints);
-    SlamCurveUtil.appendCurve(interpolatedCurve, extrapolatedCurve);
+    if (interpolatedCurve.length() > 2) {
+      Tensor endPose = slamHeadingFilter.filterHeading(interpolatedCurve);
+      Tensor extrapolatedCurve = SlamCurveExtrapolateUtil.extrapolateCurve(endPose, localCurvature, //
+          extrapolationDistance, numberOfPoints);
+      SlamCurveUtil.appendCurve(interpolatedCurve, extrapolatedCurve);
+    }
     slamPrcContainer.setCurve(interpolatedCurve);
   }
 }

@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -17,8 +18,8 @@ import ch.ethz.idsc.tensor.Tensors;
   private final Scalar resetPoseY;
   private final double padding;
 
-  protected SlamPoseMapReset(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig) {
-    super(slamContainer, slamConfig.poseMapUpdateRate);
+  protected SlamPoseMapReset(SlamCoreContainer slamCoreContainer, SlamCoreConfig slamConfig) {
+    super(slamCoreContainer, slamConfig.poseMapUpdateRate);
     corner = slamConfig.corner;
     cornerHigh = slamConfig.cornerHigh();
     resetPoseX = slamConfig.resetPoseX;
@@ -28,12 +29,12 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    if (SlamPoseMapResetUtil.checkBoarders(slamContainer.getPoseUnitless(), corner, cornerHigh, padding)) {
-      Tensor resetPose = Tensors.of(resetPoseX, resetPoseY, slamContainer.getPoseUnitless().Get(2));
-      Tensor poseDifference = slamContainer.getPoseUnitless().subtract(resetPose);
-      slamContainer.setPoseUnitless(resetPose);
-      SlamPoseMapResetUtil.resetPose(slamContainer.getSlamParticles(), poseDifference);
-      SlamPoseMapResetUtil.resetMap(slamContainer.getOccurrenceMap(), poseDifference);
+    if (SlamPoseMapResetUtil.checkBoarders(GokartPoseHelper.attachUnits(slamCoreContainer.getPoseUnitless()), corner, cornerHigh, padding)) {
+      Tensor resetPose = Tensors.of(resetPoseX, resetPoseY, slamCoreContainer.getPoseUnitless().Get(2));
+      Tensor poseDifference = slamCoreContainer.getPoseUnitless().subtract(resetPose);
+      slamCoreContainer.setPoseUnitless(resetPose);
+      SlamPoseMapResetUtil.resetPose(slamCoreContainer.getSlamParticles(), poseDifference);
+      SlamPoseMapResetUtil.resetMap(slamCoreContainer.getOccurrenceMap(), poseDifference);
     }
   }
 }

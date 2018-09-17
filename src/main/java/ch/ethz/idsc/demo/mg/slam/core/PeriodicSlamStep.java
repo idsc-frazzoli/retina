@@ -14,8 +14,8 @@ public abstract class PeriodicSlamStep extends AbstractSlamStep {
   // ---
   protected Integer lastComputationTimeStamp = null;
 
-  protected PeriodicSlamStep(SlamCoreContainer slamContainer, Scalar updatePeriod) {
-    super(slamContainer);
+  protected PeriodicSlamStep(SlamCoreContainer slamCoreContainer, Scalar updatePeriod) {
+    super(slamCoreContainer);
     this.updatePeriod = Magnitude.MICRO_SECOND.toInt(updatePeriod);
   }
 

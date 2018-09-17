@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    SlamReactiveMapStepUtil.clearNonvisibleOccurrenceMap(slamContainer.getPoseUnitless(), //
-        slamContainer.getOccurrenceMap(), lookBehindDistance);
+    SlamReactiveMapStepUtil.clearNonvisibleOccurrenceMap(slamCoreContainer.getPoseUnitless(), //
+        slamCoreContainer.getOccurrenceMap(), lookBehindDistance);
   }
 }

@@ -54,7 +54,7 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   }
 
   private void visualizationTask() {
-    slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamContainer, slamPrcContainer, gokartLidarPose.getPose()));
+    slamMapGUI.setFrames(StaticHelper.constructFrames(slamMapFrames, slamCoreContainer, slamPrcContainer, gokartLidarPose.getPose()));
   }
 
   @Override // from PeriodicSlamStep

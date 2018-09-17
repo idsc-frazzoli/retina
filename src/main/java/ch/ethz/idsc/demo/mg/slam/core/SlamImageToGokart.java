@@ -26,6 +26,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   /** sets eventGokartFrame field in SlamContainer. It is set null if eventGokartFrame[0] > lookAheadDistance.
    * Events which result from objects too far away from the go kart are neglected */
   private void setEventGokartFrame(double[] eventGokartFrame) {
-    slamContainer.setEventGokartFrame(eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame);
+    slamCoreContainer.setEventGokartFrame(eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame);
   }
 }

@@ -23,8 +23,8 @@ import ch.ethz.idsc.tensor.Tensor;
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
     double dT = (currentTimeStamp - lastComputationTimeStamp) * 1E-6;
-    Tensor newPose = propagatePose(slamContainer.getPoseUnitless(), gokartPoseOdometry.getVelocityUnitless(), dT);
-    slamContainer.setPoseUnitless(newPose);
+    Tensor newPose = propagatePose(slamCoreContainer.getPoseUnitless(), gokartPoseOdometry.getVelocityUnitless(), dT);
+    slamCoreContainer.setPoseUnitless(newPose);
   }
 
   /** @param oldPose unitless

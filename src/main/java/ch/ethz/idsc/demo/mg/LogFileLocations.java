@@ -120,7 +120,19 @@ public enum LogFileLocations {
   /** autonomously Jan driving around */
   DUBI17e("20180913T164921_34b3470dExtracted5.lcm"),
   /** autonomously driving along straight line in center of hangar */
-  DUBI18("20180913T174600_34b3470d.lcm.00");
+  DUBI18("20180913T174600_34b3470d.lcm.00"),
+  /** autonomously driving along straight line very slowly */
+  DUBI18a("20180913T174600_34b3470dExtracted1.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18b("20180913T174600_34b3470dExtracted2.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18c("20180913T174600_34b3470dExtracted3.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18d("20180913T174600_34b3470dExtracted4.lcm"),
+  /** autonomously driving along straight line a bit faster */
+  DUBI18e("20180913T174600_34b3470dExtracted5.lcm"),
+  /** autonomously driving along straight line a bit faster */
+  DUBI18f("20180913T174600_34b3470dExtracted6.lcm");
   // ---
   private final String filename;
 

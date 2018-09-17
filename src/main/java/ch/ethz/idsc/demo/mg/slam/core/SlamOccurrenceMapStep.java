@@ -17,11 +17,11 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from EventActionSlamStep
   void davisDvsAction() {
-    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
+    if (Objects.nonNull(slamCoreContainer.getEventGokartFrame()))
       SlamOccurrenceMapStepUtil.updateOccurrenceMap( //
-          slamContainer.getSlamParticles(), //
-          slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame(), //
+          slamCoreContainer.getSlamParticles(), //
+          slamCoreContainer.getOccurrenceMap(), //
+          slamCoreContainer.getEventGokartFrame(), //
           relevantParticles);
   }
 }

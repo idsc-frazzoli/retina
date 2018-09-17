@@ -16,6 +16,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    slamContainer.setPose(gokartPoseInterface.getPose());
+    slamCoreContainer.setPose(gokartPoseInterface.getPose());
   }
 }

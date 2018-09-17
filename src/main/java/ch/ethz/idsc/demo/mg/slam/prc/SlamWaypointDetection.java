@@ -13,6 +13,7 @@ import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -35,7 +36,7 @@ import ch.ethz.idsc.tensor.Tensors;
   private Mat processedMap;
 
   public SlamWaypointDetection() {
-    mapThreshold = Magnitude.ONE.toDouble(SlamCoreConfig.GLOBAL.mapThreshold);
+    mapThreshold = Magnitude.ONE.toDouble(SlamPrcConfig.GLOBAL.mapThreshold);
     cornerX = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(0));
     cornerY = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cellDim);

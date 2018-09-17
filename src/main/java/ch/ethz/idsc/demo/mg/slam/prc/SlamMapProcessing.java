@@ -30,7 +30,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    occurrenceMap = slamContainer.getOccurrenceMap();
+    occurrenceMap = slamCoreContainer.getOccurrenceMap();
     thread.interrupt();
   }
 
@@ -51,7 +51,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
 
   private void mapProcessing() {
     Tensor worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
-    slamContainer.setMat(slamWaypointDetection.getProcessedMat());
+    slamCoreContainer.setMat(slamWaypointDetection.getProcessedMat());
     handler.invoke(worldWaypoints);
   }
 

@@ -56,6 +56,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return endPose;
   }
 
+  // minimum curve length two
   public static Scalar getEndHeading(Tensor curve) {
     Tensor direction = curve.get(curve.length() - 1).subtract(curve.get(curve.length() - 2));
     return ArcTan.of(direction.Get(0), direction.Get(1));

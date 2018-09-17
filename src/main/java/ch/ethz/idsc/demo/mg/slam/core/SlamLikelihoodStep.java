@@ -19,11 +19,11 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override // from EventActionSlamStep
   void davisDvsAction() {
-    if (Objects.nonNull(slamContainer.getEventGokartFrame()))
+    if (Objects.nonNull(slamCoreContainer.getEventGokartFrame()))
       SlamLikelihoodStepUtil.updateLikelihoods( //
-          slamContainer.getSlamParticles(), //
-          slamContainer.getOccurrenceMap(), //
-          slamContainer.getEventGokartFrame(), //
+          slamCoreContainer.getSlamParticles(), //
+          slamCoreContainer.getOccurrenceMap(), //
+          slamCoreContainer.getEventGokartFrame(), //
           alpha);
   }
 }

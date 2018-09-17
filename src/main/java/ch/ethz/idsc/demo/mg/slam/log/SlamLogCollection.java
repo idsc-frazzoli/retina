@@ -28,7 +28,7 @@ public class SlamLogCollection extends PeriodicSlamStep implements StartAndStopp
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
     SlamLogCollectionUtil.savePoseEstimates(currentTimeStamp, gokartLidarPose.getPose(), //
-        slamContainer.getPoseUnitless(), logData);
+        slamCoreContainer.getPoseUnitless(), logData);
   }
 
   @Override // from StartAndStoppable

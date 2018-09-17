@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
     double dT = (currentTimeStamp - lastComputationTimeStamp) * 1E-6;
-    SlamPropagationStepUtil.propagateStateEstimate(slamContainer.getSlamParticles(), dT);
-    slamContainer.setPoseUnitless(SlamPropagationStepUtil.getAveragePose(slamContainer.getSlamParticles(), particleRange));
+    SlamPropagationStepUtil.propagateStateEstimate(slamCoreContainer.getSlamParticles(), dT);
+    slamCoreContainer.setPoseUnitless(SlamPropagationStepUtil.getAveragePose(slamCoreContainer.getSlamParticles(), particleRange));
   }
 }
