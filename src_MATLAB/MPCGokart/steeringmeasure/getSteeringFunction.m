@@ -39,15 +39,44 @@ x = -limit:0.001:limit;
 yl = polyval(pleft,x);
 yr = polyval(pright,x);
 ym = polyval(pmean,x);
+
+%nearest ackermann
+nn = numel(yl);
+yla = zeros(nn,1);
+yra = zeros(nn,1);
+yma = zeros(nn,1);
+for i = 1:nn
+    [abeta1,abeta2, abetam]=nearestAckermann(yl(i),yr(i),0.94,1.27);
+    yla(i) = abeta1;
+    yra(i) = abeta2;
+    yma(i) = abetam;
+end
+
 figure
 hold on
 %yyaxis left
 scatter(powersteer(:,1),angles)
 plot(x,yl);
 plot(x,yr);
-plot(x,ym);
+%plot(x,ym);
 xlabel('steering wheel encoder angle [rad]')
 ylabel('wheel steering angle [rad]')
+legend('raw data left','cubic left','cubic right (mirrored)')
+
+figure
+hold on
+%yyaxis left
+%scatter(powersteer(:,1),angles)
+plot(x,yl,'r');
+plot(x,yr,'b');
+plot(x,yla,'r--');
+plot(x,yra,'b--');
+plot(x,yma,'k--');
+%plot(x,ym);
+xlabel('steering wheel encoder angle [rad]')
+ylabel('wheel steering angle [rad]')
+
+legend('cubic left','cubic right','nearest ackermann left', 'nearest ackermann right', 'nearest ackermann center')
 
 %yyaxis right
 %[xt,yt] = computeTurningPoint(yl,yr,0.94);
@@ -59,4 +88,3 @@ ylabel('wheel steering angle [rad]')
 %plot(x,ab);
 %ylabel('longitudonal abberation of turning point [m]')
 %ylabel('longitudonal abberation of turning point [m]')
-legend('raw data left','cubic left','cubic right','cubic mean')
