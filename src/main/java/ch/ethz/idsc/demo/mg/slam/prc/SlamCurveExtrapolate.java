@@ -8,16 +8,16 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** extrapolates a curve estimated by the SLAM algorithm */
 /* package */ class SlamCurveExtrapolate extends AbstractSlamCurveStep {
-  private final SlamCurvatureFilter slamCurvatureFilter;
-  private final SlamHeadingFilter slamHeadingFilter;
+  private final SlamCurvatureSmoother slamCurvatureFilter;
+  private final SlamHeadingSmoother slamHeadingFilter;
   private final Scalar numberOfPoints;
   private final Scalar curveFactor;
   private final Scalar extrapolationDistance;
 
   SlamCurveExtrapolate(SlamPrcContainer slamCurveContainer) {
     super(slamCurveContainer);
-    slamCurvatureFilter = new SlamCurvatureFilter();
-    slamHeadingFilter = new SlamHeadingFilter();
+    slamCurvatureFilter = new SlamCurvatureSmoother();
+    slamHeadingFilter = new SlamHeadingSmoother();
     numberOfPoints = SlamPrcConfig.GLOBAL.numberOfPoints;
     curveFactor = SlamPrcConfig.GLOBAL.curveFactor;
     extrapolationDistance = SlamPrcConfig.GLOBAL.extrapolationDistance;
@@ -26,10 +26,10 @@ import ch.ethz.idsc.tensor.Tensor;
   @Override // from CurveListener
   public void process() {
     Tensor interpolatedCurve = slamPrcContainer.getInterpolatedCurve();
-    Scalar localCurvature = slamCurvatureFilter.filterCurvature(interpolatedCurve);
+    Scalar localCurvature = slamCurvatureFilter.smoothCurvature(interpolatedCurve);
     localCurvature = localCurvature.multiply(curveFactor);
     if (interpolatedCurve.length() > 2) {
-      Tensor endPose = slamHeadingFilter.filterHeading(interpolatedCurve);
+      Tensor endPose = slamHeadingFilter.smoothHeading(interpolatedCurve);
       Tensor extrapolatedCurve = SlamCurveExtrapolateUtil.extrapolateCurve(endPose, localCurvature, //
           extrapolationDistance, numberOfPoints);
       SlamCurveUtil.appendCurve(interpolatedCurve, extrapolatedCurve);

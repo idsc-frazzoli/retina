@@ -57,15 +57,15 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
   }
 
-  /** draws the interpolated curve estimated by the SLAM algorithm
+  /** draws the curve estimated by the SLAM algorithm
    * 
    * @param slamMapFrame
    * @param pose of vehicle
-   * @param refinedWaypointCurve in go kart frame coordinates */
-  private static void drawInterpolate(SlamMapFrame slamMapFrame, Tensor poseUnitless, Tensor refinedWaypointCurve) {
+   * @param cure in go kart frame */
+  private static void drawInterpolate(SlamMapFrame slamMapFrame, Tensor poseUnitless, Tensor curve) {
     // transform to world frame coordinates for visualization
     TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
-    Tensor globalCurve = Tensor.of(refinedWaypointCurve.stream().map(local2World));
+    Tensor globalCurve = Tensor.of(curve.stream().map(local2World));
     for (int i = 0; i < globalCurve.length(); ++i) {
       double[] point = Primitives.toDoubleArray(globalCurve.get(i));
       slamMapFrame.drawPoint(point, Color.BLACK, radius);

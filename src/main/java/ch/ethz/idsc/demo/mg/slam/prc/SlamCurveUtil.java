@@ -10,8 +10,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
-// SLAM estimated curve utils
-/* package */ enum SlamCurveUtil {
+public enum SlamCurveUtil {
   ;
   // constant is equal to maximum path curvature that the vehicle can drive
   private static final Scalar MAX_PATH_CURVATURE = RealScalar.of(SteerConfig.GLOBAL.turningRatioMax.number().doubleValue());
@@ -28,7 +27,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     for (int i = 2; i < curve.length(); ++i) {
       Tensor next = curve.get(i);
       // since curve is interpolated, we know that the 3 points are different from each other
-      Tensor localCurvature = limitCurvature(SignedCurvature2D.of(prev, current, next).get());
+      Tensor localCurvature = SignedCurvature2D.of(prev, current, next).get();
       curvature.append(localCurvature);
       prev = current;
       current = next;
@@ -48,7 +47,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return curvature;
   }
 
-  /** @param curve
+  /** @param curve with minimum length 2
    * @return pose of last point of curve looking in tangent direction */
   public static Tensor getEndPose(Tensor curve) {
     Tensor endHeading = getEndHeading(curve);
@@ -56,7 +55,8 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
     return endPose;
   }
 
-  // minimum curve length two
+  /** @param curve minimum length 2
+   * @return heading of tangent of curve endpoint */
   public static Scalar getEndHeading(Tensor curve) {
     Tensor direction = curve.get(curve.length() - 1).subtract(curve.get(curve.length() - 2));
     return ArcTan.of(direction.Get(0), direction.Get(1));

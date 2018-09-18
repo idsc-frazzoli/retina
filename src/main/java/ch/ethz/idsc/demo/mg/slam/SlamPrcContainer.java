@@ -57,7 +57,7 @@ public class SlamPrcContainer {
     this.curve = Optional.of(worldCurve);
   }
 
-  /** @return refinedWaypointCurve in go kart frame */
+  /** @return inter- and extrapolated curve in go kart frame */
   public Optional<Tensor> getCurve() {
     if (curve.isPresent()) {
       Tensor localCurve = SlamPrcContainerUtil.world2Local(curve.get(), slamPose.getPoseUnitless());

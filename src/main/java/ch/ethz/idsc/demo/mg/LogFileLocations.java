@@ -132,7 +132,39 @@ public enum LogFileLocations {
   /** autonomously driving along straight line a bit faster */
   DUBI18e("20180913T174600_34b3470dExtracted5.lcm"),
   /** autonomously driving along straight line a bit faster */
-  DUBI18f("20180913T174600_34b3470dExtracted6.lcm");
+  DUBI18f("20180913T174600_34b3470dExtracted6.lcm"),
+  /** autonomously driving a few laps davis lidar slam, slow */
+  DUBI19a("20180917T113048_f47a58b9Extracted1.lcm"),
+  /** autonomously driving two laps davis lidar slam, slighly different track */
+  DUBI19b("20180917T142635_f47a58b9Extracted1.lcm"),
+  /** autonomously driving, parts of track with vertical stripes */
+  DUBI19c("20180917T144839_f47a58b9Extracted1.lcm"),
+  /** Ale autonomously driving 1.5 laps */
+  DUBI19d("20180917T144839_f47a58b9Extracted2.lcm"),
+  /** Ale autonomously driving 2 laps */
+  DUBI19e("20180917T144839_f47a58b9Extracted3.lcm"),
+  /** driving autonomously 3 laps */
+  DUBI19f("20180917T152855_f47a58b9Extracted1.lcm"),
+  /** driving autonomously in opposite direction */
+  DUBI19g("20180917T152855_f47a58b9Extracted2.lcm"),
+  /** driving autonomously in opposite direction */
+  DUBI19h("20180917T152855_f47a58b9Extracted3.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19i("20180917T163954_f47a58b9Extracted1.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19j("20180917T163954_f47a58b9Extracted2.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19k("20180917T163954_f47a58b9Extracted3.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19l("20180917T165800_f47a58b9Extracted1.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19m("20180917T170914_f47a58b9Extracted1.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19n("20180917T170914_f47a58b9Extracted2.lcm"),
+  /** driving with vertical stripes on both sides */
+  DUBI19o("20180917T172353_f47a58b9Extracted1.lcm"),
+  /** driving with vertical stripes on both sides */
+  DUBI19p("20180917T172353_f47a58b9Extracted2.lcm");
   // ---
   private final String filename;
 

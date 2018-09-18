@@ -7,15 +7,19 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Mean;
 
-/* package */ class SlamCurvatureFilter {
+/* package */ class SlamCurvatureSmoother {
   private final Scalar alphaCurvature = SlamPrcConfig.GLOBAL.alphaCurvature;
-  private final Scalar betaCurvature = SlamPrcConfig.GLOBAL.betaCurvature;
-  private final int extractionLength = SlamPrcConfig.GLOBAL.extractionLength.number().intValue();
+  private final Scalar betaCurvature;
+  private final int extractionLength = SlamPrcConfig.GLOBAL.extractionPoints.number().intValue();
   // ---
   private Scalar lastLocalCurvature = RealScalar.of(0);
 
+  SlamCurvatureSmoother() {
+    betaCurvature = RealScalar.of(1).subtract(alphaCurvature);
+  }
+
   /** averages the local curvature over that last segment of the interpolated curve and then applies a 1st order IIR filter */
-  public Scalar filterCurvature(Tensor interpolatedCurve) {
+  public Scalar smoothCurvature(Tensor interpolatedCurve) {
     Scalar spatialAvgCurvature;
     if (interpolatedCurve.length() < extractionLength)
       spatialAvgCurvature = lastLocalCurvature;

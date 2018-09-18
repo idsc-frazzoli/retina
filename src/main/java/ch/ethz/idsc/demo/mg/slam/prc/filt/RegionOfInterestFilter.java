@@ -7,13 +7,13 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** sets validity of detected way points based on rectangular region of interest */
-public enum RegionOfInterestFilter {
-  ;
-  private static final Scalar visibleBoxXMin = SlamPrcConfig.GLOBAL.visibleBoxXMin;
-  private static final Scalar visibleBoxXMax = SlamPrcConfig.GLOBAL.visibleBoxXMax;
-  private static final Scalar visibleBoxHalfWidth = SlamPrcConfig.GLOBAL.visibleBoxHalfWidth;
+/* package */ class RegionOfInterestFilter implements WaypointFilterInterface {
+  private final Scalar visibleBoxXMin = SlamPrcConfig.GLOBAL.visibleBoxXMin;
+  private final Scalar visibleBoxXMax = SlamPrcConfig.GLOBAL.visibleBoxXMax;
+  private final Scalar visibleBoxHalfWidth = SlamPrcConfig.GLOBAL.visibleBoxHalfWidth;
 
-  public static void filter(Tensor gokartWaypoints, boolean[] validities) {
+  @Override // from WaypointFilterInterface
+  public void filter(Tensor gokartWaypoints, boolean[] validities) {
     for (int i = 0; i < gokartWaypoints.length(); ++i) {
       boolean visibility = Scalars.lessEquals(visibleBoxXMin, gokartWaypoints.get(i).Get(0)) //
           && Scalars.lessEquals(gokartWaypoints.get(i).Get(0), visibleBoxXMax) //

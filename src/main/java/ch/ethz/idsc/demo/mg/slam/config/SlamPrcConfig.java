@@ -15,10 +15,12 @@ public class SlamPrcConfig {
   public final Scalar visibleBoxHalfWidth = RealScalar.of(1.5); // [m] in go kart frame
   public final Scalar visibleBoxXMin = RealScalar.of(-3); // [m] in go kart frame
   public final Scalar visibleBoxXMax = RealScalar.of(5); // [m] in go kart frame
-  // YPosDiffFilter
-  public Scalar deltaYThreshold = RealScalar.of(1); // [m] in go kart frame
-  // AbsPosDiffFilter
-  public Scalar deltaPosThreshold = RealScalar.of(0.6); // [m] in go kart frame
+  // MergeWaypointFilter
+  public Scalar deltaPosThreshold = RealScalar.of(0.8); // [m] in go kart frame
+  // SausageFilter
+  public Scalar distanceThreshold = RealScalar.of(0.2); // [m]
+  // CurvatureFilter
+  public Scalar curvatureThreshold = RealScalar.of(0.6); // [?]
   // SlamCurveInterpolate
   public final Scalar iterations = RealScalar.of(2);
   // SlamCurveExtrapolate
@@ -26,12 +28,10 @@ public class SlamPrcConfig {
   public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
   // SlamCurvatureFilter
-  public final Scalar alphaCurvature = RealScalar.of(0.9);
-  public final Scalar betaCurvature = RealScalar.of(1).subtract(alphaCurvature);
-  public final Scalar extractionLength = RealScalar.of(6);
+  public final Scalar alphaCurvature = RealScalar.of(0.85);
+  public final Scalar extractionPoints = RealScalar.of(6);
   // SlamHeadingFilter
-  public final Scalar alphaHeading = RealScalar.of(0.9);
-  public final Scalar beataHeading = RealScalar.of(1).subtract(alphaHeading);
+  public final Scalar alphaHeading = RealScalar.of(0.8);
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = RealScalar.of(3.5); // [m]
 }
