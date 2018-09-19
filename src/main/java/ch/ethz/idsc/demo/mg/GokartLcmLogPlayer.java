@@ -18,6 +18,7 @@ enum GokartLcmLogPlayer {
     cfg.logFile = slamConfig.davisConfig.getLogFile().toString();
     LogPlayer.create(cfg);
     try {
+      // DavisDetailModule.standalone();
       DavisSlamBaseModule.standalone();
     } catch (Exception e) {
       e.printStackTrace();

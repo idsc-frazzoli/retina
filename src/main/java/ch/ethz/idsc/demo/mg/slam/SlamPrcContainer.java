@@ -58,7 +58,8 @@ public class SlamPrcContainer {
   }
 
   /** @return inter- and extrapolated curve in go kart frame */
-  public Optional<Tensor> getCurve() {
+  // synchronized since it is accessed from different threads
+  public synchronized Optional<Tensor> getCurve() {
     if (curve.isPresent()) {
       Tensor localCurve = SlamPrcContainerUtil.world2Local(curve.get(), slamPose.getPoseUnitless());
       return Optional.of(localCurve);

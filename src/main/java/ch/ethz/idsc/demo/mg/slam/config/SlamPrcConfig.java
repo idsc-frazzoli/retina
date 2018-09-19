@@ -16,11 +16,12 @@ public class SlamPrcConfig {
   public final Scalar visibleBoxXMin = RealScalar.of(-3); // [m] in go kart frame
   public final Scalar visibleBoxXMax = RealScalar.of(5); // [m] in go kart frame
   // MergeWaypointFilter
-  public Scalar deltaPosThreshold = RealScalar.of(0.8); // [m] in go kart frame
+  public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
   // SausageFilter
-  public Scalar distanceThreshold = RealScalar.of(0.2); // [m]
+  public Scalar distanceThreshold = RealScalar.of(0.4); // [m]
+  public Scalar validPointsThreshold = RealScalar.of(4); // [-]
   // CurvatureFilter
-  public Scalar curvatureThreshold = RealScalar.of(0.6); // [?]
+  public Scalar curvatureThreshold = RealScalar.of(0.3); // [rad/m]
   // SlamCurveInterpolate
   public final Scalar iterations = RealScalar.of(2);
   // SlamCurveExtrapolate

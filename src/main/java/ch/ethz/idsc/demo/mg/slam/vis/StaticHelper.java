@@ -37,7 +37,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
     // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
     if (slamPrcContainer.getCurve().isPresent())
-      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamPrcContainer.getCurve().get());
+      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
     slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
     slamMapFrames[1].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];

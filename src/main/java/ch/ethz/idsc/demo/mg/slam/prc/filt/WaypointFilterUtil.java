@@ -3,17 +3,17 @@ package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 
 /** handles the list of way point filters used in SlamWaypointFilter */
 public enum WaypointFilterUtil {
   ;
-  public static List<WaypointFilterInterface> getWaypointFilters(Optional<Tensor> curve) {
+  public static List<WaypointFilterInterface> getWaypointFilters(SlamPrcContainer slamPrcContainer) {
     return Arrays.asList( //
         new RegionOfInterestFilter(), //
         new MergeWaypointsFilter(), //
-        new SausageFilter(curve), new CurvatureFilter());
+        new SausageFilter(slamPrcContainer), //
+        new CurvatureFilter());
   }
 }

@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
   SlamWaypointFilter(SlamPrcContainer slamPrcContainer) {
     super(slamPrcContainer);
-    waypointFilters = WaypointFilterUtil.getWaypointFilters(slamPrcContainer.getCurve());
+    waypointFilters = WaypointFilterUtil.getWaypointFilters(slamPrcContainer);
   }
 
   @Override // from CurveListener

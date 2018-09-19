@@ -1,49 +1,61 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
-import java.util.Optional;
-
+import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
 /** the sausage region is defined as a region in R^2 which is closer than distanceThreshold
  * to the curve estimated by the SLAM algorithm - similar in shape to a sausage with the estimated
  * curve as centerline. The filter sets the validity field of
  * all detected way points which are not in this region to false. */
 class SausageFilter implements WaypointFilterInterface {
-  private final Optional<Tensor> curve;
+  private final SlamPrcContainer slamPrcContainer;
   private final Scalar distanceThreshold;
+  private final int validPointsThreshold;
 
-  /** @param curve go kart frame, currently estimated by SLAM algorithm */
-  public SausageFilter(Optional<Tensor> curve) {
-    this.curve = curve;
+  /** @param slamPrcContainer go kart frame, currently estimated by SLAM algorithm */
+  public SausageFilter(SlamPrcContainer slamPrcContainer) {
+    this.slamPrcContainer = slamPrcContainer;
     distanceThreshold = SlamPrcConfig.GLOBAL.distanceThreshold;
+    validPointsThreshold = SlamPrcConfig.GLOBAL.validPointsThreshold.number().intValue();
   }
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {
-    if (curve.isPresent())
-      sausageAction(gokartWaypoints, validities);
+    if (slamPrcContainer.getCurve().isPresent() && slamPrcContainer.getCurve().get().length() >= 3) {
+      Tensor curve = slamPrcContainer.getCurve().get().copy();
+      sausageAction(gokartWaypoints, validities, curve);
+    }
   }
 
   /** applies the sausage filter method to the detected way points by comparing them with the current curve
    * 
-   * @param gokartWaypoints detected way points
+   * @param gokartWaypoints go kart frame, detected way points
    * @param validities corresponding validities */
-  private void sausageAction(Tensor gokartWaypoints, boolean[] validities) {
-    Tensor curveField = curve.get();
-    Tensor minDistances = Tensors.empty();
+  private void sausageAction(Tensor gokartWaypoints, boolean[] validities, Tensor curve) {
+    boolean[] tempValidities = validities.clone();
     for (int i = 0; i < gokartWaypoints.length(); ++i) {
-      if (validities[i]) {
-        Scalar minDistance = SausageFilterUtil.computeMinDistance(gokartWaypoints.get(i), curveField);
-        minDistances.append(minDistance);
-        if (Scalars.lessEquals(distanceThreshold, minDistances.Get(i)))
-          validities[i] = false;
-      } else
-        minDistances.append(Tensors.empty());
+      if (validities[i] && gokartWaypoints.get(i).Get(0).number().doubleValue() > 0) {
+        Scalar minDistance = SausageFilterUtil.computeMinDistance(gokartWaypoints.get(i), curve);
+        if (Scalars.lessEquals(distanceThreshold, minDistance))
+          tempValidities[i] = false;
+      }
     }
+    if (checkReset(tempValidities)) {
+      for (int i = 0; i < validities.length; ++i)
+        validities[i] = tempValidities[i];
+    }
+  }
+
+  // check that we do not set everything to zero -> would be a sign that we need to "reset" curve
+  private boolean checkReset(boolean[] tempValidities) {
+    int counter = 0;
+    for (boolean validity : tempValidities)
+      if (validity)
+        counter++;
+    return counter >= validPointsThreshold;
   }
 }

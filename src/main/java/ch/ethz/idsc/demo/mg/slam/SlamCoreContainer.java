@@ -10,7 +10,8 @@ import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** container for the objects that are passed between different modules of the SLAM algorithm */
+/** container for the objects that are passed between different modules of
+ * the core part of the SLAM algorithm */
 public class SlamCoreContainer implements GokartPoseUnitlessInterface {
   private final SlamParticle[] slamParticles;
   private final String logFilename;
@@ -27,17 +28,17 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
   // ---
   private Mat labels;
 
-  public SlamCoreContainer(SlamCoreConfig slamConfig) {
-    int numOfPart = Magnitude.ONE.toInt(slamConfig.numberOfParticles);
+  public SlamCoreContainer() {
+    int numOfPart = Magnitude.ONE.toInt(SlamCoreConfig.GLOBAL.numberOfParticles);
     slamParticles = SlamParticles.allocate(numOfPart);
-    saveSlamMap = slamConfig.saveSlamMap;
-    logFilename = slamConfig.davisConfig.logFilename();
-    linVelAvg = Magnitude.VELOCITY.toDouble(slamConfig.linVelAvg);
-    linVelStd = Magnitude.VELOCITY.toDouble(slamConfig.linVelStd);
-    angVelStd = Magnitude.PER_SECOND.toDouble(slamConfig.angVelStd);
-    occurrenceMap = new MapProvider(slamConfig);
+    saveSlamMap = SlamCoreConfig.GLOBAL.saveSlamMap;
+    logFilename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
+    linVelAvg = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelAvg);
+    linVelStd = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelStd);
+    angVelStd = Magnitude.PER_SECOND.toDouble(SlamCoreConfig.GLOBAL.angVelStd);
+    occurrenceMap = new MapProvider(SlamCoreConfig.GLOBAL);
     // ---
-    labels = new Mat(slamConfig.mapWidth(), slamConfig.mapHeight(), opencv_core.CV_8U);
+    labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */

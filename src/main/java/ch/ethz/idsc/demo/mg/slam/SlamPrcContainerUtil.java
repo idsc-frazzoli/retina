@@ -23,6 +23,11 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     return Tensor.of(points.stream().map(world2Local::apply));
   }
 
+  /** initializes the SlamWaypoints object with an ordered (by WaypointXComparator) list of way points in world frame
+   * 
+   * @param worldWaypoints world frame
+   * @param poseUnitless
+   * @param slamWaypoints */
   public static void setSlamWaypoints(Tensor worldWaypoints, Tensor poseUnitless, SlamWaypoints slamWaypoints) {
     Tensor gokartWaypoints = world2Local(worldWaypoints, poseUnitless);
     gokartWaypoints = Tensor.of(gokartWaypoints.stream().sorted(WaypointXComparator.INSTANCE));

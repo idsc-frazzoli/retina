@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.config;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.filter.EventPolarityConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
@@ -25,10 +26,12 @@ public class SlamCoreConfig {
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
-  public final Boolean saveSlamMap = false;
+  public final Boolean saveSlamMap = true;
+  /** which event polarities are processed */
+  public final EventPolarityConfig eventPolarityConfig = EventPolarityConfig.both;
   // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
-  public final Scalar numberOfParticles = RealScalar.of(20);
+  public Scalar numberOfParticles = RealScalar.of(25);
   public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
   public final Scalar particleRange = RealScalar.of(3);
@@ -38,8 +41,8 @@ public class SlamCoreConfig {
   public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
   // update rates
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
-  public final Scalar resampleRate = Quantity.of(50, NonSI.MILLI_SECOND);
-  public final Scalar statePropagationRate = Quantity.of(5, NonSI.MILLI_SECOND);
+  public final Scalar resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);
+  public final Scalar statePropagationRate = Quantity.of(1, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar waypointUpdateRate = Quantity.of(0.05, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
