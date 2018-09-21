@@ -26,20 +26,23 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   /** sets all frames for the visualization
    * 
    * @param slamMapFrames
-   * @param slamContainer
+   * @param slamCoreContainer
    * @param gokartLidarPose pose with units provided by lidar
    * @return array of BufferedImages of length 2 */
-  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamContainer, //
+  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamCoreContainer, //
       SlamPrcContainer slamPrcContainer, Tensor gokartLidarPose) {
-    paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
+    SlamMapFrame.setCorners(//
+        slamCoreContainer.getOccurrenceMap().getCornerX(), //
+        slamCoreContainer.getOccurrenceMap().getCornerY());
+    paintRawMap(slamCoreContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
-    slamMapFrames[0].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
+    slamMapFrames[0].addGokartPose(slamCoreContainer.getPoseUnitless(), Color.BLUE);
     VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
     // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
     if (slamPrcContainer.getCurve().isPresent())
-      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
+      drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
     slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
-    slamMapFrames[1].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
+    slamMapFrames[1].addGokartPose(slamCoreContainer.getPoseUnitless(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();

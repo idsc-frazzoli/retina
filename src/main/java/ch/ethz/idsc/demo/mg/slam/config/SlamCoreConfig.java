@@ -22,7 +22,7 @@ public class SlamCoreConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -84,9 +84,7 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar resetPoseX = Quantity.of(50, SI.METER);
-  public final Scalar resetPoseY = Quantity.of(50, SI.METER);
-  public final Scalar padding = Quantity.of(5, SI.METER);
+  public final Scalar padding = Quantity.of(7, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

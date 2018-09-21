@@ -26,8 +26,7 @@ class SausageFilter implements WaypointFilterInterface {
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {
     if (slamPrcContainer.getCurve().isPresent() && slamPrcContainer.getCurve().get().length() >= 3) {
-      // TODO MG there is no need to make a copy of the curve
-      Tensor curve = slamPrcContainer.getCurve().get().copy();
+      Tensor curve = slamPrcContainer.getCurve().get();
       sausageAction(gokartWaypoints, validities, curve);
     }
   }

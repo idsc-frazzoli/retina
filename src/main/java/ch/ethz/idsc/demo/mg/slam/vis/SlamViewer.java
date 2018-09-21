@@ -29,8 +29,8 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   };
   private final long visualizationInterval;
 
-  public SlamViewer(SlamCoreConfig slamConfig, SlamCoreContainer slamContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartLidarPose) {
-    super(slamContainer, slamConfig.savingInterval);
+  public SlamViewer(SlamCoreConfig slamConfig, SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartLidarPose) {
+    super(slamCoreContainer, slamConfig.savingInterval);
     this.gokartLidarPose = gokartLidarPose;
     this.slamPrcContainer = slamPrcContainer;
     slamMapGUI = new SlamMapGUI(slamConfig);

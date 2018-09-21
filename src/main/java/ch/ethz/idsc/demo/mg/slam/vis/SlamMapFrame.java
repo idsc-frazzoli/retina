@@ -17,13 +17,14 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final byte[] bytes;
-  private final double cornerX;
-  private final double cornerY;
   private final double cellDim;
   private final double waypointRadius;
   private final double kartLength;
   private final int mapWidth;
   private final int mapHeight;
+  // ---
+  private static double cornerX;
+  private static double cornerY;
 
   SlamMapFrame(SlamCoreConfig slamConfig) {
     mapWidth = slamConfig.mapWidth();
@@ -37,6 +38,11 @@ import ch.ethz.idsc.tensor.io.Primitives;
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
+  }
+
+  public static void setCorners(double cornerXNew, double cornerYNew) {
+    cornerX = cornerXNew;
+    cornerY = cornerYNew;
   }
 
   /** draws an ellipse representing the vehicle pose onto the map frame
