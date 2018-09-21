@@ -752,6 +752,40 @@ public enum GokartLogFile implements LogFile {
   _20180913T174600_34b3470d, //
   /** system id track plastic [mh yn jh mh yn jh] */
   _20180913T183146_34b3470d, //
+  /***************************************************/
+  /* 2018-09-17 */
+  /** event-based marker following with davis240c */
+  _20180917T110859_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T112522_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T113048_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T114847_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T142635_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T143904_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T144839_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T152855_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T154236_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T163109_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers parallel to driving direction */
+  _20180917T163954_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers shape X */
+  _20180917T165800_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers shape X */
+  _20180917T170914_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers parallel to driving direction and placed to the sides */
+  _20180917T172353_f47a58b9, //
   ;
   // ---
   @Override // from LogFile

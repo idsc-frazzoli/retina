@@ -137,6 +137,8 @@ class SpeedClip implements ScalarUnaryOperator {
         Tensor keyvisual = ResourceData.of("/eth/marketing/keyvisual.png");
         keyvisual = TensorMap.of(BLACK_TO_YELLOW, keyvisual, 2);
         BufferedImage background = ImageFormat.of(keyvisual);
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         graphics.drawImage(background, 0, 0, null);
         graphics.drawImage(ImageFormat.of(image), 0, 0, null);
       }
