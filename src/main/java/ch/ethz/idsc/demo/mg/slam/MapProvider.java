@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -22,7 +23,7 @@ public class MapProvider {
   /** tracks max value of values in array */
   private double maxValue;
 
-  public MapProvider(SlamConfig slamConfig) {
+  public MapProvider(SlamCoreConfig slamConfig) {
     cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
     cellDimInv = 1 / cellDim;
     mapWidth = slamConfig.mapWidth();
@@ -53,6 +54,11 @@ public class MapProvider {
         double newValue = numerator.getValue(index) / denominator.getValue(index);
         targetMap.setValue(index, newValue);
       }
+  }
+
+  private void findMaxValue() {
+    maxValue = DoubleStream.of(mapArray) //
+        .reduce(Math::max).getAsDouble();
   }
 
   /** @return coordinates of cell middle point */
@@ -86,7 +92,7 @@ public class MapProvider {
   /** adds value in grid cell corresponding to coordinates. does nothing if pose is outside map domain
    * 
    * @param worldCoord [m] map position
-   * @param value */
+   * @param value >= 0 */
   public void addValue(Tensor worldCoord, double value) {
     addValue( //
         worldCoord.Get(0).number().doubleValue(), //
@@ -97,7 +103,7 @@ public class MapProvider {
    * 
    * @param posX in world coordinates
    * @param posY in world coordinates
-   * @param value */
+   * @param value >= 0 */
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
@@ -108,6 +114,8 @@ public class MapProvider {
       maxValue = mapArray[cellIndex];
   }
 
+  /** @param cellIndex
+   * @param value >= 0 */
   public void addValue(int cellIndex, double value) {
     mapArray[cellIndex] += value;
     if (mapArray[cellIndex] > maxValue)
@@ -115,6 +123,10 @@ public class MapProvider {
   }
 
   public void setValue(int cellIndex, double value) {
+    if (mapArray[cellIndex] == maxValue && value < maxValue) {
+      mapArray[cellIndex] = value;
+      findMaxValue();
+    }
     if (value > maxValue)
       maxValue = value;
     mapArray[cellIndex] = value;
@@ -149,8 +161,7 @@ public class MapProvider {
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);
-      maxValue = DoubleStream.of(mapArray) //
-          .reduce(Math::max).getAsDouble();
+      findMaxValue();
     } else
       throw new IllegalArgumentException();
   }

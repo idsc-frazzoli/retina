@@ -2,12 +2,12 @@
 package ch.ethz.idsc.demo.mg.util.calibration;
 
 import ch.ethz.idsc.demo.mg.LogFileLocations;
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import junit.framework.TestCase;
 
 public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
-    SlamConfig slamConfig = new SlamConfig();
+    SlamCoreConfig slamConfig = new SlamCoreConfig();
     slamConfig.davisConfig.logFileLocations = LogFileLocations.DUBI15a;
     ImageToGokartLookup test = (ImageToGokartLookup) slamConfig.davisConfig.createImageToGokartInterface();
     test.printInfo();
