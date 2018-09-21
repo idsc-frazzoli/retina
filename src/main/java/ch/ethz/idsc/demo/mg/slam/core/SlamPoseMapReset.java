@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.core;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -22,8 +23,8 @@ import ch.ethz.idsc.tensor.Tensors;
     super(slamCoreContainer, slamConfig.poseMapUpdateRate);
     corner = slamConfig.corner;
     cornerHigh = slamConfig.cornerHigh();
-    resetPoseX = slamConfig.resetPoseX;
-    resetPoseY = slamConfig.resetPoseY;
+    resetPoseX = Magnitude.METER.apply(slamConfig.resetPoseX);
+    resetPoseY = Magnitude.METER.apply(slamConfig.resetPoseY);
     padding = slamConfig.padding.number().doubleValue();
   }
 

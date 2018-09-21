@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.config;
 
 import ch.ethz.idsc.demo.mg.DavisConfig;
-import ch.ethz.idsc.demo.mg.filter.EventPolarityConfig;
+import ch.ethz.idsc.demo.mg.filter.EventPolarityFilter;
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
@@ -28,7 +28,7 @@ public class SlamCoreConfig {
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = true;
   /** which event polarities are processed */
-  public final EventPolarityConfig eventPolarityConfig = EventPolarityConfig.both;
+  public final EventPolarityFilter eventPolarityFilter = EventPolarityFilter.BOTH;
   // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
   public Scalar numberOfParticles = RealScalar.of(25);
@@ -84,8 +84,8 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar resetPoseX = RealScalar.of(50); // [m]
-  public final Scalar resetPoseY = RealScalar.of(50); // [m]
+  public final Scalar resetPoseX = Quantity.of(50, SI.METER);
+  public final Scalar resetPoseY = Quantity.of(50, SI.METER);
   public final Scalar padding = Quantity.of(5, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
