@@ -10,7 +10,7 @@ public class SlamContainerUtilTest extends TestCase {
   public void testSimple() {
     SlamParticle[] slamParticles = SlamParticles.allocate(300);
     Tensor pose = Tensors.fromString("{3.4[m], 5.6[m], 3.345}");
-    SlamContainerUtil.setInitialDistribution(slamParticles, pose, 2, 3, 3);
+    SlamCoreContainerUtil.setInitialDistribution(slamParticles, pose, 2, 3, 3);
     for (int index = 0; index < 10; ++index) {
       Scalar angVel = slamParticles[index].getAngVel();
       System.out.println(angVel);
