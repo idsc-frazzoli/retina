@@ -46,7 +46,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return Quantity.of(0.1, SI.SECOND);
+    return Quantity.of(0.05, SI.SECOND);
   }
 
   public static void standalone() throws Exception {
