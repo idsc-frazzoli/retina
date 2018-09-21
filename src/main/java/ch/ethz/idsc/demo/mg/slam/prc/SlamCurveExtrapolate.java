@@ -32,8 +32,14 @@ import ch.ethz.idsc.tensor.Tensor;
       Tensor endPose = slamHeadingFilter.smoothHeading(interpolatedCurve);
       Tensor extrapolatedCurve = SlamCurveExtrapolateUtil.extrapolateCurve(endPose, localCurvature, //
           extrapolationDistance, numberOfPoints);
-      SlamCurveUtil.appendCurve(interpolatedCurve, extrapolatedCurve);
+      SlamCurveExtrapolate.appendCurve(interpolatedCurve, extrapolatedCurve);
       slamPrcContainer.setCurve(interpolatedCurve);
     }
+  }
+
+  /** @param firstCurve
+   * @param secondCurve to be appended to first argument */
+  private static void appendCurve(Tensor firstCurve, Tensor secondCurve) {
+    secondCurve.stream().forEach(firstCurve::append);
   }
 }

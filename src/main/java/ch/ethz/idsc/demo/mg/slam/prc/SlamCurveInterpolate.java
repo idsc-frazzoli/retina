@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.red.Nest;
    * @param validGokartWaypoints
    * @param iterations
    * @return interpolated curve */
-  private Tensor interpolate(Tensor validGokartWaypoints, int iterations) {
+  private static Tensor interpolate(Tensor validGokartWaypoints, int iterations) {
     return Nest.of(CURVE_SUBDIVISION::string, validGokartWaypoints, iterations);
   }
 }

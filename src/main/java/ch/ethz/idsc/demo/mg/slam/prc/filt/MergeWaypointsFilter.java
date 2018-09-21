@@ -6,10 +6,11 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
+import ch.ethz.idsc.tensor.sca.AbsSquared;
 
 /** filters way points that are too close to previous valid way point */
 /* package */ class MergeWaypointsFilter implements WaypointFilterInterface {
-  private final Scalar deltaPosThreshold = SlamPrcConfig.GLOBAL.deltaPosThreshold;
+  private final Scalar deltaPosThresholdSquared = AbsSquared.FUNCTION.apply(SlamPrcConfig.GLOBAL.deltaPosThreshold);
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {
@@ -19,11 +20,11 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
 
   /** @param validities
    * @return in case no point is valid, validities.length is returned */
-  private int findFirstValidIndex(boolean[] validities) {
-    for (int i = 0; i < validities.length; ++i) {
+  private static int findFirstValidIndex(boolean[] validities) {
+    for (int i = 0; i < validities.length; ++i)
       if (validities[i])
         return i;
-    }
+    // TODO MG where is the case "index==validities.length" handled later on?
     return validities.length;
   }
 
@@ -34,20 +35,18 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
    * @param firstValidIndex */
   private void filterWaypoints(Tensor gokartWaypoints, boolean[] validities, int firstValidIndex) {
     int previousValidIndex = firstValidIndex;
-    for (int i = firstValidIndex + 1; i < gokartWaypoints.length(); ++i) {
+    for (int i = firstValidIndex + 1; i < gokartWaypoints.length(); ++i)
       if (validities[i]) {
         if (filterCondition(gokartWaypoints.get(i), gokartWaypoints.get(previousValidIndex)))
           previousValidIndex = i;
         else
           validities[i] = false;
       }
-    }
   }
 
   private boolean filterCondition(Tensor currentPoint, Tensor previousValidPoint) {
-    Scalar posDist = Norm2Squared.ofVector(currentPoint.subtract(previousValidPoint));
-    if (Scalars.lessEquals(deltaPosThreshold.multiply(deltaPosThreshold), posDist))
-      return true;
-    return false;
+    return Scalars.lessEquals( //
+        deltaPosThresholdSquared, //
+        Norm2Squared.between(currentPoint, previousValidPoint));
   }
 }

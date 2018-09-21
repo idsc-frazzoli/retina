@@ -8,5 +8,5 @@ public interface WaypointFilterInterface {
    * 
    * @param gokartWaypoints
    * @param validities */
-  public void filter(Tensor gokartWaypoints, boolean[] validities);
+  void filter(Tensor gokartWaypoints, boolean[] validities);
 }

@@ -81,11 +81,12 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++) {
-      if (processedByteArray[i] == 0)
-        bytes[i] = CLEAR_BYTE;
-      else {
-        bytes[i] = BLUE;
-      }
+      bytes[i] = processedByteArray[i] == 0 ? CLEAR_BYTE : BLUE;
+      // if (processedByteArray[i] == 0)
+      // bytes[i] = CLEAR_BYTE;
+      // else {
+      // bytes[i] = BLUE;
+      // }
     }
   }
 }

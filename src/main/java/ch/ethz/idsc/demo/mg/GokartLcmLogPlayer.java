@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamBaseModule;
-import ch.ethz.idsc.gokart.gui.DavisDetailModule;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
