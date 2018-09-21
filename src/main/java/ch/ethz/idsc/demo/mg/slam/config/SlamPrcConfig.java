@@ -12,10 +12,10 @@ public class SlamPrcConfig {
   // SlamWaypointDetection
   public Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
   // RegionOfInterestFilter
-  public final Scalar visibleBoxXMin = RealScalar.of(-3); // [m] in go kart frame
-  public final Scalar visibleBoxXMax = RealScalar.of(5); // [m] in go kart frame
+  public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
+  public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // [m] in go kart frame
   // TODO MG comment on visibleBoxYHalfWidth
-  public final Scalar visibleBoxYHalfWidth = RealScalar.of(1.5); // [m] in go kart frame
+  public final Scalar visibleBoxYHalfWidth = Quantity.of(1.5, SI.METER); // [m] in go kart frame
   // MergeWaypointFilter
   public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
   // SausageFilter
