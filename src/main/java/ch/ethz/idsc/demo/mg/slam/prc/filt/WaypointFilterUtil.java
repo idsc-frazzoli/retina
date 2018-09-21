@@ -13,7 +13,7 @@ public enum WaypointFilterUtil {
     return Arrays.asList( //
         new RegionOfInterestFilter(), //
         new MergeWaypointsFilter(), //
-        new SausageFilter(slamPrcContainer), //
+        // new SausageFilter(slamPrcContainer), //
         new CurvatureFilter());
   }
 }

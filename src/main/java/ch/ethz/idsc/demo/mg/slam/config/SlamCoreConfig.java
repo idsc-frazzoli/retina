@@ -44,7 +44,7 @@ public class SlamCoreConfig {
   public final Scalar resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);
   public final Scalar statePropagationRate = Quantity.of(1, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar waypointUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public final Scalar waypointUpdateRate = Quantity.of(0.02, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   // particle initialization
