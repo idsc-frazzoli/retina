@@ -20,6 +20,11 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
+  protected final PursuitConfig pursuitConfig;
+
+  public PurePursuitModule(PursuitConfig pursuitConfig) {
+    this.pursuitConfig = pursuitConfig;
+  }
 
   @Override // from AbstractModule
   protected final void first() throws Exception {
@@ -66,7 +71,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(Times.of( //
-          PursuitConfig.GLOBAL.rateFollower, speed, getSpeedMultiplier()));
+          pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);
   }
@@ -77,7 +82,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected final Scalar getPeriod() {
-    return PursuitConfig.GLOBAL.updatePeriod;
+    return pursuitConfig.updatePeriod;
   }
 
   /** @return heading with unit "rad"

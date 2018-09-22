@@ -16,6 +16,10 @@ import ch.ethz.idsc.tensor.red.Norm;
 public class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
   private List<TrajectorySample> trajectory;
 
+  public Tse2CurvePurePursuitModule() {
+    super(PursuitConfig.GLOBAL);
+  }
+
   public void setCurveTse2(List<TrajectorySample> trajectory) {
     Tensor curve = Tensor.of(trajectory.stream() //
         .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2)));

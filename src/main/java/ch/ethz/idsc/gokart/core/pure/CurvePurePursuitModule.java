@@ -22,7 +22,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-// TODO do not use the static reference PursuitConfig.GLOBAL but an instance
 public class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
   Optional<Tensor> optionalCurve = Optional.empty();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
@@ -38,6 +37,10 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
       isForward = Sign.isPositiveOrZero(speedChop.apply(speed));
     }
   };
+
+  public CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+    super(pursuitConfig);
+  }
 
   @Override // from AbstractModule
   protected void protected_first() throws Exception {
@@ -58,7 +61,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     // System.err.println("check isOperational");
     if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
       final Scalar quality = gokartPoseEvent.getQuality();
-      if (PursuitConfig.GLOBAL.isQualitySufficient(quality)) { // is localization quality sufficient?
+      if (pursuitConfig.isQualitySufficient(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
         Optional<Scalar> ratio = getRatio(pose);
         if (ratio.isPresent()) { // is look ahead beacon available?
@@ -80,7 +83,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   /* package */ Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent())
-      return getRatio(pose, optionalCurve.get(), isForward);
+      return getRatio(pose, optionalCurve.get(), isForward, pursuitConfig.lookAheadMeter());
     System.err.println("no curve in pure pursuit");
     return Optional.empty();
   }
@@ -88,15 +91,15 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   /** @param pose of vehicle
    * @param curve world frame coordinates
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
+   * @param PursuitConfig.GLOBAL.lookAheadMeter()
    * @return ratio rate with interpretation rad*m^-1 */
-  static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward) {
+  static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));
     if (!isForward) { // if measured tangent speed is negative
       tensor.set(Scalar::negate, Tensor.ALL, 0); // flip sign of X coord. of waypoints in tensor
       tensor = Reverse.of(tensor); // reverse order of points along trajectory
     }
-    Scalar distance = PursuitConfig.GLOBAL.lookAheadMeter();
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);

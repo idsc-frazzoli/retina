@@ -15,6 +15,10 @@ import ch.ethz.idsc.tensor.Tensor;
 public final class SlamCurvePurePursuitModule extends PurePursuitModule {
   private Optional<Tensor> optionalCurve = Optional.empty();
 
+  public SlamCurvePurePursuitModule() {
+    super(PursuitConfig.GLOBAL);
+  }
+
   @Override // form AbstractModule
   protected void protected_first() throws Exception {
     // ---

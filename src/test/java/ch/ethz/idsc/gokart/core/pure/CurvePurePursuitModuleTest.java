@@ -25,7 +25,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testFirstLast() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     purePursuitModule.runAlgo();
     purePursuitModule.last();
@@ -37,14 +37,14 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testSome() {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     Scalar period = purePursuitModule.getPeriod();
     Clip clip = Clip.function(Quantity.of(0.01, "s"), Quantity.of(0.2, "s"));
     assertTrue(clip.isInside(period));
   }
 
   public void testSimple() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
@@ -57,7 +57,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testClose() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -78,7 +78,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseInfeasible() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
@@ -94,7 +94,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseInfeasibleInvalid() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
@@ -110,7 +110,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseOther() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -130,7 +130,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseEnd() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
@@ -150,7 +150,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testCloseEndNoQuality() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
@@ -164,7 +164,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testSpecific1() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     // assertTrue(Clip.function( // for look ahead 3.9[m]
@@ -177,7 +177,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clip.function( //
@@ -187,13 +187,13 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
     assertFalse(optional.isPresent());
   }
 
   public void testLookAheadDistanceFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true);
+    Optional<Scalar> optional = CurvePurePursuitModule.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
     assertFalse(optional.isPresent());
   }
 }
