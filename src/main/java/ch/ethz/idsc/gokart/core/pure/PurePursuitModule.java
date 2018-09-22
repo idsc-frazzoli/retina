@@ -22,7 +22,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
   protected final PursuitConfig pursuitConfig;
 
-  public PurePursuitModule(PursuitConfig pursuitConfig) {
+  PurePursuitModule(PursuitConfig pursuitConfig) {
     this.pursuitConfig = pursuitConfig;
   }
 
@@ -46,6 +46,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
 
   protected abstract void protected_last();
 
+  /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
     final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
@@ -76,13 +77,14 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     purePursuitRimo.setOperational(status);
   }
 
-  protected Scalar getSpeedMultiplier() {
-    return DoubleScalar.of(1.0);
-  }
-
   @Override // from AbstractClockedModule
   protected final Scalar getPeriod() {
     return pursuitConfig.updatePeriod;
+  }
+
+  /***************************************************/
+  protected Scalar getSpeedMultiplier() {
+    return DoubleScalar.of(1.0);
   }
 
   /** @return heading with unit "rad"

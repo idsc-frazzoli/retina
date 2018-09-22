@@ -10,8 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** pure pursuit controller for SLAM algorithm */
-// TODO CurvePurePusuitModule should extend this class with the extension that it listens to go kart pose and
-// transforms world frame coordinate curve to go kart coordinates
+// TODO when only forward driving is supported, the speed should be Ramp'ed
 public final class SlamCurvePurePursuitModule extends PurePursuitModule {
   private Optional<Tensor> optionalCurve = Optional.empty();
 
@@ -29,7 +28,6 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
     // ---
   }
 
-  // TODO method is identical as in WaypointPurePursuitModule
   @Override // form PurePursuitModule
   protected Optional<Scalar> deriveHeading() {
     Optional<Scalar> ratio = getRatio();
@@ -46,7 +44,8 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
       if (optionalCurve.isPresent()) {
-        PurePursuit purePursuit = PurePursuit.fromTrajectory(optionalCurve.get(), SlamPrcConfig.GLOBAL.lookAhead);
+        PurePursuit purePursuit = PurePursuit.fromTrajectory( //
+            optionalCurve.get(), SlamPrcConfig.GLOBAL.lookAheadMeter());
         return purePursuit.ratio();
       }
       return Optional.empty();
