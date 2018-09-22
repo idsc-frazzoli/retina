@@ -98,11 +98,13 @@ params.maxBrakeRate = 5; % 1/s
 params.maxHandbrakeRate = 5; % 1/s
 params.maxThrottleRate = 5; % 1/s
 
+params.maxThrottle = 1;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %inital states 
 
-speed = 40 + 3.6*params.Dz1; % km/h
+speed = 0.5;
 
 % longitudinal and lateral speed in car coordiante frame [m/s]
 params.Ux0 = speed/3.6;
