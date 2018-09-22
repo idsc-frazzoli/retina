@@ -33,7 +33,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     }
   };
   // ---
-  Optional<Tensor> optionalCurve = Optional.empty();
+  private Optional<Tensor> optionalCurve = Optional.empty();
   GokartPoseEvent gokartPoseEvent = null;
 
   public CurvePurePursuitModule(PursuitConfig pursuitConfig) {

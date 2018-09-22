@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -19,10 +18,11 @@ import ch.ethz.idsc.tensor.red.Norm;
 /** implementation is similar to CurvePurePursuitModule with the additional
  * feature that the trajectory is annotated with velocity */
 public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
+  private final Object lock = new Object();
   private List<TrajectorySample> trajectory;
 
-  public Tse2CurvePurePursuitModule() {
-    super(PursuitConfig.GLOBAL);
+  public Tse2CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+    super(pursuitConfig);
   }
 
   public void setCurveTse2(List<TrajectorySample> trajectory) {
@@ -30,23 +30,27 @@ public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
         .map(TrajectorySample::stateTime) //
         .map(StateTime::state) //
         .map(tensor -> tensor.extract(0, 2)));
-    setCurve(Optional.of(curve));
-    // ---
-    this.trajectory = trajectory;
+    synchronized (lock) {
+      setCurve(Optional.of(curve));
+      this.trajectory = trajectory;
+    }
   }
 
   @Override // from PurePursuitModule
   protected Scalar getSpeedMultiplier() {
-    // gokartPoseEvent is non-null at this point ?
-    if (Objects.nonNull(gokartPoseEvent)) {
-      Tensor pose = gokartPoseEvent.getPose(); // latest pose
-      TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
-      // optionalCurve should be present at this point
-      Tensor tensor = Tensor.of(optionalCurve.get().stream().map(toLocal).map(Norm._2::ofVector));
-      // tensor should not be empty
-      int index = ArgMin.of(tensor);
-      TrajectorySample trajectorySample = trajectory.get(index);
-      return trajectorySample.stateTime().state().Get(3).divide(GokartTrajectorySRModule.MAX_SPEED);
+    // gokartPoseEvent is non-null at this point, implied by
+    // PurePursuitModule.runAlgo, and CurvePurePursuitModule.deriveHeading
+    Tensor pose = gokartPoseEvent.getPose(); // latest pose
+    TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
+    synchronized (lock) {
+      Optional<Tensor> curve = getCurve();
+      if (curve.isPresent()) {
+        Tensor tensor = Tensor.of(curve.get().stream().map(toLocal).map(Norm._2::ofVector));
+        // tensor should not be empty
+        int index = ArgMin.of(tensor);
+        TrajectorySample trajectorySample = trajectory.get(index);
+        return trajectorySample.stateTime().state().Get(3).divide(GokartTrajectorySRModule.MAX_SPEED);
+      }
     }
     return RealScalar.ZERO;
   }

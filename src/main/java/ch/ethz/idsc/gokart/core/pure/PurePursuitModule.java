@@ -83,6 +83,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   }
 
   /***************************************************/
+  /** @return unitless value in the interval [0, 1] */
   protected Scalar getSpeedMultiplier() {
     return DoubleScalar.of(1.0);
   }

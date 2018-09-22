@@ -108,7 +108,8 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  private final Tse2CurvePurePursuitModule purePursuitModule = new Tse2CurvePurePursuitModule();
+  private final Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
+      new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private final List<PlannerConstraint> constraints = new ArrayList<>();
@@ -173,12 +174,12 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     joystickLcmProvider.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
     // ---
-    purePursuitModule.launch();
+    tse2CurvePurePursuitModule.launch();
   }
 
   @Override // from AbstractClockedModule
   protected void last() {
-    purePursuitModule.terminate();
+    tse2CurvePurePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
     joystickLcmProvider.stopSubscriptions();
   }
@@ -214,7 +215,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       }
       return;
     }
-    purePursuitModule.setCurve(Optional.empty());
+    tse2CurvePurePursuitModule.setCurve(Optional.empty());
     System.err.println("no curve because no pose");
   }
 
@@ -230,12 +231,12 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      purePursuitModule.setCurveTse2(trajectory);
+      tse2CurvePurePursuitModule.setCurveTse2(trajectory);
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       System.err.println("goal not reached");
-      purePursuitModule.setCurve(Optional.empty());
+      tse2CurvePurePursuitModule.setCurve(Optional.empty());
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, new ArrayList<>());
     }
   }
