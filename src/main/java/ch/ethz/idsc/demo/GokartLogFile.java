@@ -786,6 +786,29 @@ public enum GokartLogFile implements LogFile {
   /** event-based marker following with davis240c
    * with markers parallel to driving direction and placed to the sides */
   _20180917T172353_f47a58b9, //
+  /***************************************************/
+  /* 2018-09-20 */
+  /** event-based marker following with davis240c */
+  _20180920T102409_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T103907_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T104534_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T105332_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T110838_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T111706_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T112831_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T113529_53622489, //
+  /** event-based marker following with davis240c
+   * long pause before beginning and after ending */
+  _20180920T145559_53622489, //
+  /***************************************************/
+  /* 2018-09-21 */
   ;
   // ---
   @Override // from LogFile
