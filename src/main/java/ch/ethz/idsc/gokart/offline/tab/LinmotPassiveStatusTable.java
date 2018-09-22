@@ -5,28 +5,19 @@
 package ch.ethz.idsc.gokart.offline.tab;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotStateVariable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LinmotPassiveStatusTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {

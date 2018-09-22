@@ -15,18 +15,18 @@ import ch.ethz.idsc.subare.util.UserHome;
     ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
     //
     List<File> files = new LinkedList<>();
-    //files.add(UserHome.file("20180430T104113_a5291af9.lcm.00"));
-    //files.add(UserHome.file("Racing/20180820T1438521.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1438522.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1438523.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1438524.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1438525.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1438526.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1656371.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1656372.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1656373.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1656374.lcm"));
-    //files.add(UserHome.file("Racing/20180820T1656375.lcm"));
+    // files.add(UserHome.file("20180430T104113_a5291af9.lcm.00"));
+    // files.add(UserHome.file("Racing/20180820T1438521.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1438522.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1438523.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1438524.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1438525.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1438526.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1656371.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1656372.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1656373.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1656374.lcm"));
+    // files.add(UserHome.file("Racing/20180820T1656375.lcm"));
     // files.add(UserHome.file("20180430T104113_a5291af9.lcm.00"));
     files.add(UserHome.file("Racing/20180820T1438521.lcm"));
     files.add(UserHome.file("Racing/20180820T1438522.lcm"));
@@ -39,7 +39,6 @@ import ch.ethz.idsc.subare.util.UserHome;
     files.add(UserHome.file("Racing/20180820T1656373.lcm"));
     files.add(UserHome.file("Racing/20180820T1656374.lcm"));
     files.add(UserHome.file("Racing/20180820T1656375.lcm"));
-
     files.add(UserHome.file("Racing/0w/20180702T1336121.lcm"));
     files.add(UserHome.file("Racing/0w/20180702T1336122.lcm"));
     files.add(UserHome.file("Racing/0w/20180702T1544171.lcm"));
@@ -55,10 +54,7 @@ import ch.ethz.idsc.subare.util.UserHome;
     files.add(UserHome.file("Racing/0w/20180705T1019441.lcm"));
     files.add(UserHome.file("Racing/0w/20180705T1019442.lcm"));
     files.add(UserHome.file("Racing/0w/20180705T1019443.lcm"));
-    
     files.add(UserHome.file("forthandback/fab.lcm"));
-
-    
     for (File inputFile : files)
       try {
         systemAnalysis.process(inputFile);

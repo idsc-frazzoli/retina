@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
-import ch.ethz.idsc.gokart.offline.tab.LinmotStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -53,8 +52,7 @@ public class ComprehensiveLogTableExport {
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //
-        linmotStatusTable,
-        powerSteerTable, //
+        linmotStatusTable, powerSteerTable, //
         // rimoOdometryTable, //
         powerRimoAnalysis, //
         rimoRateTable, //
