@@ -7,7 +7,7 @@ public interface SteerColumnInterface {
   /** @return true if steering is operational */
   boolean isSteerColumnCalibrated();
 
-  // TODO JPH confirm the correctness of the comment regarding sign
+  // TODO DUBILAB confirm the correctness of the comment regarding sign
   /** Important: only call function if {@link #isSteerColumnCalibrated()}
    * returns true, otherwise an exception is thrown.
    * 

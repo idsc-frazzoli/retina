@@ -15,10 +15,10 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
  * the localization algorithm relies on a map that encodes
  * free space and obstacles.
  * 
- * confirmed to work well at speeds of up to 2[m/s] following
- * the oval trajectory in the dubendorf hangar
- * confirmed to work well at speeds of up to 10[m/s] and
- * rotational rates of up to 180[deg/s]. */
+ * confirmed to work well at speeds of up to 2[m*s^-1] following
+ * the oval trajectory in the Dubendorf hangar
+ * confirmed to work well at speeds of up to 10[m*s^-1] and
+ * rotational rates of up to 180[deg*s^-1]. */
 public enum SlamDunk {
   ;
   /** the list of points is typically provided by {@link ParametricResample}
@@ -38,7 +38,8 @@ public enum SlamDunk {
       Se2Grid se2grid = se2MultiresGrids.grid(level);
       for (Se2GridPoint se2GridPoint : se2grid.gridPoints()) {
         geometricLayer.pushMatrix(se2GridPoint.matrix());
-        int eval = points.stream().map(geometricLayer::toPoint2D) // TODO can do in parallel
+        int eval = points.stream() //
+            .map(geometricLayer::toPoint2D) //
             .mapToInt(slamScore::evaluate).sum();
         if (score < eval) {
           best = se2GridPoint;

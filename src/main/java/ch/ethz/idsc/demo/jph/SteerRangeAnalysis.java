@@ -34,9 +34,6 @@ class SteerRangeAnalysis implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    // TODO iterate over all files
-    // int lo = DubendorfHangarLog._20180226T150533_ed1c7f0a.ordinal();
-    // int hi = DubendorfHangarLog._20180427T155709_987cb124.ordinal();
     int lo = GokartLogFile._20171213T161500_55710a6b.ordinal();
     int hi = GokartLogFile._20180112T154355_9e1d3699.ordinal();
     TableBuilder tableBuilder = new TableBuilder();

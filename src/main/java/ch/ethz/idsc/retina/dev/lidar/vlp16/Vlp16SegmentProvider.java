@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
-/** converts firing data to spacial events with time, 3d-coordinates and
+/** converts firing data to spatial events with time, 3d-coordinates and
  * intensity. Only rays with an altitude angle of <= max_alt [deg] are processed. */
 public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
   private final List<Integer> laserList = new ArrayList<>();
@@ -47,7 +47,7 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
     float dy = lookup.dy(azimuth);
     float[] coords = new float[3];
     for (int laser = 0; laser < NUM_LASERS; ++laser) {
-      byteBuffer.position(bufferPos + laserList.get(laser) * 3); // TODO pre-multiply
+      byteBuffer.position(bufferPos + laserList.get(laser) * 3); // TODO LHF pre-multiply
       int distance = byteBuffer.getShort() & 0xffff;
       byte intensity = byteBuffer.get();
       if (limit_lo <= distance) {
