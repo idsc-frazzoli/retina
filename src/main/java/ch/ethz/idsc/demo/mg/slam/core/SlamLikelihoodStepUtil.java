@@ -9,20 +9,20 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ enum SlamLikelihoodStepUtil {
   ;
-  /** updates particle likelihoods by referring to a map
+  /** updates particle likelihoods by referring to an occurrence map
    * 
    * @param slamParticles
-   * @param map
-   * @param gokartFramePos interpreted as [m] event position in go kart frame
+   * @param occurrenceMap
+   * @param eventGokartFrame interpreted as [m] event position in go kart frame
    * @param alpha [-] update equation parameter */
-  public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider map, double[] gokartFramePos, double alpha) {
+  public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] eventGokartFrame, double alpha) {
     double sumOfLikelihoods = 0;
-    double maxValue = map.getMaxValue();
+    double maxValue = occurrenceMap.getMaxValue();
     for (int i = 0; i < slamParticles.length; ++i) {
       Tensor worldCoord = new Se2Bijection(slamParticles[i].getPoseUnitless()).forward() //
-          .apply(Tensors.vectorDouble(gokartFramePos));
+          .apply(Tensors.vectorDouble(eventGokartFrame));
       double updatedParticleLikelihood = //
-          slamParticles[i].getParticleLikelihood() + alpha * map.getValue(worldCoord) / maxValue;
+          slamParticles[i].getParticleLikelihood() + alpha * occurrenceMap.getValue(worldCoord) / maxValue;
       slamParticles[i].setParticleLikelihood(updatedParticleLikelihood);
       sumOfLikelihoods += updatedParticleLikelihood;
     }

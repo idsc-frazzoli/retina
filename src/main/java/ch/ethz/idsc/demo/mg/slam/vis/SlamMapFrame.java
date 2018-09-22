@@ -26,14 +26,14 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private static double cornerX;
   private static double cornerY;
 
-  SlamMapFrame(SlamCoreConfig slamConfig) {
-    mapWidth = slamConfig.mapWidth();
-    mapHeight = slamConfig.mapHeight();
-    cornerX = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
-    kartLength = slamConfig.kartLength();
-    waypointRadius = slamConfig.waypointRadius();
+  SlamMapFrame() {
+    mapWidth = SlamCoreConfig.GLOBAL.mapWidth();
+    mapHeight = SlamCoreConfig.GLOBAL.mapHeight();
+    cornerX = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cellDim);
+    kartLength = SlamCoreConfig.GLOBAL.kartLength();
+    waypointRadius = SlamCoreConfig.GLOBAL.waypointRadius();
     bufferedImage = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();

@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.core;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,13 +42,5 @@ import ch.ethz.idsc.tensor.alg.Array;
     }
     // likelihoods always sum up to 1 --> sum of highest likelihoods will never be zero
     return expectedPose.divide(RealScalar.of(likelihoodSum));
-  }
-
-  // for testing
-  public static void printStatusInfo(SlamParticle[] slamParticles) {
-    Arrays.parallelSort(slamParticles, SlamParticleLikelihoodComparator.INSTANCE);
-    System.out.println("**** new status info **********");
-    for (int i = 0; i < slamParticles.length; i++)
-      System.out.println("Particle likelihood " + slamParticles[i].getParticleLikelihood());
   }
 }

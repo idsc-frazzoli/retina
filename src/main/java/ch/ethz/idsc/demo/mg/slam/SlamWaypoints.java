@@ -33,11 +33,15 @@ public class SlamWaypoints {
     Arrays.fill(validities, true);
   }
 
-  public void setValidity(boolean[] validity) {
-    if (validity.length == gokartWaypoints.length())
-      this.validities = validity;
+  public void setValidities(boolean[] validities) {
+    if (validities.length == gokartWaypoints.length())
+      this.validities = validities;
     else
       System.out.println("not equal length: should not happen");
+  }
+
+  public boolean[] getValidities() {
+    return validities;
   }
 
   /** @return gokartWaypoints go kart frame */
@@ -57,9 +61,5 @@ public class SlamWaypoints {
       if (validities[i])
         validGokartWaypoints.append(gokartWaypoints.get(i));
     return validGokartWaypoints;
-  }
-
-  public boolean[] getValidities() {
-    return validities;
   }
 }

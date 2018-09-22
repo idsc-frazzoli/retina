@@ -16,9 +16,10 @@ public class MapProvider {
   private final double cellDimInv;
   private final double[] mapArray;
   // ---
-  /** corners of map */
+  /** current lower left corner of map */
   private double cornerXLow;
   private double cornerYLow;
+  /** current upper right corner of map */
   private double cornerXHigh;
   private double cornerYHigh;
   /** tracks max value of values in array */
@@ -42,7 +43,7 @@ public class MapProvider {
       setMapArray(slamCoreConfig.getMapArray());
   }
 
-  /** divides the provided maps and saves into targMap
+  /** divides the provided maps and saves into targetMap
    * 
    * @param numerator
    * @param denominator
@@ -62,26 +63,27 @@ public class MapProvider {
         .reduce(Math::max).getAsDouble();
   }
 
-  // move map according to the vector
-  public void moveMap(Tensor moveVector) {
+  /** moves the map by the positionDifference vector. The whole mapArray is updated
+   * 
+   * @param positionDifference unitless */
+  public void moveMap(Tensor positionDifference) {
     double[] mapArray = new double[numberOfCells];
     for (int i = 0; i < numberOfCells; i++) {
-      // get cell coordinates in moved map
       double[] newCoord = getCellCoord(i);
-      newCoord[0] += moveVector.Get(0).number().doubleValue();
-      newCoord[1] += moveVector.Get(1).number().doubleValue();
-      double[] oldCoord = getCellCoord(i);
+      newCoord[0] += positionDifference.Get(0).number().doubleValue();
+      newCoord[1] += positionDifference.Get(1).number().doubleValue();
       mapArray[i] = getValue(newCoord[0], newCoord[1]);
     }
-    setCornerFields(moveVector);
+    updateCorners(positionDifference);
     setMapArray(mapArray);
   }
 
-  private void setCornerFields(Tensor moveVector) {
-    cornerXLow += moveVector.Get(0).number().doubleValue();
-    cornerXHigh += moveVector.Get(0).number().doubleValue();
-    cornerYLow += moveVector.Get(1).number().doubleValue();
-    cornerYHigh += moveVector.Get(1).number().doubleValue();
+  /** @param positionDifference unitless */
+  private void updateCorners(Tensor positionDifference) {
+    cornerXLow += positionDifference.Get(0).number().doubleValue();
+    cornerXHigh += positionDifference.Get(0).number().doubleValue();
+    cornerYLow += positionDifference.Get(1).number().doubleValue();
+    cornerYHigh += positionDifference.Get(1).number().doubleValue();
   }
 
   /** @return coordinates of cell middle point */

@@ -6,8 +6,8 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** for SLAM algorithm modules that execute action for each incoming event */
 /* package */ abstract class EventActionSlamStep extends AbstractSlamStep {
-  EventActionSlamStep(SlamCoreContainer slamContainer) {
-    super(slamContainer);
+  EventActionSlamStep(SlamCoreContainer slamCoreContainer) {
+    super(slamCoreContainer);
   }
 
   @Override // from DavisDvsListener

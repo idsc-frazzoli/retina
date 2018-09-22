@@ -29,17 +29,17 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   };
   private final long visualizationInterval;
 
-  public SlamViewer(SlamCoreConfig slamConfig, SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartLidarPose) {
-    super(slamCoreContainer, slamConfig.savingInterval);
+  public SlamViewer(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartLidarPose) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.savingInterval);
     this.gokartLidarPose = gokartLidarPose;
     this.slamPrcContainer = slamPrcContainer;
-    slamMapGUI = new SlamMapGUI(slamConfig);
+    slamMapGUI = new SlamMapGUI();
     slamMapFrames = new SlamMapFrame[2];
     for (int i = 0; i < slamMapFrames.length; ++i)
-      slamMapFrames[i] = new SlamMapFrame(slamConfig);
-    slamSaveFrame = new SlamSaveFrame(slamConfig, slamMapFrames);
+      slamMapFrames[i] = new SlamMapFrame();
+    slamSaveFrame = new SlamSaveFrame(slamMapFrames);
     // ---
-    visualizationInterval = Magnitude.MILLI_SECOND.toLong(slamConfig.visualizationInterval);
+    visualizationInterval = Magnitude.MILLI_SECOND.toLong(SlamCoreConfig.GLOBAL.visualizationInterval);
   }
 
   @Override // from StartAndStoppable

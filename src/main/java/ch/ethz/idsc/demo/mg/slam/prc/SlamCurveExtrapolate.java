@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.Tensor;
   private final Scalar curveFactor;
   private final Scalar extrapolationDistance;
 
-  SlamCurveExtrapolate(SlamPrcContainer slamCurveContainer) {
-    super(slamCurveContainer);
+  SlamCurveExtrapolate(SlamPrcContainer slamPrcContainer) {
+    super(slamPrcContainer);
     slamCurvatureFilter = new SlamCurvatureSmoother();
     slamHeadingFilter = new SlamHeadingSmoother();
     numberOfPoints = SlamPrcConfig.GLOBAL.numberOfPoints;
@@ -25,15 +25,15 @@ import ch.ethz.idsc.tensor.Tensor;
 
   @Override // from CurveListener
   public void process() {
-    Tensor interpolatedCurve = slamPrcContainer.getInterpolatedCurve();
-    Scalar localCurvature = slamCurvatureFilter.smoothCurvature(interpolatedCurve);
+    Tensor fittedCurve = slamPrcContainer.getFittedCurve();
+    Scalar localCurvature = slamCurvatureFilter.smoothCurvature(fittedCurve);
     localCurvature = localCurvature.multiply(curveFactor);
-    if (interpolatedCurve.length() >= 3) {
-      Tensor endPose = slamHeadingFilter.smoothHeading(interpolatedCurve);
+    if (fittedCurve.length() >= 3) {
+      Tensor endPose = slamHeadingFilter.smoothHeading(fittedCurve);
       Tensor extrapolatedCurve = SlamCurveExtrapolateUtil.extrapolateCurve(endPose, localCurvature, //
           extrapolationDistance, numberOfPoints);
-      appendCurve(interpolatedCurve, extrapolatedCurve);
-      slamPrcContainer.setCurve(interpolatedCurve);
+      appendCurve(fittedCurve, extrapolatedCurve);
+      slamPrcContainer.setCurve(fittedCurve);
     }
   }
 

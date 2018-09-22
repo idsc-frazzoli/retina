@@ -26,7 +26,7 @@ public class SlamCoreConfig {
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
-  public final Boolean saveSlamMap = true;
+  public final Boolean saveSlamMap = false;
   /** which event polarities are processed */
   public final EventPolarityFilter eventPolarityFilter = EventPolarityFilter.BOTH;
   // particle filter parameters
@@ -44,9 +44,10 @@ public class SlamCoreConfig {
   public final Scalar resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);
   public final Scalar statePropagationRate = Quantity.of(1, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar waypointUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public Scalar waypointUpdateRate = Quantity.of(0.02, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public Scalar purePursuitUpdateRate = Quantity.of(0.05, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -84,7 +85,7 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar padding = Quantity.of(7, SI.METER);
+  public final Scalar padding = Quantity.of(8, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

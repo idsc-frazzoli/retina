@@ -43,12 +43,8 @@ class SausageFilter implements WaypointFilterInterface {
         if (Scalars.lessEquals(distanceThreshold, minDistance))
           tempValidities[i] = false;
       }
-    if (checkReset(tempValidities)) {
-      // TODO MG for fun use:
-      // System.arraycopy(tempValidities, 0, validities, 0, validities.length);
-      for (int i = 0; i < validities.length; ++i)
-        validities[i] = tempValidities[i];
-    }
+    if (checkReset(tempValidities))
+      System.arraycopy(tempValidities, 0, validities, 0, validities.length);
   }
 
   // check that we do not set everything to zero -> would be a sign that we need to "reset" curve

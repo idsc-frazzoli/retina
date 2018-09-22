@@ -24,100 +24,100 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
  * in the field listeners */
 public enum SlamAlgoConfiguration {
   ;
-  public static final List<DavisDvsListener> getListeners(SlamCoreContainer slamContainer, SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig, //
+  public static final List<DavisDvsListener> getListeners(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
-    System.out.println(slamConfig.slamAlgoConfig);
+    System.out.println(SlamCoreConfig.GLOBAL.slamAlgoConfig);
     List<DavisDvsListener> listeners = new ArrayList<>();
     /** image plane to go kart frame mapping is used by every configuration
      * and always the first module to be called */
-    listeners.add(new SlamImageToGokart(slamContainer, slamConfig));
+    listeners.add(new SlamImageToGokart(slamCoreContainer));
     /** further modules depend on config */
-    switch (slamConfig.slamAlgoConfig) {
+    switch (SlamCoreConfig.GLOBAL.slamAlgoConfig) {
     case standardMode:
-      standardMode(listeners, slamContainer, slamCurveContainer, slamConfig);
+      standardMode(listeners, slamCoreContainer, slamPrcContainer);
       break;
     case standardReactiveMode:
-      reactiveMapMode(listeners, slamContainer, slamCurveContainer, slamConfig);
+      reactiveMapMode(listeners, slamCoreContainer, slamPrcContainer);
       break;
     case lidarMode:
-      externalPoseMode(listeners, slamContainer, slamCurveContainer, slamConfig, gokartLidarPose);
+      externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartLidarPose);
       break;
     case odometryMode:
-      externalPoseMode(listeners, slamContainer, slamCurveContainer, slamConfig, gokartPoseOdometry);
+      externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseOdometry);
       break;
     case lidarReactiveMode:
-      lidarPoseReactiveMode(listeners, slamContainer, slamCurveContainer, slamConfig, gokartLidarPose);
+      lidarPoseReactiveMode(listeners, slamCoreContainer, slamPrcContainer, gokartLidarPose);
       break;
     case odometryReactiveMode:
-      odometryPoseReactiveMode(listeners, slamContainer, slamCurveContainer, slamConfig, gokartPoseOdometry);
+      odometryPoseReactiveMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseOdometry);
       break;
     case localizationMode:
-      standardLocalizationStep(listeners, slamContainer, slamConfig);
+      standardLocalizationStep(listeners, slamCoreContainer);
       break;
     default:
       throw new RuntimeException();
     }
-    if (slamConfig.offlineLogMode)
-      listeners.add(new SlamLogCollection(slamContainer, slamConfig, gokartLidarPose));
+    // we always use this module to move the map when pose is too close to boarders
+    listeners.add(new SlamMapMove(slamCoreContainer));
+    if (SlamCoreConfig.GLOBAL.offlineLogMode)
+      listeners.add(new SlamLogCollection(slamCoreContainer, gokartLidarPose));
     return listeners;
   }
 
   /** standardMode: the particle velocity state is used for state propagation */
-  private static final void standardMode(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, //
-      SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig) {
-    standardLocalizationStep(listeners, slamContainer, slamConfig);
-    standardMappingStep(listeners, slamContainer, slamCurveContainer, slamConfig);
+  private static final void standardMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer) {
+    standardLocalizationStep(listeners, slamCoreContainer);
+    standardMappingStep(listeners, slamCoreContainer, slamPrcContainer);
   }
 
   /** reactiveMapMode: In comparison with standardConfig, the part of the map which is currently not seen by the vehicle
    * is cleared. This results in a "local" localization */
   private static final void reactiveMapMode(List<DavisDvsListener> listeners, //
-      SlamCoreContainer slamContainer, SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig) {
-    standardLocalizationStep(listeners, slamContainer, slamConfig);
-    standardMappingStep(listeners, slamContainer, slamCurveContainer, slamConfig);
-    listeners.add(new SlamReactiveMapStep(slamConfig, slamContainer));
+      SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer) {
+    standardLocalizationStep(listeners, slamCoreContainer);
+    standardMappingStep(listeners, slamCoreContainer, slamPrcContainer);
+    listeners.add(new SlamReactiveMapStep(slamCoreContainer));
   }
 
   /** externalPoseMode: Instead of using a particle filter, the pose is provided by an external module like the lidar
    * or odometry. The occurrence map is then updated using this pose */
-  private static final void externalPoseMode(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, //
-      SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig, GokartPoseInterface gokartPoseInterface) {
-    listeners.add(new SlamLocalizationStep(slamContainer, slamConfig, gokartPoseInterface));
-    listeners.add(new SlamMappingStep(slamContainer));
-    listeners.add(new SlamMapProcessing(slamContainer, slamCurveContainer));
+  private static final void externalPoseMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface) {
+    listeners.add(new SlamLocalizationStep(slamCoreContainer, gokartPoseInterface));
+    listeners.add(new SlamMappingStep(slamCoreContainer));
+    listeners.add(new SlamMapProcessing(slamCoreContainer, slamPrcContainer));
   }
 
   /** lidarPoseReactiveMode: reactive map mode with lidar pose. Since the lidar pose does not drift, we do not need a SlamMapPoseReset */
-  private static final void lidarPoseReactiveMode(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, //
-      SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig, GokartPoseInterface gokartPoseInterface) {
-    externalPoseMode(listeners, slamContainer, slamCurveContainer, slamConfig, gokartPoseInterface);
-    listeners.add(new SlamReactiveMapStep(slamConfig, slamContainer));
+  private static final void lidarPoseReactiveMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface) {
+    externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseInterface);
+    listeners.add(new SlamReactiveMapStep(slamCoreContainer));
   }
 
   /** odometryPoseReactiveMode: reactive mode with odometry. In comparison to lidarPoseReactiveMode, SlamPoseMapReset module is included
    * since the odometry pose tends to drift away */
-  private static final void odometryPoseReactiveMode(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, //
-      SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry) {
-    listeners.add(new SlamPoseOdometryStep(slamContainer, slamConfig, gokartPoseOdometry));
-    listeners.add(new SlamMappingStep(slamContainer));
-    listeners.add(new SlamReactiveMapStep(slamConfig, slamContainer));
-    listeners.add(new SlamMapProcessing(slamContainer, slamCurveContainer));
-    listeners.add(new SlamPoseMapReset(slamContainer, slamConfig));
+  private static final void odometryPoseReactiveMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer, GokartPoseOdometryDemo gokartPoseOdometry) {
+    listeners.add(new SlamPoseOdometryStep(slamCoreContainer, gokartPoseOdometry));
+    listeners.add(new SlamMappingStep(slamCoreContainer));
+    listeners.add(new SlamReactiveMapStep(slamCoreContainer));
+    listeners.add(new SlamMapProcessing(slamCoreContainer, slamPrcContainer));
   }
 
   /** localizationMode: the mapping step of the algorithm is not executed and a previously known ground truth map is loaded instead.
    * Only for measuring performance of particle filter for localization step, therefore no SlamMapProcessing is done */
-  private static final void standardLocalizationStep(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, SlamCoreConfig slamConfig) {
-    listeners.add(new SlamLikelihoodStep(slamContainer, slamConfig.alpha));
-    listeners.add(new SlamPropagationStep(slamContainer, slamConfig));
-    listeners.add(new SlamResamplingStep(slamContainer, slamConfig));
+  private static final void standardLocalizationStep(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer) {
+    listeners.add(new SlamLikelihoodStep(slamCoreContainer));
+    listeners.add(new SlamPropagationStep(slamCoreContainer));
+    listeners.add(new SlamResamplingStep(slamCoreContainer));
   }
 
   /** standard mapping step of SLAM algorithm. consists of three modules */
-  private static final void standardMappingStep(List<DavisDvsListener> listeners, SlamCoreContainer slamContainer, //
-      SlamPrcContainer slamCurveContainer, SlamCoreConfig slamConfig) {
-    listeners.add(new SlamOccurrenceMapStep(slamContainer, slamConfig.relevantParticles));
-    listeners.add(new SlamMapProcessing(slamContainer, slamCurveContainer));
-    listeners.add(new SlamPoseMapReset(slamContainer, slamConfig));
+  private static final void standardMappingStep(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer) {
+    listeners.add(new SlamOccurrenceMapStep(slamCoreContainer));
+    listeners.add(new SlamMapProcessing(slamCoreContainer, slamPrcContainer));
   }
 }

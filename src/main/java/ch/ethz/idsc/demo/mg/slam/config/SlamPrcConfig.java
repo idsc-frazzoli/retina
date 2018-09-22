@@ -14,7 +14,7 @@ public class SlamPrcConfig {
   // RegionOfInterestFilter
   public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // [m] in go kart frame
-  // TODO MG comment on visibleBoxYHalfWidth
+  /** half 'width' of rectangle for RegionOfInterestFilter */
   public final Scalar visibleBoxYHalfWidth = Quantity.of(1.5, SI.METER); // [m] in go kart frame
   // MergeWaypointFilter
   public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
@@ -30,10 +30,10 @@ public class SlamPrcConfig {
   public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
   // SlamCurvatureFilter
-  public final Scalar alphaCurvature = RealScalar.of(0.85);
-  public final Scalar extractionPoints = RealScalar.of(6);
+  public final Scalar alphaCurvature = RealScalar.of(0.85); // [-]
+  public final Scalar extractionPoints = RealScalar.of(6); // [-]
   // SlamHeadingFilter
-  public final Scalar alphaHeading = RealScalar.of(0.8);
+  public final Scalar alphaHeading = RealScalar.of(0.8); // [-]
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = RealScalar.of(3.5); // [m]
 }

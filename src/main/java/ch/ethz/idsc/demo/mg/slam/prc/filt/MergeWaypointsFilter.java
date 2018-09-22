@@ -20,11 +20,10 @@ import ch.ethz.idsc.tensor.sca.AbsSquared;
 
   /** @param validities
    * @return in case no point is valid, validities.length is returned */
-  private static int findFirstValidIndex(boolean[] validities) {
+  private int findFirstValidIndex(boolean[] validities) {
     for (int i = 0; i < validities.length; ++i)
       if (validities[i])
         return i;
-    // TODO MG where is the case "index==validities.length" handled later on?
     return validities.length;
   }
 
@@ -44,6 +43,9 @@ import ch.ethz.idsc.tensor.sca.AbsSquared;
       }
   }
 
+  /** @param currentPoint go kart frame
+   * @param previousValidPoint go kart frame
+   * @return true when distance between points is larger than deltaPosThreshold */
   private boolean filterCondition(Tensor currentPoint, Tensor previousValidPoint) {
     return Scalars.lessEquals( //
         deltaPosThresholdSquared, //
