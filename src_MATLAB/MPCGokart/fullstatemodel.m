@@ -31,7 +31,7 @@ global params;
 
 [ FORCES, forces] = tires(x,u);
 [brakeTorques] = brakes(x, u, forces);
-[torques] = motorTorques(u);
+[torques] = motorTorques(u,x);
 
 rollFric = params.m*params.g*params.muRoll;
 du = 1/params.m*(deadZone(sum(FORCES(1:4)) + params.m*x(3)*x(2), -rollFric, rollFric)  - coulombFriction(x(1)));
@@ -43,6 +43,8 @@ dy = x(1) * sin(x(4)) + x(2) * cos(x(4));
 dw2L = 1/params.Iw * (torques(3) + brakeTorques(3) - forces(3)*params.R);
 dw2R = 1/params.Iw * (torques(4) + brakeTorques(4) - forces(4)*params.R);
 
+%dw2L = 0;
+%dw2R = 0;
 dX = [du dv dr dKsi dx dy dw2L dw2R]';
 
 uPrev = u;
@@ -144,17 +146,17 @@ brakeTorques = brakeTorques(:);
 end
 
 
-function [torques] = motorTorques(u)
+function [torques] = motorTorques(u,x)
 
 global params;
 
 leftThrottle = saturation(u(3),0,params.maxThrottle)*0.1;
 rightThrottle = saturation(u(4),0,params.maxThrottle)*0.1;
 
-Tm2L = leftThrottle;
-Tm2R = rightThrottle;
+Tm2L = leftThrottle/max(x(7),1);
+Tm2R = rightThrottle/max(x(8),1);
 
-torques = [0; 0; Tm2L; Tm2R];
+torques = [0; 0; Tm2L; Tm2R]
 
 end
 

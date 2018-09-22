@@ -1,5 +1,4 @@
 addpath('..')
-addpath('../misc')
 addpath('../visualization')
 addpath('../ML')
 addpath('../SystemAnalysis')
@@ -10,8 +9,10 @@ times = fullM(:,1);
 names = {"race test real","simulation"};
 
 initialize_parameters
-u = getControl(fullM);
-u = u(1:5000,:)*0.001;
+%u = getControl(fullM);
+%u = u(1:5000,:)*0.001;
+u = zeros(6000,4);
+u(:,3:4)=1;
 x = zeros(1,8);
 f = @(x,u)fullstatemodel(x,u);
 [simxhist,simtime] = euler(f,x,u,0.01);
