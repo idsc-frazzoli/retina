@@ -75,15 +75,16 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 // TODO make configurable as parameter
 public class GokartTrajectorySRModule extends AbstractClockedModule {
   public static final Scalar MAX_SPEED = RealScalar.of(8); // 8
+  public static final int INIT_VEL = 6;
   static final Scalar MAX_TURNING_PLAN = Degree.of(20); // 45
   static final Tensor ACCELERATIONS = Tensors.vector(-2, 0, 2);
   static final int FLOWRES = 9;
-  static final float CAR_RAD = 1.1f; // [m]
+  static final float CAR_RAD = 1.2f; // [m]
   // ---
-  static final Tensor GOAL = Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, MAX_SPEED.divide(RealScalar.of(2))); // TODO
+  static final Tensor GOAL = Tensors.of(RealScalar.of(54), RealScalar.of(57), DoubleScalar.of(Math.PI / 4), MAX_SPEED.divide(RealScalar.of(2))); // TODO
   // ---
-  static final boolean SR_PED_LEGAL = true;
-  static final boolean SR_PED_ILLEGAL = false;
+  static final boolean SR_PED_LEGAL = false;
+  static final boolean SR_PED_ILLEGAL = true;
   static final float PED_VELOCITY = 2.0f;
   static final float CAR_VELOCITY = 10.0f;
   static final float PED_RADIUS = 0.3f;
@@ -96,20 +97,21 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal(), RealScalar.of(10)).unmodifiable();
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = FixedStateIntegrator.create( //
-      new Tse2Integrator(Clip.function(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 10), 4);
+      new Tse2Integrator(Clip.function(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 15), 4);
   // private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(Tse2Wrap.INSTANCE::represent));
   private static final int MAX_STEPS = 10000;
   // ---
-  static final FlowsInterface TSE2_CARFLOWS = Tse2CarFlows.of(Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);
+  static final FlowsInterface TSE2_CARFLOWS = Tse2CarFlows.of( //
+      Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Tse2CurvePurePursuitModule purePursuitModule = new Tse2CurvePurePursuitModule();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
-  private List<PlannerConstraint> constraints;
+  private final List<PlannerConstraint> constraints = new ArrayList<>();
   private PlannerConstraint carConstraint;
   private final Collection<CostFunction> extraCosts = new LinkedList<>();
   private final Tensor goalRadius;
@@ -125,7 +127,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     MinMax minMax = MinMax.of(STANDARD.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     //
-    Tensor imageLid = ResourceData.of("/dubilab/sr/lidar_obs.png");
+    Tensor imageLid = ResourceData.of("/dubilab/sr/lidar_obs.png").get(Tensor.ALL, Tensor.ALL);
     imageLid = ImageEdges.extrusion(imageLid, 3);
     Tensor range = LocalizationConfig.getPredefinedMapObstacles().range();
     ImageRegion irLid = new ImageRegion(imageLid, range, false);
@@ -138,8 +140,8 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();
     controls = TSE2_CARFLOWS.getFlows(resolution);
     // ---
-    Tensor imageCar = ResourceData.of("/dubilab/sr/car_obs.png");
-    Tensor imagePedLegal = ResourceData.of("/dubilab/sr/ped_obs_legal.png");
+    Tensor imageCar = ResourceData.of("/dubilab/sr/car_obs.png").get(Tensor.ALL, Tensor.ALL, 0);
+    Tensor imagePedLegal = ResourceData.of("/dubilab/sr/ped_obs_legal.png").get(Tensor.ALL, Tensor.ALL, 0);
     ImageRegion irCar = new ImageRegion(imageCar, range, false);
     ImageRegion irPedLegal = new ImageRegion(imagePedLegal, range, false);
     ImageRegion irPedIllegal = new ImageRegion(imageLid, range, false);
@@ -184,8 +186,8 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (Objects.nonNull(gokartPoseEvent)) {
-      Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
-      xya = xya.append(RealScalar.ZERO); // Zero init velocity
+      Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
+      xya.append(RealScalar.of(INIT_VEL)); // Zero init velocity
       Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
       boolean isResetPressed = optional.isPresent() && ((GokartJoystickInterface) optional.get()).isResetPressed();
       // ---
@@ -204,11 +206,13 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
             STATE_TIME_RASTER, FIXEDSTATEINTEGRATOR, controls, plannerConstraints, goalInterface);
         // ---
         // PLANNING
+        // System.out.println(stateTime.toInfoString());
         trajectoryPlanner.insertRoot(stateTime);
         GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
         glcExpand.findAny(MAX_STEPS);
         expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
       }
+      return;
     }
     purePursuitModule.setCurve(Optional.empty());
     System.err.println("no curve because no pose");
@@ -222,6 +226,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) { // goal reached
+      System.out.println("goal reached");
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
@@ -229,6 +234,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, trajectory);
     } else {
       // failure to reach goal
+      System.err.println("goal not reached");
       purePursuitModule.setCurve(Optional.empty());
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME, new ArrayList<>());
     }

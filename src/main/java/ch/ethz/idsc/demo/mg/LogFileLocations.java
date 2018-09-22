@@ -106,7 +106,65 @@ public enum LogFileLocations {
   /** one round with aprupt acceleration and braking */
   DUBI16d("20180813T165630_2c569ed8Extracted4.lcm"),
   /** six rounds with varying speed */
-  DUBI16e("20180813T165630_2c569ed8Extracted5.lcm");
+  DUBI16e("20180813T165630_2c569ed8Extracted5.lcm"),
+  /** autonomously driving around circle shape with lots of way points */
+  DUBI17("20180913T164921_34b3470d.lcm.00"),
+  /** 2.5 laps autonomously driving around */
+  DUBI17a("20180913T164921_34b3470dExtracted1.lcm"),
+  /** 2 laps autonomously driving around */
+  DUBI17b("20180913T164921_34b3470dExtracted2.lcm"),
+  /** 2 laps autonomously driving around */
+  DUBI17c("20180913T164921_34b3470dExtracted3.lcm"),
+  /** 1.5 laps autonomously Jan driving around */
+  DUBI17d("20180913T164921_34b3470dExtracted4.lcm"),
+  /** autonomously Jan driving around */
+  DUBI17e("20180913T164921_34b3470dExtracted5.lcm"),
+  /** autonomously driving along straight line in center of hangar */
+  DUBI18("20180913T174600_34b3470d.lcm.00"),
+  /** autonomously driving along straight line very slowly */
+  DUBI18a("20180913T174600_34b3470dExtracted1.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18b("20180913T174600_34b3470dExtracted2.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18c("20180913T174600_34b3470dExtracted3.lcm"),
+  /** autonomously driving along straight line slow speed */
+  DUBI18d("20180913T174600_34b3470dExtracted4.lcm"),
+  /** autonomously driving along straight line a bit faster */
+  DUBI18e("20180913T174600_34b3470dExtracted5.lcm"),
+  /** autonomously driving along straight line a bit faster */
+  DUBI18f("20180913T174600_34b3470dExtracted6.lcm"),
+  /** autonomously driving a few laps davis lidar slam, slow */
+  DUBI19a("20180917T113048_f47a58b9Extracted1.lcm"),
+  /** autonomously driving two laps davis lidar slam, slighly different track */
+  DUBI19b("20180917T142635_f47a58b9Extracted1.lcm"),
+  /** autonomously driving, parts of track with vertical stripes */
+  DUBI19c("20180917T144839_f47a58b9Extracted1.lcm"),
+  /** Ale autonomously driving 1.5 laps */
+  DUBI19d("20180917T144839_f47a58b9Extracted2.lcm"),
+  /** Ale autonomously driving 2 laps */
+  DUBI19e("20180917T144839_f47a58b9Extracted3.lcm"),
+  /** driving autonomously 3 laps */
+  DUBI19f("20180917T152855_f47a58b9Extracted1.lcm"),
+  /** driving autonomously in opposite direction */
+  DUBI19g("20180917T152855_f47a58b9Extracted2.lcm"),
+  /** driving autonomously in opposite direction */
+  DUBI19h("20180917T152855_f47a58b9Extracted3.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19i("20180917T163954_f47a58b9Extracted1.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19j("20180917T163954_f47a58b9Extracted2.lcm"),
+  /** driving autonomously with vertical stripes */
+  DUBI19k("20180917T163954_f47a58b9Extracted3.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19l("20180917T165800_f47a58b9Extracted1.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19m("20180917T170914_f47a58b9Extracted1.lcm"),
+  /** autonomously driving with crosses instead of stripes */
+  DUBI19n("20180917T170914_f47a58b9Extracted2.lcm"),
+  /** driving with vertical stripes on both sides */
+  DUBI19o("20180917T172353_f47a58b9Extracted1.lcm"),
+  /** driving with vertical stripes on both sides */
+  DUBI19p("20180917T172353_f47a58b9Extracted2.lcm"), DUBI19x("20180917T144839_f47a58b9.lcm.00");
   // ---
   private final String filename;
 

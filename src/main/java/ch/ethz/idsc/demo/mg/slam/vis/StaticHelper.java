@@ -7,7 +7,9 @@ import java.awt.image.BufferedImage;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.SlamContainer;
+import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
+import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
+import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
@@ -19,8 +21,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
-  private static final byte[] LOOKUP = { ORANGE, GREEN, BLUE };
-  private static final double curveRadius = 0.1;
+  private static final double radius = 0.1; // [m]
 
   /** sets all frames for the visualization
    * 
@@ -28,16 +29,17 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @param slamContainer
    * @param gokartLidarPose pose with units provided by lidar
    * @return array of BufferedImages of length 2 */
-  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamContainer slamContainer, Tensor gokartLidarPose) {
+  public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamContainer, //
+      SlamPrcContainer slamPrcContainer, Tensor gokartLidarPose) {
     paintRawMap(slamContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
-    slamMapFrames[0].addGokartPose(slamContainer.getPose(), Color.BLUE);
-    slamMapFrames[1].drawSlamWaypoints(slamContainer.getSlamWaypoints());
-    if (slamContainer.getlookAheadWorldFrame().isPresent())
-      // slamMapFrames[1].drawPoint(slamContainer.getlookAheadWorldFrame().get(), Color.BLUE, 0.2);
-      slamMapFrames[1].addGokartPose(slamContainer.getPose(), Color.BLUE);
-    if (slamContainer.getRefinedWaypointCurve().isPresent())
-      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamContainer.getRefinedWaypointCurve().get());
+    slamMapFrames[0].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
+    VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
+    // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
+    if (slamPrcContainer.getCurve().isPresent())
+      drawInterpolate(slamMapFrames[1], slamContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
+    slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
+    slamMapFrames[1].addGokartPose(slamContainer.getPoseUnitless(), Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
@@ -55,18 +57,18 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       bytes[i] = (byte) (216 + 39 * (1 - mapArray[i] / maxValue));
   }
 
-  /** draws the interpolated curve estimated by the SLAM algorithm
+  /** draws the curve estimated by the SLAM algorithm
    * 
    * @param slamMapFrame
    * @param pose of vehicle
-   * @param refinedWaypointCurve in go kart frame coordinates */
-  private static void drawInterpolate(SlamMapFrame slamMapFrame, Tensor poseUnitless, Tensor refinedWaypointCurve) {
+   * @param cure in go kart frame */
+  private static void drawInterpolate(SlamMapFrame slamMapFrame, Tensor poseUnitless, Tensor curve) {
     // transform to world frame coordinates for visualization
     TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
-    Tensor globalCurve = Tensor.of(refinedWaypointCurve.stream().map(local2World));
+    Tensor globalCurve = Tensor.of(curve.stream().map(local2World));
     for (int i = 0; i < globalCurve.length(); ++i) {
       double[] point = Primitives.toDoubleArray(globalCurve.get(i));
-      slamMapFrame.drawPoint(point, Color.BLACK, curveRadius);
+      slamMapFrame.drawPoint(point, Color.BLACK, radius);
     }
   }
 
@@ -79,12 +81,12 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++) {
-      if (processedByteArray[i] == 0)
-        bytes[i] = CLEAR_BYTE;
-      else {
-        int labelID = processedByteArray[i] % 3;
-        bytes[i] = LOOKUP[labelID];
-      }
+      bytes[i] = processedByteArray[i] == 0 ? CLEAR_BYTE : BLUE;
+      // if (processedByteArray[i] == 0)
+      // bytes[i] = CLEAR_BYTE;
+      // else {
+      // bytes[i] = BLUE;
+      // }
     }
   }
 }
