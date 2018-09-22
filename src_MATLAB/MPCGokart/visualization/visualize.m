@@ -29,6 +29,7 @@ for i = 1:nargin-4
     end
     %interpolate
     xhist = interp1(xhist(:,1),xhist(:,2:end),time,'linear','extrap');
+    %xhist = interp1(xhist(:,1),xhist(:,2:end),time,'linear','extrap');
     
     Ux(:,i)=xhist(:,1);
     Uy(:,i)=xhist(:,2);
