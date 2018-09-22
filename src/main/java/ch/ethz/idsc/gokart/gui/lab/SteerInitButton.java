@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 
-/** gui element to initiate calibration procedure of steering wheel */
+/** GUI element to initiate calibration procedure of steering wheel */
 /* package */ class SteerInitButton extends AutoboxInitButton {
   public SteerInitButton() {
     super("Calibration");
