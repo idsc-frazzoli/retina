@@ -3,5 +3,5 @@ function f = objectiveN(z,p)
     wantedpos = p;
     error = realPos-wantedpos;
     Q = eye(2)*10;
-    f = error'*Q*error;
+    f = error'*Q*error+z'*z*0.001;
 end
