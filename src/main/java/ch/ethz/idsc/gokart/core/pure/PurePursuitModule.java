@@ -20,6 +20,11 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
+  protected final PursuitConfig pursuitConfig;
+
+  PurePursuitModule(PursuitConfig pursuitConfig) {
+    this.pursuitConfig = pursuitConfig;
+  }
 
   @Override // from AbstractModule
   protected final void first() throws Exception {
@@ -41,6 +46,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
 
   protected abstract void protected_last();
 
+  /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
     final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
@@ -66,18 +72,20 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(Times.of( //
-          PursuitConfig.GLOBAL.rateFollower, speed, getSpeedMultiplier()));
+          pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);
   }
 
-  protected Scalar getSpeedMultiplier() {
-    return DoubleScalar.of(1.0);
-  }
-
   @Override // from AbstractClockedModule
   protected final Scalar getPeriod() {
-    return PursuitConfig.GLOBAL.updatePeriod;
+    return pursuitConfig.updatePeriod;
+  }
+
+  /***************************************************/
+  /** @return unitless value in the interval [0, 1] */
+  protected Scalar getSpeedMultiplier() {
+    return DoubleScalar.of(1.0);
   }
 
   /** @return heading with unit "rad"

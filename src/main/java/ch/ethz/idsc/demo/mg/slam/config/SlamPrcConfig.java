@@ -1,6 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.config;
 
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -10,7 +11,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class SlamPrcConfig {
   public static final SlamPrcConfig GLOBAL = new SlamPrcConfig();
   // SlamWaypointDetection
-  public Scalar mapThreshold = RealScalar.of(0.3); // valid range [0,1]
+  /** valid range [0,1] */
+  public Scalar mapThreshold = RealScalar.of(0.3);
   // RegionOfInterestFilter
   public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // [m] in go kart frame
@@ -35,5 +37,11 @@ public class SlamPrcConfig {
   // SlamHeadingFilter
   public final Scalar alphaHeading = RealScalar.of(0.8);
   // SlamCurvePurePursuitModule
-  public Scalar lookAhead = RealScalar.of(3.5); // [m]
+  public Scalar lookAhead = Quantity.of(3.5, SI.METER);
+
+  /***************************************************/
+  /** @return unitless look ahead distance with interpretation in meters */
+  public Scalar lookAheadMeter() {
+    return Magnitude.METER.apply(lookAhead);
+  }
 }

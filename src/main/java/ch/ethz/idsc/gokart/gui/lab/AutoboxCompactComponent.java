@@ -51,7 +51,6 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   private int imuFrame_count = 0;
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
-  // TODO document for all gui elements why the subscriptions are the way they are
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
@@ -113,9 +112,12 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   public void start() {
     rimoGetLcmClient.addListener(rimoGetListener);
     rimoGetLcmClient.startSubscriptions();
+    // ---
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
+    // ---
     joystickLcmProvider.startSubscriptions();
+    // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
     // ---
@@ -171,6 +173,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     joystickLcmProvider.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
+    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override // from DavisImuFrameListener

@@ -31,6 +31,7 @@ public class PursuitConfig implements Serializable {
   public Scalar poseQualityMin = RealScalar.of(0.5);
 
   /***************************************************/
+  /** @return unitless look ahead distance with interpretation in meters */
   public Scalar lookAheadMeter() {
     return Magnitude.METER.apply(lookAhead);
   }
