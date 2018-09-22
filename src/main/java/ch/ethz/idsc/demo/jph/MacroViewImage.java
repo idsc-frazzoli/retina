@@ -49,7 +49,8 @@ class SpeedClip implements ScalarUnaryOperator {
  * 
  * https://user-images.githubusercontent.com/4012178/44048221-08391a08-9f31-11e8-86ec-df450f4051e6.png */
 /* package */ class MacroViewImage {
-  private static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, 13);
+  private static final int FONT_SIZE = 10;
+  private static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, FONT_SIZE);
   private static final int LENGTH = MacroViewTable.LENGTH;
   private static final int MARGIN_L = 75;
   private static final int MARGIN_R = 50;
@@ -82,13 +83,13 @@ class SpeedClip implements ScalarUnaryOperator {
     {
       img1 = Tensors.of(table.get(Tensor.ALL, 2));
       img1 = img1.map(COLODATAINDEXED);
-      img1 = ImageResize.nearest(img1, 5, 1);
+      img1 = ImageResize.nearest(img1, 5, 1); // autonomous bar
     }
     Tensor img0;
     {
       img0 = Tensors.of(table.get(Tensor.ALL, 1).map(SPEED_CLIP));
       img0 = img0.map(GRADIENT);
-      img0 = ImageResize.nearest(img0, 10, 1);
+      img0 = ImageResize.nearest(img0, 6, 1); // speed bar
     }
     Tensor image = Join.of(0, img1, img0);
     List<Integer> dims0 = Dimensions.of(image);
@@ -103,9 +104,9 @@ class SpeedClip implements ScalarUnaryOperator {
       graphics.setFont(FONT);
       graphics.setColor(Color.BLACK);
       graphics.fillRect(0, 0, width(), 1);
-      graphics.drawString("" + dayname, 0, 13);
+      graphics.drawString("" + dayname, 0, FONT_SIZE);
       minutes = (int) table.get(Tensor.ALL, 0).stream().filter(NumberQ::of).count();
-      graphics.drawString(String.format("%3d", minutes), width() - 32, 13);
+      graphics.drawString(String.format("%3d", minutes), width() - 32, FONT_SIZE);
       // ---
       image = ImageFormat.from(bufferedImage);
     }
@@ -137,6 +138,8 @@ class SpeedClip implements ScalarUnaryOperator {
         Tensor keyvisual = ResourceData.of("/eth/marketing/keyvisual.png");
         keyvisual = TensorMap.of(BLACK_TO_YELLOW, keyvisual, 2);
         BufferedImage background = ImageFormat.of(keyvisual);
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         graphics.drawImage(background, 0, 0, null);
         graphics.drawImage(ImageFormat.of(image), 0, 0, null);
       }
