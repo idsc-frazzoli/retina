@@ -41,10 +41,10 @@ class SausageFilter implements WaypointFilterInterface {
    * @param curve */
   private void sausageAction(Tensor gokartWaypoints, boolean[] validities, Tensor curve) {
     boolean[] tempValidities = validities.clone();
-    TensorScalarFunction pointCloudDistance = SimpleRnPointcloudDistance.of(curve, Norm._2);
+    TensorScalarFunction tensorScalarFunction = SimpleRnPointcloudDistance.of(curve, Norm._2);
     for (int i = 0; i < gokartWaypoints.length(); ++i)
       if (validities[i] && gokartWaypoints.get(i).Get(0).number().doubleValue() > 0) {
-        Scalar minDistance = pointCloudDistance.apply(gokartWaypoints.get(i));
+        Scalar minDistance = tensorScalarFunction.apply(gokartWaypoints.get(i));
         if (Scalars.lessEquals(distanceThreshold, minDistance))
           tempValidities[i] = false;
       }

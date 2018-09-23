@@ -11,8 +11,8 @@ import junit.framework.TestCase;
 
 public class SimpleRnPointcloudDistanceTest extends TestCase {
   public void testSimple() {
-    TensorScalarFunction pointCloudDistance = SimpleRnPointcloudDistance.of(CirclePoints.of(20), Norm._2);
-    Scalar distance = pointCloudDistance.apply(Tensors.vector(1, 1));
+    TensorScalarFunction tensorScalarFunction = SimpleRnPointcloudDistance.of(CirclePoints.of(20), Norm._2);
+    Scalar distance = tensorScalarFunction.apply(Tensors.vector(1, 1));
     Clip.function(0.4, 0.5).requireInside(distance);
   }
 }

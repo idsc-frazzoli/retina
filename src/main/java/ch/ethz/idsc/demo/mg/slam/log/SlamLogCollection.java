@@ -8,7 +8,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
-import ch.ethz.idsc.demo.mg.util.io.CsvIO;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 

@@ -3,13 +3,13 @@ package ch.ethz.idsc.demo.mg.slam.vis;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 /* package */ enum StaticHelper {
   ;
-  private static final byte CLEAR_BYTE = -1; // white
+  private static final byte CLEAR_BYTE = -1; // white for type TYPE_BYTE_INDEXED
+  // TODO MG orange and green are not used -> remove?
   private static final byte ORANGE = (byte) -52;
   private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
@@ -37,7 +38,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     paintRawMap(slamCoreContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
     slamMapFrames[0].addGokartPose(slamCoreContainer.getPoseUnitless(), Color.BLUE);
-    VisGeneralUtil.clearFrame(slamMapFrames[1].getBytes());
+    Arrays.fill(slamMapFrames[1].getBytes(), CLEAR_BYTE);
     // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
     if (slamPrcContainer.getCurve().isPresent())
       drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
