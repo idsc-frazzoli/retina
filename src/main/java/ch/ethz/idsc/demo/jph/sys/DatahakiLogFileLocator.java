@@ -9,7 +9,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.GokartLogFiles;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 
 public enum DatahakiLogFileLocator implements LogFileLocator {
   INSTANCE;

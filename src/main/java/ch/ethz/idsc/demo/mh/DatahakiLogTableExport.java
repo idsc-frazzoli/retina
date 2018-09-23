@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 
 /* package */ enum DatahakiLogTableExport {
   ;
