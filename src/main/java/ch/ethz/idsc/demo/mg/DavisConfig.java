@@ -30,6 +30,7 @@ public class DavisConfig {
   public final Scalar width = RealScalar.of(240);
   /** height of image is required to be an integer */
   public final Scalar height = RealScalar.of(180);
+  // TODO MG comment on unitConversion: mm to m ?
   public final Scalar unitConversion = RealScalar.of(1000);
   /** time threshold for background activity filter
    * the report 20180225_davis240c_event_distribution concludes:

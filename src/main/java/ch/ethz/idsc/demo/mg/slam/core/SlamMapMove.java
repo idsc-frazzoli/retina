@@ -7,19 +7,17 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Norm2Squared;
+import ch.ethz.idsc.tensor.sca.Chop;
 
 /** moves the part of the world frame which is saved in the occurrence map when the estimated
  * pose comes too close to the borders of the current map */
 /* package */ class SlamMapMove extends PeriodicSlamStep {
   private final Tensor mapMoveVector = //
-      SlamCoreConfig.GLOBAL.dimensions.map(Magnitude.METER).multiply(RationalScalar.HALF);
-  private final Tensor mapDimensions = SlamCoreConfig.GLOBAL.dimensions.copy();
+      SlamCoreConfig.GLOBAL.mapDimensions.map(Magnitude.METER).multiply(RationalScalar.HALF);
+  private final Tensor mapDimensions = SlamCoreConfig.GLOBAL.mapDimensions;
   private final double padding = SlamCoreConfig.GLOBAL.padding.number().doubleValue();
   // ---
   /** current lower left corner of map */
@@ -40,7 +38,7 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
     Tensor positionDifference = SlamMapMoveUtil.computePositionDifference(//
         vehiclePosition, corner, cornerHigh, mapMoveVector, padding);
     // when positionDifference is not zero, we move the map accordingly
-    if (!Scalars.lessEquals(Norm2Squared.ofVector(positionDifference), RealScalar.of(0)))
+    if (!Chop.NONE.allZero(positionDifference))
       slamCoreContainer.getOccurrenceMap().moveMap(positionDifference);
   }
 

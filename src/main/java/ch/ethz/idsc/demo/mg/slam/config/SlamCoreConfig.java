@@ -58,14 +58,14 @@ public class SlamCoreConfig {
   // SLAM map parameters
   public final Scalar cellDim = Quantity.of(0.05, SI.METER); // single cell dimension
   /** map dimensions {width[m], height[m]} */
-  public final Tensor dimensions = Tensors.of(Quantity.of(35, SI.METER), Quantity.of(35, SI.METER));
+  public final Tensor mapDimensions = Tensors.of(Quantity.of(35, SI.METER), Quantity.of(35, SI.METER)).unmodifiable();
 
   public final int mapWidth() {
-    return Magnitude.ONE.toInt(dimensions.Get(0).divide(cellDim));
+    return Magnitude.ONE.toInt(mapDimensions.Get(0).divide(cellDim));
   }
 
   public final int mapHeight() {
-    return Magnitude.ONE.toInt(dimensions.Get(1).divide(cellDim));
+    return Magnitude.ONE.toInt(mapDimensions.Get(1).divide(cellDim));
   }
 
   /** @return [m] coordinates of lower left point in map */
@@ -74,7 +74,7 @@ public class SlamCoreConfig {
 
   /** @return [m] coordinates of upper right point in map */
   public Tensor cornerHigh() {
-    return corner.add(dimensions.map(UnitSystem.SI()));
+    return corner.add(mapDimensions.map(UnitSystem.SI()));
   }
 
   /** @return mapArray containing ground truth occurrence map */
