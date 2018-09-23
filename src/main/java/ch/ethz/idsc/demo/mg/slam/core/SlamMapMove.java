@@ -6,6 +6,7 @@ import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,10 +17,9 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
 /** moves the part of the world frame which is saved in the occurrence map when the estimated
  * pose comes too close to the borders of the current map */
 /* package */ class SlamMapMove extends PeriodicSlamStep {
-  private final Tensor mapMoveVector = Tensors.of( //
-      Magnitude.METER.apply(SlamCoreConfig.GLOBAL.dimX.multiply(RealScalar.of(0.5))), //
-      Magnitude.METER.apply(SlamCoreConfig.GLOBAL.dimY.multiply(RealScalar.of(0.5))));
-  private final Tensor mapDimensions = Tensors.of(SlamCoreConfig.GLOBAL.dimX, SlamCoreConfig.GLOBAL.dimY);
+  private final Tensor mapMoveVector = //
+      SlamCoreConfig.GLOBAL.dimensions.map(Magnitude.METER).multiply(RationalScalar.HALF);
+  private final Tensor mapDimensions = SlamCoreConfig.GLOBAL.dimensions.copy();
   private final double padding = SlamCoreConfig.GLOBAL.padding.number().doubleValue();
   // ---
   /** current lower left corner of map */

@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensors;
    * @param vehiclePosition with units
    * @param corner current lower left corner of map
    * @param cornerHigh current upper right corner of map
-   * @param mapMoveVector
+   * @param mapMoveVector unitless
    * @param padding [m] if pose is closer than padding to map boarders, we move map
    * @return positionDifference unitless by which the map should be moved */
   public static Tensor computePositionDifference(Tensor vehiclePosition, Tensor corner, //

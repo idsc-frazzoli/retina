@@ -57,17 +57,15 @@ public class SlamCoreConfig {
   public final Scalar rougheningAngAccelStd = Quantity.of(12, "rad*s^-2");
   // SLAM map parameters
   public final Scalar cellDim = Quantity.of(0.05, SI.METER); // single cell dimension
-  /** [m] x 'width' of map */
-  public final Scalar dimX = Quantity.of(35, SI.METER);
-  /** [m] y 'height' of map */
-  public final Scalar dimY = Quantity.of(35, SI.METER);
+  /** map dimensions {width[m], height[m]} */
+  public final Tensor dimensions = Tensors.of(Quantity.of(35, SI.METER), Quantity.of(35, SI.METER));
 
   public final int mapWidth() {
-    return Magnitude.ONE.toInt(dimX.divide(cellDim));
+    return Magnitude.ONE.toInt(dimensions.Get(0).divide(cellDim));
   }
 
   public final int mapHeight() {
-    return Magnitude.ONE.toInt(dimY.divide(cellDim));
+    return Magnitude.ONE.toInt(dimensions.Get(1).divide(cellDim));
   }
 
   /** @return [m] coordinates of lower left point in map */
@@ -76,7 +74,7 @@ public class SlamCoreConfig {
 
   /** @return [m] coordinates of upper right point in map */
   public Tensor cornerHigh() {
-    return corner.add(Tensors.of(dimX, dimY).map(UnitSystem.SI()));
+    return corner.add(dimensions.map(UnitSystem.SI()));
   }
 
   /** @return mapArray containing ground truth occurrence map */

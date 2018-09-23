@@ -3,9 +3,12 @@ package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.retina.util.math.SimpleRnPointcloudDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
+import ch.ethz.idsc.tensor.red.Norm;
 
 /** the sausage region is defined as a region in R^2 which is closer than distanceThreshold
  * to the curve estimated by the SLAM algorithm - similar in shape to a sausage with the estimated
@@ -34,12 +37,14 @@ class SausageFilter implements WaypointFilterInterface {
   /** applies the sausage filter method to the detected way points by comparing them with the current curve
    * 
    * @param gokartWaypoints go kart frame, detected way points
-   * @param validities corresponding validities */
+   * @param validities corresponding validities
+   * @param curve */
   private void sausageAction(Tensor gokartWaypoints, boolean[] validities, Tensor curve) {
     boolean[] tempValidities = validities.clone();
+    TensorScalarFunction pointCloudDistance = SimpleRnPointcloudDistance.of(curve, Norm._2);
     for (int i = 0; i < gokartWaypoints.length(); ++i)
       if (validities[i] && gokartWaypoints.get(i).Get(0).number().doubleValue() > 0) {
-        Scalar minDistance = SausageFilterUtil.computeMinDistance(gokartWaypoints.get(i), curve);
+        Scalar minDistance = pointCloudDistance.apply(gokartWaypoints.get(i));
         if (Scalars.lessEquals(distanceThreshold, minDistance))
           tempValidities[i] = false;
       }

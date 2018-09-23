@@ -47,7 +47,7 @@ public class BlobTrackViewer implements DavisDvsListener {
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     double timeStamp = davisDvsEvent.time / 1000000.0;
-    if(!isInitialized) {
+    if (!isInitialized) {
       lastImagingTimeStamp = timeStamp;
       lastSavingTimeStamp = timeStamp;
       isInitialized = true;
