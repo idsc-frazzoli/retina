@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private final int mapWidth;
   private final int mapHeight;
   // ---
+  // TODO MG talk to jan
   private static double cornerX;
   private static double cornerY;
 

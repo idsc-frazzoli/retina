@@ -29,8 +29,12 @@ public class SlamPrcConfig {
   public Scalar curveFactor = RealScalar.of(1);
   public Scalar extrapolationDistance = Quantity.of(6, SI.METER);
   public final Scalar numberOfPoints = RealScalar.of(4).multiply(extrapolationDistance);
-  // SlamCurvatureFilter
+  // SlamCurvatureSmoother
+  /** alphaCurvature is the weight for the last curvature in the filter
+   * alphaCurvature is required to be in the interval [0, 1] */
   public final Scalar alphaCurvature = RealScalar.of(0.85); // [-]
+  /** mimimum number of curve points to average curvature from
+   * see SlamCurvatureSmoother */
   public final Scalar extractionPoints = RealScalar.of(6); // [-]
   // SlamHeadingFilter
   public final Scalar alphaHeading = RealScalar.of(0.8); // [-]
