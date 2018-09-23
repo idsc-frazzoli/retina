@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 

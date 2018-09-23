@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 

@@ -4,12 +4,12 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.owl.math.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public enum CurveUtils {
   ;
@@ -44,8 +44,7 @@ public enum CurveUtils {
         int next = index + 1;
         next %= curve_local.length();
         Tensor p1 = curve_local.get(next);
-        Tensor dif = p1.subtract(p0);
-        Scalar angle = ArcTan.of(dif.Get(0), dif.Get(1));
+        Scalar angle = ArcTan2D.of(p1.subtract(p0));
         if (Scalars.lessThan(angle.abs(), ANGLE_LIMIT)) {
           dist = norm;
           best = index;

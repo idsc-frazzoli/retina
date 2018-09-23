@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
@@ -15,7 +16,6 @@ import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.davis.DavisDvsBlockPublisher;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.Scalar;
 
 class AccumulateToListener implements OfflineLogListener, TimedImageListener {
