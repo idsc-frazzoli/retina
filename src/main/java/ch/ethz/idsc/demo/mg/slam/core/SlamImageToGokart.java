@@ -9,13 +9,12 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** transforms events from image plane to go kart frame */
 /* package */ class SlamImageToGokart extends AbstractSlamStep {
-  private final ImageToGokartInterface imageToGokartInterface;
-  private final double lookAheadDistance;
+  private final ImageToGokartInterface imageToGokartInterface = //
+      SlamCoreConfig.GLOBAL.davisConfig.createImageToGokartInterface();
+  private final double lookAheadDistance = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.lookAheadDistance);
 
-  SlamImageToGokart(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig) {
-    super(slamContainer);
-    imageToGokartInterface = slamConfig.davisConfig.createImageToGokartInterface();
-    lookAheadDistance = Magnitude.METER.toDouble(slamConfig.lookAheadDistance);
+  SlamImageToGokart(SlamCoreContainer slamCoreContainer) {
+    super(slamCoreContainer);
   }
 
   @Override // from DavisDvsListener

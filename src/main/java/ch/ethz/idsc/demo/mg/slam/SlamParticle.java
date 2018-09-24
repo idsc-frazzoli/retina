@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -10,8 +9,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** single particle for the SLAM algorithm */
-public class SlamParticle implements GokartPoseInterface {
-  private Tensor pose; // unitless representation
+public class SlamParticle {
+  private Tensor poseUnitless;
   private Scalar linVel; // in direction of go kart x axis
   private Scalar angVel; // around go kart z axis
   private double particleLikelihood;
@@ -34,13 +33,6 @@ public class SlamParticle implements GokartPoseInterface {
     setPoseUnitless(Se2CoveringIntegrator.INSTANCE.spin(getPoseUnitless(), deltaPose));
   }
 
-  /** subtracts pose vector from pose
-   * 
-   * @param subtractPose unitless representation */
-  public void subtractPose(Tensor subtractPose) {
-    pose = pose.subtract(subtractPose);
-  }
-
   public void setStateFromParticle(SlamParticle particle, double updatedLikelihood) {
     setPoseUnitless(particle.getPoseUnitless());
     linVel = particle.getLinVel();
@@ -48,13 +40,13 @@ public class SlamParticle implements GokartPoseInterface {
     particleLikelihood = updatedLikelihood;
   }
 
-  /** @param pose {x,y,heading} without units */
-  public void setPoseUnitless(Tensor unitlessPose) {
-    pose = unitlessPose;
+  /** @param poseUnitless {x,y,heading} without units */
+  public void setPoseUnitless(Tensor poseUnitless) {
+    this.poseUnitless = poseUnitless;
   }
 
   public Tensor getPoseUnitless() {
-    return pose;
+    return poseUnitless;
   }
 
   public void setLinVel(Scalar linVel) {
@@ -94,10 +86,5 @@ public class SlamParticle implements GokartPoseInterface {
    * @param pose {x[m], y[m], heading[]} */
   public void setPose(Tensor pose) {
     setPoseUnitless(GokartPoseHelper.toUnitless(pose));
-  }
-
-  @Override // from GokartPoseInterface
-  public Tensor getPose() {
-    return GokartPoseHelper.attachUnits(pose);
   }
 }

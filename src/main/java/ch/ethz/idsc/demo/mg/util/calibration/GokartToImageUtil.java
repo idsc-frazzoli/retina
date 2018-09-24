@@ -1,7 +1,6 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.util.calibration;
 
-import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -85,12 +84,5 @@ public class GokartToImageUtil implements GokartToImageInterface {
     Tensor distortedImgCoord = normalizedImgCoord.multiply(distortionCoeff);
     // unnormalize distorted image coordinates
     return distortedImgCoord.pmul(focalLength).add(principalPoint);
-  }
-
-  // testing
-  public static void main(String[] args) {
-    GokartToImageUtil test = new DavisConfig().createGokartToImageUtil();
-    double[] imgPos = test.gokartToImage(3.4386292832405725, -0.4673008409796591);
-    System.out.println(imgPos[0] + " , " + imgPos[1]);
   }
 }

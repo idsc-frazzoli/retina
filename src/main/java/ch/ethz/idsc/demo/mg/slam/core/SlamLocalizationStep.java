@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 /* package */ class SlamLocalizationStep extends PeriodicSlamStep {
   private final GokartPoseInterface gokartPoseInterface;
 
-  protected SlamLocalizationStep(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig, GokartPoseInterface gokartPoseInterface) {
-    super(slamContainer, slamConfig.localizationUpdateRate);
+  protected SlamLocalizationStep(SlamCoreContainer slamCoreContainer, GokartPoseInterface gokartPoseInterface) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.localizationUpdateRate);
     this.gokartPoseInterface = gokartPoseInterface;
   }
 

@@ -164,7 +164,11 @@ public enum LogFileLocations {
   /** driving with vertical stripes on both sides */
   DUBI19o("20180917T172353_f47a58b9Extracted1.lcm"),
   /** driving with vertical stripes on both sides */
-  DUBI19p("20180917T172353_f47a58b9Extracted2.lcm"), DUBI19x("20180917T144839_f47a58b9.lcm.00");
+  DUBI19p("20180917T172353_f47a58b9Extracted2.lcm"),
+  /** driving 9 laps autonomously in slam odometry mode with increasing speed */
+  DUBI19q("20180920T111706_53622489Extracted1.lcm"),
+  /** raw uncut file to inspect failure cases */
+  DUBI19x("20180917T144839_f47a58b9.lcm.00");
   // ---
   private final String filename;
 

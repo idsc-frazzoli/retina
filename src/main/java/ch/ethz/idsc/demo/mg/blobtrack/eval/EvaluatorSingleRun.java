@@ -67,9 +67,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
     // overlay estimatedFeatures
     for (int i = 0; i < estimatedFeatures.get(currentLabelInstant).size(); ++i)
       VisBlobTrackUtil.drawImageBlob(rawEventsFrame.createGraphics(), estimatedFeatures.get(currentLabelInstant).get(i), Color.RED);
-    // TODO MG test if same result
     VisGeneralUtil.saveFrame(rawEventsFrame, evaluationImagesFilePath, logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant]);
-    // saveImage(rawEventsFrame);
   }
 
   /** @return hand-labeled image of the current evaluation instant */
@@ -87,15 +85,6 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
     return bufferedImage;
   }
 
-  // private void saveImage(BufferedImage bufferedImage) {
-  // try {
-  // String toBeSaved = String.format("%s_%04d_%d_%s.png", logFileName, currentLabelInstant + 1, groundTruthTimeStamps[currentLabelInstant], "evaluated");
-  // ImageIO.write(bufferedImage, "png", new File(evaluationImagesFilePath, toBeSaved));
-  // System.out.printf("Evaluation frame saved as %s\n", toBeSaved);
-  // } catch (IOException e) {
-  // e.printStackTrace();
-  // }
-  // }
   private void computePerformance() {
     for (int i = 0; i < numberOfFiles; ++i) {
       averageRecall += evaluatorInstants[i].getRecall() / numberOfFiles;

@@ -11,8 +11,8 @@ import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** extracts way points from a map using threshold operation,
- * morphological processing and connected component labeling */
+/** extracts way points from the occurrence map and invokes all way point processing modules.
+ * Runs in separate thread */
 public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, StartAndStoppable {
   private final Thread thread = new Thread(this);
   private final SlamWaypointDetection slamWaypointDetection;
@@ -51,7 +51,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
 
   private void mapProcessing() {
     Tensor worldWaypoints = slamWaypointDetection.detectWaypoints(occurrenceMap);
-    slamCoreContainer.setMat(slamWaypointDetection.getProcessedMat());
+    slamCoreContainer.setLabels(slamWaypointDetection.getProcessedMat());
     handler.invoke(worldWaypoints);
   }
 

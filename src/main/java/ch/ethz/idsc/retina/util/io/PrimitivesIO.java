@@ -9,7 +9,9 @@ import java.util.stream.DoubleStream;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.Primitives;
 
-/** utility to save/load primite arrays */
+/** utility to save/load primitive arrays
+ * 
+ * Hint: the use of Export.of("file.csv", tensor) is preferred */
 public enum PrimitivesIO {
   ;
   /** @param file

@@ -75,8 +75,8 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
     return eventGokartFrame;
   }
 
-  public void setPoseUnitless(Tensor unitlessPose) {
-    poseUnitless = unitlessPose;
+  public void setPoseUnitless(Tensor poseUnitless) {
+    this.poseUnitless = poseUnitless;
   }
 
   @Override // from GokartPoseUnitlessInterface
@@ -91,11 +91,11 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
     this.poseUnitless = GokartPoseHelper.toUnitless(pose);
   }
 
-  public void setMat(Mat labels) {
+  public void setLabels(Mat labels) {
     this.labels = labels;
   }
 
-  public Mat getMat() {
+  public Mat getLabels() {
     return labels;
   }
 }

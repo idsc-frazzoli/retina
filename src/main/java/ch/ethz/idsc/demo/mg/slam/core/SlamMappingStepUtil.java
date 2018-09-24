@@ -12,10 +12,10 @@ import ch.ethz.idsc.tensor.Tensors;
    * 
    * @param poseUnitless {x, y, alpha}
    * @param occurrenceMap
-   * @param localCoord {px, py} with interpretation [m] position of event in go kart frame */
-  public static void updateOccurrenceMap(Tensor poseUnitless, MapProvider occurrenceMap, double[] localCoord) {
+   * @param eventGokartFrame {px, py} with interpretation [m] position of event in go kart frame */
+  public static void updateOccurrenceMap(Tensor poseUnitless, MapProvider occurrenceMap, double[] eventGokartFrame) {
     Tensor worldCoord = new Se2Bijection(poseUnitless).forward() //
-        .apply(Tensors.vectorDouble(localCoord));
+        .apply(Tensors.vectorDouble(eventGokartFrame));
     occurrenceMap.addValue(worldCoord, 1);
   }
 }

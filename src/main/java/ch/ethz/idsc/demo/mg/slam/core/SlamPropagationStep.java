@@ -7,11 +7,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** particle's state propagation which should be followed by a resampling step */
 /* package */ class SlamPropagationStep extends PeriodicSlamStep {
-  private final int particleRange;
+  private final int particleRange = Magnitude.ONE.toInt(SlamCoreConfig.GLOBAL.particleRange);
 
-  SlamPropagationStep(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig) {
-    super(slamContainer, slamConfig.statePropagationRate);
-    particleRange = Magnitude.ONE.toInt(slamConfig.particleRange);
+  SlamPropagationStep(SlamCoreContainer slamCoreContainer) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.statePropagationRate);
   }
 
   @Override // from PeriodicSlamStep
