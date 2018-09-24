@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.slam.SlamConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
@@ -28,10 +28,10 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     }
   };
 
-  SlamMapGUI(SlamConfig slamConfig) {
-    frameWidth = slamConfig.frameWidth.number().intValue();
-    int mapWidth = slamConfig.mapWidth();
-    int mapHeight = slamConfig.mapHeight();
+  SlamMapGUI() {
+    frameWidth = SlamCoreConfig.GLOBAL.frameWidth.number().intValue();
+    int mapWidth = SlamCoreConfig.GLOBAL.mapWidth();
+    int mapHeight = SlamCoreConfig.GLOBAL.mapHeight();
     scaling = frameWidth / (double) mapWidth;
     bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);

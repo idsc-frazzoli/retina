@@ -716,7 +716,99 @@ public enum GokartLogFile implements LogFile {
   /** slow joystick driving to collect mapping information
    * with vehicle and house tents */
   _20180912T142434_76cef406, //
-  _20180912T171031_c2615078, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T172503_c2615078, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T172801_c2615078, //
+  /** planning a xyavt trajectory, stationary */
+  _20180912T173408_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T174110_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T175114_c2615078, //
+  /** planning a xyavt trajectory, driving along */
+  _20180912T180817_c2615078, //
+  /***************************************************/
+  /* 2018-09-13 */
+  /** testing if linmot maintains position even when in non-operational mode */
+  _20180913T110848_c2615078, //
+  /** event-based marker following with davis240c */
+  _20180913T115450_52e28a08, //
+  /** event-based marker following with davis240c */
+  _20180913T120042_52e28a08, //
+  /** event-based marker following with davis240c */
+  _20180913T121258_52e28a08, //
+  /** visitor joystick driving; trajectory planning */
+  _20180913T143824_b0c36115, //
+  /** xyavt trajectory planning */
+  _20180913T155444_b0c36115, //
+  /** several xyavt trajectory planning, driving along */
+  _20180913T160707_b0c36115, //
+  /** event-based marker following with davis240c along circle */
+  _20180913T164921_34b3470d, //
+  /** event-based marker following with davis240c along eight */
+  _20180913T172039_34b3470d, //
+  /** event-based marker following with davis240c straight */
+  _20180913T174600_34b3470d, //
+  /** system id track plastic [mh yn jh mh yn jh] */
+  _20180913T183146_34b3470d, //
+  /***************************************************/
+  /* 2018-09-17 */
+  /** event-based marker following with davis240c */
+  _20180917T110859_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T112522_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T113048_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T114847_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T142635_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T143904_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T144839_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T152855_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T154236_f47a58b9, //
+  /** event-based marker following with davis240c */
+  _20180917T163109_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers parallel to driving direction */
+  _20180917T163954_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers shape X */
+  _20180917T165800_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers shape X */
+  _20180917T170914_f47a58b9, //
+  /** event-based marker following with davis240c
+   * with markers parallel to driving direction and placed to the sides */
+  _20180917T172353_f47a58b9, //
+  /***************************************************/
+  /* 2018-09-20 */
+  /** event-based marker following with davis240c */
+  _20180920T102409_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T103907_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T104534_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T105332_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T110838_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T111706_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T112831_53622489, //
+  /** event-based marker following with davis240c */
+  _20180920T113529_53622489, //
+  /** event-based marker following with davis240c
+   * long pause before beginning and after ending */
+  _20180920T145559_53622489, //
+  /***************************************************/
+  /* 2018-09-21 */
   ;
   // ---
   @Override // from LogFile

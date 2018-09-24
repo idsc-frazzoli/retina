@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.util.stream.DoubleStream;
 
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -14,33 +15,35 @@ public class MapProvider {
   private final double cellDim;
   private final double cellDimInv;
   private final double[] mapArray;
-  private final double cornerXLow;
-  private final double cornerYLow;
-  private final double cornerXHigh;
-  private final double cornerYHigh;
   // ---
+  /** current lower left corner of map */
+  private double cornerXLow;
+  private double cornerYLow;
+  /** current upper right corner of map */
+  private double cornerXHigh;
+  private double cornerYHigh;
   /** tracks max value of values in array */
   private double maxValue;
 
-  public MapProvider(SlamConfig slamConfig) {
-    cellDim = Magnitude.METER.toDouble(slamConfig.cellDim);
+  public MapProvider(SlamCoreConfig slamCoreConfig) {
+    cellDim = Magnitude.METER.toDouble(slamCoreConfig.cellDim);
     cellDimInv = 1 / cellDim;
-    mapWidth = slamConfig.mapWidth();
-    mapHeight = slamConfig.mapHeight();
+    mapWidth = slamCoreConfig.mapWidth();
+    mapHeight = slamCoreConfig.mapHeight();
     numberOfCells = mapWidth * mapHeight;
-    cornerXLow = Magnitude.METER.toDouble(slamConfig.corner.Get(0));
-    cornerYLow = Magnitude.METER.toDouble(slamConfig.corner.Get(1));
-    Tensor cornerHigh = slamConfig.cornerHigh();
+    cornerXLow = Magnitude.METER.toDouble(slamCoreConfig.corner.Get(0));
+    cornerYLow = Magnitude.METER.toDouble(slamCoreConfig.corner.Get(1));
+    Tensor cornerHigh = slamCoreConfig.cornerHigh();
     cornerXHigh = Magnitude.METER.toDouble(cornerHigh.Get(0));
     cornerYHigh = Magnitude.METER.toDouble(cornerHigh.Get(1));
     mapArray = new double[numberOfCells];
     maxValue = 0;
     /** when in localization mode, we load a prior map */
-    if (slamConfig.slamAlgoConfig == SlamAlgoConfig.localizationMode)
-      setMapArray(slamConfig.getMapArray());
+    if (slamCoreConfig.slamAlgoConfig == SlamAlgoConfig.localizationMode)
+      setMapArray(slamCoreConfig.getMapArray());
   }
 
-  /** divides the provided maps and saves into targMap
+  /** divides the provided maps and saves into targetMap
    * 
    * @param numerator
    * @param denominator
@@ -53,6 +56,34 @@ public class MapProvider {
         double newValue = numerator.getValue(index) / denominator.getValue(index);
         targetMap.setValue(index, newValue);
       }
+  }
+
+  private void findMaxValue() {
+    maxValue = DoubleStream.of(mapArray) //
+        .reduce(Math::max).getAsDouble();
+  }
+
+  /** moves the map by the positionDifference vector. The whole mapArray is updated
+   * 
+   * @param positionDifference unitless */
+  public void moveMap(Tensor positionDifference) {
+    double[] mapArray = new double[numberOfCells];
+    for (int i = 0; i < numberOfCells; i++) {
+      double[] newCoord = getCellCoord(i);
+      newCoord[0] += positionDifference.Get(0).number().doubleValue();
+      newCoord[1] += positionDifference.Get(1).number().doubleValue();
+      mapArray[i] = getValue(newCoord[0], newCoord[1]);
+    }
+    updateCorners(positionDifference);
+    setMapArray(mapArray);
+  }
+
+  /** @param positionDifference unitless */
+  private void updateCorners(Tensor positionDifference) {
+    cornerXLow += positionDifference.Get(0).number().doubleValue();
+    cornerXHigh += positionDifference.Get(0).number().doubleValue();
+    cornerYLow += positionDifference.Get(1).number().doubleValue();
+    cornerYHigh += positionDifference.Get(1).number().doubleValue();
   }
 
   /** @return coordinates of cell middle point */
@@ -85,8 +116,8 @@ public class MapProvider {
 
   /** adds value in grid cell corresponding to coordinates. does nothing if pose is outside map domain
    * 
-   * @param worldCoord [m] map position
-   * @param value */
+   * @param worldCoord world frame map position
+   * @param value >= 0 */
   public void addValue(Tensor worldCoord, double value) {
     addValue( //
         worldCoord.Get(0).number().doubleValue(), //
@@ -95,9 +126,9 @@ public class MapProvider {
 
   /** adds value in grid cell corresponding to pose. does nothing if pose is outside map domain
    * 
-   * @param posX in world coordinates
-   * @param posY in world coordinates
-   * @param value */
+   * @param posX world frame
+   * @param posY world frame
+   * @param value >= 0 */
   public void addValue(double posX, double posY, double value) {
     int cellIndex = getCellIndex(posX, posY);
     // case of outside map domain
@@ -108,6 +139,8 @@ public class MapProvider {
       maxValue = mapArray[cellIndex];
   }
 
+  /** @param cellIndex
+   * @param value >= 0 */
   public void addValue(int cellIndex, double value) {
     mapArray[cellIndex] += value;
     if (mapArray[cellIndex] > maxValue)
@@ -115,6 +148,10 @@ public class MapProvider {
   }
 
   public void setValue(int cellIndex, double value) {
+    if (mapArray[cellIndex] == maxValue && value < maxValue) {
+      mapArray[cellIndex] = value;
+      findMaxValue();
+    }
     if (value > maxValue)
       maxValue = value;
     mapArray[cellIndex] = value;
@@ -126,7 +163,7 @@ public class MapProvider {
 
   /** value of grid cell which correspond to worldCoord
    * 
-   * @param worldCoord [m]
+   * @param worldCoord world frame
    * @return value at the position of 0 if coordinates are outside map domain */
   public double getValue(Tensor worldCoord) {
     return getValue( //
@@ -149,8 +186,7 @@ public class MapProvider {
   public void setMapArray(double[] mapArray) {
     if (this.mapArray.length == mapArray.length) {
       System.arraycopy(mapArray, 0, this.mapArray, 0, this.mapArray.length);
-      maxValue = DoubleStream.of(mapArray) //
-          .reduce(Math::max).getAsDouble();
+      findMaxValue();
     } else
       throw new IllegalArgumentException();
   }
@@ -169,6 +205,16 @@ public class MapProvider {
 
   public int getMapHeight() {
     return mapHeight;
+  }
+
+  /** @return x coordinate of lower left corner of map */
+  public double getCornerX() {
+    return cornerXLow;
+  }
+
+  /** @return y coordinate of lower left corner of map */
+  public double getCornerY() {
+    return cornerYLow;
   }
 
   /** @return maxValue or 1 if maxValue == 0

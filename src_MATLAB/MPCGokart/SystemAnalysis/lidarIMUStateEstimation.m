@@ -1,78 +1,103 @@
 %code by mheim
 function [st,sx,sP] = lidarIMUStateEstimation(adat,ldat)
-x = zeros(10,1);
+%definitive state model (all in world frame):
+%[x,y,psi,dotx,doty,dotpsi,dotdotx,dotdoty,dotdotpsi]
+x = zeros(9,1);
 %first state estimation
 x(1:3)=ldat(1,2:4);
 x(4:6)=(ldat(30,2:4)-ldat(1,2:4))/(ldat(30,1)-ldat(1,1));
 dim = numel(x);
 P = eye(dim)*10;
-P(9,9)=1000;
-P(10,10)=1000;
-IMUa = 100;
-IMUr = 30;
-DRIFT=0;
-Q = diag([0,0,0,0,0, IMUr, IMUa, IMUa,DRIFT,DRIFT]);
+IMUa = 10;
+IMUr = 2000;
+dQ = diag([0,0,0,0,0, 0, IMUa, IMUa,IMUr]);
 lt = ldat(:,1);
 at = adat(:,1);
 ldat = ldat(:,2:4);
 adat = adat(:,2:4);
 
-%debugging
-mwdebug = [];
+%I don't use IMU data at the moment :(
+useIMU = false;
+maxStep = 1;
 
 %aggregate accelerationdata
 aagg = 10;
 
 %use higher frequency for data
-lR = estimateVar(ldat);
-aR = estimateVar(adat)*100000;
+%lR = estimateVar(ldat);
+lR = diag([0.2,0.2,0.1]);
+%aR = estimateVar(adat)*100000;
 
 
-[~,lN]=size(ldat);
-[~,lA]=size(adat);
-totalN = lN+lA;
 
-currentt = min(lt(1),at(1));
+if(useIMU)
+    currentt = min(lt(1),at(1));
+else
+    currentt = lt(1);
+end
 acount = aagg;
 lcount = 3;
 tcount = 1;
-maxt = max(at)-0.1;
+maxt = max(lt)-0.1;
+
+[lN,~]=size(ldat);
+[lA,~]=size(adat);
+totalN = lN+lA+int32(maxt/maxStep);
 thist = zeros(totalN,1);
 xhist = zeros(totalN,dim);
 Phist = zeros(totalN,dim,dim);
 Fhist = zeros(totalN,dim,dim);
 Qhist = zeros(totalN,dim,dim);
 while(currentt < maxt)
-    currentt
-    maxt
-    %if currentt>530
-    %    lR=eye(3)*1000000;
-    %end
-    if(lt(lcount)<at(acount))
-        %update with lidar
-        dt = lt(lcount)-currentt;
-        currentt = lt(lcount);
-        dmt = lt(lcount)-lt(lcount-1);
-        [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount,:)',ldat(lcount-1,:)',ldat(lcount-2,:)',lR,Q);
-        lcount = lcount+1;
+    currentt;
+    maxt;
+    if currentt>25
+        %lR=eye(3)*1000000;
+        a = 1;
+    end
+    if(useIMU)
+        if(lt(lcount)<at(acount))
+            %update with lidar
+            dt = lt(lcount)-currentt;
+            currentt = lt(lcount);
+            dmt = lt(lcount)-lt(lcount-1);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount+1,:)',ldat(lcount,:)',ldat(lcount-1,:)',lR,dQ);
+            lcount = lcount+1;
+        else
+            %update with IMU
+            dt = at(acount)-currentt;
+            currentt = at(acount);
+            m = mean(adat(acount-aagg+1:acount,:));
+            [x,P]=IMUMeasure(x,P,dt,m', aR,dQ);
+            acount = acount+aagg;
+
+            %debugging
+            %Rot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
+            %mw = Rot(x(3))*m';
+            %mwdebug = [mwdebug;currentt,mw'];
+        end
     else
-        %update with IMU
-        dt = at(acount)-currentt;
-        currentt = at(acount);
-        m = mean(adat(acount-aagg+1:acount,:));
-        [x,P]=IMUMeasure(x,P,dt,m', aR,Q);
-        acount = acount+aagg;
-        
-        %debugging
-        %Rot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
-        %mw = Rot(x(3))*m';
-        %mwdebug = [mwdebug;currentt,mw'];
+        if(lt(lcount)<currentt+maxStep)
+        %if(1)
+            %update with lidar
+            dt = lt(lcount)-currentt;
+            currentt = lt(lcount);
+            dmt = lt(lcount)-lt(lcount-1);
+            [x,P]=lidarMeasure(x,P,dt,dmt,ldat(lcount-1,:)',ldat(lcount,:)',ldat(lcount+1,:)',lR,dQ);
+            lcount = lcount+1;
+        else
+            dt = maxStep;
+            currentt = currentt+dt;
+            Fx = getEvolution(x);
+            dotx = Fx*x;
+            [x,P]=Predict(x,P,dotx,Fx,dt,dQ);
+        end
     end
     thist(tcount)=currentt;
     xhist(tcount,:) = x;
     Phist(tcount,:,:) = P;
     Fhist(tcount,:,:) = getEvolution(x)*dt+eye(dim);
-    Qhist(tcount,:,:) = Q*dt;
+    Qhist(tcount,:,:) = dQ*dt;
     tcount = tcount + 1;
 end
 
@@ -87,7 +112,7 @@ Qhist = Qhist(1:tcount-1,:,:);
     %sx = xhist;
     %sP = Phist;
     st = thist;
-    show = 1;
+    show = 0;
     if(show)
         close all
 
@@ -119,13 +144,6 @@ Qhist = Qhist(1:tcount-1,:,:);
         hold on
         plot(thist,sx(:,7));
         plot(thist,sx(:,8));
-        hold off
-        
-        %acceleration sensor drift
-        figure
-        hold on
-        plot(thist,sx(:,9));
-        plot(thist,sx(:,10));
         hold off
 
         sigma = 20;

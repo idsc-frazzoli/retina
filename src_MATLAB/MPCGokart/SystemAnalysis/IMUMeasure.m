@@ -8,7 +8,7 @@ fRot = @(theta)[1,0,0;0,cos(theta),-sin(theta);0,sin(theta),cos(theta)];
 Fx = getEvolution(x);
 dotx = Fx*x;
 if(dt > 0.00001)
-    [px,pP]=Predict(x,P,dotx,Fx,dt,Q*dt);
+    [px,pP]=Predict(x,P,dotx,Fx,dt,Q);
 else
     px = x;
     pP = P;

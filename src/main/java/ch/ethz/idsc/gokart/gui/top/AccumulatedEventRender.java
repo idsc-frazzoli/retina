@@ -36,7 +36,8 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   // ..
   final JToggleButton jToggleButton = new JToggleButton("events");
   public boolean isSelected = false;
-  // TODO make this configurable in SensorsConfig
+  // TODO MG can the lines below be removed?
+  // make this configurable:
   // private final double mapAheadDistance = 7; // [m]
 
   public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {

@@ -25,6 +25,8 @@ public class BlobTrackViewer implements DavisDvsListener {
   private double lastImagingTimeStamp;
   private double lastSavingTimeStamp;
   private int imageCount;
+  // ---
+  private boolean isInitialized;
 
   public BlobTrackViewer(BlobTrackConfig blobTrackConfig, BlobTrackProvider blobTrackProvider) {
     davisDvsEventFilter = blobTrackConfig.davisConfig.createBackgroundActivityFilter();
@@ -45,6 +47,11 @@ public class BlobTrackViewer implements DavisDvsListener {
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     double timeStamp = davisDvsEvent.time / 1000000.0;
+    if (!isInitialized) {
+      lastImagingTimeStamp = timeStamp;
+      lastSavingTimeStamp = timeStamp;
+      isInitialized = true;
+    }
     eventFrames[0].receiveEvent(davisDvsEvent);
     if (davisDvsEventFilter.filter(davisDvsEvent)) {
       eventFrames[1].receiveEvent(davisDvsEvent);

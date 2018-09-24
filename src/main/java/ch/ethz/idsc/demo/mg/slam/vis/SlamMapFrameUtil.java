@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
-import ch.ethz.idsc.demo.mg.slam.SlamWaypoint;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum SlamMapFrameUtil {
@@ -48,26 +47,13 @@ import ch.ethz.idsc.tensor.Tensor;
         (worldPos[1] - cornerY) / cellDim };
   }
 
-  /** draws a way point object onto the graphics object
-   * 
-   * @param graphics
-   * @param waypoint
+  /** @param graphics
+   * @param pointCoord
    * @param color used for the way point
    * @param radius interpreted as [pixel]
    * @param cornerX interpreted as [m]
    * @param cornerY interpreted as [m]
    * @param cellDim interpreted as [m] */
-  public static void drawWaypoint(Graphics2D graphics, SlamWaypoint waypoint, Color color, double radius, //
-      double cornerX, double cornerY, double cellDim) {
-    double[] framePos = worldToFrame(waypoint.getWorldPosition(), cornerX, cornerY, cellDim);
-    Ellipse2D circle = new Ellipse2D.Double( //
-        framePos[0] - radius, //
-        framePos[1] - radius, //
-        2 * radius, 2 * radius);
-    graphics.setColor(color);
-    graphics.fill(circle);
-  }
-
   public static void drawPoint(Graphics2D graphics, double[] pointCoord, Color color, double radius, //
       double cornerX, double cornerY, double cellDim) {
     double[] framePos = worldToFrame(pointCoord, cornerX, cornerY, cellDim);

@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Tensor;
 
 abstract class FigureBaseModule extends AbstractModule {
-  private final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule();
+  private final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
 
   protected FigureBaseModule(Tensor curve) {
     purePursuitModule.setCurve(Optional.of(curve));

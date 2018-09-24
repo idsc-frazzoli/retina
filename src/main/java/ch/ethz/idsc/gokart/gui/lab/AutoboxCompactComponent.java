@@ -21,6 +21,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -30,7 +31,6 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -51,7 +51,6 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   private int imuFrame_count = 0;
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
-  // TODO document for all gui elements why the subscriptions are the way they are
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
@@ -113,9 +112,12 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   public void start() {
     rimoGetLcmClient.addListener(rimoGetListener);
     rimoGetLcmClient.startSubscriptions();
+    // ---
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
+    // ---
     joystickLcmProvider.startSubscriptions();
+    // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
     // ---
@@ -171,6 +173,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     joystickLcmProvider.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
+    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override // from DavisImuFrameListener

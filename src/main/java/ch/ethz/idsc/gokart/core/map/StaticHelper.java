@@ -1,7 +1,7 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.subare.util.GlobalAssert;
+import ch.ethz.idsc.owl.data.GlobalAssert;
 
 enum StaticHelper {
   ;

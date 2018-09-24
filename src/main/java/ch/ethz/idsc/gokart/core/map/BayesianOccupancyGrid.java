@@ -225,7 +225,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
 
   /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
-  // TODO this function should return, or update a region object created here, or provided from the outside!
+  // TODO LHF this function should return, or update a region object created here, or provided from the outside!
   public void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());

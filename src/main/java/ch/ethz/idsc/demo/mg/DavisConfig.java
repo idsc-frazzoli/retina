@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI16e;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI19q;
   /** maxDuration */
   public final Scalar logFileDuration = Quantity.of(100, SI.SECOND);
   // general parameters
@@ -30,6 +30,7 @@ public class DavisConfig {
   public final Scalar width = RealScalar.of(240);
   /** height of image is required to be an integer */
   public final Scalar height = RealScalar.of(180);
+  // TODO MG comment on unitConversion: mm to m ?
   public final Scalar unitConversion = RealScalar.of(1000);
   /** time threshold for background activity filter
    * the report 20180225_davis240c_event_distribution concludes:
@@ -37,7 +38,7 @@ public class DavisConfig {
    * of duration at least 1[ms] during which no events occur
    * 2) for a bin of width 500[us] chances are p=0.30283 that the bin is empty
    * 3) for a bin size of 2397[us] there is a 99% chance that it’s non-empty */
-  public Scalar filterConstant = Quantity.of(300, NonSI.MICRO_SECOND);
+  public Scalar filterConstant = Quantity.of(500, NonSI.MICRO_SECOND);
   /** [-] for FAST corner filter */
   public final Scalar margin = RealScalar.of(4);
 

@@ -110,7 +110,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         // ---
         graphics.setColor(new Color(0, 128 + 64, 128, 64));
         try {
-          Tensor path = RamerDouglasPeucker.of(contour, RAMERDOUGLASPEUKER);
+          Tensor path = RamerDouglasPeucker.of(RAMERDOUGLASPEUKER).apply(contour);
           graphics.draw(TensorGraphics.polygonToPath(path, this::toPoint));
         } catch (Exception exception) {
           System.err.println("nono");

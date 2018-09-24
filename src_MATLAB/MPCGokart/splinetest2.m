@@ -1,5 +1,5 @@
-%code by mheim
-%points = [-1,1,2,0,0,0,1,0,0,0]';
-%points = ones(5,1)
-points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
-[p,steps,speed]=getTrajectory(points,3,1);
+dt = 0.01;
+X = 0:dt:2*pi;
+n = numel(X);
+Y = sin(X);%+normrnd(0,0.1,[1,n]);
+getDerivation(Y, 10, dt);

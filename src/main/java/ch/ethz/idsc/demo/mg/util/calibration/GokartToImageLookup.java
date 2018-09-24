@@ -16,6 +16,7 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   // ---
   private final GokartToImageUtil gokartToImageUtil;
+  // TODO MG imageToGokartUtil not used -> remove?
   private final ImageToGokartUtil imageToGokartUtil;
   private final double[] lookupArray;
   private final double cellDim;
