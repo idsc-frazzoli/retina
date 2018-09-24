@@ -12,7 +12,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
   public static final List<CurveListener> getListeners(SlamPrcContainer slamCurveContainer) {
     return Arrays.asList(//
         new SlamWaypointFilter(slamCurveContainer), //
-        new SlamCurveInterpolate(slamCurveContainer), //
+        new SlamCurveFitting(slamCurveContainer), //
         new SlamCurveExtrapolate(slamCurveContainer));
   }
 }

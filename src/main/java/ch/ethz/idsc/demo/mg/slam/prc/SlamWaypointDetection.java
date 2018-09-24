@@ -28,8 +28,6 @@ import ch.ethz.idsc.tensor.Tensors;
   private static final Point POINT = new Point(-1, -1);
   // ---
   private final double mapThreshold;
-  private final double cornerX;
-  private final double cornerY;
   private final double cellDim;
   // ---
   private final Mat labels;
@@ -37,8 +35,6 @@ import ch.ethz.idsc.tensor.Tensors;
 
   public SlamWaypointDetection() {
     mapThreshold = Magnitude.ONE.toDouble(SlamPrcConfig.GLOBAL.mapThreshold);
-    cornerX = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(1));
     cellDim = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cellDim);
     labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
     processedMap = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
@@ -48,10 +44,10 @@ import ch.ethz.idsc.tensor.Tensors;
    * connected component labeling.
    * calls opencv_imgproc#connectedComponentsWithStats
    * 
-   * @param thresholdMap input object containing binary map
-   * @return worldWaypoints [m] detected way points in world frame */
-  public Tensor detectWaypoints(MapProvider thresholdMap) {
-    processedMap = mapProviderToBinaryMat(thresholdMap, mapThreshold);
+   * @param occurrenceMap
+   * @return worldWaypoints [m] world frame */
+  public Tensor detectWaypoints(MapProvider occurrenceMap) {
+    processedMap = mapProviderToBinaryMat(occurrenceMap, mapThreshold);
     // opening
     opencv_imgproc.dilate(processedMap, processedMap, KERNEL_DILATE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
     opencv_imgproc.erode(processedMap, processedMap, KERNEL_ERODE, POINT, 1, opencv_core.BORDER_CONSTANT, null);
@@ -67,7 +63,7 @@ import ch.ethz.idsc.tensor.Tensors;
       double[] newWaypoint = { //
           arrayData.getDouble(0), //
           arrayData.getDouble(Double.BYTES) };
-      worldWaypoints.add(index - 1, frameToWorld(newWaypoint));
+      worldWaypoints.add(index - 1, frameToWorld(newWaypoint, occurrenceMap.getCornerX(), occurrenceMap.getCornerY()));
     }
     // processedMap.release(); // probably obsolete because underlying array was created in java
     centroid.release();
@@ -96,14 +92,16 @@ import ch.ethz.idsc.tensor.Tensors;
   /** coordinate transformation between pixel coordinates and world frame coordinates
    * 
    * @param framePos interpreted as [pixel] way point position in frame
-   * @return worldPos interpreted as [m] way point position in world coordinate system */
-  private double[] frameToWorld(double[] framePos) {
+   * @param cornerX x coordinate of current lower left corner
+   * @param cornerY y coordinate of current lower left corner
+   * @return worldPos world frame interpreted as [m] */
+  private double[] frameToWorld(double[] framePos, double cornerX, double cornerY) {
     return new double[] { //
         cornerX + framePos[0] * cellDim, //
         cornerY + framePos[1] * cellDim };
   }
 
-  // could be used for visualization of the processed occurrence map
+  // used for visualization of processed map
   public Mat getProcessedMat() {
     labels.convertTo(labels, opencv_core.CV_8UC1);
     return processedMap;

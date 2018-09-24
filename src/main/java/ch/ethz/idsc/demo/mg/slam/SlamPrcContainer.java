@@ -9,17 +9,18 @@ import ch.ethz.idsc.tensor.Tensors;
 /** container for detected way points and curves which are estimated from the points */
 public class SlamPrcContainer {
   private final GokartPoseUnitlessInterface slamPose;
+  // ---
   /** most recently detected way points */
   private SlamWaypoints slamWaypoints;
-  /** interpolated curve through valid way points in go kart frame */
-  private Tensor interpolatedCurve;
+  /** fitted curve through valid way points in go kart frame */
+  private Tensor fittedCurve;
   /** inter- and extrapolated curve to be passed to pure pursuit controller, world frame */
   private Optional<Tensor> curve;
 
   public SlamPrcContainer(GokartPoseUnitlessInterface slamPose) {
     this.slamPose = slamPose;
     slamWaypoints = new SlamWaypoints();
-    interpolatedCurve = Tensors.empty();
+    fittedCurve = Tensors.empty();
     curve = Optional.empty();
   }
 
@@ -48,7 +49,7 @@ public class SlamPrcContainer {
   }
 
   public void setValidities(boolean[] validity) {
-    slamWaypoints.setValidity(validity);
+    slamWaypoints.setValidities(validity);
   }
 
   /** @param curve in go kart frame */
@@ -67,11 +68,11 @@ public class SlamPrcContainer {
     return Optional.empty();
   }
 
-  public void setInterpolatedCurve(Tensor interpolatedCurve) {
-    this.interpolatedCurve = interpolatedCurve;
+  public void setFittedCurve(Tensor fittedCurve) {
+    this.fittedCurve = fittedCurve;
   }
 
-  public Tensor getInterpolatedCurve() {
-    return interpolatedCurve;
+  public Tensor getFittedCurve() {
+    return fittedCurve;
   }
 }

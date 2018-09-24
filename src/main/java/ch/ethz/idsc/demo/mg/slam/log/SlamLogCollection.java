@@ -8,7 +8,6 @@ import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
-import ch.ethz.idsc.demo.mg.util.io.CsvIO;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
@@ -18,10 +17,10 @@ public class SlamLogCollection extends PeriodicSlamStep implements StartAndStopp
   private final String filename;
   private final List<double[]> logData;
 
-  public SlamLogCollection(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig, GokartPoseInterface gokartPoseInterface) {
-    super(slamContainer, slamConfig.logCollectionUpdateRate);
+  public SlamLogCollection(SlamCoreContainer slamCoreContainer, GokartPoseInterface gokartPoseInterface) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
     this.gokartLidarPose = gokartPoseInterface;
-    filename = slamConfig.davisConfig.logFilename();
+    filename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
     logData = new ArrayList<>();
   }
 

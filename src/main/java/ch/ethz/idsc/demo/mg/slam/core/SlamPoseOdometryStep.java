@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.Tensor;
 /* package */ class SlamPoseOdometryStep extends PeriodicSlamStep {
   private final GokartPoseOdometryDemo gokartPoseOdometry;
 
-  protected SlamPoseOdometryStep(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig, GokartPoseOdometryDemo gokartPoseOdometry) {
-    super(slamContainer, slamConfig.localizationUpdateRate);
+  protected SlamPoseOdometryStep(SlamCoreContainer slamCoreContainer, GokartPoseOdometryDemo gokartPoseOdometry) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.localizationUpdateRate);
     this.gokartPoseOdometry = gokartPoseOdometry;
   }
 

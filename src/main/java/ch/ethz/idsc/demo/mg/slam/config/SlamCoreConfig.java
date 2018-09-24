@@ -22,11 +22,11 @@ public class SlamCoreConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarReactiveMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
-  public final Boolean saveSlamMap = true;
+  public final Boolean saveSlamMap = false;
   /** which event polarities are processed */
   public final EventPolarityFilter eventPolarityFilter = EventPolarityFilter.BOTH;
   // particle filter parameters
@@ -44,9 +44,10 @@ public class SlamCoreConfig {
   public final Scalar resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);
   public final Scalar statePropagationRate = Quantity.of(1, NonSI.MILLI_SECOND);
   public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar waypointUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public Scalar waypointUpdateRate = Quantity.of(0.02, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public Scalar purePursuitUpdateRate = Quantity.of(0.05, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -56,17 +57,15 @@ public class SlamCoreConfig {
   public final Scalar rougheningAngAccelStd = Quantity.of(12, "rad*s^-2");
   // SLAM map parameters
   public final Scalar cellDim = Quantity.of(0.05, SI.METER); // single cell dimension
-  /** [m] x 'width' of map */
-  public final Scalar dimX = Quantity.of(35, SI.METER);
-  /** [m] y 'height' of map */
-  public final Scalar dimY = Quantity.of(35, SI.METER);
+  /** map dimensions {width[m], height[m]} */
+  public final Tensor mapDimensions = Tensors.of(Quantity.of(35, SI.METER), Quantity.of(35, SI.METER)).unmodifiable();
 
   public final int mapWidth() {
-    return Magnitude.ONE.toInt(dimX.divide(cellDim));
+    return Magnitude.ONE.toInt(mapDimensions.Get(0).divide(cellDim));
   }
 
   public final int mapHeight() {
-    return Magnitude.ONE.toInt(dimY.divide(cellDim));
+    return Magnitude.ONE.toInt(mapDimensions.Get(1).divide(cellDim));
   }
 
   /** @return [m] coordinates of lower left point in map */
@@ -75,7 +74,7 @@ public class SlamCoreConfig {
 
   /** @return [m] coordinates of upper right point in map */
   public Tensor cornerHigh() {
-    return corner.add(Tensors.of(dimX, dimY).map(UnitSystem.SI()));
+    return corner.add(mapDimensions.map(UnitSystem.SI()));
   }
 
   /** @return mapArray containing ground truth occurrence map */
@@ -84,9 +83,7 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar resetPoseX = Quantity.of(50, SI.METER);
-  public final Scalar resetPoseY = Quantity.of(50, SI.METER);
-  public final Scalar padding = Quantity.of(5, SI.METER);
+  public final Scalar padding = Quantity.of(8, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

@@ -9,18 +9,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** sets up the SLAM algorithm for offline processing of a log file */
 /* package */ class SlamSetup {
-  private final SlamCoreConfig slamConfig;
-  private final File logFile;
-  private final long logFileDuration;
-
-  SlamSetup(SlamCoreConfig slamConfig) {
-    this.slamConfig = slamConfig;
-    logFile = slamConfig.davisConfig.getLogFile();
-    logFileDuration = Magnitude.MICRO_SECOND.toLong(slamConfig.davisConfig.logFileDuration);
-  }
+  private final File logFile = SlamCoreConfig.GLOBAL.davisConfig.getLogFile();
+  private final long logFileDuration = Magnitude.MICRO_SECOND.toLong(SlamCoreConfig.GLOBAL.davisConfig.logFileDuration);
 
   private void runAlgo() {
-    OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap(slamConfig);
+    OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap();
     try {
       BoundedOfflineLogPlayer.process(logFile, logFileDuration, offlineSlamWrap);
       offlineSlamWrap.stop();
@@ -30,7 +23,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   }
 
   public static void main(String[] args) {
-    SlamSetup slamSetup = new SlamSetup(new SlamCoreConfig());
+    SlamSetup slamSetup = new SlamSetup();
     slamSetup.runAlgo();
   }
 }

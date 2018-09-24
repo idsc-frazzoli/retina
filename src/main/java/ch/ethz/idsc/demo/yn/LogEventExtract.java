@@ -4,9 +4,9 @@ package ch.ethz.idsc.demo.yn;
 import java.io.File;
 
 import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.subare.util.UserHome;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;

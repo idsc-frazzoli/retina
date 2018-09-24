@@ -8,8 +8,8 @@ import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 /** executes the mapping step of the SLAM algorithm for the case that the pose is provided from another module,
  * e.g. lidar or odometry */
 /* package */ class SlamMappingStep extends EventActionSlamStep {
-  protected SlamMappingStep(SlamCoreContainer slamContainer) {
-    super(slamContainer);
+  protected SlamMappingStep(SlamCoreContainer slamCoreContainer) {
+    super(slamCoreContainer);
   }
 
   @Override // from EventActionSlamStep

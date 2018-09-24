@@ -9,11 +9,11 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 /* package */ class SlamResamplingStep extends PeriodicSlamStep {
   private final SlamResamplingStepUtil slamResamplingStepUtil;
 
-  SlamResamplingStep(SlamCoreContainer slamContainer, SlamCoreConfig slamConfig) {
-    super(slamContainer, slamConfig.resampleRate);
+  SlamResamplingStep(SlamCoreContainer slamCoreContainer) {
+    super(slamCoreContainer, SlamCoreConfig.GLOBAL.resampleRate);
     slamResamplingStepUtil = new SlamResamplingStepUtil( //
-        Magnitude.ACCELERATION.toDouble(slamConfig.rougheningLinAccelStd), //
-        Magnitude.ANGULAR_ACCELERATION.toDouble(slamConfig.rougheningAngAccelStd));
+        Magnitude.ACCELERATION.toDouble(SlamCoreConfig.GLOBAL.rougheningLinAccelStd), //
+        Magnitude.ANGULAR_ACCELERATION.toDouble(SlamCoreConfig.GLOBAL.rougheningAngAccelStd));
   }
 
   @Override // from PeriodicSlamStep

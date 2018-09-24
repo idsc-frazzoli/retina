@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.subare.util.UserHome;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 
 /* package */ enum MhLogTableExport {
   ;
