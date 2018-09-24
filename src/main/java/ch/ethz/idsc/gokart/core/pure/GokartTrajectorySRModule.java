@@ -79,17 +79,10 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   static final Scalar MAX_TURNING_PLAN = Degree.of(20); // 45
   static final Tensor ACCELERATIONS = Tensors.vector(-2, 0, 2);
   static final int FLOWRES = 9;
-  static final float CAR_RAD = 1.2f; // [m]
+  static final float CAR_RAD = 1.1f; // [m]
   // ---
   static final Tensor GOAL = Tensors.of(RealScalar.of(54), RealScalar.of(57), DoubleScalar.of(Math.PI / 4), MAX_SPEED.divide(RealScalar.of(2))); // TODO
   // ---
-  static final boolean SR_PED_LEGAL = false;
-  static final boolean SR_PED_ILLEGAL = true;
-  static final float PED_VELOCITY = 2.0f;
-  static final float CAR_VELOCITY = 10.0f;
-  static final float PED_RADIUS = 0.3f;
-  static final float MAX_A = 5.0f; // [m/s²]
-  static final float REACTION_TIME = 0.4f;
   static final LidarRaytracer LIDAR_RAYTRACER = //
       new LidarRaytracer(Subdivide.of(Degree.of(-180), Degree.of(180), 72), Subdivide.of(0, 40, 120));
   // ---
@@ -97,7 +90,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal(), RealScalar.of(10)).unmodifiable();
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = FixedStateIntegrator.create( //
-      new Tse2Integrator(Clip.function(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 15), 4);
+      new Tse2Integrator(Clip.function(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 15), 3);
   // private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(Tse2Wrap.INSTANCE::represent));
@@ -151,16 +144,20 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     TrajectoryRegionQuery lidarRay = SimpleTrajectoryRegionQuery.timeInvariant(irLid);
     LidarEmulator lidarEmulator = new LidarEmulator( //
         LIDAR_RAYTRACER, () -> new StateTime(Tensors.vector(0, 0, 0), RealScalar.ZERO), lidarRay);
-    if (SR_PED_LEGAL) {
+    if (PlanSRConfig.GLOBAL.SR_PED_LEGAL) {
       ShadowMapSpherical smPedLegal = //
-          new ShadowMapSpherical(lidarEmulator, irPedLegal, PED_VELOCITY, PED_RADIUS);
-      PlannerConstraint pedLegalConst = new SimpleShadowConstraintCV(smPedLegal, irCar, CAR_RAD, MAX_A, REACTION_TIME, true);
+          new ShadowMapSpherical(lidarEmulator, irPedLegal, //
+              PlanSRConfig.GLOBAL.PED_VELOCITY.number().floatValue(), PlanSRConfig.GLOBAL.PED_RADIUS.number().floatValue());
+      PlannerConstraint pedLegalConst = new SimpleShadowConstraintCV(smPedLegal, irCar, CAR_RAD, //
+          PlanSRConfig.GLOBAL.MAX_A.number().floatValue(), PlanSRConfig.GLOBAL.REACTION_TIME.number().floatValue(), true);
       constraints.add(pedLegalConst);
     }
-    if (SR_PED_ILLEGAL) {
+    if (PlanSRConfig.GLOBAL.SR_PED_ILLEGAL) {
       ShadowMapSpherical smPedIllegal = //
-          new ShadowMapSpherical(lidarEmulator, irPedIllegal, PED_VELOCITY, PED_RADIUS);
-      PlannerConstraint pedIllegalConst = new SimpleShadowConstraintCV(smPedIllegal, irCar, CAR_RAD, MAX_A, REACTION_TIME, true);
+          new ShadowMapSpherical(lidarEmulator, irPedIllegal, PlanSRConfig.GLOBAL.PED_VELOCITY.number().floatValue(),
+              PlanSRConfig.GLOBAL.PED_RADIUS.number().floatValue());
+      PlannerConstraint pedIllegalConst = new SimpleShadowConstraintCV(smPedIllegal, irCar, CAR_RAD, //
+          PlanSRConfig.GLOBAL.MAX_A.number().floatValue(), PlanSRConfig.GLOBAL.REACTION_TIME.number().floatValue(), true);
       constraints.add(pedIllegalConst);
     }
   }
