@@ -83,7 +83,7 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar padding = Quantity.of(8, SI.METER);
+  public final Scalar padding = Quantity.of(5, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);

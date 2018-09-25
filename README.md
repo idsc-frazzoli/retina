@@ -10,6 +10,16 @@ The code in the repository operates a heavy and fast robot that may endanger liv
 We follow best practices and coding standards to protect from avoidable errors.
 See [development_guidelines](doc/development_guidelines.md)
 
+## Features
+
+* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
+* interfaces to event based camera Davis240C with lossless compression by 4x
+* lidar based localization
+* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* offline processing of log data
+
+## Gallery
+
 <table>
 <tr>
 <td>
@@ -24,17 +34,20 @@ See [development_guidelines](doc/development_guidelines.md)
 
 [Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
 
+<td>
+
+![visioneventbased](https://user-images.githubusercontent.com/4012178/45996325-21d77680-c09c-11e8-9d0a-ffdd4dfba62b.png)
+
+[Event-based SLAM](https://www.youtube.com/watch?v=NKylhRHbnGA), [Fig. 8](https://www.youtube.com/watch?v=NpCwG_32Cr8)
+
 </tr>
 </table>
 
-## Features
-
-* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
-* interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization
-* offline processing of log data
-
 ## Architecture
+
+Source file size distribution
+
+![retina](https://user-images.githubusercontent.com/4012178/45996769-a4146a80-c09d-11e8-87c4-acf9db7fcc5f.png)
 
 We use `LCM` for message interchange.
 All messages are encoded using a single type `BinaryBlob`.
@@ -42,8 +55,6 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
-
-![retina-repo](https://user-images.githubusercontent.com/4012178/39506091-ddca7cfe-4dd6-11e8-904b-b5ed1f267422.png)
 
 ## GOKART
 
