@@ -18,9 +18,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 /* package */ enum StaticHelper {
   ;
   private static final byte CLEAR_BYTE = -1; // white for type TYPE_BYTE_INDEXED
-  // TODO MG orange and green are not used -> remove?
-  private static final byte ORANGE = (byte) -52;
-  private static final byte GREEN = (byte) 30;
   private static final byte BLUE = (byte) 5;
   private static final double radius = 0.1; // [m]
 

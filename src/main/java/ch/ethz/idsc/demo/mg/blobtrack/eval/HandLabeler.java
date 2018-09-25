@@ -221,6 +221,6 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   // standalone application
   public static void main(String[] args) {
     BlobTrackConfig pipelineConfig = new BlobTrackConfig();
-    HandLabeler handlabeler = new HandLabeler(pipelineConfig);
+    new HandLabeler(pipelineConfig);
   }
 }

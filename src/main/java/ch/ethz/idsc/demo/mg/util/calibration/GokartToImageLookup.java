@@ -16,8 +16,6 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   // ---
   private final GokartToImageUtil gokartToImageUtil;
-  // TODO MG imageToGokartUtil not used -> remove?
-  private final ImageToGokartUtil imageToGokartUtil;
   private final double[] lookupArray;
   private final double cellDim;
   private final double lookAhead;
@@ -27,7 +25,6 @@ public class GokartToImageLookup implements GokartToImageInterface {
 
   public GokartToImageLookup(ImageToGokartUtil imageToGokartUtil, GokartToImageUtil gokartToImageUtil, Scalar cellDimension, Scalar lookAheadDistance) {
     this.gokartToImageUtil = gokartToImageUtil;
-    this.imageToGokartUtil = imageToGokartUtil;
     cellDim = cellDimension.number().doubleValue();
     // lookAhead = lookAheadDistance.number().doubleValue();
     lookAhead = 20;

@@ -18,7 +18,6 @@ import ch.ethz.idsc.tensor.io.Export;
    * 
    * @param file list is saved to that file
    * @param doubleList length of list and double array are arbitrary */
-  // TODO MG test with evalUtil, should replace EvalUtil::saveToCSV
   public static void saveToCSV(File file, List<double[]> doubleList) {
     // TODO MG try the code below
     try {

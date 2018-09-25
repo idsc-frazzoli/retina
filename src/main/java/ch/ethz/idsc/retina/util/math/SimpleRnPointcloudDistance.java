@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.red.Norm;
  * by iterating over all points
  * 
  * see also RnPointcloudRegion which uses a nd-map */
+// TODO OWL V020
 public class SimpleRnPointcloudDistance implements TensorScalarFunction {
   public static TensorScalarFunction of(Tensor points, Norm norm) {
     return new SimpleRnPointcloudDistance(points, norm);

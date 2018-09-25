@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -13,8 +12,6 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -35,10 +32,10 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   private Scalar time_next;
   private RimoGetEvent rge;
-  private RimoPutEvent rpe;
+  // private RimoPutEvent rpe;
   /** counters with long precision (using int results in overflow) */
   long[] events = new long[2]; //
-  private GokartStatusEvent gse;
+  // private GokartStatusEvent gse;
 
   public DavisEventTable(Scalar delta) {
     this.delta = delta;
@@ -76,7 +73,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       rge = new RimoGetEvent(byteBuffer);
     } else //
     if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
-      rpe = RimoPutHelper.from(byteBuffer);
+      // rpe = RimoPutHelper.from(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) { // TODO get channel name from code
       // this is where the decoder obtains a single message and
@@ -84,7 +81,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       davisDvsDatagramDecoder.decode(byteBuffer);
     }
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      gse = new GokartStatusEvent(byteBuffer);
+      // gse = new GokartStatusEvent(byteBuffer);
     }
   }
 
