@@ -47,7 +47,7 @@ codeoptions = getOptions('FORCESNLPsolver');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
-codeoptions.cleanup = true;
+codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
