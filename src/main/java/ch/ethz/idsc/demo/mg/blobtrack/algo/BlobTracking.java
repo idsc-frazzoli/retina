@@ -25,7 +25,7 @@ public class BlobTracking {
   // algorithm parameters
   private final float aUp; // if activity is higher, blob is in active layer
   private final float aDown; // if activity is lower, active blob gets deleted
-  private final float scoreThreshold; // score threshold for active blobs
+  // private final float scoreThreshold; // score threshold for active blobs
   private final float alphaOne; // for blob position update
   private final float alphaTwo; // for blob covariance update
   private final float alphaAttr; // attraction parameter - large value pulls blobs more towards initPos
@@ -51,7 +51,7 @@ public class BlobTracking {
     defaultBlobID = pipelineConfig.defaultBlobID.number().intValue();
     aUp = pipelineConfig.aUp.number().floatValue();
     aDown = pipelineConfig.aDown.number().floatValue();
-    scoreThreshold = pipelineConfig.scoreThreshold.number().floatValue();
+    // scoreThreshold = pipelineConfig.scoreThreshold.number().floatValue();
     alphaOne = pipelineConfig.alphaOne.number().floatValue();
     alphaTwo = pipelineConfig.alphaTwo.number().floatValue();
     alphaAttr = pipelineConfig.alphaAttr.number().floatValue();

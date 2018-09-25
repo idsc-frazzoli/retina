@@ -72,6 +72,7 @@ import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
+/** rapid prototype implementation to run experiment as part of ICRA publication */
 // TODO make configurable as parameter
 public class GokartTrajectorySRModule extends AbstractClockedModule {
   public static final Scalar MAX_SPEED = RealScalar.of(8); // 8
@@ -81,7 +82,12 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   static final int FLOWRES = 9;
   static final float CAR_RAD = 1.2f; // [m]
   // ---
-  static final Tensor GOAL = Tensors.of(RealScalar.of(54), RealScalar.of(57), DoubleScalar.of(Math.PI / 4), MAX_SPEED.divide(RealScalar.of(2))); // TODO
+  // TODO define goal in a generic manner?
+  static final Tensor GOAL = Tensors.of( //
+      RealScalar.of(54), //
+      RealScalar.of(57), //
+      DoubleScalar.of(Math.PI / 4), //
+      MAX_SPEED.divide(RealScalar.of(2)));
   // ---
   static final boolean SR_PED_LEGAL = false;
   static final boolean SR_PED_ILLEGAL = true;

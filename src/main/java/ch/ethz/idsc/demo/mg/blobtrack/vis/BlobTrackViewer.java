@@ -1,11 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.blobtrack.vis;
 
-import java.io.File;
-
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
-import ch.ethz.idsc.demo.mg.blobtrack.eval.MgEvaluationFolders;
 import ch.ethz.idsc.demo.mg.filter.DavisDvsEventFilter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -18,13 +15,13 @@ public class BlobTrackViewer implements DavisDvsListener {
   private final BlobTrackGUI blobTrackGUI;
   private final AccumulatedEventFrame[] eventFrames;
   private final PhysicalBlobFrame[] physicalFrames;
-  private final String imagePrefix;
-  private final File parentFilePath;
+  // private final String imagePrefix;
+  // private final File parentFilePath;
   private final double visualizationInterval;
   private final double savingInterval;
   private double lastImagingTimeStamp;
   private double lastSavingTimeStamp;
-  private int imageCount;
+  // private int imageCount;
   // ---
   private boolean isInitialized;
 
@@ -38,8 +35,8 @@ public class BlobTrackViewer implements DavisDvsListener {
     physicalFrames = new PhysicalBlobFrame[3];
     for (int i = 0; i < physicalFrames.length; i++)
       physicalFrames[i] = new PhysicalBlobFrame(blobTrackConfig);
-    imagePrefix = blobTrackConfig.davisConfig.logFilename();
-    parentFilePath = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix);
+    // imagePrefix = blobTrackConfig.davisConfig.logFilename();
+    // parentFilePath = MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix);
     visualizationInterval = Magnitude.SECOND.toDouble(blobTrackConfig.visualizationInterval);
     savingInterval = Magnitude.SECOND.toDouble(blobTrackConfig.savingInterval);
   }
@@ -63,7 +60,7 @@ public class BlobTrackViewer implements DavisDvsListener {
       lastImagingTimeStamp = timeStamp;
     }
     if (timeStamp - lastSavingTimeStamp > savingInterval) {
-      ++imageCount;
+      // ++imageCount;
       // VisGeneralUtil.saveFrame(eventFrames[1].getAccumulatedEvents(), parentFilePath, imagePrefix, timeStamp, imageCount);
       lastSavingTimeStamp = timeStamp;
     }
