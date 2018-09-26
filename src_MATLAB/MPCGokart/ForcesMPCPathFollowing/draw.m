@@ -35,11 +35,11 @@ hold off
 subplot(m,n,2)
 hold on
 yyaxis left
-plot(lhistory(:,1),lhistory(:,9), 'r')
+plot(lhistory(:,1),lhistory(:,9))
 ylabel('steering position [rad]')
 axis([-inf inf -1 1])
 yyaxis right
-stairs(lhistory(:,1), lhistory(:,3), 'b')
+stairs(lhistory(:,1), lhistory(:,3))
 %axis([-inf inf -2 2])
 axis([-inf inf -4 4])
 ylabel('steering change rate [rad/s]')
