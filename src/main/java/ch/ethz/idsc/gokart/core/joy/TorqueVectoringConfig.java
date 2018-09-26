@@ -14,12 +14,11 @@ public class TorqueVectoringConfig implements Serializable {
   public static final TorqueVectoringConfig GLOBAL = AppResources.load(new TorqueVectoringConfig());
   /***************************************************/
   /**  */
-  // FIXME
-  public Scalar name1 = Quantity.of(2315, NonSI.ARMS);
+  public Scalar SteeringCorrection = Quantity.of(1, SI.PER_METER);
+  /** */
+  public Scalar StaticCompensation = Quantity.of(1, SI.ONE);
   /**  */
-  public Scalar name2 = Quantity.of(4.0, "rad*s^-1");
-  /**  */
-  public Scalar name3 = Quantity.of(2.0, SI.SECOND);
-  /**  */
-  public Scalar name4 = Quantity.of(2.2, SI.SECOND);
+  public Scalar DynamicCorrection = Quantity.of(1, SI.ONE);
+  /** */
+  public Scalar 
 }

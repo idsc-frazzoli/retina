@@ -47,7 +47,8 @@ end
 function plotPower()
     global beta power slip v;
     rreal = tan(beta)*v*1+slip;
-    [l,r,il,ir,pv,dv]=backtorques(beta,rreal,v,power);
+    %[l,r,il,ir,pv,dv]=backtorques(beta,rreal,v,power);
+    [l,r,il,ir,pv,dv]=backtorquesSimplified(beta,rreal,v,power);
     bar([l,r,il,ir])
     text(0.1,0.6,num2str(pv,'power violated: %10.3f\n'))
     text(0.1,0.5,num2str(dv,'diff violated: %10.3f\n'))
