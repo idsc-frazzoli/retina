@@ -59,6 +59,8 @@ public enum SlamAlgoConfiguration {
     }
     // we always use this module to move the map when pose is too close to boarders
     listeners.add(new SlamMapMove(slamCoreContainer));
+    // testing new module
+    listeners.add(new SlamEventCounter(slamCoreContainer));
     if (SlamCoreConfig.GLOBAL.offlineLogMode)
       listeners.add(new SlamLogCollection(slamCoreContainer, gokartLidarPose));
     return listeners;

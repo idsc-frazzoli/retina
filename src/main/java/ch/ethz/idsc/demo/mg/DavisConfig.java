@@ -22,9 +22,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI19q;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI16e;
   /** maxDuration */
-  public final Scalar logFileDuration = Quantity.of(100, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(54, SI.SECOND);
   // general parameters
   /** width of image is required to be an integer */
   public final Scalar width = RealScalar.of(240);

@@ -17,7 +17,7 @@ public class BlobTrackConfig {
   public final DavisConfig davisConfig = new DavisConfig();
   // visualization and image saving
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
-  public final Scalar savingInterval = Quantity.of(0.2, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
   /***************************************************/
   // feature tracking algorithm parameters
   // feature tracking
@@ -55,6 +55,7 @@ public class BlobTrackConfig {
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = true;
+  public Boolean saveFrame = false;
   public final Boolean rotateFrame = false; // for early recordings the DAVIS was mounted upside down
   // physical world visualization
   public final Scalar frameWidth = RealScalar.of(400); // [pixel] for physical frame

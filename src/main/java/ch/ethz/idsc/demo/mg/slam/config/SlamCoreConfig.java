@@ -22,7 +22,7 @@ public class SlamCoreConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
   /** when true, SLAM module SlamLogCollection is invoked */
   public final Boolean offlineLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -31,8 +31,9 @@ public class SlamCoreConfig {
   public final EventPolarityFilter eventPolarityFilter = EventPolarityFilter.BOTH;
   // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
-  public Scalar numberOfParticles = RealScalar.of(25);
-  public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
+  public Scalar numberOfParticles = RealScalar.of(40);
+  /** only these particles are used for occurrence map update */
+  public final Scalar relevantParticles = RealScalar.of(4);
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
@@ -49,7 +50,7 @@ public class SlamCoreConfig {
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   public Scalar purePursuitUpdateRate = Quantity.of(0.05, SI.SECOND);
   // particle initialization
-  public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
+  public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
@@ -83,7 +84,7 @@ public class SlamCoreConfig {
   }
 
   // SlamPoseReset
-  public final Scalar padding = Quantity.of(5, SI.METER);
+  public final Scalar padding = Quantity.of(2, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
