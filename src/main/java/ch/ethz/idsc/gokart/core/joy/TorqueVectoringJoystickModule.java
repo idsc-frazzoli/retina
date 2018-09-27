@@ -64,9 +64,8 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar theta1 = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // steering angle
     Scalar rotPerMeterDriver = Tan.FUNCTION.apply(theta1).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // 1/m
-
-    //why isn't theta rad/m?
-    //Scalar theta = SteerConfig.GLOBAL.getSCEfromAngle(angle)
+    // why isn't theta rad/m?
+    // Scalar theta = SteerConfig.GLOBAL.getSCEfromAngle(angle)
     Scalar power = Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // Scalar constant3 = RealScalar.of(-0.58);
     // Scalar constant1 = RealScalar.of(0.98);
@@ -81,7 +80,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     Scalar dynamicComponent = angularSlip.multiply(TorqueVectoringConfig.GLOBAL.dynamicCorrection);
     System.out.println("Dynamic component: " + dynamicComponent);
     Scalar lateralAcceleration = rotPerMeterDriver.multiply(Power.of(meanTangentSpeed, 2));
-    System.out.println("lateral Acceleration: "+ lateralAcceleration);
+    System.out.println("lateral Acceleration: " + lateralAcceleration);
     Scalar staticComponent = lateralAcceleration.multiply(TorqueVectoringConfig.GLOBAL.staticCompensation);
     System.out.println("Static component: " + staticComponent);
     Scalar wantedZTorque = dynamicComponent.add(staticComponent); // One

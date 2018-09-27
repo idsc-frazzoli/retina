@@ -37,8 +37,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     System.out.println(rimoPutEvent1.putTireR.getTorque());
     assertEquals(rimoPutEvent1.putTireL.getTorque(), Quantity.of(0, NonSI.ARMS));
     assertEquals(rimoPutEvent1.putTireR.getTorque(), Quantity.of(0, NonSI.ARMS));
-    
-    //full forward
+    // full forward
     System.out.println("full forward");
     tvjm.gyro_Z = Quantity.of(0, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -49,13 +48,12 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent2 = control.get();
     System.out.println(rimoPutEvent2.putTireL.getTorque());
     System.out.println(rimoPutEvent2.putTireR.getTorque());
-    
-    //assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
-    //assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
-    assertEquals(rimoPutEvent2.putTireL.getTorque(), Quantity.of(-2300, NonSI.ARMS));
-    assertEquals(rimoPutEvent2.putTireR.getTorque(), Quantity.of(2300, NonSI.ARMS));
-    
-    //half forward slip right
+    // JoystickConfig.GLOBAL;
+    // assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
+    // assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
+    assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit.negate());
+    assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
+    // half forward slip right
     System.out.println("half forward/slip right");
     tvjm.gyro_Z = Quantity.of(-0.2, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -69,10 +67,9 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent3.putTireL.getTorque().negate(), rimoPutEvent3.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent3.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent3.putTireL.getTorque().negate().add(rimoPutEvent3.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = Quantity.of(0.5*2300, NonSI.ARMS);
+    Scalar wantedPower = Quantity.of(0.5 * 2300, NonSI.ARMS);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    
-    //3/4 forward slip right
+    // 3/4 forward slip right
     System.out.println("3/4 /slip right");
     tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -86,10 +83,9 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent4.putTireL.getTorque().negate(), rimoPutEvent4.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent4.putTireR.getTorque()));
     meanPower = rimoPutEvent4.putTireL.getTorque().negate().add(rimoPutEvent4.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    wantedPower = Quantity.of(0.75*2300, NonSI.ARMS);
+    wantedPower = Quantity.of(0.75 * 2300, NonSI.ARMS);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    
-    //3/4 forward slip left
+    // 3/4 forward slip left
     System.out.println("3/4 /slip left");
     tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -103,10 +99,9 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent5.putTireR.getTorque(), rimoPutEvent5.putTireL.getTorque().negate()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent5.putTireL.getTorque().negate()));
     meanPower = rimoPutEvent5.putTireL.getTorque().negate().add(rimoPutEvent5.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    wantedPower = Quantity.of(0.75*2300, NonSI.ARMS);
+    wantedPower = Quantity.of(0.75 * 2300, NonSI.ARMS);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    
-    //3/4 forward slip right
+    // 3/4 forward slip right
     System.out.println("-3/4 /slip right");
     tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -119,10 +114,9 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     System.out.println(rimoPutEvent6.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent6.putTireL.getTorque().negate(), rimoPutEvent6.putTireR.getTorque()));
     meanPower = rimoPutEvent6.putTireL.getTorque().negate().add(rimoPutEvent6.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    wantedPower = Quantity.of(-0.75*2300, NonSI.ARMS);
+    wantedPower = Quantity.of(-0.75 * 2300, NonSI.ARMS);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    
-    //3/4 forward slip left
+    // 3/4 forward slip left
     System.out.println("-3/4 /slip left");
     tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
     tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
@@ -135,11 +129,8 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     System.out.println(rimoPutEvent7.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent7.putTireR.getTorque(), rimoPutEvent7.putTireL.getTorque().negate()));
     meanPower = rimoPutEvent7.putTireL.getTorque().negate().add(rimoPutEvent7.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    wantedPower = Quantity.of(-0.75*2300, NonSI.ARMS);
+    wantedPower = Quantity.of(-0.75 * 2300, NonSI.ARMS);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    
     tvjm.last();
-    
-    
   }
 }

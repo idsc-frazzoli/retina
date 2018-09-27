@@ -15,5 +15,5 @@ public class TorqueVectoringConfig implements Serializable {
   /** */
   public Scalar staticCompensation = Quantity.of(0.5, "s^2*m^-1");
   /**  */
-  public Scalar dynamicCorrection = Quantity.of(1, "s");
+  public Scalar dynamicCorrection = Quantity.of(1, SI.SECOND);
 }
