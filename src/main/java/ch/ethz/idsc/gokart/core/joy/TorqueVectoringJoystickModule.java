@@ -1,4 +1,4 @@
-// code by jph
+// code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
@@ -23,21 +23,32 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
-    implements DavisImuFrameListener, RimoGetListener {
+    implements DavisImuFrameListener {
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private Scalar gyro_Z = Quantity.of(0, SI.PER_SECOND);
   private Scalar meanRate = Quantity.of(0, SI.PER_SECOND);
+  // rimo get listener
+  final RimoGetListener rimoGetListener = new RimoGetListener() {
+    @Override
+    public void getEvent(RimoGetEvent getEvent) {
+      Scalar leftRate = getEvent.getTireL.getAngularRate_Y();
+      Scalar rightRate = getEvent.getTireR.getAngularRate_Y();
+      meanRate = leftRate.add(rightRate).divide(Quantity.of(2, SI.ONE));
+    }
+  };
 
   @Override // from AbstractModule
   void protected_first() {
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
+    RimoSocket.INSTANCE.addGetListener(rimoGetListener);
   }
 
   @Override // from AbstractModule
   void protected_last() {
     RimoSocket.INSTANCE.removePutProvider(this);
+    RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     davisImuLcmClient.stopSubscriptions();
   }
 
@@ -55,9 +66,16 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     Scalar ackermannCenterSteering = constant3.multiply(theta.multiply(theta.multiply(theta))).add(constant1.multiply(theta));
     //compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
     Scalar wantedRotationRate =Tan.of(ackermannCenterSteering).multiply(TorqueVectoringConfig.GLOBAL.SteeringCorrection.multiply(meanRate));
+    //compute (negative )angular slip
+    Scalar angularSlip = wantedRotationRate.subtract(gyro_Z);
+    System.out.println("angular slip: " + angularSlip);
     //compute differential torque (in Arms as we do not use the power function yet)
-    Scalar wantedZTorque = (wantedRotationRate.subtract(gyro_Z)).multiply(TorqueVectoringConfig.GLOBAL.DynamicCorrection)
-        .add(Tan.of(ackermannCenterSteering).multiply(meanRate.multiply(meanRate.multiply(TorqueVectoringConfig.GLOBAL.StaticCompensation))));
+    Scalar DynamicComponent = angularSlip.multiply(TorqueVectoringConfig.GLOBAL.DynamicCorrection);
+    System.out.println("Dynamic component: " + DynamicComponent);
+    Scalar StaticComponent = Tan.of(ackermannCenterSteering).multiply(meanRate.multiply(meanRate.multiply(TorqueVectoringConfig.GLOBAL.StaticCompensation)));
+    System.out.println("Static component: " + StaticComponent);
+    Scalar wantedZTorque = DynamicComponent.add(StaticComponent);
+    System.out.println("ZTorque: " + wantedZTorque);
     //left and right power 
     Scalar powerLeft = power.subtract(wantedZTorque);
     Scalar powerRight = power.add(wantedZTorque);
@@ -87,22 +105,17 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     powerLeft = powerLeft.multiply(JoystickConfig.GLOBAL.torqueLimit);//we can use the same data as from the joystick controller
     powerRight = powerRight.multiply(JoystickConfig.GLOBAL.torqueLimit);
     short arms_rawl = Magnitude.ARMS.toShort(powerLeft); // confirm that units are correct
-    short armr_rawr = Magnitude.ARMS.toShort(powerRight);
+    short arms_rawr = Magnitude.ARMS.toShort(powerRight);
+    System.out.println("arms_rawl: " + arms_rawl);
+    System.out.println("arms_rawr: " + arms_rawr);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_rawl, // sign left invert
-        (short) +armr_rawr // sign right id
+        (short) +arms_rawr // sign right id
     ));
   }
 
   @Override
   public void imuFrame(DavisImuFrame davisImuFrame) {
     gyro_Z = davisImuFrame.gyroImageFrame().Get(1); // TODO magic const
-  }
-  
-  @Override
-  public void getEvent(RimoGetEvent getEvent) {
-    Scalar leftRate = getEvent.getTireL.getAngularRate_Y();
-    Scalar rightRate = getEvent.getTireR.getAngularRate_Y();
-    meanRate = leftRate.add(rightRate).divide(Quantity.of(2, SI.ONE));
   }
 }

@@ -1,4 +1,4 @@
-// code by jph
+// code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import java.io.Serializable;
@@ -19,6 +19,4 @@ public class TorqueVectoringConfig implements Serializable {
   public Scalar StaticCompensation = Quantity.of(1, SI.ONE);
   /**  */
   public Scalar DynamicCorrection = Quantity.of(1, SI.ONE);
-  /** */
-  public Scalar 
 }
