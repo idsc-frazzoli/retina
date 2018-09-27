@@ -75,16 +75,16 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     Scalar wantedRotationRate = rotPerMeterDriver.multiply(meanTangentSpeed);
     // compute (negative )angular slip
     Scalar angularSlip = wantedRotationRate.subtract(gyro_Z);
-    System.out.println("angular slip: " + angularSlip);
+    // System.out.println("angular slip: " + angularSlip);
     // compute differential torque (in Arms as we do not use the power function yet)
     Scalar dynamicComponent = angularSlip.multiply(TorqueVectoringConfig.GLOBAL.dynamicCorrection);
-    System.out.println("Dynamic component: " + dynamicComponent);
+    // System.out.println("Dynamic component: " + dynamicComponent);
     Scalar lateralAcceleration = rotPerMeterDriver.multiply(Power.of(meanTangentSpeed, 2));
-    System.out.println("lateral Acceleration: " + lateralAcceleration);
+    // System.out.println("lateral Acceleration: " + lateralAcceleration);
     Scalar staticComponent = lateralAcceleration.multiply(TorqueVectoringConfig.GLOBAL.staticCompensation);
-    System.out.println("Static component: " + staticComponent);
+    // System.out.println("Static component: " + staticComponent);
     Scalar wantedZTorque = dynamicComponent.add(staticComponent); // One
-    System.out.println("ZTorque: " + wantedZTorque);
+    // System.out.println("ZTorque: " + wantedZTorque);
     // left and right power
     Scalar powerLeft = power.subtract(wantedZTorque);// One
     Scalar powerRight = power.add(wantedZTorque);// One
@@ -119,8 +119,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     powerRight = Clip.absoluteOne().apply(powerRight).multiply(JoystickConfig.GLOBAL.torqueLimit);
     short arms_rawl = Magnitude.ARMS.toShort(powerLeft); // confirm that units are correct
     short arms_rawr = Magnitude.ARMS.toShort(powerRight);
-    System.out.println("arms_rawl: " + arms_rawl);
-    System.out.println("arms_rawr: " + arms_rawr);
+    System.out.println("arms_rawl: " + arms_rawl + " arms_rawr " + arms_rawr);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_rawl, // sign left invert
         (short) +arms_rawr // sign right id
