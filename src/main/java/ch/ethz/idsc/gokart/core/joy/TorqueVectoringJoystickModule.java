@@ -119,7 +119,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     powerRight = Clip.absoluteOne().apply(powerRight).multiply(JoystickConfig.GLOBAL.torqueLimit);
     short arms_rawl = Magnitude.ARMS.toShort(powerLeft); // confirm that units are correct
     short arms_rawr = Magnitude.ARMS.toShort(powerRight);
-    System.out.println("arms_rawl: " + arms_rawl + " arms_rawr " + arms_rawr);
+    System.out.println("l: " + arms_rawl + " r: " + arms_rawr+ "\ngZ: "+gyro_Z + " wRot: "+wantedRotationRate);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_rawl, // sign left invert
         (short) +arms_rawr // sign right id
