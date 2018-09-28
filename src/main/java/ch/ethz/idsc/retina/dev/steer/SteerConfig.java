@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
+import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PID controller of steering
@@ -72,11 +73,11 @@ public class SteerConfig implements Serializable {
   /** @return scalar without unit but with interpretation in radians
    * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
   public Scalar getAdvAngleFromSCE(SteerColumnInterface steerColumnInterface) {
+    Scalar CSEangle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar linearComponent = Times.of(CSEangle, advColumn2steer1);
+    Scalar cubicComponent = Times.of(CSEangle,CSEangle, CSEangle, advColumn2steer3);
     return UnitSystem.SI().apply(
-        Scalar CSE = steerColumnInterface.getSteerColumnEncoderCentered();
-        Scalar linearComponent = CSE.multiply(advColumn2steer1);
-        Scalar cubicComponent = 
-        steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
+        linearComponent.add(cubicComponent);
   }
 
   /** @return scalar without unit but with interpretation in radians
