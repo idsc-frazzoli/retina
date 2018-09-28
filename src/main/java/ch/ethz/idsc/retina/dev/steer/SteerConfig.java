@@ -46,6 +46,9 @@ public class SteerConfig implements Serializable {
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
+  /** factors for advanced Steering function */
+  public Scalar advColumn2steer1 = Quantity.of(0.93, "rad*SCE^-1");
+  public Scalar advColumn2steer3 = Quantity.of(-0.58, "rad*SCE^-3");
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
@@ -68,11 +71,21 @@ public class SteerConfig implements Serializable {
 
   /** @return scalar without unit but with interpretation in radians
    * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
+  public Scalar getAdvAngleFromSCE(SteerColumnInterface steerColumnInterface) {
+    return UnitSystem.SI().apply(
+        Scalar CSE = steerColumnInterface.getSteerColumnEncoderCentered();
+        Scalar linearComponent = CSE.multiply(advColumn2steer1);
+        Scalar cubicComponent = 
+        steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
+  }
+
+  /** @return scalar without unit but with interpretation in radians
+   * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
   public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
     return UnitSystem.SI().apply( //
         steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
   }
-
+  
   public Scalar getSCEfromAngle(Scalar angle) {
     return angle.divide(column2steer);
   }

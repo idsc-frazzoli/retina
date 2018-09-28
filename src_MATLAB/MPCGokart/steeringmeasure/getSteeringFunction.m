@@ -62,7 +62,7 @@ plot(x,yr);
 %plot(x,ym);
 xlabel('steering wheel encoder angle [rad]')
 ylabel('wheel steering angle [rad]')
-legend('raw data left','cubic left','cubic right (mirrored)')
+legend('measured values for \delta_L','cubic appoximation for \delta_L','cubic appoximation for \delta_R (mirrored)')
 
 figure
 hold on
@@ -76,8 +76,7 @@ plot(x,yma,'k--');
 %plot(x,ym);
 xlabel('steering wheel encoder angle [rad]')
 ylabel('wheel steering angle [rad]')
-
-legend('cubic left','cubic right','nearest ackermann left', 'nearest ackermann right', 'nearest ackermann center')
+legend('cubic appoximation for \delta_L','cubic appoximation for \delta_R','nearest left Ackermann value for (\delta_L,\delta_R)', 'nearest left Ackermann value for (\delta_L,\delta_R)', 'nearest center Ackermann value for (\delta_L,\delta_R)')
 
 %yyaxis right
 %[xt,yt] = computeTurningPoint(yl,yr,0.94);
