@@ -13,7 +13,7 @@ public class TorqueVectoringConfig implements Serializable {
   public static final TorqueVectoringConfig GLOBAL = AppResources.load(new TorqueVectoringConfig());
   /***************************************************/
   /** */
-  public Scalar staticCompensation = Quantity.of(0.4, "s^2*m^-1");
+  public Scalar staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
   /**  */
-  public Scalar dynamicCorrection = Quantity.of(0, SI.SECOND);//this is not tested yet (leave at zero).
+  public Scalar dynamicCorrection = Quantity.of(0, SI.SECOND);// this is not tested yet (leave at zero).
 }
