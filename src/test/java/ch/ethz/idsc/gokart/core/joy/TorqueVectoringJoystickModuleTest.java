@@ -27,7 +27,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
     tvjm.first();
     tvjm.gyro_Z = Quantity.of(0, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(100, 200));
+    tvjm.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false);
@@ -40,7 +40,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // full forward
     System.out.println("full forward");
     tvjm.gyro_Z = Quantity.of(0, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 1), false);
@@ -56,7 +56,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // half forward slip right
     System.out.println("half forward/slip right");
     tvjm.gyro_Z = Quantity.of(-0.2, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false);
@@ -72,7 +72,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // 3/4 forward slip right
     System.out.println("3/4 /slip right");
     tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false);
@@ -88,7 +88,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // 3/4 forward slip left
     System.out.println("3/4 /slip left");
     tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false);
@@ -104,7 +104,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // 3/4 forward slip right
     System.out.println("-3/4 /slip right");
     tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false);
@@ -119,7 +119,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // 3/4 forward slip left
     System.out.println("-3/4 /slip left");
     tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
-    tvjm.rimoGetListener.getEvent(RimoGetEvents.create(200, 200));
+    tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false);
