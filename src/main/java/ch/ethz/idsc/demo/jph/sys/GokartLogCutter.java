@@ -17,8 +17,9 @@ enum GokartLogCutter {
    * _20180830T101537_db899976
    * _20180830T111749_db899976 */
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20180827T155655_db899976;
+    GokartLogFile gokartLogFile = GokartLogFile._20180924T104243_820c1ac4;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
+    file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180924T104243_1/log.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
