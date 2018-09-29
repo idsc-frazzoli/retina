@@ -808,7 +808,38 @@ public enum GokartLogFile implements LogFile {
    * long pause before beginning and after ending */
   _20180920T145559_53622489, //
   /***************************************************/
-  /* 2018-09-21 */
+  /* 2018-09-24 */
+  /** event-based marker following with davis240c */
+  _20180924T104243_820c1ac4, //
+  /** event-based marker following with davis240c */
+  _20180924T105358_820c1ac4, //
+  /** event-based marker following with davis240c */
+  _20180924T110653_820c1ac4, //
+  /** event-based marker following with davis240c */
+  _20180924T141613_820c1ac4, //
+  /** event-based marker following with davis240c */
+  _20180924T151741_820c1ac4, //
+  /** event-based marker following with davis240c
+   * lidar based localization has trouble */
+  _20180924T153005_820c1ac4, //
+  /** system identification */
+  _20180924T162502_820c1ac4, //
+  /** system identification */
+  _20180924T165429_820c1ac4, //
+  /***************************************************/
+  /* 2018-09-27 */
+  /** event-based marker following with davis240c */
+  _20180927T120119_6581b630, //
+  /** event-based marker following with davis240c */
+  _20180927T121713_6581b630, //
+  /** event-based marker following with davis240c */
+  _20180927T123336_6581b630, //
+  /** torque vectoring */
+  _20180927T143750_44599876, //
+  /** event-based marker following with davis240c */
+  _20180927T145943_44599876, //
+  /** torque vectoring, without davis240c */
+  _20180927T162555_44599876, //
   ;
   // ---
   @Override // from LogFile
