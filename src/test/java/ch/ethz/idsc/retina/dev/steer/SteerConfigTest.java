@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class SteerConfigTest extends TestCase {
@@ -53,5 +54,25 @@ public class SteerConfigTest extends TestCase {
     // conclusion: we should build a more accurate model that maps [encoder <-> effective steering angle]
     Clip clip = Clip.function(Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER), Quantity.of(0.8, SteerPutEvent.UNIT_ENCODER));
     assertTrue(clip.isInside(encoder));
+  }
+
+  public void testAdvancedFormulaCenter() {
+    Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE_Cubic( //
+        new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
+    assertEquals(angle, RealScalar.ZERO);
+  }
+
+  public void testAdvancedFormulaSign() {
+    Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE_Cubic( //
+        new SteerColumnAdapter(true, Quantity.of(0.1, "SCE")));
+    assertTrue(Sign.isPositive(angle));
+    Clip.function(.08, .15).requireInside(angle);
+  }
+
+  public void testAdvancedFormulaNegative() {
+    Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE_Cubic( //
+        new SteerColumnAdapter(true, Quantity.of(-0.7, "SCE")));
+    assertTrue(Sign.isNegative(angle));
+    Clip.function(-.5, .4).requireInside(angle);
   }
 }

@@ -36,6 +36,12 @@ See [development_guidelines](doc/development_guidelines.md)
 
 <td>
 
+![autonomous_braking](https://user-images.githubusercontent.com/4012178/46241930-4051b080-c3c1-11e8-84b5-909d698d4bdf.png)
+
+[Autonomous braking](https://www.youtube.com/watch?v=b_Sqy2TmKIk)
+
+<td>
+
 ![visioneventbased](https://user-images.githubusercontent.com/4012178/45996325-21d77680-c09c-11e8-9d0a-ffdd4dfba62b.png)
 
 [Event-based SLAM](https://www.youtube.com/watch?v=NKylhRHbnGA), [Fig. 8](https://www.youtube.com/watch?v=NpCwG_32Cr8)
