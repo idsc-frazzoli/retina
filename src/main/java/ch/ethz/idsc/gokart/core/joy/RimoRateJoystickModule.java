@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** DO NOT USE THIS IMPLEMENTATION.
@@ -27,6 +28,7 @@ import ch.ethz.idsc.tensor.Scalar;
  * 
  * superseded by {@link RimoTorqueJoystickModule} */
 /* package */ class RimoRateJoystickModule extends GuideJoystickModule<RimoPutEvent> {
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   @Override // from AbstractModule
@@ -46,7 +48,7 @@ import ch.ethz.idsc.tensor.Scalar;
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
-    Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface);
+    Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface);
     return rimoRateControllerWrap.iterate(speed, theta);
   }
 }

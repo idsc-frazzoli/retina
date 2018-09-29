@@ -72,12 +72,8 @@ public class SteerConfig implements Serializable {
   }
 
   /***************************************************/
-  /** @param steerColumnInterface
-   * @return scalar without unit but with interpretation in radians
-   * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    return UnitSystem.SI().apply( //
-        steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
+  public SteerMapping getSteerMapping() {
+    return new LinearSteerMapping(column2steer);
   }
 
   /** @param steerColumnInterface
@@ -88,13 +84,6 @@ public class SteerConfig implements Serializable {
     Scalar deg1Component = Times.of(cubicColumn2steer1, sce);
     Scalar deg3Component = Times.of(cubicColumn2steer3, sce, sce, sce);
     return UnitSystem.SI().apply(deg1Component.add(deg3Component));
-  }
-
-  /***************************************************/
-  /** @param angle of imaginary center front wheel with unit "rad"
-   * @return steer column encoder value with unit "SCE" */
-  public Scalar getSCEfromAngle(Scalar angle) {
-    return angle.divide(column2steer);
   }
 
   /** @return */

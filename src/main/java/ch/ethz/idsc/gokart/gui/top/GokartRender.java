@@ -24,6 +24,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -51,6 +52,7 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
   public GokartRender(GokartPoseInterface gokartPoseInterface, VehicleModel vehicleModel) {
     super(gokartPoseInterface);
@@ -125,7 +127,7 @@ public class GokartRender extends AbstractGokartRender {
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
       Scalar angleL = pair.Get(0);
       Scalar angleR = pair.Get(1);

@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -14,8 +15,9 @@ public class GokartStatusEventTest extends TestCase {
   public void testSimple() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(Float.NaN);
     assertFalse(gokartStatusEvent.isSteerColumnCalibrated());
+    SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     try {
-      SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
+      steerMapping.getAngleFromSCE(gokartStatusEvent);
       assertTrue(false);
     } catch (Exception exception) {
       // ---
@@ -25,7 +27,8 @@ public class GokartStatusEventTest extends TestCase {
   public void testUnitless() {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
-    Scalar scalar = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
+    SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+    Scalar scalar = steerMapping.getAngleFromSCE(gokartStatusEvent);
     assertFalse(scalar instanceof Quantity);
     Clip.function(0.05, 0.08).requireInside(scalar);
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
