@@ -21,29 +21,33 @@ import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
+/** parameters in this config class are final because they
+ * correspond to immutable characteristic of the gokart. */
 public class ChassisGeometry implements Serializable {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
   /***************************************************/
   /** distance from rear to front axle [m] */
-  public Scalar xAxleRtoF = Quantity.of(+1.19, SI.METER);
-  public Scalar xAxleFtoTip = Quantity.of(+0.56, SI.METER);
-  /** from center to outer protection boundary */
-  public Scalar yHalfWidth = Quantity.of(0.7, SI.METER);
+  public final Scalar xAxleRtoF = Quantity.of(+1.19, SI.METER);
+  /** distance from front axle to front tip of gokart [m] */
+  public final Scalar xAxleFtoTip = Quantity.of(+0.56, SI.METER);
+  /** from center to outer protection boundary along y-axis */
+  public final Scalar yHalfWidth = Quantity.of(0.7, SI.METER);
   /** distance from x-axis to front tire */
-  public Scalar yTireFront = Quantity.of(0.48, SI.METER);
+  public final Scalar yTireFront = Quantity.of(0.48, SI.METER);
   /** distance from x-axis to rear tire */
-  public Scalar yTireRear = Quantity.of(0.54, SI.METER);
-  /** approx. radius of tire when on gokart is on ground */
-  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
-  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
+  public final Scalar yTireRear = Quantity.of(0.54, SI.METER);
   /** front tire half width */
-  public Scalar tireHalfWidthFront = Quantity.of(0.065, SI.METER);
-  public Scalar tireHalfWidthContactFront = Quantity.of(0.045, SI.METER);
+  public final Scalar tireHalfWidthFront = Quantity.of(0.065, SI.METER);
+  public final Scalar tireHalfWidthContactFront = Quantity.of(0.045, SI.METER);
   /** rear tire half width */
-  public Scalar tireHalfWidthRear = Quantity.of(0.0975, SI.METER);
-  public Scalar tireHalfWidthContactRear = Quantity.of(0.0675, SI.METER);
+  public final Scalar tireHalfWidthRear = Quantity.of(0.0975, SI.METER);
+  public final Scalar tireHalfWidthContactRear = Quantity.of(0.0675, SI.METER);
   /** approximation of ground clearance measured on 20180507 */
-  public Scalar groundClearance = Quantity.of(0.03, SI.METER);
+  public final Scalar groundClearance = Quantity.of(0.03, SI.METER);
+  /** approx. radius of front tire when on gokart is on ground [m/rad] */
+  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
+  /** approx. radius of rear tire when on gokart is on ground [m/rad] */
+  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
 
   /***************************************************/
   public Scalar yHalfWidthMeter() {

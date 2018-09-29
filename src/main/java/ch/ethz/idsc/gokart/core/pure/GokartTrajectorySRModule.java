@@ -153,17 +153,21 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     if (PlanSRConfig.GLOBAL.SR_PED_LEGAL) {
       ShadowMapSpherical smPedLegal = //
           new ShadowMapSpherical(lidarEmulator, irPedLegal, //
-              PlanSRConfig.GLOBAL.PED_VELOCITY.number().floatValue(), PlanSRConfig.GLOBAL.PED_RADIUS.number().floatValue());
+              Magnitude.VELOCITY.toFloat(PlanSRConfig.GLOBAL.pedVelocity), //
+              Magnitude.METER.toFloat(PlanSRConfig.GLOBAL.pedRadius));
       PlannerConstraint pedLegalConst = new SimpleShadowConstraintCV(smPedLegal, irCar, CAR_RAD, //
-          PlanSRConfig.GLOBAL.MAX_A.number().floatValue(), PlanSRConfig.GLOBAL.REACTION_TIME.number().floatValue(), true);
+          Magnitude.ACCELERATION.toFloat(PlanSRConfig.GLOBAL.maxAccel), //
+          Magnitude.SECOND.toFloat(PlanSRConfig.GLOBAL.reactionTime), true);
       constraints.add(pedLegalConst);
     }
     if (PlanSRConfig.GLOBAL.SR_PED_ILLEGAL) {
       ShadowMapSpherical smPedIllegal = //
-          new ShadowMapSpherical(lidarEmulator, irPedIllegal, PlanSRConfig.GLOBAL.PED_VELOCITY.number().floatValue(),
-              PlanSRConfig.GLOBAL.PED_RADIUS.number().floatValue());
+          new ShadowMapSpherical(lidarEmulator, irPedIllegal, //
+              Magnitude.VELOCITY.toFloat(PlanSRConfig.GLOBAL.pedVelocity), //
+              Magnitude.METER.toFloat(PlanSRConfig.GLOBAL.pedRadius));
       PlannerConstraint pedIllegalConst = new SimpleShadowConstraintCV(smPedIllegal, irCar, CAR_RAD, //
-          PlanSRConfig.GLOBAL.MAX_A.number().floatValue(), PlanSRConfig.GLOBAL.REACTION_TIME.number().floatValue(), true);
+          Magnitude.ACCELERATION.toFloat(PlanSRConfig.GLOBAL.maxAccel), //
+          Magnitude.SECOND.toFloat(PlanSRConfig.GLOBAL.reactionTime), true);
       constraints.add(pedIllegalConst);
     }
   }
