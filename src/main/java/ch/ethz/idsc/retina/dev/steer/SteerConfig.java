@@ -27,8 +27,8 @@ public class SteerConfig implements Serializable {
    * 
    * post 20180628: the steer battery is replaced. the new model is
    * Lithium Polymer Akku: 45C/90C 4500mAh 11.1V 3S1P */
-  public Scalar voltageLo = Quantity.of(3.6 * 3, SI.VOLT); // 3.6 * 3 == 10.8[V]
-  public Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
+  public final Scalar voltageLo = Quantity.of(3.6 * 3, SI.VOLT); // 3.6 * 3 == 10.8[V]
+  public final Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
   // ---
   /** amplitude of signal during calibration procedure */
   public Scalar calibration = Quantity.of(1.5, "SCT");
