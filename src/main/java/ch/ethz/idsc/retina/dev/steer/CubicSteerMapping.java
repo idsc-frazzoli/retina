@@ -1,18 +1,29 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.retina.dev.steer;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Series;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class CubicSteerMapping implements SteerMapping {
+  /** DO NOT MODIFY CONSTANTS BUT CREATE SECOND VERSION */
+  private static final SteerMapping APPROXIMATION_1 = new CubicSteerMapping( //
+      Quantity.of(+0.9189766407706671, "rad*SCE^-1"), Quantity.of(-0.5606503091815459, "rad*SCE^-3"), //
+      Quantity.of(+0.9755773866318296, "SCE"), Quantity.of(+2.325797449027361, "SCE"));
+
+  public static SteerMapping approximation_1() {
+    return APPROXIMATION_1;
+  }
+
+  // ---
   private final ScalarUnaryOperator column2steer;
   private final ScalarUnaryOperator steer2column;
 
-  public CubicSteerMapping( //
+  private CubicSteerMapping( //
       Scalar column2steer1, Scalar column2steer3, //
       Scalar steer2column1, Scalar steer2column3) {
     column2steer = Series.of(Tensors.of(RealScalar.ZERO, column2steer1, RealScalar.ZERO, column2steer3));

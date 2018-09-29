@@ -45,14 +45,6 @@ public class SteerConfig implements Serializable {
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
-  /** linear factor for steering polynomial */
-  public final Scalar cubicColumn2steer1 = Quantity.of(+0.918977, "rad*SCE^-1");
-  /** cubic factor for steering polynomial */
-  public final Scalar cubicColumn2steer3 = Quantity.of(-0.56065, "rad*SCE^-3");
-  /** linear factor for inverse steering polynomial */
-  public final Scalar cubicSteer2column1 = Quantity.of(+0.975577, "SCE");
-  /** cubic factor for inverse steering polynomial */
-  public final Scalar cubicSteer2column3 = Quantity.of(+2.3258, "SCE");
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
@@ -81,9 +73,7 @@ public class SteerConfig implements Serializable {
   }
 
   public SteerMapping getCubicSteerMapping() {
-    return new CubicSteerMapping( //
-        cubicColumn2steer1, cubicColumn2steer3, //
-        cubicSteer2column1, cubicSteer2column3);
+    return CubicSteerMapping.approximation_1();
   }
 
   /** @return */
