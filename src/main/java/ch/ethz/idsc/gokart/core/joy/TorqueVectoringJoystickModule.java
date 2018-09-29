@@ -78,7 +78,8 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    gyro_Z = davisImuFrame.gyroImageFrame().Get(1); // TODO magic const
+    // FIXME after merged into master
+    gyro_Z = davisImuFrame.gyroImageFrame().Get(1);
   }
 
   @Override // from RimoGetListener
