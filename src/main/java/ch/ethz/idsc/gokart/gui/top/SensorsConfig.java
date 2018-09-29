@@ -6,6 +6,7 @@ import java.io.Serializable;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
@@ -61,7 +62,7 @@ public class SensorsConfig implements Serializable {
    * on 20180514 the jaer-core was retired in favor of jAER1.5
    * the camera is in upright position and therefore
    * the scaling was set to -1.0 */
-  public Scalar davis_imuY_scale = RealScalar.of(-1.0);
+  private Scalar davis_imuY_scale = RealScalar.of(-1.0);
   /** shift from center of VLP16 to DAVIS */
   public final Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public final Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);
@@ -85,5 +86,10 @@ public class SensorsConfig implements Serializable {
 
   public int imuSamplesPerLidarScan() {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
+  }
+
+  public Scalar gyroGokartZ(DavisImuFrame davisImuFrame) {
+    Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
+    return rate.multiply(davis_imuY_scale);
   }
 }
