@@ -49,12 +49,6 @@ public enum Magnitude implements ScalarUnaryOperator {
   }
 
   /** @param scalar
-   * @return double value of given scalar quantity after conversion to given unit */
-  public double toDouble(Scalar scalar) {
-    return apply(scalar).number().doubleValue();
-  }
-
-  /** @param scalar
    * @return short value of given scalar quantity after conversion to given unit */
   public short toShort(Scalar scalar) {
     return apply(scalar).number().shortValue();
@@ -70,5 +64,17 @@ public enum Magnitude implements ScalarUnaryOperator {
    * @return long value of given scalar quantity after conversion to given unit */
   public long toLong(Scalar scalar) {
     return apply(scalar).number().longValue();
+  }
+
+  /** @param scalar
+   * @return float value of given scalar quantity after conversion to given unit */
+  public float toFloat(Scalar scalar) {
+    return apply(scalar).number().floatValue();
+  }
+
+  /** @param scalar
+   * @return double value of given scalar quantity after conversion to given unit */
+  public double toDouble(Scalar scalar) {
+    return apply(scalar).number().doubleValue();
   }
 }

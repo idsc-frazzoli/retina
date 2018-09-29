@@ -35,9 +35,10 @@ public class MappingConfig implements Serializable {
    * otherwise the driver is put in the map. */
   // TODO param should be obsolete if the mapping is started when the driver is already seated
   public Scalar minDistance = Quantity.of(2, SI.METER);
-  /** Occupied cells are dilated with this radius before generating the obstacle map
-   * 1.5[m] was a choice in the past */
-  public Scalar obsRadius = Quantity.of(1.2, SI.METER);
+  /** Occupied cells are dilated with this radius before generating the obstacle map.
+   * the safety margin accounts not only for the half-width of the gokart
+   * but also the corner cutting behavior of the pure pursuit */
+  public Scalar obsRadius = Quantity.of(1.1, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public Scalar cellDim = Quantity.of(0.2, SI.METER);
   public Boolean alongLine = false;

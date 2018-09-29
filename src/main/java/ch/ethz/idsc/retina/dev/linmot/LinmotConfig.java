@@ -18,9 +18,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LinmotConfig implements Serializable {
   public static final LinmotConfig GLOBAL = AppResources.load(new LinmotConfig());
   /***************************************************/
-  public Scalar windingTempCold = Quantity.of(5, NonSI.DEGREE_CELSIUS);
-  public Scalar windingTempGlow = Quantity.of(85, NonSI.DEGREE_CELSIUS);
-  public Scalar windingTempFire = Quantity.of(110, NonSI.DEGREE_CELSIUS);
+  public final Scalar windingTempCold = Quantity.of(5, NonSI.DEGREE_CELSIUS);
+  public final Scalar windingTempGlow = Quantity.of(85, NonSI.DEGREE_CELSIUS);
+  public final Scalar windingTempFire = Quantity.of(110, NonSI.DEGREE_CELSIUS);
   // ---
   /** minimum velocity required to trigger emergency brake */
   public Scalar minVelocity = Quantity.of(0.3, SI.VELOCITY);
@@ -29,7 +29,7 @@ public class LinmotConfig implements Serializable {
    * the brake requires 0.05[s] to move from home position to max press
    * at max brake press, the tires will lock after another 0.1[s].
    * to be conservative, we add 0.05[s] */
-  public Scalar responseTime = Quantity.of(0.05 + 0.05 + 0.1 + 0.05, SI.SECOND);
+  public final Scalar responseTime = Quantity.of(0.05 + 0.05 + 0.1 + 0.05, SI.SECOND);
   /** the analysis of log files has yielded a deceleration of -4.5[m*s^-2]
    * to be conservative, we assume a deceleration of -4.3[m*s^-2] */
   public Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);

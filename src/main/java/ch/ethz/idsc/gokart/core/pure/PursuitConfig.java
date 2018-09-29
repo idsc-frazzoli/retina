@@ -22,8 +22,10 @@ public class PursuitConfig implements Serializable {
   public Scalar updatePeriod = Quantity.of(0.1, SI.SECOND); // 0.1[s] == 10[Hz]
   /** look ahead distance for pure pursuit controller
    * 20171218: changed from 2.8[m] to 3.5[m] otherwise tracked angle is out of range too frequently
-   * 20180304: changed from 3.5[m] to 3.9[m] to match with value used many times before */
-  public Scalar lookAhead = Quantity.of(3.9, SI.METER);
+   * 20180304: changed from 3.5[m] to 3.9[m] to match with value used many times before
+   * 20180929: changed from 3.9[m] to 3.5[m]
+   * TODO as look ahead as decreased -> increase pure pursuit update rate also */
+  public Scalar lookAhead = Quantity.of(3.5, SI.METER);
   /** gokart velocity speed for curve follower module
    * 20180531 the rate was increased to 75[rad*s^-1]
    * 20180604 the rate was decreased to 50[rad*s^-1] because of the presence of the tents */
