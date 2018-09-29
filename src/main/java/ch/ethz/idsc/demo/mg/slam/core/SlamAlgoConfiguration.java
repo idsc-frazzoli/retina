@@ -8,6 +8,7 @@ import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.demo.mg.slam.log.SlamLogCollection;
 import ch.ethz.idsc.demo.mg.slam.prc.SlamMapProcessing;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
@@ -59,10 +60,11 @@ public enum SlamAlgoConfiguration {
     }
     // we always use this module to move the map when pose is too close to boarders
     listeners.add(new SlamMapMove(slamCoreContainer));
-    // testing new module
-    listeners.add(new SlamEventCounter(slamCoreContainer));
-    if (SlamCoreConfig.GLOBAL.offlineLogMode)
-      listeners.add(new SlamLogCollection(slamCoreContainer, gokartLidarPose));
+    if (SlamCoreConfig.GLOBAL.offlineLogMode) {
+      SlamEventCounter slamEventCounter = new SlamEventCounter(slamCoreContainer);
+      listeners.add(slamEventCounter);
+      listeners.add(new SlamLogCollection(slamCoreContainer, gokartLidarPose, slamEventCounter));
+    }
     return listeners;
   }
 

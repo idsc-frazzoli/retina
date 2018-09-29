@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -17,6 +18,7 @@ public abstract class AbstractFilterHandler implements DavisDvsListener, DavisDv
 
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
+    SlamEventCounter.increaseRawEventCount();
     if (eventPolarityFilter.filter(davisDvsEvent))
       if (filter(davisDvsEvent))
         listeners.forEach(listener -> listener.davisDvs(davisDvsEvent));

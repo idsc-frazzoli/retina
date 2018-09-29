@@ -24,5 +24,12 @@ import ch.ethz.idsc.tensor.Tensor;
       logInstant[i + 4] = estimatedPose.Get(i).number().doubleValue();
     logData.add(logInstant);
   }
-  // TODO could save other quantities as well
+
+  public static void saveProcessedEventCount(int currentTimeStamp, long processedEventCount, long totalEventCount, List<double[]> logData) {
+    double[] logInstant = new double[3];
+    logInstant[0] = currentTimeStamp;
+    logInstant[1] = processedEventCount;
+    logInstant[2] = totalEventCount;
+    logData.add(logInstant);
+  }
 }

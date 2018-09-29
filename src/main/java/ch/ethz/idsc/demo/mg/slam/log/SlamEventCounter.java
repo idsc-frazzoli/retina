@@ -1,23 +1,31 @@
-package ch.ethz.idsc.demo.mg.slam.core;
+package ch.ethz.idsc.demo.mg.slam.log;
 
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.core.AbstractSlamStep;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
 // counts how many events are processed. By running it both offline and online, we get ratio of 
 // processed events
-/* package */ class SlamEventCounter extends AbstractSlamStep implements StartAndStoppable {
-  private final int updatePeriod = 1000000; // [us]
+public class SlamEventCounter extends AbstractSlamStep implements StartAndStoppable {
+  private static long rawEventCount;
+  // ---
+  private final int updatePeriod = Magnitude.MICRO_SECOND.toInt(SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
   // ---
   private Integer lastComputationTimeStamp = null;
-  private int secondCount;
-  private long totalEventCount;
+  private long totalProcessedEventCount;
   private int eventCount;
 
-  SlamEventCounter(SlamCoreContainer slamCoreContainer) {
+  public SlamEventCounter(SlamCoreContainer slamCoreContainer) {
     super(slamCoreContainer);
+  }
+
+  public static void increaseRawEventCount() {
+    rawEventCount++;
   }
 
   @Override // from DavisDvsListener
@@ -31,9 +39,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
   }
 
   private void periodictask() {
-    System.out.println(eventCount + " events processed in last sec");
-    totalEventCount += eventCount;
-    secondCount++;
+    totalProcessedEventCount += eventCount;
     eventCount = 0;
   }
 
@@ -49,6 +55,14 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
   @Override // from StartAndStoppable
   public void stop() {
-    System.out.println("Average processed event rate " + totalEventCount / secondCount + " events/sec");
+    // ---
+  }
+
+  public long getProcessedEvents() {
+    return totalProcessedEventCount;
+  }
+
+  public long getRawEvents() {
+    return rawEventCount;
   }
 }

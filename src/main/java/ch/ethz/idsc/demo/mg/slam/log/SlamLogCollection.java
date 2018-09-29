@@ -14,20 +14,24 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 /** save CSV logs when testing the SLAM algorithm offline */
 public class SlamLogCollection extends PeriodicSlamStep implements StartAndStoppable {
   private final GokartPoseInterface gokartLidarPose;
+  private final SlamEventCounter slamEventCounter;
   private final String filename;
   private final List<double[]> logData;
 
-  public SlamLogCollection(SlamCoreContainer slamCoreContainer, GokartPoseInterface gokartPoseInterface) {
+  public SlamLogCollection(SlamCoreContainer slamCoreContainer, GokartPoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
     super(slamCoreContainer, SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
     this.gokartLidarPose = gokartPoseInterface;
+    this.slamEventCounter = slamEventCounter;
     filename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
     logData = new ArrayList<>();
   }
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    SlamLogCollectionUtil.savePoseEstimates(currentTimeStamp, gokartLidarPose.getPose(), //
-        slamCoreContainer.getPoseUnitless(), logData);
+    // SlamLogCollectionUtil.savePoseEstimates(currentTimeStamp, gokartLidarPose.getPose(), //
+    // slamCoreContainer.getPoseUnitless(), logData);
+    SlamLogCollectionUtil.saveProcessedEventCount(currentTimeStamp, slamEventCounter.getProcessedEvents(), //
+        slamEventCounter.getRawEvents(), logData);
   }
 
   @Override // from StartAndStoppable
