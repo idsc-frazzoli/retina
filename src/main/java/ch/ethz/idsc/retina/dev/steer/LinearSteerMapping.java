@@ -21,6 +21,6 @@ public class LinearSteerMapping implements SteerMapping {
 
   @Override // from SteerMapping
   public Scalar getSCEfromAngle(Scalar angle) {
-    return angle.divide(column2steer);
+    return UnitSystem.SI().apply(angle.divide(column2steer));
   }
 }

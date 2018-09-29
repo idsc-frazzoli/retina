@@ -8,8 +8,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.UnitSystem;
-import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PID controller of steering
@@ -47,10 +45,14 @@ public class SteerConfig implements Serializable {
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** conversion factor from measured steer column angle to front wheel angle */
   public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
-  /** linear factor for cubic steering polynomial */
-  public Scalar cubicColumn2steer1 = Quantity.of(0.93, "rad*SCE^-1");
-  /** cubic factor for cubic steering polynomial */
-  public Scalar cubicColumn2steer3 = Quantity.of(-0.58, "rad*SCE^-3");
+  /** linear factor for steering polynomial */
+  public final Scalar cubicColumn2steer1 = Quantity.of(+0.918977, "rad*SCE^-1");
+  /** cubic factor for steering polynomial */
+  public final Scalar cubicColumn2steer3 = Quantity.of(-0.56065, "rad*SCE^-3");
+  /** linear factor for inverse steering polynomial */
+  public final Scalar cubicSteer2column1 = Quantity.of(+0.975577, "SCE");
+  /** cubic factor for inverse steering polynomial */
+  public final Scalar cubicSteer2column3 = Quantity.of(+2.3258, "SCE");
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
@@ -72,18 +74,16 @@ public class SteerConfig implements Serializable {
   }
 
   /***************************************************/
+  // TODO once cubic mapping is confirmed, replace default implementation with cubic
+  /** @return default steer mapping */
   public SteerMapping getSteerMapping() {
     return new LinearSteerMapping(column2steer);
   }
 
-  /** @param steerColumnInterface
-   * @return scalar without unit but with interpretation in radians
-   * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  public Scalar getAngleFromSCE_Cubic(SteerColumnInterface steerColumnInterface) {
-    Scalar sce = steerColumnInterface.getSteerColumnEncoderCentered();
-    Scalar deg1Component = Times.of(cubicColumn2steer1, sce);
-    Scalar deg3Component = Times.of(cubicColumn2steer3, sce, sce, sce);
-    return UnitSystem.SI().apply(deg1Component.add(deg3Component));
+  public SteerMapping getCubicSteerMapping() {
+    return new CubicSteerMapping( //
+        cubicColumn2steer1, cubicColumn2steer3, //
+        cubicSteer2column1, cubicSteer2column3);
   }
 
   /** @return */
