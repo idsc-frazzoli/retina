@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -30,7 +31,6 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final SimpleTorqueVectoring simpleTorqueVectoring = new SimpleTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  // TODO
   Scalar gyro_Z = Quantity.of(0, SI.PER_SECOND);
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -78,8 +78,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    // FIXME after merged into master
-    gyro_Z = davisImuFrame.gyroImageFrame().Get(1);
+    gyro_Z = SensorsConfig.GLOBAL.gyroGokartZ(davisImuFrame);
   }
 
   @Override // from RimoGetListener
