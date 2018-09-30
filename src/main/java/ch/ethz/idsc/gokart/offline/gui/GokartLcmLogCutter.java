@@ -29,6 +29,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
 
+/** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
   public static final String GOKART_LOG_CONFIG = "GokartLogConfig.properties";

@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -97,8 +98,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       auton = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
-      steer = SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered());
+      SteerColumnInterface steerColumnInterface = new GokartStatusEvent(byteBuffer);
+      steer = steerColumnInterface.isSteerColumnCalibrated() //
+          ? SteerPutEvent.ENCODER.apply(steerColumnInterface.getSteerColumnEncoderCentered())
+          : RealScalar.ZERO;
     } else //
     if (channel.equals(CHANNEL_DAVIS_IMU)) {
       DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
