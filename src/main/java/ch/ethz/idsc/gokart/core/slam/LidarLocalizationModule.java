@@ -8,14 +8,12 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -33,7 +31,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   private final GokartPoseOdometry gokartPoseOdometry = //
       GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  // private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   public final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
@@ -53,10 +51,10 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    davisImuLcmClient.addListener(lidarGyroLocalization);
+    // davisImuLcmClient.addListener(lidarGyroLocalization);
     // ---
     vlp16LcmHandler.startSubscriptions();
-    davisImuLcmClient.startSubscriptions();
+    // davisImuLcmClient.startSubscriptions();
     thread.start();
   }
 
@@ -65,7 +63,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     isLaunched = false;
     thread.interrupt();
     vlp16LcmHandler.stopSubscriptions();
-    davisImuLcmClient.stopSubscriptions();
+    // davisImuLcmClient.stopSubscriptions();
   }
 
   @Override // from LidarRayBlockListener

@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -27,7 +28,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   public void testControl() throws Exception {
     TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
     tvjm.first();
-    tvjm.gyro_Z = Quantity.of(0, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
@@ -40,7 +41,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertEquals(rimoPutEvent1.putTireR.getTorque(), Quantity.of(0, NonSI.ARMS));
     // full forward
     System.out.println("full forward");
-    tvjm.gyro_Z = Quantity.of(0, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     joystick = new GokartJoystickAdapter( //
@@ -63,7 +64,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.first();
     Scalar slip = RationalScalar.of(1, 2); // 1/2 forward slip right
     System.out.println(slip + " forward/slip right");
-    tvjm.gyro_Z = Quantity.of(-0.2, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.2, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
@@ -85,7 +86,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip right
     System.out.println(slip + " slip right");
-    tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
@@ -107,7 +108,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");
-    tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
@@ -129,7 +130,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip right
     System.out.println(slip + " slip right");
-    tvjm.gyro_Z = Quantity.of(-0.3, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
@@ -150,7 +151,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");
-    tvjm.gyro_Z = Quantity.of(0.3, SI.PER_SECOND);
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //

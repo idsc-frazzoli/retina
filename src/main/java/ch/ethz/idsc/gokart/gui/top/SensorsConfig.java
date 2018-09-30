@@ -89,8 +89,8 @@ public class SensorsConfig implements Serializable {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
   }
 
-  public Scalar gyroGokartZ(DavisImuFrame davisImuFrame) {
-    Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
-    return rate.multiply(davis_imuY_scale);
+  public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
+    return davisImuFrame.gyroImageFrame().Get(1) // image - y axis
+        .multiply(davis_imuY_scale);
   }
 }

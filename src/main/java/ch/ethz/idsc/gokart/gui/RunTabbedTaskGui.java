@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -66,7 +66,8 @@ enum RunTabbedTaskGui {
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       LinmotSafetyModule.class, //
-      JoystickResetModule.class //
+      JoystickResetModule.class, //
+      DavisImuTrackerModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring
@@ -94,9 +95,9 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
-      LinmotTakeoverModule.class, //
-      // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
-      DavisImuWatchdog.class //
+      LinmotTakeoverModule.class //
+  // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
+  //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //

@@ -105,7 +105,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(CHANNEL_DAVIS_IMU)) {
       DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
-      gyroz = Magnitude.PER_SECOND.apply(SensorsConfig.GLOBAL.gyroGokartZ(davisImuFrame));
+      gyroz = Magnitude.PER_SECOND.apply(SensorsConfig.GLOBAL.getGyroZ(davisImuFrame));
     }
     ++event_count;
   }

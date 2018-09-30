@@ -13,22 +13,19 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -40,15 +37,13 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable, DavisImuFrameListener {
+public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Timer timer = new Timer();
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
-  private int imuFrame_count = 0;
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
@@ -113,9 +108,6 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     rimoGetLcmClient.addListener(rimoGetListener);
     rimoGetLcmClient.startSubscriptions();
     // ---
-    davisImuLcmClient.addListener(this);
-    davisImuLcmClient.startSubscriptions();
-    // ---
     joystickLcmProvider.startSubscriptions();
     // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
@@ -149,7 +141,10 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           }
           jTF_joystickAhead.setText(string);
         }
-        jTF_davis240c.setText("#=" + imuFrame_count);
+        {
+          String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
+          jTF_davis240c.setText(text + " " + DavisImuTracker.INSTANCE.getGyroZ());
+        }
         { // pose coordinates
           String string = Objects.nonNull(gokartPoseEvent) //
               ? gokartPoseEvent.getPose().map(Round._3).toString()
@@ -173,13 +168,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   public void stop() {
     timer.cancel();
     joystickLcmProvider.stopSubscriptions();
-    davisImuLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
-  }
-
-  @Override // from DavisImuFrameListener
-  public void imuFrame(DavisImuFrame davisImuFrame) {
-    ++imuFrame_count;
   }
 }
