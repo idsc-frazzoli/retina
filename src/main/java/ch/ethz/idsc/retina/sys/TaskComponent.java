@@ -52,6 +52,8 @@ class TaskComponent {
 
   private static String getName(Class<?> module) {
     String name = StringBrew.putSpaceBefCaps(module.getSimpleName());
-    return name.endsWith(" Module") ? name.substring(0, name.length() - 7) : name;
+    return name.endsWith(" Module") //
+        ? name.substring(0, name.length() - 7)
+        : name;
   }
 }

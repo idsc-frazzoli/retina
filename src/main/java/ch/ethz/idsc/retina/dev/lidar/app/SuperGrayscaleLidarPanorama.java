@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 
 import ch.ethz.idsc.retina.util.img.ImageCopy;
@@ -101,12 +102,16 @@ public class SuperGrayscaleLidarPanorama implements LidarPanorama {
 
   @Override // from LidarPanorama
   public BufferedImage distances() {
-    return distancesImage == null ? new ImageCopy().get() : distancesImage;
+    return Objects.isNull(distancesImage) //
+        ? new ImageCopy().get()
+        : distancesImage;
   }
 
   @Override // from LidarPanorama
   public BufferedImage intensity() {
-    return intensityImage == null ? new ImageCopy().get() : intensityImage;
+    return Objects.isNull(intensityImage) //
+        ? new ImageCopy().get()
+        : intensityImage;
   }
 
   @Override

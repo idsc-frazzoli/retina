@@ -13,7 +13,7 @@ mout = @(alpha)d*tan(alpha)+bw/cos(alpha)-bw;
 lsqfun = @(alpha)(mout(alpha)-x)^2;
 
 alpha = fminsearch(lsqfun, 0);
-show = 0;
+show = 1;
 if(show)
     close all
    figure

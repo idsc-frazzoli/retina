@@ -12,6 +12,6 @@ function dx = interstagedx(x,u)
     v/l*tan(beta);
     ab;
     dotbeta;
-    1];
+    0.15];
 end
 
