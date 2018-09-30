@@ -87,7 +87,7 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    Scalar rate = SensorsConfig.GLOBAL.gyroGokartZ(davisImuFrame); // image - y axis
+    Scalar rate = SensorsConfig.GLOBAL.gyroGokartZ(davisImuFrame);
     gyro_y.set(rate, gyro_index);
     ++gyro_index;
     gyro_index %= gyro_y.length();

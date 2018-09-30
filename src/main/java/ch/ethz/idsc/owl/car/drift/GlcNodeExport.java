@@ -26,9 +26,9 @@ class GlcNodeExport {
   public void append(GlcNode node) {
     Tensor t = Tensors.of(node.stateTime().time());
     Tensor x = node.stateTime().state();
-    Tensor u = node.isRoot() ? //
-        Array.zeros(table.get(0).length() - x.length() - 1) : //
-        node.flow().getU();
+    Tensor u = node.isRoot() //
+        ? Array.zeros(table.get(0).length() - x.length() - 1)
+        : node.flow().getU();
     Tensor row = Join.of(t, x, u);
     GlobalAssert.that(row.length() == table.get(0).length());
     table.append(N.DOUBLE.of(row));

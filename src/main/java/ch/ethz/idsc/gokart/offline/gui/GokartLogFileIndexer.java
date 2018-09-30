@@ -92,6 +92,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
+      // TODO V061 replace
       auton = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {

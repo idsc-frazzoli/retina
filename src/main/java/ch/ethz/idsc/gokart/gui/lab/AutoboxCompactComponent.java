@@ -135,7 +135,9 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
         }
         {
           Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
-          String string = optional.isPresent() ? optional.get().toString() : ToolbarsComponent.UNKNOWN;
+          String string = optional.isPresent() //
+              ? optional.get().toString()
+              : ToolbarsComponent.UNKNOWN;
           jTF_joystick.setText(string);
         }
         {

@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.AutoboxDevice;
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerBatteryCharger;
 
 public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
   private static final int LOCAL_PORT = 5003;
@@ -24,7 +23,8 @@ public class MiscSocket extends AutoboxSocket<MiscGetEvent, MiscPutEvent> {
     addPutProvider(MiscIgnitionProvider.INSTANCE); // calibration procedue
     addGetListener(MiscIgnitionProvider.INSTANCE); // monitor of comm timeout
     // ---
-    addGetListener(SteerBatteryCharger.INSTANCE); // steering passive when steering battery is charged
+    // SteerBatteryCharger is obsolete, see comment in SteerBatteryCharger
+    // addGetListener(SteerBatteryCharger.INSTANCE); // steering passive when steering battery is charged
   }
 
   @Override // from AutoboxSocket

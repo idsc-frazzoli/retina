@@ -114,7 +114,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       contact = Optional.empty();
     }
     // return Optional.empty();
-    return penaltyTimeout.isPenalty() ? penaltyAction() : Optional.empty();
+    return penaltyTimeout.isPenalty() //
+        ? penaltyAction()
+        : Optional.empty();
   }
 
   /** @return non-null */

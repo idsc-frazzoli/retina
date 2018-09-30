@@ -62,7 +62,7 @@ public class SensorsConfig implements Serializable {
    * on 20180514 the jaer-core was retired in favor of jAER1.5
    * the camera is in upright position and therefore
    * the scaling was set to -1.0 */
-  private Scalar davis_imuY_scale = RealScalar.of(-1.0);
+  private final Scalar davis_imuY_scale = RealScalar.of(-1.0);
   /** shift from center of VLP16 to DAVIS */
   public final Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public final Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);

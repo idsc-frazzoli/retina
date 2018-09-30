@@ -58,6 +58,7 @@ public class GyroOfflineLocalize extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
+    // TODO the sign of rate was changed 2018-09
     Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
     // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //

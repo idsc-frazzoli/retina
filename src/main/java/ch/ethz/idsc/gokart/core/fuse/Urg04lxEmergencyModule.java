@@ -50,6 +50,8 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return Optional.ofNullable(watchdog.isBlown() ? RimoPutEvent.PASSIVE : null);
+    return watchdog.isBlown() //
+        ? StaticHelper.OPTIONAL_RIMO_PASSIVE
+        : Optional.empty();
   }
 }

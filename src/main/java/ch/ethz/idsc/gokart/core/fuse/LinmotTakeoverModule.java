@@ -50,6 +50,8 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
     isBlown |= watchdog.isBlown();
-    return Optional.ofNullable(isBlown ? LinmotPutOperation.INSTANCE.offMode() : null); // deactivate break
+    return isBlown //
+        ? Optional.of(LinmotPutOperation.INSTANCE.offMode()) // deactivate break
+        : Optional.empty();
   }
 }

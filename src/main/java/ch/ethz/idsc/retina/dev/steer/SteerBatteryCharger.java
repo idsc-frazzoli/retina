@@ -10,7 +10,10 @@ import ch.ethz.idsc.tensor.Scalars;
 
 /** the steering battery is charged from time to time.
  * during charing, the steering motor should be passive.
- * otherwise, the steering battery may overcharge. */
+ * otherwise, the steering battery may overcharge.
+ * 
+ * post 2018-06: module obsolete because battery was replaced
+ * and charging is not possible during operation. */
 public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
   INSTANCE;
   // ---
@@ -29,6 +32,8 @@ public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.ofNullable(isCharging ? SteerPutEvent.PASSIVE_MOT_TRQ_0 : null);
+    return isCharging //
+        ? Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0)
+        : Optional.empty();
   }
 }
