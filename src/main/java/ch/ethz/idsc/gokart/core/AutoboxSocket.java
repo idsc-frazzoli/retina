@@ -112,16 +112,18 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     return getListeners.size();
   }
 
+  /** @return */
   public final String getPutProviderDesc() {
     return Objects.nonNull(putProviderActive) //
         ? putProviderActive.getClass().getSimpleName()
         : "<null>";
   }
 
+  /** @return ProviderRank of active provider or empty */
   public final Optional<ProviderRank> getPutProviderRank() {
-    return Optional.ofNullable(Objects.nonNull(putProviderActive) //
-        ? putProviderActive.getProviderRank()
-        : null);
+    return Objects.nonNull(putProviderActive) //
+        ? Optional.of(putProviderActive.getProviderRank())
+        : Optional.empty();
   }
 
   /***************************************************/

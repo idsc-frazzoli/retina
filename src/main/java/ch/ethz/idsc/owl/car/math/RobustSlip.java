@@ -27,8 +27,9 @@ public class RobustSlip implements SlipInterface, Serializable {
   public RobustSlip(Pacejka3 pacejka3, Tensor U, Scalar rtw) {
     final Scalar ux = U.Get(0).subtract(rtw); // effective speed of tire (longitude)
     final Scalar uy = U.Get(1);
-    final Scalar total = Scalars.isZero(rtw) ? //
-        pacejka3.limit() : pacejka3.apply(Hypot.of(ux, uy).divide(rtw));
+    final Scalar total = Scalars.isZero(rtw) //
+        ? pacejka3.limit()
+        : pacejka3.apply(Hypot.of(ux, uy).divide(rtw));
     mu = Normalize.unlessZero(Tensors.of(ux, uy), Norm._2).multiply(total.negate());
   }
 

@@ -39,6 +39,8 @@ public final class MiscEmergencyWatchdog extends EmergencyModule<RimoPutEvent> i
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return isEmergency ? StaticHelper.OPTIONAL_RIMO_PASSIVE : Optional.empty();
+    return isEmergency //
+        ? StaticHelper.OPTIONAL_RIMO_PASSIVE
+        : Optional.empty();
   }
 }

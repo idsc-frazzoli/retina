@@ -77,7 +77,9 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
         Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
-        Scalar factor = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
+        Scalar factor = gji.isAutonomousPressed() // TODO V061
+            ? RealScalar.ONE
+            : RealScalar.ZERO;
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS

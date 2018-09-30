@@ -33,7 +33,7 @@ public class ClusterDeque {
 
   public void appendEmpty() {
     deque.add(new DequeCloud(Tensors.empty()));
-    means.add(Tensors.empty());
+    means.add(Tensors.unmodifiableEmpty());
   }
 
   public boolean nonEmpty() {
@@ -48,7 +48,7 @@ public class ClusterDeque {
     deque.removeLast();
     means.removeLast();
     deque.add(new DequeCloud(points));
-    means.add(Tensors.isEmpty(points) ? Tensors.empty() : Mean.of(points));
+    means.add(Tensors.isEmpty(points) ? Tensors.unmodifiableEmpty() : Mean.of(points));
   }
 
   public boolean isInside(Tensor point) {

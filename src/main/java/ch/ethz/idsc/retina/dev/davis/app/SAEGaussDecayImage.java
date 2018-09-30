@@ -28,6 +28,8 @@ public class SAEGaussDecayImage extends AbstractAccumulatedImage {
   @Override // from AbstractAccumulatedImage
   protected void assign(int delta, DavisDvsEvent dvsDavisEvent) {
     int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
-    bytes[index] = dvsDavisEvent.brightToDark() ? gaussN.get(delta >> DROP) : gaussP.get(delta >> DROP);
+    bytes[index] = dvsDavisEvent.brightToDark() //
+        ? gaussN.get(delta >> DROP)
+        : gaussP.get(delta >> DROP);
   }
 }

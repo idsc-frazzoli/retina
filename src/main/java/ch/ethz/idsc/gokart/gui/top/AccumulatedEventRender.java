@@ -68,7 +68,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
             Tensor mappedEvent = imageToWorldLookup.imageToGokartTensor(index);
             if (mappedEvent.Get(0).number().doubleValue() < mapAheadDistance) {
               Point2D point = geometricLayer.toPoint2D(mappedEvent);
-              Color eventColor = (bytes[index] == 0) ? Color.GREEN : Color.RED;
+              Color eventColor = bytes[index] == 0 ? Color.GREEN : Color.RED;
               graphics.setColor(eventColor);
               graphics.fillRect((int) point.getX(), (int) point.getY(), 1, 1);
             }

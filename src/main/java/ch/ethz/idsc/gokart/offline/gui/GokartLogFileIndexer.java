@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -43,7 +44,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   // ---
   private static final String CHANNEL_DAVIS_IMU = //
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
-  private static final Scalar resolution = Quantity.of(0.25, SI.SECOND);
+  private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
+  // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
   private final TableBuilder raster2auton = new TableBuilder();
@@ -75,7 +77,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    int index = time.divide(resolution).number().intValue();
+    int index = time.divide(RESOLUTION).number().intValue();
     if (raster2event.size() <= index)
       append(event_count);
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
@@ -92,11 +94,14 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
+      // TODO V061 replace
       auton = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
-      steer = SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered());
+      SteerColumnInterface steerColumnInterface = new GokartStatusEvent(byteBuffer);
+      steer = steerColumnInterface.isSteerColumnCalibrated() //
+          ? SteerPutEvent.ENCODER.apply(steerColumnInterface.getSteerColumnEncoderCentered())
+          : RealScalar.ZERO;
     } else //
     if (channel.equals(CHANNEL_DAVIS_IMU)) {
       DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);

@@ -36,8 +36,9 @@ public class DavisImuWatchdog extends EmergencyModule<RimoPutEvent> implements D
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    boolean isBlown = watchdog.isBlown(); // true == stop gokart
-    return isBlown ? StaticHelper.OPTIONAL_RIMO_PASSIVE : Optional.empty();
+    return watchdog.isBlown() //
+        ? StaticHelper.OPTIONAL_RIMO_PASSIVE
+        : Optional.empty();
   }
 
   /***************************************************/
