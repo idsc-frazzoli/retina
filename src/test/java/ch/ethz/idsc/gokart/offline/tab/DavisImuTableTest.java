@@ -21,6 +21,6 @@ public class DavisImuTableTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = new DavisImuTable(Quantity.of(0, "s"));
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    assertEquals(Dimensions.of(tensor), Arrays.asList(719, 11));
+    assertEquals(Dimensions.of(tensor), Arrays.asList(719, 9));
   }
 }
