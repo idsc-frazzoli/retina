@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
@@ -16,7 +17,8 @@ import ch.ethz.idsc.tensor.Tensors;
   ;
   static boolean isPathObstructed(SteerColumnInterface steerColumnInterface, FloatBuffer floatBuffer) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
-      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // <- calibration checked
+      SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+      Scalar angle = steerMapping.getAngleFromSCE(steerColumnInterface); // <- calibration checked
       return isPathObstructed(angle, floatBuffer);
     }
     return true;

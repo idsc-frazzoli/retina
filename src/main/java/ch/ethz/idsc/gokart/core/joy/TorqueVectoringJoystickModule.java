@@ -15,6 +15,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -26,6 +27,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
 
 public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
     implements DavisImuFrameListener, RimoGetListener {
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final SimpleTorqueVectoring simpleTorqueVectoring = new SimpleTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   // TODO
@@ -51,7 +53,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
-    Scalar theta = SteerConfig.GLOBAL.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
+    Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
     Scalar power = Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
@@ -76,7 +78,8 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    gyro_Z = davisImuFrame.gyroImageFrame().Get(1); // TODO magic const
+    // FIXME after merged into master
+    gyro_Z = davisImuFrame.gyroImageFrame().Get(1);
   }
 
   @Override // from RimoGetListener
