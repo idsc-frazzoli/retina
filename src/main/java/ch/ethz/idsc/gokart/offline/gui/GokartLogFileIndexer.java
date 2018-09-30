@@ -43,7 +43,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   // ---
   private static final String CHANNEL_DAVIS_IMU = //
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
-  private static final Scalar resolution = Quantity.of(0.25, SI.SECOND);
+  private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
+  // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
   private final TableBuilder raster2auton = new TableBuilder();
@@ -75,7 +76,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    int index = time.divide(resolution).number().intValue();
+    int index = time.divide(RESOLUTION).number().intValue();
     if (raster2event.size() <= index)
       append(event_count);
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {

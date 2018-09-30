@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.demo;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.retina.dev.linmot.LinmotFireFighter;
 
@@ -850,5 +853,13 @@ public enum GokartLogFile implements LogFile {
   @Override // from LogFile
   public String getTitle() {
     return name().substring(1, 16);
+  }
+
+  /** @param startInclusive
+   * @param endInclusive
+   * @return */
+  public static List<GokartLogFile> range(GokartLogFile startInclusive, GokartLogFile endInclusive) {
+    return Arrays.asList(values()) //
+        .subList(startInclusive.ordinal(), endInclusive.ordinal() + 1);
   }
 }

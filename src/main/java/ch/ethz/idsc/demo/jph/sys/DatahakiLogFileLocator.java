@@ -17,14 +17,13 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   /** the archive of all log files is kept on an external hard-drive */
   private static final File ARCHIVE = new File("/media/datahaki/backup/gokartlogs");
   private static final List<File> LOG_ROOT = Arrays.asList( //
-      new File("/media/datahaki/media/ethz/gokartlogs"), //
       ARCHIVE, //
       UserHome.file("gokartlogs"));
 
   @Override // from LogFileLocator
   public File getAbsoluteFile(LogFile logFile) {
     String title = logFile.getFilename();
-    String date = title.substring(0, 8);
+    String date = title.substring(0, 8); // e.g. "20180924"
     for (File dir : LOG_ROOT) {
       File file = new File(new File(dir, date), title);
       if (file.isFile())

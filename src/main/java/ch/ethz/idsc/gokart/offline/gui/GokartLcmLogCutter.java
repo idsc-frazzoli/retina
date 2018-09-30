@@ -28,15 +28,6 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dimensions;
-import ch.ethz.idsc.tensor.alg.Flatten;
-import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.img.ImageResize;
-import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
@@ -135,7 +126,7 @@ public class GokartLcmLogCutter {
     this.gokartLogFileIndexer = gokartLogFileIndexer;
     this.export_root = export_root;
     this.title = title;
-    bufferedImage = speedProfile(gokartLogFileIndexer);
+    bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 1500, 200);
@@ -158,46 +149,5 @@ public class GokartLcmLogCutter {
     // ---
     jFrame.setTitle(title);
     jFrame.setVisible(true);
-  }
-
-  static BufferedImage speedProfile(GokartLogFileIndexer gokartLogFileIndexer) {
-    Tensor im = Tensors.empty();
-    {
-      Tensor auton = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2auton()));
-      System.out.println(Dimensions.of(auton));
-      auton = ImageResize.nearest(auton.map(ColorDataGradients.COPPER), 8, 1);
-      im.append(auton);
-    }
-    {
-      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseq()));
-      System.out.println(Dimensions.of(poseq));
-      poseq = ImageResize.nearest(poseq.map(ColorDataGradients.AVOCADO), 8, 1);
-      im.append(poseq);
-    }
-    {
-      Clip clip = Clip.function(-0.7, 0.7);
-      Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steer()).map(clip::rescale));
-      System.out.println(Dimensions.of(steer));
-      steer = ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), 8, 1);
-      im.append(steer);
-    }
-    {
-      Clip clip = Clip.function(-1, +1);
-      Tensor gyroz = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2gyroz()).map(clip::rescale));
-      System.out.println(Dimensions.of(gyroz));
-      gyroz = ImageResize.nearest(gyroz.map(ColorDataGradients.THERMOMETER), 8, 1);
-      im.append(gyroz);
-    }
-    {
-      Clip clip = Clip.function(0, 40);
-      Tensor speed = Transpose.of( //
-          Tensor.of(gokartLogFileIndexer.raster2speed()).map(clip::rescale));
-      System.out.println(Dimensions.of(speed));
-      speed = ImageResize.nearest(speed.map(ColorDataGradients.CLASSIC), 16, 1);
-      im.append(speed);
-    }
-    im = Flatten.of(im, 1);
-    System.out.println(Dimensions.of(im));
-    return ImageFormat.of(im);
   }
 }
