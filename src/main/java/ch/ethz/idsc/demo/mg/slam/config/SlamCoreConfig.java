@@ -47,7 +47,7 @@ public class SlamCoreConfig {
   public final Scalar reactiveUpdateRate = Quantity.of(0.1, SI.SECOND);
   public Scalar waypointUpdateRate = Quantity.of(0.01, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar logCollectionUpdateRate = Quantity.of(0.001, SI.SECOND);
+  public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
   public Scalar purePursuitUpdateRate = Quantity.of(0.02, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -84,10 +84,10 @@ public class SlamCoreConfig {
   }
 
   // SlamMapMove
-  public final Scalar padding = Quantity.of(5, SI.METER);
+  public final Scalar padding = Quantity.of(2, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(5, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);

@@ -63,7 +63,7 @@ public enum SlamAlgoConfiguration {
     if (SlamCoreConfig.GLOBAL.offlineLogMode) {
       SlamEventCounter slamEventCounter = new SlamEventCounter(slamCoreContainer);
       listeners.add(slamEventCounter);
-      listeners.add(new SlamLogCollection(slamCoreContainer, gokartLidarPose, slamEventCounter));
+      listeners.add(new SlamLogCollection(slamCoreContainer, slamPrcContainer, gokartLidarPose, slamEventCounter));
     }
     return listeners;
   }
