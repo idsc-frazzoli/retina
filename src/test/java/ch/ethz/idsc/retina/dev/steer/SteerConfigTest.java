@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.dev.steer;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -35,6 +36,7 @@ public class SteerConfigTest extends TestCase {
   public void testAngleLimit() {
     Clip clip = SteerConfig.GLOBAL.getAngleLimit();
     assertEquals(clip.min(), clip.max().negate());
+    clip.requireInside(Quantity.of(0.37, SIDerived.RADIAN));
   }
 
   public void testConversion() {
