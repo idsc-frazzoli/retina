@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.sys;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
@@ -25,7 +27,10 @@ class TaskComponent {
     jpanel.setLayout(new GridLayout(modules.size(), 1));
     for (Class<?> module : modules) {
       final String key = module.getSimpleName();
-      JToggleButton jToggleButton = new JToggleButton(getName(module));
+      JToggleButton jToggleButton = GuiConfig.GLOBAL.createToggleButton(getName(module));
+      // new JToggleButton(getName(module));
+      // jToggleButton.setFont(GuiConfig.GLOBAL.getFont());
+      // jToggleButton.setPreferredSize(new Dimension(120, 36));
       jToggleButton.addActionListener(e -> {
         if (jToggleButton.isSelected())
           ModuleAuto.INSTANCE.runOne(module);
@@ -41,6 +46,9 @@ class TaskComponent {
       map.put(module, jToggleButton);
     }
     top.add("North", jpanel);
+    // ---
+    JScrollBar jScrollBar = jScrollPane.getVerticalScrollBar();
+    jScrollBar.setPreferredSize(new Dimension(28, 28));
   }
 
   public void terminateAll() {

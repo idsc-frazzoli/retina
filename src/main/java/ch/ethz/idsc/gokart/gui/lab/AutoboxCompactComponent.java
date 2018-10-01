@@ -28,16 +28,24 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Put;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
+  private static final Clip CLIP_GYROZ = Clip.function( //
+      Quantity.of(-1, SI.PER_SECOND), //
+      Quantity.of(+1, SI.PER_SECOND));
+  // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -142,8 +150,12 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           jTF_joystickAhead.setText(string);
         }
         {
+          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+          Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
+          Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
           String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
-          jTF_davis240c.setText(text + " " + DavisImuTracker.INSTANCE.getGyroZ());
+          jTF_davis240c.setText(text + " " + gyroZ);
+          jTF_davis240c.setBackground(color);
         }
         { // pose coordinates
           String string = Objects.nonNull(gokartPoseEvent) //

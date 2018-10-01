@@ -28,7 +28,7 @@ public enum DavisImuTracker implements DavisImuFrameListener {
     ++framecount;
   }
 
-  /** @return fairly accurate estimate of gyro rate of gokart around z-axis */
+  /** @return fairly accurate estimate of gyro rate of gokart around z-axis in unit "s^-1" */
   public Scalar getGyroZ() {
     return Mean.of(gyroZ).Get();
   }

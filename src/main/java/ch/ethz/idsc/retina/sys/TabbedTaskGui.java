@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -31,5 +32,10 @@ public class TabbedTaskGui {
 
   public void tab(String title, List<Class<?>> modules) {
     jTabbedPane.addTab(title, new TaskComponent(modules, properties).jScrollPane);
+    {
+      int count = jTabbedPane.getTabCount() - 1;
+      JLabel jLabel = GuiConfig.GLOBAL.createLabel(title);
+      jTabbedPane.setTabComponentAt(count, jLabel);
+    }
   }
 }
