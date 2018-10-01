@@ -60,7 +60,7 @@ scatter(powersteer(:,1),angles)
 plot(x,yl);
 plot(x,yr);
 %plot(x,ym);
-xlabel('steering wheel encoder angle [rad]')
+xlabel('steering wheel encoder value [CSE]')
 ylabel('wheel steering angle [rad]')
 legend('measured values for \delta_L','cubic appoximation for \delta_L','cubic appoximation for \delta_R (mirrored)')
 
@@ -74,7 +74,7 @@ plot(x,yla,'r--');
 plot(x,yra,'b--');
 plot(x,yma,'k--');
 %plot(x,ym);
-xlabel('steering wheel encoder angle [rad]')
+xlabel('steering wheel encoder value [CSE]')
 ylabel('wheel steering angle [rad]')
 legend('cubic appoximation for \delta_L','cubic appoximation for \delta_R','nearest left Ackermann value for (\delta_L,\delta_R)', 'nearest left Ackermann value for (\delta_L,\delta_R)', 'nearest center Ackermann value for (\delta_L,\delta_R)')
 
