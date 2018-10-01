@@ -76,7 +76,7 @@ public class SteerConfig implements Serializable {
 
   /** @return */
   public Clip getAngleLimit() {
-    Scalar angleMax = columnMax.multiply(LinearSteerMapping.COLUMN_TO_STEER);
+    Scalar angleMax = getSteerMapping().getAngleFromSCE(columnMax);
     return Clip.function(angleMax.negate(), angleMax);
   }
 }
