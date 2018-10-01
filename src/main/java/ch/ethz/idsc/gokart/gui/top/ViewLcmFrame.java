@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
+import ch.ethz.idsc.retina.sys.GuiConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -20,12 +21,12 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class ViewLcmFrame extends TimerFrame {
-  public final JButton jButtonMapCreate = new JButton("map create");
-  public final JButton jButtonMapUpdate = new JButton("map update");
-  public final JButton jButtonSetLocation1 = new JButton("1 set");
-  public final JButton jButtonSnap = new JButton("2 snap");
-  private final JButton jButtonSetLocation2 = new JButton("3 set (again)");
-  private final JToggleButton jToggleButton = new JToggleButton("4 track");
+  public final JButton jButtonMapCreate = GuiConfig.GLOBAL.createButton("map create");
+  public final JButton jButtonMapUpdate = GuiConfig.GLOBAL.createButton("map update");
+  public final JButton jButtonSetLocation1 = GuiConfig.GLOBAL.createButton("1 set");
+  public final JButton jButtonSnap = GuiConfig.GLOBAL.createButton("2 snap");
+  private final JButton jButtonSetLocation2 = GuiConfig.GLOBAL.createButton("3 set (again)");
+  private final JToggleButton jToggleButton = GuiConfig.GLOBAL.createToggleButton("4 track");
   // TODO obtain matrix from predefined map
   public static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 7.5, 0, 0 }, //
