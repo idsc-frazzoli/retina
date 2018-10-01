@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 public class SlamEventCounter extends AbstractSlamStep {
   private static long rawEventCount;
   // ---
-  private long totalProcessedEventCount;
+  private long processedEventCount;
 
   public SlamEventCounter(SlamCoreContainer slamCoreContainer) {
     super(slamCoreContainer);
@@ -23,14 +23,14 @@ public class SlamEventCounter extends AbstractSlamStep {
 
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    totalProcessedEventCount++;
+    processedEventCount++;
   }
 
-  public long getProcessedEvents() {
-    return totalProcessedEventCount;
+  public long getProcessedEventCount() {
+    return processedEventCount;
   }
 
-  public long getRawEvents() {
+  public long getRawEventCount() {
     return rawEventCount;
   }
 }
