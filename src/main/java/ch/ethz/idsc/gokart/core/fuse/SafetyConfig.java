@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -55,7 +56,8 @@ public class SafetyConfig implements Serializable {
    * @return */
   public ClearanceTracker getClearanceTracker(Scalar speed, GokartStatusEvent gokartStatusEvent) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent);
+      SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       return new CircleClearanceTracker(speed, half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
     }

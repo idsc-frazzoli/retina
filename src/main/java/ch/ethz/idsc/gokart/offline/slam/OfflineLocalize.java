@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
@@ -57,12 +58,14 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
+    Scalar rate = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
     gyro_y.append(rate);
   }
 
   protected final Scalar getGyroAndReset() {
-    Scalar mean = Tensors.isEmpty(gyro_y) ? ZERO_RATE : Mean.of(gyro_y).Get();
+    Scalar mean = Tensors.isEmpty(gyro_y) //
+        ? ZERO_RATE
+        : Mean.of(gyro_y).Get();
     gyro_y = Tensors.empty();
     return mean;
   }

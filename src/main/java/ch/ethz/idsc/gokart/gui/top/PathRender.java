@@ -18,6 +18,7 @@ import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -29,6 +30,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 /** draw blue lines of prediction of traces of gokart */
 public class PathRender extends AbstractGokartRender {
   public Color color = new Color(0, 0, 255, 128);
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
@@ -46,7 +48,7 @@ public class PathRender extends AbstractGokartRender {
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
-      final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      final Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Sign.isPositive(angle)) {
         p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
         p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);

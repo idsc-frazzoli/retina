@@ -53,6 +53,9 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
         DoubleScalar.of(angle));
   }
 
+  /** @return value in the interval [0, 1] where
+   * 0 represents no pose quality, and
+   * 1 represents perfect pose quality */
   public Scalar getQuality() {
     return DoubleScalar.of(quality);
   }

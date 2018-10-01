@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.sys.SafetyCritical;
  * except that this watchdog does not notify an interrupt
  * but simply sets a flag to true that cannot be reset */
 @SafetyCritical
-public class Watchdog {
+public class Watchdog implements WatchdogInterface {
   private final Stopwatch stopwatch = Stopwatch.started();
   private final double timeout_seconds;
   private boolean isBlown = false;
@@ -19,6 +19,7 @@ public class Watchdog {
   }
 
   /** resets timeout counter to zero */
+  @Override
   public void pacify() {
     isBlown();
     stopwatch.stop();
@@ -27,6 +28,7 @@ public class Watchdog {
   }
 
   /** @return true if timeout counter has ever elapsed the allowed period */
+  @Override
   public boolean isBlown() {
     isBlown |= timeout_seconds < stopwatch.display_seconds();
     return isBlown;

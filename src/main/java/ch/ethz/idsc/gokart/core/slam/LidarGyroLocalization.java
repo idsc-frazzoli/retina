@@ -4,14 +4,13 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.util.List;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -20,11 +19,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Mean;
 
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-public class LidarGyroLocalization implements DavisImuFrameListener {
+public class LidarGyroLocalization
+// implements DavisImuFrameListener
+{
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
@@ -58,7 +58,9 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
    * @return */
   public Optional<SlamResult> handle(Tensor points) {
     Tensor model = _model;
-    Scalar rate = getGyroAndReset().divide(lidarRate);
+    Scalar rate = DavisImuTracker.INSTANCE.getGyroZ()
+        // getGyroZ()
+        .divide(lidarRate);
     // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
         .apply(points).getPointsSpin(rate); // TODO optimize
@@ -84,16 +86,15 @@ public class LidarGyroLocalization implements DavisImuFrameListener {
     System.err.println("few points " + sum);
     return Optional.empty();
   }
-
-  @Override // from DavisImuFrameListener
-  public void imuFrame(DavisImuFrame davisImuFrame) {
-    Scalar rate = davisImuFrame.gyroImageFrame().Get(1); // image - y axis
-    gyro_y.set(rate, gyro_index);
-    ++gyro_index;
-    gyro_index %= gyro_y.length();
-  }
-
-  private final Scalar getGyroAndReset() {
-    return Mean.of(gyro_y).Get().multiply(SensorsConfig.GLOBAL.davis_imuY_scale);
-  }
+  // @Override // from DavisImuFrameListener
+  // public void imuFrame(DavisImuFrame davisImuFrame) {
+  // // TODO obsolete, use DavisImuTracker instead
+  // Scalar rate = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
+  // gyro_y.set(rate, gyro_index);
+  // ++gyro_index;
+  // gyro_index %= gyro_y.length();
+  // }
+  // private final Scalar getGyroZ() {
+  // return Mean.of(gyro_y).Get();
+  // }
 }

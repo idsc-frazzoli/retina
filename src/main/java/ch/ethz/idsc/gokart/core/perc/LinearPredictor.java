@@ -43,9 +43,9 @@ public class LinearPredictor {
         Tensor subtract = Tensor.of(x.extract(0, x.length() - 2).subtract(x.extract(1, x.length() - 1)).stream().map(tensor -> tensor.Get(0)));
         Tensor subtract1 = y.extract(0, x.length() - 2).subtract(y.extract(1, y.length() - 1));
         Tensor add = subtract1.pmul(subtract1).add(subtract.pmul(subtract));
-        double step = Tensors.nonEmpty(add) //
-            ? Math.sqrt(Mean.of(add).Get().number().doubleValue())
-            : 0;
+        double step = Tensors.isEmpty(add) //
+            ? 0
+            : Math.sqrt(Mean.of(add).Get().number().doubleValue());
         Tensor beta = LeastSquares.of(x, y);
         double angle = Math.atan(beta.Get(0).number().doubleValue());
         return Last.of(nonEmptyMeans).add(AngleVector.of(RealScalar.of(angle)).multiply(RealScalar.of(i * step)));

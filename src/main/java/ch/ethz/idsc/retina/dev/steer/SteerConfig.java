@@ -5,11 +5,10 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.UnitSystem;
-import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PID controller of steering
@@ -28,8 +27,8 @@ public class SteerConfig implements Serializable {
    * 
    * post 20180628: the steer battery is replaced. the new model is
    * Lithium Polymer Akku: 45C/90C 4500mAh 11.1V 3S1P */
-  public Scalar voltageLo = Quantity.of(3.6 * 3, SI.VOLT); // 3.6 * 3 == 10.8[V]
-  public Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
+  public final Scalar voltageLo = Quantity.of(3.6 * 3, SI.VOLT); // 3.6 * 3 == 10.8[V]
+  public final Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
   // ---
   /** amplitude of signal during calibration procedure */
   public Scalar calibration = Quantity.of(1.5, "SCT");
@@ -45,12 +44,6 @@ public class SteerConfig implements Serializable {
    * 20180517 the */
   // TODO JPH value of columnMax does not correspond to the above comment
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
-  /** conversion factor from measured steer column angle to front wheel angle */
-  public Scalar column2steer = Quantity.of(0.6, "rad*SCE^-1");
-  /** linear factor for advanced Steering function */
-  public Scalar advColumn2steer1 = Quantity.of(0.93, "rad*SCE^-1");
-  /** cubic factor for advanced Steering function */
-  public Scalar advColumn2steer3 = Quantity.of(-0.58, "rad*SCE^-3");
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter
@@ -71,29 +64,20 @@ public class SteerConfig implements Serializable {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 
-  /** @return scalar without unit but with interpretation in radians
-   * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  public Scalar getAdvAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    Scalar CSEangle = steerColumnInterface.getSteerColumnEncoderCentered();
-    Scalar linearComponent = Times.of(CSEangle, advColumn2steer1);
-    Scalar cubicComponent = Times.of(CSEangle,CSEangle, CSEangle, advColumn2steer3);
-    return UnitSystem.SI().apply(
-        linearComponent.add(cubicComponent));
+  /***************************************************/
+  // TODO once cubic mapping is confirmed, replace default implementation with cubic
+  /** @return default steer mapping */
+  public SteerMapping getSteerMapping() {
+    return LinearSteerMapping.instance();
   }
 
-  /** @return scalar without unit but with interpretation in radians
-   * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    return UnitSystem.SI().apply( //
-        steerColumnInterface.getSteerColumnEncoderCentered().multiply(column2steer));
-  }
-  
-  public Scalar getSCEfromAngle(Scalar angle) {
-    return angle.divide(column2steer);
+  public SteerMapping getCubicSteerMapping() {
+    return CubicSteerMapping.approximation_1();
   }
 
+  /** @return */
   public Clip getAngleLimit() {
-    Scalar angleMax = columnMax.multiply(column2steer);
+    Scalar angleMax = Quantity.of(getSteerMapping().getAngleFromSCE(columnMax), SIDerived.RADIAN);
     return Clip.function(angleMax.negate(), angleMax);
   }
 }

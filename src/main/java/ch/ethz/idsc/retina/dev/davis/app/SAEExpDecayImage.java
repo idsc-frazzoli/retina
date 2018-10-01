@@ -22,7 +22,9 @@ public class SAEExpDecayImage extends AbstractAccumulatedImage {
 
   @Override // from AbstractAccumulatedImage
   protected void assign(int delta, DavisDvsEvent dvsDavisEvent) {
-    int index = dvsDavisEvent.x + (dvsDavisEvent.y) * width;
-    bytes[index] = dvsDavisEvent.brightToDark() ? expN.get(delta >> DROP) : expP.get(delta >> DROP);
+    int index = dvsDavisEvent.x + dvsDavisEvent.y * width;
+    bytes[index] = dvsDavisEvent.brightToDark() //
+        ? expN.get(delta >> DROP)
+        : expP.get(delta >> DROP);
   }
 }

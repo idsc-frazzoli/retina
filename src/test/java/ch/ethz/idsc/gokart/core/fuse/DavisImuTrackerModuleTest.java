@@ -7,15 +7,20 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
-public class DavisImuWatchdogTest extends TestCase {
+public class DavisImuTrackerModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    DavisImuWatchdog davisImuWatchdog = new DavisImuWatchdog();
+    DavisImuTrackerModule davisImuWatchdog = new DavisImuTrackerModule();
     davisImuWatchdog.first();
     {
       Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
       assertFalse(optional.isPresent()); // no control is issued
     }
-    Thread.sleep(200); // sleep for 200[ms]
+    Thread.sleep(100); // sleep for 200[ms]
+    {
+      Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
+      assertFalse(optional.isPresent()); // no control is issued
+    }
+    Thread.sleep(500); // sleep for 200[ms]
     {
       Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
       assertTrue(optional.isPresent()); // no control is issued
@@ -24,7 +29,7 @@ public class DavisImuWatchdogTest extends TestCase {
   }
 
   public void testRank() {
-    DavisImuWatchdog davisImuWatchdog = new DavisImuWatchdog();
+    DavisImuTrackerModule davisImuWatchdog = new DavisImuTrackerModule();
     assertEquals(davisImuWatchdog.getProviderRank(), ProviderRank.EMERGENCY);
   }
 }

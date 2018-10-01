@@ -28,13 +28,8 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Dimensions;
-import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.sca.Clip;
 
+/** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
   public static final String GOKART_LOG_CONFIG = "GokartLogConfig.properties";
@@ -49,15 +44,16 @@ public class GokartLcmLogCutter {
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
-      graphics.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(), 32, null);
+      graphics.drawImage(bufferedImage, 0, 0, null);
+      int ofsy = 20;
       synchronized (map) {
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = entry.getKey();
           int width = Math.max(0, entry.getValue() - x0);
           graphics.setColor(new Color(0, 0, 255, 128));
-          graphics.fillRect(x0, 5, width, 32);
+          graphics.fillRect(x0, ofsy, width, 32);
           graphics.setColor(new Color(255, 255, 255, 128));
-          graphics.drawRect(x0, 5, width, 32);
+          graphics.drawRect(x0, ofsy, width, 32);
         }
       }
     }
@@ -131,7 +127,7 @@ public class GokartLcmLogCutter {
     this.gokartLogFileIndexer = gokartLogFileIndexer;
     this.export_root = export_root;
     this.title = title;
-    bufferedImage = speedProfile(gokartLogFileIndexer);
+    bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setBounds(100, 100, 1500, 200);
@@ -154,13 +150,5 @@ public class GokartLcmLogCutter {
     // ---
     jFrame.setTitle(title);
     jFrame.setVisible(true);
-  }
-
-  static BufferedImage speedProfile(GokartLogFileIndexer gokartLogFileIndexer) {
-    Clip clip = Clip.function(0, 40);
-    Tensor tensor = Transpose.of( //
-        Tensor.of(gokartLogFileIndexer.raster2speed()).map(clip::rescale));
-    System.out.println(Dimensions.of(tensor));
-    return ImageFormat.of(tensor.map(ColorDataGradients.CLASSIC));
   }
 }

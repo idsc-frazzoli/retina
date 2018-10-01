@@ -24,6 +24,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.TensorProperties;
 
 /** ParametersModule is a graphical user interface to configure all constant
  * quantities that are critical for the safety and performance of the gokart
@@ -68,8 +69,13 @@ public class ParametersModule extends AbstractModule {
   }
 
   private void addTab(Object object) {
-    ParametersComponent propertiesComponent = new ParametersComponent(object);
-    jTabbedPane.addTab(object.getClass().getSimpleName(), propertiesComponent.getScrollPane());
+    // only include config class with configurable parameters
+    if (0 < TensorProperties.wrap(object).fields().count()) {
+      ParametersComponent propertiesComponent = new ParametersComponent(object);
+      String title = object.getClass().getSimpleName();
+      title = title.endsWith("Config") ? title.substring(0, title.length() - 6) : title;
+      jTabbedPane.addTab(title, propertiesComponent.getScrollPane());
+    }
   }
 
   /***************************************************/
