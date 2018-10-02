@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.TableBuilder;
+import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartLogFileIndexer implements OfflineLogListener {
@@ -94,8 +95,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
-      // TODO V061 replace
-      auton = gji.isAutonomousPressed() ? RealScalar.ONE : RealScalar.ZERO;
+      auton = Boole.of(gji.isAutonomousPressed());
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       SteerColumnInterface steerColumnInterface = new GokartStatusEvent(byteBuffer);
