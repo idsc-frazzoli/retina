@@ -11,7 +11,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -45,10 +44,9 @@ public class GokartPoseTable implements OfflineTableSupplier {
           // degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
           // degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
           // metric.map(Magnitude.METER).map(Round._2), //
-          Tensors.of( //
-              gpe.getQuality().map(Round._3), // 1
-              pose.map(Round._3), // 2
-              gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5)) // 1
+          gpe.getQuality().map(Round._3), // 1
+          pose.map(Round._3), // 2
+          gpe.getPose().Get(2).map(Magnitude.ONE).map(Round._5) // 1
       );
       System.out.println(tableBuilder.getRowCount());
     }

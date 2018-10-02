@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -26,6 +27,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class RimoSlipTable implements OfflineTableSupplier {
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
@@ -64,7 +66,7 @@ public class RimoSlipTable implements OfflineTableSupplier {
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), //
             rates.map(Magnitude.PER_SECOND), //
-            SteerConfig.GLOBAL.getAngleFromSCE(gse), //
+            steerMapping.getAngleFromSCE(gse), //
             speed.map(Magnitude.VELOCITY), //
             rate.map(Magnitude.PER_SECOND), //
             dif.gyroImageFrame().map(Magnitude.PER_SECOND) //

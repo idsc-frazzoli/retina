@@ -1,9 +1,17 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -27,5 +35,22 @@ public class SensorsConfigTest extends TestCase {
   public void testImuSamplesPerLidarScan() {
     int samples = SensorsConfig.GLOBAL.imuSamplesPerLidarScan();
     assertEquals(samples, 50);
+  }
+
+  public void testImuGyroZ() {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4 + 2 * 7]);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putInt(0x12345678);
+    byteBuffer.putShort((short) 102);
+    byteBuffer.putShort((short) 120);
+    byteBuffer.putShort((short) 220);
+    byteBuffer.putShort((short) (340 * 12));
+    byteBuffer.putShort((short) 120);
+    byteBuffer.putShort((short) 1000);
+    byteBuffer.putShort((short) -4233);
+    byteBuffer.flip();
+    DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
+    Scalar gyroZ = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
+    assertTrue(Chop._07.close(gyroZ, Quantity.of(-0.5435834616898371, SI.PER_SECOND)));
   }
 }

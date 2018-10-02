@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -12,9 +13,10 @@ import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
+final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_1);
   // ---
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from StartAndStoppable
@@ -42,7 +44,7 @@ class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   @Override // from PurePursuitBase
   Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    Scalar desPos = SteerConfig.GLOBAL.getSCEfromAngle(angle);
+    Scalar desPos = steerMapping.getSCEfromAngle(angle);
     Scalar difference = desPos.subtract(currAngle);
     Scalar torqueCmd = steerPositionController.iterate(difference);
     return Optional.of(SteerPutEvent.createOn(torqueCmd));

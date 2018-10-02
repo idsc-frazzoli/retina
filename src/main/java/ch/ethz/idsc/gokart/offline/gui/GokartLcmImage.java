@@ -26,7 +26,8 @@ public enum GokartLcmImage {
       tensor.append(ImageResize.nearest(auton.map(ColorDataGradients.COPPER), fx, 1));
     }
     {
-      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseq()));
+      Clip clip = Clip.function(0.5, 1);
+      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseq()).map(clip::rescale));
       tensor.append(ImageResize.nearest(poseq.map(ColorDataGradients.AVOCADO), fx, 1));
     }
     {

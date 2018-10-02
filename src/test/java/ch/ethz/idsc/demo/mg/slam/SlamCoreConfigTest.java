@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
-public class SlamConfigTest extends TestCase {
+public class SlamCoreConfigTest extends TestCase {
   public void testSimple() {
     SlamCoreConfig slamConfig = new SlamCoreConfig();
     Tensor high = slamConfig.cornerHigh();

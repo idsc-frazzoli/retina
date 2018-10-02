@@ -8,11 +8,14 @@ function alpha = getAlpha(x,d,bw)
 %bw: offset of the projection from the wheel hub
 %x: measured offset to projected
 %measurement functi
-mout = @(alpha)d*tan(alpha)+bw/cos(alpha)-bw;
+%mout = @(alpha)d*tan(alpha)+bw/cos(alpha)-bw;
 %find alpha for given x
-lsqfun = @(alpha)(mout(alpha)-x)^2;
+%lsqfun = @(alpha)(mout(alpha)-x)^2;
 
-alpha = fminsearch(lsqfun, 0);
+%alpha = fminsearch(lsqfun, 0);
+
+alpha = -2*atan((d - (d^2 + x^2 + 2*bw*x)^(1/2))/(2*bw + x));
+
 show = 1;
 if(show)
     close all

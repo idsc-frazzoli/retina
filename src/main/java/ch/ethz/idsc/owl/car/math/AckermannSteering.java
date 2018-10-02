@@ -35,7 +35,7 @@ public class AckermannSteering implements Serializable {
   }
 
   /** @param delta
-   * @return steering angle for two wheels located at (x_front, y_offset) */
+   * @return angle for a wheel located at (x_front, y_offset) */
   public Scalar angle(Scalar delta) {
     Scalar tan = Tan.of(delta);
     return ArcTan.of(tan.divide(RealScalar.ONE.subtract(tan.multiply(factor))));
@@ -44,7 +44,7 @@ public class AckermannSteering implements Serializable {
   /** @param delta
    * @return steering angle for two wheels located at +y_offset and -y_offset
    * as is the symmetric standard configuration of most vehicles */
-  // implementation is redundant to angle function in order to reuse the computation of the tangens
+  // implementation is redundant to angle function in order to reuse the computation of the tangent
   public Tensor pair(Scalar delta) {
     Scalar tan = Tan.of(delta);
     Scalar tan_factor = tan.multiply(factor);
