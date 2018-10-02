@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
-import ch.ethz.idsc.retina.util.math.SimpleRnPointcloudDistance;
+import ch.ethz.idsc.owl.bot.rn.SimpleRnPointcloudDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
