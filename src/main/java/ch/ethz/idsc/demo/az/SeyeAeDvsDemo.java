@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 enum SeyeAeDvsDemo {
   ;
   public static void main(String[] args) throws InterruptedException {
-    SeyeAeDvsLcmClient siliconEyeLcmHandler = new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
+    SeyeAeDvsLcmClient seyeAeDvsLcmClient = new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
     // siliconEyeLcmHandler.aedat31Imu6Listeners.add(new Aedat31Imu6Listener() {
     // @Override
     // public void imu6Event(Aedat31Imu6Event aedat31Imu6Event) {
@@ -40,8 +40,8 @@ enum SeyeAeDvsDemo {
         count++;
       }
     });
-    siliconEyeLcmHandler.aedat31PolarityListeners.add(aedat31PolarityImage);
-    siliconEyeLcmHandler.startSubscriptions();
+    seyeAeDvsLcmClient.aedat31PolarityListeners.add(aedat31PolarityImage);
+    seyeAeDvsLcmClient.startSubscriptions();
     Thread.sleep(10000);
   }
 }
