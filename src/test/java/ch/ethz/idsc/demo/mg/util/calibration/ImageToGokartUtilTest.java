@@ -7,9 +7,10 @@ import junit.framework.TestCase;
 
 public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
-    SlamCoreConfig slamConfig = new SlamCoreConfig();
-    slamConfig.davisConfig.logFileLocations = LogFileLocations.DUBI15a;
-    ImageToGokartLookup test = (ImageToGokartLookup) slamConfig.davisConfig.createImageToGokartInterface();
+    SlamCoreConfig slamCoreConfig = new SlamCoreConfig();
+    slamCoreConfig.davisConfig.cameraType = "davis";
+    slamCoreConfig.davisConfig.logFileLocations = LogFileLocations.DUBI15a;
+    ImageToGokartLookup test = (ImageToGokartLookup) slamCoreConfig.davisConfig.createImageToGokartInterface();
     test.printInfo();
     System.out.println("---");
     int x = 170;

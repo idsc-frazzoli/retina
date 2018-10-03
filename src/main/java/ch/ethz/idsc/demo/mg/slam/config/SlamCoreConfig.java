@@ -22,9 +22,9 @@ public class SlamCoreConfig {
   // general parameters
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
+  public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.lidarMode;
   /** when true, logs are recorded with timestamps provided by dvs event stream */
-  public final Boolean dvsTimeLogMode = false;
+  public final Boolean dvsTimeLogMode = true;
   /** when true, logs are recorded with periodic timestamps */
   public final Boolean periodicLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -40,6 +40,9 @@ public class SlamCoreConfig {
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
   public final Scalar lookAheadDistance = Quantity.of(5, SI.METER);
+  // for SiliconEye sensor which has very wide field of view
+  public final Scalar cropLowerPart = Quantity.of(2, SI.METER);
+  public final Scalar cropSides = Quantity.of(4, SI.METER);
   /** for reactive mapping modes */
   public final Scalar lookBehindDistance = Quantity.of(-3, SI.METER);
   // update rates
@@ -49,7 +52,7 @@ public class SlamCoreConfig {
   public final Scalar reactiveUpdateRate = Quantity.of(0.1, SI.SECOND);
   public Scalar waypointUpdateRate = Quantity.of(0.01, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public final Scalar logCollectionUpdateRate = Quantity.of(0.001, SI.SECOND);
   public Scalar purePursuitUpdateRate = Quantity.of(0.02, SI.SECOND);
   // particle initialization
   public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
@@ -89,7 +92,7 @@ public class SlamCoreConfig {
   public final Scalar padding = Quantity.of(4, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = Quantity.of(0.05, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(21, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);

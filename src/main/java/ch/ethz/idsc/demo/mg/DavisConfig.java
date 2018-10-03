@@ -28,11 +28,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI19s;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBISiliconEyeC;
   /** which camera is used */
   public String cameraType = "siliconEye";
   /** maxDuration */
-  public final Scalar logFileDuration = Quantity.of(54, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(10, SI.SECOND);
   // general parameters
   /** conversion factor from [mm] to [m] */
   public final Scalar unitConversion = RealScalar.of(1000);
@@ -89,6 +89,18 @@ public class DavisConfig {
     }
   }
 
+  public String getChannel_DVS() {
+    CameraType cameraType2 = CameraType.valueOf(cameraType);
+    switch (cameraType2) {
+    case davis:
+      return "davis240c.overview.dvs";
+    case siliconEye:
+      return "seye.overview.aedvs";
+    default:
+      throw new RuntimeException();
+    }
+  }
+
   public String logFilename() {
     return logFileLocations.name();
   }
@@ -99,6 +111,7 @@ public class DavisConfig {
     case davis:
       return logFileLocations.calibration();
     case siliconEye:
+      // for SiliconEye, we currently only have one calibration file
       return ResourceData.of("/demo/mg/DUBISiliconEye.csv");
     default:
       throw new RuntimeException();

@@ -54,6 +54,10 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
     jComponent.repaint();
   }
 
+  public static void standalone() throws Exception {
+    new SeyeDetailModule().first();
+  }
+
   public static void main(String[] args) throws Exception {
     new SeyeDetailModule().first();
   }

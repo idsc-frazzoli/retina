@@ -178,7 +178,9 @@ public enum LogFileLocations {
   /** driving around faster with odometry SLAM */
   DUBI19test2("20180924T110653_820c1ac4.lcm.00"),
   /** enum to get the correct calibration file */
-  DUBISiliconEyeA("20180924T110653_820c1ac4Extracted1.lcm");
+  DUBISiliconEye("20181003T155915_f6edefe8.lcm.00"), DUBISiliconEyeA("20181003T155915_f6edefe8Extracted1.lcm"), DUBISiliconEyeB(
+      "20181003T155915_f6edefe8Extracted2.lcm"), DUBISiliconEyeC(
+          "20181003T155915_f6edefe8Extracted3.lcm"), DUBISiliconEyeD("20181003T155915_f6edefe8Extracted4.lcm");
   // ---
   private final String filename;
 

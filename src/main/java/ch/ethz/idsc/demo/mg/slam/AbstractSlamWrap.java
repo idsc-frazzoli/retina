@@ -60,7 +60,6 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
    * visualization task is initialized as well at this instant */
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
-    System.out.println("TRIGGER CHECK");
     if (!triggered)
       if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         triggered = true;

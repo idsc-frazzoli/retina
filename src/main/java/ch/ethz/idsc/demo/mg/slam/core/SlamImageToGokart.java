@@ -12,6 +12,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final ImageToGokartInterface imageToGokartInterface = //
       SlamCoreConfig.GLOBAL.davisConfig.createImageToGokartInterface();
   private final double lookAheadDistance = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.lookAheadDistance);
+  private final double cropLowerPart = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cropLowerPart);
+  private final double cropSides = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cropSides);
 
   SlamImageToGokart(SlamCoreContainer slamCoreContainer) {
     super(slamCoreContainer);
@@ -25,6 +27,16 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   /** sets eventGokartFrame field in SlamContainer. It is set null if eventGokartFrame[0] > lookAheadDistance.
    * Events which result from objects too far away from the go kart are neglected */
   private void setEventGokartFrame(double[] eventGokartFrame) {
-    slamCoreContainer.setEventGokartFrame(eventGokartFrame[0] > lookAheadDistance ? null : eventGokartFrame);
+    slamCoreContainer.setEventGokartFrame(checkEventPosition(eventGokartFrame)//
+        ? null
+        : eventGokartFrame);
+  }
+
+  // returns true when event is ignored due to position
+  private boolean checkEventPosition(double[] eventGokartFrame) {
+    return eventGokartFrame[0] > lookAheadDistance //
+        || eventGokartFrame[0] < cropLowerPart //
+        || eventGokartFrame[1] < -cropSides //
+        || eventGokartFrame[1] > cropSides;
   }
 }
