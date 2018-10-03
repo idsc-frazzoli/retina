@@ -1,3 +1,4 @@
+// code by az and jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.io.File;
@@ -19,11 +20,12 @@ import ch.ethz.idsc.retina.util.TimedImageListener;
 public class SiliconEyeDvsLcmHandler extends BinaryLcmClient {
   public final List<Aedat31PolarityListener> aedat31PolarityListeners = new LinkedList<>();
   public final List<Aedat31Imu6Listener> aedat31Imu6Listeners = new LinkedList<>();
+
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
     int events = byteBuffer.remaining() / 8;
     for (int count = 0; count < events; ++count) {
-      Aedat31PolarityEvent aedat31PolarityEvent = new Aedat31PolarityEvent(byteBuffer);
+      Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(byteBuffer);
       aedat31PolarityListeners.forEach(listener -> listener.polarityEvent(aedat31PolarityEvent));
     }
   }
@@ -32,7 +34,7 @@ public class SiliconEyeDvsLcmHandler extends BinaryLcmClient {
   protected String channel() {
     return "se_rino3.overview.aedvs";
   }
-  
+
   public static void main(String[] args) throws InterruptedException {
     SiliconEyeDvsLcmHandler siliconEyeLcmHandler = new SiliconEyeDvsLcmHandler();
     siliconEyeLcmHandler.aedat31Imu6Listeners.add(new Aedat31Imu6Listener() {
@@ -43,7 +45,8 @@ public class SiliconEyeDvsLcmHandler extends BinaryLcmClient {
     });
     Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(2500);
     aedat31PolarityImage.listeners.add(new TimedImageListener() {
-      int count=0;
+      int count = 0;
+
       @Override
       public void timedImage(TimedImageEvent timedImageEvent) {
         System.out.println(timedImageEvent.time);
@@ -55,7 +58,6 @@ public class SiliconEyeDvsLcmHandler extends BinaryLcmClient {
           e.printStackTrace();
         }
         count++;
-        
       }
     });
     siliconEyeLcmHandler.aedat31PolarityListeners.add(aedat31PolarityImage);
