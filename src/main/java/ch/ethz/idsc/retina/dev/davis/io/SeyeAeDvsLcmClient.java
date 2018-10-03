@@ -2,15 +2,15 @@
 package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 
 public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
-  public static final int EVENT_BYTES = 8;
+  private static final int AEDAT31POLARITYEVENT_BYTES = 8;
   // ---
-  public final List<Aedat31PolarityListener> aedat31PolarityListeners = new LinkedList<>();
+  public final List<DavisDvsListener> aedat31PolarityListeners = new CopyOnWriteArrayList<>();
 
   public SeyeAeDvsLcmClient(String channel) {
     super(channel);
@@ -18,10 +18,11 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    int events = byteBuffer.remaining() / EVENT_BYTES;
+    byteBuffer.getShort(); // TODO CCODE
+    int events = byteBuffer.remaining() / AEDAT31POLARITYEVENT_BYTES;
     for (int count = 0; count < events; ++count) {
       Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(byteBuffer);
-      aedat31PolarityListeners.forEach(listener -> listener.polarityEvent(aedat31PolarityEvent));
+      aedat31PolarityListeners.forEach(listener -> listener.davisDvs(aedat31PolarityEvent));
     }
   }
 

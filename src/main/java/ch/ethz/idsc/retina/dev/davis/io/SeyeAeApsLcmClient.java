@@ -3,13 +3,13 @@ package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 
 public class SeyeAeApsLcmClient extends SeyeAbstractLcmClient {
-  public final List<Aedat31FrameListener> aedat31FrameListeners = new LinkedList<>();
+  public final List<Aedat31FrameListener> aedat31FrameListeners = new CopyOnWriteArrayList<>();
   int count = 0;
 
   public SeyeAeApsLcmClient(String channel) {

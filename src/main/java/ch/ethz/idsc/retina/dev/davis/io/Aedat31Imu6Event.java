@@ -35,9 +35,6 @@ public class Aedat31Imu6Event {
     gyro_y = byteBuffer.getFloat(); // 28
     gyro_z = byteBuffer.getFloat(); // 32
     temperature = byteBuffer.getFloat(); // 36
-    // FIXME reading the last float is not necessary when reading AEDAT31 files!
-    // ... but only when serializing the events by hand
-    byteBuffer.getFloat();
   }
 
   public boolean isValid() {
