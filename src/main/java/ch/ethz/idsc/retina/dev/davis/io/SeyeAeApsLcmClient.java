@@ -7,11 +7,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
-import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
-public class SiliconEyeApsLcmHandler extends BinaryLcmClient {
+public class SeyeAeApsLcmClient extends SeyeAbstractLcmClient {
   public final List<Aedat31FrameListener> aedat31FrameListeners = new LinkedList<>();
   int count = 0;
+
+  public SeyeAeApsLcmClient(String channel) {
+    super(channel);
+  }
 
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
@@ -26,19 +29,7 @@ public class SiliconEyeApsLcmHandler extends BinaryLcmClient {
   }
 
   @Override
-  protected String channel() {
-    return "se_rino3.overview.aeaps";
-  }
-
-  public static void main(String[] args) throws InterruptedException {
-    SiliconEyeApsLcmHandler siliconEyeLcmHandler = new SiliconEyeApsLcmHandler();
-    siliconEyeLcmHandler.aedat31FrameListeners.add(new Aedat31FrameListener() {
-      @Override
-      public void frameEvent(Aedat31FrameEvent aedat31FrameEvent) {
-        System.out.println("received frame");
-      }
-    });
-    siliconEyeLcmHandler.startSubscriptions();
-    Thread.sleep(10000);
+  protected String type() {
+    return "aeaps";
   }
 }
