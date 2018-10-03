@@ -17,8 +17,8 @@ import ch.ethz.idsc.tensor.Scalar;
 public class GuiConfig implements Serializable {
   public static final GuiConfig GLOBAL = AppResources.load(new GuiConfig());
   // ---
-  public final Scalar fontSize = RealScalar.of(18);
-  public final Scalar labelSize = RealScalar.of(36);
+  public final Scalar fontSize = RealScalar.of(22);
+  public final Scalar labelSize = RealScalar.of(46);
 
   /***************************************************/
   public Font getFont() {

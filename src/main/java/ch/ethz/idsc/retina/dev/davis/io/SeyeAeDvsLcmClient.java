@@ -18,7 +18,7 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    byteBuffer.getShort(); // TODO CCODE
+    byteBuffer.getShort();
     int events = byteBuffer.remaining() / AEDAT31POLARITYEVENT_BYTES;
     for (int count = 0; count < events; ++count) {
       Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(byteBuffer);

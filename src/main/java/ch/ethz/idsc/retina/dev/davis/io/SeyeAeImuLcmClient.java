@@ -18,8 +18,8 @@ public class SeyeAeImuLcmClient extends SeyeAbstractLcmClient {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    byteBuffer.getShort(); // TODO CCODE
-    int events = byteBuffer.remaining() / AEDAT31IMU6EVENT_BYTES; // TODO CCODE
+    byteBuffer.getShort();
+    int events = byteBuffer.remaining() / AEDAT31IMU6EVENT_BYTES;
     for (int count = 0; count < events; ++count) {
       Aedat31Imu6Event aedat31ImuEvent = new Aedat31Imu6Event(byteBuffer);
       aedat31Imu6Listeners.forEach(listener -> listener.imu6Event(aedat31ImuEvent));
