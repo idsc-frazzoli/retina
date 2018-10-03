@@ -12,7 +12,7 @@ public abstract class SeyeAbstractLcmClient extends BinaryLcmClient {
 
   @Override
   protected final String channel() {
-    return "seye." + channel + ".ae" + type();
+    return "seye." + channel + "." + type();
   }
 
   protected abstract String type();

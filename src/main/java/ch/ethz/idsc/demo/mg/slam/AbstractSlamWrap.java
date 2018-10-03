@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** base class to initialize the SLAM algorithm
@@ -18,7 +17,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
  * by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStoppable {
-  //protected final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  // protected final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   protected final SeyeAeDvsLcmClient seyeAeDvsLcmClient = new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
   protected final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
   protected final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
@@ -31,7 +30,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected boolean triggered;
 
   protected AbstractSlamWrap() {
-    //davisLcmClient.davisDvsDatagramDecoder.addDvsListener(this);
+    // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(this);
     seyeAeDvsLcmClient.aedat31PolarityListeners.add(this);
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);
@@ -43,14 +42,14 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   public final void start() {
     protected_start();
     gokartLidarPose.gokartPoseLcmClient.startSubscriptions();
-    //davisLcmClient.startSubscriptions();
+    // davisLcmClient.startSubscriptions();
     seyeAeDvsLcmClient.startSubscriptions();
   }
 
   @Override // from StartAndStoppable
   public final void stop() {
     gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
-    //davisLcmClient.stopSubscriptions();
+    // davisLcmClient.stopSubscriptions();
     seyeAeDvsLcmClient.stopSubscriptions();
     slamViewer.stop();
     abstractFilterHandler.stopStopableListeners();
@@ -68,13 +67,13 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
     if (!triggered)
       if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         triggered = true;
-        //davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractFilterHandler);
-        //davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
+        // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(abstractFilterHandler);
+        // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(slamViewer);
         seyeAeDvsLcmClient.aedat31PolarityListeners.add(abstractFilterHandler);
         seyeAeDvsLcmClient.aedat31PolarityListeners.add(slamViewer);
         SlamWrapUtil.initialize(slamCoreContainer, slamPrcContainer, //
             abstractFilterHandler, gokartLidarPose, gokartOdometryPose);
-        slamViewer.start();        
+        slamViewer.start();
         // TODO JPH find a way to unsubscribe once it has been triggered
         seyeAeDvsLcmClient.aedat31PolarityListeners.remove(this);
       }

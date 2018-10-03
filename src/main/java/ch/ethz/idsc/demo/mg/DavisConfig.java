@@ -57,7 +57,7 @@ public class DavisConfig {
       throw new RuntimeException();
     }
   }
-  
+
   public Scalar height() {
     switch (cameraType) {
     case davis:

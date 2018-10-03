@@ -25,17 +25,19 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
       graphics.drawImage(imageCopy.get(), 0, 0, null);
     }
   };
-  private final Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(1000);
+  private final Aedat31PolarityImage aedat31PolarityImage = //
+      new Aedat31PolarityImage(100);
 
   public SeyeDetailModule() {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
+    aedat31PolarityImage.listeners.add(this);
   }
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    seyeAeDvsLcmClient.startSubscriptions();
     seyeAeDvsLcmClient.aedat31PolarityListeners.add(aedat31PolarityImage);
+    seyeAeDvsLcmClient.startSubscriptions();
     jFrame.setBounds(100, 100, 400, 400);
     jFrame.setVisible(true);
   }
@@ -47,6 +49,7 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
 
   @Override
   public void timedImage(TimedImageEvent timedImageEvent) {
+    // System.out.println("image");
     imageCopy.update(timedImageEvent.bufferedImage);
     jComponent.repaint();
   }

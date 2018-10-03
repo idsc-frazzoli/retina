@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.subdiv.curve.GeodesicMeanFilter;
 import ch.ethz.idsc.owl.subdiv.curve.Se2Geodesic;
@@ -41,12 +40,9 @@ public class PoseFilteringTable implements OfflineTableSupplier {
     return tableBuilder.toTable();
   }
 
-  /**
-   * 
-   * @param lcmfile
+  /** @param lcmfile
    * @param dest
-   * @throws IOException
-   */
+   * @throws IOException */
   public static void process(File lcmfile, File dest) throws IOException {
     PoseFilteringTable poseFiltering = new PoseFilteringTable();
     DavisImuTable davisImuTable = DavisImuTable.all();
@@ -74,5 +70,4 @@ public class PoseFilteringTable implements OfflineTableSupplier {
         file2, //
         table.map(CsvFormat.strict()));
   }
-
 }

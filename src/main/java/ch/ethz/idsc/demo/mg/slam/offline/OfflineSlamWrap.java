@@ -24,10 +24,10 @@ import ch.ethz.idsc.tensor.Scalar;
     if (channel.equals(GokartLcmChannel.POSE_LIDAR))
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     else //
-    if (channel.equals(CHANNEL_DVS))
+    if (channel.equals(CHANNEL_DVS)) {
       // davisLcmClient.davisDvsDatagramDecoder.decode(byteBuffer);
-      seyeAeDvsLcmClient.messageReceived(byteBuffer);
-    else //
+      // FIXME seyeAeDvsLcmClient.messageReceived(byteBuffer);
+    } else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
   }
