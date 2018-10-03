@@ -34,8 +34,8 @@ public class Aedat31PolarityImage implements Aedat31PolarityListener {
 
   @Override
   public void polarityEvent(Aedat31PolarityEvent aedat31PolarityEvent) {
-    if (aedat31PolarityEvent.getTime_us() != time) {
-      time = aedat31PolarityEvent.getTime_us();
+    if (aedat31PolarityEvent.time() != time) {
+      time = aedat31PolarityEvent.time();
       ++packet;
     }
     if (packet == packets) {

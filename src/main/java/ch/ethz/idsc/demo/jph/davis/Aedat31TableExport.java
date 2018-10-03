@@ -31,7 +31,7 @@ class Aedat31TableExport implements Aedat31PolarityListener, Aedat31FrameListene
 
   @Override
   public void polarityEvent(Aedat31PolarityEvent aedat31PolarityEvent) {
-    int key = aedat31PolarityEvent.getTime_us();
+    int key = aedat31PolarityEvent.time();
     map.put(key, map.containsKey(key) ? map.get(key) + 1 : 1);
   }
 
