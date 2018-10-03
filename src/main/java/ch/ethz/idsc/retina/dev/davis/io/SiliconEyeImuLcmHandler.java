@@ -1,20 +1,12 @@
+// code by az and jph
 package ch.ethz.idsc.retina.dev.davis.io;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
-import ch.ethz.idsc.demo.jph.davis.Aedat31PolarityImage;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
-import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
 
 public class SiliconEyeImuLcmHandler extends BinaryLcmClient {
   public final List<Aedat31Imu6Listener> aedat31Imu6Listeners = new LinkedList<>();
@@ -38,7 +30,7 @@ public class SiliconEyeImuLcmHandler extends BinaryLcmClient {
     siliconEyeLcmHandler.aedat31Imu6Listeners.add(new Aedat31Imu6Listener() {
       @Override
       public void imu6Event(Aedat31Imu6Event aedat31Imu6Event) {
-        //if (aedat31Imu6Event.isValid()) 
+        // if (aedat31Imu6Event.isValid())
         {
           System.out.println("Temp: " + aedat31Imu6Event.getTemperature());
           System.out.println("Temp: " + aedat31Imu6Event.getAccel());

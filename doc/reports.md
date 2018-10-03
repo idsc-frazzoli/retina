@@ -29,6 +29,7 @@
 * [20180730_lidar_perception_for_autonomous_vehicles.pdf](https://github.com/idsc-frazzoli/retina/files/2263053/20180730_lidar_perception_for_autonomous_vehicles.pdf)
 * [20180818_datasets_track_w.pdf](https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf)
 * [20180821_datasets_track_r.pdf](https://github.com/idsc-frazzoli/retina/files/2304268/20180821_datasets_track_r.pdf)
+* [20181001_steering_measurement.pdf](https://github.com/idsc-frazzoli/retina/files/2440459/20181001_steering_measurement.pdf)
 
 ## Bug Reports
 

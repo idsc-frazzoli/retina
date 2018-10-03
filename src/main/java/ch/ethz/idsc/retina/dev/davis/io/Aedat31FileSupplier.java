@@ -50,7 +50,7 @@ public class Aedat31FileSupplier implements StartAndStoppable {
         switch (aedat31EventHeader.getType()) {
         case POLARITY_EVENT: {
           for (int count = 0; count < aedat31EventHeader.getNumber(); ++count) {
-            Aedat31PolarityEvent aedat31PolarityEvent = new Aedat31PolarityEvent(dataBuffer);
+            Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(dataBuffer);
             aedat31PolarityListeners.forEach(listener -> listener.polarityEvent(aedat31PolarityEvent));
           }
           break;

@@ -3,37 +3,36 @@ package ch.ethz.idsc.retina.dev.davis.io;
 
 import java.nio.ByteBuffer;
 
-/** image from camera */
-public class Aedat31PolarityEvent {
-  private static final int MASK15 = 0x7fff;
-  // ---
-  public final int x;
-  public final int y;
-  public final int i;
-  private final int valid;
-  private final int time;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
-  public Aedat31PolarityEvent(ByteBuffer byteBuffer) {
+/** image from camera */
+public class Aedat31PolarityEvent extends DavisDvsEvent {
+  private static final int MASK15 = 0x7fff;
+
+  public static Aedat31PolarityEvent create(ByteBuffer byteBuffer) {
     final int value = byteBuffer.getInt();
-    // System.out.println(String.format("v=%08x", value&0xfffffffe));
-    valid = value & 1;
-    i = (value >> 1) & 1;
-    y = (value >> 2) & MASK15;
-    x = (value >> 17) & MASK15;
-    // ---
-    time = byteBuffer.getInt();
+    int valid = value & 1;
+    int i = (value >> 1) & 1;
+    int y = (value >> 2) & MASK15;
+    int x = (value >> 17) & MASK15;
+    int time = byteBuffer.getInt();
+    return new Aedat31PolarityEvent(time, x, y, i, valid);
+  }
+
+  // ---
+  private final int valid;
+
+  public Aedat31PolarityEvent(int time, int x, int y, int i, int valid) {
+    super(time, x, y, i);
+    this.valid = valid;
+  }
+
+  public boolean isValid() {
+    return valid == 1;
   }
 
   @Override
   public String toString() {
     return String.format("v=%d p=%d (%4d,%4d) t=%d", valid, i, x, y, time);
-  }
-
-  public int getTime_us() {
-    return time;
-  }
-
-  public boolean isValid() {
-    return valid == 1;
   }
 }
