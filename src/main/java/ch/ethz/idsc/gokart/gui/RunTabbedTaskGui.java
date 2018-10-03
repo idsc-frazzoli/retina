@@ -104,6 +104,7 @@ enum RunTabbedTaskGui {
       AutoboxTestingModule.class, //
       // LocalViewLcmModule.class, //
       DavisDetailModule.class, //
+      SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
       PresenterLcmModule.class

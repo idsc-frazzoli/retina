@@ -12,7 +12,6 @@ import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.io.DvsLcmClient;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
@@ -96,18 +95,15 @@ public class DavisLcmClient implements DvsLcmClient {
   @Override
   public void addDvsListener(DavisDvsListener davisDvsListener) {
     davisDvsDatagramDecoder.addDvsListener(davisDvsListener);
-    
   }
 
   @Override
   public void removeDvsListener(DavisDvsListener davisDvsListener) {
     davisDvsDatagramDecoder.removeDvsListener(davisDvsListener);
-    
   }
 
   @Override
   public void messageReceived(ByteBuffer byteBuffer) {
     davisDvsDatagramDecoder.decode(byteBuffer);
-    
   }
 }

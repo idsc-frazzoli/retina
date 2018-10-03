@@ -34,11 +34,13 @@ public class Aedat31PolarityImage implements DavisDvsListener {
 
   @Override
   public void davisDvs(DavisDvsEvent aedat31PolarityEvent) {
+    // System.out.println(aedat31PolarityEvent.x+" "+aedat31PolarityEvent.y);
     if (aedat31PolarityEvent.time() != time) {
       time = aedat31PolarityEvent.time();
       ++packet;
     }
-    if (packet == packets) {
+    if (packet >= packets) {
+      // System.out.println("publish "+packet);
       packet = 0;
       TimedImageEvent timedImageEvent = new TimedImageEvent(time, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));

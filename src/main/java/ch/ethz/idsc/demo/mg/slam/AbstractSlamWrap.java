@@ -70,7 +70,6 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
             abstractFilterHandler, gokartLidarPose, gokartOdometryPose);
         slamViewer.start();
         dvsLcmClient.removeDvsListener(this);
-        System.out.println("REMOVED TRIG");
       }
   }
 
