@@ -35,7 +35,7 @@ public class BlobTrackConfig {
   public Scalar boundaryDistance = RealScalar.of(1);
   public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
-  public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
+  public Scalar upperBoarder = RealScalar.of(davisConfig.height().number()); // with this number, all features are selected
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool
@@ -51,7 +51,7 @@ public class BlobTrackConfig {
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
   public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
-  public final Scalar maxDistance = davisConfig.width.add(davisConfig.height); // [pixel] upper bound for distance between features
+  public final Scalar maxDistance = davisConfig.width().add(davisConfig.height()); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = true;
