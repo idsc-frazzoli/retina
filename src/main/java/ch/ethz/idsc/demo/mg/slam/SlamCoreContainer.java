@@ -16,9 +16,6 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
   private final SlamParticle[] slamParticles;
   private final String logFilename;
   private final boolean saveSlamMap;
-  private final double linVelAvg;
-  private final double linVelStd;
-  private final double angVelStd;
   // ---
   private MapProvider occurrenceMap;
   /** unitless pose estimated by algorithm */
@@ -33,9 +30,6 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
     slamParticles = SlamParticles.allocate(numOfPart);
     saveSlamMap = SlamCoreConfig.GLOBAL.saveSlamMap;
     logFilename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
-    linVelAvg = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelAvg);
-    linVelStd = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelStd);
-    angVelStd = Magnitude.PER_SECOND.toDouble(SlamCoreConfig.GLOBAL.angVelStd);
     occurrenceMap = new MapProvider(SlamCoreConfig.GLOBAL);
     // ---
     labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
@@ -43,7 +37,7 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
 
   /** @param initPose {x[m], y[m], angle[-]} */
   public void initialize(Tensor initPose) {
-    SlamCoreContainerUtil.setInitialDistribution(slamParticles, initPose, linVelAvg, linVelStd, angVelStd);
+    SlamCoreContainerUtil.setInitialDistribution(slamParticles, initPose);
     setPose(initPose);
   }
 
