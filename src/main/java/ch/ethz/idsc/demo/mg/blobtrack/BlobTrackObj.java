@@ -13,8 +13,8 @@ public class BlobTrackObj {
    * 
    * @param blobTrackConfig */
   public static void setParams(BlobTrackConfig blobTrackConfig) {
-    WIDTH = blobTrackConfig.davisConfig.width.number().intValue();
-    HEIGHT = blobTrackConfig.davisConfig.height.number().intValue();
+    WIDTH = blobTrackConfig.davisConfig.width().number().intValue();
+    HEIGHT = blobTrackConfig.davisConfig.height().number().intValue();
     DEFAULT_BLOB_ID = blobTrackConfig.defaultBlobID.number().intValue();
   }
 

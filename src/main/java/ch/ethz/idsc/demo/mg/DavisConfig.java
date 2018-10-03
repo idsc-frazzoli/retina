@@ -23,13 +23,11 @@ public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
   public LogFileLocations logFileLocations = LogFileLocations.DUBISiliconEyeA;
+  /** which camera is used */
+  public CameraType cameraType = CameraType.davis;
   /** maxDuration */
   public final Scalar logFileDuration = Quantity.of(54, SI.SECOND);
   // general parameters
-  /** width of image is required to be an integer */
-  public final Scalar width = RealScalar.of(240);
-  /** height of image is required to be an integer */
-  public final Scalar height = RealScalar.of(180);
   /** conversion factor from [mm] to [m] */
   public final Scalar unitConversion = RealScalar.of(1000);
   /** time threshold for background activity filter
@@ -44,9 +42,31 @@ public class DavisConfig {
 
   public AbstractFilterHandler createBackgroundActivityFilter() {
     return new BackgroundActivityFilter( //
-        Scalars.intValueExact(width), //
-        Scalars.intValueExact(height), //
+        Scalars.intValueExact(width()), //
+        Scalars.intValueExact(height()), //
         Magnitude.MICRO_SECOND.toInt(filterConstant));
+  }
+
+  public Scalar width() {
+    switch (cameraType) {
+    case davis:
+      return RealScalar.of(240);
+    case siliconEye:
+      return RealScalar.of(320);
+    default:
+      throw new RuntimeException();
+    }
+  }
+  
+  public Scalar height() {
+    switch (cameraType) {
+    case davis:
+      return RealScalar.of(180);
+    case siliconEye:
+      return RealScalar.of(264);
+    default:
+      throw new RuntimeException();
+    }
   }
 
   public String logFilename() {
@@ -63,7 +83,7 @@ public class DavisConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, Scalars.intValueExact(width));
+    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, Scalars.intValueExact(width()));
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
@@ -71,8 +91,8 @@ public class DavisConfig {
     return ImageToGokartLookup.fromMatrix( //
         logFileLocations.calibration(), //
         unitConversion, //
-        Scalars.intValueExact(width), //
-        Scalars.intValueExact(height));
+        Scalars.intValueExact(width()), //
+        Scalars.intValueExact(height()));
   }
 
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */

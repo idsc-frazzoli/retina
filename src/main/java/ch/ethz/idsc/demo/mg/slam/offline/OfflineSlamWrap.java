@@ -25,7 +25,8 @@ import ch.ethz.idsc.tensor.Scalar;
       gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
     else //
     if (channel.equals(CHANNEL_DVS))
-      davisLcmClient.davisDvsDatagramDecoder.decode(byteBuffer);
+      // davisLcmClient.davisDvsDatagramDecoder.decode(byteBuffer);
+      seyeAeDvsLcmClient.messageReceived(byteBuffer);
     else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET))
       gokartOdometryPose.getEvent(new RimoGetEvent(byteBuffer));
