@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
 /* package */ class SlamLogSave {
   private final SlamEventCounter slamEventCounter;
+  private final SlamCoreContainer slamCoreContainer;
   private final SlamPrcContainer slamPrcContainer;
   private final GokartPoseInterface gokartLidarPose;
   private final String filename;
@@ -20,6 +21,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
   SlamLogSave(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
       GokartPoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
     this.slamEventCounter = slamEventCounter;
+    this.slamCoreContainer = slamCoreContainer;
     this.slamPrcContainer = slamPrcContainer;
     this.gokartLidarPose = gokartPoseInterface;
     filename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
@@ -27,10 +29,10 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
   }
 
   protected void logSaveTask(int currentTimeStamp) {
-    // SlamLogCollectionUtil.savePoseEstimates(currentTimeStamp, gokartLidarPose.getPose(), //
-    // slamCoreContainer.getPoseUnitless(), logData);
-    SlamLogCollectionUtil.saveProcessedEventCount(currentTimeStamp, slamEventCounter.getProcessedEventCount(), //
-        slamEventCounter.getRawEventCount(), logData);
+    SlamLogCollectionUtil.savePoseEstimates(currentTimeStamp, gokartLidarPose.getPose(), //
+        slamCoreContainer.getPoseUnitless(), logData);
+    // SlamLogCollectionUtil.saveProcessedEventCount(currentTimeStamp, slamEventCounter.getProcessedEventCount(), //
+    // slamEventCounter.getRawEventCount(), logData);
     // Tensor gokartWaypoints = slamPrcContainer.getGokartWaypoints();
     // double xDistance = gokartWaypoints.get(gokartWaypoints.length() - 1).Get(0).number().doubleValue();
     // SlamLogCollectionUtil.saveWaypointDistance(currentTimeStamp, xDistance, logData);

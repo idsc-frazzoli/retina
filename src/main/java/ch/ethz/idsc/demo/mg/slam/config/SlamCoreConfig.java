@@ -24,9 +24,9 @@ public class SlamCoreConfig {
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
   public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
   /** when true, logs are recorded with timestamps provided by dvs event stream */
-  public final Boolean dvsTimeLogMode = false;
+  public final Boolean dvsTimeLogMode = true;
   /** when true, logs are recorded with periodic timestamps */
-  public final Boolean periodicLogMode = true;
+  public final Boolean periodicLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   /** which event polarities are processed */
@@ -86,10 +86,10 @@ public class SlamCoreConfig {
   }
 
   // SlamMapMove
-  public final Scalar padding = Quantity.of(2, SI.METER);
+  public final Scalar padding = Quantity.of(4, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = Quantity.of(5, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(0.05, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);
