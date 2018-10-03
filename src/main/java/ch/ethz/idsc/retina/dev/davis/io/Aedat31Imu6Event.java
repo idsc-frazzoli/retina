@@ -35,6 +35,7 @@ public class Aedat31Imu6Event {
     gyro_y = byteBuffer.getFloat();
     gyro_z = byteBuffer.getFloat();
     temperature = byteBuffer.getFloat();
+    byteBuffer.getFloat();
   }
 
   public boolean isValid() {
