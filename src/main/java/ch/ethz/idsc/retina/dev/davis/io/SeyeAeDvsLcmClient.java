@@ -7,10 +7,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 
-public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
+public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient implements DvsLcmClient {
   private static final int AEDAT31POLARITYEVENT_BYTES = 8;
   // ---
-  public final List<DavisDvsListener> aedat31PolarityListeners = new CopyOnWriteArrayList<>();
+  private final List<DavisDvsListener> aedat31PolarityListeners = new CopyOnWriteArrayList<>();
 
   public SeyeAeDvsLcmClient(String channel) {
     super(channel);
@@ -29,5 +29,15 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
   @Override
   protected String type() {
     return "aedvs";
+  }
+
+  @Override
+  public void addDvsListener(DavisDvsListener davisDvsListener) {
+    aedat31PolarityListeners.add(davisDvsListener);
+  }
+
+  @Override
+  public void removeDvsListener(DavisDvsListener davisDvsListener) {
+    aedat31PolarityListeners.remove(davisDvsListener);
   }
 }

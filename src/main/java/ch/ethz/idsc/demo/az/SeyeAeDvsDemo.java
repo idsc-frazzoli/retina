@@ -40,7 +40,7 @@ enum SeyeAeDvsDemo {
         count++;
       }
     });
-    siliconEyeLcmHandler.aedat31PolarityListeners.add(aedat31PolarityImage);
+    siliconEyeLcmHandler.addDvsListener(aedat31PolarityImage);
     siliconEyeLcmHandler.startSubscriptions();
     Thread.sleep(10000);
   }

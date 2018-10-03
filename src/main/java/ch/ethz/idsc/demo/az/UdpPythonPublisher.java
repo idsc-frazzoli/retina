@@ -74,7 +74,7 @@ class UdpPythonPublisher implements TimedImageListener {
     DavisLcmClient davisLcmClient = new DavisLcmClient(cameraId);
     // handle dvs
     AbstractAccumulatedImage accumulatedEventsImage = SAEGaussDecayImage.of(davisDevice, period);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    davisLcmClient.addDvsListener(accumulatedEventsImage);
     UdpPythonPublisher udpPythonPublisher = new UdpPythonPublisher();
     accumulatedEventsImage.addListener(udpPythonPublisher);
     // start to listen

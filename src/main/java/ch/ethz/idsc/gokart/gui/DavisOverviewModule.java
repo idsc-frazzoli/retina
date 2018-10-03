@@ -37,7 +37,7 @@ public class DavisOverviewModule extends AbstractModule {
     // handle dvs
     AbstractAccumulatedImage accumulatedEventsImage = AccumulatedEventsGrayImage.of(davisDevice);
     accumulatedEventsImage.setInterval(period_us);
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
+    davisLcmClient.addDvsListener(accumulatedEventsImage);
     accumulatedEventsImage.addListener(davisViewerFrame.davisViewerComponent.dvsImageListener);
     // handle dif
     DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
