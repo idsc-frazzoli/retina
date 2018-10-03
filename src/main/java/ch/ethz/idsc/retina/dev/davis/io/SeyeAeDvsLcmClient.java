@@ -14,11 +14,13 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient {
 
   public SeyeAeDvsLcmClient(String channel) {
     super(channel);
+    System.out.println(channel());
   }
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     byteBuffer.getShort();
+    // System.out.println("recv");
     int events = byteBuffer.remaining() / AEDAT31POLARITYEVENT_BYTES;
     for (int count = 0; count < events; ++count) {
       Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(byteBuffer);

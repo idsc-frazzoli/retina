@@ -25,7 +25,7 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
     // ---
     addGetListener(steerColumnTracker);
     addPutProvider(SteerPutFallback.INSTANCE);
-    addPutProvider(SteerBatteryCharger.INSTANCE);
+    // addPutProvider(SteerBatteryCharger.INSTANCE);
     addPutProvider(SteerCalibrationProvider.INSTANCE);
   }
 
