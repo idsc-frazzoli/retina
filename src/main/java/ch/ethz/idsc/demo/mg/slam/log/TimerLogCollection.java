@@ -31,7 +31,7 @@ public class TimerLogCollection implements StartAndStoppable, DavisDvsListener {
       SlamEventCounter slamEventCounter) {
     slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
     periodicSavePeriod = Magnitude.MILLI_SECOND.toLong(SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
-    timer.schedule(logSaveTask, 0, periodicSavePeriod);
+    timer.scheduleAtFixedRate(logSaveTask, 0, periodicSavePeriod);
     initialTimestamp = (int) System.currentTimeMillis();
   }
 

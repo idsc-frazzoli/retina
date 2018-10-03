@@ -17,7 +17,7 @@ public class SlamPrcConfig {
   public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // [m] in go kart frame
   /** half 'width' of rectangle for RegionOfInterestFilter */
-  public final Scalar visibleBoxYHalfWidth = Quantity.of(0.75, SI.METER); // [m] in go kart frame
+  public final Scalar visibleBoxYHalfWidth = Quantity.of(1, SI.METER); // [m] in go kart frame
   // MergeWaypointFilter
   public Scalar deltaPosThreshold = RealScalar.of(0.6); // [m] in go kart frame
   // SausageFilter
