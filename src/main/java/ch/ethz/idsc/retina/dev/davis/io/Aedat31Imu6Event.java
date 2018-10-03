@@ -25,19 +25,16 @@ public class Aedat31Imu6Event {
   private final float temperature;
 
   public Aedat31Imu6Event(ByteBuffer byteBuffer) {
-    final int value = byteBuffer.getInt();
+    final int value = byteBuffer.getInt(); // 4
     valid = value & 1;
-    time = byteBuffer.getInt();
-    accel_x = byteBuffer.getFloat();
-    accel_y = byteBuffer.getFloat();
-    accel_z = byteBuffer.getFloat();
-    gyro_x = byteBuffer.getFloat();
-    gyro_y = byteBuffer.getFloat();
-    gyro_z = byteBuffer.getFloat();
-    temperature = byteBuffer.getFloat();
-    // FIXME reading the last float is not necessary when reading AEDAT31 files!
-    // ... but only when serializing the events by hand
-    byteBuffer.getFloat();
+    time = byteBuffer.getInt(); // 8
+    accel_x = byteBuffer.getFloat(); // 12
+    accel_y = byteBuffer.getFloat(); // 16
+    accel_z = byteBuffer.getFloat(); // 20
+    gyro_x = byteBuffer.getFloat(); // 24
+    gyro_y = byteBuffer.getFloat(); // 28
+    gyro_z = byteBuffer.getFloat(); // 32
+    temperature = byteBuffer.getFloat(); // 36
   }
 
   public boolean isValid() {

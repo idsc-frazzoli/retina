@@ -10,7 +10,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
-import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** parser for aedat version 3.1 */
@@ -23,7 +23,7 @@ public class Aedat31FileSupplier implements StartAndStoppable {
   private final ByteBuffer headBuffer = ByteBuffer.wrap(head);
   private final ByteBuffer dataBuffer = ByteBuffer.wrap(data);
   private final InputStream inputStream;
-  public final List<Aedat31PolarityListener> aedat31PolarityListeners = new LinkedList<>();
+  public final List<DavisDvsListener> aedat31PolarityListeners = new LinkedList<>();
   public final List<Aedat31FrameListener> aedat31FrameListeners = new LinkedList<>();
   public final List<Aedat31Imu6Listener> aedat31Imu6Listeners = new LinkedList<>();
 
@@ -51,7 +51,7 @@ public class Aedat31FileSupplier implements StartAndStoppable {
         case POLARITY_EVENT: {
           for (int count = 0; count < aedat31EventHeader.getNumber(); ++count) {
             Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(dataBuffer);
-            aedat31PolarityListeners.forEach(listener -> listener.polarityEvent(aedat31PolarityEvent));
+            aedat31PolarityListeners.forEach(listener -> listener.davisDvs(aedat31PolarityEvent));
           }
           break;
         }

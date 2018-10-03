@@ -8,21 +8,21 @@ import java.util.TreeMap;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
-import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31Imu6Event;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31PolarityEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-class Aedat31TableExport implements Aedat31PolarityListener, Aedat31FrameListener, Aedat31Imu6Listener {
-  TableBuilder table_frame = new TableBuilder();
-  TableBuilder table_imu6 = new TableBuilder();
-  Map<Integer, Integer> map = new TreeMap<>();
+class Aedat31TableExport implements DavisDvsListener, Aedat31FrameListener, Aedat31Imu6Listener {
+  private final TableBuilder table_frame = new TableBuilder();
+  private final TableBuilder table_imu6 = new TableBuilder();
+  private final Map<Integer, Integer> map = new TreeMap<>();
 
   @Override
   public void frameEvent(Aedat31FrameEvent aedat31FrameEvent) {
@@ -30,7 +30,7 @@ class Aedat31TableExport implements Aedat31PolarityListener, Aedat31FrameListene
   }
 
   @Override
-  public void polarityEvent(Aedat31PolarityEvent aedat31PolarityEvent) {
+  public void davisDvs(DavisDvsEvent aedat31PolarityEvent) {
     int key = aedat31PolarityEvent.time();
     map.put(key, map.containsKey(key) ? map.get(key) + 1 : 1);
   }
