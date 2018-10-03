@@ -53,7 +53,7 @@ See [development_guidelines](doc/development_guidelines.md)
 
 Source file size distribution
 
-![retina](https://user-images.githubusercontent.com/4012178/45996769-a4146a80-c09d-11e8-87c4-acf9db7fcc5f.png)
+![retina](https://user-images.githubusercontent.com/4012178/46388749-62ec0e00-c6ce-11e8-91b9-32e23a199f20.png)
 
 We use `LCM` for message interchange.
 All messages are encoded using a single type `BinaryBlob`.
