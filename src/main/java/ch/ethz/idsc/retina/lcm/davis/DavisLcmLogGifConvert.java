@@ -24,7 +24,7 @@ public class DavisLcmLogGifConvert {
     long count = 0;
     try {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
+      davisLcmClient.addDvsListener(davisEventStatistics);
       // ---
       AccumulatedOverlay accumulatedOverlay = new AccumulatedOverlay(Davis240c.INSTANCE, 3000);
       // ---
@@ -38,7 +38,7 @@ public class DavisLcmLogGifConvert {
         davisLcmClient.davisSigDatagramDecoder.addListener(signalResetDifference);
         davisLcmClient.davisSigDatagramDecoder.addListener(fitec);
         // ---
-        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedOverlay);
+        davisLcmClient.addDvsListener(accumulatedOverlay);
         signalResetDifference.addListener(accumulatedOverlay.differenceListener);
         accumulatedOverlay.addListener(davisGifImageWriter);
         // ---

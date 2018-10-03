@@ -24,7 +24,7 @@ public class SlamCoreConfig {
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
   public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
   /** when true, logs are recorded with timestamps provided by dvs event stream */
-  public final Boolean dvsTimeLogMode = true;
+  public final Boolean dvsTimeLogMode = false;
   /** when true, logs are recorded with periodic timestamps */
   public final Boolean periodicLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */

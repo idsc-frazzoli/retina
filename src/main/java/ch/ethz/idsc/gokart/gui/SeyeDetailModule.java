@@ -36,7 +36,7 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    seyeAeDvsLcmClient.aedat31PolarityListeners.add(aedat31PolarityImage);
+    seyeAeDvsLcmClient.addDvsListener(aedat31PolarityImage);
     seyeAeDvsLcmClient.startSubscriptions();
     jFrame.setBounds(100, 100, 400, 400);
     jFrame.setVisible(true);

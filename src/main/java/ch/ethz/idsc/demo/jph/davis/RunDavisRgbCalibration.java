@@ -39,7 +39,7 @@ class RunDavisRgbCalibration implements DavisDvsListener {
 
   public RunDavisRgbCalibration() {
     DavisLcmClient dlc = new DavisLcmClient(DavisSerial.FX2_02460045.name());
-    dlc.davisDvsDatagramDecoder.addDvsListener(this);
+    dlc.addDvsListener(this);
     dlc.startSubscriptions();
     JFrame jFrame = new JFrame();
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

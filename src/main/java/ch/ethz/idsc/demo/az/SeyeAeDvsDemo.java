@@ -40,7 +40,7 @@ enum SeyeAeDvsDemo {
         count++;
       }
     });
-    seyeAeDvsLcmClient.aedat31PolarityListeners.add(aedat31PolarityImage);
+    seyeAeDvsLcmClient.addDvsListener(aedat31PolarityImage);
     seyeAeDvsLcmClient.startSubscriptions();
     Thread.sleep(10000);
   }

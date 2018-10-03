@@ -80,7 +80,7 @@ public class OfflineHud implements OfflineLogListener {
   public OfflineHud(Scalar period) {
     this.delta = period;
     accumulatedEventRender.isSelected = true;
-    davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
+    davisLcmClient.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
   }
 
   @Override // from OfflineLogListener
@@ -95,7 +95,7 @@ public class OfflineHud implements OfflineLogListener {
       gpe = new GokartPoseEvent(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
-      davisLcmClient.davisDvsDatagramDecoder.decode(byteBuffer);
+      davisLcmClient.messageReceived(byteBuffer);
     }
     // ---
     if (Scalars.lessThan(time_next, time)

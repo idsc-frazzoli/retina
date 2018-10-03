@@ -54,4 +54,8 @@ public class DavisDvsDatagramDecoder {
     }
     pacid_next = ++pacid;
   }
+
+  public void removeDvsListener(DavisDvsListener davisDvsListener) {
+    listeners.remove(davisDvsListener);
+  }
 }

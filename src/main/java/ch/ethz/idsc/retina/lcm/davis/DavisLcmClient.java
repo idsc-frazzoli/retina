@@ -7,19 +7,20 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
 import ch.ethz.idsc.retina.dev.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.dev.davis.data.DavisDvsDatagramDecoder;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
+import ch.ethz.idsc.retina.dev.davis.io.DvsLcmClient;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;
 import lcm.lcm.LCMSubscriber;
 import lcm.lcm.SubscriptionRecord;
 
-public class DavisLcmClient implements LcmClientInterface {
+public class DavisLcmClient implements DvsLcmClient {
   private final String cameraId;
-  public final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
+  private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   public final DavisApsDatagramDecoder davisSigDatagramDecoder = new DavisApsDatagramDecoder();
   public final DavisApsDatagramDecoder davisRstDatagramDecoder = new DavisApsDatagramDecoder();
   private final Collection<SubscriptionRecord> subscriptions = new HashSet<>();
@@ -89,5 +90,20 @@ public class DavisLcmClient implements LcmClientInterface {
     ByteBuffer byteBuffer = ByteBuffer.wrap(apsBinaryBlob.data);
     byteBuffer.order(DavisStatics.BYTE_ORDER);
     davisRstDatagramDecoder.decode(byteBuffer);
+  }
+
+  @Override
+  public void addDvsListener(DavisDvsListener davisDvsListener) {
+    davisDvsDatagramDecoder.addDvsListener(davisDvsListener);
+  }
+
+  @Override
+  public void removeDvsListener(DavisDvsListener davisDvsListener) {
+    davisDvsDatagramDecoder.removeDvsListener(davisDvsListener);
+  }
+
+  @Override
+  public void messageReceived(ByteBuffer byteBuffer) {
+    davisDvsDatagramDecoder.decode(byteBuffer);
   }
 }
