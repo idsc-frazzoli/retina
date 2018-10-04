@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.gokart.offline.pose;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -11,8 +11,6 @@ import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.retina.lcm.BinaryBlobs;
 import ch.ethz.idsc.retina.lcm.MessageConsistency;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -26,8 +24,8 @@ import lcm.logging.Log;
 import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
-/** changes all pose messages to a constant value */
-enum LogPoseInject {
+/** changes pose messages based on given pose estimating interface */
+public enum LogPoseInject {
   ;
   public static void process(File src, File dst, OfflinePoseEstimator offlinePoseEstimator) throws Exception {
     if (dst.exists())
@@ -76,22 +74,5 @@ enum LogPoseInject {
     logWriter.close();
     // ---
     OfflineLogPlayer.process(dst, MessageConsistency.INSTANCE);
-  }
-
-  public static void main(String[] args) throws Exception {
-    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_azure");
-    File targ = new File("/media/datahaki/data/ethz/export_azure");
-    for (File folder : root.listFiles())
-      if (folder.isDirectory()) {
-        System.out.println(folder);
-        File dst = new File(targ, folder.getName() + ".lcm");
-        if (dst.isFile()) {
-          System.out.println("skipping " + dst);
-        } else {
-          // dst.delete();
-          GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-          process(gokartLogInterface.file(), dst, new LidarGyroPoseEstimator(gokartLogInterface));
-        }
-      }
   }
 }
