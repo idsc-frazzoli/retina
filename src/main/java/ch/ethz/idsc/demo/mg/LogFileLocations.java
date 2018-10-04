@@ -184,7 +184,9 @@ public enum LogFileLocations {
   DUBISiliconEyeA("20181003T155915_f6edefe8Extracted1.lcm"), //
   DUBISiliconEyeB("20181003T155915_f6edefe8Extracted2.lcm"), //
   DUBISiliconEyeC("20181003T155915_f6edefe8Extracted3.lcm"), //
-  DUBISiliconEyeD("20181003T155915_f6edefe8Extracted4.lcm");
+  DUBISiliconEyeD("20181003T155915_f6edefe8Extracted4.lcm"), //
+  DUBISiliconEyeE("20181003T155915_f6edefe8Extracted5.lcm"), //
+  DUBISiliconEyeF("20181003T155915_f6edefe8Extracted6.lcm");
   // ---
   private final String filename;
 

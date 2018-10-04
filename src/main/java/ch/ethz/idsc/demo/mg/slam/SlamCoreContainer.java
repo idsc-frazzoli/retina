@@ -29,7 +29,7 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
     int numOfPart = Magnitude.ONE.toInt(SlamCoreConfig.GLOBAL.numberOfParticles);
     slamParticles = SlamParticles.allocate(numOfPart);
     saveSlamMap = SlamCoreConfig.GLOBAL.saveSlamMap;
-    logFilename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
+    logFilename = SlamCoreConfig.GLOBAL.dvsConfig.logFilename();
     occurrenceMap = new MapProvider(SlamCoreConfig.GLOBAL);
     // ---
     labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);

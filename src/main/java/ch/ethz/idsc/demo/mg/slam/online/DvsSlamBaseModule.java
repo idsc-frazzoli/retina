@@ -53,7 +53,7 @@ public class DvsSlamBaseModule extends AbstractClockedModule {
   public static void standalone() throws Exception {
     DvsSlamBaseModule davisSlamBaseModule = new DvsSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig, SlamDvsConfig.cameraType);
     davisSlamBaseModule.launch();
-    TimeUnit.SECONDS.sleep(SlamCoreConfig.GLOBAL.davisConfig.logFileDuration.number().longValue());
+    TimeUnit.SECONDS.sleep(SlamCoreConfig.GLOBAL.dvsConfig.logFileDuration.number().longValue());
     davisSlamBaseModule.terminate();
   }
 }

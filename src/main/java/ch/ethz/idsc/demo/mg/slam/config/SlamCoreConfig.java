@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 /** defines parameters for the event-based SLAM algorithm */
 public class SlamCoreConfig {
   public static final SlamCoreConfig GLOBAL = SlamDvsConfig.getSlamCoreConfig();
-  public final DvsConfig davisConfig = SlamDvsConfig.getDvsConfig();
+  public final DvsConfig dvsConfig = SlamDvsConfig.getDvsConfig();
   public EventPolarityFilter eventPolarityFilter;
   public SlamAlgoConfig slamAlgoConfig;
   public Boolean dvsTimeLogMode;
@@ -72,7 +72,7 @@ public class SlamCoreConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(davisConfig.logFilename()));
+    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(dvsConfig.logFilename()));
   }
 
   public final double kartLength() {

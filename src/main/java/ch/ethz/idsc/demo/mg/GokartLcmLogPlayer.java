@@ -14,7 +14,7 @@ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = SlamCoreConfig.GLOBAL.davisConfig.getLogFile().toString();
+    cfg.logFile = SlamCoreConfig.GLOBAL.dvsConfig.getLogFile().toString();
     LogPlayer.create(cfg);
     try {
       // DavisDetailModule.standalone();

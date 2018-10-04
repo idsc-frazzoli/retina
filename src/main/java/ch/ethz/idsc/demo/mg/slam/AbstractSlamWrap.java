@@ -28,11 +28,11 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected boolean triggered;
 
   protected AbstractSlamWrap() {
-    dvsLcmClient = SlamCoreConfig.GLOBAL.davisConfig.dvsLcmClient;
+    dvsLcmClient = SlamCoreConfig.GLOBAL.dvsConfig.dvsLcmClient;
     dvsLcmClient.addDvsListener(this);
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);
-    abstractFilterHandler = SlamCoreConfig.GLOBAL.davisConfig.createBackgroundActivityFilter();
+    abstractFilterHandler = SlamCoreConfig.GLOBAL.dvsConfig.createBackgroundActivityFilter();
     slamViewer = new SlamViewer(slamCoreContainer, slamPrcContainer, gokartLidarPose);
   }
 

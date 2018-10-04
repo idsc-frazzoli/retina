@@ -24,7 +24,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
     this.slamCoreContainer = slamCoreContainer;
     this.slamPrcContainer = slamPrcContainer;
     this.gokartLidarPose = gokartPoseInterface;
-    filename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
+    filename = SlamCoreConfig.GLOBAL.dvsConfig.logFilename();
     logData = new ArrayList<>();
   }
 

@@ -24,7 +24,6 @@ public class DvsConfig {
   public LogFileLocations logFileLocations;
   public DvsLcmClient dvsLcmClient;
   public String channel_DVS;
-  public Tensor calibration;
   public Scalar logFileDuration;
   public Scalar filterConstant;
   public Scalar margin;
@@ -52,20 +51,24 @@ public class DvsConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(calibration, unitConversion, Scalars.intValueExact(width));
+    return ImageToGokartUtil.fromMatrix(calibration(), unitConversion, Scalars.intValueExact(width));
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
   public ImageToGokartInterface createImageToGokartInterface() {
     return ImageToGokartLookup.fromMatrix( //
-        calibration, //
+        calibration(), //
         unitConversion, //
         Scalars.intValueExact(width), //
         Scalars.intValueExact(height));
   }
 
+  public Tensor calibration() {
+    return logFileLocations.calibration();
+  }
+
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
   public GokartToImageUtil createGokartToImageUtil() {
-    return GokartToImageUtil.fromMatrix(calibration, unitConversion);
+    return GokartToImageUtil.fromMatrix(calibration(), unitConversion);
   }
 }

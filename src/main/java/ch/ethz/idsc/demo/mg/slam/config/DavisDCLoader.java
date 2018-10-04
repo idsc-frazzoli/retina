@@ -33,7 +33,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     dvsConfig.height = RealScalar.of(180);
     dvsConfig.dvsLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
     dvsConfig.channel_DVS = "davis240c.overview.dvs";
-    dvsConfig.calibration = dvsConfig.logFileLocations.calibration();
     return dvsConfig;
   }
 }

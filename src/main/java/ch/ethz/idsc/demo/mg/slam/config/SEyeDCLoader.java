@@ -17,12 +17,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     DvsConfig dvsConfig = new DvsConfig();
     // log file parameters
     /** must match name in LogFileLocations and be an extract of a recording with the siliconEye */
-    dvsConfig.logFileLocations = LogFileLocations.DUBISiliconEyeC;
+    dvsConfig.logFileLocations = LogFileLocations.DUBISiliconEyeF;
     dvsConfig.width = RealScalar.of(320);
     dvsConfig.height = RealScalar.of(264);
     dvsConfig.channel_DVS = "seye.overview.aedvs";
     dvsConfig.dvsLcmClient = new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
-    dvsConfig.calibration = ResourceData.of("/demo/mg/DUBISiliconEye.csv");
     /** maxDuration */
     dvsConfig.logFileDuration = Quantity.of(50, SI.SECOND);
     // general parameters
