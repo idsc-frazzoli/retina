@@ -43,8 +43,8 @@ public class BlobTracking {
   public float hitthreshold = 0;
 
   BlobTracking(BlobTrackConfig pipelineConfig) {
-    width = pipelineConfig.davisConfig.width.number().intValue();
-    height = pipelineConfig.davisConfig.height.number().intValue();
+    width = pipelineConfig.davisConfig.width().number().intValue();
+    height = pipelineConfig.davisConfig.height().number().intValue();
     initNumberOfBlobs = pipelineConfig.initNumberOfBlobs.number().intValue();
     numberRows = pipelineConfig.numberRows.number().intValue();
     initVariance = pipelineConfig.initVariance.number().intValue();

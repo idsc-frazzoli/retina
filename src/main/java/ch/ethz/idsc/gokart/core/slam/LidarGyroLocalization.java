@@ -16,15 +16,12 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-public class LidarGyroLocalization
-// implements DavisImuFrameListener
-{
+public class LidarGyroLocalization {
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
@@ -36,10 +33,6 @@ public class LidarGyroLocalization
   // ---
   private final Tensor model2pixel;
   private final SlamScore slamScore;
-  /** the imu sampling rate is 1000[Hz], the vlp16 revolution rate is configured to 20[Hz]
-   * that means per lidar scan there are 50 samples from the imu */
-  private final Tensor gyro_y = Array.of(l -> ZERO_RATE, SensorsConfig.GLOBAL.imuSamplesPerLidarScan());
-  private int gyro_index = 0;
   private Tensor _model = null;
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
@@ -58,9 +51,7 @@ public class LidarGyroLocalization
    * @return */
   public Optional<SlamResult> handle(Tensor points) {
     Tensor model = _model;
-    Scalar rate = DavisImuTracker.INSTANCE.getGyroZ()
-        // getGyroZ()
-        .divide(lidarRate);
+    Scalar rate = DavisImuTracker.INSTANCE.getGyroZ().divide(lidarRate);
     // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
         .apply(points).getPointsSpin(rate); // TODO optimize
@@ -86,15 +77,4 @@ public class LidarGyroLocalization
     System.err.println("few points " + sum);
     return Optional.empty();
   }
-  // @Override // from DavisImuFrameListener
-  // public void imuFrame(DavisImuFrame davisImuFrame) {
-  // // TODO obsolete, use DavisImuTracker instead
-  // Scalar rate = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
-  // gyro_y.set(rate, gyro_index);
-  // ++gyro_index;
-  // gyro_index %= gyro_y.length();
-  // }
-  // private final Scalar getGyroZ() {
-  // return Mean.of(gyro_y).Get();
-  // }
 }

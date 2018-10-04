@@ -29,8 +29,8 @@ public class CornerDetector extends AbstractFilterHandler {
   private final int[][][] SAE;
 
   public CornerDetector(DavisConfig davisConfig) {
-    width = Scalars.intValueExact(davisConfig.width);
-    height = Scalars.intValueExact(davisConfig.height);
+    width = Scalars.intValueExact(davisConfig.width());
+    height = Scalars.intValueExact(davisConfig.height());
     margin = Scalars.intValueExact(davisConfig.margin);
     SAE = new int[width][height][2];
   }

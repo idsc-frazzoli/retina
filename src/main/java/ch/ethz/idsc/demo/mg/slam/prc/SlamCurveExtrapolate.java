@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
   @Override // from CurveListener
   public void process() {
-    Tensor fittedCurve = slamPrcContainer.getFittedCurve();
+    Tensor fittedCurve = slamPrcContainer.getFittedCurve().copy();
     Scalar localCurvature = slamCurvatureFilter.smoothCurvature(fittedCurve);
     localCurvature = localCurvature.multiply(curveFactor);
     if (fittedCurve.length() >= 3) {

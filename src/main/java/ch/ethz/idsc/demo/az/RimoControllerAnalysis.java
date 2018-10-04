@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
+    if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_AW)) {
       byteBuffer.order(byteOrder);
       Tensor tensor = VectorFloatBlob.decode(byteBuffer);
       tableBuilder1.appendRow( //
@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   }
 
   public static void main(String[] args) throws IOException {
-    String string = "20180814T175821_2c569ed8";
+    String string = "20180830T151854_21b2e8ae";
     File file = UserHome.file("/datasets/gokartlogs/" + string + ".lcm.00");
     RimoControllerAnalysis offlineTableSupplier = new RimoControllerAnalysis(ByteOrder.LITTLE_ENDIAN);
     OfflineLogPlayer.process(file, offlineTableSupplier);

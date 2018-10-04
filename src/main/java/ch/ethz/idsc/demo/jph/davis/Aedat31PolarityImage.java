@@ -7,12 +7,12 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.Aedat31PolarityListener;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31PolarityEvent;
+import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.TimedImageEvent;
 import ch.ethz.idsc.retina.util.TimedImageListener;
 
-public class Aedat31PolarityImage implements Aedat31PolarityListener {
+public class Aedat31PolarityImage implements DavisDvsListener {
   private static final Color[] COLORS = new Color[] { //
       new Color(255, 0, 255), //
       Color.GREEN };
@@ -33,12 +33,14 @@ public class Aedat31PolarityImage implements Aedat31PolarityListener {
   }
 
   @Override
-  public void polarityEvent(Aedat31PolarityEvent aedat31PolarityEvent) {
-    if (aedat31PolarityEvent.getTime_us() != time) {
-      time = aedat31PolarityEvent.getTime_us();
+  public void davisDvs(DavisDvsEvent aedat31PolarityEvent) {
+    // System.out.println(aedat31PolarityEvent.x+" "+aedat31PolarityEvent.y);
+    if (aedat31PolarityEvent.time() != time) {
+      time = aedat31PolarityEvent.time();
       ++packet;
     }
-    if (packet == packets) {
+    if (packet >= packets) {
+      // System.out.println("publish "+packet);
       packet = 0;
       TimedImageEvent timedImageEvent = new TimedImageEvent(time, bufferedImage);
       listeners.forEach(listener -> listener.timedImage(timedImageEvent));

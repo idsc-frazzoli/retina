@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.online;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
@@ -50,5 +51,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   public static void standalone() throws Exception {
     DavisSlamBaseModule davisSlamBaseModule = new DavisSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig);
     davisSlamBaseModule.launch();
+    TimeUnit.SECONDS.sleep(SlamCoreConfig.GLOBAL.davisConfig.logFileDuration.number().longValue());
+    davisSlamBaseModule.terminate();
   }
 }

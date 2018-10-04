@@ -18,7 +18,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 /* package */ enum StaticHelper {
   ;
   private static final byte CLEAR_BYTE = -1; // white for type TYPE_BYTE_INDEXED
-  private static final byte BLUE = (byte) 5;
   private static final double radius = 0.1; // [m]
 
   /** sets all frames for the visualization
@@ -33,14 +32,16 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
         slamCoreContainer.getOccurrenceMap().getCornerX(), //
         slamCoreContainer.getOccurrenceMap().getCornerY());
     paintRawMap(slamCoreContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
-    slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
-    slamMapFrames[0].addGokartPose(slamCoreContainer.getPoseUnitless(), Color.BLUE);
+    Tensor pose = slamCoreContainer.getPoseUnitless().copy();
     Arrays.fill(slamMapFrames[1].getBytes(), CLEAR_BYTE);
-    // setProcessedMat(slamContainer.getMat(), slamMapFrames[1].getBytes());
+    // setProcessedMat(slamCoreContainer.getLabels(), slamMapFrames[1].getBytes());
     if (slamPrcContainer.getCurve().isPresent())
+      // drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), slamPrcContainer.getFittedCurve());
       drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), slamPrcContainer.getCurve().get().copy());
     slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
-    slamMapFrames[1].addGokartPose(slamCoreContainer.getPoseUnitless(), Color.BLUE);
+    // slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
+    slamMapFrames[0].addGokartPose(pose, Color.BLUE);
+    slamMapFrames[1].addGokartPose(pose, Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)
       combinedFrames[i] = slamMapFrames[i].getFrame();
@@ -82,7 +83,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
     byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
     for (int i = 0; i < bytes.length; i++) {
-      bytes[i] = processedByteArray[i] == 0 ? CLEAR_BYTE : BLUE;
+      bytes[i] = processedByteArray[i] == 0 ? CLEAR_BYTE : (byte) 0;
       // if (processedByteArray[i] == 0)
       // bytes[i] = CLEAR_BYTE;
       // else {

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.gokart.offline.pose;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-class LidarGyroPoseEstimator implements OfflinePoseEstimator, LocalizationResultListener {
+public class LidarGyroPoseEstimator implements OfflinePoseEstimator, LocalizationResultListener {
   private final GokartLogInterface gokartLogInterface;
   private final OfflineTableSupplier offlineTableSupplier;
   private LocalizationResult localizationResult;

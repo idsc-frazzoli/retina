@@ -167,8 +167,18 @@ public enum LogFileLocations {
   DUBI19p("20180917T172353_f47a58b9Extracted2.lcm"),
   /** driving 9 laps autonomously in slam odometry mode with increasing speed */
   DUBI19q("20180920T111706_53622489Extracted1.lcm"),
-  /** raw uncut file to inspect failure cases */
-  DUBI19x("20180917T144839_f47a58b9.lcm.00");
+  /** visual SLAM, also in GoPro videos */
+  DUBI19r("20180927T145943_44599876.lcm.00"),
+  /** fast visual SLAM, GoPro video 3:39 of GH010213 */
+  DUBI19s("20180927T145943_44599876Extracted1.lcm"),
+  /** very fast driving odometry SLAM, as 2:45 of GH020200 */
+  DUBI19z("20180924T110653_820c1ac4Extracted1.lcm"),
+  /** driving with odometry SLAM, not super fast, GoPro video GHO10194 */
+  DUBI19test("20180924T104243_820c1ac4.lcm.00"),
+  /** driving around faster with odometry SLAM */
+  DUBI19test2("20180924T110653_820c1ac4.lcm.00"),
+  /** enum to get the correct calibration file */
+  DUBISiliconEyeA("20180924T110653_820c1ac4Extracted1.lcm");
   // ---
   private final String filename;
 

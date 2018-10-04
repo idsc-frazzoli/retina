@@ -1,9 +1,9 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.gokart.offline.pose;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 
-interface OfflinePoseEstimator extends OfflineLogListener {
+public interface OfflinePoseEstimator extends OfflineLogListener {
   GokartPoseEvent getGokartPoseEvent();
 }

@@ -20,11 +20,11 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
+import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -77,9 +77,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
         Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
-        Scalar factor = gji.isAutonomousPressed() // TODO V061
-            ? RealScalar.ONE
-            : RealScalar.ZERO;
+        Scalar factor = Boole.of(gji.isAutonomousPressed());
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS

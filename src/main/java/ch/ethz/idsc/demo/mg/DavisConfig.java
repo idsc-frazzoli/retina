@@ -10,26 +10,30 @@ import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartLookup;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.retina.dev.davis.io.DvsLcmClient;
+import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
+import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** provides general parameters not specific to SLAM or object detection algorithms */
 public class DavisConfig {
   // log file parameters
   /** must match name in LogFileLocations and be an extract of a recording */
-  public LogFileLocations logFileLocations = LogFileLocations.DUBI19q;
+  public LogFileLocations logFileLocations = LogFileLocations.DUBI19s;
+  /** which camera is used */
+  public String cameraType = "siliconEye";
   /** maxDuration */
-  public final Scalar logFileDuration = Quantity.of(100, SI.SECOND);
+  public final Scalar logFileDuration = Quantity.of(54, SI.SECOND);
   // general parameters
-  /** width of image is required to be an integer */
-  public final Scalar width = RealScalar.of(240);
-  /** height of image is required to be an integer */
-  public final Scalar height = RealScalar.of(180);
   /** conversion factor from [mm] to [m] */
   public final Scalar unitConversion = RealScalar.of(1000);
   /** time threshold for background activity filter
@@ -44,13 +48,61 @@ public class DavisConfig {
 
   public AbstractFilterHandler createBackgroundActivityFilter() {
     return new BackgroundActivityFilter( //
-        Scalars.intValueExact(width), //
-        Scalars.intValueExact(height), //
+        Scalars.intValueExact(width()), //
+        Scalars.intValueExact(height()), //
         Magnitude.MICRO_SECOND.toInt(filterConstant));
+  }
+
+  public Scalar width() {
+    CameraType cameraType2 = CameraType.valueOf(cameraType);
+    switch (cameraType2) {
+    case davis:
+      return RealScalar.of(240);
+    case siliconEye:
+      return RealScalar.of(320);
+    default:
+      throw new RuntimeException();
+    }
+  }
+
+  public Scalar height() {
+    CameraType cameraType2 = CameraType.valueOf(cameraType);
+    switch (cameraType2) {
+    case davis:
+      return RealScalar.of(180);
+    case siliconEye:
+      return RealScalar.of(264);
+    default:
+      throw new RuntimeException();
+    }
+  }
+
+  public DvsLcmClient getLcmClient() {
+    CameraType cameraType2 = CameraType.valueOf(cameraType);
+    switch (cameraType2) {
+    case davis:
+      return new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+    case siliconEye:
+      return new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
+    default:
+      throw new RuntimeException();
+    }
   }
 
   public String logFilename() {
     return logFileLocations.name();
+  }
+
+  private Tensor calibration() {
+    CameraType cameraType2 = CameraType.valueOf(cameraType);
+    switch (cameraType2) {
+    case davis:
+      return logFileLocations.calibration();
+    case siliconEye:
+      return ResourceData.of("/demo/mg/DUBISiliconEye.csv");
+    default:
+      throw new RuntimeException();
+    }
   }
 
   /** @return file specified by parameter {@link #logFileName} */
@@ -63,20 +115,20 @@ public class DavisConfig {
 
   /** @return new instance of {@link ImageToGokartUtil} derived from parameters in pipelineConfig */
   public ImageToGokartUtil createImageToGokartUtil() {
-    return ImageToGokartUtil.fromMatrix(logFileLocations.calibration(), unitConversion, Scalars.intValueExact(width));
+    return ImageToGokartUtil.fromMatrix(calibration(), unitConversion, Scalars.intValueExact(width()));
   }
 
   /** @return new instance of {@link ImageToGokartLookup} derived from parameters in pipelineConfig */
   public ImageToGokartInterface createImageToGokartInterface() {
     return ImageToGokartLookup.fromMatrix( //
-        logFileLocations.calibration(), //
+        calibration(), //
         unitConversion, //
-        Scalars.intValueExact(width), //
-        Scalars.intValueExact(height));
+        Scalars.intValueExact(width()), //
+        Scalars.intValueExact(height()));
   }
 
   /** @return new instance of {@link GokartToImageUtil} derived from parameters in pipelineConfig */
   public GokartToImageUtil createGokartToImageUtil() {
-    return GokartToImageUtil.fromMatrix(logFileLocations.calibration(), unitConversion);
+    return GokartToImageUtil.fromMatrix(calibration(), unitConversion);
   }
 }

@@ -23,16 +23,19 @@ public class SlamCoreConfig {
   public final DavisConfig davisConfig = new DavisConfig(); // main/resources/
   /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
   public SlamAlgoConfig slamAlgoConfig = SlamAlgoConfig.odometryReactiveMode;
-  /** when true, SLAM module SlamLogCollection is invoked */
-  public final Boolean offlineLogMode = false;
+  /** when true, logs are recorded with timestamps provided by dvs event stream */
+  public final Boolean dvsTimeLogMode = false;
+  /** when true, logs are recorded with periodic timestamps */
+  public final Boolean periodicLogMode = false;
   /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
   public final Boolean saveSlamMap = false;
   /** which event polarities are processed */
   public final EventPolarityFilter eventPolarityFilter = EventPolarityFilter.BOTH;
   // particle filter parameters
   public final Scalar alpha = RealScalar.of(0.5); // [-] for update of state estimate
-  public Scalar numberOfParticles = RealScalar.of(25);
-  public final Scalar relevantParticles = RealScalar.of(4); // only these particles are used for occurrence map update
+  public Scalar numberOfParticles = RealScalar.of(20);
+  /** only these particles are used for occurrence map update */
+  public final Scalar relevantParticles = RealScalar.of(4);
   /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
   public final Scalar particleRange = RealScalar.of(3);
   /** events further away are neglected */
@@ -43,13 +46,13 @@ public class SlamCoreConfig {
   public final Scalar localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
   public final Scalar resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);
   public final Scalar statePropagationRate = Quantity.of(1, NonSI.MILLI_SECOND);
-  public final Scalar reactiveUpdateRate = Quantity.of(0.5, SI.SECOND);
-  public Scalar waypointUpdateRate = Quantity.of(0.02, SI.SECOND);
+  public final Scalar reactiveUpdateRate = Quantity.of(0.1, SI.SECOND);
+  public Scalar waypointUpdateRate = Quantity.of(0.01, SI.SECOND);
   public final Scalar poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
   public final Scalar logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
-  public Scalar purePursuitUpdateRate = Quantity.of(0.05, SI.SECOND);
+  public Scalar purePursuitUpdateRate = Quantity.of(0.02, SI.SECOND);
   // particle initialization
-  public final Scalar linVelAvg = Quantity.of(2, SI.VELOCITY); // for initial particle distribution
+  public final Scalar linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
   public final Scalar angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
   // particle roughening
@@ -82,11 +85,11 @@ public class SlamCoreConfig {
     return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(davisConfig.logFilename()));
   }
 
-  // SlamPoseReset
-  public final Scalar padding = Quantity.of(5, SI.METER);
+  // SlamMapMove
+  public final Scalar padding = Quantity.of(4, SI.METER);
   // SlamViewer
   public final Boolean saveSlamFrame = false;
-  public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(0.05, SI.SECOND);
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar frameWidth = RealScalar.of(600); // [pixel]
   public final Scalar kartSize = Quantity.of(1.5, SI.METER);

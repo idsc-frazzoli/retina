@@ -148,13 +148,13 @@ public class PresenterLcmModule extends AbstractModule {
     if (SHOW_DAVIS) {
       {
         AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
-        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
+        davisLcmClient.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
         timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
         timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
       }
       {
         DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseInterface);
-        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisPipelineRenderRender.pipelineProvider);
+        davisLcmClient.addDvsListener(davisPipelineRenderRender.pipelineProvider);
         timerFrame.geometricComponent.addRenderInterface(davisPipelineRenderRender);
         timerFrame.jToolBar.add(davisPipelineRenderRender.jToggleButton);
       }

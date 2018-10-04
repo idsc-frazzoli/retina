@@ -28,11 +28,11 @@ public enum DavisLcmLogUzhConvert {
     long count = 0;
     try {
       DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
-      davisLcmClient.davisDvsDatagramDecoder.addDvsListener(davisEventStatistics);
+      davisLcmClient.addDvsListener(davisEventStatistics);
       // davisLcmClient.davisSigDatagramDecoder.addListener(davisEventStatistics);
       // davisLcmClient.davisDvsDatagramDecoder.addImuListener(davisEventStatistics);
       try (DavisEventsTextWriter eventsTextWriter = new DavisEventsTextWriter(directory, fitec)) {
-        davisLcmClient.davisDvsDatagramDecoder.addDvsListener(eventsTextWriter);
+        davisLcmClient.addDvsListener(eventsTextWriter);
         // ---
         DavisImageBuffer davisImageBuffer = new DavisImageBuffer();
         davisLcmClient.davisRstDatagramDecoder.addListener(davisImageBuffer);

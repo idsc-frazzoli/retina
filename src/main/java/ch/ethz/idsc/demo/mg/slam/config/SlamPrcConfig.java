@@ -12,16 +12,16 @@ public class SlamPrcConfig {
   public static final SlamPrcConfig GLOBAL = new SlamPrcConfig();
   // SlamWaypointDetection
   /** valid range [0,1] */
-  public Scalar mapThreshold = RealScalar.of(0.3);
+  public Scalar mapThreshold = RealScalar.of(0.25);
   // RegionOfInterestFilter
   public final Scalar visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
   public final Scalar visibleBoxXMax = Quantity.of(5, SI.METER); // [m] in go kart frame
   /** half 'width' of rectangle for RegionOfInterestFilter */
-  public final Scalar visibleBoxYHalfWidth = Quantity.of(1.5, SI.METER); // [m] in go kart frame
+  public final Scalar visibleBoxYHalfWidth = Quantity.of(1, SI.METER); // [m] in go kart frame
   // MergeWaypointFilter
-  public Scalar deltaPosThreshold = RealScalar.of(0.5); // [m] in go kart frame
+  public Scalar deltaPosThreshold = RealScalar.of(0.6); // [m] in go kart frame
   // SausageFilter
-  public Scalar distanceThreshold = RealScalar.of(0.4); // [m]
+  public Scalar distanceThreshold = RealScalar.of(0.3); // [m]
   public Scalar validPointsThreshold = RealScalar.of(4); // [-]
   // CurvatureFilter
   public Scalar curvatureThreshold = RealScalar.of(0.3); // [rad/m]
@@ -34,12 +34,12 @@ public class SlamPrcConfig {
   // SlamCurvatureSmoother
   /** alphaCurvature is the weight for the last curvature in the filter
    * alphaCurvature is required to be in the interval [0, 1] */
-  public final Scalar alphaCurvature = RealScalar.of(0.85); // [-]
+  public final Scalar alphaCurvature = RealScalar.of(0.92); // [-]
   /** mimimum number of curve points to average curvature from
    * see SlamCurvatureSmoother */
   public final Scalar extractionPoints = RealScalar.of(6); // [-]
   // SlamHeadingFilter
-  public final Scalar alphaHeading = RealScalar.of(0.8); // [-]
+  public final Scalar alphaHeading = RealScalar.of(0.85); // [-]
   // SlamCurvePurePursuitModule
   public Scalar lookAhead = Quantity.of(3.5, SI.METER);
 

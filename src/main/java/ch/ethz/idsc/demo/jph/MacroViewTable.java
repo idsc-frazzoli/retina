@@ -32,7 +32,6 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -58,7 +57,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    Min.function(null);
     int index = getMinute(time);
     if (0 <= index && index < LENGTH) {
       table.set(MAX, index, INDEX_LOGE);
