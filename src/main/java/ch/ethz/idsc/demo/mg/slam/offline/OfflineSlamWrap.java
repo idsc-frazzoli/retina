@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** wrapper to run SLAM algorithm with offline log files */
 /* package */ class OfflineSlamWrap extends AbstractSlamWrap implements OfflineLogListener {
-  private static final String CHANNEL_DVS = SlamCoreConfig.GLOBAL.davisConfig.getChannel_DVS();
+  private static final String CHANNEL_DVS = SlamCoreConfig.GLOBAL.davisConfig.channel_DVS;
 
   OfflineSlamWrap() {
     start();

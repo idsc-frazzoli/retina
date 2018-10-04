@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,11 +14,12 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** runs the SLAM algorithm and a pure pursuit module which gets a lookAhead point in the go kart frame
  * from the SLAM algorithm */
-public class DavisSlamBaseModule extends AbstractClockedModule {
+public class DvsSlamBaseModule extends AbstractClockedModule {
   private final SlamCurvePurePursuitModule slamCurvePurePursuitModule;
   private final OnlineSlamWrap onlineSlamWrap;
 
-  DavisSlamBaseModule(SlamAlgoConfig slamAlgoConfig) {
+  DvsSlamBaseModule(SlamAlgoConfig slamAlgoConfig, String cameraType) {
+    SlamDvsConfig.cameraType = cameraType;
     SlamCoreConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
     onlineSlamWrap = new OnlineSlamWrap();
     slamCurvePurePursuitModule = new SlamCurvePurePursuitModule();
@@ -49,7 +51,7 @@ public class DavisSlamBaseModule extends AbstractClockedModule {
   }
 
   public static void standalone() throws Exception {
-    DavisSlamBaseModule davisSlamBaseModule = new DavisSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig);
+    DvsSlamBaseModule davisSlamBaseModule = new DvsSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig, SlamDvsConfig.cameraType);
     davisSlamBaseModule.launch();
     TimeUnit.SECONDS.sleep(SlamCoreConfig.GLOBAL.davisConfig.logFileDuration.number().longValue());
     davisSlamBaseModule.terminate();
