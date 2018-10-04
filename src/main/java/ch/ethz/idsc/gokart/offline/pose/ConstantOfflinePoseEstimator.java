@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.gokart.offline.pose;
 
 import java.nio.ByteBuffer;
 
@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** when gokart is stationary */
-class ConstantOfflinePoseEstimator implements OfflinePoseEstimator {
+public class ConstantOfflinePoseEstimator implements OfflinePoseEstimator {
   private final GokartPoseEvent gokartPoseEvent;
 
   public ConstantOfflinePoseEstimator(GokartPoseEvent gokartPoseEvent) {
