@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.online;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 
-class SEyeSlamLidarModule extends DvsSlamBaseModule {
+public class SEyeSlamLidarModule extends DvsSlamBaseModule {
   /** public constructor for invocation in GUI */
   public SEyeSlamLidarModule() {
     super(SlamAlgoConfig.lidarReactiveMode, "sEye");

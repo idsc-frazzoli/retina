@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.mg.slam.online;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 
-class SEyeSlamVisualModule extends DvsSlamBaseModule {
+public class SEyeSlamVisualModule extends DvsSlamBaseModule {
   /** public constructor for invocation in GUI */
-  SEyeSlamVisualModule() {
+  public SEyeSlamVisualModule() {
     super(SlamAlgoConfig.standardReactiveMode, "sEye");
   }
 }

@@ -6,20 +6,20 @@ import java.util.Objects;
 
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
-public final class Sees2LcmModule extends AbstractModule {
-  private Sees2LcmProcess sees2LcmProcess;
+public final class SeesLcmModule extends AbstractModule {
+  private SeesLcmProcess seesLcmProcess;
 
   @Override
   protected void first() throws Exception {
-    sees2LcmProcess = new Sees2LcmProcess();
+    seesLcmProcess = new SeesLcmProcess();
   }
 
   @Override
   protected void last() {
-    if (Objects.nonNull(sees2LcmProcess))
+    if (Objects.nonNull(seesLcmProcess))
       try {
         System.out.println(new Date() + " seye process: destruction");
-        sees2LcmProcess.close();
+        seesLcmProcess.close();
       } catch (Exception exception) {
         exception.printStackTrace();
       }

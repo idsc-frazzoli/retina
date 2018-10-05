@@ -7,21 +7,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Sees2LcmProcess implements AutoCloseable {
-  // TODO MG confirm path
-  public final static String BINARY = "/home/gokart/Projects/sees_sdk/lcmprovider/build/sees2lcm";
+public class SeesLcmProcess implements AutoCloseable {
+  public final static String BINARY = "/home/gokart/Projects/sees_sdk/sees_lcm/build/sees_lcm";
   // ---
   private final Process process;
 
-  public Sees2LcmProcess() throws IOException {
+  public SeesLcmProcess() throws IOException {
     List<String> list = Arrays.asList(BINARY);
     ProcessBuilder processBuilder = new ProcessBuilder(list);
     process = processBuilder.start();
-    System.out.println(new Date() + " sees2lcm: started");
+    System.out.println(new Date() + " sees_lcm: started");
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       // the print out will not always show up
       // even if the shutdown hook is called !
-      System.out.println(new Date() + " sees2lcm: isAlive=" + process.isAlive());
+      System.out.println(new Date() + " sees_lcm: isAlive=" + process.isAlive());
       process.destroy();
     }));
   }
