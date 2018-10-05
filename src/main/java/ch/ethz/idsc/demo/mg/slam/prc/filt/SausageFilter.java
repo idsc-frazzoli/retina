@@ -56,19 +56,8 @@ class SausageFilter implements WaypointFilterInterface {
       }
       ++index;
     }
-    if (validPointsThreshold <= validCount(tempValidities))
+    // check that we do not set everything to zero -> would be a sign that we need to "reset" curve
+    if (validPointsThreshold <= StaticHelper.filterCount(tempValidities))
       System.arraycopy(tempValidities, 0, validities, 0, validities.length);
-  }
-
-  /** check that we do not set everything to zero -> would be a sign that we need to "reset" curve
-   * 
-   * @param tempValidities
-   * @return */
-  private static int validCount(boolean[] tempValidities) {
-    int counter = 0;
-    for (boolean validity : tempValidities)
-      if (validity)
-        ++counter;
-    return counter;
   }
 }
