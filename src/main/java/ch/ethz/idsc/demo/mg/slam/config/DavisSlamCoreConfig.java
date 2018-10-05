@@ -33,9 +33,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     lookAheadDistance = Quantity.of(5, SI.METER);
     /** for reactive mapping modes */
     lookBehindDistance = Quantity.of(-3, SI.METER);
-    // values below are not required for davis
-    // slamCoreConfig.cropLowerPart = Quantity.of(0, SI.METER);
-    // slamCoreConfig.cropSides = Quantity.of(0, SI.METER);
+    // values below are not required for davis TODO are set to zero to avoid errors
+    cropLowerPart = Quantity.of(0, SI.METER);
+    cropSides = Quantity.of(0, SI.METER);
     // update rates
     localizationUpdateRate = Quantity.of(4, NonSI.MILLI_SECOND); // external pose update rate
     resampleRate = Quantity.of(20, NonSI.MILLI_SECOND);

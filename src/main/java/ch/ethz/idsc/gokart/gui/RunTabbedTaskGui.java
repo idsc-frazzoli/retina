@@ -8,6 +8,9 @@ import java.util.Properties;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
+import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
+import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
+import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
@@ -90,6 +93,9 @@ enum RunTabbedTaskGui {
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //
+      SEyeSlamLidarModule.class, //
+      SEyeSlamOdometryModule.class, //
+      SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class, //
       GokartTrajectorySRModule.class //
