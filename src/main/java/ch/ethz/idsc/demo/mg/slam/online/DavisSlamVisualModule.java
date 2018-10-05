@@ -5,9 +5,9 @@ import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 
 // TODO in online use, the window should not be closable by pressing (X)
 // ... only if stop() is called
-public class DavisSlamVisualModule extends DavisSlamBaseModule {
+public class DavisSlamVisualModule extends DvsSlamBaseModule {
   /** public constructor for invocation in GUI */
   public DavisSlamVisualModule() {
-    super(SlamAlgoConfig.standardReactiveMode);
+    super(SlamAlgoConfig.standardReactiveMode, "davis");
   }
 }

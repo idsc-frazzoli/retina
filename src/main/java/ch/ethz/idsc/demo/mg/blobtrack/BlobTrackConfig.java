@@ -3,8 +3,9 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.mg.DavisConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.ImageBlobSelector;
+import ch.ethz.idsc.demo.mg.slam.config.DvsConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -14,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class BlobTrackConfig {
   // general parameters
-  public final DavisConfig davisConfig = new DavisConfig();
+  public final DvsConfig davisConfig = SlamDvsConfig.getDvsConfig();
   // visualization and image saving
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
@@ -35,7 +36,7 @@ public class BlobTrackConfig {
   public Scalar boundaryDistance = RealScalar.of(1);
   public Scalar tau = RealScalar.of(20000); // [us]
   // feature selection
-  public Scalar upperBoarder = RealScalar.of(davisConfig.height().number()); // with this number, all features are selected
+  public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // image saving
   public final Scalar saveImagesConfig = RealScalar.of(0); // 0: no saving, 1: saving in testing, 2: saving for handlabeling
   // hand-labeling tool
@@ -51,7 +52,7 @@ public class BlobTrackConfig {
   // performance evaluation
   public final Boolean saveEvaluationFrame = false;
   public final String evaluationResultFileName = "evaluationResults"; // for csv file containing multirun results
-  public final Scalar maxDistance = davisConfig.width().add(davisConfig.height()); // [pixel] upper bound for distance between features
+  public final Scalar maxDistance = davisConfig.width.add(davisConfig.height); // [pixel] upper bound for distance between features
   public final Scalar truePositiveThreshold = RealScalar.of(30); // [pixel]
   // visualization
   public Boolean visualizePipeline = true;

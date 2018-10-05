@@ -43,8 +43,8 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     abstractAccumulatedImage.addListener(this);
     pipelineConfig = new BlobTrackConfig();
     imageToWorldLookup = pipelineConfig.davisConfig.createImageToGokartInterface();
-    width = pipelineConfig.davisConfig.width().number().intValue();
-    height = pipelineConfig.davisConfig.height().number().intValue();
+    width = pipelineConfig.davisConfig.width.number().intValue();
+    height = pipelineConfig.davisConfig.height.number().intValue();
     imageCopy = new ImageCopy();
     jToggleButton.setSelected(isSelected);
     jToggleButton.addActionListener(this);

@@ -9,7 +9,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 
 /** saves slamMapFrame objects using the time stamps provided by event stream */
 /* package */ class SlamSaveFrame {
-  private final String logFilename = SlamCoreConfig.GLOBAL.davisConfig.logFilename();
+  private final String logFilename = SlamCoreConfig.GLOBAL.dvsConfig.logFilename();
   private final File parentFilePath = SlamFileLocations.MAP_FRAMES.subfolder(logFilename);
   private final boolean saveSlamFrame = SlamCoreConfig.GLOBAL.saveSlamFrame;
   private final SlamMapFrame[] slamMapFrames;
@@ -23,7 +23,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
   public void saveFrame(int currentTimeStamp) {
     if (saveSlamFrame) {
       ++imageCount;
-      VisGeneralUtil.saveFrame(slamMapFrames[1].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
+      VisGeneralUtil.saveFrame(slamMapFrames[0].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
     }
   }
 }

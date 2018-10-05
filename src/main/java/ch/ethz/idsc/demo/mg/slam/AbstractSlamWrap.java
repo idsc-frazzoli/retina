@@ -28,11 +28,11 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected boolean triggered;
 
   protected AbstractSlamWrap() {
-    dvsLcmClient = SlamCoreConfig.GLOBAL.davisConfig.getLcmClient();
+    dvsLcmClient = SlamCoreConfig.GLOBAL.dvsConfig.dvsLcmClient;
     dvsLcmClient.addDvsListener(this);
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);
-    abstractFilterHandler = SlamCoreConfig.GLOBAL.davisConfig.createBackgroundActivityFilter();
+    abstractFilterHandler = SlamCoreConfig.GLOBAL.dvsConfig.createBackgroundActivityFilter();
     slamViewer = new SlamViewer(slamCoreContainer, slamPrcContainer, gokartLidarPose);
   }
 
@@ -60,7 +60,6 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
    * visualization task is initialized as well at this instant */
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
-    System.out.println("TRIGGER CHECK");
     if (!triggered)
       if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
         triggered = true;
