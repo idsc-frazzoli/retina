@@ -41,8 +41,8 @@ public class DvsSlamBaseModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    Optional<Tensor> curve = onlineSlamWrap.getSlamPrcContainer().getCurve();
-    slamCurvePurePursuitModule.setCurve(curve);
+    Optional<Tensor> optional = onlineSlamWrap.getSlamPrcContainer().getCurve();
+    slamCurvePurePursuitModule.setCurve(optional);
   }
 
   @Override // from AbstractClockedModule

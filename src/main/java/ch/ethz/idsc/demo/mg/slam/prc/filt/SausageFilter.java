@@ -1,6 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.owl.bot.rn.SimpleRnPointcloudDistance;
@@ -15,6 +17,8 @@ import ch.ethz.idsc.tensor.red.Norm;
  * curve as centerline. The filter sets the validity field of
  * all detected way points which are not in this region to false. */
 class SausageFilter implements WaypointFilterInterface {
+  private static final int MIN_LENGTH = 3;
+  // ---
   private final SlamPrcContainer slamPrcContainer;
   private final Scalar distanceThreshold;
   private final int validPointsThreshold;
@@ -28,8 +32,9 @@ class SausageFilter implements WaypointFilterInterface {
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {
-    if (slamPrcContainer.getCurve().isPresent() && slamPrcContainer.getCurve().get().length() >= 3) {
-      Tensor curve = slamPrcContainer.getCurve().get();
+    Optional<Tensor> optional = slamPrcContainer.getCurve();
+    if (optional.isPresent() && MIN_LENGTH <= optional.get().length()) {
+      Tensor curve = optional.get();
       sausageAction(gokartWaypoints, validities, curve);
     }
   }
@@ -44,23 +49,26 @@ class SausageFilter implements WaypointFilterInterface {
     TensorScalarFunction tensorScalarFunction = SimpleRnPointcloudDistance.of(curve, Norm._2);
     int index = 0;
     for (Tensor gokartWaypoint : gokartWaypoints) {
-      if (validities[index] && gokartWaypoint.Get(0).number().doubleValue() > 0) {
+      if (validities[index] && 0 < gokartWaypoint.Get(0).number().doubleValue()) {
         Scalar minDistance = tensorScalarFunction.apply(gokartWaypoint);
         if (Scalars.lessEquals(distanceThreshold, minDistance))
           tempValidities[index] = false;
       }
       ++index;
     }
-    if (checkReset(tempValidities))
+    if (validPointsThreshold <= validCount(tempValidities))
       System.arraycopy(tempValidities, 0, validities, 0, validities.length);
   }
 
-  // check that we do not set everything to zero -> would be a sign that we need to "reset" curve
-  private boolean checkReset(boolean[] tempValidities) {
+  /** check that we do not set everything to zero -> would be a sign that we need to "reset" curve
+   * 
+   * @param tempValidities
+   * @return */
+  private static int validCount(boolean[] tempValidities) {
     int counter = 0;
     for (boolean validity : tempValidities)
       if (validity)
-        counter++;
-    return counter >= validPointsThreshold;
+        ++counter;
+    return counter;
   }
 }
