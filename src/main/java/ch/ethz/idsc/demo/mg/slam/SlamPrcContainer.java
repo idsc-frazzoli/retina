@@ -14,14 +14,16 @@ public class SlamPrcContainer {
   private SlamWaypoints slamWaypoints;
   /** fitted curve through valid way points in go kart frame */
   private Tensor fittedCurve;
-  /** inter- and extrapolated curve to be passed to pure pursuit controller, world frame */
-  private Optional<Tensor> curve;
+  /** inter- and extrapolated curve to be passed to pure pursuit controller.
+   * The curve is stored in world frame so that as the gokart moves
+   * the local coordinates of the curve are tracked accordingly. */
+  private Optional<Tensor> worldCurve;
 
   public SlamPrcContainer(GokartPoseUnitlessInterface slamPose) {
     this.slamPose = slamPose;
     slamWaypoints = new SlamWaypoints();
     fittedCurve = Tensors.empty();
-    curve = Optional.empty();
+    worldCurve = Optional.empty();
   }
 
   /** saves the detected way points in a SlamWaypoints object with all points considered valid
@@ -52,20 +54,16 @@ public class SlamPrcContainer {
     slamWaypoints.setValidities(validity);
   }
 
-  /** @param curve in go kart frame */
-  public void setCurve(Tensor curve) {
-    Tensor worldCurve = SlamPrcContainerUtil.local2World(curve, slamPose.getPoseUnitless());
-    this.curve = Optional.of(worldCurve);
+  /** @param localCurve in go kart frame */
+  public void setCurve(Tensor localCurve) {
+    this.worldCurve = Optional.of(SlamPrcContainerUtil.local2World(localCurve, slamPose.getPoseUnitless()));
   }
 
-  /** @return inter- and extrapolated curve in go kart frame */
-  // synchronized since it is accessed from different threads
+  /** Hint: synchronized since function is accessed from different threads
+   * 
+   * @return inter- and extrapolated curve in go kart frame, or empty if no curve is available */
   public synchronized Optional<Tensor> getCurve() {
-    if (curve.isPresent()) {
-      Tensor localCurve = SlamPrcContainerUtil.world2Local(curve.get(), slamPose.getPoseUnitless());
-      return Optional.of(localCurve);
-    }
-    return Optional.empty();
+    return worldCurve.map(tensor -> SlamPrcContainerUtil.world2Local(tensor, slamPose.getPoseUnitless()));
   }
 
   public void setFittedCurve(Tensor fittedCurve) {

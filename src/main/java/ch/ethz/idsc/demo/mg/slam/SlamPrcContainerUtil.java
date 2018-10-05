@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @return points in world frame */
   public static Tensor local2World(Tensor points, Tensor poseUnitless) {
     TensorUnaryOperator local2World = new Se2Bijection(poseUnitless).forward();
-    return Tensor.of(points.stream().map(local2World::apply));
+    return Tensor.of(points.stream().map(local2World));
   }
 
   /** @param points in world frame
@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @return points in go kart frame */
   public static Tensor world2Local(Tensor points, Tensor poseUnitless) {
     TensorUnaryOperator world2Local = new Se2Bijection(poseUnitless).inverse();
-    return Tensor.of(points.stream().map(world2Local::apply));
+    return Tensor.of(points.stream().map(world2Local));
   }
 
   /** initializes the SlamWaypoints object with an ordered (by WaypointXComparator) list of way points in world frame
