@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets DvsConfig parameters according to siliconEye */

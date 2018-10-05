@@ -18,10 +18,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   public static boolean checkEventPosition(double[] eventGokartFrame) {
     if (useDavis)
       return eventGokartFrame[0] > lookAheadDistance;
-    else
-      return eventGokartFrame[0] > lookAheadDistance //
-          || eventGokartFrame[0] < cropLowerPart //
-          || eventGokartFrame[1] < -cropSides //
-          || eventGokartFrame[1] > cropSides;
+    // ---
+    return eventGokartFrame[0] > lookAheadDistance //
+        || eventGokartFrame[0] < cropLowerPart //
+        || eventGokartFrame[1] < -cropSides //
+        || eventGokartFrame[1] > cropSides;
   }
 }
