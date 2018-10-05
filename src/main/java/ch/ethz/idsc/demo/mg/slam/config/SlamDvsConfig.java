@@ -10,10 +10,10 @@ public class SlamDvsConfig {
   /** @return SlamPrcConfig set according to cameraType */
   public static SlamPrcConfig getSlamPrcConfig() {
     if (cameraType.equals("sEye")) {
-      return SEyeSPCLoader.getSlamPrcConfig();
+      return new SEyeSlamPrcConfig();
     } else //
     if (cameraType.equals("davis")) {
-      return DavisSPCLoader.getSlamPrcConfig();
+      return new DavisSlamPrcConfig();
     } else
       throw new RuntimeException();
   }
@@ -21,10 +21,10 @@ public class SlamDvsConfig {
   /** @return SlamCoreConfig set according to cameraType */
   public static SlamCoreConfig getSlamCoreConfig() {
     if (cameraType.equals("sEye")) {
-      return SEyeSCCLoader.getSlamCoreConfig();
+      return new SEyeSlamCoreConfig();
     } else //
     if (cameraType.equals("davis")) {
-      return DavisSCCLoader.getSlamCoreConfig();
+      return new DavisSlamCoreConfig();
     } else
       throw new RuntimeException();
   }
@@ -32,10 +32,10 @@ public class SlamDvsConfig {
   /** @return DvsConfig set according to cameraType */
   public static DvsConfig getDvsConfig() {
     if (cameraType.equals("sEye")) {
-      return SEyeDCLoader.getSlamCoreConfig();
+      return new SEyeDvsConfig();
     } else //
     if (cameraType.equals("davis")) {
-      return DavisDCLoader.getSlamCoreConfig();
+      return new DavisDvsConfig();
     } else
       throw new RuntimeException();
   }
