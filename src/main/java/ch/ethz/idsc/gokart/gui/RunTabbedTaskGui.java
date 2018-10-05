@@ -34,7 +34,7 @@ import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
-import ch.ethz.idsc.gokart.dev.Sees2LcmModule;
+import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -74,7 +74,7 @@ enum RunTabbedTaskGui {
       DavisImuTrackerModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
-      Sees2LcmModule.class, //
+      SeesLcmModule.class, //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
