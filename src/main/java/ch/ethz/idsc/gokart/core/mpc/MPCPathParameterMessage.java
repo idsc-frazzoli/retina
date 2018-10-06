@@ -1,13 +1,11 @@
 //code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.io.Serializable;
-
-public class MPCPathParameterMessage implements Serializable {
-  private static final long serialVersionUID = 1L;
+public class MPCPathParameterMessage {
   public final int messageType = MPCNative.PATH_UPDATE;
-  public final MPCPathParameters mpcPathParameters;
-  public MPCPathParameterMessage(MPCPathParameters mpcPathParameters) {
+  public final MPCPathParameter mpcPathParameters;
+
+  public MPCPathParameterMessage(MPCPathParameter mpcPathParameters) {
     this.mpcPathParameters = mpcPathParameters;
   }
 }

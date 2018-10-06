@@ -1,18 +1,12 @@
 //code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Scanner;
-import java.util.ResourceBundle.Control;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -55,11 +49,11 @@ public class MPCPathFollowingClient {
   }
 
   // path parameters
-  private MPCPathParameters pathParameters = null;
+  private MPCPathParameter pathParameters = null;
   private Boolean pathParametersUpdated = false;
   private ReadWriteLock pathParametersLock = new ReentrantReadWriteLock();
 
-  public void updatePathParameters(MPCPathParameters pathParameters) {
+  public void updatePathParameters(MPCPathParameter pathParameters) {
     pathParametersLock.writeLock().lock();
     try {
       this.pathParameters = pathParameters;
@@ -70,11 +64,11 @@ public class MPCPathFollowingClient {
   }
 
   // optimization parameters
-  private MPCOptimizationParameters optimizationParameters = null;
+  private MPCOptimizationParameter optimizationParameters = null;
   private Boolean optimizationParametersUpdated = false;
   private ReadWriteLock optimizationParametersLock = new ReentrantReadWriteLock();
 
-  public void updateOptimizationParameters(MPCOptimizationParameters optimizationParameters) {
+  public void updateOptimizationParameters(MPCOptimizationParameter optimizationParameters) {
     optimizationParametersLock.writeLock().lock();
     try {
       this.optimizationParameters = optimizationParameters;
@@ -121,7 +115,7 @@ public class MPCPathFollowingClient {
           if (pathParametersUpdated) {
             pathParametersLock.readLock().lock();
             try {
-              //outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
+              // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
               pathParametersUpdated = false;
             } finally {
               pathParametersLock.readLock().unlock();
@@ -131,7 +125,7 @@ public class MPCPathFollowingClient {
           if (optimizationParametersUpdated) {
             optimizationParametersLock.readLock().lock();
             try {
-              //outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
+              // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
               optimizationParametersUpdated = false;
             } finally {
               optimizationParametersLock.readLock().unlock();
@@ -161,8 +155,7 @@ public class MPCPathFollowingClient {
   /** start MPC node
    * @throws IOException
    * @throws InterruptedException */
-  public void start() throws Exception {
-    // TODO: ask jph if we should catch or throw
+  public void first() {
     // TODO: check were the runtime is started
     clientThread = new Thread(clientRunnable);
     clientThread.start();
@@ -170,9 +163,8 @@ public class MPCPathFollowingClient {
 
   /** finish MPC node
    * @throws Exception */
-  public void finish() throws Exception {
+  public void last() {
     // TODO: finish the MPC node
     isLaunched = false;
-    clientThread.join();
   }
 }
