@@ -15,9 +15,13 @@ public class RegionOfInterestFilter implements WaypointFilterInterface {
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {
-    for (int i = 0; i < gokartWaypoints.length(); ++i)
-      validities[i] = Scalars.lessEquals(visibleBoxXMin, gokartWaypoints.get(i).Get(0)) //
-          && Scalars.lessEquals(gokartWaypoints.get(i).Get(0), visibleBoxXMax) //
-          && Scalars.lessEquals(gokartWaypoints.get(i).Get(1).abs(), visibleBoxYHalfWidth);
+    int index = 0;
+    for (Tensor gokartWaypoint : gokartWaypoints) {
+      Scalar ix = gokartWaypoint.Get(0);
+      validities[index] = Scalars.lessEquals(visibleBoxXMin, ix) //
+          && Scalars.lessEquals(ix, visibleBoxXMax) //
+          && Scalars.lessEquals(gokartWaypoint.Get(1).abs(), visibleBoxYHalfWidth);
+      ++index;
+    }
   }
 }

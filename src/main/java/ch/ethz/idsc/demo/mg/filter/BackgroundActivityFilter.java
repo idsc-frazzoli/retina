@@ -23,8 +23,12 @@ public class BackgroundActivityFilter extends AbstractFilterHandler {
 
   @Override // from DavisDvsEventFilter
   public boolean filter(DavisDvsEvent davisDvsEvent) {
-    updateNeighboursTimeStamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
-    return davisDvsEvent.time - timeStamps[davisDvsEvent.x][davisDvsEvent.y] <= threshold_us;
+    // TODO investigate why siliconEye data sometimes wrong
+    if (davisDvsEvent.x <= x_last && davisDvsEvent.y <= y_last) {
+      updateNeighboursTimeStamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
+      return davisDvsEvent.time - timeStamps[davisDvsEvent.x][davisDvsEvent.y] <= threshold_us;
+    }
+    return false;
   }
 
   /** updates all neighboring cells with the time stamp of the incoming event

@@ -7,20 +7,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class to pair go kart frame, world frame and validity field for detected way points */
+/** at initialization, no points are detected yet */
 public class SlamWaypoints {
   /** go kart frame, ordered by x distance */
-  private Tensor gokartWaypoints;
+  private Tensor gokartWaypoints = Tensors.empty();
   /** same ordered list of points as gokartWaypoints but in world frame */
-  private Tensor worldWaypointsOrdered;
+  private Tensor worldWaypointsOrdered = Tensors.empty();
   /** indicate whether the detected points are counted as valid */
-  private boolean[] validities;
-
-  /** at initialization, no points are detected yet */
-  public SlamWaypoints() {
-    gokartWaypoints = Tensors.empty();
-    worldWaypointsOrdered = Tensors.empty();
-    validities = new boolean[gokartWaypoints.length()];
-  }
+  private boolean[] validities = new boolean[0];
 
   /** method to set the fields. the validities of all points is set to true
    * 
@@ -37,7 +31,7 @@ public class SlamWaypoints {
     if (validities.length == gokartWaypoints.length())
       this.validities = validities;
     else
-      System.out.println("not equal length: should not happen");
+      System.err.println("validities not in sync with gokartWaypoints");
   }
 
   public boolean[] getValidities() {

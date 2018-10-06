@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.filter;
 
-import ch.ethz.idsc.demo.mg.DavisConfig;
+import ch.ethz.idsc.demo.mg.slam.config.DvsConfig;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Scalars;
 
@@ -28,9 +28,9 @@ public class CornerDetector extends AbstractFilterHandler {
   /** surface of active events for both polarities */
   private final int[][][] SAE;
 
-  public CornerDetector(DavisConfig davisConfig) {
-    width = Scalars.intValueExact(davisConfig.width());
-    height = Scalars.intValueExact(davisConfig.height());
+  public CornerDetector(DvsConfig davisConfig) {
+    width = Scalars.intValueExact(davisConfig.width);
+    height = Scalars.intValueExact(davisConfig.height);
     margin = Scalars.intValueExact(davisConfig.margin);
     SAE = new int[width][height][2];
   }

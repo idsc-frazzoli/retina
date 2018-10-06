@@ -13,10 +13,10 @@ import ch.ethz.idsc.retina.sys.SystemTimestamp;
 
 /** process to log lcm traffic */
 public class LcmLogProcess implements AutoCloseable {
-  /** standard on linux, non-final so that configurable at runtime */
-  public static String BINARY = "/usr/local/bin/lcm-logger";
+  /** standard path on linux */
+  public final static String BINARY = "/usr/local/bin/lcm-logger";
   /** split file every 50 MB */
-  public static String SPLIT_MB = "50";
+  public final static String SPLIT_MB = "50";
 
   public static LcmLogProcess createDefault(File directory) throws Exception {
     return new LcmLogProcess(new File(directory, defaultFilename()));

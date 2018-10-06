@@ -29,8 +29,8 @@ import ch.ethz.idsc.retina.util.img.ImageRotate;
   private final boolean rotateFrame;
 
   public AccumulatedEventFrame(BlobTrackConfig blobTrackConfig) {
-    width = blobTrackConfig.davisConfig.width().number().intValue();
-    height = blobTrackConfig.davisConfig.height().number().intValue();
+    width = blobTrackConfig.davisConfig.width.number().intValue();
+    height = blobTrackConfig.davisConfig.height.number().intValue();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();

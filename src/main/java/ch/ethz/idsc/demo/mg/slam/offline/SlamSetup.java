@@ -9,8 +9,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** sets up the SLAM algorithm for offline processing of a log file */
 /* package */ class SlamSetup {
-  private final File logFile = SlamCoreConfig.GLOBAL.davisConfig.getLogFile();
-  private final long logFileDuration = Magnitude.MICRO_SECOND.toLong(SlamCoreConfig.GLOBAL.davisConfig.logFileDuration);
+  private final File logFile = SlamCoreConfig.GLOBAL.dvsConfig.getLogFile();
+  private final long logFileDuration = Magnitude.MICRO_SECOND.toLong(SlamCoreConfig.GLOBAL.dvsConfig.logFileDuration);
 
   private void runAlgo() {
     OfflineSlamWrap offlineSlamWrap = new OfflineSlamWrap();

@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.online.DavisSlamBaseModule;
+import ch.ethz.idsc.demo.mg.slam.online.DvsSlamBaseModule;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -13,11 +13,11 @@ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
-    cfg.logFile = SlamCoreConfig.GLOBAL.davisConfig.getLogFile().toString();
+    cfg.logFile = SlamCoreConfig.GLOBAL.dvsConfig.getLogFile().toString();
     LogPlayer.create(cfg);
     try {
       // DavisDetailModule.standalone();
-      DavisSlamBaseModule.standalone();
+      DvsSlamBaseModule.standalone();
     } catch (Exception e) {
       e.printStackTrace();
     }

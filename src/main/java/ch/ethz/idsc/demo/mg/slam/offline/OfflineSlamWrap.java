@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.offline;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.slam.AbstractSlamWrap;
+import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
@@ -13,7 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** wrapper to run SLAM algorithm with offline log files */
 /* package */ class OfflineSlamWrap extends AbstractSlamWrap implements OfflineLogListener {
-  private static final String CHANNEL_DVS = "davis240c.overview.dvs";
+  private static final String CHANNEL_DVS = SlamCoreConfig.GLOBAL.dvsConfig.channel_DVS;
 
   OfflineSlamWrap() {
     start();

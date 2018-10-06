@@ -1,6 +1,7 @@
 // code by az and jph
 package ch.ethz.idsc.demo.az;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ enum SeyeAeDvsDemo {
     // System.out.println("Temp: " + aedat31Imu6Event.getTemperature());
     // }
     // });
-    Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(2500);
+    Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(Color.BLACK, 2500);
     aedat31PolarityImage.listeners.add(new TimedImageListener() {
       int count = 0;
 
