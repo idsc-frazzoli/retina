@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
 //TODO: configurable
-//TODO: comment approprietly
+//TODO: comment appropriately
 /** sends stop command if linmot status is "not-operational"
  * {@link LinmotGetEvent#isOperational()}
  * 

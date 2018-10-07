@@ -1,7 +1,5 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
-
-import java.io.Serializable;
 
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -9,9 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public class GokartState implements Serializable, OfflineVectorInterface {
-  // (Scalars used for clarity right now
-  private static final long serialVersionUID = 1L;
+/* package */ class GokartState implements OfflineVectorInterface {
   /** forward velocity in gokart frame with unit m*s^1 */
   public final Scalar Ux;
   /** sidewards velocity in gokart frame with unit m*s^1 */
