@@ -12,7 +12,7 @@ enum ImagesToGif {
   public static void main(String[] args) throws Exception {
     File dir = UserHome.Pictures("gif/slamTest");
     dir.mkdir();
-    File output = UserHome.Pictures("odometryGoProDVSTime.gif");
+    File output = UserHome.Pictures("siliconEyePureEvents.gif");
     int period_ms = 50;
     Stream<File> stream = Stream.of(dir.listFiles()).sorted().limit(2500);
     ImageFilesAnimation.gif(output, period_ms, stream);
