@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -149,7 +150,14 @@ public class MPCPathFollowingClient {
           } finally {
             controlAndPredictionStepsLock.writeLock().unlock();
           }
+          
+          //only for testing
+          String testString = "hello";
+          outputStream.write(testString.getBytes(StandardCharsets.UTF_8));
+          outputStream.flush();
         }
+        
+        socket.close();
       } catch (Exception e) {
         System.out.println("could not connect!");
         System.out.println(e.getMessage());

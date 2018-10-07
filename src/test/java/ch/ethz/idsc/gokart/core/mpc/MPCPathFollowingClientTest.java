@@ -6,7 +6,7 @@ public class MPCPathFollowingClientTest extends TestCase {
   public void testSimple() throws Exception {
      MPCPathFollowingClient mpcPathFollowingClient = new MPCPathFollowingClient(MPCPathFollowingConfig.GLOBAL);
      mpcPathFollowingClient.first();
-     Thread.sleep(100000);
+     Thread.sleep(10000);//fire for a second
      mpcPathFollowingClient.last();
   }
 }
