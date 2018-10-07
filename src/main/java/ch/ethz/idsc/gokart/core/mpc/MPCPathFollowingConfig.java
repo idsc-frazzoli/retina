@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCPathFollowingConfig {
   public static final MPCPathFollowingConfig GLOBAL = AppResources.load(new MPCPathFollowingConfig());
+  /***************************************************/
   /** The limit for the norm of the acceleration */
   public Scalar maxAcceleration = Quantity.of(1, SI.ACCELERATION);
   /** The limit for the Go-kart speed */

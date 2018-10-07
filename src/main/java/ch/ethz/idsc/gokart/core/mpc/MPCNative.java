@@ -14,7 +14,7 @@ public enum MPCNative {
   public static final int PATH_UPDATE = 1;
   // parameter update: send new parameters
   public static final int PARAMETER_UPDATE = 2;
-  //executable location and name
+  // executable location and name
   public final static String BINARY = "nativeMPC";
   public final static String RELATIVEPATH = "/src_MATLAB/MPCGokart/ForcesMPCPathFollowing/";
 }

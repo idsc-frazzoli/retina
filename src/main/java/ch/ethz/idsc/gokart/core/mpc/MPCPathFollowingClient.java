@@ -1,4 +1,4 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.IOException;
@@ -21,9 +21,7 @@ public class MPCPathFollowingClient {
   private Scanner scanner;
   private Boolean isLaunched = true;
   public String absolutePath = "";
-  
   private Process process;
- 
   // for now just write it to an array
   // canAccess is set to false when array is written to.
   private ReadWriteLock controlAndPredictionStepsLock = new ReentrantReadWriteLock();
@@ -112,9 +110,7 @@ public class MPCPathFollowingClient {
         Socket socket = new Socket(serverAddress, MPCNative.TCP_SERVER_PORT);
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
-
         System.out.println("connected");
-        
         while (isLaunched) {
           // check if we should update path parameters
           if (pathParametersUpdated) {
@@ -150,13 +146,11 @@ public class MPCPathFollowingClient {
           } finally {
             controlAndPredictionStepsLock.writeLock().unlock();
           }
-          
-          //only for testing
+          // only for testing
           String testString = "hello";
           outputStream.write(testString.getBytes(StandardCharsets.UTF_8));
           outputStream.flush();
         }
-        
         socket.close();
       } catch (Exception e) {
         System.out.println("could not connect!");
@@ -171,12 +165,12 @@ public class MPCPathFollowingClient {
   public void first() throws Exception {
     System.out.println(System.getProperty("user.dir"));
     absolutePath = System.getProperty("user.dir");
-    String fullPath = absolutePath+MPCNative.RELATIVEPATH+MPCNative.BINARY;
-    //start server
+    String fullPath = absolutePath + MPCNative.RELATIVEPATH + MPCNative.BINARY;
+    // start server
     List<String> list = Arrays.asList( //
-        fullPath//,
-        //String.valueOf(MPCNative.TCP_SERVER_PORT)
-        );
+        fullPath// ,
+    // String.valueOf(MPCNative.TCP_SERVER_PORT)
+    );
     ProcessBuilder processBuilder = new ProcessBuilder(list);
     process = processBuilder.start();
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -184,7 +178,6 @@ public class MPCPathFollowingClient {
       process.destroy();
     }));
     System.out.println(new Date() + " mpc-server: started");
-    
     // TODO: check were the runtime is started
     clientThread = new Thread(clientRunnable);
     clientThread.start();
