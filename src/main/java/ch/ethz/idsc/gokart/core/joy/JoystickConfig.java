@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
@@ -17,7 +15,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
-public class JoystickConfig implements Serializable {
+public class JoystickConfig {
   public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]

@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
@@ -19,7 +17,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class SensorsConfig implements Serializable {
+public class SensorsConfig {
   public static final SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
   /***************************************************/
   // TODO at some point also introduce units here

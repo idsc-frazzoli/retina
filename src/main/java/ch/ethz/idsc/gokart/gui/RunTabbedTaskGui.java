@@ -12,11 +12,13 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
@@ -72,7 +74,8 @@ enum RunTabbedTaskGui {
       LidarLocalizationModule.class, //
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
-      DavisImuTrackerModule.class //
+      DavisImuTrackerModule.class, //
+      AutonomySafetyModule.class // TODO DUBILAB test
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       SeesLcmModule.class, //
@@ -103,6 +106,7 @@ enum RunTabbedTaskGui {
       MPCPathFollowingModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
+      SpeedLimitSafetyModule.class, // TODO DUBILAB test
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //

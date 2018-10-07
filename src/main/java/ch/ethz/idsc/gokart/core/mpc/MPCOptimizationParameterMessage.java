@@ -7,10 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-public class MPCOptimizationParameterMessage implements MPCNativeOutputable {
-  public final int messageType = MPCNative.PATH_UPDATE;
+/* package */  class MPCOptimizationParameterMessage implements MPCNativeOutputable {
+  public final int messageType = MPCNative.PARAMETER_UPDATE;
   public final MPCOptimizationParameter mpcOptimizationParameter;
   public final Date creationTime;
+
 
   public MPCOptimizationParameterMessage(MPCOptimizationParameter mpcOptimizationParameter) {
     this.creationTime = new Date();

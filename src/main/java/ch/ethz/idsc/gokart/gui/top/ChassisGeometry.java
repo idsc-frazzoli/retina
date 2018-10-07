@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
@@ -23,7 +21,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 
 /** parameters in this config class are final because they
  * correspond to immutable characteristic of the gokart. */
-public class ChassisGeometry implements Serializable {
+public class ChassisGeometry {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
   /***************************************************/
   /** distance from rear to front axle [m] */

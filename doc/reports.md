@@ -30,6 +30,7 @@
 * [20180818_datasets_track_w.pdf](https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf)
 * [20180821_datasets_track_r.pdf](https://github.com/idsc-frazzoli/retina/files/2304268/20180821_datasets_track_r.pdf)
 * [20181001_steering_measurement.pdf](https://github.com/idsc-frazzoli/retina/files/2440459/20181001_steering_measurement.pdf)
+* [20181006_filtering_signals_in_se2.pdf](https://github.com/idsc-frazzoli/retina/files/2453316/20181006_filtering_signals_in_se2.pdf)
 
 ## Bug Reports
 

@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.rimo;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -14,7 +12,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
-public class RimoConfig implements Serializable {
+public class RimoConfig {
   public static final RimoConfig GLOBAL = AppResources.load(new RimoConfig());
   /***************************************************/
   /** parameters for {@link SimpleRimoRateController}

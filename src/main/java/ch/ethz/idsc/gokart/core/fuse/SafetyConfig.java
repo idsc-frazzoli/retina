@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
@@ -16,12 +14,13 @@ import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /**  */
-public class SafetyConfig implements Serializable {
+public class SafetyConfig {
   public static final SafetyConfig GLOBAL = AppResources.load(new SafetyConfig());
   /***************************************************/
   public Scalar clearance_XLo = Quantity.of(0.2, SI.METER);
@@ -35,6 +34,8 @@ public class SafetyConfig implements Serializable {
   /** 20180226: changed from -1.0[m] to -0.9[m] because the sensor rack was lowered by ~8[cm] */
   public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
+  /** rate limit is used in {@link SpeedLimitSafetyModule} */
+  public Scalar rateLimit = Quantity.of(10, SIDerived.RADIAN_PER_SECOND);
 
   /***************************************************/
   /** @return */

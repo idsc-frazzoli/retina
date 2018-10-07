@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -16,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * there are 2 special units related to the manufacturer of the steering column:
  * "SCE" steer-column encoder
  * "SCT" steer-column torque */
-public class PursuitConfig implements Serializable {
+public class PursuitConfig {
   public static final PursuitConfig GLOBAL = AppResources.load(new PursuitConfig());
   /***************************************************/
   public Scalar updatePeriod = Quantity.of(0.1, SI.SECOND); // 0.1[s] == 10[Hz]

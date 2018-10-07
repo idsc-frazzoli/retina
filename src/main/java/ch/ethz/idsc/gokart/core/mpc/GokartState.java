@@ -1,4 +1,4 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.DataInputStream;
@@ -14,9 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartState implements OfflineVectorInterface, MPCNativeOutputable {
-  // (Scalars used for clarity right now
-  private static final long serialVersionUID = 1L;
+/* package */ class GokartState implements OfflineVectorInterface, MPCNativeOutputable {
   /** forward velocity in gokart frame with unit m*s^1 */
   public final Scalar Ux;
   /** sidewards velocity in gokart frame with unit m*s^1 */

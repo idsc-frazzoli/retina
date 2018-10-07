@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-public class MPCPathParameterMessage implements MPCNativeOutputable {
+/* package */ class MPCPathParameterMessage implements MPCNativeOutputable {
   public final int messageType = MPCNative.PATH_UPDATE;
   public final MPCPathParameter mpcPathParameters;
   public final Date creationTime;

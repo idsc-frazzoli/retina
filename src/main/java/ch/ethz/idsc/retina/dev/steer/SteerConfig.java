@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.steer;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.SIDerived;
@@ -16,7 +14,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * there are 2 special units related to the manufacturer of the steering column:
  * "SCE" steer-column encoder
  * "SCT" steer-column torque */
-public class SteerConfig implements Serializable {
+public class SteerConfig {
   public static final SteerConfig GLOBAL = AppResources.load(new SteerConfig());
   /***************************************************/
   /** battery supply voltage ratings
