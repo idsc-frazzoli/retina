@@ -5,6 +5,6 @@ import junit.framework.TestCase;
 
 public class AutonomyButtonSafetyModule extends TestCase {
   public void testFirstLast() throws Exception {
-    //TODO: tests
+    // TODO: tests
   }
 }

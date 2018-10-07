@@ -26,62 +26,39 @@ public class MPCPathFollowingClient {
  
   // for now just write it to an array
   // canAccess is set to false when array is written to.
-  private ReadWriteLock controlAndPredictionStepsLock = new ReentrantReadWriteLock();
   private ControlAndPredictionStep[] controlAndPredictionSteps = new ControlAndPredictionStep[MPCNative.PREDICTIONSIZE];
 
   /** gives back a deep copy of the control and predictions steps
    * Result has to be checked if not null */
   public ControlAndPredictionStep[] getControlAndPredictionStepsDeepCopy() {
-    controlAndPredictionStepsLock.readLock().lock();
     ControlAndPredictionStep[] result = null;
-    try {
       result = this.controlAndPredictionSteps.clone();
-    } finally {
-      controlAndPredictionStepsLock.readLock().unlock();
-    }
     return result;
   }
 
   /** gives back control and prediction at time t */
   public ControlAndPredictionStep getControlAndPredictionAtTime(double t) {
-    controlAndPredictionStepsLock.readLock().lock();
     ControlAndPredictionStep result = null;
-    try {
       // TODO: implement this
-    } finally {
-      controlAndPredictionStepsLock.readLock().unlock();
-    }
     return result;
   }
 
   // path parameters
   private MPCPathParameter pathParameters = null;
   private Boolean pathParametersUpdated = false;
-  private ReadWriteLock pathParametersLock = new ReentrantReadWriteLock();
 
   public void updatePathParameters(MPCPathParameter pathParameters) {
-    pathParametersLock.writeLock().lock();
-    try {
-      this.pathParameters = pathParameters;
-      this.pathParametersUpdated = true;
-    } finally {
-      pathParametersLock.writeLock().unlock();
-    }
+    this.pathParameters = pathParameters;
+    this.pathParametersUpdated = true;
   }
 
   // optimization parameters
   private MPCOptimizationParameter optimizationParameters = null;
   private Boolean optimizationParametersUpdated = false;
-  private ReadWriteLock optimizationParametersLock = new ReentrantReadWriteLock();
 
   public void updateOptimizationParameters(MPCOptimizationParameter optimizationParameters) {
-    optimizationParametersLock.writeLock().lock();
-    try {
       this.optimizationParameters = optimizationParameters;
       this.optimizationParametersUpdated = true;
-    } finally {
-      optimizationParametersLock.writeLock().unlock();
-    }
   }
 
   // set current state
@@ -89,12 +66,7 @@ public class MPCPathFollowingClient {
   private ReadWriteLock currentStateLock = new ReentrantReadWriteLock();
 
   public void updateCurrentState(GokartState currentState) {
-    currentStateLock.writeLock().lock();
-    try {
       this.currentState = currentState;
-    } finally {
-      currentStateLock.writeLock().unlock();
-    }
   }
 
   public MPCPathFollowingClient(MPCPathFollowingConfig mpcPathFollowingConfig) {
@@ -118,38 +90,21 @@ public class MPCPathFollowingClient {
         while (isLaunched) {
           // check if we should update path parameters
           if (pathParametersUpdated) {
-            pathParametersLock.readLock().lock();
-            try {
               // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
               pathParametersUpdated = false;
-            } finally {
-              pathParametersLock.readLock().unlock();
-            }
           }
           // check if we should update optimization parameters
           if (optimizationParametersUpdated) {
-            optimizationParametersLock.readLock().lock();
-            try {
               // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
               optimizationParametersUpdated = false;
-            } finally {
-              optimizationParametersLock.readLock().unlock();
-            }
           }
           // send request for control
-          currentStateLock.readLock().lock();
-          try {
             // TODO: send request
-          } finally {
-            currentStateLock.readLock().unlock();
-          }
+          
+          outputStream.flush();
+          
           // read response
-          controlAndPredictionStepsLock.writeLock().lock();
-          try {
             // TODO: read stuff and write it to controlandpredictionsteps
-          } finally {
-            controlAndPredictionStepsLock.writeLock().unlock();
-          }
           
           //only for testing
           String testString = "hello";
