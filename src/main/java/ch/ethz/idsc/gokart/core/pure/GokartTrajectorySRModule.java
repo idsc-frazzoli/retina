@@ -140,8 +140,8 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();
     controls = TSE2_CARFLOWS.getFlows(resolution);
     // ---
-    Tensor imageCar = ResourceData.of("/dubilab/sr/car_obs.png").get(Tensor.ALL, Tensor.ALL, 0);
-    Tensor imagePedLegal = ResourceData.of("/dubilab/sr/ped_obs_legal.png").get(Tensor.ALL, Tensor.ALL, 0);
+    Tensor imageCar = ResourceData.of("/dubilab/sr/car_obs.png"); // grayscale
+    Tensor imagePedLegal = ResourceData.of("/dubilab/sr/ped_obs_legal.png"); // grayscale
     ImageRegion irCar = new ImageRegion(imageCar, range, false);
     ImageRegion irPedLegal = new ImageRegion(imagePedLegal, range, false);
     ImageRegion irPedIllegal = new ImageRegion(imageLid, range, false);

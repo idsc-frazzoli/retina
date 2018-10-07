@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.sys;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.io.Serializable;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -14,7 +13,7 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-public class GuiConfig implements Serializable {
+public class GuiConfig {
   public static final GuiConfig GLOBAL = AppResources.load(new GuiConfig());
   // ---
   public final Scalar fontSize = RealScalar.of(22);
