@@ -5,27 +5,19 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-//TODO: configurable
-//TODO: comment appropriately
-/** sends stop command if linmot status is "not-operational"
- * {@link LinmotGetEvent#isOperational()}
- * 
- * <p>The module has {@link ProviderRank#SAFETY} to prevent the autonomous
- * drive without operational brake. */
+/** The module has {@link ProviderRank#SAFETY} to prevent autonomous
+ * modules to accelerate if either wheel rate exceeds threshold */
 public final class SpeedLimitSafetyModule extends AbstractModule implements RimoGetListener, PutProvider<RimoPutEvent> {
-  private boolean limitObeyed = false;
+  private boolean isLimitObeyed = false;
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -44,7 +36,7 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
     Scalar maxSpeed = Max.of(//
         rimoGetEvent.getTireL.getAngularRate_Y().abs(), //
         rimoGetEvent.getTireR.getAngularRate_Y().abs());
-    limitObeyed = Scalars.lessThan(maxSpeed, Quantity.of(10, SI.PER_SECOND));
+    isLimitObeyed = Scalars.lessThan(maxSpeed, SafetyConfig.GLOBAL.rateLimit);
   }
 
   @Override // from PutProvider
@@ -54,7 +46,7 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return limitObeyed //
+    return isLimitObeyed //
         ? Optional.empty()
         : StaticHelper.OPTIONAL_RIMO_PASSIVE;
   }

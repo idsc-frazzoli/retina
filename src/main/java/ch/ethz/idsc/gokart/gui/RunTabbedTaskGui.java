@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
@@ -74,7 +75,7 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class //
+      AutonomySafetyModule.class // TODO DUBILAB test
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       SeesLcmModule.class, //
@@ -105,6 +106,7 @@ enum RunTabbedTaskGui {
       MPCPathFollowingModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
+      SpeedLimitSafetyModule.class, // TODO DUBILAB test
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //

@@ -1,8 +1,6 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.map;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -12,7 +10,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** parameters for the mapping of the gokart surroundings and obstacles */
-public class MappingConfig implements Serializable {
+public class MappingConfig {
   public static final MappingConfig GLOBAL = AppResources.load(new MappingConfig());
   /***************************************************/
   /** Prior on occupancy probability of a single cell in grid */

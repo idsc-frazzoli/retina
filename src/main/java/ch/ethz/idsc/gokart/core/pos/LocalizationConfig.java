@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
@@ -19,7 +17,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /**  */
-public class LocalizationConfig implements Serializable {
+public class LocalizationConfig {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
   public Scalar gridShift = Quantity.of(0.5, SI.METER);
