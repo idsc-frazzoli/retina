@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
@@ -64,6 +65,7 @@ abstract class ViewLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       RenderInterface renderInterface = //
