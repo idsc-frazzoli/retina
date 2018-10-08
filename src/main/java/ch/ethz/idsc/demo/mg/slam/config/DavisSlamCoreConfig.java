@@ -13,9 +13,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class DavisSlamCoreConfig extends SlamCoreConfig {
   public DavisSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
-    slamAlgoConfig = SlamAlgoConfig.lidarMode;
+    slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
     /** when true, logs are recorded with timestamps provided by dvs event stream */
-    dvsTimeLogMode = false;
+    dvsTimeLogMode = true;
     /** when true, logs are recorded with periodic timestamps */
     periodicLogMode = false;
     /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     reactiveUpdateRate = Quantity.of(0.1, SI.SECOND);
     waypointUpdateRate = Quantity.of(0.01, SI.SECOND);
     poseMapUpdateRate = Quantity.of(0.5, SI.SECOND);
-    logCollectionUpdateRate = Quantity.of(0.001, SI.SECOND);
+    logCollectionUpdateRate = Quantity.of(0.1, SI.SECOND);
     purePursuitUpdateRate = Quantity.of(0.02, SI.SECOND);
     // particle initialization
     linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
