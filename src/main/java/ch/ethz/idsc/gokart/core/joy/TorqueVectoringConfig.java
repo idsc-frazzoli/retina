@@ -13,5 +13,5 @@ public class TorqueVectoringConfig {
   /** The Static compensation coefficient */
   public Scalar staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
   /** The Dynamic correction coefficient */
-  public Scalar dynamicCorrection = Quantity.of(0, SI.SECOND);// this is not tested yet (leave at zero).
+  public Scalar dynamicCorrection = Quantity.of(0.2, SI.SECOND);
 }

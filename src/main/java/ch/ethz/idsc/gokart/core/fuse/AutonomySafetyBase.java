@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 
-abstract class AutonomySafetyBase<T extends DataEvent> implements PutProvider<T> {
+/* package */ abstract class AutonomySafetyBase<T extends DataEvent> implements PutProvider<T> {
   final Supplier<Boolean> supplier;
 
   public AutonomySafetyBase(Supplier<Boolean> supplier) {

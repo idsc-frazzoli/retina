@@ -16,7 +16,6 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
  * The put providers are implemented as anonymous classes */
 public final class AutonomySafetyModule extends AbstractModule {
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
-  // rimo
   private final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(() -> isAutonomousPressed());
   private final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(() -> isAutonomousPressed());
 

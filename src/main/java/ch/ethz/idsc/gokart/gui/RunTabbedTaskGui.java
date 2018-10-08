@@ -75,7 +75,7 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class // TODO DUBILAB test
+      AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       SeesLcmModule.class, //
@@ -106,12 +106,10 @@ enum RunTabbedTaskGui {
       MPCPathFollowingModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      SpeedLimitSafetyModule.class, // TODO DUBILAB test
+      SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //
-  // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
-  //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //

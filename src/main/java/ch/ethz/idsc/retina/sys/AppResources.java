@@ -20,6 +20,7 @@ public enum AppResources {
   }
 
   public static void save(Object object) {
+    DIRECTORY.mkdir();
     TensorProperties.wrap(object).trySave(file(object));
   }
 }

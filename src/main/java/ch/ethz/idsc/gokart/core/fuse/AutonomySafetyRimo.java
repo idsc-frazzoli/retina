@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 
-public class AutonomySafetyRimo extends AutonomySafetyBase<RimoPutEvent> {
+/* package */ class AutonomySafetyRimo extends AutonomySafetyBase<RimoPutEvent> {
   public AutonomySafetyRimo(Supplier<Boolean> supplier) {
     super(supplier);
   }
