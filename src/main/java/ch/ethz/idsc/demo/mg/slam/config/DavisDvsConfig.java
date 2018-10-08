@@ -14,6 +14,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public DavisDvsConfig() {
     /** must match name in LogFileLocations and be an extract of a recording with the davis */
     logFileLocations = LogFileLocations.DUBI19a;
+    width = RealScalar.of(240);
+    height = RealScalar.of(180);
+    dvsLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+    channel_DVS = "davis240c.overview.dvs";
     /** maxDuration */
     logFileDuration = Quantity.of(50, SI.SECOND);
     // general parameters
@@ -26,9 +30,5 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     filterConstant = Quantity.of(500, NonSI.MICRO_SECOND);
     /** [-] for FAST corner filter */
     margin = RealScalar.of(4);
-    width = RealScalar.of(240);
-    height = RealScalar.of(180);
-    dvsLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-    channel_DVS = "davis240c.overview.dvs";
   }
 }

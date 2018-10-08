@@ -179,14 +179,20 @@ public enum LogFileLocations {
   DUBI19test("20180924T104243_820c1ac4.lcm.00"),
   /** driving around faster with odometry SLAM */
   DUBI19test2("20180924T110653_820c1ac4.lcm.00"),
-  /** enum to get the correct calibration file */
+  /** testing SiliconEye sensor first time, partially with markings */
   DUBISiliconEye("20181003T155915_f6edefe8.lcm.00"), //
   DUBISiliconEyeA("20181003T155915_f6edefe8Extracted1.lcm"), //
   DUBISiliconEyeB("20181003T155915_f6edefe8Extracted2.lcm"), //
   DUBISiliconEyeC("20181003T155915_f6edefe8Extracted3.lcm"), //
   DUBISiliconEyeD("20181003T155915_f6edefe8Extracted4.lcm"), //
   DUBISiliconEyeE("20181003T155915_f6edefe8Extracted5.lcm"), //
-  DUBISiliconEyeF("20181003T155915_f6edefe8Extracted6.lcm");
+  DUBISiliconEyeF("20181003T155915_f6edefe8Extracted6.lcm"), //
+  /** visual SLAM, GoPro video GH010214 */
+  DUBISiliconEyeG("20181005T154321_1cb189b4.lcm.00"), //
+  /** visual SLAM fast, synched with video from GoPro */
+  DUBISiliconEyeH("20181005T154321_1cb189b4Extracted1.lcm"), //
+  DUBISiliconEyeI("20181005T154321_1cb189b4Extracted2.lcm"), //
+  DUBISiliconEyeJ("20181005T154321_1cb189b4Extracted3.lcm");
   // ---
   private final String filename;
 

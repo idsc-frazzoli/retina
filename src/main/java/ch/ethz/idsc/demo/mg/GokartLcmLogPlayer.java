@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.online.DvsSlamBaseModule;
+import ch.ethz.idsc.gokart.gui.SeyeDetailModule;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -17,7 +17,8 @@ enum GokartLcmLogPlayer {
     LogPlayer.create(cfg);
     try {
       // DavisDetailModule.standalone();
-      DvsSlamBaseModule.standalone();
+      SeyeDetailModule.standalone();
+      // DvsSlamBaseModule.standalone();
     } catch (Exception e) {
       e.printStackTrace();
     }

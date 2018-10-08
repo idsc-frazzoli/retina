@@ -18,7 +18,7 @@ public class BlobTrackConfig {
   public final DvsConfig davisConfig = SlamDvsConfig.getDvsConfig();
   // visualization and image saving
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
-  public final Scalar savingInterval = Quantity.of(0.3, SI.SECOND);
+  public final Scalar savingInterval = Quantity.of(0.05, SI.SECOND);
   /***************************************************/
   // feature tracking algorithm parameters
   // feature tracking
