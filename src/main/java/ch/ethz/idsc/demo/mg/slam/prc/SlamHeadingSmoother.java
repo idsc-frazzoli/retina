@@ -1,20 +1,20 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ class SlamHeadingSmoother {
-  private final Scalar alphaHeading = SlamPrcConfig.GLOBAL.alphaHeading;
+  private final Scalar alphaHeading;
   private final Scalar betaHeading;
   // ---
   private Scalar lastEndHeading;
   private boolean initialized;
 
-  SlamHeadingSmoother() {
-    betaHeading = RealScalar.of(1).subtract(alphaHeading);
+  SlamHeadingSmoother(Scalar alphaHeading) {
+    this.alphaHeading = alphaHeading;
+    betaHeading = RealScalar.ONE.subtract(alphaHeading);
   }
 
   public Tensor smoothHeading(Tensor interpolatedCurve) {

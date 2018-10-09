@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -26,13 +26,15 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
   private Mat labels;
 
   public SlamCoreContainer() {
-    int numOfPart = Magnitude.ONE.toInt(SlamCoreConfig.GLOBAL.numberOfParticles);
+    int numOfPart = Magnitude.ONE.toInt(SlamDvsConfig.eventCamera.slamCoreConfig.numberOfParticles);
     slamParticles = SlamParticles.allocate(numOfPart);
-    saveSlamMap = SlamCoreConfig.GLOBAL.saveSlamMap;
-    logFilename = SlamCoreConfig.GLOBAL.dvsConfig.logFilename();
-    occurrenceMap = new MapProvider(SlamCoreConfig.GLOBAL);
+    saveSlamMap = SlamDvsConfig.eventCamera.slamCoreConfig.saveSlamMap;
+    logFilename = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.logFilename();
+    occurrenceMap = new MapProvider(SlamDvsConfig.eventCamera.slamCoreConfig);
     // ---
-    labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
+    labels = new Mat( //
+        SlamDvsConfig.eventCamera.slamCoreConfig.mapWidth(), //
+        SlamDvsConfig.eventCamera.slamCoreConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   /** @param initPose {x[m], y[m], angle[-]} */
