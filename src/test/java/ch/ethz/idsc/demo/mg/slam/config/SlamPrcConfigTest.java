@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 public class SlamPrcConfigTest extends TestCase {
   public void testSimple() {
-    Clip.unit().requireInside(SlamPrcConfig.GLOBAL.alphaCurvature);
+    for (EventCamera eventCamera : EventCamera.values())
+      Clip.unit().requireInside(eventCamera.slamPrcConfig.alphaCurvature);
   }
 }

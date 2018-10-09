@@ -6,7 +6,10 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamPrcConfig parameters according to davis */
-/* package */ class DavisSlamPrcConfig extends SlamPrcConfig {
+public class DavisSlamPrcConfig extends SlamPrcConfig {
+  // TODO check parameter initialization
+  public static final DavisSlamPrcConfig GLOBAL = new DavisSlamPrcConfig();
+
   public DavisSlamPrcConfig() {
     // SlamWaypointDetection
     /** valid range [0,1] */

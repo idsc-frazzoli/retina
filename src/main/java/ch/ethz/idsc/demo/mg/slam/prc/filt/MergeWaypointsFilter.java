@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.sca.AbsSquared;
 
 /** filters way points that are too close to previous valid way point */
 /* package */ class MergeWaypointsFilter implements WaypointFilterInterface {
-  private final Scalar deltaPosThresholdSquared = AbsSquared.FUNCTION.apply(SlamPrcConfig.GLOBAL.deltaPosThreshold);
+  private final Scalar deltaPosThresholdSquared = AbsSquared.FUNCTION.apply(SlamDvsConfig.eventCamera.slamPrcConfig.deltaPosThreshold);
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {

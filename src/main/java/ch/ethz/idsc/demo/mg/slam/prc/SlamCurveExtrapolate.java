@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.prc;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -18,9 +18,9 @@ import ch.ethz.idsc.tensor.Tensor;
     super(slamPrcContainer);
     slamCurvatureFilter = new SlamCurvatureSmoother();
     slamHeadingFilter = new SlamHeadingSmoother();
-    numberOfPoints = SlamPrcConfig.GLOBAL.numberOfPoints;
-    curveFactor = SlamPrcConfig.GLOBAL.curveFactor;
-    extrapolationDistance = SlamPrcConfig.GLOBAL.extrapolationDistance;
+    numberOfPoints = SlamDvsConfig.eventCamera.slamPrcConfig.numberOfPoints;
+    curveFactor = SlamDvsConfig.eventCamera.slamPrcConfig.curveFactor;
+    extrapolationDistance = SlamDvsConfig.eventCamera.slamPrcConfig.extrapolationDistance;
   }
 
   @Override // from CurveListener

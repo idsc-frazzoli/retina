@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -10,8 +10,9 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.red.Mean;
 
 /* package */ class SlamCurvatureSmoother {
-  private final Scalar alphaCurvature = SlamPrcConfig.GLOBAL.alphaCurvature;
-  private final int extractionLength = SlamPrcConfig.GLOBAL.extractionPoints.number().intValue();
+  // TODO
+  private final Scalar alphaCurvature = SlamDvsConfig.eventCamera.slamPrcConfig.alphaCurvature;
+  private final int extractionLength = SlamDvsConfig.eventCamera.slamPrcConfig.extractionPoints.number().intValue();
   // ---
   private Scalar lastLocalCurvature = RealScalar.ZERO;
 

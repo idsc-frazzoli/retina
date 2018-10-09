@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.gui;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.demo.mg.slam.config.DavisSlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
@@ -37,5 +39,7 @@ enum ParametersHelper {
       ClusterConfig.GLOBAL, //
       TrajectoryConfig.GLOBAL, //
       PlanSRConfig.GLOBAL, //
-      MappingConfig.GLOBAL);
+      MappingConfig.GLOBAL, //
+      DavisSlamPrcConfig.GLOBAL, //
+      DavisSlamCoreConfig.GLOBAL);
 }

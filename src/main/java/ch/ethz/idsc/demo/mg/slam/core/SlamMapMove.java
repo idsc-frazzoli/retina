@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -16,9 +16,9 @@ import ch.ethz.idsc.tensor.sca.Chop;
  * pose comes too close to the borders of the current map */
 /* package */ class SlamMapMove extends PeriodicSlamStep {
   private final Tensor mapMoveVector = //
-      SlamCoreConfig.GLOBAL.mapDimensions.map(Magnitude.METER).multiply(RationalScalar.HALF);
-  private final Tensor mapDimensions = SlamCoreConfig.GLOBAL.mapDimensions;
-  private final double padding = SlamCoreConfig.GLOBAL.padding.number().doubleValue();
+      SlamDvsConfig.eventCamera.slamCoreConfig.mapDimensions.map(Magnitude.METER).multiply(RationalScalar.HALF);
+  private final Tensor mapDimensions = SlamDvsConfig.eventCamera.slamCoreConfig.mapDimensions;
+  private final double padding = SlamDvsConfig.eventCamera.slamCoreConfig.padding.number().doubleValue();
   // ---
   /** current lower left corner of map */
   private Tensor corner;
@@ -26,9 +26,9 @@ import ch.ethz.idsc.tensor.sca.Chop;
   private Tensor cornerHigh;
 
   protected SlamMapMove(SlamCoreContainer slamCoreContainer) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.poseMapUpdateRate);
-    corner = SlamCoreConfig.GLOBAL.corner;
-    cornerHigh = SlamCoreConfig.GLOBAL.cornerHigh();
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.poseMapUpdateRate);
+    corner = SlamDvsConfig.eventCamera.slamCoreConfig.corner;
+    cornerHigh = SlamDvsConfig.eventCamera.slamCoreConfig.cornerHigh();
   }
 
   @Override // from PeriodicSlamStep

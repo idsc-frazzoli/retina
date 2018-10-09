@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -9,9 +9,9 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** sets validity of detected way points based on rectangular region of interest */
 public class RegionOfInterestFilter implements WaypointFilterInterface {
-  private final Scalar visibleBoxXMin = Magnitude.METER.apply(SlamPrcConfig.GLOBAL.visibleBoxXMin);
-  private final Scalar visibleBoxXMax = Magnitude.METER.apply(SlamPrcConfig.GLOBAL.visibleBoxXMax);
-  private final Scalar visibleBoxYHalfWidth = Magnitude.METER.apply(SlamPrcConfig.GLOBAL.visibleBoxYHalfWidth);
+  private final Scalar visibleBoxXMin = Magnitude.METER.apply(SlamDvsConfig.eventCamera.slamPrcConfig.visibleBoxXMin);
+  private final Scalar visibleBoxXMax = Magnitude.METER.apply(SlamDvsConfig.eventCamera.slamPrcConfig.visibleBoxXMax);
+  private final Scalar visibleBoxYHalfWidth = Magnitude.METER.apply(SlamDvsConfig.eventCamera.slamPrcConfig.visibleBoxYHalfWidth);
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {

@@ -7,7 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.log.DvsTimerLogCollection;
 import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.demo.mg.slam.log.TimerLogCollection;
@@ -28,13 +28,13 @@ public enum SlamAlgoConfiguration {
   ;
   public static final List<DavisDvsListener> getListeners(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
-    System.out.println(SlamCoreConfig.GLOBAL.slamAlgoConfig);
+    System.out.println(SlamDvsConfig.eventCamera.slamCoreConfig.slamAlgoConfig);
     List<DavisDvsListener> listeners = new ArrayList<>();
     /** image plane to go kart frame mapping is used by every configuration
      * and always the first module to be called */
     listeners.add(new SlamImageToGokart(slamCoreContainer));
     /** further modules depend on config */
-    switch (SlamCoreConfig.GLOBAL.slamAlgoConfig) {
+    switch (SlamDvsConfig.getSlamCoreConfig().slamAlgoConfig) {
     case standardMode:
       standardMode(listeners, slamCoreContainer, slamPrcContainer);
       break;
@@ -62,10 +62,10 @@ public enum SlamAlgoConfiguration {
     // we always use this module to move the map when pose is too close to boarders
     listeners.add(new SlamMapMove(slamCoreContainer));
     // log configuration
-    if (SlamCoreConfig.GLOBAL.dvsTimeLogMode || SlamCoreConfig.GLOBAL.periodicLogMode) {
+    if (SlamDvsConfig.eventCamera.slamCoreConfig.dvsTimeLogMode || SlamDvsConfig.eventCamera.slamCoreConfig.periodicLogMode) {
       SlamEventCounter slamEventCounter = new SlamEventCounter(slamCoreContainer);
       listeners.add(slamEventCounter);
-      if (SlamCoreConfig.GLOBAL.dvsTimeLogMode)
+      if (SlamDvsConfig.eventCamera.slamCoreConfig.dvsTimeLogMode)
         listeners.add(new DvsTimerLogCollection(slamCoreContainer, slamPrcContainer, gokartLidarPose, slamEventCounter));
       else
         listeners.add(new TimerLogCollection(slamCoreContainer, slamPrcContainer, gokartLidarPose, slamEventCounter));

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
@@ -28,11 +28,11 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected boolean triggered;
 
   protected AbstractSlamWrap() {
-    dvsLcmClient = SlamCoreConfig.GLOBAL.dvsConfig.dvsLcmClient;
+    dvsLcmClient = SlamDvsConfig.getDvsConfig().dvsLcmClient;
     dvsLcmClient.addDvsListener(this);
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);
-    abstractFilterHandler = SlamCoreConfig.GLOBAL.dvsConfig.createBackgroundActivityFilter();
+    abstractFilterHandler = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.createBackgroundActivityFilter();
     slamViewer = new SlamViewer(slamCoreContainer, slamPrcContainer, gokartLidarPose);
   }
 

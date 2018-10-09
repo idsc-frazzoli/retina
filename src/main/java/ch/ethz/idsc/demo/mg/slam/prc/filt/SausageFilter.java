@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.prc.filt;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.owl.bot.rn.SimpleRnPointcloudDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -26,8 +26,8 @@ class SausageFilter implements WaypointFilterInterface {
   /** @param slamPrcContainer go kart frame, currently estimated by SLAM algorithm */
   public SausageFilter(SlamPrcContainer slamPrcContainer) {
     this.slamPrcContainer = slamPrcContainer;
-    distanceThreshold = SlamPrcConfig.GLOBAL.distanceThreshold;
-    validPointsThreshold = SlamPrcConfig.GLOBAL.validPointsThreshold.number().intValue();
+    distanceThreshold = SlamDvsConfig.eventCamera.slamPrcConfig.distanceThreshold;
+    validPointsThreshold = SlamDvsConfig.eventCamera.slamPrcConfig.validPointsThreshold.number().intValue();
   }
 
   @Override // from WaypointFilterInterface

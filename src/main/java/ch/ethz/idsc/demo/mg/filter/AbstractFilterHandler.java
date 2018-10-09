@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.filter;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 /** base class for SLAM algorithm filtering. Filtered events are passed to all algorithm modules
  * in the listeners field of the class */
 public abstract class AbstractFilterHandler implements DavisDvsListener, DavisDvsEventFilter {
-  private final DavisDvsEventFilter eventPolarityFilter = SlamCoreConfig.GLOBAL.eventPolarityFilter;
+  private final DavisDvsEventFilter eventPolarityFilter = SlamDvsConfig.getSlamCoreConfig().eventPolarityFilter;
   private final List<DavisDvsListener> listeners = new CopyOnWriteArrayList<>();
 
   @Override // from DavisDvsListener
