@@ -5,8 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
@@ -56,8 +54,7 @@ public class ParametersModule extends AbstractModule {
     addTab(TrajectoryConfig.GLOBAL);
     addTab(PlanSRConfig.GLOBAL);
     addTab(MappingConfig.GLOBAL);
-    addTab(SlamCoreConfig.GLOBAL);
-    addTab(SlamPrcConfig.GLOBAL);
+    // only classes that other classes do not extend from
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -50,6 +50,7 @@ import ch.ethz.idsc.tensor.io.TensorProperties;
       reference = object.getClass().newInstance();
     } catch (Exception exception) {
       reference = null;
+      System.out.println(object.getClass().getSimpleName());
       exception.printStackTrace();
     }
     {

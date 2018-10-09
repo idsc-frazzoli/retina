@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamCoreConfig parameters according to siliconEye */
-/* package */ class SEyeSlamCoreConfig extends SlamCoreConfig {
+public class SEyeSlamCoreConfig extends SlamCoreConfig {
   public SEyeSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
     slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
