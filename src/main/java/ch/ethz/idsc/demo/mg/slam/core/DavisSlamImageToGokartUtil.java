@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   ;
   // TODO here we assume the only two options are "davis" and "sEye"
   // private static final boolean useDavis = SlamDvsConfig.cameraType.equals("davis");
-  private static final double lookAheadDistance = Magnitude.METER.toDouble(SlamDvsConfig.getSlamCoreConfig().lookAheadDistance);
+  private static final double lookAheadDistance = Magnitude.METER.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.lookAheadDistance);
   // private static final double cropLowerPart = useDavis ? 0 : Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cropLowerPart);
   // private static final double cropSides = useDavis ? 0 : Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cropSides);
 

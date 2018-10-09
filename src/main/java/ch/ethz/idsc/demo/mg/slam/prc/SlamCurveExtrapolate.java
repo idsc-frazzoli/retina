@@ -3,6 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.prc;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -16,11 +17,12 @@ import ch.ethz.idsc.tensor.Tensor;
 
   SlamCurveExtrapolate(SlamPrcContainer slamPrcContainer) {
     super(slamPrcContainer);
+    SlamPrcConfig slamPrcConfig = SlamDvsConfig.eventCamera.slamPrcConfig;
     slamCurvatureFilter = new SlamCurvatureSmoother();
-    slamHeadingFilter = new SlamHeadingSmoother();
-    numberOfPoints = SlamDvsConfig.eventCamera.slamPrcConfig.numberOfPoints;
-    curveFactor = SlamDvsConfig.eventCamera.slamPrcConfig.curveFactor;
-    extrapolationDistance = SlamDvsConfig.eventCamera.slamPrcConfig.extrapolationDistance;
+    slamHeadingFilter = new SlamHeadingSmoother(slamPrcConfig.alphaHeading);
+    numberOfPoints = slamPrcConfig.numberOfPoints;
+    curveFactor = slamPrcConfig.curveFactor;
+    extrapolationDistance = slamPrcConfig.extrapolationDistance;
   }
 
   @Override // from CurveListener

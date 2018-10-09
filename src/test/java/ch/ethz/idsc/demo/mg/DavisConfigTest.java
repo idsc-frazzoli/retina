@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class DavisConfigTest extends TestCase {
   public void testSimple() {
-    DvsConfig davisConfig = SlamDvsConfig.getDvsConfig();
+    DvsConfig davisConfig = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig;
     int delta = Magnitude.MICRO_SECOND.toInt(davisConfig.filterConstant);
     assertTrue(200 <= delta && delta <= 5000);
   }

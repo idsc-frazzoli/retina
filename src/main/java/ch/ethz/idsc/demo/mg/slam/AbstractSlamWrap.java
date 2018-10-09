@@ -28,7 +28,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   protected boolean triggered;
 
   protected AbstractSlamWrap() {
-    dvsLcmClient = SlamDvsConfig.getDvsConfig().dvsLcmClient;
+    dvsLcmClient = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.dvsLcmClient;
     dvsLcmClient.addDvsListener(this);
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);

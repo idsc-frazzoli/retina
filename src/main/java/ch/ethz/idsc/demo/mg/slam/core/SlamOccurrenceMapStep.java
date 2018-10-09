@@ -4,15 +4,14 @@ package ch.ethz.idsc.demo.mg.slam.core;
 import java.util.Objects;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 
 /** update of occurrence map using the particles */
 /* package */ class SlamOccurrenceMapStep extends EventActionSlamStep {
-  // TODO pass as argument in constructor
-  private final int relevantParticles = SlamDvsConfig.eventCamera.slamCoreConfig.relevantParticles.number().intValue();
+  private final int relevantParticles;
 
-  protected SlamOccurrenceMapStep(SlamCoreContainer slamCoreContainer) {
+  protected SlamOccurrenceMapStep(SlamCoreContainer slamCoreContainer, int relevantParticles) {
     super(slamCoreContainer);
+    this.relevantParticles = relevantParticles;
   }
 
   @Override // from EventActionSlamStep

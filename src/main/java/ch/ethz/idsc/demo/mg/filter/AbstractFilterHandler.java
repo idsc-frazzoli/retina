@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 /** base class for SLAM algorithm filtering. Filtered events are passed to all algorithm modules
  * in the listeners field of the class */
 public abstract class AbstractFilterHandler implements DavisDvsListener, DavisDvsEventFilter {
-  private final DavisDvsEventFilter eventPolarityFilter = SlamDvsConfig.getSlamCoreConfig().eventPolarityFilter;
+  private final DavisDvsEventFilter eventPolarityFilter = SlamDvsConfig.eventCamera.slamCoreConfig.eventPolarityFilter;
   private final List<DavisDvsListener> listeners = new CopyOnWriteArrayList<>();
 
   @Override // from DavisDvsListener

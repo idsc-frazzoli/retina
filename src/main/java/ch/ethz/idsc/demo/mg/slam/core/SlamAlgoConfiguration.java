@@ -14,6 +14,7 @@ import ch.ethz.idsc.demo.mg.slam.log.TimerLogCollection;
 import ch.ethz.idsc.demo.mg.slam.prc.SlamMapProcessing;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** SLAM algorithm module configuration.
  * The order in the list is the order of the respective callback method calls
@@ -26,7 +27,8 @@ import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
  * in the field listeners */
 public enum SlamAlgoConfiguration {
   ;
-  public static final List<DavisDvsListener> getListeners(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
+  public static final List<DavisDvsListener> getListeners( //
+      SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
       GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
     System.out.println(SlamDvsConfig.eventCamera.slamCoreConfig.slamAlgoConfig);
     List<DavisDvsListener> listeners = new ArrayList<>();
@@ -34,7 +36,7 @@ public enum SlamAlgoConfiguration {
      * and always the first module to be called */
     listeners.add(new SlamImageToGokart(slamCoreContainer));
     /** further modules depend on config */
-    switch (SlamDvsConfig.getSlamCoreConfig().slamAlgoConfig) {
+    switch (SlamDvsConfig.eventCamera.slamCoreConfig.slamAlgoConfig) {
     case standardMode:
       standardMode(listeners, slamCoreContainer, slamPrcContainer);
       break;
@@ -119,14 +121,18 @@ public enum SlamAlgoConfiguration {
    * Only for measuring performance of particle filter for localization step, therefore no SlamMapProcessing is done */
   private static final void standardLocalizationStep(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer) {
     listeners.add(new SlamLikelihoodStep(slamCoreContainer));
-    listeners.add(new SlamPropagationStep(slamCoreContainer));
+    listeners.add(new SlamPropagationStep( //
+        slamCoreContainer, //
+        Magnitude.ONE.toInt(SlamDvsConfig.eventCamera.slamCoreConfig.particleRange)));
     listeners.add(new SlamResamplingStep(slamCoreContainer));
   }
 
   /** standard mapping step of SLAM algorithm. consists of three modules */
   private static final void standardMappingStep(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
       SlamPrcContainer slamPrcContainer) {
-    listeners.add(new SlamOccurrenceMapStep(slamCoreContainer));
+    listeners.add(new SlamOccurrenceMapStep( //
+        slamCoreContainer, //
+        SlamDvsConfig.eventCamera.slamCoreConfig.relevantParticles.number().intValue()));
     listeners.add(new SlamMapProcessing(slamCoreContainer, slamPrcContainer));
   }
 }
