@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.davis;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
@@ -19,7 +20,7 @@ import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
         "sees_control_recording_2018_08_30-13_45_50.aedat");
     Aedat31FileSupplier aedat31FileSupplier = new Aedat31FileSupplier(file);
     // ---
-    Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(250);
+    Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(Color.BLACK, 250);
     aedat31FileSupplier.aedat31PolarityListeners.add(aedat31PolarityImage);
     // ---
     try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(filename, SiliconEyeVideoFrame.DIMENSION, snaps)) {

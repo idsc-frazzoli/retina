@@ -10,12 +10,14 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamCoreConfig parameters according to siliconEye */
-/* package */ class SEyeSlamCoreConfig extends SlamCoreConfig {
+public class SEyeSlamCoreConfig extends SlamCoreConfig {
+  public static final SEyeSlamCoreConfig GLOBAL = new SEyeSlamCoreConfig();
+
   public SEyeSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
     slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
     /** when true, logs are recorded with timestamps provided by dvs event stream */
-    dvsTimeLogMode = false;
+    dvsTimeLogMode = true;
     /** when true, logs are recorded with periodic timestamps */
     periodicLogMode = false;
     /** saves occurrence map. To be used to save ground truth map obtained with lidar pose */
@@ -60,10 +62,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     padding = Quantity.of(4, SI.METER);
     // SlamViewer
     saveSlamFrame = false;
-    savingInterval = Quantity.of(21, SI.SECOND);
+    savingInterval = Quantity.of(0.05, SI.SECOND);
     visualizationInterval = Quantity.of(0.1, SI.SECOND);
     frameWidth = RealScalar.of(600); // [pixel]
     kartSize = Quantity.of(1.5, SI.METER);
     waypointRadius = Quantity.of(0.17, SI.METER);
+    dvsConfig = new SEyeDvsConfig();
   }
 }

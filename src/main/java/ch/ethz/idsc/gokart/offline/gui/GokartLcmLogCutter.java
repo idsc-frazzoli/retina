@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -28,23 +29,41 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
+import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 
 /** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
   public static final String GOKART_LOG_CONFIG = "GokartLogConfig.properties";
+  private static final Font FONT = //
+      new Font(Font.DIALOG, Font.PLAIN, GokartLcmImage.FX + 2);
+  // ---
+  private final JFrame jFrame = new JFrame();
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
+  private final NavigableMap<Integer, Integer> map = new TreeMap<>();
   // ---
   private final GokartLogFileIndexer gokartLogFileIndexer;
   private final String title;
   private final File export_root;
   private final BufferedImage bufferedImage;
-  private final JFrame jFrame = new JFrame();
-  private final NavigableMap<Integer, Integer> map = new TreeMap<>();
-  private Point pressed = null;
   private final JComponent jComponent = new JComponent() {
     @Override
     protected void paintComponent(Graphics graphics) {
       graphics.drawImage(bufferedImage, 0, 0, null);
+      {
+        graphics.setFont(FONT);
+        graphics.setColor(Color.WHITE);
+        int piy = -2;
+        int fx = GokartLcmImage.FX;
+        graphics.drawString("autonomous", 0, piy += fx);
+        graphics.drawString("pose quality", 0, piy += fx);
+        graphics.drawString("steer", 0, piy += fx);
+        graphics.drawString("gyro z", 0, piy += fx);
+        graphics.drawString("tire L", 0, piy += fx);
+        graphics.drawString("tire R", 0, piy += fx);
+      }
       int ofsy = 20;
       synchronized (map) {
         for (Entry<Integer, Integer> entry : map.entrySet()) {
@@ -59,6 +78,8 @@ public class GokartLcmLogCutter {
     }
   };
   private final MouseAdapter mouseListener = new MouseAdapter() {
+    private Point pressed = null;
+
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
       if (mouseEvent.getButton() == 3) {
@@ -130,7 +151,7 @@ public class GokartLcmLogCutter {
     bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    jFrame.setBounds(100, 100, 1500, 200);
+    windowConfiguration.attach(getClass(), jFrame);
     JPanel jPanel = new JPanel(new BorderLayout());
     {
       JToolBar jToolBar = new JToolBar();

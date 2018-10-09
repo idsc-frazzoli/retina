@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.tensor.Scalar;
@@ -45,7 +45,7 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
     if (optionalCurve.isPresent()) {
       if (optionalCurve.isPresent()) {
         PurePursuit purePursuit = PurePursuit.fromTrajectory( //
-            optionalCurve.get(), SlamPrcConfig.GLOBAL.lookAheadMeter());
+            optionalCurve.get(), SlamDvsConfig.eventCamera.slamPrcConfig.lookAheadMeter());
         return purePursuit.ratio();
       }
       return Optional.empty();

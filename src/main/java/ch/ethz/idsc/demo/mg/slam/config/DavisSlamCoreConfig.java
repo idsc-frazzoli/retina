@@ -10,7 +10,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamCoreConfig parameters according to davis */
-/* package */ class DavisSlamCoreConfig extends SlamCoreConfig {
+public class DavisSlamCoreConfig extends SlamCoreConfig {
+  public static final DavisSlamCoreConfig GLOBAL = new DavisSlamCoreConfig();
+
   public DavisSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
     slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
@@ -65,5 +67,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     frameWidth = RealScalar.of(600); // [pixel]
     kartSize = Quantity.of(1.5, SI.METER);
     waypointRadius = Quantity.of(0.17, SI.METER);
+    dvsConfig = new DavisDvsConfig();
   }
 }

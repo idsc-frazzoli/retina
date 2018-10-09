@@ -22,6 +22,6 @@ public class PenaltyTimeout {
 
   /** @return true if timeout counter has ever elapsed the allowed period */
   public boolean isPenalty() {
-    return System.nanoTime() < lastPenalty_ns + timeout_ns;
+    return System.nanoTime() - lastPenalty_ns < timeout_ns;
   }
 }

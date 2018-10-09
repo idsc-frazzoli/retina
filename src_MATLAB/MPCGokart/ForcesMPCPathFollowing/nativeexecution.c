@@ -8,15 +8,43 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
  * */
 
+int listen_sock;
+int sock;
+FILE *file;
+bool finished = false;
+bool running = true;
+
+void intHandler(int dummy) {
+	printf("finished after interuption\n");
+	fprintf(file, "finished after interuption\n");
+	closeConnection();
+}
+
+void closeConnection(){
+    printf("Connection closed\n");
+    close(sock);
+    close(listen_sock);
+    fclose(file);
+    finished = true;
+    exit(0);
+}
+
 int main(int argc, char *argv[]) {
+   	signal(SIGINT, intHandler);
 	// port to start the server on
-	int SERVER_PORT = 8877;
+	int SERVER_PORT = 4143;
+
+	printf("Server started\n");
+
+        file = fopen("livesign.txt", "w"); // write only s
+	fprintf(file, "Native server started\n");
 
 	// socket address used for the server
 	struct sockaddr_in server_address;
@@ -31,7 +59,6 @@ int main(int argc, char *argv[]) {
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// create a TCP socket, creation returns -1 on failure
-	int listen_sock;
 	if ((listen_sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("could not create listen socket\n");
 		return 1;
@@ -59,37 +86,38 @@ int main(int argc, char *argv[]) {
 	// run indefinitely
 	//while (true) {
 		// open a new socket to transmit data per connection
-		int sock;
 		if ((sock =
 		         accept(listen_sock, (struct sockaddr *)&client_address,
 		                &client_address_len)) < 0) {
 			printf("could not open a socket to accept data\n");
 			return 1;
 		}
+		if(finished)
+			return 1;
 
 		int n = 0;
 		int len = 0, maxlen = 100;
 		char buffer[maxlen];
 		char *pbuffer = buffer;
-
 		printf("client connected with ip address: %s\n",
 		       inet_ntoa(client_address.sin_addr));
 
+		fprintf(file, "client connected with ip address: %s\n",
+	       		inet_ntoa(client_address.sin_addr));
+
 		// keep running as long as the client keeps the connection open
 		while ((n = recv(sock, pbuffer, maxlen, 0)) > 0) {
-			pbuffer += n;
-			maxlen -= n;
-			len += n;
+			//pbuffer += n;
+			//maxlen -= n;
+			//len += n;
 
 			printf("received: '%s'\n", buffer);
+			fprintf(file, "received: '%s'\n", buffer);
 
 			// echo received content back
 			send(sock, buffer, len, 0);
 		}
-
-		close(sock);
-	//}
-
-	close(listen_sock);
+    	fprintf(file, "Program closed after connection finished\n");
+	closeConnection();
 	return 0;
 }

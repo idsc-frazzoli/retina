@@ -6,7 +6,7 @@ import java.util.TimerTask;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
@@ -30,7 +30,7 @@ public class TimerLogCollection implements StartAndStoppable, DavisDvsListener {
   public TimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface,
       SlamEventCounter slamEventCounter) {
     slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
-    periodicSavePeriod = Magnitude.MILLI_SECOND.toLong(SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
+    periodicSavePeriod = Magnitude.MILLI_SECOND.toLong(SlamDvsConfig.eventCamera.slamCoreConfig.logCollectionUpdateRate);
     timer.scheduleAtFixedRate(logSaveTask, 0, periodicSavePeriod);
     initialTimestamp = (int) System.currentTimeMillis();
   }

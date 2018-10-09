@@ -12,8 +12,7 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -34,10 +33,10 @@ import ch.ethz.idsc.tensor.Tensors;
   private Mat processedMap;
 
   public SlamWaypointDetection() {
-    mapThreshold = Magnitude.ONE.toDouble(SlamPrcConfig.GLOBAL.mapThreshold);
-    cellDim = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cellDim);
-    labels = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
-    processedMap = new Mat(SlamCoreConfig.GLOBAL.mapWidth(), SlamCoreConfig.GLOBAL.mapHeight(), opencv_core.CV_8U);
+    mapThreshold = Magnitude.ONE.toDouble(SlamDvsConfig.eventCamera.slamPrcConfig.mapThreshold);
+    cellDim = Magnitude.METER.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.cellDim);
+    labels = new Mat(SlamDvsConfig.eventCamera.slamCoreConfig.mapWidth(), SlamDvsConfig.eventCamera.slamCoreConfig.mapHeight(), opencv_core.CV_8U);
+    processedMap = new Mat(SlamDvsConfig.eventCamera.slamCoreConfig.mapWidth(), SlamDvsConfig.eventCamera.slamCoreConfig.mapHeight(), opencv_core.CV_8U);
   }
 
   /** finds way points through threshold operation, morphological processing and

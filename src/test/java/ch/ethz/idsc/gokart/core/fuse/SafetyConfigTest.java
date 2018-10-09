@@ -5,7 +5,10 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -30,5 +33,9 @@ public class SafetyConfigTest extends TestCase {
     Clip clip = SafetyConfig.GLOBAL.getClearanceClip();
     Clip.function(0.1, 0.3).requireInside(clip.min());
     Clip.function(3.0, 7.0).requireInside(clip.max());
+  }
+
+  public void testRateLimit() {
+    assertTrue(Scalars.lessEquals(Quantity.of(1, SIDerived.RADIAN_PER_SECOND), SafetyConfig.GLOBAL.rateLimit));
   }
 }

@@ -21,6 +21,15 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
     return new TrajectoryLcmClient(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME);
   }
 
+  /** function for offline log processing
+   * 
+   * @param byteBuffer
+   * @return */
+  public static List<TrajectorySample> trajectory(ByteBuffer byteBuffer) {
+    Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
+    return PlannerPublish.getTrajectory(tensor);
+  }
+
   // ---
   private final String channel;
 
@@ -30,8 +39,7 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
-    List<TrajectorySample> trajectory = PlannerPublish.getTrajectory(tensor);
+    List<TrajectorySample> trajectory = trajectory(byteBuffer);
     listeners.forEach(listener -> listener.trajectory(trajectory));
   }
 

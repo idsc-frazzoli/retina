@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.retina.dev.linmot.LinmotFireFighter;
 
@@ -843,6 +844,66 @@ public enum GokartLogFile implements LogFile {
   _20180927T145943_44599876, //
   /** torque vectoring, without davis240c */
   _20180927T162555_44599876, //
+  /***************************************************/
+  /* 2018-10-01 */
+  /** torque vectoring */
+  _20181001T142708_91a61e15, //
+  /** demo for visitor: figure 8, trajectory planning, emergency stops */
+  _20181001T144009_91a61e15, //
+  /** torque vectoring */
+  _20181001T163228_e654a9ad, //
+  /** trajectory planning, manual driving */
+  _20181001T183434_e654a9ad, //
+  /***************************************************/
+  /* 2018-10-03 */
+  /** torque vectoring */
+  _20181003T120312_e654a9ad, //
+  /** manual driving */
+  _20181003T144503_6d8de4be, //
+  /** silicon eye recording while driving along markers
+   * aedat protocol */
+  _20181003T155915_f6edefe8, //
+  /** manual driving */
+  _20181003T172231_f6edefe8, //
+  /***************************************************/
+  /* 2018-10-05 */
+  /** event-based marker following using davis */
+  _20181005T104920_c0176eef, //
+  /** event-based marker following */
+  _20181005T110121_c0176eef, //
+  /** event-based marker following */
+  _20181005T112611_1cb189b4, //
+  /** manual driving along markers */
+  _20181005T135151_1cb189b4, //
+  /** event-based marker following */
+  _20181005T145807_1cb189b4, //
+  /** driving with silicon eye and davis on */
+  _20181005T154321_1cb189b4, //
+  /** driving with silicon eye and davis on */
+  _20181005T161158_1cb189b4, //
+  /** event-based marker following */
+  _20181005T181350_1cb189b4, //
+  /** event-based marker following */
+  _20181005T183532_1cb189b4, //
+  /** event-based marker following */
+  _20181005T184013_1cb189b4, //
+  /** event-based marker following */
+  _20181005T184043_1cb189b4, //
+  /***************************************************/
+  /* 2018-10-08 */
+  /** autonomous driving, trajectory following
+   * test of {@link SpeedLimitSafetyModule} */
+  _20181008T114035_0faeff06, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T160558_88f26d5f, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T161549_88f26d5f, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T165907_69109edf, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T175943_786ab990, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T183011_786ab990, //
   ;
   // ---
   @Override // from LogFile

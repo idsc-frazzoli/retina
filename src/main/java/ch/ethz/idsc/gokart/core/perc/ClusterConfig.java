@@ -1,8 +1,6 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -13,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /**  */
-public class ClusterConfig implements Serializable {
+public class ClusterConfig {
   public static final ClusterConfig GLOBAL = AppResources.load(new ClusterConfig());
   /***************************************************/
   public Scalar epsilon = Quantity.of(0.035, SI.METER);

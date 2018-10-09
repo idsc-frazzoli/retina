@@ -20,6 +20,11 @@ public enum AppResources {
   }
 
   public static void save(Object object) {
-    TensorProperties.wrap(object).trySave(file(object));
+    DIRECTORY.mkdir(); // git removes directory if empty
+    try {
+      TensorProperties.wrap(object).save(file(object));
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 }

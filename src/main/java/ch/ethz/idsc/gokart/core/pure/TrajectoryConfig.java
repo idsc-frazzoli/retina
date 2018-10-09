@@ -1,8 +1,6 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -13,7 +11,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-public class TrajectoryConfig implements Serializable {
+public class TrajectoryConfig {
   public static final TrajectoryConfig GLOBAL = AppResources.load(new TrajectoryConfig());
   /***************************************************/
   public Scalar planningPeriod = Quantity.of(1, SI.SECOND); // 1[s] == 1[Hz]

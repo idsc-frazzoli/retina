@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** resamples particles of SLAM algorithm */
@@ -10,10 +10,10 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
   private final SlamResamplingStepUtil slamResamplingStepUtil;
 
   SlamResamplingStep(SlamCoreContainer slamCoreContainer) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.resampleRate);
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.resampleRate);
     slamResamplingStepUtil = new SlamResamplingStepUtil( //
-        Magnitude.ACCELERATION.toDouble(SlamCoreConfig.GLOBAL.rougheningLinAccelStd), //
-        Magnitude.ANGULAR_ACCELERATION.toDouble(SlamCoreConfig.GLOBAL.rougheningAngAccelStd));
+        Magnitude.ACCELERATION.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.rougheningLinAccelStd), //
+        Magnitude.ANGULAR_ACCELERATION.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.rougheningAngAccelStd));
   }
 
   @Override // from PeriodicSlamStep

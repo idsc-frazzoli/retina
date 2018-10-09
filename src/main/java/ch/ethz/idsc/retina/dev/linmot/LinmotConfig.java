@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.linmot;
 
-import java.io.Serializable;
-
 import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeManeuver;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -15,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * see also document: 20180217_emergency_braking.pdf
  * https://www.youtube.com/watch?v=b_Sqy2TmKIk */
-public class LinmotConfig implements Serializable {
+public class LinmotConfig {
   public static final LinmotConfig GLOBAL = AppResources.load(new LinmotConfig());
   /***************************************************/
   public final Scalar windingTempCold = Quantity.of(5, NonSI.DEGREE_CELSIUS);

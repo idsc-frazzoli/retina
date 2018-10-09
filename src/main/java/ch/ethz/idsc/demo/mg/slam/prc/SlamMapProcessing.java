@@ -6,7 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +22,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
   private boolean isLaunched;
 
   public SlamMapProcessing(SlamCoreContainer slamContainer, SlamPrcContainer slamPrcContainer) {
-    super(slamContainer, SlamCoreConfig.GLOBAL.waypointUpdateRate);
+    super(slamContainer, SlamDvsConfig.eventCamera.slamCoreConfig.waypointUpdateRate);
     slamWaypointDetection = new SlamWaypointDetection();
     handler = new SlamPrcHandler(slamPrcContainer);
     start();

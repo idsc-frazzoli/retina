@@ -5,22 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
-import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
-import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pure.PlanSRConfig;
-import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
@@ -40,22 +24,8 @@ public class ParametersModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    addTab(ChassisGeometry.GLOBAL);
-    addTab(SensorsConfig.GLOBAL);
-    addTab(LinmotConfig.GLOBAL);
-    addTab(SteerConfig.GLOBAL);
-    addTab(RimoConfig.GLOBAL);
-    addTab(SafetyConfig.GLOBAL);
-    addTab(LocalizationConfig.GLOBAL);
-    addTab(JoystickConfig.GLOBAL);
-    addTab(PursuitConfig.GLOBAL);
-    addTab(TorqueVectoringConfig.GLOBAL);
-    addTab(ClusterConfig.GLOBAL);
-    addTab(TrajectoryConfig.GLOBAL);
-    addTab(PlanSRConfig.GLOBAL);
-    addTab(MappingConfig.GLOBAL);
-    addTab(SlamCoreConfig.GLOBAL);
-    addTab(SlamPrcConfig.GLOBAL);
+    ParametersHelper.OBJECTS.forEach(this::addTab);
+    // only classes that other classes do not extend from
     jFrame.setContentPane(jTabbedPane);
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

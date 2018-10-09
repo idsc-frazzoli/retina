@@ -55,8 +55,8 @@ public class BlobTrackViewer implements DavisDvsListener {
       lastSavingTimeStamp = timeStamp;
       isInitialized = true;
     }
+    eventFrames[0].receiveEvent(davisDvsEvent);
     if (davisDvsEventFilter.filter(davisDvsEvent)) {
-      eventFrames[0].receiveEvent(davisDvsEvent);
       eventFrames[1].receiveEvent(davisDvsEvent);
       eventFrames[2].receiveEvent(davisDvsEvent);
     }

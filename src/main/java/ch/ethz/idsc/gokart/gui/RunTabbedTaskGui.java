@@ -12,11 +12,13 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
@@ -26,6 +28,7 @@ import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringJoystickModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCPathFollowingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
@@ -71,7 +74,8 @@ enum RunTabbedTaskGui {
       LidarLocalizationModule.class, //
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
-      DavisImuTrackerModule.class //
+      DavisImuTrackerModule.class, //
+      AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       SeesLcmModule.class, //
@@ -98,14 +102,14 @@ enum RunTabbedTaskGui {
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class, //
-      GokartTrajectorySRModule.class //
+      GokartTrajectorySRModule.class, //
+      MPCPathFollowingModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
+      SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //
-  // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
-  //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //

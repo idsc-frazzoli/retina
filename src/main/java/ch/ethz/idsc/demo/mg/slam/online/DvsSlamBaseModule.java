@@ -5,8 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
+import ch.ethz.idsc.demo.mg.slam.config.EventCamera;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
@@ -15,12 +14,14 @@ import ch.ethz.idsc.tensor.Tensor;
 /** runs the SLAM algorithm and a pure pursuit module which gets a lookAhead point in the go kart frame
  * from the SLAM algorithm */
 public class DvsSlamBaseModule extends AbstractClockedModule {
+  private final EventCamera eventCamera;
   private final SlamCurvePurePursuitModule slamCurvePurePursuitModule;
   private final OnlineSlamWrap onlineSlamWrap;
 
-  DvsSlamBaseModule(SlamAlgoConfig slamAlgoConfig, String cameraType) {
-    SlamDvsConfig.cameraType = cameraType;
-    SlamCoreConfig.GLOBAL.slamAlgoConfig = slamAlgoConfig;
+  // TODO first parameter may be obsolete
+  DvsSlamBaseModule(EventCamera eventCamera, SlamAlgoConfig slamAlgoConfig) {
+    this.eventCamera = eventCamera;
+    eventCamera.slamCoreConfig.slamAlgoConfig = slamAlgoConfig; // TODO global solution not good
     onlineSlamWrap = new OnlineSlamWrap();
     slamCurvePurePursuitModule = new SlamCurvePurePursuitModule();
   }
@@ -47,13 +48,15 @@ public class DvsSlamBaseModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return SlamCoreConfig.GLOBAL.purePursuitUpdateRate;
+    return eventCamera.slamCoreConfig.purePursuitUpdateRate;
   }
 
   public static void standalone() throws Exception {
-    DvsSlamBaseModule davisSlamBaseModule = new DvsSlamBaseModule(SlamCoreConfig.GLOBAL.slamAlgoConfig, SlamDvsConfig.cameraType);
+    EventCamera eventCamera = EventCamera.DAVIS;
+    // ---
+    DvsSlamBaseModule davisSlamBaseModule = new DvsSlamBaseModule(eventCamera, eventCamera.slamCoreConfig.slamAlgoConfig);
     davisSlamBaseModule.launch();
-    TimeUnit.SECONDS.sleep(SlamCoreConfig.GLOBAL.dvsConfig.logFileDuration.number().longValue());
+    TimeUnit.SECONDS.sleep(eventCamera.slamCoreConfig.dvsConfig.logFileDuration.number().longValue());
     davisSlamBaseModule.terminate();
   }
 }
