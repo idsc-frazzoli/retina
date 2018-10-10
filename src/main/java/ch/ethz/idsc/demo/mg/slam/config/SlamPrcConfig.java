@@ -6,7 +6,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** parameters for the map processing steps of the SLAM algorithm */
 public class SlamPrcConfig {
-  public static final SlamPrcConfig GLOBAL = SlamDvsConfig.getSlamPrcConfig();
   public Scalar mapThreshold;
   public Scalar visibleBoxXMin;
   public Scalar visibleBoxXMax;

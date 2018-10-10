@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TruncatedGaussian;
@@ -12,9 +12,10 @@ import ch.ethz.idsc.tensor.Tensor;
   ;
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
-  private static final double linVelAvg = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelAvg);
-  private static final double linVelStd = Magnitude.VELOCITY.toDouble(SlamCoreConfig.GLOBAL.linVelStd);
-  private static final double angVelStd = Magnitude.PER_SECOND.toDouble(SlamCoreConfig.GLOBAL.angVelStd);
+  // TODO
+  private static final double linVelAvg = Magnitude.VELOCITY.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.linVelAvg);
+  private static final double linVelStd = Magnitude.VELOCITY.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.linVelStd);
+  private static final double angVelStd = Magnitude.PER_SECOND.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.angVelStd);
 
   /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
    * 

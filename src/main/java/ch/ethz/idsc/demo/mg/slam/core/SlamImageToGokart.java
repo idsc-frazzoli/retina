@@ -2,14 +2,14 @@
 package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
 
 /** transforms events from image plane to go kart frame */
 /* package */ class SlamImageToGokart extends AbstractSlamStep {
   private final ImageToGokartInterface imageToGokartInterface = //
-      SlamCoreConfig.GLOBAL.dvsConfig.createImageToGokartInterface();
+      SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.createImageToGokartInterface();
 
   SlamImageToGokart(SlamCoreContainer slamCoreContainer) {
     super(slamCoreContainer);

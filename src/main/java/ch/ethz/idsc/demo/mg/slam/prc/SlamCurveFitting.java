@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.prc;
 
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.owl.subdiv.curve.BSpline2CurveSubdivision;
 import ch.ethz.idsc.owl.subdiv.curve.CurveSubdivision;
 import ch.ethz.idsc.owl.subdiv.curve.RnGeodesic;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 
   SlamCurveFitting(SlamPrcContainer slamPrcContainer) {
     super(slamPrcContainer);
-    iterations = Magnitude.ONE.toInt(SlamPrcConfig.GLOBAL.iterations);
+    iterations = Magnitude.ONE.toInt(SlamDvsConfig.eventCamera.slamPrcConfig.iterations);
   }
 
   @Override // from CurveListener

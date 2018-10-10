@@ -52,6 +52,6 @@ final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
 
   @Override // from PurePursuitBase
   Optional<SteerPutEvent> fallback() {
-    return FALLBACK; // TODO DUBILAB test
+    return FALLBACK;
   }
 }

@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc.filt;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamPrcConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.prc.SlamCurveUtil;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** filters way points when the curvature between neighboring way points is above threshold */
 class CurvatureFilter implements WaypointFilterInterface {
-  private final Scalar curvatureThreshold = SlamPrcConfig.GLOBAL.curvatureThreshold;
+  private final Scalar curvatureThreshold = SlamDvsConfig.eventCamera.slamPrcConfig.curvatureThreshold;
 
   @Override // from WaypointFilterInterface
   public void filter(Tensor gokartWaypoints, boolean[] validities) {

@@ -10,7 +10,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamCoreConfig parameters according to siliconEye */
-/* package */ class SEyeSlamCoreConfig extends SlamCoreConfig {
+public class SEyeSlamCoreConfig extends SlamCoreConfig {
+  public static final SEyeSlamCoreConfig GLOBAL = new SEyeSlamCoreConfig();
+
   public SEyeSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
     slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
@@ -65,5 +67,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     frameWidth = RealScalar.of(600); // [pixel]
     kartSize = Quantity.of(1.5, SI.METER);
     waypointRadius = Quantity.of(0.17, SI.METER);
+    dvsConfig = new SEyeDvsConfig();
   }
 }

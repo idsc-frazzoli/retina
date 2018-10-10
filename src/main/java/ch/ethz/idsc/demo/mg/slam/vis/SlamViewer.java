@@ -6,7 +6,7 @@ import java.util.TimerTask;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -30,7 +30,7 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
   private final long visualizationInterval;
 
   public SlamViewer(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartLidarPose) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.savingInterval);
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.savingInterval);
     this.gokartLidarPose = gokartLidarPose;
     this.slamPrcContainer = slamPrcContainer;
     slamMapGUI = new SlamMapGUI();
@@ -39,7 +39,7 @@ public class SlamViewer extends PeriodicSlamStep implements StartAndStoppable {
       slamMapFrames[i] = new SlamMapFrame();
     slamSaveFrame = new SlamSaveFrame(slamMapFrames);
     // ---
-    visualizationInterval = Magnitude.MILLI_SECOND.toLong(SlamCoreConfig.GLOBAL.visualizationInterval);
+    visualizationInterval = Magnitude.MILLI_SECOND.toLong(SlamDvsConfig.eventCamera.slamCoreConfig.visualizationInterval);
   }
 
   @Override // from StartAndStoppable

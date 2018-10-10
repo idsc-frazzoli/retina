@@ -15,8 +15,7 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 
 /** defines parameters for the event-based SLAM algorithm */
 public class SlamCoreConfig {
-  public static final SlamCoreConfig GLOBAL = SlamDvsConfig.getSlamCoreConfig();
-  public final DvsConfig dvsConfig = SlamDvsConfig.getDvsConfig();
+  public DvsConfig dvsConfig;
   public EventPolarityFilter eventPolarityFilter;
   public SlamAlgoConfig slamAlgoConfig;
   public Boolean dvsTimeLogMode;

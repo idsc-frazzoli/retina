@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.owl.math.map.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Tensor;
   private final GokartPoseOdometryDemo gokartPoseOdometry;
 
   protected SlamPoseOdometryStep(SlamCoreContainer slamCoreContainer, GokartPoseOdometryDemo gokartPoseOdometry) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.localizationUpdateRate);
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.localizationUpdateRate);
     this.gokartPoseOdometry = gokartPoseOdometry;
   }
 
