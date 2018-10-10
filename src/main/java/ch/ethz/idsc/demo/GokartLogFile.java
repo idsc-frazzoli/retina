@@ -904,6 +904,18 @@ public enum GokartLogFile implements LogFile {
   _20181008T175943_786ab990, //
   /** manual driving track orange, torque vectoring comparison */
   _20181008T183011_786ab990, //
+  /***************************************************/
+  /* 2018-10-10 */
+  /** figure 8, trajectory planning */
+  _20181010T143615_786ab990, //
+  /** manual driving track orange */
+  _20181010T151121_786ab990, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181010T160308_786ab990, //
+  /** manual driving */
+  _20181010T163911_786ab990, //
+  /** manual driving */
+  _20181010T171643_786ab990, //
   ;
   // ---
   @Override // from LogFile
