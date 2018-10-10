@@ -1,10 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -14,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class GokartState implements OfflineVectorInterface, MPCNativeOutputable {
+/* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
   /** forward velocity in gokart frame with unit m*s^1 */
   public final Scalar Ux;
   /** sidewards velocity in gokart frame with unit m*s^1 */
@@ -65,22 +62,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   // constructor for input stream
-  public GokartState(InputStream inputStream) throws IllegalArgumentException {
+  public GokartState(ByteBuffer byteBuffer) {
     // assume that the input stream contains 8 floats
     // if not, IllegalArgumentException is raised
-    DataInputStream dataInputStream = new DataInputStream(inputStream);
-    try {
-      Ux = Quantity.of(dataInputStream.readFloat(), SI.VELOCITY);
-      Uy = Quantity.of(dataInputStream.readFloat(), SI.VELOCITY);
-      dotPsi = Quantity.of(dataInputStream.readFloat(), SI.PER_SECOND);
-      X = Quantity.of(dataInputStream.readFloat(), SI.METER);
-      Y = Quantity.of(dataInputStream.readFloat(), SI.METER);
-      Psi = Quantity.of(dataInputStream.readFloat(), SI.ONE);
-      w2L = Quantity.of(dataInputStream.readFloat(), SI.PER_SECOND);
-      w2R = Quantity.of(dataInputStream.readFloat(), SI.PER_SECOND);
-    } catch (Exception e) {
-      throw new IllegalArgumentException("Not enough fields in input stream");
-    }
+    Ux = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
+    Uy = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
+    dotPsi = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
+    X = Quantity.of(byteBuffer.getFloat(), SI.METER);
+    Y = Quantity.of(byteBuffer.getFloat(), SI.METER);
+    Psi = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    w2L = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
+    w2R = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
   }
 
   @Override
@@ -103,15 +95,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override
-  public void output(OutputStream outputStream) throws Exception {
-    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-    dataOutputStream.writeFloat(Magnitude.VELOCITY.toFloat(Ux));
-    dataOutputStream.writeFloat(Magnitude.VELOCITY.toFloat(Uy));
-    dataOutputStream.writeFloat(Magnitude.PER_SECOND.toFloat(dotPsi));
-    dataOutputStream.writeFloat(Magnitude.METER.toFloat(X));
-    dataOutputStream.writeFloat(Magnitude.METER.toFloat(Y));
-    dataOutputStream.writeFloat(Magnitude.ONE.toFloat(Psi));
-    dataOutputStream.writeFloat(Magnitude.PER_SECOND.toFloat(w2L));
-    dataOutputStream.writeFloat(Magnitude.PER_SECOND.toFloat(w2R));
+  public void input(ByteBuffer byteBuffer) {
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Ux));
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Uy));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(dotPsi));
+    byteBuffer.putFloat(Magnitude.METER.toFloat(X));
+    byteBuffer.putFloat(Magnitude.METER.toFloat(Y));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(Psi));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(w2L));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(w2R));
+  }
+
+  @Override
+  public int getLength() {
+    return 8*4;
   }
 }

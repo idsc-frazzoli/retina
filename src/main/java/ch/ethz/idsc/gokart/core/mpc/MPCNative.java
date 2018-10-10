@@ -19,6 +19,8 @@ import java.util.Optional;
   public static final int PATH_UPDATE = 1;
   /** parameter update: send new parameters */
   public static final int PARAMETER_UPDATE = 2;
+  /** control update: receive this from MPC program */
+  public static final int CONTROL_UPDATE = 3;
   // executable location and name
   public final static String BINARY = "nativeMPC";
   public final static String RELATIVEPATH = "/src_MATLAB/MPCGokart/ForcesMPCPathFollowing/";
