@@ -9,18 +9,23 @@
 
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
+#include "idsc_BinaryBlob.c"
+#include "definitions.c"
 
+#define N 30
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
  * */
-
 int listen_sock;
 int sock;
 FILE *file;
 FILE *solverFile;
 bool finished = false;
 bool running = true;
+
+#define DATASIZE 100
+struct ControlAndState cns [DATASIZE];
 
 /* declare FORCES variables and structures */
 int i, exitflag;
@@ -37,12 +42,48 @@ extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, doub
 MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
 
+
+void sendEmptyControlAndStates(lcm_t * lcm){
+	struct _idsc_BinaryBlob blob;
+	for (int i = 0; i<N; i++){
+		cns[i].uL = 1;
+		cns[i].uR = 2;
+		cns[i].udotS = 3;
+		cns[i].uB = 4;
+		cns[i].state.Ux = 5;
+		cns[i].state.Uy = 6;
+		cns[i].state.dotPsi = 7;
+		cns[i].state.X = 8;
+		cns[i].state.Y = 9;
+		cns[i].state.Psi = 10;
+		cns[i].state.w2L = 11;
+		cns[i].state.w2R = 12;
+		cns[i].state.s = 13;
+	}
+	
+	blob.data_length = sizeof(struct ControlAndState)*N;
+	blob.data = (int8_t*)&cns;
+
+	for (int i = 0; i< 100; i++){
+		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
+			printf("published test message%d\n",sizeof(struct ControlAndState)*N);
+		else
+			printf("error while publishing message\n");
+	}
+}
+
 int main(int argc, char *argv[]) {
-	lcm_t * lcm = lcm_create(NULL)
+
+	lcm_t * lcm = lcm_create(NULL);
 	if(!lcm)
 		return 1;
 	
-	exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
+	
+	//return format [state]
+	//exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
+
+	sendEmptyControlAndStates(lcm);
+	
 	lcm_destroy(lcm);
 	return 0;
 }
