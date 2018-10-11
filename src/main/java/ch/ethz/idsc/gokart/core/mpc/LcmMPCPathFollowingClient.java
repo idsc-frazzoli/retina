@@ -17,12 +17,13 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
   BinaryLcmClient binaryLcmClient = new BinaryLcmClient() {
     @Override
     protected void messageReceived(ByteBuffer byteBuffer) {
-      // TODO handle
+      //get new message
+      ControlAndPredictionSteps cns = new ControlAndPredictionSteps(byteBuffer);
     }
 
     @Override
     protected String channel() {
-      return "mpc.forces.cu";
+      return "mpc.forces.cns";
     }
   };
 
