@@ -35,7 +35,8 @@ public class ImprovedTorqueVectoring {
     // if we want to stabilize an oversteering gokart, we should have no differential thrust
     // do we want to stabilize?
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
-      Scalar stabilizerFactor = RealScalar.ONE.subtract(Clip.absoluteOne().apply(realRotation.abs().multiply(torqueVectoringConfig.ks)));
+      Scalar scalar = Clip.absoluteOne().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
+      Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);
       wantedZTorque = stabilizerFactor.multiply(stabilizerFactor);
     }
     // System.out.println("ZTorque: " + wantedZTorque);
@@ -43,7 +44,6 @@ public class ImprovedTorqueVectoring {
     Scalar powerLeft = power.subtract(wantedZTorque); // One
     Scalar powerRight = power.add(wantedZTorque); // One
     // prefer power over Z-torque
-    // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
     return SimpleTorqueVectoring.clip(powerLeft, powerRight);
   }
 }

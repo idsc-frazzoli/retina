@@ -39,7 +39,6 @@ public class SimpleTorqueVectoring {
     Scalar powerLeft = power.subtract(wantedZTorque); // One
     Scalar powerRight = power.add(wantedZTorque); // One
     // prefer power over Z-torque
-    // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
     return clip(powerLeft, powerRight);
   }
 
@@ -47,6 +46,7 @@ public class SimpleTorqueVectoring {
    * @param powerRight
    * @return */
   static Tensor clip(Scalar powerLeft, Scalar powerRight) {
+    // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
     if (Scalars.lessThan(MAX, powerRight)) {
       Scalar overpower = powerRight.subtract(MAX);
       powerRight = MAX;

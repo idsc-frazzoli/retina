@@ -50,18 +50,11 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
     final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
-    final boolean isAutonomousPressed;
-    if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-      isAutonomousPressed = gokartJoystickInterface.isAutonomousPressed();
-    } else
-      isAutonomousPressed = false;
-    // ---
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       purePursuitSteer.setHeading(heading.get());
     // ---
-    final boolean status = isAutonomousPressed && heading.isPresent();
+    final boolean status = joystick.isPresent() && heading.isPresent();
     purePursuitSteer.setOperational(status);
     if (status) {
       GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
