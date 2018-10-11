@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class SimpleTorqueVectoring {
+public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   private static final Scalar MIN = RealScalar.of(-1);
   private static final Scalar MAX = RealScalar.of(+1);
   // ---
@@ -19,17 +19,11 @@ public class SimpleTorqueVectoring {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 
-  /** @param rotationPerMeterDriven with unit m^-1
-   * @param meanTangentSpeed with unit m*s^-1
-   * @param angularSlip with unit s^-1
-   * @param power unitless in the interval [-1, 1]
-   * @return vector of the form {powerLeft, powerRight} where both
-   * powerLeft and powerRight are guaranteed to be in the interval [-1, 1] */
-  public Tensor powers(Scalar rotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power) {
+  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // compute differential torque (in Arms as we do not use the power function yet)
     Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
     // System.out.println("Dynamic component: " + dynamicComponent);
-    Scalar lateralAcceleration = Times.of(rotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
+    Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
     // System.out.println("lateral Acceleration: " + lateralAcceleration);
     Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
     // System.out.println("Static component: " + staticComponent);

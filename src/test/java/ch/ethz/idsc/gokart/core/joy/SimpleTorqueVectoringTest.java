@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +23,8 @@ public class SimpleTorqueVectoringTest extends TestCase {
         Quantity.of(0, "m^-1"), //
         Quantity.of(0, "m*s^-1"), //
         Quantity.of(0, "s^-1"), //
-        power);
+        power,
+        Quantity.of(0, "s^-1"));
     assertTrue(Chop._08.close(Total.of(powers), power));
     assertEquals(powers, Tensors.vector(0, 0));
   }
@@ -37,7 +39,8 @@ public class SimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(1, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
-        power);
+        power,
+        Quantity.of(0, "s^-1"));
     assertTrue(Chop._08.close(Total.of(powers), power));
     assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }
@@ -52,7 +55,8 @@ public class SimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
-        power);
+        power,
+        Quantity.of(0, "s^-1"));
     assertEquals(powers, Tensors.vector(1, 1));
   }
 
@@ -66,7 +70,8 @@ public class SimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
-        power);
+        power,
+        Quantity.of(0, "s^-1"));
     assertEquals(powers, Tensors.vector(-1, -1));
   }
 

@@ -25,7 +25,10 @@ import ch.ethz.idsc.tensor.sca.Tan;
 public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final SimpleTorqueVectoring simpleTorqueVectoring = new SimpleTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+//TODO: make switching configurable
+  private final TorqueVectoringInterface simpleTorqueVectoring = 
+      new ImprovedTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+      //      new SimpleTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   @Override // from AbstractModule
@@ -51,10 +54,10 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     // compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();//unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     // ---
-    Tensor powers = simpleTorqueVectoring.powers(rotationPerMeterDriven, meanTangentSpeed, angularSlip, power);
+    Tensor powers = simpleTorqueVectoring.powers(rotationPerMeterDriven, meanTangentSpeed, angularSlip, power, gyroZ);
     Tensor torquesARMS = powers.multiply(JoystickConfig.GLOBAL.torqueLimit); // vector of length 2
     // ---
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));

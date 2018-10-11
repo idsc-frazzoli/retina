@@ -8,20 +8,14 @@ import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ImprovedTorqueVectoring {
+public class ImprovedTorqueVectoring implements TorqueVectoringInterface{
   private final TorqueVectoringConfig torqueVectoringConfig;
 
   public ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 
-  /** @param expectedRotationPerMeterDriven with unit m^-1
-   * @param meanTangentSpeed with unit m*s^-1
-   * @param angularSlip with unit s^-1
-   * @param power unitless in the interval [-1, 1]
-   * @param real rotation taken from gyro with unit s^-1
-   * @return vector of the form {powerLeft, powerRight} where both
-   * powerLeft and powerRight are guaranteed to be in the interval [-1, 1] */
+
   public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // compute differential torque (in Arms as we do not use the power function yet)
     Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
@@ -35,9 +29,9 @@ public class ImprovedTorqueVectoring {
     // if we want to stabilize an oversteering gokart, we should have no differential thrust
     // do we want to stabilize?
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
-      Scalar scalar = Clip.absoluteOne().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
-      Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);
-      wantedZTorque = stabilizerFactor.multiply(stabilizerFactor);
+      Scalar s = Clip.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
+      Scalar stabilizerFactor = RealScalar.ONE.subtract(s);
+      wantedZTorque = wantedZTorque.multiply(stabilizerFactor);
     }
     // System.out.println("ZTorque: " + wantedZTorque);
     // left and right power
