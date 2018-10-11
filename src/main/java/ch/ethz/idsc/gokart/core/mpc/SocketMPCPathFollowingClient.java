@@ -123,38 +123,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
         while (isLaunched) {
           // check if we should update path parameters
           if (pathParametersUpdated) {
-            pathParametersLock.readLock().lock();
-            try {
-              // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
-              pathParametersUpdated = false;
-            } finally {
-              pathParametersLock.readLock().unlock();
-            }
+            // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
+            pathParametersUpdated = false;
           }
           // check if we should update optimization parameters
           if (optimizationParametersUpdated) {
-            optimizationParametersLock.readLock().lock();
-            try {
-              // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
-              optimizationParametersUpdated = false;
-            } finally {
-              optimizationParametersLock.readLock().unlock();
-            }
+            // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
+            optimizationParametersUpdated = false;
           }
           // send request for control
-          currentStateLock.readLock().lock();
-          try {
-            // TODO: send request
-          } finally {
-            currentStateLock.readLock().unlock();
-          }
+          // TODO: send request
+          outputStream.flush();
           // read response
-          controlAndPredictionStepsLock.writeLock().lock();
-          try {
-            // TODO: read stuff and write it to controlandpredictionsteps
-          } finally {
-            controlAndPredictionStepsLock.writeLock().unlock();
-          }
+          // TODO: read stuff and write it to controlandpredictionsteps
           // only for testing
           String testString = "hello";
           outputStream.write(testString.getBytes(StandardCharsets.UTF_8));

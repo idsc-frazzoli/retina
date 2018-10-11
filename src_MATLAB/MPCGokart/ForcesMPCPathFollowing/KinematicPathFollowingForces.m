@@ -43,7 +43,7 @@ model.xinitidx = 4:9;
 model.ub = [+1, +inf, +0.5, +inf, +inf, +inf, +inf,1,+inf];  % simple upper bounds 
 model.lb = [-inf, -inf, +0.001, -inf, -inf,  -inf, -inf,-1,-inf];  % simple lower bounds 
 
-codeoptions = getOptions('FORCESNLPsolver');
+codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
@@ -73,7 +73,7 @@ for i =1:tend
     problem.x0 = x0(:);
 
     % solve mpc
-    [output,exitflag,info] = FORCESNLPsolver(problem);
+    [output,exitflag,info] = MPCPathFollowing(problem);
 
     %get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';

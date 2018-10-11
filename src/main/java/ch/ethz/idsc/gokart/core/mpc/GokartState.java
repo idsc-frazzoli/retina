@@ -1,13 +1,17 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.nio.ByteBuffer;
+
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class GokartState implements OfflineVectorInterface {
+/* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
   /** forward velocity in gokart frame with unit m*s^1 */
   public final Scalar Ux;
   /** sidewards velocity in gokart frame with unit m*s^1 */
@@ -57,6 +61,20 @@ import ch.ethz.idsc.tensor.Tensors;
     checkUnits();
   }
 
+  // constructor for input stream
+  public GokartState(ByteBuffer byteBuffer) {
+    // assume that the input stream contains 8 floats
+    // if not, IllegalArgumentException is raised
+    Ux = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
+    Uy = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
+    dotPsi = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
+    X = Quantity.of(byteBuffer.getFloat(), SI.METER);
+    Y = Quantity.of(byteBuffer.getFloat(), SI.METER);
+    Psi = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    w2L = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
+    w2R = Quantity.of(byteBuffer.getFloat(), SI.PER_SECOND);
+  }
+
   @Override
   public Tensor asVector() {
     return Tensors.of(//
@@ -72,6 +90,24 @@ import ch.ethz.idsc.tensor.Tensors;
 
   boolean checkUnits() {
     Magnitude.VELOCITY.apply(Ux);
+    // TODO: check this stuff
     return true;
+  }
+
+  @Override
+  public void insert(ByteBuffer byteBuffer) {
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Ux));
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Uy));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(dotPsi));
+    byteBuffer.putFloat(Magnitude.METER.toFloat(X));
+    byteBuffer.putFloat(Magnitude.METER.toFloat(Y));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(Psi));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(w2L));
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(w2R));
+  }
+
+  @Override
+  public int length() {
+    return 8 * 4;
   }
 }
