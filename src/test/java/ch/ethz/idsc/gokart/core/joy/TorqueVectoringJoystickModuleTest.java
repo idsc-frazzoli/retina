@@ -105,7 +105,6 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
 
   public void testControl4() throws Exception {
     TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    ;
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");

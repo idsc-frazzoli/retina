@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 public class ImprovedTorqueVectoringJoystickModule extends TorqueVectoringJoystickModule {
-  ImprovedTorqueVectoringJoystickModule() {
+  public ImprovedTorqueVectoringJoystickModule() {
     super(new ImprovedTorqueVectoring(TorqueVectoringConfig.GLOBAL));
   }
 }
