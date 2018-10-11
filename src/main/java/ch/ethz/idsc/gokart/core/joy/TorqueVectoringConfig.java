@@ -14,4 +14,6 @@ public class TorqueVectoringConfig {
   public Scalar staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
   /** The Dynamic correction coefficient */
   public Scalar dynamicCorrection = Quantity.of(0.2, SI.SECOND);
+  /** TODO document control constant used in ITV */
+  public Scalar ks = Quantity.of(10, SI.SECOND);
 }

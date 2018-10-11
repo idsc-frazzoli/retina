@@ -12,12 +12,12 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class ImprovedSimpleTorqueVectoringTest extends TestCase {
+public class ImprovedTorqueVectoringTest extends TestCase {
   public void testZeros() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improveSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improveSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improveSimpleTorqueVectoring.powers( //
         Quantity.of(0, "m^-1"), //
@@ -32,7 +32,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improvedSimpleTorqueVectoring.powers( //
         Quantity.of(1, "m^-1"), //
@@ -47,7 +47,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ONE;
     Tensor powers = improvedSimpleTorqueVectoring.powers( //
         Quantity.of(1, "m^-1"), //
@@ -61,7 +61,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ONE.negate();
     Tensor powers = improvedSimpleTorqueVectoring.powers( //
         Quantity.of(1, "m^-1"), //
@@ -80,7 +80,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improvedSimpleTorqueVectoring.powers( //
         Quantity.of(1, "m^-1"), //
@@ -96,7 +96,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedSimpleTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedSimpleTorqueVectoring(tvc);
+    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improvedSimpleTorqueVectoring.powers( //
         Quantity.of(-1, "m^-1"), //

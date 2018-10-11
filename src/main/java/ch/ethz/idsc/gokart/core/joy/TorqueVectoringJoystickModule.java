@@ -48,8 +48,6 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
     Scalar power = Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
-    // Scalar constant3 = RealScalar.of(-0.58);
-    // Scalar constant1 = RealScalar.of(0.98);
     // compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
