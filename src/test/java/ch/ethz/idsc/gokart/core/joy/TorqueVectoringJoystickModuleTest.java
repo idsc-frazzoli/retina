@@ -20,13 +20,13 @@ import junit.framework.TestCase;
 
 public class TorqueVectoringJoystickModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     tvjm.last();
   }
 
   public void testControl() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(100, 200));
@@ -60,7 +60,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   }
 
   public void testControl2() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(1, 2); // 1/2 forward slip right
     System.out.println(slip + " forward/slip right");
@@ -82,7 +82,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   }
 
   public void testControl3() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip right
     System.out.println(slip + " slip right");
@@ -104,7 +104,8 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   }
 
   public void testControl4() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
+    ;
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");
@@ -126,7 +127,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   }
 
   public void testControl5() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip right
     System.out.println(slip + " slip right");
@@ -147,7 +148,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   }
 
   public void testControl6() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new TorqueVectoringJoystickModule();
+    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");

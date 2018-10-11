@@ -8,6 +8,7 @@ import java.util.Optional;
   ;
   public static final int TCP_PORT = 4142;
   public static final int TCP_SERVER_PORT = 4143;
+  public static final int MPC_HORIZON = 10;
   public static final int INITIALMSGSIZE = 100;
   public static final int PREDICTIONSIZE = 10;
   public static final int GOKART_STATE = 0;

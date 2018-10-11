@@ -22,27 +22,32 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
+abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final SimpleTorqueVectoring simpleTorqueVectoring = new SimpleTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+  private final TorqueVectoringInterface torqueVectoringInterface;
+  // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
+  TorqueVectoringJoystickModule(TorqueVectoringInterface torqueVectoring) {
+    this.torqueVectoringInterface = torqueVectoring;
+  }
+
   @Override // from AbstractModule
-  void protected_first() {
+  final void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  final void protected_last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);
   }
 
   /***************************************************/
   @Override // from GuideJoystickModule
-  Optional<RimoPutEvent> control( //
+  final Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
@@ -51,15 +56,16 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
     // compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     // ---
-    Tensor powers = simpleTorqueVectoring.powers(rotationPerMeterDriven, meanTangentSpeed, angularSlip, power);
+    Tensor powers = torqueVectoringInterface.powers( //
+        rotationPerMeterDriven, meanTangentSpeed, angularSlip, power, gyroZ);
     Tensor torquesARMS = powers.multiply(JoystickConfig.GLOBAL.torqueLimit); // vector of length 2
     // ---
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(torquesARMS.Get(1));
-    System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
+    // System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_rawL, // sign left invert
         (short) +arms_rawR // sign right id
@@ -67,7 +73,7 @@ public class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEv
   }
 
   @Override // from RimoGetListener
-  public void getEvent(RimoGetEvent getEvent) {
+  public final void getEvent(RimoGetEvent getEvent) {
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
   }
 }

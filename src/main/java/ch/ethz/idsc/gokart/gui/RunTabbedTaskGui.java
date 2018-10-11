@@ -23,11 +23,12 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
+import ch.ethz.idsc.gokart.core.joy.ImprovedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
+import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCPathFollowingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
@@ -86,7 +87,8 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
-      TorqueVectoringJoystickModule.class, //
+      SimpleTorqueVectoringJoystickModule.class, //
+      ImprovedTorqueVectoringJoystickModule.class, //
       JoystickGroupModule.class, //
       SysidSignalsModule.class //
   );
