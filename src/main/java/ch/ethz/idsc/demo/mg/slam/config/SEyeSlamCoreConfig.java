@@ -32,7 +32,7 @@ public class SEyeSlamCoreConfig extends SlamCoreConfig {
     /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
     particleRange = RealScalar.of(3);
     /** events further away are neglected */
-    lookAheadDistance = Quantity.of(12, SI.METER);
+    lookAheadDistance = Quantity.of(7, SI.METER);
     /** for reactive mapping modes */
     lookBehindDistance = Quantity.of(-2, SI.METER);
     // for SiliconEye sensor which has very wide field of view
