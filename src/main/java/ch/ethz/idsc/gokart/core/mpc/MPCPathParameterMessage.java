@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
     this.mpcPathParameters = mpcPathParameters;
   }
 
-  public MPCPathParameterMessage(ByteBuffer byteBuffer){
+  public MPCPathParameterMessage(ByteBuffer byteBuffer) {
     super(byteBuffer);
     mpcPathParameters = new MPCPathParameter(byteBuffer);
   }

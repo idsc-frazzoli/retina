@@ -28,7 +28,7 @@ public class MPCNativeSession {
     }
   }
 
-  /** gets a unique ID for any object that inherits MPCNative*/
+  /** gets a unique ID for any object that inherits MPCNative */
   int getMessageId(MPCNativeMessage message) {
     int prefix = message.getMessagePrefix();
     Integer current = messageCounter.get(prefix);

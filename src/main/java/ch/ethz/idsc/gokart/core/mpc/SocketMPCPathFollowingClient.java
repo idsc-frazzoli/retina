@@ -119,34 +119,28 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
         Socket socket = new Socket(serverAddress, MPCNative.TCP_SERVER_PORT);
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
-
         System.out.println("connected");
-        
         while (isLaunched) {
           // check if we should update path parameters
           if (pathParametersUpdated) {
-              // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
-              pathParametersUpdated = false;
+            // outputStream.writeObject(new MPCPathParameterMessage(pathParameters));
+            pathParametersUpdated = false;
           }
           // check if we should update optimization parameters
           if (optimizationParametersUpdated) {
-              // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
-              optimizationParametersUpdated = false;
+            // outputStream.writeObject(new MPCOptimizationParameterMessage(optimizationParameters));
+            optimizationParametersUpdated = false;
           }
           // send request for control
-            // TODO: send request
-          
+          // TODO: send request
           outputStream.flush();
-          
           // read response
-            // TODO: read stuff and write it to controlandpredictionsteps
-          
-          //only for testing
+          // TODO: read stuff and write it to controlandpredictionsteps
+          // only for testing
           String testString = "hello";
           outputStream.write(testString.getBytes(StandardCharsets.UTF_8));
           outputStream.flush();
         }
-        
         socket.close();
       } catch (Exception e) {
         System.out.println("could not connect!");

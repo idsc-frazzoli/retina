@@ -108,6 +108,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public int getLength() {
-    return 8*4;
+    return 8 * 4;
   }
 }

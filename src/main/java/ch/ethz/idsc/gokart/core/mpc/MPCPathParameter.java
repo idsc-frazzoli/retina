@@ -26,7 +26,7 @@ public class MPCPathParameter implements MPCNativeInsertable {
   public void input(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(Magnitude.METER.toFloat(X1));
   }
-  
+
   @Override
   public int getLength() {
     return 4;

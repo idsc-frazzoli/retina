@@ -5,5 +5,6 @@ import java.nio.ByteBuffer;
 
 public interface MPCNativeInsertable {
   void input(ByteBuffer byteBuffer);
+
   int getLength();
 }

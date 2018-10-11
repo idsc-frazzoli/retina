@@ -16,14 +16,15 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
   BinaryLcmClient binaryLcmClient = new BinaryLcmClient() {
     @Override
     protected void messageReceived(ByteBuffer byteBuffer) {
-      //TODO handle 
+      // TODO handle
     }
-    
+
     @Override
     protected String channel() {
       return "mpc.forces.cu";
     }
   };
+
   @Override
   public void start() {
     mpcNativeSession.first();
@@ -33,7 +34,7 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
   public void stop() {
     mpcNativeSession.last();
   }
-  
+
   public void publishGokartState(GokartState gokartState) {
     GokartStateMessage gokartStateMessage = new GokartStateMessage(gokartState, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.getLength());
@@ -41,7 +42,7 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
     gokartStateMessage.input(byteBuffer);
     gokartStatePublisher.accept(binaryBlob);
   }
-  
+
   public void publishPathParameter(MPCPathParameter mpcPathParameter) {
     MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.getLength());
@@ -49,7 +50,7 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
     mpcPathParameterMessage.input(byteBuffer);
     pathParameterPublisher.accept(binaryBlob);
   }
-  
+
   public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
     MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.getLength());
@@ -61,12 +62,10 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
   @Override
   public void startSubscriptions() {
     // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void stopSubscriptions() {
     // TODO Auto-generated method stub
-    
   }
 }

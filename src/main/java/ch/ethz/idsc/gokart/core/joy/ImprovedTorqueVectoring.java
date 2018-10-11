@@ -40,12 +40,11 @@ public class ImprovedSimpleTorqueVectoring {
     // do we want to break the back axle lose?
     // if we want to stabilise an oversteering gokart, we should have no differential thrust
     // do we want to stabilise?
-    if(Scalars.lessThan(realRotation.multiply(wantedZTorque),Quantity.of(0, SI.PER_SECOND))) {
+    if (Scalars.lessThan(realRotation.multiply(wantedZTorque), Quantity.of(0, SI.PER_SECOND))) {
       Scalar ks = Quantity.of(10, SI.SECOND);
       Scalar stabilizerFactor = Quantity.of(1, SI.ONE).subtract(Clip.absoluteOne().apply(realRotation.abs().multiply(ks)));
       wantedZTorque = stabilizerFactor.multiply(stabilizerFactor);
     }
-    
     // System.out.println("ZTorque: " + wantedZTorque);
     // left and right power
     Scalar powerLeft = power.subtract(wantedZTorque); // One

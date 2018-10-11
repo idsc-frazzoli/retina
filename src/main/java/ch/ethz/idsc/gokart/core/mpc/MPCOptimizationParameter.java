@@ -13,7 +13,7 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
 
   // TODO: actually implement this
   public MPCOptimizationParameter(ByteBuffer byteBuffer) {
-    //dummy constructor
+    // dummy constructor
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
   }
 
@@ -26,7 +26,7 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
   public void input(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(speedLimit));
   }
-  
+
   @Override
   public int getLength() {
     return 4;

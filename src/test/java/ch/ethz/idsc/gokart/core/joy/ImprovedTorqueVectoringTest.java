@@ -23,8 +23,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(0, "m^-1"), //
         Quantity.of(0, "m*s^-1"), //
         Quantity.of(0, "s^-1"), //
-        power,
-        Quantity.of(0, "s^-1"));
+        power, Quantity.of(0, "s^-1"));
     assertTrue(Chop._08.close(Total.of(powers), power));
     assertEquals(powers, Tensors.vector(0, 0));
   }
@@ -39,10 +38,9 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(1, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
-        power,
-        Quantity.of(-1, "s^-1"));
+        power, Quantity.of(-1, "s^-1"));
     assertTrue(Chop._08.close(Total.of(powers), power));
-    //assertEquals(powers, Tensors.vector(-0.4, 0.4));
+    // assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }
 
   public void testSaturatedPositive() {
@@ -55,8 +53,7 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
-        power,
-        Quantity.of(0, "s^-1"));
+        power, Quantity.of(0, "s^-1"));
     assertEquals(powers, Tensors.vector(1, 1));
   }
 
@@ -70,17 +67,15 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
-        power, 
-        Quantity.of(0, "s^-1"));
+        power, Quantity.of(0, "s^-1"));
     assertEquals(powers, Tensors.vector(-1, -1));
   }
-  
-  /*Scalar expectedRotationPerMeterDriven
-  Scalar meanTangentSpeed
-  Scalar angularSlip
-  Scalar power
-  Scalar realRotation */
 
+  /* Scalar expectedRotationPerMeterDriven
+   * Scalar meanTangentSpeed
+   * Scalar angularSlip
+   * Scalar power
+   * Scalar realRotation */
   public void testTorqueWhenUndersteering() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
@@ -91,12 +86,12 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
-        power, 
-      //brutal oversteering -> reaction should be that there is no differential torque
+        power,
+        // brutal oversteering -> reaction should be that there is no differential torque
         Quantity.of(0, "s^-1"));
-    assertTrue(Scalars.lessThan(powers.Get(0),powers.Get(1)));
+    assertTrue(Scalars.lessThan(powers.Get(0), powers.Get(1)));
   }
-  
+
   public void testNoTorqueWhenOversteering() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
@@ -107,9 +102,9 @@ public class ImprovedSimpleTorqueVectoringTest extends TestCase {
         Quantity.of(-1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
-        power, 
-      //brutal oversteering -> reaction should be that there is no differential torque
+        power,
+        // brutal oversteering -> reaction should be that there is no differential torque
         Quantity.of(3, "s^-1"));
-    assertEquals(powers.Get(0),powers.Get(1));
+    assertEquals(powers.Get(0), powers.Get(1));
   }
 }
