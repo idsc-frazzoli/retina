@@ -1,4 +1,4 @@
-// code by jph + mh
+// code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.retina.util.math.SI;

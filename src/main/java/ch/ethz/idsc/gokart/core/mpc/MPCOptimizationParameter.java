@@ -1,4 +1,4 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
@@ -23,12 +23,12 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
   }
 
   @Override
-  public void input(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(speedLimit));
   }
 
   @Override
-  public int getLength() {
+  public int length() {
     return 4;
   }
 }

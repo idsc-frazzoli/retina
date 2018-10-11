@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
@@ -27,15 +28,15 @@ public abstract class MPCNativeMessage implements MPCNativeInsertable {
   }
 
   @Override
-  public int getLength() {
-    return 8 + getPayload().getLength();
+  public int length() {
+    return 8 + getPayload().length();
   }
 
   @Override
-  public void input(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     // just override this for different kinds of messages
     byteBuffer.putInt(getMessagePrefix());
     byteBuffer.putInt(messageSequence);
-    getPayload().input(byteBuffer);
+    getPayload().insert(byteBuffer);
   }
 }

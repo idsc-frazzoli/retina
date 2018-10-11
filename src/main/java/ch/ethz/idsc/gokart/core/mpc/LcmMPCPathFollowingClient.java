@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
@@ -37,25 +38,25 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
 
   public void publishGokartState(GokartState gokartState) {
     GokartStateMessage gokartStateMessage = new GokartStateMessage(gokartState, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.getLength());
+    BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-    gokartStateMessage.input(byteBuffer);
+    gokartStateMessage.insert(byteBuffer);
     gokartStatePublisher.accept(binaryBlob);
   }
 
   public void publishPathParameter(MPCPathParameter mpcPathParameter) {
     MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.getLength());
+    BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-    mpcPathParameterMessage.input(byteBuffer);
+    mpcPathParameterMessage.insert(byteBuffer);
     pathParameterPublisher.accept(binaryBlob);
   }
 
   public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
     MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.getLength());
+    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-    mpcOptimizationParameterMessage.input(byteBuffer);
+    mpcOptimizationParameterMessage.insert(byteBuffer);
     optimizationParameterPublisher.accept(binaryBlob);
   }
 

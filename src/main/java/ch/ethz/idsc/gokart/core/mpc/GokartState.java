@@ -95,7 +95,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override
-  public void input(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Ux));
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(Uy));
     byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(dotPsi));
@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override
-  public int getLength() {
+  public int length() {
     return 8 * 4;
   }
 }

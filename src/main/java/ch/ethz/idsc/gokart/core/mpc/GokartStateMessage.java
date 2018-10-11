@@ -1,4 +1,4 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;

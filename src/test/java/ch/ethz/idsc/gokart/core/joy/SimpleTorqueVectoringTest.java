@@ -1,4 +1,4 @@
-// code by jph
+// code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.retina.util.math.SI;
@@ -71,7 +71,9 @@ public class SimpleTorqueVectoringTest extends TestCase {
   }
 
   public void testClip() {
-    Tensor clip = SimpleTorqueVectoring.clip(RealScalar.of(1.2), RealScalar.ZERO);
-    System.out.println(clip);
+    // Tensor clip =
+    SimpleTorqueVectoring.clip(RealScalar.of(1.2), RealScalar.ZERO);
+    // TOOD JPH simplify function
+    // System.out.println(clip);
   }
 }

@@ -64,7 +64,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 ## GOKART
 
-![gokart_operation](https://user-images.githubusercontent.com/4012178/46567308-22d89580-c931-11e8-8570-3aaea8975f46.png)
+![gokart_operation](https://user-images.githubusercontent.com/4012178/46775645-630c8f00-cd08-11e8-9b41-c298fdc94bd2.png)
 
 ### Actuation
 
