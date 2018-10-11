@@ -42,6 +42,7 @@ import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
+import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
@@ -83,6 +84,7 @@ enum RunTabbedTaskGui {
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
+      LocalViewLcmModule.class, //
       ParametersModule.class // configure parameters
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //

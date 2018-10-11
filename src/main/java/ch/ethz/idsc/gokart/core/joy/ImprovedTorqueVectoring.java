@@ -15,6 +15,7 @@ public class ImprovedTorqueVectoring implements TorqueVectoringInterface {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 
+  @Override
   public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // compute differential torque (in Arms as we do not use the power function yet)
     Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
@@ -94,29 +95,39 @@ public class GokartRender extends AbstractGokartRender {
       }
     }
     // rear wheels
+    final AxisAlignedBox axisAlignedBox = //
+        new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(.8)));
     if (Objects.nonNull(rimoGetEvent)) {
       final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
-      graphics.setStroke(new BasicStroke(2));
       graphics.setColor(Color.GREEN);
-      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.1));
-      graphics.draw(geometricLayer.toVector( //
-          vehicleModel.wheel(2).lever(), //
-          Tensors.vector(rateY_draw.Get(0).number().doubleValue(), 0)));
-      graphics.draw(geometricLayer.toVector( //
-          vehicleModel.wheel(3).lever(), //
-          Tensors.vector(rateY_draw.Get(1).number().doubleValue(), 0)));
-      graphics.setStroke(new BasicStroke(1));
+      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
+      Tensor[] ofs = new Tensor[] { Tensors.vector(0, .13, 0), Tensors.vector(0, -.13, 0) };
+      for (int wheel = 0; wheel < 2; ++wheel) {
+        Tensor matrix = Se2Utils.toSE2Translation(vehicleModel.wheel(2 + wheel).lever().add(ofs[wheel]));
+        geometricLayer.pushMatrix(matrix);
+        Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(rateY_draw.Get(0 + wheel)));
+        path.closePath();
+        graphics.fill(path);
+        geometricLayer.popMatrix();
+      }
     }
     if (Objects.nonNull(rimoPutEvent)) {
       double factor = 5E-4;
-      double trqL = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor;
-      double trqR = -Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor;
+      double[] trq = new double[] { //
+          -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor, //
+          -Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor //
+      };
+      Tensor[] ofs = new Tensor[] { Tensors.vector(0, .13 * 2, 0), Tensors.vector(0, -.13 * 2, 0) };
       graphics.setColor(Color.BLUE);
-      graphics.setStroke(new BasicStroke(2));
-      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(2).lever(), Tensors.vector(0.0, trqL)));
-      graphics.draw(geometricLayer.toVector(vehicleModel.wheel(3).lever(), Tensors.vector(0.0, trqR)));
-      // graphics.drawString(Tensors.vector(trqL, trqR).toString(), 0, 100);
-      graphics.setStroke(new BasicStroke(1));
+      for (int wheel = 0; wheel < 2; ++wheel) {
+        Tensor vector = vehicleModel.wheel(2 + wheel).lever();
+        Tensor matrix = Se2Utils.toSE2Translation(vector.add(ofs[wheel]));
+        geometricLayer.pushMatrix(matrix);
+        Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(RealScalar.of(trq[0 + wheel])));
+        path.closePath();
+        graphics.fill(path);
+        geometricLayer.popMatrix();
+      }
     }
     if (Objects.nonNull(linmotGetEvent)) {
       Tensor brakePosition = Tensors.vector(1.0, 0.05);
