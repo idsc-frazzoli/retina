@@ -8,6 +8,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
 
+// TODO breakup class in separate 
 public class GokartRender extends AbstractGokartRender {
   private final VehicleModel vehicleModel;
   // ---
@@ -50,6 +52,8 @@ public class GokartRender extends AbstractGokartRender {
   // ---
   private JoystickEvent joystickEvent;
   public final JoystickListener joystickListener = getEvent -> joystickEvent = getEvent;
+  // ---
+  public final GokartAngularSlip gokartAngularSlip = new GokartAngularSlip(SteerConfig.GLOBAL.getSteerMapping());
   // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
@@ -137,21 +141,34 @@ public class GokartRender extends AbstractGokartRender {
           brakePosition, //
           Tensors.vector(linmotGetEvent.getActualPosition().number().doubleValue() * -10, 0)));
     }
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
-      Scalar angleL = pair.Get(0);
-      Scalar angleR = pair.Get(1);
-      graphics.setStroke(new BasicStroke(2));
-      graphics.setColor(new Color(128, 128, 128, 128));
-      Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
-      for (int index = 0; index < 4; ++index) {
-        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(vehicleModel.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
-        geometricLayer.pushMatrix(matrix);
-        graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
-        geometricLayer.popMatrix();
+    if (Objects.nonNull(gokartStatusEvent))
+      if (gokartStatusEvent.isSteerColumnCalibrated()) {
+        Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+        Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
+        Scalar angleL = pair.Get(0);
+        Scalar angleR = pair.Get(1);
+        graphics.setStroke(new BasicStroke(2));
+        graphics.setColor(new Color(128, 128, 128, 128));
+        Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
+        for (int index = 0; index < 4; ++index) {
+          Tensor matrix = Se2Utils.toSE2Matrix(Join.of(vehicleModel.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
+          geometricLayer.pushMatrix(matrix);
+          graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
+          geometricLayer.popMatrix();
+        }
+        {
+          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
+          Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
+          Tensor alongX = axisAlignedBox.alongX(Magnitude.PER_SECOND.apply(angularSlip));
+          // Tensor matrix = Se2Utils.toSE2Translation(vector.add(ofs[wheel]));
+          // geometricLayer.pushMatrix(matrix);
+          Path2D path = geometricLayer.toPath2D(alongX);
+          path.closePath();
+          graphics.setColor(new Color(255, 0, 0, 128));
+          graphics.fill(path);
+          // geometricLayer.popMatrix();
+        }
       }
-    }
     graphics.setStroke(new BasicStroke());
   }
 }
