@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,5 +12,10 @@ public interface TorqueVectoringInterface {
    * @param real rotation taken from gyro with unit s^-1
    * @return vector of the form {powerLeft, powerRight} where both
    * powerLeft and powerRight are guaranteed to be in the interval [-1, 1] */
-  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation);
+  public Tensor powers( //
+      Scalar expectedRotationPerMeterDriven, //
+      Scalar meanTangentSpeed, //
+      Scalar angularSlip, //
+      Scalar power, //
+      Scalar realRotation);
 }

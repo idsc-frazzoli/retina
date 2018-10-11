@@ -8,13 +8,12 @@ import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ImprovedTorqueVectoring implements TorqueVectoringInterface{
+public class ImprovedTorqueVectoring implements TorqueVectoringInterface {
   private final TorqueVectoringConfig torqueVectoringConfig;
 
   public ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
-
 
   public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // compute differential torque (in Arms as we do not use the power function yet)
@@ -33,8 +32,7 @@ public class ImprovedTorqueVectoring implements TorqueVectoringInterface{
       Scalar stabilizerFactor = RealScalar.ONE.subtract(s);
       wantedZTorque = wantedZTorque.multiply(stabilizerFactor);
     }
-    
-    System.out.println("ZTorque: " + wantedZTorque + "e:"+angularSlip);
+    System.out.println("ZTorque: " + wantedZTorque + "e:" + angularSlip);
     // left and right power
     Scalar powerLeft = power.subtract(wantedZTorque); // One
     Scalar powerRight = power.add(wantedZTorque); // One
