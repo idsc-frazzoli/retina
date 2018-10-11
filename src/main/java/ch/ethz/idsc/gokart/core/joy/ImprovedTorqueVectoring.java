@@ -33,7 +33,8 @@ public class ImprovedTorqueVectoring implements TorqueVectoringInterface{
       Scalar stabilizerFactor = RealScalar.ONE.subtract(s);
       wantedZTorque = wantedZTorque.multiply(stabilizerFactor);
     }
-    // System.out.println("ZTorque: " + wantedZTorque);
+    
+    System.out.println("ZTorque: " + wantedZTorque + "e:"+angularSlip);
     // left and right power
     Scalar powerLeft = power.subtract(wantedZTorque); // One
     Scalar powerRight = power.add(wantedZTorque); // One

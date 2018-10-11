@@ -66,7 +66,7 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     // ---
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(torquesARMS.Get(1));
-    System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
+    //System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_rawL, // sign left invert
         (short) +arms_rawR // sign right id
