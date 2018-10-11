@@ -105,9 +105,9 @@ public class GokartRender extends AbstractGokartRender {
       final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       graphics.setColor(Color.GREEN);
       Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
-      Tensor[] ofs = new Tensor[] { Tensors.vector(0, .13, 0), Tensors.vector(0, -.13, 0) };
+      Tensor[] ofs = new Tensor[] { Tensors.vector(0, +.13, 0), Tensors.vector(0, -.13, 0) };
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(vehicleModel.wheel(2 + wheel).lever().add(ofs[wheel]));
+        Tensor matrix = Se2Utils.toSE2Translation(vehicleModel.wheel(3 - wheel).lever().add(ofs[wheel]));
         geometricLayer.pushMatrix(matrix);
         Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(rateY_draw.Get(0 + wheel)));
         path.closePath();
@@ -119,12 +119,12 @@ public class GokartRender extends AbstractGokartRender {
       double factor = 5E-4;
       double[] trq = new double[] { //
           -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor, //
-          -Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor //
+          +Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor //
       };
-      Tensor[] ofs = new Tensor[] { Tensors.vector(0, .13 * 2, 0), Tensors.vector(0, -.13 * 2, 0) };
+      Tensor[] ofs = new Tensor[] { Tensors.vector(0, -.13 * 2, 0), Tensors.vector(0, +.13 * 2, 0) };
       graphics.setColor(Color.BLUE);
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor vector = vehicleModel.wheel(2 + wheel).lever();
+        Tensor vector = vehicleModel.wheel(3 - wheel).lever();
         Tensor matrix = Se2Utils.toSE2Translation(vector.add(ofs[wheel]));
         geometricLayer.pushMatrix(matrix);
         Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(RealScalar.of(trq[0 + wheel])));
@@ -144,7 +144,7 @@ public class GokartRender extends AbstractGokartRender {
     if (Objects.nonNull(gokartStatusEvent))
       if (gokartStatusEvent.isSteerColumnCalibrated()) {
         Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-        Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
+        Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle.negate()); // TODO
         Scalar angleL = pair.Get(0);
         Scalar angleR = pair.Get(1);
         graphics.setStroke(new BasicStroke(2));
