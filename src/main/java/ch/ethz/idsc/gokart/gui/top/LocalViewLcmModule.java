@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensors;
 public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
-  private static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,100,200},{-100,0,300},{0,0,1}}").unmodifiable();
+  static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
@@ -51,7 +51,7 @@ public class LocalViewLcmModule extends AbstractModule {
     gokartStatusLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
-    timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
   }
 
@@ -62,12 +62,13 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     // ---
-    timerFrame.jFrame.setVisible(false);
+    timerFrame.close();
   }
 
   public static void standalone() throws Exception {
     LocalViewLcmModule localViewLcmModule = new LocalViewLcmModule();
     localViewLcmModule.first();
+    localViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {

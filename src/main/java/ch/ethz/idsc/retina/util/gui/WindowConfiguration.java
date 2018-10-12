@@ -41,7 +41,7 @@ public class WindowConfiguration implements Serializable {
     WindowConfiguration windowConfig = this;
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosed(WindowEvent e) {
+      public void windowClosed(WindowEvent windowEvent) {
         Rectangle rectangle = jFrame.getBounds();
         rectangle.x -= shift.x;
         rectangle.y -= shift.y;

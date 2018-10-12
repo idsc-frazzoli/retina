@@ -2,6 +2,8 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.tensor.mat.Det;
+import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class LocalViewLcmModuleTest extends TestCase {
@@ -9,5 +11,9 @@ public class LocalViewLcmModuleTest extends TestCase {
     ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
     Thread.sleep(200);
     ModuleAuto.INSTANCE.terminateOne(LocalViewLcmModule.class);
+  }
+
+  public void testDeterminant() {
+    assertTrue(Sign.isNegative(Det.of(LocalViewLcmModule.MODEL2PIXEL)));
   }
 }
