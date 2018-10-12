@@ -107,7 +107,7 @@ public class GokartRender extends AbstractGokartRender {
       Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
       Tensor[] ofs = new Tensor[] { Tensors.vector(0, +.13, 0), Tensors.vector(0, -.13, 0) };
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(vehicleModel.wheel(3 - wheel).lever().add(ofs[wheel]));
+        Tensor matrix = Se2Utils.toSE2Translation(vehicleModel.wheel(2 + wheel).lever().add(ofs[wheel]));
         geometricLayer.pushMatrix(matrix);
         Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(rateY_draw.Get(0 + wheel)));
         path.closePath();
@@ -124,7 +124,7 @@ public class GokartRender extends AbstractGokartRender {
       Tensor[] ofs = new Tensor[] { Tensors.vector(0, -.13 * 2, 0), Tensors.vector(0, +.13 * 2, 0) };
       graphics.setColor(Color.BLUE);
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor vector = vehicleModel.wheel(3 - wheel).lever();
+        Tensor vector = vehicleModel.wheel(2 + wheel).lever();
         Tensor matrix = Se2Utils.toSE2Translation(vector.add(ofs[wheel]));
         geometricLayer.pushMatrix(matrix);
         Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(RealScalar.of(trq[0 + wheel])));
@@ -144,7 +144,7 @@ public class GokartRender extends AbstractGokartRender {
     if (Objects.nonNull(gokartStatusEvent))
       if (gokartStatusEvent.isSteerColumnCalibrated()) {
         Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-        Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle.negate()); // TODO
+        Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
         Scalar angleL = pair.Get(0);
         Scalar angleR = pair.Get(1);
         graphics.setStroke(new BasicStroke(2));
@@ -159,14 +159,11 @@ public class GokartRender extends AbstractGokartRender {
         {
           Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
           Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
-          Tensor alongX = axisAlignedBox.alongX(Magnitude.PER_SECOND.apply(angularSlip));
-          // Tensor matrix = Se2Utils.toSE2Translation(vector.add(ofs[wheel]));
-          // geometricLayer.pushMatrix(matrix);
+          Tensor alongX = axisAlignedBox.alongX(Magnitude.PER_SECOND.apply(angularSlip).negate());
           Path2D path = geometricLayer.toPath2D(alongX);
           path.closePath();
           graphics.setColor(new Color(255, 0, 0, 128));
           graphics.fill(path);
-          // geometricLayer.popMatrix();
         }
       }
     graphics.setStroke(new BasicStroke());
