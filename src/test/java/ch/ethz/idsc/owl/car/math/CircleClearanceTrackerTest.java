@@ -28,7 +28,7 @@ public class CircleClearanceTrackerTest extends TestCase {
     assertFalse(clearanceTracker.isObstructed(Tensors.vector(3, 0)));
     assertFalse(clearanceTracker.isObstructed(Tensors.vector(3, -1)));
     assertFalse(clearanceTracker.contact().isPresent());
-    assertTrue(clearanceTracker.isObstructed(Tensors.vector(3, +1)));
+    assertTrue(clearanceTracker.isObstructed(Tensors.vector(2, +1.5)));
     assertTrue(clearanceTracker.contact().isPresent());
     assertFalse(clearanceTracker.isObstructed(Tensors.vector(-3, 0)));
     assertFalse(clearanceTracker.isObstructed(Tensors.vector(-3, -1)));
