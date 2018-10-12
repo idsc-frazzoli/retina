@@ -6,10 +6,10 @@ import junit.framework.TestCase;
 public class MPCPathFollowingClientTest extends TestCase {
   public void testSimple() throws Exception {
     // TODO
-    // MPCPathFollowingClient mpcPathFollowingClient = //
-    // new MPCPathFollowingClient(MPCPathFollowingConfig.GLOBAL);
-    // mpcPathFollowingClient.first();
-    // Thread.sleep(10000); // fire for a second
-    // mpcPathFollowingClient.last();
+    LcmMPCPathFollowingClient lcmMPCPathFollowingClient =
+        new LcmMPCPathFollowingClient();
+    lcmMPCPathFollowingClient.start();
+    Thread.sleep(10000); // fire for a second
+    lcmMPCPathFollowingClient.stop();
   }
 }

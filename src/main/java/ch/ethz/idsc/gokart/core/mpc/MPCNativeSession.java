@@ -11,7 +11,7 @@ public class MPCNativeSession {
   private HashMap<Integer, Integer> messageCounter;
 
   void first() {
-    String fullPath = MPCNative.binary().get().getAbsolutePath();
+    String fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
     // start server
     List<String> list = Arrays.asList(fullPath
     // String.valueOf(MPCNative.TCP_SERVER_PORT)
