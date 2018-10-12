@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 
 public class CubicSteerMappingTest extends TestCase {
   public void testAdvancedFormulaCenter() {
-    SteerMapping steerMapping = SteerConfig.GLOBAL.getCubicSteerMapping();
+    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
     assertEquals(angle, RealScalar.ZERO);
@@ -23,7 +23,7 @@ public class CubicSteerMappingTest extends TestCase {
   }
 
   public void testAdvancedFormulaSign() {
-    SteerMapping steerMapping = SteerConfig.GLOBAL.getCubicSteerMapping();
+    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
     Scalar sceIn = Quantity.of(0.1, "SCE");
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
@@ -34,12 +34,12 @@ public class CubicSteerMappingTest extends TestCase {
   }
 
   public void testAdvancedFormulaNegative() {
-    SteerMapping steerMapping = SteerConfig.GLOBAL.getCubicSteerMapping();
+    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
     Scalar sceIn = Quantity.of(-0.7, "SCE");
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isNegative(angle));
-    Clip.function(-.5, .4).requireInside(angle);
+    Clip.function(-.5, -.4).requireInside(angle);
     Scalar sce = steerMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
   }
