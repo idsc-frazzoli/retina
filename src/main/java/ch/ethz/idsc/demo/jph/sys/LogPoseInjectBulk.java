@@ -11,14 +11,15 @@ import ch.ethz.idsc.gokart.offline.pose.LogPoseInject;
 enum LogPoseInjectBulk {
   ;
   public static void main(String[] args) throws Exception {
-    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_azure");
-    File targ = new File("/media/datahaki/data/ethz/export_azure");
+    File root = new File("/media/datahaki/media/ethz/gokart/topic/track_orange");
+    File targ = new File("/media/datahaki/media/ethz/gokart/topic/racing4o");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         System.out.println(folder);
         File dst = new File(targ, folder.getName() + ".lcm");
         if (dst.isFile()) {
-          System.out.println("skipping " + dst);
+          System.err.println("file already exists, skipping:");
+          System.out.println(dst);
         } else {
           // dst.delete();
           GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);

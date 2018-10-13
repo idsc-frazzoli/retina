@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Mod;
 
+// TODO V022 obsolete
 enum Se2SpeedEstimate implements TensorUnaryOperator {
   FUNCTION;
   // ---
