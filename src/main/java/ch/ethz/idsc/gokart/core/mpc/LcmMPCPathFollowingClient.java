@@ -18,12 +18,12 @@ public class LcmMPCPathFollowingClient extends BinaryLcmClient implements MPCPat
   @Override
   public void start() {
     startSubscriptions();
-    //mpcNativeSession.first();
+    mpcNativeSession.first();
   }
 
   @Override
   public void stop() {
-    //mpcNativeSession.last();
+    mpcNativeSession.last();
     stopSubscriptions();
   }
 
