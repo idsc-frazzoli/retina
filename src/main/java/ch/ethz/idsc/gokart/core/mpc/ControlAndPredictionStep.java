@@ -36,4 +36,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
   public int length() {
     return control.length()+state.length();
   }
+  
+  public String toString() {
+    return "cns:\n"+control.toString()+state.toString();
+  }
 }

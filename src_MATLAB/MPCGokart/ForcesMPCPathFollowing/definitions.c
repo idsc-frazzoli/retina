@@ -1,3 +1,5 @@
+#include <byteswap.h>
+
 //note: not all values are necessarily known for every type of controller
 struct State {
 	float Ux;
@@ -11,7 +13,7 @@ struct State {
 	float s;
 };
 
-struct ControlAndState{
+struct Control {
 	//control: left power, right power, 
 	float uL;
 	float uR;
@@ -20,6 +22,17 @@ struct ControlAndState{
 	float udotS;
 	//control: braking
 	float uB;
-	//also send predicted states
+};
+
+struct ControlAndStateMsg{
+	int messageType;
+	int sequenceInt;
+	struct Control control;
+	struct State state;
+};
+
+struct StateMsg{
+	int messageType;
+	int sequenceInt;
 	struct State state;
 };

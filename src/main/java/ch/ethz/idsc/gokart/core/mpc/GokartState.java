@@ -63,7 +63,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
       Scalar Y, //
       Scalar Psi, //
       Scalar w2L, //
-      Scalar w2R, Scalar s) {
+      Scalar w2R, //
+      Scalar s) {
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
     this.Uy = Magnitude.VELOCITY.toFloat(Uy);
     this.dotPsi = Magnitude.PER_SECOND.toFloat(dotPsi);
@@ -178,5 +179,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
   @Override
   public int length() {
     return 9 * 4;
+  }
+  
+  public String toString(){
+    return "State:\n"+asVector().toString()+"\n";
   }
 }

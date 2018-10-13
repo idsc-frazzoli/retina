@@ -71,4 +71,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
         getudotS(),//
         getuB());
   }
+  
+  public String toString() {
+    return "Control:\n"+asVector().toString()+"\n";
+  }
 }
