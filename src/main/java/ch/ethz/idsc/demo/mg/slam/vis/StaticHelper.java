@@ -40,12 +40,11 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       Optional<Tensor> optional = slamPrcContainer.getCurve();
       if (optional.isPresent())
         // drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), slamPrcContainer.getFittedCurve());
-        // TODO MG jan removed the copy() in "optional.get().copy()" below, check if ok
         drawInterpolate(slamMapFrames[1], slamCoreContainer.getPoseUnitless(), optional.get());
     }
     slamMapFrames[1].drawSlamWaypoints(slamPrcContainer.getWorldWaypoints(), slamPrcContainer.getValidities());
     // slamMapFrames[0].addGokartPose(gokartLidarPose, Color.BLACK);
-    slamMapFrames[0].addGokartPose(pose, Color.BLUE);
+    // slamMapFrames[0].addGokartPose(pose, Color.BLUE);
     slamMapFrames[1].addGokartPose(pose, Color.BLUE);
     BufferedImage[] combinedFrames = new BufferedImage[2];
     for (int i = 0; i < 2; i++)

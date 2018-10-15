@@ -5,7 +5,7 @@ package ch.ethz.idsc.demo.mg.slam.config;
  * set accordingly */
 public class SlamDvsConfig {
   /** current options are "sEye" and "davis" */
-  public static String cameraType = "sEye";
+  public static String cameraType = "davis";
 
   /** @return SlamPrcConfig set according to cameraType */
   public static SlamPrcConfig getSlamPrcConfig() {
