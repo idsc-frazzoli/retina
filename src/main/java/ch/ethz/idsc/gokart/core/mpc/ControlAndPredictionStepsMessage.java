@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   public final ControlAndPredictionSteps controlAndPredictionSteps;
-  
+
   public ControlAndPredictionStepsMessage(ControlAndPredictionSteps controlAndPredictionSteps, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
     this.controlAndPredictionSteps = controlAndPredictionSteps;
@@ -14,7 +14,7 @@ public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
     super(byteBuffer);
     controlAndPredictionSteps = new ControlAndPredictionSteps(byteBuffer);
   }
-  
+
   @Override
   public int getMessagePrefix() {
     return MPCNative.CONTROL_UPDATE;

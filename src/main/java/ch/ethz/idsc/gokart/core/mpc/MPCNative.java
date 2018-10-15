@@ -32,6 +32,7 @@ import java.util.Optional;
     File file = new File(RELATIVE_BINARY).getAbsoluteFile();
     return Optional.ofNullable(file.isFile() ? file : null);
   }
+
   public static Optional<File> lcmBinary() {
     File file = new File(RELATIVE_LCM_BINARY).getAbsoluteFile();
     return Optional.ofNullable(file.isFile() ? file : null);

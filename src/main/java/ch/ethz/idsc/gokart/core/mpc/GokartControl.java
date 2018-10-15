@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -39,6 +38,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   public Scalar getudotS() {
     return Quantity.of(uR, SCE_PER_SECOND);
   }
+
   public Scalar getuB() {
     return Quantity.of(uB, SI.ONE);
   }
@@ -60,19 +60,19 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public int length() {
-    return 4*4;
+    return 4 * 4;
   }
 
   @Override
   public Tensor asVector() {
     return Tensors.of(//
-        getuL(),//
-        getuR(),//
-        getudotS(),//
+        getuL(), //
+        getuR(), //
+        getudotS(), //
         getuB());
   }
-  
+
   public String toString() {
-    return "Control:\n"+asVector().toString()+"\n";
+    return "Control:\n" + asVector().toString() + "\n";
   }
 }

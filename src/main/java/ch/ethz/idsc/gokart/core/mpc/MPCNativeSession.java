@@ -35,7 +35,7 @@ public class MPCNativeSession {
   }
 
   public String getNativeOutput() {
-    //doesn't seem to work
+    // doesn't seem to work
     String res = "";
     try {
       while (is.ready())

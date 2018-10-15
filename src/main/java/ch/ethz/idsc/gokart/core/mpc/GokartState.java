@@ -15,6 +15,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
 /* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
   private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
+  /** time in seconds from synchronized time point */
+  private final float time;
   /** forward velocity in gokart frame with unit m*s^1 */
   private final float Ux;
   /** sidewards velocity in gokart frame with unit m*s^1 */
@@ -33,8 +35,10 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float w2R;
   /** steering state */
   private final float s;
+  
 
   public GokartState(//
+      float time,//
       float Ux, //
       float Uy, //
       float dotPsi, //
@@ -42,7 +46,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
       float Y, //
       float Psi, //
       float w2L, //
-      float w2R, float s) {
+      float w2R,//
+      float s) {
+    this.time = time;
     this.Ux = Ux;
     this.Uy = Uy;
     this.dotPsi = dotPsi;
@@ -53,9 +59,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.w2R = w2R;
     this.s = s;
   }
-  
 
   public GokartState(//
+      Scalar time,
       Scalar Ux, //
       Scalar Uy, //
       Scalar dotPsi, //
@@ -65,6 +71,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
       Scalar w2L, //
       Scalar w2R, //
       Scalar s) {
+    this.time = Magnitude.SECOND.toFloat(time);
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
     this.Uy = Magnitude.VELOCITY.toFloat(Uy);
     this.dotPsi = Magnitude.PER_SECOND.toFloat(dotPsi);
@@ -77,21 +84,23 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public GokartState(Tensor GokartStateTensor) {
-    Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(0));
-    Uy = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
-    dotPsi = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(2));
-    X = Magnitude.METER.toFloat(GokartStateTensor.Get(3));
-    Y = Magnitude.METER.toFloat(GokartStateTensor.Get(4));
-    Psi = Magnitude.ONE.toFloat(GokartStateTensor.Get(5));
-    w2L = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(6));
-    w2R = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(7));
-    s = SteerPutEvent.ENCODER.apply(GokartStateTensor.Get(8)).number().floatValue();
+    time = Magnitude.SECOND.toFloat(GokartStateTensor.Get(0));
+    Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
+    Uy = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(2));
+    dotPsi = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(3));
+    X = Magnitude.METER.toFloat(GokartStateTensor.Get(4));
+    Y = Magnitude.METER.toFloat(GokartStateTensor.Get(5));
+    Psi = Magnitude.ONE.toFloat(GokartStateTensor.Get(6));
+    w2L = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(7));
+    w2R = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(8));
+    s = SteerPutEvent.ENCODER.apply(GokartStateTensor.Get(9)).number().floatValue();
   }
 
   // constructor for input stream
   public GokartState(ByteBuffer byteBuffer) {
     // assume that the input stream contains 8 floats
     // if not, IllegalArgumentException is raised
+    time = byteBuffer.getFloat();
     Ux = byteBuffer.getFloat();
     Uy = byteBuffer.getFloat();
     dotPsi = byteBuffer.getFloat();
@@ -116,17 +125,21 @@ import ch.ethz.idsc.tensor.qty.Unit;
      * w2R,
      * s); */
     return Tensors.of(//
-        getUx(),//
-        getUy(),
-        getdotPsi(),//
-        getX(),//
-        getY(),//
-        getPsi(),//
-        getw2L(),//
-        getw2R(),//
+        getTime(),//
+        getUx(), //
+        getUy(), getdotPsi(), //
+        getX(), //
+        getY(), //
+        getPsi(), //
+        getw2L(), //
+        getw2R(), //
         getS());
   }
 
+  public Scalar getTime() {
+    return Quantity.of(time, SI.SECOND);
+  }
+  
   public Scalar getUx() {
     return Quantity.of(Ux, SI.VELOCITY);
   }
@@ -165,6 +178,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
+    byteBuffer.putFloat(time);
     byteBuffer.putFloat(Ux);
     byteBuffer.putFloat(Uy);
     byteBuffer.putFloat(dotPsi);
@@ -178,10 +192,10 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public int length() {
-    return 9 * 4;
+    return 10 * 4;
   }
-  
-  public String toString(){
-    return "State:\n"+asVector().toString()+"\n";
+
+  public String toString() {
+    return "State:\n" + asVector().toString() + "\n";
   }
 }

@@ -4,28 +4,28 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 /* package */ class ControlAndPredictionSteps implements MPCNativeInsertable {
-  public final ControlAndPredictionStep[] controlAndPredictionSteps;
+  public final ControlAndPredictionStep[] steps;
 
   public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {
-    this.controlAndPredictionSteps = controlAndPredictionSteps;
+    this.steps = controlAndPredictionSteps;
   }
 
   public ControlAndPredictionSteps(ByteBuffer byteBuffer) {
-    controlAndPredictionSteps = new ControlAndPredictionStep[MPCNative.PREDICTIONSIZE];
+    steps = new ControlAndPredictionStep[MPCNative.PREDICTIONSIZE];
     for (int i = 0; i < MPCNative.PREDICTIONSIZE; i++) {
-      controlAndPredictionSteps[i] = new ControlAndPredictionStep(byteBuffer);
+      steps[i] = new ControlAndPredictionStep(byteBuffer);
     }
   }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    for (ControlAndPredictionStep step : controlAndPredictionSteps) {
+    for (ControlAndPredictionStep step : steps) {
       step.insert(byteBuffer);
     }
   }
 
   @Override
   public int length() {
-    return controlAndPredictionSteps[0].length() * controlAndPredictionSteps.length;
+    return steps[0].length() * steps.length;
   }
 }
