@@ -62,7 +62,7 @@ public class DavisSlamCoreConfig extends SlamCoreConfig {
     padding = Quantity.of(4, SI.METER);
     // SlamViewer
     saveSlamFrame = false;
-    savingInterval = Quantity.of(21, SI.SECOND);
+    savingInterval = Quantity.of(54, SI.SECOND);
     visualizationInterval = Quantity.of(0.1, SI.SECOND);
     frameWidth = RealScalar.of(600); // [pixel]
     kartSize = Quantity.of(1.5, SI.METER);
