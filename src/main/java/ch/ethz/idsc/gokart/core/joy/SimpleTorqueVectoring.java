@@ -9,36 +9,44 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class SimpleTorqueVectoring {
-  private static final Scalar MIN = RealScalar.of(-1);
-  private static final Scalar MAX = RealScalar.of(+1);
-  // ---
-  private final TorqueVectoringConfig torqueVectoringConfig;
+public class SimpleTorqueVectoring implements TorqueVectoringInterface {
+  final TorqueVectoringConfig torqueVectoringConfig;
 
   public SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 
-  /** @param rotationPerMeterDriven with unit m^-1
-   * @param meanTangentSpeed with unit m*s^-1
-   * @param angularSlip with unit s^-1
-   * @param power unitless in the interval [-1, 1]
-   * @return vector of the form {powerLeft, powerRight} where both
-   * powerLeft and powerRight are guaranteed to be in the interval [-1, 1] */
-  public Tensor powers(Scalar rotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power) {
-    // compute differential torque (in Arms as we do not use the power function yet)
+  @Override
+  public final Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
+    // compute differential torque (in ARMS as we do not use the power function yet)
     Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
-    // System.out.println("Dynamic component: " + dynamicComponent);
-    Scalar lateralAcceleration = Times.of(rotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
-    // System.out.println("lateral Acceleration: " + lateralAcceleration);
+    Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
     Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
-    // System.out.println("Static component: " + staticComponent);
-    Scalar wantedZTorque = dynamicComponent.add(staticComponent); // One
-    // System.out.println("ZTorque: " + wantedZTorque);
-    // left and right power
-    Scalar powerLeft = power.subtract(wantedZTorque); // One
-    Scalar powerRight = power.add(wantedZTorque); // One
-    // prefer power over Z-torque
+    // ---
+    Scalar wantedZTorque = wantedZTorque( //
+        dynamicComponent.add(staticComponent), // One
+        realRotation);
+    // left and right power prefer power over Z-torque
+    return clip( //
+        power.subtract(wantedZTorque), // unit one
+        power.add(wantedZTorque) // unit one
+    );
+  }
+
+  /** @param wantedZTorque
+   * @param realRotation
+   * @return */
+  Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
+    return wantedZTorque; // simple implementation
+  }
+
+  private static final Scalar MAX = RealScalar.of(+1.0);
+  private static final Scalar MIN = RealScalar.of(-1.0);
+
+  /** @param powerLeft unitless
+   * @param powerRight unitless
+   * @return vector of length 2 with scalars in interval [-1, 1] */
+  static Tensor clip(Scalar powerLeft, Scalar powerRight) {
     // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
     if (Scalars.lessThan(MAX, powerRight)) {
       Scalar overpower = powerRight.subtract(MAX);

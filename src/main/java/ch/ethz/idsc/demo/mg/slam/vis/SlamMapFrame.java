@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.img.ImageReflect;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
@@ -28,13 +28,13 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private static double cornerY;
 
   SlamMapFrame() {
-    mapWidth = SlamCoreConfig.GLOBAL.mapWidth();
-    mapHeight = SlamCoreConfig.GLOBAL.mapHeight();
-    cornerX = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(0));
-    cornerY = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.corner.Get(1));
-    cellDim = Magnitude.METER.toDouble(SlamCoreConfig.GLOBAL.cellDim);
-    kartLength = SlamCoreConfig.GLOBAL.kartLength();
-    waypointRadius = SlamCoreConfig.GLOBAL.waypointRadius();
+    mapWidth = SlamDvsConfig.eventCamera.slamCoreConfig.mapWidth();
+    mapHeight = SlamDvsConfig.eventCamera.slamCoreConfig.mapHeight();
+    cornerX = Magnitude.METER.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.corner.Get(0));
+    cornerY = Magnitude.METER.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.corner.Get(1));
+    cellDim = Magnitude.METER.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.cellDim);
+    kartLength = SlamDvsConfig.eventCamera.slamCoreConfig.kartLength();
+    waypointRadius = SlamDvsConfig.eventCamera.slamCoreConfig.waypointRadius();
     bufferedImage = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     graphics = bufferedImage.createGraphics();
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();

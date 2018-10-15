@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <signal.h>
 
+#include "MPCPathFollowing/include/MPCPathFollowing.h"
+
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
@@ -18,22 +20,38 @@
 int listen_sock;
 int sock;
 FILE *file;
+FILE *solverFile;
 bool finished = false;
 bool running = true;
 
-void intHandler(int dummy) {
-	printf("finished after interuption\n");
-	fprintf(file, "finished after interuption\n");
-	closeConnection();
-}
+/* declare FORCES variables and structures */
+int i, exitflag;
+MPCPathFollowing_params myparams;
+MPCPathFollowing_output myoutput;
+MPCPathFollowing_info myinfo;
+MPCPathFollowing_float minusA_times_x0[2];
+
+extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
+                                                double *f, double *nabla_f, double *c, double *nabla_c,
+                                                double *h, double *nabla_h, double *H, int stage);
+
+
+MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
 void closeConnection(){
     printf("Connection closed\n");
     close(sock);
     close(listen_sock);
     fclose(file);
+    fclose(solverFile);
     finished = true;
     exit(0);
+}
+
+void intHandler(int dummy) {
+	printf("finished after interuption\n");
+	fprintf(file, "finished after interuption\n");
+	closeConnection();
 }
 
 int main(int argc, char *argv[]) {
@@ -46,6 +64,7 @@ int main(int argc, char *argv[]) {
         file = fopen("livesign.txt", "w"); // write only s
 	fprintf(file, "Native server started\n");
 
+    solverFile = fopen("solverLog.txt","w");
 	// socket address used for the server
 	struct sockaddr_in server_address;
 	memset(&server_address, 0, sizeof(server_address));
@@ -110,6 +129,8 @@ int main(int argc, char *argv[]) {
 			//pbuffer += n;
 			//maxlen -= n;
 			//len += n;
+
+			exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 
 			printf("received: '%s'\n", buffer);
 			fprintf(file, "received: '%s'\n", buffer);

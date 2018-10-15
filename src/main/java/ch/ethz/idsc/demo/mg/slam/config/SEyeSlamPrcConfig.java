@@ -7,6 +7,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamPrcConfig parameters according to siliconEye */
 /* package */ class SEyeSlamPrcConfig extends SlamPrcConfig {
+  public static final SEyeSlamPrcConfig GLOBAL = new SEyeSlamPrcConfig();
+
   public SEyeSlamPrcConfig() {
     // SlamWaypointDetection
     /** valid range [0,1] */

@@ -1,11 +1,28 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-/* package */ class MPCOptimizationParameterMessage {
-  public final int messageType = MPCNative.PARAMETER_UPDATE;
-  public final MPCOptimizationParameter optimizationParameters;
+import java.nio.ByteBuffer;
 
-  public MPCOptimizationParameterMessage(MPCOptimizationParameter optimizationParameters) {
-    this.optimizationParameters = optimizationParameters;
+/* package */ class MPCOptimizationParameterMessage extends MPCNativeMessage {
+  public final MPCOptimizationParameter mpcOptimizationParameter;
+
+  public MPCOptimizationParameterMessage(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+    super(mpcNativeSession);
+    this.mpcOptimizationParameter = mpcOptimizationParameter;
+  }
+
+  public MPCOptimizationParameterMessage(ByteBuffer byteBuffer) {
+    super(byteBuffer);
+    mpcOptimizationParameter = new MPCOptimizationParameter(byteBuffer);
+  }
+
+  @Override
+  public int getMessagePrefix() {
+    return MPCNative.PARAMETER_UPDATE;
+  }
+
+  @Override
+  public MPCNativeInsertable getPayload() {
+    return mpcOptimizationParameter;
   }
 }

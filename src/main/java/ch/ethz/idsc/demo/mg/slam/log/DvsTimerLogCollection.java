@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.log;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -16,7 +16,7 @@ public class DvsTimerLogCollection extends PeriodicSlamStep implements StartAndS
 
   public DvsTimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
       GokartPoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.logCollectionUpdateRate);
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.logCollectionUpdateRate);
     slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
   }
 

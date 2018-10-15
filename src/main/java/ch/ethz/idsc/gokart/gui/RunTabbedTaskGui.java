@@ -23,11 +23,12 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
+import ch.ethz.idsc.gokart.core.joy.ImprovedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
+import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCPathFollowingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
@@ -41,6 +42,7 @@ import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
+import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
@@ -75,18 +77,20 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class // TODO DUBILAB test
+      AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       SeesLcmModule.class, //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
+      LocalViewLcmModule.class, //
       ParametersModule.class // configure parameters
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
-      TorqueVectoringJoystickModule.class, //
+      SimpleTorqueVectoringJoystickModule.class, //
+      ImprovedTorqueVectoringJoystickModule.class, //
       JoystickGroupModule.class, //
       SysidSignalsModule.class //
   );
@@ -106,12 +110,10 @@ enum RunTabbedTaskGui {
       MPCPathFollowingModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
-      SpeedLimitSafetyModule.class, // TODO DUBILAB test
+      SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //
-  // Vlp16ActiveSlowingModule.class, // no option until speed controller reliable
-  //
   );
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //

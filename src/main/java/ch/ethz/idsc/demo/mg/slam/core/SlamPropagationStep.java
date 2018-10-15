@@ -2,15 +2,16 @@
 package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.demo.mg.slam.config.SlamCoreConfig;
-import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 
 /** particle's state propagation which should be followed by a resampling step */
 /* package */ class SlamPropagationStep extends PeriodicSlamStep {
-  private final int particleRange = Magnitude.ONE.toInt(SlamCoreConfig.GLOBAL.particleRange);
+  // TODO pass parameter to constructor
+  private final int particleRange;
 
-  SlamPropagationStep(SlamCoreContainer slamCoreContainer) {
-    super(slamCoreContainer, SlamCoreConfig.GLOBAL.statePropagationRate);
+  SlamPropagationStep(SlamCoreContainer slamCoreContainer, int particleRange) {
+    super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.statePropagationRate);
+    this.particleRange = particleRange;
   }
 
   @Override // from PeriodicSlamStep

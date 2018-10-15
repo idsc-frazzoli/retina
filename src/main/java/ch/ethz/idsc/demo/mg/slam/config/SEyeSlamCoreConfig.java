@@ -10,7 +10,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamCoreConfig parameters according to siliconEye */
-/* package */ class SEyeSlamCoreConfig extends SlamCoreConfig {
+public class SEyeSlamCoreConfig extends SlamCoreConfig {
+  public static final SEyeSlamCoreConfig GLOBAL = new SEyeSlamCoreConfig();
+
   public SEyeSlamCoreConfig() {
     /** SLAM algorithm configuration. Options are fields of {@link SlamAlgoConfig} */
     slamAlgoConfig = SlamAlgoConfig.standardReactiveMode;
@@ -30,7 +32,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     /** average pose of particleRange with highest likelihood is set as pose estimate of the algorithm */
     particleRange = RealScalar.of(3);
     /** events further away are neglected */
-    lookAheadDistance = Quantity.of(12, SI.METER);
+    lookAheadDistance = Quantity.of(7, SI.METER);
     /** for reactive mapping modes */
     lookBehindDistance = Quantity.of(-2, SI.METER);
     // for SiliconEye sensor which has very wide field of view
@@ -65,5 +67,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     frameWidth = RealScalar.of(600); // [pixel]
     kartSize = Quantity.of(1.5, SI.METER);
     waypointRadius = Quantity.of(0.17, SI.METER);
+    dvsConfig = new SEyeDvsConfig();
   }
 }

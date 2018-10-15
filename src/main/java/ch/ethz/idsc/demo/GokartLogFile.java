@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.retina.dev.linmot.LinmotFireFighter;
 
@@ -862,14 +863,80 @@ public enum GokartLogFile implements LogFile {
   /** silicon eye recording while driving along markers
    * aedat protocol */
   _20181003T155915_f6edefe8, //
+  /** manual driving */
+  _20181003T172231_f6edefe8, //
   /***************************************************/
   /* 2018-10-05 */
   /** event-based marker following using davis */
   _20181005T104920_c0176eef, //
+  /** event-based marker following */
+  _20181005T110121_c0176eef, //
+  /** event-based marker following */
+  _20181005T112611_1cb189b4, //
+  /** manual driving along markers */
+  _20181005T135151_1cb189b4, //
+  /** event-based marker following */
+  _20181005T145807_1cb189b4, //
   /** driving with silicon eye and davis on */
   _20181005T154321_1cb189b4, //
   /** driving with silicon eye and davis on */
   _20181005T161158_1cb189b4, //
+  /** event-based marker following */
+  _20181005T181350_1cb189b4, //
+  /** event-based marker following */
+  _20181005T183532_1cb189b4, //
+  /** event-based marker following */
+  _20181005T184013_1cb189b4, //
+  /** event-based marker following */
+  _20181005T184043_1cb189b4, //
+  /***************************************************/
+  /* 2018-10-08 */
+  /** autonomous driving, trajectory following
+   * test of {@link SpeedLimitSafetyModule} */
+  _20181008T114035_0faeff06, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T160558_88f26d5f, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T161549_88f26d5f, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T165907_69109edf, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T175943_786ab990, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181008T183011_786ab990, //
+  /***************************************************/
+  /* 2018-10-10 */
+  /** figure 8, trajectory planning */
+  _20181010T143615_786ab990, //
+  /** manual driving track orange */
+  _20181010T151121_786ab990, //
+  /** manual driving track orange, torque vectoring comparison */
+  _20181010T160308_786ab990, //
+  /** manual driving */
+  _20181010T163911_786ab990, //
+  /** manual driving */
+  _20181010T171643_786ab990, //
+  /***************************************************/
+  /* 2018-10-11 */
+  /** manual driving using torque vectoring */
+  _20181011T115610_66b8cfdb, //
+  /** manual driving using torque vectoring */
+  _20181011T121025_66b8cfdb, //
+  /** manual driving using torque vectoring */
+  _20181011T123004_4a8286b3, //
+  /** manual driving */
+  _20181011T152524_4a8286b3, //
+  /** manual driving using torque vectoring */
+  _20181011T171350_96e04760, //
+  /** manual driving using torque vectoring */
+  _20181011T172043_96e04760, //
+  /** slow manual driving */
+  _20181011T172612_96e04760, //
+  /** manual driving using torque vectoring */
+  _20181011T173058_96e04760, //
+  /** manual driving using torque vectoring
+   * autonomous driving figure 8 reverse */
+  _20181011T173747_96e04760, //
   ;
   // ---
   @Override // from LogFile

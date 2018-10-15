@@ -35,7 +35,7 @@ public class CubicSteerMapping implements SteerMapping {
     return getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
   }
 
-  @Override
+  @Override // from SteerMapping
   public Scalar getAngleFromSCE(Scalar scalar) {
     return UnitSystem.SI().apply(column2steer.apply(scalar));
   }

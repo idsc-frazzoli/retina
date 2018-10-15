@@ -46,9 +46,11 @@ import ch.ethz.idsc.tensor.io.TensorProperties;
   public ParametersComponent(Object object) {
     this.object = object;
     try {
-      reference = object.getClass().newInstance();
+      // TODO JPH use proper default constructor
+      reference = object.getClass().getDeclaredConstructor().newInstance();
     } catch (Exception exception) {
       reference = null;
+      System.out.println(object.getClass().getSimpleName());
       exception.printStackTrace();
     }
     {

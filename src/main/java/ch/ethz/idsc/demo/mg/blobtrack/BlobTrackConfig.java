@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** defines all parameters of the control pipeline and optionally saves them to a .properties file */
 public class BlobTrackConfig {
   // general parameters
-  public final DvsConfig davisConfig = SlamDvsConfig.getDvsConfig();
+  public final DvsConfig davisConfig = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig;
   // visualization and image saving
   public final Scalar visualizationInterval = Quantity.of(0.1, SI.SECOND);
   public final Scalar savingInterval = Quantity.of(0.05, SI.SECOND);

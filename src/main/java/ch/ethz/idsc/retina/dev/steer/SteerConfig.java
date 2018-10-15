@@ -63,14 +63,11 @@ public class SteerConfig {
   }
 
   /***************************************************/
-  // TODO once cubic mapping is confirmed, replace default implementation with cubic
   /** @return default steer mapping */
   public SteerMapping getSteerMapping() {
-    return LinearSteerMapping.instance();
-  }
-
-  public SteerMapping getCubicSteerMapping() {
     return CubicSteerMapping.approximation_1();
+    // TODO once cubic mapping is confirmed, replace default implementation with cubic
+    // return LinearSteerMapping.instance();
   }
 
   /** @return */
