@@ -21,7 +21,8 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
           16,//
           17,//
           18,//
-          19);
+          19,//
+          20);
       lcmMPCPathFollowingClient.publishGokartState(gokartState);
       Thread.sleep(1000);
       //System.out.print(lcmMPCPathFollowingClient.mpcNativeSession.getNativeOutput());
