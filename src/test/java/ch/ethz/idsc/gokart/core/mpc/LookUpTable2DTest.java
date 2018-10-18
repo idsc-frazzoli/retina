@@ -56,7 +56,8 @@ public class LookUpTable2DTest extends TestCase {
 			public Scalar getValue(Scalar firstValue, Scalar secondValue) {
 				// TODO find sine in Tensor
 				return Quantity.of(
-						Math.sin(firstValue.number().floatValue()) + Math.sin(secondValue.number().floatValue() * 3),
+						//Math.sin(firstValue.number().floatValue()) + Math.sin(secondValue.number().floatValue() * 3),
+						firstValue.number().floatValue(),
 						SI.ONE);
 			}
 		};
@@ -92,13 +93,13 @@ public class LookUpTable2DTest extends TestCase {
 			public Scalar getValue(Scalar firstValue, Scalar secondValue) {
 				// TODO find sine in Tensor
 				return Quantity.of(
-						Math.sin(firstValue.number().floatValue()) + Math.sin(secondValue.number().floatValue() * 3),
+						firstValue.number().floatValue()+secondValue.number().floatValue(),
 						//firstValue.number().floatValue(),
 						SI.ONE);
 			}
 		};
-		final int DimN = 1000;
-		final Scalar fidelityLimit = Quantity.of(0.0001, SI.ONE);
+		final int DimN = 100;
+		final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
 		final int testN = 100;
 		LookUpTable2D lookUpTable2D = new LookUpTable2D(//
 				function, //
@@ -114,10 +115,10 @@ public class LookUpTable2DTest extends TestCase {
 				0, 				
 				DimN, //
 				DimN, //
-				Quantity.of(-0.3, SI.ONE), //
-				Quantity.of(0.9, SI.ONE), //
-				Quantity.of(-0.7, SI.ONE), //
-				Quantity.of(0.8, SI.ONE));
+				Quantity.of(-5, SI.ONE), //
+				Quantity.of(5, SI.ONE), //
+				Quantity.of(-5, SI.ONE), //
+				Quantity.of(5, SI.ONE));
 				
 
 		Random rand = new Random(0);
@@ -128,8 +129,56 @@ public class LookUpTable2DTest extends TestCase {
 			Scalar xb = inverseLookupTable.lookup(out, y);
 			Scalar diff = x.subtract(xb).abs();
 			//System.out.println("For X="+ x + " and Y="+y+": "+diff);
-			//System.out.println("out="+out+ " /ref="+refOut);
-			assertTrue(Scalars.lessThan(diff,fidelityLimit));
+			//System.out.println("x="+x+ " /xb="+xb);
+			assertTrue(Scalars.lessThan(diff,inversionLimit));
+		}
+	}
+	
+	public void testInversion2() throws Exception {
+		LookupFunction function = new LookupFunction() {
+			@Override
+			public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+				// TODO find sine in Tensor
+				return Quantity.of(
+						firstValue.number().floatValue()+secondValue.number().floatValue(),
+						//firstValue.number().floatValue(),
+						SI.ONE);
+			}
+		};
+		final int DimN = 100;
+		final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
+		final int testN = 100;
+		LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+				function, //
+				DimN, //
+				DimN, //
+				Quantity.of(-0.3, SI.ONE), //
+				Quantity.of(1.2, SI.ONE), //
+				Quantity.of(-0.7, SI.ONE), //
+				Quantity.of(3.1, SI.ONE), //
+				SI.ONE, SI.ONE, SI.ONE);
+		
+		LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTable(//
+				1, 				
+				DimN, //
+				DimN, //
+				Quantity.of(-5, SI.ONE), //
+				Quantity.of(5, SI.ONE), //
+				Quantity.of(-5, SI.ONE), //
+				Quantity.of(5, SI.ONE));
+				
+
+		Random rand = new Random(0);
+		System.out.println("second dimension");
+		for (int i = 0; i < testN; i++) {
+			Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
+			Scalar y = Quantity.of(rand.nextFloat(), SI.ONE);
+			Scalar out = lookUpTable2D.lookup(x, y);
+			Scalar yb = inverseLookupTable.lookup(x, out);
+			Scalar diff = y.subtract(yb).abs();
+			System.out.println("For X="+ x + " and Y="+y+": "+diff);
+			System.out.println("y="+y+ " /yb="+yb);
+			assertTrue(Scalars.lessThan(diff,inversionLimit));
 		}
 	}
 }
