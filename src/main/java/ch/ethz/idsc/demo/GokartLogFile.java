@@ -937,6 +937,22 @@ public enum GokartLogFile implements LogFile {
   /** manual driving using torque vectoring
    * autonomous driving figure 8 reverse */
   _20181011T173747_96e04760, //
+  /***************************************************/
+  /* 2018-10-15 */
+  /** demo with figure 8, trajectory following, torque vectoring */
+  _20181015T140629_f273889f, //
+  /** figure 8, and trajectory following */
+  _20181015T153805_f273889f, //
+  /** figure 8 */
+  _20181015T160852_f273889f, //
+  /** davis240c event-based waypoint following */
+  _20181015T171909_a9bf87af, //
+  /***************************************************/
+  /* 2018-10-18 */
+  /** figure 8, manual driving */
+  _20181018T134353_a9bf87af, //
+  /** trajectory planning with spherical goal region */
+  _20181018T140542_1a649e65, //
   ;
   // ---
   @Override // from LogFile
