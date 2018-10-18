@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
@@ -54,15 +53,5 @@ public class TimePoseQualityTable implements OfflineTableSupplier {
     Export.of( //
         new File(dest, name.substring(0, name.length() - 4) + ".csv"), //
         timePoseQualityTable.getTable().map(CsvFormat.strict()));
-  }
-
-  public static void main(String[] args) throws IOException {
-    File folder = new File("/media/datahaki/media/ethz/gokart/topic/racing3az");
-    for (File file : folder.listFiles()) {
-      System.out.println(file);
-      process(file, UserHome.file("Projects/ephemeral/src/main/resources/dubilab/app/filter/3az"));
-    }
-    // File file = new File("/media/datahaki/media/ethz/gokart/topic/pedestrian/20180503T160522_1/log.lcm");
-    // process(file, UserHome.file("Projects/ephemeral/src/main/resources/dubilab/app/filter/slow"));
   }
 }
