@@ -186,12 +186,6 @@ public class LookUpTable2D {
 						}else if(currentX>this.firstDimMax) {
 							currentX = this.firstDimMax;
 						}
-						if(oldX==currentX) {
-							System.out.println("same!");
-						}
-							
-						//System.out.println(currentX);
-						//System.out.println("d: "+Math.abs(currentValue - firstValuef));
 					}
 				else if (target == 1)
 					while (count<maxC && Math.abs(currentValue - secondValuef) > tolerance && oldX!=currentX) {
@@ -208,10 +202,6 @@ public class LookUpTable2D {
 						}else if(currentX>this.secondDimMax) {
 							currentX = this.secondDimMax;
 						}
-						if(oldX==currentX) {
-							System.out.println("same!");
-						}
-						//System.out.println(currentX);
 					}
 				table[i1][i2] = currentX;
 			}

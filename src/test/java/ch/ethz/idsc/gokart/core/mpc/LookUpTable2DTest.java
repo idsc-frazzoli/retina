@@ -183,15 +183,14 @@ public class LookUpTable2DTest extends TestCase {
 				
 
 		Random rand = new Random(0);
-		System.out.println("second dimension");
 		for (int i = 0; i < testN; i++) {
 			Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
 			Scalar y = Quantity.of(rand.nextFloat(), SI.ONE);
 			Scalar out = lookUpTable2D.lookup(x, y);
 			Scalar yb = inverseLookupTable.lookup(x, out);
 			Scalar diff = y.subtract(yb).abs();
-			System.out.println("For X="+ x + " and Y="+y+": "+diff);
-			System.out.println("y="+y+ " /yb="+yb);
+			//System.out.println("For X="+ x + " and Y="+y+": "+diff);
+			//System.out.println("y="+y+ " /yb="+yb);
 			assertTrue(Scalars.lessThan(diff,inversionLimit));
 		}
 	
