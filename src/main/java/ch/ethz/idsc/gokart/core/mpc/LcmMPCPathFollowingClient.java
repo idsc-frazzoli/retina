@@ -2,44 +2,43 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.lcm.BinaryBlobs;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
-import ch.ethz.idsc.retina.lcm.LcmClientInterface;
 import idsc.BinaryBlob;
 
-public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmClientInterface {
-  MPCNativeSession mpcNativeSession;
+public class LcmMPCPathFollowingClient extends BinaryLcmClient implements MPCPathFollowingClient {
+  public interface ControlUpdateListener {
+    void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps);
+  }
+
+  private List<ControlUpdateListener> listeners = new ArrayList<>();
+  MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher gokartStatePublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher pathParameterPublisher = new BinaryBlobPublisher("mpc.forces.pp");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
-  BinaryLcmClient binaryLcmClient = new BinaryLcmClient() {
-    @Override
-    protected void messageReceived(ByteBuffer byteBuffer) {
-      // TODO handle
-    }
-
-    @Override
-    protected String channel() {
-      return "mpc.forces.cu";
-    }
-  };
 
   @Override
   public void start() {
+    startSubscriptions();
     mpcNativeSession.first();
   }
 
   @Override
   public void stop() {
     mpcNativeSession.last();
+    stopSubscriptions();
   }
 
   public void publishGokartState(GokartState gokartState) {
     GokartStateMessage gokartStateMessage = new GokartStateMessage(gokartState, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     gokartStateMessage.insert(byteBuffer);
     gokartStatePublisher.accept(binaryBlob);
   }
@@ -48,6 +47,7 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
     MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     mpcPathParameterMessage.insert(byteBuffer);
     pathParameterPublisher.accept(binaryBlob);
   }
@@ -56,17 +56,27 @@ public class LcmMPCPathFollowingClient implements MPCPathFollowingClient, LcmCli
     MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     mpcOptimizationParameterMessage.insert(byteBuffer);
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  @Override
-  public void startSubscriptions() {
-    // TODO Auto-generated method stub
+  public void registerControlUpdateLister(ControlUpdateListener listener) {
+    listeners.add(listener);
   }
 
   @Override
-  public void stopSubscriptions() {
-    // TODO Auto-generated method stub
+  protected void messageReceived(ByteBuffer byteBuffer) {
+    // get new message
+    ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
+    System.out.println(cns.controlAndPredictionSteps.steps[0]);
+    for (ControlUpdateListener listener : listeners) {
+      listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
+    }
+  }
+
+  @Override
+  protected String channel() {
+    return "mpc.forces.cns";
   }
 }
