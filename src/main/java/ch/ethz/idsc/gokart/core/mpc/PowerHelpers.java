@@ -1,4 +1,4 @@
-//code by mheim based on matlab code
+// code by mheim based on matlab code
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -73,7 +73,7 @@ enum PowerHelpers {
     } else {
       final float forwardValue = forwardacc(speedthreshold, fpow);
       final float backwardValue = backwardacc(-speedthreshold, fpow);
-      float prog = (fspd - speedthreshold) / (2 * speedthreshold);
+      float prog = (fspd + speedthreshold) / (2 * speedthreshold);
       return prog * forwardValue + (1 - prog) * backwardValue;
     }
   }
