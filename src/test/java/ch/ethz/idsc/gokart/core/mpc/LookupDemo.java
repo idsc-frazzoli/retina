@@ -13,8 +13,6 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.img.ArrayPlot;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.io.Export;
-import ch.ethz.idsc.tensor.io.Import;
-import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum LookupDemo {
