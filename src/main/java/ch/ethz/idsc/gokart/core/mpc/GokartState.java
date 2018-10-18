@@ -35,10 +35,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float w2R;
   /** steering state */
   private final float s;
-  
 
   public GokartState(//
-      float time,//
+      float time, //
       float Ux, //
       float Uy, //
       float dotPsi, //
@@ -46,7 +45,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
       float Y, //
       float Psi, //
       float w2L, //
-      float w2R,//
+      float w2R, //
       float s) {
     this.time = time;
     this.Ux = Ux;
@@ -61,8 +60,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public GokartState(//
-      Scalar time,
-      Scalar Ux, //
+      Scalar time, Scalar Ux, //
       Scalar Uy, //
       Scalar dotPsi, //
       Scalar X, //
@@ -125,7 +123,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
      * w2R,
      * s); */
     return Tensors.of(//
-        getTime(),//
+        getTime(), //
         getUx(), //
         getUy(), getdotPsi(), //
         getX(), //
@@ -139,7 +137,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   public Scalar getTime() {
     return Quantity.of(time, SI.SECOND);
   }
-  
+
   public Scalar getUx() {
     return Quantity.of(Ux, SI.VELOCITY);
   }

@@ -4,5 +4,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public interface MPCSteering {
   void Update(ControlAndPredictionSteps controlAndPredictionSteps);
+
   Scalar getSteering(Scalar time);
 }

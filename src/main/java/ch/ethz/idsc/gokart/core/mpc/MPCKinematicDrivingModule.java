@@ -29,8 +29,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       return ProviderRank.AUTONOMOUS;
     }
   };
-  
-  
   public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
