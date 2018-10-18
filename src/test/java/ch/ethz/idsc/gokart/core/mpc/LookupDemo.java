@@ -18,14 +18,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 enum LookupDemo {
   ;
   public static void main(String[] args) throws IOException {
-    Tensor powers = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
-    Tensor speeds = Subdivide.of(-5, 5, 500).map(s -> Quantity.of(s, SI.VELOCITY));
-    Tensor matrix = Tensors.matrix((i, j) -> PowerHelpers.getAccelerationEstimation(powers.Get(i), speeds.Get(j)), powers.length(), speeds.length());
-    Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.CLASSIC);
-    Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
-    Export.of(UserHome.Pictures("linearinterplook2d.csv"), rgba);
-    Tensor tensor = Import.of(UserHome.Pictures("linearinterplook2d.csv"));
-    @SuppressWarnings("unused")
-    float[][] array = Primitives.toFloatArray2D(tensor);
+    {
+      Tensor powers = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
+      Tensor speeds = Subdivide.of(-5, 5, 500).map(s -> Quantity.of(s, SI.VELOCITY));
+      Tensor matrix = Tensors.matrix((i, j) -> PowerHelpers.getAccelerationEstimation(powers.Get(i), speeds.Get(j)), powers.length(), speeds.length());
+      Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
+      Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
+    }
+    // Export.of(UserHome.Pictures("linearinterplook2d.csv"), rgba);
+    // Tensor tensor = Import.of(UserHome.Pictures("linearinterplook2d.csv"));
+    // @SuppressWarnings("unused")
+    // float[][] array = Primitives.toFloatArray2D(tensor);4
   }
 }

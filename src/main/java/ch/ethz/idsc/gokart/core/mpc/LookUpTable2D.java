@@ -142,16 +142,16 @@ public class LookUpTable2D {
 					Quantity.of(x, this.firstDimUnit), //
 					Quantity.of(y, this.secondDimUnit)).number().floatValue();
 		else
-			throw new NotImplementedException("not robust enough for inversion!");
-			//return getValue(x, y);
+			throw new NotImplementedException("not tested yet!");
+		// return getValue(x, y);
 	}
 
 	public LookUpTable2D getInverseLookupTable(int target, int firstDimN, int secondDimN, Scalar firstDimMin,
 			Scalar firstDimMax, Scalar secondDimMin, Scalar secondDimMax) {
-		final float ds = 0.01f;
+		final float ds = 0.03f;
 		final float dx = 0.001f;
 		final float tolerance = 0.001f;
-		int maxC = 1000;
+		final int maxC = 1000;
 		float firstDimMinf = firstDimMin.number().floatValue();
 		float firstDimMaxf = firstDimMax.number().floatValue();
 		float secondDimMinf = secondDimMin.number().floatValue();
@@ -159,8 +159,10 @@ public class LookUpTable2D {
 		// switch x and out
 		float table[][] = new float[firstDimN][secondDimN];
 		for (int i1 = 0; i1 < firstDimN; i1++) {
-			float currentX = 0;
+			System.out.println("i1:" + i1);
 			for (int i2 = 0; i2 < secondDimN; i2++) {
+				float currentX = 0;
+				float lastChange = 100;
 				float firstValuef = firstDimMinf//
 						+ (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
 				float secondValuef = secondDimMinf//
@@ -171,37 +173,119 @@ public class LookUpTable2D {
 				int count = 0;
 				float oldX = Float.NEGATIVE_INFINITY;
 				if (target == 0)
-					while (count<maxC && Math.abs(currentValue - firstValuef) > tolerance && oldX!=currentX) {
+					while (count < maxC && Math.abs(currentValue - firstValuef) > tolerance
+							&& Math.abs(lastChange) > 0.001 && oldX != currentX) {
 						count++;
 						float fromValue = getFunctionValue(currentX - dx, secondValuef);
 						float toValue = getFunctionValue(currentX + dx, secondValuef);
 						float dval = (toValue - fromValue) / (2f * dx);
 						currentValue = getFunctionValue(currentX, secondValuef);
-						currentX += (firstValuef - currentValue) * dval * ds;
-						//clamp to limits
-						if(currentX<this.firstDimMin) {
+						float change = (firstValuef - currentValue) * dval * ds;
+						lastChange = change + lastChange * 0.9999f;
+						if (lastChange <= 0.001)
+							System.out.println("stationary");
+						currentX += change;
+						// clamp to limits
+						if (currentX < this.firstDimMin) {
 							currentX = this.firstDimMin;
-						}else if(currentX>this.firstDimMax) {
+						} else if (currentX > this.firstDimMax) {
 							currentX = this.firstDimMax;
 						}
 					}
 				else if (target == 1)
-					while (count<maxC && Math.abs(currentValue - secondValuef) > tolerance && oldX!=currentX) {
+					while (count < maxC && Math.abs(currentValue - secondValuef) > tolerance
+							&& Math.abs(lastChange) > 0.001 && oldX != currentX) {
 						oldX = currentX;
 						count++;
 						float fromValue = getFunctionValue(firstValuef, currentX - dx);
 						float toValue = getFunctionValue(firstValuef, currentX + dx);
 						float dval = (toValue - fromValue) / (2f * dx);
 						currentValue = getFunctionValue(firstValuef, currentX);
-						currentX += (secondValuef - currentValue) * dval * ds;
-						//clamp to limits
-						if(currentX<this.secondDimMin) {
+						float change = (secondValuef - currentValue) * dval * ds;
+						lastChange = change + lastChange * 0.9999f;
+						currentX += change;
+						// clamp to limits
+						if (currentX < this.secondDimMin) {
 							currentX = this.secondDimMin;
-						}else if(currentX>this.secondDimMax) {
+						} else if (currentX > this.secondDimMax) {
 							currentX = this.secondDimMax;
 						}
 					}
 				table[i1][i2] = currentX;
+			}
+		}
+		if (target == 0)
+			return new LookUpTable2D(//
+					table, //
+					firstDimMinf, //
+					firstDimMaxf, //
+					secondDimMinf, //
+					secondDimMaxf, //
+					this.outputUnit, //
+					this.secondDimUnit, //
+					this.firstDimUnit);
+		else if (target == 1)
+			return new LookUpTable2D(//
+					table, //
+					firstDimMinf, //
+					firstDimMaxf, //
+					secondDimMinf, //
+					secondDimMaxf, //
+					this.firstDimUnit, //
+					this.outputUnit, //
+					this.secondDimUnit);
+		else
+			return null;
+
+	}
+
+	public LookUpTable2D getInverseLookupTableBinarySearch(int target, int firstDimN, int secondDimN,
+			Scalar firstDimMin, Scalar firstDimMax, Scalar secondDimMin, Scalar secondDimMax) {
+		final float tolerance = 0.001f;
+		float firstDimMinf = firstDimMin.number().floatValue();
+		float firstDimMaxf = firstDimMax.number().floatValue();
+		float secondDimMinf = secondDimMin.number().floatValue();
+		float secondDimMaxf = secondDimMax.number().floatValue();
+		// switch x and out
+		float table[][] = new float[firstDimN][secondDimN];
+		for (int i1 = 0; i1 < firstDimN; i1++) {
+			for (int i2 = 0; i2 < secondDimN; i2++) {
+				float currentX = 0;
+				float lastChange = 100;
+				float firstValuef = firstDimMinf//
+						+ (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
+				float secondValuef = secondDimMinf//
+						+ (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
+				// find appropriate value
+				// use approximative gradient descent
+				float lower;
+				float upper;
+				float mid = 0;
+				if (target == 0) {
+					lower = this.firstDimMin;
+					upper = this.firstDimMax;
+					while (Math.abs(upper - lower) > tolerance) {
+						mid = (lower + upper) / 2.0f;
+						final float midValue = getFunctionValue(mid, secondValuef);
+						if (midValue > firstValuef)
+							upper = mid;
+						else
+							lower = mid;
+					}
+				} else if (target == 1) {
+					lower = this.secondDimMin;
+					upper = this.secondDimMax;
+					while (Math.abs(upper - lower) > tolerance) {
+						mid = (lower + upper) / 2.0f;
+						final float midValue = getFunctionValue(firstValuef, mid);
+						if (midValue > secondValuef)
+							upper = mid;
+						else
+							lower = mid;
+					}
+
+				}
+				table[i1][i2] = mid;
 			}
 		}
 		if (target == 0)
