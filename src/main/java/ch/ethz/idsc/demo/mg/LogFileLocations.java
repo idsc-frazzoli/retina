@@ -179,6 +179,8 @@ public enum LogFileLocations {
   DUBI19test("20180924T104243_820c1ac4.lcm.00"),
   /** driving around faster with odometry SLAM */
   DUBI19test2("20180924T110653_820c1ac4.lcm.00"),
+  /** dubi20 is the new calibration */
+  DUBI20a("20180924T110653_820c1ac4.lcm.00"),
   /** testing SiliconEye sensor first time, partially with markings */
   DUBISiliconEye("20181003T155915_f6edefe8.lcm.00"), //
   DUBISiliconEyeA("20181003T155915_f6edefe8Extracted1.lcm"), //

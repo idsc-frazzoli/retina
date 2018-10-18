@@ -23,7 +23,7 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
   public void saveFrame(int currentTimeStamp) {
     if (saveSlamFrame) {
       ++imageCount;
-      VisGeneralUtil.saveFrame(slamMapFrames[1].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
+      VisGeneralUtil.saveFrame(slamMapFrames[0].getFrame(), parentFilePath, logFilename, currentTimeStamp * 1E-3, imageCount);
     }
   }
 }
