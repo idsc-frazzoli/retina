@@ -3,10 +3,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.function.Function;
 
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import de.lmu.ifi.dbs.elki.utilities.exceptions.NotImplementedException;

@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Random;
 
-import org.apache.xalan.xsltc.runtime.Operators;
-
 import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
