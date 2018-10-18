@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum PowerHelpers {
   ;
-  private static float sfneg(float fpow, float fspd) {
+  private static float sfpos(float fpow, float fspd) {
     float p00 = -0.321f;
     float p10 = 0.1285f;
     float p01 = 0.002162f;
@@ -27,7 +27,7 @@ enum PowerHelpers {
         + p30 * x * x * x + p21 * x * x * y + p12 * x * y * y + p03 * y * y * y;// cubic
   }
 
-  private static float sfpos(float fspd, float fpow) {
+  private static float sfneg(float fspd, float fpow) {
     float p00 = -0.3738f;
     float p10 = -0.06382f;
     float p01 = 0.002075f;
