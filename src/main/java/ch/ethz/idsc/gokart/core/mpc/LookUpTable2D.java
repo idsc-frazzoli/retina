@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.function.Function;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import de.lmu.ifi.dbs.elki.utilities.exceptions.NotImplementedException;
@@ -167,28 +168,49 @@ public class LookUpTable2D {
 				float secondValuef = secondDimMinf//
 						+ (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
 				// find appropriate value
-				// use approxative gradient descent
+				// use approximative gradient descent
 				float currentValue = Float.POSITIVE_INFINITY;
 				int count = 0;
+				float oldX = Float.NEGATIVE_INFINITY;
 				if (target == 0)
-					while (count<maxC && Math.abs(currentValue - firstValuef) > tolerance) {
+					while (count<maxC && Math.abs(currentValue - firstValuef) > tolerance && oldX!=currentX) {
 						count++;
 						float fromValue = getFunctionValue(currentX - dx, secondValuef);
 						float toValue = getFunctionValue(currentX + dx, secondValuef);
 						float dval = (toValue - fromValue) / (2f * dx);
 						currentValue = getFunctionValue(currentX, secondValuef);
 						currentX += (firstValuef - currentValue) * dval * ds;
+						//clamp to limits
+						if(currentX<this.firstDimMin) {
+							currentX = this.firstDimMin;
+						}else if(currentX>this.firstDimMax) {
+							currentX = this.firstDimMax;
+						}
+						if(oldX==currentX) {
+							System.out.println("same!");
+						}
+							
 						//System.out.println(currentX);
 						//System.out.println("d: "+Math.abs(currentValue - firstValuef));
 					}
 				else if (target == 1)
-					while (count<maxC && Math.abs(currentValue - secondValuef) > tolerance) {
+					while (count<maxC && Math.abs(currentValue - secondValuef) > tolerance && oldX!=currentX) {
+						oldX = currentX;
 						count++;
 						float fromValue = getFunctionValue(firstValuef, currentX - dx);
 						float toValue = getFunctionValue(firstValuef, currentX + dx);
 						float dval = (toValue - fromValue) / (2f * dx);
 						currentValue = getFunctionValue(firstValuef, currentX);
 						currentX += (secondValuef - currentValue) * dval * ds;
+						//clamp to limits
+						if(currentX<this.secondDimMin) {
+							currentX = this.secondDimMin;
+						}else if(currentX>this.secondDimMax) {
+							currentX = this.secondDimMax;
+						}
+						if(oldX==currentX) {
+							System.out.println("same!");
+						}
 						//System.out.println(currentX);
 					}
 				table[i1][i2] = currentX;

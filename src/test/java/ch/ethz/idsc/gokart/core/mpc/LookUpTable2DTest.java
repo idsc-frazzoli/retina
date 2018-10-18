@@ -99,16 +99,20 @@ public class LookUpTable2DTest extends TestCase {
 			}
 		};
 		final int DimN = 100;
+		final Scalar xMin = Quantity.of(-0.3, SI.ONE);
+		final Scalar xMax = Quantity.of(1.2, SI.ONE);
+		final Scalar yMin = Quantity.of(-0.7, SI.ONE);
+		final Scalar yMax = Quantity.of(3.1, SI.ONE);
 		final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
 		final int testN = 100;
 		LookUpTable2D lookUpTable2D = new LookUpTable2D(//
 				function, //
 				DimN, //
 				DimN, //
-				Quantity.of(-0.3, SI.ONE), //
-				Quantity.of(1.2, SI.ONE), //
-				Quantity.of(-0.7, SI.ONE), //
-				Quantity.of(3.1, SI.ONE), //
+				xMin, //
+				xMax, //
+				yMin, //
+				yMax, //
 				SI.ONE, SI.ONE, SI.ONE);
 		
 		LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTable(//
@@ -132,6 +136,12 @@ public class LookUpTable2DTest extends TestCase {
 			//System.out.println("x="+x+ " /xb="+xb);
 			assertTrue(Scalars.lessThan(diff,inversionLimit));
 		}
+		
+		//check if values outside limits of the original lookup table are enforced:
+		Scalar xb = inverseLookupTable.lookup(Quantity.of(-5, SI.ONE), Quantity.of(0, SI.ONE));
+		assertTrue(Scalars.lessThan((xb.subtract(xMin)).abs(),inversionLimit));
+		xb = inverseLookupTable.lookup(Quantity.of(5, SI.ONE), Quantity.of(0, SI.ONE));
+		assertTrue(Scalars.lessThan((xb.subtract(xMax)).abs(),inversionLimit));
 	}
 	
 	public void testInversion2() throws Exception {
@@ -147,15 +157,19 @@ public class LookUpTable2DTest extends TestCase {
 		};
 		final int DimN = 100;
 		final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
+		final Scalar xMin = Quantity.of(-0.3, SI.ONE);
+		final Scalar xMax = Quantity.of(1.2, SI.ONE);
+		final Scalar yMin = Quantity.of(-0.7, SI.ONE);
+		final Scalar yMax = Quantity.of(3.1, SI.ONE);
 		final int testN = 100;
 		LookUpTable2D lookUpTable2D = new LookUpTable2D(//
 				function, //
 				DimN, //
 				DimN, //
-				Quantity.of(-0.3, SI.ONE), //
-				Quantity.of(1.2, SI.ONE), //
-				Quantity.of(-0.7, SI.ONE), //
-				Quantity.of(3.1, SI.ONE), //
+				xMin, //
+				xMax, //
+				yMin, //
+				yMax, //
 				SI.ONE, SI.ONE, SI.ONE);
 		
 		LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTable(//
@@ -180,5 +194,11 @@ public class LookUpTable2DTest extends TestCase {
 			System.out.println("y="+y+ " /yb="+yb);
 			assertTrue(Scalars.lessThan(diff,inversionLimit));
 		}
+	
+		//check if values outside limits of the original lookup table are enforced:
+		Scalar yb = inverseLookupTable.lookup(Quantity.of(0, SI.ONE), Quantity.of(-4, SI.ONE));
+		assertTrue(Scalars.lessThan((yb.subtract(yMin)).abs(),inversionLimit));
+		yb = inverseLookupTable.lookup(Quantity.of(0, SI.ONE), Quantity.of(+4, SI.ONE));
+		assertTrue(Scalars.lessThan((yb.subtract(yMax)).abs(),inversionLimit));
 	}
 }
