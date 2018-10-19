@@ -224,7 +224,7 @@ public class LookUpTable2D {
       return null;
   }
 
-  private float getValue(float x, float y) {
+  private float getLookupValue(float x, float y) {
     float posx = (x - firstDimMin) / (firstDimMax - firstDimMin) * (firstDimN - 1);
     float posy = (y - secondDimMin) / (secondDimMax - secondDimMin) * (secondDimN - 1);
     if (posx < 0)
@@ -253,7 +253,7 @@ public class LookUpTable2D {
     float fx = x.number().floatValue();
     float fy = y.number().floatValue();
     return Quantity.of( //
-        getValue(fx, fy), outputUnit);
+        getLookupValue(fx, fy), outputUnit);
   }
 
   /** delivers the extremal values in the specified direction

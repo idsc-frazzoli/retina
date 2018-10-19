@@ -20,8 +20,9 @@ enum LookupDemo {
   public static void main(String[] args) throws IOException {
     {
       Tensor powers = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
-      Tensor speeds = Subdivide.of(-8, 8, 500).map(s -> Quantity.of(s, SI.VELOCITY));
-      Tensor matrix = Tensors.matrix((i, j) -> MotorFunction.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(), speeds.length());
+      Tensor speeds = Subdivide.of(-10, 10, 500).map(s -> Quantity.of(s, SI.VELOCITY));
+      Tensor matrix = Tensors.matrix((i, j) -> MotorFunction.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(),
+          speeds.length());
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
       Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
     }

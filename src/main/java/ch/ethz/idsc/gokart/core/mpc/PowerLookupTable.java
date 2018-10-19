@@ -50,7 +50,8 @@ public class PowerLookupTable {
   final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
   final int DimN = 100;
 
-  public PowerLookupTable() throws IOException {
+  /** create or load Power Lookup Table */
+  private PowerLookupTable() throws IOException {
     // TODO: save this in ephemeral
     File lookupfile = new File(lookupTableLocation);
     File invlookupfile = new File(inverseLookupTableLocation);
@@ -128,22 +129,21 @@ public class PowerLookupTable {
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return inverseLookupTable.lookup(wantedAcceleration, velocity);
   }
-  
+
   /** get the acceleration characterized by the relative power value
-   * @param power value scaled from [-1,1] characterizing the requested power value
+   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
    * 0: no acceleration
    * 1: maximal acceleration
-   * @param velocity
-   * @return
-   */
+   * @param velocity [m/s]
+   * @return the resulting acceleration [m/s^2] */
   public Scalar getNormalizedAcceleration(Scalar power, Scalar velocity) {
     Tensor minMaxAcc = getMinMaxAcceleration(velocity);
     power.map(Clip.absoluteOne());
-    if(Scalars.lessThan(power, RealScalar.ZERO)) {
-      return power.multiply(minMaxAcc.Get(0));
-    }else {
-      return power.multiply(minMaxAcc.Get(1));
+    if (Scalars.lessThan(power, RealScalar.ZERO)) {
+      return power.abs().multiply(minMaxAcc.Get(0)).multiply(Quantity.of(1.02, SI.ONE));
+    } else {
+      return power.abs().multiply(minMaxAcc.Get(1)).multiply(Quantity.of(1.02, SI.ONE));
     }
   }
 }
