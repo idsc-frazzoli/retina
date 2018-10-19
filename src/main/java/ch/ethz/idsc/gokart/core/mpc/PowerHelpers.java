@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum PowerHelpers {
   ;
-  private static float sfpos(float fpow, float fspd) {
+  private static float sfpos(float fspd, float fpow) {
     float p00 = -0.321f;
     float p10 = 0.1285f;
     float p01 = 0.002162f;
@@ -47,7 +47,7 @@ enum PowerHelpers {
   }
 
   private static float forwardacc(float fspd, float fpow) {
-    float powerthreshold = 0.1f;
+    float powerthreshold = 100f;
     if (fpow > powerthreshold)
       return sfpos(fspd, fpow);
     else if (fpow < -powerthreshold)
@@ -55,7 +55,7 @@ enum PowerHelpers {
     else {
       final float posval = sfpos(fspd, powerthreshold);
       final float negval = sfneg(fspd, -powerthreshold);
-      final float prog = (fpow - powerthreshold) / (2 * powerthreshold);
+      final float prog = (fpow + powerthreshold) / (2 * powerthreshold);
       return prog * posval + (1 - prog) * negval;
     }
   }

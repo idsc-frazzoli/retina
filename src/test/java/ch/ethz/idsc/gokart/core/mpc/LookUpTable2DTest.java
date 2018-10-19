@@ -113,8 +113,6 @@ public class LookUpTable2DTest extends TestCase {
         0, DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
-        Quantity.of(5, SI.ONE), //
-        Quantity.of(-5, SI.ONE), //
         Quantity.of(5, SI.ONE));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
@@ -165,8 +163,6 @@ public class LookUpTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
-        Quantity.of(5, SI.ONE), //
-        Quantity.of(-5, SI.ONE), //
         Quantity.of(5, SI.ONE));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
@@ -189,17 +185,18 @@ public class LookUpTable2DTest extends TestCase {
   public void testWithPowerFunction() {
     LookupFunction function = new LookupFunction() {
       @Override
-      public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+      public Scalar getValue(Scalar current, Scalar velocity) {
         // power, Speed
-        return PowerHelpers.getAccelerationEstimation(firstValue, secondValue);
+        return PowerHelpers.getAccelerationEstimation(current, velocity);
       }
     };
-    final int DimN = 100;
-    final Scalar inversionLimit = Quantity.of(0.001, NonSI.ARMS);
-    final Scalar xMin = Quantity.of(-10, SI.VELOCITY);
-    final Scalar xMax = Quantity.of(10, SI.VELOCITY);
-    final Scalar yMin = Quantity.of(-2300, NonSI.ARMS);
-    final Scalar yMax = Quantity.of(2300, NonSI.ARMS);
+    final int DimN = 250;
+    // higher limit because of scaling of output [-2300, 2300]
+    final Scalar inversionLimit = Quantity.of(1, NonSI.ARMS);
+    final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
+    final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
+    final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
+    final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
     LookUpTable2D lookUpTable2D = new LookUpTable2D(//
         function, //
@@ -215,19 +212,19 @@ public class LookUpTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Quantity.of(-2, SI.ACCELERATION), //
-        Quantity.of(2, SI.ACCELERATION), //
-        Quantity.of(-10, SI.VELOCITY), //
-        Quantity.of(10, SI.VELOCITY));
+        Quantity.of(2, SI.ACCELERATION));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
-      Scalar x = Quantity.of(rand.nextFloat(), SI.VELOCITY);
-      Scalar y = Quantity.of(rand.nextFloat(), NonSI.ARMS);
+      Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);
+      Scalar y = Quantity.of(rand.nextFloat(), SI.VELOCITY);
       Scalar out = lookUpTable2D.lookup(x, y);
-      Scalar yb = inverseLookupTable.lookup(x, out);
-      Scalar diff = y.subtract(yb).abs();
+      Scalar xb = inverseLookupTable.lookup(out, y);
+      Scalar diff = x.subtract(xb).abs();
       // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("y="+y+ " /yb="+yb);
-      // assertTrue(Scalars.lessThan(diff, inversionLimit));
+      // System.out.println("out: "+out);
+      // System.out.println("fun out: "+function.getValue(x, y));
+      // System.out.println("x="+x+ " /xb="+xb);
+      assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
   }
 }

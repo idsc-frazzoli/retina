@@ -5,10 +5,14 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import de.lmu.ifi.dbs.elki.utilities.exceptions.NotImplementedException;
 
+//TODO: switch the whole thing to Tensor variables (this will not change any interactions)
+//TODO: document this properly (to be done after the whole thing works)
 public class LookUpTable2D {
   final float table[][];
   final int firstDimN;
@@ -141,109 +145,28 @@ public class LookUpTable2D {
     // return getValue(x, y);
   }
 
-  public LookUpTable2D getInverseLookupTable(int target, int firstDimN, int secondDimN, Scalar firstDimMin, Scalar firstDimMax, Scalar secondDimMin,
-      Scalar secondDimMax) {
-    final float ds = 0.03f;
-    final float dx = 0.001f;
+  public LookUpTable2D getInverseLookupTableBinarySearch(int target, int firstDimN, int secondDimN, Scalar newDimMin, Scalar newDimMax) {
     final float tolerance = 0.001f;
-    final int maxC = 1000;
-    float firstDimMinf = firstDimMin.number().floatValue();
-    float firstDimMaxf = firstDimMax.number().floatValue();
-    float secondDimMinf = secondDimMin.number().floatValue();
-    float secondDimMaxf = secondDimMax.number().floatValue();
-    // switch x and out
-    float table[][] = new float[firstDimN][secondDimN];
-    for (int i1 = 0; i1 < firstDimN; i1++) {
-      System.out.println("i1:" + i1);
-      for (int i2 = 0; i2 < secondDimN; i2++) {
-        float currentX = 0;
-        float lastChange = 100;
-        float firstValuef = firstDimMinf//
-            + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
-        float secondValuef = secondDimMinf//
-            + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
-        // find appropriate value
-        // use approximative gradient descent
-        float currentValue = Float.POSITIVE_INFINITY;
-        int count = 0;
-        float oldX = Float.NEGATIVE_INFINITY;
-        if (target == 0)
-          while (count < maxC && Math.abs(currentValue - firstValuef) > tolerance && Math.abs(lastChange) > 0.001 && oldX != currentX) {
-            count++;
-            float fromValue = getFunctionValue(currentX - dx, secondValuef);
-            float toValue = getFunctionValue(currentX + dx, secondValuef);
-            float dval = (toValue - fromValue) / (2f * dx);
-            currentValue = getFunctionValue(currentX, secondValuef);
-            float change = (firstValuef - currentValue) * dval * ds;
-            lastChange = change + lastChange * 0.9999f;
-            if (lastChange <= 0.001)
-              System.out.println("stationary");
-            currentX += change;
-            // clamp to limits
-            if (currentX < this.firstDimMin) {
-              currentX = this.firstDimMin;
-            } else if (currentX > this.firstDimMax) {
-              currentX = this.firstDimMax;
-            }
-          }
-        else if (target == 1)
-          while (count < maxC && Math.abs(currentValue - secondValuef) > tolerance && Math.abs(lastChange) > 0.001 && oldX != currentX) {
-            oldX = currentX;
-            count++;
-            float fromValue = getFunctionValue(firstValuef, currentX - dx);
-            float toValue = getFunctionValue(firstValuef, currentX + dx);
-            float dval = (toValue - fromValue) / (2f * dx);
-            currentValue = getFunctionValue(firstValuef, currentX);
-            float change = (secondValuef - currentValue) * dval * ds;
-            lastChange = change + lastChange * 0.9999f;
-            currentX += change;
-            // clamp to limits
-            if (currentX < this.secondDimMin) {
-              currentX = this.secondDimMin;
-            } else if (currentX > this.secondDimMax) {
-              currentX = this.secondDimMax;
-            }
-          }
-        table[i1][i2] = currentX;
-      }
-    }
-    if (target == 0)
-      return new LookUpTable2D(//
-          table, //
-          firstDimMinf, //
-          firstDimMaxf, //
-          secondDimMinf, //
-          secondDimMaxf, //
-          this.outputUnit, //
-          this.secondDimUnit, //
-          this.firstDimUnit);
-    else if (target == 1)
-      return new LookUpTable2D(//
-          table, //
-          firstDimMinf, //
-          firstDimMaxf, //
-          secondDimMinf, //
-          secondDimMaxf, //
-          this.firstDimUnit, //
-          this.outputUnit, //
-          this.secondDimUnit);
-    else
+    float firstDimMinf;
+    float firstDimMaxf;
+    float secondDimMinf;
+    float secondDimMaxf;
+    if (target == 0) {
+      firstDimMinf = newDimMin.number().floatValue();
+      firstDimMaxf = newDimMax.number().floatValue();
+      secondDimMinf = this.secondDimMin;
+      secondDimMaxf = this.secondDimMax;
+    } else if (target == 1) {
+      firstDimMinf = this.firstDimMin;
+      firstDimMaxf = this.firstDimMax;
+      secondDimMinf = newDimMin.number().floatValue();
+      secondDimMaxf = newDimMax.number().floatValue();
+    } else
       return null;
-  }
-
-  public LookUpTable2D getInverseLookupTableBinarySearch(int target, int firstDimN, int secondDimN, Scalar firstDimMin, Scalar firstDimMax, Scalar secondDimMin,
-      Scalar secondDimMax) {
-    final float tolerance = 0.001f;
-    float firstDimMinf = firstDimMin.number().floatValue();
-    float firstDimMaxf = firstDimMax.number().floatValue();
-    float secondDimMinf = secondDimMin.number().floatValue();
-    float secondDimMaxf = secondDimMax.number().floatValue();
     // switch x and out
     float table[][] = new float[firstDimN][secondDimN];
     for (int i1 = 0; i1 < firstDimN; i1++) {
       for (int i2 = 0; i2 < secondDimN; i2++) {
-        float currentX = 0;
-        float lastChange = 100;
         float firstValuef = firstDimMinf//
             + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
         float secondValuef = secondDimMinf//
@@ -333,5 +256,22 @@ public class LookUpTable2D {
     float fy = y.number().floatValue();
     return Quantity.of(//
         getValue(fx, fy), outputUnit);
+  }
+
+  /** delivers the extremal values in the specified direction
+   * @param dimension the dimension along which the extremal are to be found
+   * @param otherValue the value that is set at the other dimension
+   * @return a Tensor containing the minimum and maximum value along the dimension */
+  public Tensor getExtremalValues(int dimension, Scalar otherValue) {
+    if (dimension == 0) {
+      return Tensors.of(//
+          lookup(Quantity.of(firstDimMin, firstDimUnit), otherValue), //
+          lookup(Quantity.of(firstDimMax, firstDimUnit), otherValue));
+    } else if (dimension == 1) {
+      return Tensors.of(//
+          lookup(otherValue, Quantity.of(secondDimMin, secondDimUnit)), //
+          lookup(otherValue, Quantity.of(secondDimMax, secondDimUnit)));
+    } else
+      return null;
   }
 }
