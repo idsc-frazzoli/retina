@@ -36,7 +36,7 @@ public class PowerLookupTable {
   }
 
   final String lookupTableLocation = "powerlookuptable.csv";
-  final String inverseLookupTableLocation = "inverselookup.csv";
+  final String inverseLookupTableLocation = "inversepowerlookuptable.csv";
   /** maps from (current, speed)->(acceleration) */
   final LookUpTable2D powerLookupTable;
   /** maps from (acceleration, speed)->(current) */
@@ -87,18 +87,18 @@ public class PowerLookupTable {
           aMin, //
           aMax);
       // Save
-      FileWriter inverseLookupFileWriter = new FileWriter(lookupfile);
+      FileWriter inverseLookupFileWriter = new FileWriter(invlookupfile);
       BufferedWriter inverseLookupBufferedWriter = new BufferedWriter(inverseLookupFileWriter);
       inverseLookupTable.saveTable(inverseLookupBufferedWriter);
       inverseLookupBufferedWriter.close();
     } else {
       // load lookup table
-      FileReader lookupFileReader = new FileReader(lookupTableLocation);
+      FileReader lookupFileReader = new FileReader(lookupfile);
       BufferedReader lookupBufferedReader = new BufferedReader(lookupFileReader);
       powerLookupTable = new LookUpTable2D(lookupBufferedReader);
       lookupBufferedReader.close();
       // load inverse table
-      FileReader inverseLookupFileReader = new FileReader(inverseLookupTableLocation);
+      FileReader inverseLookupFileReader = new FileReader(invlookupfile);
       BufferedReader inverseLookupBufferedReader = new BufferedReader(inverseLookupFileReader);
       inverseLookupTable = new LookUpTable2D(inverseLookupBufferedReader);
       inverseLookupBufferedReader.close();
