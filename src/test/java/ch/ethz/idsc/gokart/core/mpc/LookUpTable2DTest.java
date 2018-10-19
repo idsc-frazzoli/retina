@@ -187,7 +187,7 @@ public class LookUpTable2DTest extends TestCase {
       @Override
       public Scalar getValue(Scalar current, Scalar velocity) {
         // power, Speed
-        return PowerHelpers.getAccelerationEstimation(current, velocity);
+        return MotorFunction.getAccelerationEstimation(current, velocity);
       }
     };
     final int DimN = 250;

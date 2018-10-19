@@ -21,7 +21,7 @@ enum LookupDemo {
     {
       Tensor powers = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
       Tensor speeds = Subdivide.of(-8, 8, 500).map(s -> Quantity.of(s, SI.VELOCITY));
-      Tensor matrix = Tensors.matrix((i, j) -> PowerHelpers.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(), speeds.length());
+      Tensor matrix = Tensors.matrix((i, j) -> MotorFunction.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(), speeds.length());
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
       Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
     }
@@ -34,7 +34,7 @@ enum LookupDemo {
         @Override
         public Scalar getValue(Scalar firstValue, Scalar secondValue) {
           // power, Speed
-          return PowerHelpers.getAccelerationEstimation(firstValue, secondValue);
+          return MotorFunction.getAccelerationEstimation(firstValue, secondValue);
         }
       };
       final int DimN = 250;

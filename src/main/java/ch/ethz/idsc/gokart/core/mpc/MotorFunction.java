@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum PowerHelpers {
+enum MotorFunction {
   ;
   private static float sfpos(float fspd, float fpow) {
     float p00 = -0.321f;

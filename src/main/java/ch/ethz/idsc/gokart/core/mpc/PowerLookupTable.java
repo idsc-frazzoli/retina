@@ -5,15 +5,36 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public class PowerLookupTable {
+  private static PowerLookupTable INSTANCE;
+
+  /** returns global instance of Power Lookup Table
+   * @return instance of PowerLookupTable */
+  public static PowerLookupTable getInstance() {
+    try {
+      if (PowerLookupTable.INSTANCE == null) {
+        PowerLookupTable.INSTANCE = new PowerLookupTable();
+      }
+      return PowerLookupTable.INSTANCE;
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      System.err.println("Power lookup table not available");
+      return null;
+    }
+  }
+
   final String lookupTableLocation = "powerlookuptable.csv";
   final String inverseLookupTableLocation = "inverselookup.csv";
   /** maps from (current, speed)->(acceleration) */
@@ -29,7 +50,7 @@ public class PowerLookupTable {
   final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
   final int DimN = 100;
 
-  public PowerLookupTable() throws Exception {
+  public PowerLookupTable() throws IOException {
     // TODO: save this in ephemeral
     File lookupfile = new File(lookupTableLocation);
     File invlookupfile = new File(inverseLookupTableLocation);
@@ -39,7 +60,7 @@ public class PowerLookupTable {
         @Override
         public Scalar getValue(Scalar firstValue, Scalar secondValue) {
           // power, Speed
-          return PowerHelpers.getAccelerationEstimation(firstValue, secondValue);
+          return MotorFunction.getAccelerationEstimation(firstValue, secondValue);
         }
       };
       // maps from (current, speed)->(acceleration)
@@ -89,25 +110,40 @@ public class PowerLookupTable {
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     return powerLookupTable.getExtremalValues(0, velocity);
   }
-  
-  
- /** get acceleration for a given current and velocity
-  * @param current the applied motor current [Arms]
-  * @param velocity the velocity [m/s]
-  * @return the resulting acceleration [m/s^2]
-  */
+
+  /** get acceleration for a given current and velocity
+   * @param current the applied motor current [Arms]
+   * @param velocity the velocity [m/s]
+   * @return the resulting acceleration [m/s^2] */
   public Scalar getAcceleration(Scalar current, Scalar velocity) {
     return powerLookupTable.lookup(current, velocity);
   }
-  
+
   /** get the need current for a wanted acceleration
    * If the acceleration is not achievable
    * the motor current corresponding to the nearest possible acceleration value is returned
    * @param wantedAcceleration the wanted acceleration [m/s^2]
    * @param velocity the velocity [m/s]
-   * @return the needed motor current [Arms]
-   */
+   * @return the needed motor current [Arms] */
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return inverseLookupTable.lookup(wantedAcceleration, velocity);
+  }
+  
+  /** get the acceleration characterized by the relative power value
+   * @param power value scaled from [-1,1] characterizing the requested power value
+   * -1: minimal acceleration (full deceleration)
+   * 0: no acceleration
+   * 1: maximal acceleration
+   * @param velocity
+   * @return
+   */
+  public Scalar getNormalizedAcceleration(Scalar power, Scalar velocity) {
+    Tensor minMaxAcc = getMinMaxAcceleration(velocity);
+    power.map(Clip.absoluteOne());
+    if(Scalars.lessThan(power, RealScalar.ZERO)) {
+      return power.multiply(minMaxAcc.Get(0));
+    }else {
+      return power.multiply(minMaxAcc.Get(1));
+    }
   }
 }
