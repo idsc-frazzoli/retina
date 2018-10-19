@@ -1,4 +1,4 @@
-//code by mheim based on matlab code
+// code by mheim based on matlab code
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;

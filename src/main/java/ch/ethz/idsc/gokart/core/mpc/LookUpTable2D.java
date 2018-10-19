@@ -1,3 +1,4 @@
+// code by mheim
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.BufferedReader;
@@ -55,7 +56,6 @@ public class LookUpTable2D {
   }
 
   public void saveTable(BufferedWriter csvWriter) throws IOException {
-    String line;
     // read dimensions
     csvWriter.write(firstDimN + "\n");
     csvWriter.write(secondDimN + "\n");
@@ -67,9 +67,8 @@ public class LookUpTable2D {
     csvWriter.write(outputUnit + "\n");
     for (int i1 = 0; i1 < firstDimN; i1++) {
       String[] linevals = new String[secondDimN];
-      for (int i2 = 0; i2 < secondDimN; i2++) {
+      for (int i2 = 0; i2 < secondDimN; ++i2)
         linevals[i2] = String.valueOf(table[i1][i2]);
-      }
       csvWriter.write(String.join(",", linevals) + "\n");
     }
   }
@@ -140,8 +139,7 @@ public class LookUpTable2D {
       return originalFunction.getValue(//
           Quantity.of(x, this.firstDimUnit), //
           Quantity.of(y, this.secondDimUnit)).number().floatValue();
-    else
-      throw new NotImplementedException("not tested yet!");
+    throw new NotImplementedException("not tested yet!");
     // return getValue(x, y);
   }
 
@@ -254,7 +252,7 @@ public class LookUpTable2D {
   public Scalar lookup(Scalar x, Scalar y) {
     float fx = x.number().floatValue();
     float fy = y.number().floatValue();
-    return Quantity.of(//
+    return Quantity.of( //
         getValue(fx, fy), outputUnit);
   }
 
