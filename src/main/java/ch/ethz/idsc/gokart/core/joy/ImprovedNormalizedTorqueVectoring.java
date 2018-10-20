@@ -10,10 +10,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-public class ImprovedNormalizedTorqueVectoringJoystickModule extends ImprovedTorqueVectoring {
+public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
 
-  public ImprovedNormalizedTorqueVectoringJoystickModule(TorqueVectoringConfig torqueVectoringConfig) {
+  public ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
