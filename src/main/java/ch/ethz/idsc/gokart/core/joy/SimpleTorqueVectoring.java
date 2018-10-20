@@ -17,11 +17,13 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   }
 
   @Override
-  public final Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
+  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // compute differential torque (in ARMS as we do not use the power function yet)
-    Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
-    Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
-    Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
+    // Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
+    Scalar dynamicComponent = getDynamicComponent(angularSlip);
+    // Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
+    // Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
+    Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
     // ---
     Scalar wantedZTorque = wantedZTorque( //
         dynamicComponent.add(staticComponent), // One
@@ -31,6 +33,21 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
         power.subtract(wantedZTorque), // unit one
         power.add(wantedZTorque) // unit one
     );
+  }
+
+  /** get dynamic component
+   * @param angularSlip [1/s]
+   * @return dynamic component [1] */
+  Scalar getDynamicComponent(Scalar angularSlip) {
+    return angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
+  }
+
+  /** get dynamic component
+   * @param angularSlip [1/s]
+   * @return dynamic component [1] */
+  Scalar getStaticComponent(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed) {
+    Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
+    return lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
   }
 
   /** @param wantedZTorque
@@ -46,7 +63,7 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   /** @param powerLeft unitless
    * @param powerRight unitless
    * @return vector of length 2 with scalars in interval [-1, 1] */
-  static Tensor clip(Scalar powerLeft, Scalar powerRight) {
+  protected static Tensor clip(Scalar powerLeft, Scalar powerRight) {
     // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
     if (Scalars.lessThan(MAX, powerRight)) {
       Scalar overpower = powerRight.subtract(MAX);
