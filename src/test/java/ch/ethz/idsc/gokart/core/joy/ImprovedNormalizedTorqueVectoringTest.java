@@ -16,7 +16,13 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
-  PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  static {
+    System.out.println("building power lookup table");
+  }
+  private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
+  static {
+    System.out.println("done");
+  }
 
   public void testZeros() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
@@ -48,9 +54,9 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         power, Quantity.of(0, "s^-1"));
     // more complicated test
     Scalar maxcurr = Quantity.of(2300, NonSI.ARMS);
-    Scalar noPowerAcceleration = powerLookupTable.getAcceleration(Quantity.of(0, NonSI.ARMS), Quantity.of(1, "m*s^-1"));
-    Scalar leftAcc = powerLookupTable.getAcceleration(powers.Get(0).multiply(maxcurr), velocity);
-    Scalar rightAcc = powerLookupTable.getAcceleration(powers.Get(1).multiply(maxcurr), velocity);
+    Scalar noPowerAcceleration = POWER_LOOKUP_TABLE.getAcceleration(Quantity.of(0, NonSI.ARMS), Quantity.of(1, "m*s^-1"));
+    Scalar leftAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(0).multiply(maxcurr), velocity);
+    Scalar rightAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(1).multiply(maxcurr), velocity);
     assertTrue(Chop._04.close(Mean.of(Tensors.of(leftAcc, rightAcc)), noPowerAcceleration));
     // assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }

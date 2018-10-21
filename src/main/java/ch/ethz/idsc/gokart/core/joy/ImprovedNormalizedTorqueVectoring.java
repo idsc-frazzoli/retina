@@ -2,18 +2,16 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
-import ch.ethz.idsc.retina.util.math.NonSI;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
-  PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
+  private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
 
-  public ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
@@ -27,7 +25,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
         angularSlip, //
         wantedAcceleration, //
         realRotation);
-    return motorCurrents.divide(Quantity.of(2300, NonSI.ARMS));
+    return motorCurrents.divide(JoystickConfig.GLOBAL.torqueLimit);
   }
 
   /** get torque vectoring motor currents corresponding to the wanted rotation speed
@@ -55,25 +53,21 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
    * @param velocity [m/s]
    * @return the required motor currents [Arms] */
   private Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
-    Tensor MinMax = powerLookupTable.getMinMaxAcceleration(velocity);
-    Scalar min = MinMax.Get(0);
-    Scalar max = MinMax.Get(1);
-    Scalar halfRange = max.subtract(min).divide(Quantity.of(2, SI.ONE));
-    Scalar mid = (Scalar) Mean.of(MinMax);
+    Tensor minMax = powerLookupTable.getMinMaxAcceleration(velocity);
+    Scalar min = minMax.Get(0);
+    Scalar max = minMax.Get(1);
+    Scalar halfRange = max.subtract(min).divide(RealScalar.of(2));
+    Scalar mid = (Scalar) Mean.of(minMax);
     // get acceleration remapped to [-1,1] TODO: find handy Tensor function
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations
-    Tensor remappedAccelerations = clip(//
+    Tensor remappedAccelerations = clip( //
         remappedMeanAcceleration.subtract(wantedZTorque), //
         remappedMeanAcceleration.add(wantedZTorque));
-    // remap again to acceleration space TODO: find handy Tensor function
-    // TODO: do something like this (doesn't seem to work)
-    // Tensor wantedAccelerations = remappedAccelerations.map(x -> x.add(mid).multiply(halfRange));//
-    Tensor wantedAccelerations = Tensors.of(//
-        remappedAccelerations.Get(0).multiply(halfRange).add(mid), //
-        remappedAccelerations.Get(1).multiply(halfRange).add(mid));
-    return Tensors.of(//
+    // remap again to acceleration space
+    Tensor wantedAccelerations = remappedAccelerations.multiply(halfRange).map(s -> s.add(mid));
+    return Tensors.of( //
         powerLookupTable.getNeededCurrent(wantedAccelerations.Get(0), velocity), //
         powerLookupTable.getNeededCurrent(wantedAccelerations.Get(1), velocity));
   }

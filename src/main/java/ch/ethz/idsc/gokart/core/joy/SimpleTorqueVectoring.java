@@ -9,10 +9,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-public class SimpleTorqueVectoring implements TorqueVectoringInterface {
+class SimpleTorqueVectoring implements TorqueVectoringInterface {
   final TorqueVectoringConfig torqueVectoringConfig;
 
-  public SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 
@@ -38,14 +38,14 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   /** get dynamic component
    * @param angularSlip [1/s]
    * @return dynamic component [1] */
-  Scalar getDynamicComponent(Scalar angularSlip) {
+  final Scalar getDynamicComponent(Scalar angularSlip) {
     return angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
   }
 
   /** get dynamic component
    * @param angularSlip [1/s]
    * @return dynamic component [1] */
-  Scalar getStaticComponent(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed) {
+  final Scalar getStaticComponent(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed) {
     Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
     return lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
   }

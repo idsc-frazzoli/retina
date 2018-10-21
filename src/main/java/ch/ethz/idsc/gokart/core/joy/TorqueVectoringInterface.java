@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public interface TorqueVectoringInterface {
+interface TorqueVectoringInterface {
   /** @param expectedRotationPerMeterDriven with unit m^-1
    * @param meanTangentSpeed with unit m*s^-1
    * @param angularSlip with unit s^-1

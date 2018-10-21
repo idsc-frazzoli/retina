@@ -220,10 +220,10 @@ public class LookupTable2dTest extends TestCase {
       Scalar out = lookUpTable2D.lookup(x, y);
       Scalar xb = inverseLookupTable.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
-      System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      System.out.println("out: "+out);
-      System.out.println("fun out: "+function.getValue(x, y));
-      System.out.println("x="+x+ " /xb="+xb);
+      System.out.println("For X=" + x + " and Y=" + y + ": " + diff);
+      System.out.println("out: " + out);
+      System.out.println("fun out: " + function.getValue(x, y));
+      System.out.println("x=" + x + " /xb=" + xb);
       assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
   }

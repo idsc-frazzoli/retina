@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.BufferedReader;
@@ -7,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -27,31 +29,30 @@ public class PowerLookupTable {
    * @return instance of PowerLookupTable */
   public static PowerLookupTable getInstance() {
     try {
-      if (PowerLookupTable.INSTANCE == null) {
-        PowerLookupTable.INSTANCE = new PowerLookupTable();
-      }
-      return PowerLookupTable.INSTANCE;
+      if (INSTANCE == null)
+        INSTANCE = new PowerLookupTable();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       System.err.println("Power lookup table not available");
-      return null;
+      e.printStackTrace();
     }
+    return INSTANCE;
   }
 
-  final String lookupTableLocation = "powerlookuptable.csv";
-  final String inverseLookupTableLocation = "inversepowerlookuptable.csv";
+  private final String lookupTableLocation = "powerlookuptable.csv";
+  private final String inverseLookupTableLocation = "inversepowerlookuptable.csv";
   /** maps from (current, speed)->(acceleration) */
-  final LookUpTable2D powerLookupTable;
+  private final LookUpTable2D powerLookupTable;
   /** maps from (acceleration, speed)->(current) */
-  final LookUpTable2D inverseLookupTable;
+  private final LookUpTable2D inverseLookupTable;
   // min and max values for lookup tables
-  final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
-  final Scalar vMax = Quantity.of(10, SI.VELOCITY);
-  final Scalar cMin = Quantity.of(-2300, NonSI.ARMS);
-  final Scalar cMax = Quantity.of(2300, NonSI.ARMS);
-  final Scalar aMin = Quantity.of(-2, SI.ACCELERATION);
-  final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
-  final int DimN = 1000;
+  // TODO magic const in config class
+  private final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
+  private final Scalar vMax = Quantity.of(+10, SI.VELOCITY);
+  private final Scalar cMin = JoystickConfig.GLOBAL.torqueLimit.negate();
+  private final Scalar cMax = JoystickConfig.GLOBAL.torqueLimit;
+  private final Scalar aMin = Quantity.of(-2, SI.ACCELERATION);
+  private final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
+  private final int DimN = 1000;
 
   /** create or load Power Lookup Table */
   private PowerLookupTable() throws IOException {
