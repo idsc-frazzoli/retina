@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
+import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,6 +14,8 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
+  PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+
   public void testZeros() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
@@ -28,21 +31,6 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     assertEquals(powers, Tensors.vector(0, 0));
   }
 
-  public void testZeroMean() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedTorqueVectoring(tvc);
-    Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
-        Quantity.of(1, "m^-1"), //
-        Quantity.of(1, "m*s^-1"), //
-        Quantity.of(1, "s^-1"), //
-        power, Quantity.of(-1, "s^-1"));
-    assertTrue(Chop._08.close(Total.of(powers), power));
-    // assertEquals(powers, Tensors.vector(-0.4, 0.4));
-  }
-
   public void testSaturatedPositive() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
@@ -54,7 +42,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    assertEquals(powers, Tensors.vector(1, 1));
+    assertTrue(Chop._04.close(powers, Tensors.vector(1, 1)));
   }
 
   public void testSaturatedNegative() {
@@ -68,7 +56,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    assertEquals(powers, Tensors.vector(-1, -1));
+    assertTrue(Chop._04.close(powers, Tensors.vector(-1, -1)));
   }
 
   /* Scalar expectedRotationPerMeterDriven

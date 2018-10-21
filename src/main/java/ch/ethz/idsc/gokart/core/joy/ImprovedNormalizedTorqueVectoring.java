@@ -51,19 +51,30 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   }
 
   /** @param wantedAcceleration [m(s^2]
-   * @param wantedZTorque [ONE] TODO: currently dimensionless. Should we change that.
+   * @param wantedZTorque [ONE] TODO: currently dimensionless. Should we change that?
    * @param velocity [m/s]
    * @return the required motor currents [Arms] */
   private Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
     Tensor MinMax = powerLookupTable.getMinMaxAcceleration(velocity);
     Scalar min = MinMax.Get(0);
     Scalar max = MinMax.Get(1);
-    Scalar range = max.subtract(min);
+    Scalar halfRange = max.subtract(min).divide(Quantity.of(2, SI.ONE));
     Scalar mid = (Scalar) Mean.of(MinMax);
-    Scalar relativePower = wantedAcceleration.subtract(mid).divide(range).multiply(Quantity.of(2, SI.ONE));
-    Tensor expectedAcceleration = clip(relativePower, wantedZTorque);
+    // get acceleration remapped to [-1,1] TODO: find handy Tensor function
+    Scalar remappedMeanAcceleration = //
+        wantedAcceleration.subtract(mid).divide(halfRange);//
+    // get clipped individual accelerations
+    Tensor remappedAccelerations = clip(//
+        remappedMeanAcceleration.subtract(wantedZTorque), //
+        remappedMeanAcceleration.add(wantedZTorque));
+    // remap again to acceleration space TODO: find handy Tensor function
+    // TODO: do something like this (doesn't seem to work)
+    // Tensor wantedAccelerations = remappedAccelerations.map(x -> x.add(mid).multiply(halfRange));//
+    Tensor wantedAccelerations = Tensors.of(//
+        remappedAccelerations.Get(0).multiply(halfRange).add(mid), //
+        remappedAccelerations.Get(1).multiply(halfRange).add(mid));
     return Tensors.of(//
-        powerLookupTable.getNeededCurrent(expectedAcceleration.Get(0), velocity), //
-        powerLookupTable.getNeededCurrent(expectedAcceleration.Get(1), velocity));
+        powerLookupTable.getNeededCurrent(wantedAccelerations.Get(0), velocity), //
+        powerLookupTable.getNeededCurrent(wantedAccelerations.Get(1), velocity));
   }
 }

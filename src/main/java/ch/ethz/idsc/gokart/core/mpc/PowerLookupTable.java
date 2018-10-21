@@ -22,7 +22,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class PowerLookupTable {
   private static PowerLookupTable INSTANCE;
   // to ensure that the maximum motor torque is actually applied
-  private final Scalar numCorrectingFactor = Quantity.of(1.02, SI.ONE);
 
   /** returns global instance of Power Lookup Table
    * @return instance of PowerLookupTable */
@@ -113,7 +112,9 @@ public class PowerLookupTable {
    * @param velocity current velocity [m/s]
    * @return a tensor of the maximal and minimal acceleration [m/s^2] */
   public Tensor getMinMaxAcceleration(Scalar velocity) {
-    return powerLookupTable.getExtremalValues(0, velocity);
+    // the min and max values are multiplied by 1.02
+    // in order to ensure that the maximum value can be outputted
+    return powerLookupTable.getExtremalValues(0, velocity).multiply(Quantity.of(1.02, SI.ONE));
   }
 
   /** get acceleration for a given current and velocity
@@ -146,7 +147,7 @@ public class PowerLookupTable {
     Scalar clippedPower = Clip.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), RealScalar.ZERO, minMaxAcc.Get(1));
     Interpolation powerInterpolation = LinearInterpolation.of(keypoints);
-    return powerInterpolation.At(clippedPower.add(RealScalar.ONE)).multiply(numCorrectingFactor);
+    return powerInterpolation.At(clippedPower.add(RealScalar.ONE));
   }
 
   /** get the acceleration characterized by the relative power value
@@ -162,6 +163,6 @@ public class PowerLookupTable {
     Scalar clippedPower = Clip.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), torqueFreeAcc, minMaxAcc.Get(1));
     Interpolation powerInterpolation = LinearInterpolation.of(keypoints);
-    return powerInterpolation.At(clippedPower.add(RealScalar.ONE)).multiply(numCorrectingFactor);
+    return powerInterpolation.At(clippedPower.add(RealScalar.ONE));
   }
 }
