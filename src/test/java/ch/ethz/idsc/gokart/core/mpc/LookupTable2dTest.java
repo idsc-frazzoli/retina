@@ -192,7 +192,7 @@ public class LookupTable2dTest extends TestCase {
     };
     final int DimN = 250;
     // higher limit because of scaling of output [-2300, 2300]
-    final Scalar inversionLimit = Quantity.of(1, NonSI.ARMS);
+    final Scalar inversionLimit = Quantity.of(2, NonSI.ARMS);
     final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
     final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
     final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
@@ -220,10 +220,10 @@ public class LookupTable2dTest extends TestCase {
       Scalar out = lookUpTable2D.lookup(x, y);
       Scalar xb = inverseLookupTable.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
-      // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("out: "+out);
-      // System.out.println("fun out: "+function.getValue(x, y));
-      // System.out.println("x="+x+ " /xb="+xb);
+      System.out.println("For X="+ x + " and Y="+y+": "+diff);
+      System.out.println("out: "+out);
+      System.out.println("fun out: "+function.getValue(x, y));
+      System.out.println("x="+x+ " /xb="+xb);
       assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
   }
