@@ -39,14 +39,11 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
-    // Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
-    pair = pair.multiply(JoystickConfig.GLOBAL.torqueLimit);
     // get the wanted acceleration
-    Scalar wantedAcceleration = powerLookupTable.getNormalizedAcceleration(pair, meanTangentSpeed);
+    Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(pair, meanTangentSpeed);
+    //get current
     Scalar current = powerLookupTable.getNeededCurrent(wantedAcceleration, meanTangentSpeed);
-    // TODO MH unfinished since "current" is not used
-    // get the
-    short arms_raw = Magnitude.ARMS.toShort(pair); // confirm that units are correct
+    short arms_raw = Magnitude.ARMS.toShort(current); // confirm that units are correct
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_raw, // sign left invert
         (short) +arms_raw // sign right id

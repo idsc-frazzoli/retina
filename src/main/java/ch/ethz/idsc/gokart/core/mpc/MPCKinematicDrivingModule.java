@@ -1,5 +1,5 @@
 package ch.ethz.idsc.gokart.core.mpc;
-
+//Not in use yet
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
@@ -37,7 +37,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
-      return Optional.of(SteerPutEvent);
+      return Optional.of(null);
     }
 
     @Override
