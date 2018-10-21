@@ -7,6 +7,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
   public void testSimple() throws Exception {
     // only sends a simple message
     // uncomment if you are able to compile the binary
+    /*
     LcmMPCPathFollowingClient lcmMPCPathFollowingClient = new LcmMPCPathFollowingClient();
     try {
       // TODO jan had to add try here
@@ -31,6 +32,6 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       lcmMPCPathFollowingClient.stop();
     } catch (Exception exception) {
       exception.printStackTrace();
-    }
+    }*/
   }
 }

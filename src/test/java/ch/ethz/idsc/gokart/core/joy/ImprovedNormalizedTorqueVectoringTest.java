@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -9,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
@@ -31,6 +33,28 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     assertEquals(powers, Tensors.vector(0, 0));
   }
 
+  public void testZeroMean() {
+    // this is only true when we have no torque vectoring
+    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
+    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    ImprovedNormalizedTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedTorqueVectoring(tvc);
+    Scalar power = RealScalar.ZERO;
+    Scalar velocity = Quantity.of(1, SI.VELOCITY);
+    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+        Quantity.of(1, "m^-1"), //
+        velocity, //
+        Quantity.of(0, "s^-1"), //
+        power, Quantity.of(0, "s^-1"));
+    // more complicated test
+    Scalar maxcurr = Quantity.of(2300, NonSI.ARMS);
+    Scalar noPowerAcceleration = powerLookupTable.getAcceleration(Quantity.of(0, NonSI.ARMS), Quantity.of(1, "m*s^-1"));
+    Scalar leftAcc = powerLookupTable.getAcceleration(powers.Get(0).multiply(maxcurr), velocity);
+    Scalar rightAcc = powerLookupTable.getAcceleration(powers.Get(1).multiply(maxcurr), velocity);
+    assertTrue(Chop._04.close(Mean.of(Tensors.of(leftAcc, rightAcc)), noPowerAcceleration));
+    // assertEquals(powers, Tensors.vector(-0.4, 0.4));
+  }
+
   public void testSaturatedPositive() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
@@ -42,6 +66,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
+    // it's 0.9999999...
     assertTrue(Chop._04.close(powers, Tensors.vector(1, 1)));
   }
 
