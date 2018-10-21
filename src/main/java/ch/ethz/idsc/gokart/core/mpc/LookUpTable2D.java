@@ -15,16 +15,18 @@ import de.lmu.ifi.dbs.elki.utilities.exceptions.NotImplementedException;
 //TODO: switch the whole thing to Tensor variables (this will not change any interactions)
 //TODO: document this properly (to be done after the whole thing works)
 public class LookUpTable2D {
+  private static final float TOLERANCE = 0.001f;
+  // ---
   final float table[][];
-  final int firstDimN;
-  final int secondDimN;
-  final float firstDimMin;
-  final float firstDimMax;
-  final float secondDimMin;
-  final float secondDimMax;
-  final Unit firstDimUnit;
-  final Unit secondDimUnit;
-  final Unit outputUnit;
+  private final int firstDimN;
+  private final int secondDimN;
+  private final float firstDimMin;
+  private final float firstDimMax;
+  private final float secondDimMin;
+  private final float secondDimMax;
+  private final Unit firstDimUnit;
+  private final Unit secondDimUnit;
+  private final Unit outputUnit;
   private LookupFunction originalFunction = null;
 
   public LookUpTable2D(BufferedReader csvReader) throws IOException {
@@ -101,7 +103,7 @@ public class LookUpTable2D {
     this.outputUnit = outputUnit;
   }
 
-  public interface LookupFunction {
+  static interface LookupFunction {
     Scalar getValue(Scalar firstValue, Scalar secondValue);
   }
 
@@ -143,8 +145,8 @@ public class LookUpTable2D {
     // return getValue(x, y);
   }
 
-  public LookUpTable2D getInverseLookupTableBinarySearch(int target, int firstDimN, int secondDimN, Scalar newDimMin, Scalar newDimMax) {
-    final float tolerance = 0.001f;
+  public LookUpTable2D getInverseLookupTableBinarySearch( //
+      int target, int firstDimN, int secondDimN, Scalar newDimMin, Scalar newDimMax) {
     float firstDimMinf;
     float firstDimMaxf;
     float secondDimMinf;
@@ -152,11 +154,12 @@ public class LookUpTable2D {
     if (target == 0) {
       firstDimMinf = newDimMin.number().floatValue();
       firstDimMaxf = newDimMax.number().floatValue();
-      secondDimMinf = this.secondDimMin;
-      secondDimMaxf = this.secondDimMax;
-    } else if (target == 1) {
-      firstDimMinf = this.firstDimMin;
-      firstDimMaxf = this.firstDimMax;
+      secondDimMinf = secondDimMin;
+      secondDimMaxf = secondDimMax;
+    } else //
+    if (target == 1) {
+      firstDimMinf = firstDimMin;
+      firstDimMaxf = firstDimMax;
       secondDimMinf = newDimMin.number().floatValue();
       secondDimMaxf = newDimMax.number().floatValue();
     } else
@@ -175,9 +178,9 @@ public class LookUpTable2D {
         float upper;
         float mid = 0;
         if (target == 0) {
-          lower = this.firstDimMin;
-          upper = this.firstDimMax;
-          while (Math.abs(upper - lower) > tolerance) {
+          lower = firstDimMin;
+          upper = firstDimMax;
+          while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) / 2.0f;
             final float midValue = getFunctionValue(mid, secondValuef);
             if (midValue > firstValuef)
@@ -185,10 +188,11 @@ public class LookUpTable2D {
             else
               lower = mid;
           }
-        } else if (target == 1) {
-          lower = this.secondDimMin;
-          upper = this.secondDimMax;
-          while (Math.abs(upper - lower) > tolerance) {
+        } else //
+        if (target == 1) {
+          lower = secondDimMin;
+          upper = secondDimMax;
+          while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) / 2.0f;
             final float midValue = getFunctionValue(firstValuef, mid);
             if (midValue > secondValuef)
@@ -201,27 +205,26 @@ public class LookUpTable2D {
       }
     }
     if (target == 0)
+      return new LookUpTable2D( //
+          table, //
+          firstDimMinf, //
+          firstDimMaxf, //
+          secondDimMinf, //
+          secondDimMaxf, //
+          outputUnit, //
+          secondDimUnit, //
+          firstDimUnit);
+    if (target == 1)
       return new LookUpTable2D(//
           table, //
           firstDimMinf, //
           firstDimMaxf, //
           secondDimMinf, //
           secondDimMaxf, //
-          this.outputUnit, //
-          this.secondDimUnit, //
-          this.firstDimUnit);
-    else if (target == 1)
-      return new LookUpTable2D(//
-          table, //
-          firstDimMinf, //
-          firstDimMaxf, //
-          secondDimMinf, //
-          secondDimMaxf, //
-          this.firstDimUnit, //
-          this.outputUnit, //
-          this.secondDimUnit);
-    else
-      return null;
+          firstDimUnit, //
+          outputUnit, //
+          secondDimUnit);
+    return null;
   }
 
   private float getLookupValue(float x, float y) {
@@ -261,15 +264,14 @@ public class LookUpTable2D {
    * @param otherValue the value that is set at the other dimension
    * @return a Tensor containing the minimum and maximum value along the dimension */
   public Tensor getExtremalValues(int dimension, Scalar otherValue) {
-    if (dimension == 0) {
-      return Tensors.of(//
+    if (dimension == 0)
+      return Tensors.of( //
           lookup(Quantity.of(firstDimMin, firstDimUnit), otherValue), //
           lookup(Quantity.of(firstDimMax, firstDimUnit), otherValue));
-    } else if (dimension == 1) {
+    if (dimension == 1)
       return Tensors.of(//
           lookup(otherValue, Quantity.of(secondDimMin, secondDimUnit)), //
           lookup(otherValue, Quantity.of(secondDimMax, secondDimUnit)));
-    } else
-      return null;
+    return null;
   }
 }

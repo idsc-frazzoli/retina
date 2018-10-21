@@ -15,7 +15,7 @@ class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     super(torqueVectoringConfig);
   }
 
-  @Override
+  @Override // from TorqueVectoringInterface
   public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
     // wrapper for torque vectoring method
     Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(power, meanTangentSpeed);
@@ -36,7 +36,7 @@ class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
    * @param wantedAcceleration [m/s^2]
    * @param realRotation [1/s]
    * @return the motor currents [Arms] */
-  public Tensor getMotorCurrentsFromAcceleration(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedAcceleration,
+  private Tensor getMotorCurrentsFromAcceleration(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedAcceleration,
       Scalar realRotation) {
     Scalar dynamicComponent = getDynamicComponent(angularSlip);
     Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
@@ -62,7 +62,7 @@ class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations
-    Tensor remappedAccelerations = clip( //
+    Tensor remappedAccelerations = TorqueVectoringHelper.clip( //
         remappedMeanAcceleration.subtract(wantedZTorque), //
         remappedMeanAcceleration.add(wantedZTorque));
     // remap again to acceleration space

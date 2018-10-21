@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import junit.framework.TestCase;
 
-public class LookupTable2dTest extends TestCase {
+public class LookupTable2DTest extends TestCase {
   public void testConsistency() throws Exception {
     // units not part of this unit test
     // save to file and reload again
@@ -30,20 +30,17 @@ public class LookupTable2dTest extends TestCase {
       }
     }
     LookUpTable2D lookUpTable = new LookUpTable2D(table, -1f, 1f, -1f, 1f, testUnit, testUnit, testUnit);
-    FileWriter fw = new FileWriter("testLookupTable.csv");
-    BufferedWriter bw = new BufferedWriter(fw);
-    lookUpTable.saveTable(bw);
-    bw.close();
-    FileReader fr = new FileReader("testLookupTable.csv");
-    BufferedReader br = new BufferedReader(fr);
-    LookUpTable2D lookUpTable2 = new LookUpTable2D(br);
-    fr.close();
-    for (int i1 = 0; i1 < 10; i1++) {
-      for (int i2 = 0; i2 < 10; i2++) {
-        assertEquals(table[i1][i2], lookUpTable2.table[i1][i2]);
-      }
+    final File file = new File("testLookupTable.csv");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+      lookUpTable.saveTable(bw);
     }
-    File file = new File("testLookupTable.csv");
+    LookUpTable2D lookUpTable2 = null;
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+      lookUpTable2 = new LookUpTable2D(br);
+    }
+    for (int i1 = 0; i1 < 10; i1++)
+      for (int i2 = 0; i2 < 10; i2++)
+        assertEquals(table[i1][i2], lookUpTable2.table[i1][i2]);
     file.delete();
   }
 

@@ -1,4 +1,4 @@
-// code by jph
+// code by jph and mh
 package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<RimoPutEvent> implements RimoGetListener {
+  private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   @Override // from AbstractModule
@@ -33,8 +34,6 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
     RimoSocket.INSTANCE.removeGetListener(this);
   }
 
-  PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
-
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
@@ -45,6 +44,7 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
     // get the wanted acceleration
     Scalar wantedAcceleration = powerLookupTable.getNormalizedAcceleration(pair, meanTangentSpeed);
     Scalar current = powerLookupTable.getNeededCurrent(wantedAcceleration, meanTangentSpeed);
+    // TODO MH unfinished since "current" is not used
     // get the
     short arms_raw = Magnitude.ARMS.toShort(pair); // confirm that units are correct
     return Optional.of(RimoPutHelper.operationTorque( //
