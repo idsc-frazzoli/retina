@@ -11,12 +11,12 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobs;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
-public class LcmMPCPathFollowingClient extends BinaryLcmClient implements MPCPathFollowingClient {
-  public interface ControlUpdateListener {
+public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+  public interface MPCControlUpdateListener {
     void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps);
   }
 
-  private List<ControlUpdateListener> listeners = new ArrayList<>();
+  private List<MPCControlUpdateListener> listeners = new ArrayList<>();
   MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher gokartStatePublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher pathParameterPublisher = new BinaryBlobPublisher("mpc.forces.pp");
@@ -61,7 +61,7 @@ public class LcmMPCPathFollowingClient extends BinaryLcmClient implements MPCPat
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  public void registerControlUpdateLister(ControlUpdateListener listener) {
+  public void registerControlUpdateLister(MPCControlUpdateListener listener) {
     listeners.add(listener);
   }
 
@@ -70,7 +70,7 @@ public class LcmMPCPathFollowingClient extends BinaryLcmClient implements MPCPat
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
     System.out.println(cns.controlAndPredictionSteps.steps[0]);
-    for (ControlUpdateListener listener : listeners) {
+    for (MPCControlUpdateListener listener : listeners) {
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
     }
   }

@@ -16,8 +16,8 @@ import java.util.Scanner;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/* package */ class SocketMPCPathFollowingClient implements MPCPathFollowingClient {
-  public static MPCPathFollowingClient create() {
+/* package */ class SocketMPCPathFollowingClient implements MPCControlClient {
+  public static MPCControlClient create() {
     Optional<File> optional = MPCNative.binary();
     if (optional.isPresent())
       return new SocketMPCPathFollowingClient(MPCPathFollowingConfig.GLOBAL);

@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.mpc;
 
-/* package */ class VoidMPCPathFollowingClient implements MPCPathFollowingClient {
+/* package */ class VoidMPCPathFollowingClient implements MPCControlClient {
   @Override
   public void start() {
     // ---
