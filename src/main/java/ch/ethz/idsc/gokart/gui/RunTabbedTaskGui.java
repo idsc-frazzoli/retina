@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
+import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.ImprovedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
@@ -91,6 +92,7 @@ enum RunTabbedTaskGui {
       RimoThrustJoystickModule.class, //
       SimpleTorqueVectoringJoystickModule.class, //
       ImprovedTorqueVectoringJoystickModule.class, //
+      ImprovedNormalizedTorqueVectoringJoystickModule.class, //
       JoystickGroupModule.class, //
       SysidSignalsModule.class //
   );

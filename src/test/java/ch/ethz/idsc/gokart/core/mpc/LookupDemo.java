@@ -20,8 +20,9 @@ enum LookupDemo {
   public static void main(String[] args) throws IOException {
     {
       Tensor powers = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
-      Tensor speeds = Subdivide.of(-8, 8, 500).map(s -> Quantity.of(s, SI.VELOCITY));
-      Tensor matrix = Tensors.matrix((i, j) -> PowerHelpers.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(), speeds.length());
+      Tensor speeds = Subdivide.of(-10, 10, 500).map(s -> Quantity.of(s, SI.VELOCITY));
+      Tensor matrix = Tensors.matrix((i, j) -> MotorFunction.getAccelerationEstimation(powers.Get(i).negate(), speeds.Get(j)), powers.length(),
+          speeds.length());
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
       Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
     }
@@ -34,14 +35,14 @@ enum LookupDemo {
         @Override
         public Scalar getValue(Scalar firstValue, Scalar secondValue) {
           // power, Speed
-          return PowerHelpers.getAccelerationEstimation(firstValue, secondValue);
+          return MotorFunction.getAccelerationEstimation(firstValue, secondValue);
         }
       };
-      final int DimN = 100;
-      final Scalar xMin = Quantity.of(-10, SI.VELOCITY);
-      final Scalar xMax = Quantity.of(10, SI.VELOCITY);
-      final Scalar yMin = Quantity.of(-2300, NonSI.ARMS);
-      final Scalar yMax = Quantity.of(2300, NonSI.ARMS);
+      final int DimN = 250;
+      final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
+      final Scalar yMax = Quantity.of(10, SI.VELOCITY);
+      final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
+      final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
       LookUpTable2D lookUpTable2D = new LookUpTable2D(//
           function, //
           DimN, //
@@ -56,16 +57,26 @@ enum LookupDemo {
           DimN, //
           DimN, //
           Quantity.of(-2, SI.ACCELERATION), //
-          Quantity.of(2, SI.ACCELERATION), //
-          Quantity.of(-5, SI.VELOCITY), //
-          Quantity.of(5, SI.VELOCITY));
+          Quantity.of(2, SI.ACCELERATION));
+      System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
+      System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("set up inverse table");
-      Tensor accelerations = Subdivide.of(-2, 2, 500).map(s -> Quantity.of(s, SI.ACCELERATION));
-      Tensor speeds = Subdivide.of(-5, 5, 500).map(s -> Quantity.of(s, SI.VELOCITY));
-      Tensor matrix = Tensors.matrix((i, j) -> inverseLookupTable.lookup(accelerations.Get(i).negate(), speeds.Get(j)), accelerations.length(),
-          speeds.length());
-      Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
-      Export.of(UserHome.Pictures("inverseTable.png"), rgba);
+      {
+        Tensor accelerations = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, SI.ACCELERATION));
+        Tensor speeds = Subdivide.of(-8, 8, 500).map(s -> Quantity.of(s, SI.VELOCITY));
+        Tensor matrix = Tensors.matrix((i, j) -> lookUpTable2D.lookup(accelerations.Get(i).negate(), speeds.Get(j)), accelerations.length(), speeds.length());
+        Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
+        Export.of(UserHome.Pictures("lookupTable.png"), rgba);
+      }
+      {
+        Tensor accelerations = Subdivide.of(-2, 2, 500).map(s -> Quantity.of(s, SI.ACCELERATION));
+        Tensor speeds = Subdivide.of(-5, 5, 500).map(s -> Quantity.of(s, SI.VELOCITY));
+        Tensor matrix = Tensors.matrix((i, j) -> inverseLookupTable.lookup(accelerations.Get(i).negate(), speeds.Get(j)), accelerations.length(),
+            speeds.length());
+        Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
+        Export.of(UserHome.Pictures("inverseTable.png"), rgba);
+      }
+      System.out.println("exported pictures");
       // System.out.println(inverseLookupTable.lookup(Quantity.of(number, string), y));
     }
   }

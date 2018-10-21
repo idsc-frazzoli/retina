@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import junit.framework.TestCase;
 
-public class LookUpTable2DTest extends TestCase {
+public class LookupTable2DTest extends TestCase {
   public void testConsistency() throws Exception {
     // units not part of this unit test
     // save to file and reload again
@@ -30,20 +30,17 @@ public class LookUpTable2DTest extends TestCase {
       }
     }
     LookUpTable2D lookUpTable = new LookUpTable2D(table, -1f, 1f, -1f, 1f, testUnit, testUnit, testUnit);
-    FileWriter fw = new FileWriter("testLookupTable.csv");
-    BufferedWriter bw = new BufferedWriter(fw);
-    lookUpTable.saveTable(bw);
-    bw.close();
-    FileReader fr = new FileReader("testLookupTable.csv");
-    BufferedReader br = new BufferedReader(fr);
-    LookUpTable2D lookUpTable2 = new LookUpTable2D(br);
-    fr.close();
-    for (int i1 = 0; i1 < 10; i1++) {
-      for (int i2 = 0; i2 < 10; i2++) {
-        assertEquals(table[i1][i2], lookUpTable2.table[i1][i2]);
-      }
+    final File file = new File("testLookupTable.csv");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+      lookUpTable.saveTable(bw);
     }
-    File file = new File("testLookupTable.csv");
+    LookUpTable2D lookUpTable2 = null;
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+      lookUpTable2 = new LookUpTable2D(br);
+    }
+    for (int i1 = 0; i1 < 10; i1++)
+      for (int i2 = 0; i2 < 10; i2++)
+        assertEquals(table[i1][i2], lookUpTable2.table[i1][i2]);
     file.delete();
   }
 
@@ -113,8 +110,6 @@ public class LookUpTable2DTest extends TestCase {
         0, DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
-        Quantity.of(5, SI.ONE), //
-        Quantity.of(-5, SI.ONE), //
         Quantity.of(5, SI.ONE));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
@@ -165,8 +160,6 @@ public class LookUpTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
-        Quantity.of(5, SI.ONE), //
-        Quantity.of(-5, SI.ONE), //
         Quantity.of(5, SI.ONE));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
@@ -189,17 +182,18 @@ public class LookUpTable2DTest extends TestCase {
   public void testWithPowerFunction() {
     LookupFunction function = new LookupFunction() {
       @Override
-      public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+      public Scalar getValue(Scalar current, Scalar velocity) {
         // power, Speed
-        return PowerHelpers.getAccelerationEstimation(firstValue, secondValue);
+        return MotorFunction.getAccelerationEstimation(current, velocity);
       }
     };
-    final int DimN = 100;
-    final Scalar inversionLimit = Quantity.of(0.001, NonSI.ARMS);
-    final Scalar xMin = Quantity.of(-10, SI.VELOCITY);
-    final Scalar xMax = Quantity.of(10, SI.VELOCITY);
-    final Scalar yMin = Quantity.of(-2300, NonSI.ARMS);
-    final Scalar yMax = Quantity.of(2300, NonSI.ARMS);
+    final int DimN = 250;
+    // higher limit because of scaling of output [-2300, 2300]
+    final Scalar inversionLimit = Quantity.of(2, NonSI.ARMS);
+    final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
+    final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
+    final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
+    final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
     LookUpTable2D lookUpTable2D = new LookUpTable2D(//
         function, //
@@ -215,19 +209,19 @@ public class LookUpTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Quantity.of(-2, SI.ACCELERATION), //
-        Quantity.of(2, SI.ACCELERATION), //
-        Quantity.of(-10, SI.VELOCITY), //
-        Quantity.of(10, SI.VELOCITY));
+        Quantity.of(2, SI.ACCELERATION));
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
-      Scalar x = Quantity.of(rand.nextFloat(), SI.VELOCITY);
-      Scalar y = Quantity.of(rand.nextFloat(), NonSI.ARMS);
+      Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);
+      Scalar y = Quantity.of(rand.nextFloat(), SI.VELOCITY);
       Scalar out = lookUpTable2D.lookup(x, y);
-      Scalar yb = inverseLookupTable.lookup(x, out);
-      Scalar diff = y.subtract(yb).abs();
-      // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("y="+y+ " /yb="+yb);
-      // assertTrue(Scalars.lessThan(diff, inversionLimit));
+      Scalar xb = inverseLookupTable.lookup(out, y);
+      Scalar diff = x.subtract(xb).abs();
+      System.out.println("For X=" + x + " and Y=" + y + ": " + diff);
+      System.out.println("out: " + out);
+      System.out.println("fun out: " + function.getValue(x, y));
+      System.out.println("x=" + x + " /xb=" + xb);
+      assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
   }
 }

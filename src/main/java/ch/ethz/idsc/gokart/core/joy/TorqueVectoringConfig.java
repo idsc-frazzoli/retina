@@ -16,4 +16,6 @@ public class TorqueVectoringConfig {
   public Scalar dynamicCorrection = Quantity.of(1, SI.SECOND);
   /** TODO document control constant used in ITV */
   public Scalar ks = Quantity.of(10.0, SI.SECOND);
+  /** Scaling factor for Normalized torque vectoring */
+  public Scalar kn = Quantity.of(1, SI.ACCELERATION.negate());
 }

@@ -69,11 +69,4 @@ public class SimpleTorqueVectoringTest extends TestCase {
         power, Quantity.of(0, "s^-1"));
     assertEquals(powers, Tensors.vector(-1, -1));
   }
-
-  public void testClip() {
-    // Tensor clip =
-    SimpleTorqueVectoring.clip(RealScalar.of(1.2), RealScalar.ZERO);
-    // TOOD JPH simplify function
-    // System.out.println(clip);
-  }
 }

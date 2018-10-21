@@ -6,9 +6,10 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum PowerHelpers {
+enum MotorFunction {
   ;
-  private static float sfpos(float fpow, float fspd) {
+  // TODO MH due to the use 2 times create extra class to evaluate multinomial
+  private static float sfpos(float fspd, float fpow) {
     float p00 = -0.321f;
     float p10 = 0.1285f;
     float p01 = 0.002162f;
@@ -21,10 +22,12 @@ enum PowerHelpers {
     float p03 = -5.126e-11f;
     float x = fspd;
     float y = fpow;
-    return p00// constant
-        + p10 * x + p01 * y// linear
-        + p20 * x * x + p11 * x * y + p02 * y * y// quadratic
-        + p30 * x * x * x + p21 * x * x * y + p12 * x * y * y + p03 * y * y * y;// cubic
+    float x2 = x * x;
+    float y2 = y * y;
+    return p00 // constant
+        + p10 * x + p01 * y // linear
+        + p20 * x2 + p11 * x * y + p02 * y * y // quadratic
+        + p30 * x2 * x + p21 * x2 * y + p12 * x * y2 + p03 * y2 * y; // cubic
   }
 
   private static float sfneg(float fspd, float fpow) {
@@ -40,24 +43,24 @@ enum PowerHelpers {
     float p03 = 2.899e-10f;
     float x = fspd;
     float y = fpow;
-    return p00// constant
-        + p10 * x + p01 * y// linear
-        + p20 * x * x + p11 * x * y + p02 * y * y// quadratic
-        + p30 * x * x * x + p21 * x * x * y + p12 * x * y * y + p03 * y * y * y;// cubic
+    float x2 = x * x;
+    float y2 = y * y;
+    return p00 // constant
+        + p10 * x + p01 * y // linear
+        + p20 * x2 + p11 * x * y + p02 * y2 // quadratic
+        + p30 * x2 * x + p21 * x2 * y + p12 * x * y2 + p03 * y2 * y; // cubic
   }
 
   private static float forwardacc(float fspd, float fpow) {
-    float powerthreshold = 0.1f;
+    float powerthreshold = 100f;
     if (fpow > powerthreshold)
       return sfpos(fspd, fpow);
-    else if (fpow < -powerthreshold)
+    if (fpow < -powerthreshold)
       return sfneg(fspd, fpow);
-    else {
-      final float posval = sfpos(fspd, powerthreshold);
-      final float negval = sfneg(fspd, -powerthreshold);
-      final float prog = (fpow - powerthreshold) / (2 * powerthreshold);
-      return prog * posval + (1 - prog) * negval;
-    }
+    float posval = sfpos(fspd, powerthreshold);
+    float negval = sfneg(fspd, -powerthreshold);
+    float prog = (fpow + powerthreshold) / (2 * powerthreshold);
+    return prog * posval + (1 - prog) * negval;
   }
 
   private static float backwardacc(float fspd, float fpow) {
@@ -66,16 +69,14 @@ enum PowerHelpers {
 
   private static float fullFunction(float fspd, float fpow) {
     float speedthreshold = 0.5f;
-    if (fspd > speedthreshold) {
+    if (fspd > speedthreshold)
       return forwardacc(fspd, fpow);
-    } else if (fspd < -speedthreshold) {
+    if (fspd < -speedthreshold)
       return backwardacc(fspd, fpow);
-    } else {
-      final float forwardValue = forwardacc(speedthreshold, fpow);
-      final float backwardValue = backwardacc(-speedthreshold, fpow);
-      float prog = (fspd + speedthreshold) / (2 * speedthreshold);
-      return prog * forwardValue + (1 - prog) * backwardValue;
-    }
+    float forwardValue = forwardacc(speedthreshold, fpow);
+    float backwardValue = backwardacc(-speedthreshold, fpow);
+    float prog = (fspd + speedthreshold) / (2 * speedthreshold);
+    return prog * forwardValue + (1 - prog) * backwardValue;
   }
 
   /** @param power with unit "ARMS"

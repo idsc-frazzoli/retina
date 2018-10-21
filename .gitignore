@@ -82,3 +82,5 @@ fabric.properties
 export/
 mvninstall.sh
 
+/powerlookuptable.csv
+/inversepowerlookuptable.csv
