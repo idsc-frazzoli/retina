@@ -1,6 +1,5 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
