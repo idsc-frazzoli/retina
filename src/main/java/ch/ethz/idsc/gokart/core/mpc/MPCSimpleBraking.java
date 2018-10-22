@@ -28,7 +28,7 @@ public class MPCSimpleBraking implements MPCBraking {
     this.cns = controlAndPredictionSteps;
     inext = 0;
   }
-  
+
   @Override
   public void setStateProvider(MPCStateProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;

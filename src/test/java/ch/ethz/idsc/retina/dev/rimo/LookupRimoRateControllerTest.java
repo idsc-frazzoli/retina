@@ -3,9 +3,7 @@ package ch.ethz.idsc.retina.dev.rimo;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.SIDerived;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;

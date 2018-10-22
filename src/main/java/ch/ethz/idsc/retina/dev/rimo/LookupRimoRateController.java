@@ -15,7 +15,6 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
 
 /** two instance of this class are used for left and right rear motors
  * @see RimoRateControllerDuo
@@ -37,7 +36,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
     this.rimoConfig = rimoConfig;
   }
 
-  //Public because of testing
+  // Public because of testing
   public Scalar integral = Quantity.of(0, SI.METER);
   Scalar velocity = Quantity.of(0, SI.VELOCITY);
 

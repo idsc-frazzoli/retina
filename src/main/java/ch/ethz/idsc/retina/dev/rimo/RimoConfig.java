@@ -20,7 +20,7 @@ public class RimoConfig {
   public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
   public Scalar Kp = Quantity.of(35, "ARMS*rad^-1*s"); // 40
   public Scalar Ki = Quantity.of(0, "ARMS*rad^-1"); // 15
-  /** used for lookup table*/
+  /** used for lookup table */
   public Scalar lKp = Quantity.of(1, SI.ACCELERATION.add(SI.VELOCITY.negate()));
   public Scalar lKi = Quantity.of(1, SI.ACCELERATION.add(SI.METER.negate()));
   public Scalar lAntiWindupPadding = Quantity.of(0.1, SI.ACCELERATION);

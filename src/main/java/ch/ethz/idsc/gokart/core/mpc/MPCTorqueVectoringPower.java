@@ -41,9 +41,9 @@ public class MPCTorqueVectoringPower implements MPCPower {
       Scalar wantedAcceleration = cns.steps[inext - 1].control.getaB();// when used in
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
           expectedRotationPerMeterDriven, //
-          mpcStateProvider.getState().getUx(),//
-          currentSlip,//
-          wantedAcceleration,//
+          mpcStateProvider.getState().getUx(), //
+          currentSlip, //
+          wantedAcceleration, //
           mpcStateProvider.getState().getdotPsi());
     } else {
       return null;
@@ -55,7 +55,7 @@ public class MPCTorqueVectoringPower implements MPCPower {
     cns = controlAndPredictionSteps;
     inext = 0;
   }
-  
+
   @Override
   public void setStateProvider(MPCStateProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
