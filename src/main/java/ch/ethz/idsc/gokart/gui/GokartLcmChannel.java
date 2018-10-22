@@ -21,6 +21,8 @@ public enum GokartLcmChannel {
   // ---
   /** for debugging of rimo rate controller */
   public static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";
+  /** for debugging of rimo rate controller */
+  public static final String RIMO_CONTROLLER_LT = "rimo.controller.lt";
   /** for debugging of stable rimo rate controller */
   public static final String RIMO_CONTROLLER_AW = "rimo.controller.aw";
 }

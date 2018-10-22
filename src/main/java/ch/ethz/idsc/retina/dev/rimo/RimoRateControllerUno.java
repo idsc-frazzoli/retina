@@ -15,6 +15,7 @@ public class RimoRateControllerUno extends RimoRateControllerWrap {
   protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {
     Scalar vel_avg = Mean.of(rimoGetEvent.getAngularRate_Y_pair()).Get(); // average of wheel rates
     Scalar vel_error = rate_target.subtract(vel_avg);
+    pi.setVelocity(vel_avg);
     Scalar torque = pi.iterate(vel_error);
     short value_Yaxis = Magnitude.ARMS.toShort(torque);
     return RimoPutHelper.operationTorque( //

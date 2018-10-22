@@ -10,27 +10,21 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCTorqueVectroringPower implements MPCPower {
+public class MPCTorqueVectoringPower implements MPCPower {
   ControlAndPredictionSteps cns;
   ImprovedNormalizedTorqueVectoring torqueVectoring;
+  MPCStateProvider mpcStateProvider;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   MPCSteering mpcSteering;
-  GokartState currentState;
   int inext = 0;
 
-  public MPCTorqueVectroringPower(MPCSteering mpcSteering) {
+  public MPCTorqueVectoringPower(MPCSteering mpcSteering) {
     this.mpcSteering = mpcSteering;
     torqueVectoring = new ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   }
 
   @Override
-  public void Update(ControlAndPredictionSteps controlAndPredictionSteps) {
-    cns = controlAndPredictionSteps;
-    inext = 0;
-  }
-
-  @Override
-  public Tensor getSteering(Scalar time) {
+  public Tensor getPower(Scalar time) {
     // find at which stage we are
     while (//
     Scalars.lessThan(//
@@ -43,18 +37,27 @@ public class MPCTorqueVectroringPower implements MPCPower {
       // TODO: this leads to multiple executions. Fix that.
       Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
       Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-      Scalar currentSlip = currentState.getdotPsi().subtract(expectedRotationPerMeterDriven);
+      Scalar currentSlip = mpcStateProvider.getState().getdotPsi().subtract(expectedRotationPerMeterDriven);
       Scalar wantedAcceleration = cns.steps[inext - 1].control.getaB();// when used in
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
           expectedRotationPerMeterDriven, //
-          currentState.getUx(), currentSlip, wantedAcceleration, currentState.getdotPsi());
+          mpcStateProvider.getState().getUx(),//
+          currentSlip,//
+          wantedAcceleration,//
+          mpcStateProvider.getState().getdotPsi());
     } else {
       return null;
     }
   }
 
   @Override
-  public void getState(GokartState state) {
-    currentState = state;
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    cns = controlAndPredictionSteps;
+    inext = 0;
+  }
+  
+  @Override
+  public void setStateProvider(MPCStateProvider mpcstateProvider) {
+    this.mpcStateProvider = mpcstateProvider;
   }
 }
