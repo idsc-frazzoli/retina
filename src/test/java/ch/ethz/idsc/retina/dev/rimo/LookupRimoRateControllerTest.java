@@ -15,7 +15,7 @@ public class LookupRimoRateControllerTest extends TestCase {
   public void testSimple() {
     RimoRateController rimoRateController = new LookupRimoRateController(RimoConfig.GLOBAL);
     Scalar vel_error = Quantity.of(31, SIDerived.RADIAN_PER_SECOND); // rad*s^-1
-    rimoRateController.setVelocity(Quantity.of(2, "rad*s^-1"));
+    rimoRateController.setWheelRate(Quantity.of(2, "rad*s^-1"));
     Scalar arms = rimoRateController.iterate(vel_error);
     assertEquals(Units.of(arms), Unit.of("ARMS"));
   }

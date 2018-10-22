@@ -7,9 +7,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -28,8 +26,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final RimoConfig rimoConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
-  private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
-  private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
+  // private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
+  // private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
   private PowerLookupTable lookupTable = PowerLookupTable.getInstance();
 
   public LookupRimoRateController(RimoConfig rimoConfig) {
@@ -41,8 +39,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   Scalar velocity = Quantity.of(0, SI.VELOCITY);
 
   @Override
-  public void setVelocity(Scalar abs_vel) {
-    // TODO Auto-generated method stub
+  public void setWheelRate(Scalar abs_vel) {
     velocity = abs_vel.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
   }
 
@@ -61,7 +58,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       integral = integral.add(tangentVelError.multiply(DT));
     }
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
-        vel_error, pPart, iPart, integral, lastTor_value)));
+        vel_error, pPart, iPart, integral)));
     return currentValue;
   }
 }
