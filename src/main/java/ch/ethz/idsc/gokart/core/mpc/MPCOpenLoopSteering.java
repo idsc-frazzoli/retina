@@ -9,12 +9,6 @@ public class MPCOpenLoopSteering implements MPCSteering {
   int inext = 0;
 
   @Override
-  public void Update(ControlAndPredictionSteps controlAndPredictionSteps) {
-    cns = controlAndPredictionSteps;
-    inext = 0;
-  }
-
-  @Override
   public Scalar getSteering(Scalar time) {
     // find at which stage we are
     while (//
@@ -30,6 +24,12 @@ public class MPCOpenLoopSteering implements MPCSteering {
 
   @Override
   public void getState(GokartState state) {
-    //not used here
+    // not used here
+  }
+
+  @Override
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    cns = controlAndPredictionSteps;
+    inext = 0;
   }
 }

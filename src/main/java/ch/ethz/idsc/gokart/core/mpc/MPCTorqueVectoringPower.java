@@ -1,7 +1,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -11,7 +10,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCTorqueVectroringPower implements MPCPower {
+public class MPCTorqueVectoringPower implements MPCPower {
   ControlAndPredictionSteps cns;
   ImprovedNormalizedTorqueVectoring torqueVectoring;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
@@ -19,19 +18,13 @@ public class MPCTorqueVectroringPower implements MPCPower {
   GokartState currentState;
   int inext = 0;
 
-  public MPCTorqueVectroringPower(MPCSteering mpcSteering) {
+  public MPCTorqueVectoringPower(MPCSteering mpcSteering) {
     this.mpcSteering = mpcSteering;
     torqueVectoring = new ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   }
 
   @Override
-  public void Update(ControlAndPredictionSteps controlAndPredictionSteps) {
-    cns = controlAndPredictionSteps;
-    inext = 0;
-  }
-
-  @Override
-  public Tensor getSteering(Scalar time) {
+  public Tensor getPower(Scalar time) {
     // find at which stage we are
     while (//
     Scalars.lessThan(//
@@ -45,14 +38,10 @@ public class MPCTorqueVectroringPower implements MPCPower {
       Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
       Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
       Scalar currentSlip = currentState.getdotPsi().subtract(expectedRotationPerMeterDriven);
-      Scalar wantedAcceleration = cns.steps[inext-1].control.getaB();//when used in 
-      
+      Scalar wantedAcceleration = cns.steps[inext - 1].control.getaB();// when used in
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
-          expectedRotationPerMeterDriven,//
-          currentState.getUx(),
-          currentSlip,
-          wantedAcceleration,
-          currentState.getdotPsi());
+          expectedRotationPerMeterDriven, //
+          currentState.getUx(), currentSlip, wantedAcceleration, currentState.getdotPsi());
     } else {
       return null;
     }
@@ -61,5 +50,11 @@ public class MPCTorqueVectroringPower implements MPCPower {
   @Override
   public void getState(GokartState state) {
     currentState = state;
+  }
+
+  @Override
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    cns = controlAndPredictionSteps;
+    inext = 0;
   }
 }

@@ -12,9 +12,6 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
 public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
-  public interface MPCControlUpdateListener {
-    void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps);
-  }
 
   private List<MPCControlUpdateListener> listeners = new ArrayList<>();
   MPCNativeSession mpcNativeSession = new MPCNativeSession();
