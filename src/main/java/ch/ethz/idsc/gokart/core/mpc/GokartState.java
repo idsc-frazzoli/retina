@@ -12,10 +12,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
-  private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
+  // not used yet:
+  // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
   /** time in seconds from synchronized time point */
   private final float time;
   /** forward velocity in gokart frame with unit m*s^1 */
@@ -253,6 +253,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return 11 * 4;
   }
 
+  @Override
   public String toString() {
     return "State:\n" + asVector().toString() + "\n";
   }

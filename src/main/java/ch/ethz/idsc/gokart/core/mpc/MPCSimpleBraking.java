@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,9 +18,8 @@ public class MPCSimpleBraking implements MPCBraking {
         cns.steps[inext].state.getTime())) {
       inext++;
     }
-    if (inext > 0) {
+    if (inext > 0)
       return cns.steps[inext - 1].control.getuB();
-    }
     return null;
   }
 

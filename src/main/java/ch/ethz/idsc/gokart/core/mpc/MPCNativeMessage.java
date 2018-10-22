@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 public abstract class MPCNativeMessage implements MPCNativeInsertable {
-  abstract public int getMessagePrefix();
+  public abstract int getMessagePrefix();
 
-  abstract public MPCNativeInsertable getPayload();
+  public abstract MPCNativeInsertable getPayload();
 
   private final int messageSequence;
 
