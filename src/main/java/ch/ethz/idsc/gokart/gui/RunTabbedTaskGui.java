@@ -27,6 +27,7 @@ import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickMod
 import ch.ethz.idsc.gokart.core.joy.ImprovedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
+import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
@@ -94,7 +95,8 @@ enum RunTabbedTaskGui {
       ImprovedTorqueVectoringJoystickModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
       JoystickGroupModule.class, //
-      SysidSignalsModule.class //
+      SysidSignalsModule.class, //
+      LookupTableRimoThrustJoystickModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //

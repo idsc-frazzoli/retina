@@ -19,12 +19,16 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float uR;
   private final float udotS;
   private final float uB;
+  private final float aB;
+  private final boolean directMotorControl;
 
   public GokartControl(float uL, float uR, float udotS, float uB) {
     this.uL = uL;
     this.uR = uR;
     this.udotS = udotS;
     this.uB = uB;
+    this.aB = 0;
+    this.directMotorControl = false;
   }
 
   public Scalar getuL() {
@@ -43,11 +47,17 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return Quantity.of(uB, SI.ONE);
   }
 
+  public Scalar getaB() {
+    return Quantity.of(aB, SI.ACCELERATION);
+  }
+
   public GokartControl(ByteBuffer byteBuffer) {
     uL = byteBuffer.getFloat();
     uR = byteBuffer.getFloat();
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
+    aB = byteBuffer.getFloat();
+    directMotorControl = Math.signum(aB) == 0;
   }
 
   @Override
@@ -56,20 +66,28 @@ import ch.ethz.idsc.tensor.qty.Unit;
     byteBuffer.putFloat(uR);
     byteBuffer.putFloat(udotS);
     byteBuffer.putFloat(uB);
+    byteBuffer.putFloat(aB);
   }
 
   @Override
   public int length() {
-    return 4 * 4;
+    return 5 * 4;
   }
 
   @Override
   public Tensor asVector() {
-    return Tensors.of(//
-        getuL(), //
-        getuR(), //
-        getudotS(), //
-        getuB());
+    if (directMotorControl) {
+      return Tensors.of(//
+          getuL(), //
+          getuR(), //
+          getudotS(), //
+          getuB());
+    } else {
+      return Tensors.of(//
+          getaB(), //
+          getudotS(), //
+          getuB());
+    }
   }
 
   public String toString() {

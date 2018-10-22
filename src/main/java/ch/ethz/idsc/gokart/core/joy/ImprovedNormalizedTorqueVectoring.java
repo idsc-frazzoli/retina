@@ -8,10 +8,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Mean;
 
-class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
+public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
 
-  ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  public ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
@@ -29,14 +29,14 @@ class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   }
 
   /** get torque vectoring motor currents corresponding to the wanted rotation speed
-   * (this can also be used externally)
+   * (this can also be used externally!)
    * @param expectedRotationPerMeterDriven [1/s]
    * @param meanTangentSpeed [m/s]
    * @param angularSlip [1/s]
    * @param wantedAcceleration [m/s^2]
    * @param realRotation [1/s]
    * @return the motor currents [Arms] */
-  private Tensor getMotorCurrentsFromAcceleration(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedAcceleration,
+  public Tensor getMotorCurrentsFromAcceleration(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedAcceleration,
       Scalar realRotation) {
     Scalar dynamicComponent = getDynamicComponent(angularSlip);
     Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);

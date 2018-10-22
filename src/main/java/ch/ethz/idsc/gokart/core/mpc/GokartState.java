@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -35,6 +36,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float w2R;
   /** steering state */
   private final float s;
+  /** brake temperature */
+  private final float bTemp;
 
   public GokartState(//
       float time, //
@@ -57,6 +60,32 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.w2L = w2L;
     this.w2R = w2R;
     this.s = s;
+    this.bTemp = 0;
+  }
+  
+  public GokartState(//
+      float time, //
+      float Ux, //
+      float Uy, //
+      float dotPsi, //
+      float X, //
+      float Y, //
+      float Psi, //
+      float w2L, //
+      float w2R, //
+      float s,//
+      float bTemp) {
+    this.time = time;
+    this.Ux = Ux;
+    this.Uy = Uy;
+    this.dotPsi = dotPsi;
+    this.X = X;
+    this.Y = Y;
+    this.Psi = Psi;
+    this.w2L = w2L;
+    this.w2R = w2R;
+    this.s = s;
+    this.bTemp = bTemp;
   }
 
   public GokartState(//
@@ -79,6 +108,31 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.w2L = Magnitude.PER_SECOND.toFloat(w2L);
     this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
+    this.bTemp = 0;
+  }
+  
+  public GokartState(//
+      Scalar time, Scalar Ux, //
+      Scalar Uy, //
+      Scalar dotPsi, //
+      Scalar X, //
+      Scalar Y, //
+      Scalar Psi, //
+      Scalar w2L, //
+      Scalar w2R, //
+      Scalar s,
+      Scalar bTemp) {
+    this.time = Magnitude.SECOND.toFloat(time);
+    this.Ux = Magnitude.VELOCITY.toFloat(Ux);
+    this.Uy = Magnitude.VELOCITY.toFloat(Uy);
+    this.dotPsi = Magnitude.PER_SECOND.toFloat(dotPsi);
+    this.X = Magnitude.METER.toFloat(X);
+    this.Y = Magnitude.METER.toFloat(Y);
+    this.Psi = Magnitude.ONE.toFloat(Psi);
+    this.w2L = Magnitude.PER_SECOND.toFloat(w2L);
+    this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
+    this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
+    this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
   }
 
   public GokartState(Tensor GokartStateTensor) {
@@ -92,6 +146,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     w2L = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(7));
     w2R = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(8));
     s = SteerPutEvent.ENCODER.apply(GokartStateTensor.Get(9)).number().floatValue();
+    bTemp = Magnitude.DEGREE_CELSIUS.toFloat(GokartStateTensor.Get(10));
   }
 
   // constructor for input stream
@@ -108,6 +163,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     w2L = byteBuffer.getFloat();
     w2R = byteBuffer.getFloat();
     s = byteBuffer.getFloat();
+    bTemp = byteBuffer.getFloat();
   }
 
   @Override
@@ -131,7 +187,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
         getPsi(), //
         getw2L(), //
         getw2R(), //
-        getS());
+        getS(),
+        getBTemp());
   }
 
   public Scalar getTime() {
@@ -173,6 +230,10 @@ import ch.ethz.idsc.tensor.qty.Unit;
   public Scalar getS() {
     return Quantity.of(s, SteerPutEvent.UNIT_ENCODER);
   }
+  
+  public Scalar getBTemp() {
+    return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
+  }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
@@ -186,11 +247,12 @@ import ch.ethz.idsc.tensor.qty.Unit;
     byteBuffer.putFloat(w2L);
     byteBuffer.putFloat(w2R);
     byteBuffer.putFloat(s);
+    byteBuffer.putFloat(bTemp);
   }
 
   @Override
   public int length() {
-    return 10 * 4;
+    return 11 * 4;
   }
 
   public String toString() {
