@@ -19,7 +19,7 @@ public class TrajectoryConfig {
   public Scalar planningOffset = Quantity.of(2.5, SI.METER);
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap
    * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway */
-  public Scalar horizonDistance = RealScalar.of(10);
+  public Scalar horizonDistance = RealScalar.of(8);
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);

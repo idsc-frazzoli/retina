@@ -19,6 +19,7 @@ public class RimoRateControllerUno extends RimoRateControllerWrap {
     Scalar vel_error = rate_target.subtract(vel_avg);
     pi.setWheelRate(vel_avg);
     Scalar torque = pi.iterate(vel_error);
+    System.out.println("torque=" + torque);
     short value_Yaxis = Magnitude.ARMS.toShort(torque);
     return RimoPutHelper.operationTorque( //
         (short) -value_Yaxis, // negative sign LEFT

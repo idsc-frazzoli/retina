@@ -51,6 +51,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar acc_value = pPart.add(iPart);
     final Scalar currentValue = lookupTable.getNeededCurrent(acc_value, velocity);
     // get min and max aviable
+    System.out.println("currentValue=" + currentValue);
     Tensor minmax = lookupTable.getMinMaxAcceleration(velocity);
     // anti windup
     if (Scalars.lessThan(minmax.Get(0), acc_value) && Scalars.lessThan(acc_value, minmax.Get(1))) {
@@ -58,7 +59,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       integral = integral.add(tangentVelError.multiply(DT));
     }
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
-        vel_error, pPart, iPart, integral)));
+        vel_error, pPart, iPart, integral, velocity)));
     return currentValue;
   }
 }
