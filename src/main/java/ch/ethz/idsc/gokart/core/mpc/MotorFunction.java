@@ -8,47 +8,23 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum MotorFunction {
   ;
-  // TODO MH due to the use 2 times create extra class to evaluate multinomial
-  private static float sfpos(float fspd, float fpow) {
-    float p00 = -0.321f;
-    float p10 = 0.1285f;
-    float p01 = 0.002162f;
-    float p20 = -0.03076f;
-    float p11 = -0.0002196f;
-    float p02 = -3.999e-07f;
-    float p30 = 0.002858f;
-    float p21 = 5.106e-06f;
-    float p12 = 7.048e-08f;
-    float p03 = -5.126e-11f;
-    float x = fspd;
-    float y = fpow;
-    float x2 = x * x;
-    float y2 = y * y;
-    return p00 // constant
-        + p10 * x + p01 * y // linear
-        + p20 * x2 + p11 * x * y + p02 * y * y // quadratic
-        + p30 * x2 * x + p21 * x2 * y + p12 * x * y2 + p03 * y2 * y; // cubic
+  private static final CubicBiPolynomial SF_POS = new CubicBiPolynomial( //
+      -0.321f, //
+      0.1285f, 0.002162f, //
+      -0.03076f, -0.0002196f, -3.999e-07f, //
+      0.002858f, 5.106e-06f, 7.048e-08f, -5.126e-11f);
+  private static final CubicBiPolynomial SF_NEG = new CubicBiPolynomial( //
+      -0.3738f, //
+      -0.06382f, 0.002075f, //
+      0.03953f, 0.0001024f, 1.371e-06f, //
+      -0.004336f, -3.495e-06f, 2.634e-08f, 2.899e-10f);
+
+  /* package */ static float sfpos(float fspd, float fpow) {
+    return SF_POS.evaluate(fspd, fpow);
   }
 
-  private static float sfneg(float fspd, float fpow) {
-    float p00 = -0.3738f;
-    float p10 = -0.06382f;
-    float p01 = 0.002075f;
-    float p20 = 0.03953f;
-    float p11 = 0.0001024f;
-    float p02 = 1.371e-06f;
-    float p30 = -0.004336f;
-    float p21 = -3.495e-06f;
-    float p12 = 2.634e-08f;
-    float p03 = 2.899e-10f;
-    float x = fspd;
-    float y = fpow;
-    float x2 = x * x;
-    float y2 = y * y;
-    return p00 // constant
-        + p10 * x + p01 * y // linear
-        + p20 * x2 + p11 * x * y + p02 * y2 // quadratic
-        + p30 * x2 * x + p21 * x2 * y + p12 * x * y2 + p03 * y2 * y; // cubic
+  /* package */ static float sfneg(float fspd, float fpow) {
+    return SF_NEG.evaluate(fspd, fpow);
   }
 
   private static float forwardacc(float fspd, float fpow) {

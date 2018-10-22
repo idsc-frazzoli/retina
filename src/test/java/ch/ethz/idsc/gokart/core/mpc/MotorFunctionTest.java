@@ -10,6 +10,16 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class MotorFunctionTest extends TestCase {
+  public void testSfpos() {
+    float sfpos = MotorFunction.sfpos(.3f, .5f);
+    assertEquals(sfpos, -0.28409305f);
+  }
+
+  public void testSfneg() {
+    float sfneg = MotorFunction.sfneg(.3f, .5f);
+    assertEquals(sfneg, -0.3884523f);
+  }
+
   public void testSimple() {
     Scalar epos = MotorFunction.getAccelerationEstimation( //
         Quantity.of(+1000, NonSI.ARMS), //
