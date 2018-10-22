@@ -94,9 +94,9 @@ enum RunTabbedTaskGui {
       SimpleTorqueVectoringJoystickModule.class, //
       ImprovedTorqueVectoringJoystickModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
+      LookupTableRimoThrustJoystickModule.class, //
       JoystickGroupModule.class, //
-      SysidSignalsModule.class, //
-      LookupTableRimoThrustJoystickModule.class //
+      SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
       FigureEightModule.class, //
