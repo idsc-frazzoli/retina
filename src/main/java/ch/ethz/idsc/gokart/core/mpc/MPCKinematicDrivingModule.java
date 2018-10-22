@@ -1,4 +1,6 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
+
 //Not in use yet
 import java.util.Optional;
 
@@ -14,13 +16,9 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
 
 public class MPCKinematicDrivingModule extends AbstractModule implements MPCControlUpdateListener {
-  public final LcmMPCControlClient lcmMPCPathFollowingClient//
-      = new LcmMPCControlClient();
-  private MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  
-  
-  
-  public final PutProvider<RimoPutEvent> rimoProvider = new PutProvider<RimoPutEvent>() {
+  final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
+  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  final PutProvider<RimoPutEvent> rimoProvider = new PutProvider<RimoPutEvent>() {
     @Override
     public Optional<RimoPutEvent> putEvent() {
       return Optional.of(RimoPutHelper.operationTorque( //
@@ -37,7 +35,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
-      return Optional.of(null);
+      return Optional.empty(); // TODO unfinished. btw of(null) throws an exception
     }
 
     @Override
@@ -48,6 +46,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   public final PutProvider<LinmotPutEvent> linmotProvider = new PutProvider<LinmotPutEvent>() {
     @Override
     public Optional<LinmotPutEvent> putEvent() {
+      // TODO unfinished
       return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
     }
 

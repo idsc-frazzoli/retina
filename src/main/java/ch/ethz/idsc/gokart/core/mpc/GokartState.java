@@ -62,7 +62,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.s = s;
     this.bTemp = 0;
   }
-  
+
   public GokartState(//
       float time, //
       float Ux, //
@@ -73,7 +73,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
       float Psi, //
       float w2L, //
       float w2R, //
-      float s,//
+      float s, //
       float bTemp) {
     this.time = time;
     this.Ux = Ux;
@@ -110,7 +110,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = 0;
   }
-  
+
   public GokartState(//
       Scalar time, Scalar Ux, //
       Scalar Uy, //
@@ -120,8 +120,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
       Scalar Psi, //
       Scalar w2L, //
       Scalar w2R, //
-      Scalar s,
-      Scalar bTemp) {
+      Scalar s, Scalar bTemp) {
     this.time = Magnitude.SECOND.toFloat(time);
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
     this.Uy = Magnitude.VELOCITY.toFloat(Uy);
@@ -187,8 +186,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
         getPsi(), //
         getw2L(), //
         getw2R(), //
-        getS(),
-        getBTemp());
+        getS(), getBTemp());
   }
 
   public Scalar getTime() {
@@ -230,7 +228,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   public Scalar getS() {
     return Quantity.of(s, SteerPutEvent.UNIT_ENCODER);
   }
-  
+
   public Scalar getBTemp() {
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }

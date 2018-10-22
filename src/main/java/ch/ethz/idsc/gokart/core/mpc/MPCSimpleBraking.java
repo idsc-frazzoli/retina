@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Scalars;
 public class MPCSimpleBraking implements MPCBraking {
   ControlAndPredictionSteps cns;
   int inext = 0;
+
   @Override
   public void getState(GokartState state) {
     // TODO Auto-generated method stub
@@ -26,8 +27,8 @@ public class MPCSimpleBraking implements MPCBraking {
         cns.steps[inext].state.getTime())) {
       inext++;
     }
-    if(inext>0) {
-      return cns.steps[inext-1].control.getuB();
+    if (inext > 0) {
+      return cns.steps[inext - 1].control.getuB();
     }
     return null;
   }

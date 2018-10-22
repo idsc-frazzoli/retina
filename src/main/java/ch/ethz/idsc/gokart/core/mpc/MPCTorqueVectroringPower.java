@@ -1,7 +1,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
@@ -45,14 +44,10 @@ public class MPCTorqueVectroringPower implements MPCPower {
       Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
       Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
       Scalar currentSlip = currentState.getdotPsi().subtract(expectedRotationPerMeterDriven);
-      Scalar wantedAcceleration = cns.steps[inext-1].control.getaB();//when used in 
-      
+      Scalar wantedAcceleration = cns.steps[inext - 1].control.getaB();// when used in
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
-          expectedRotationPerMeterDriven,//
-          currentState.getUx(),
-          currentSlip,
-          wantedAcceleration,
-          currentState.getdotPsi());
+          expectedRotationPerMeterDriven, //
+          currentState.getUx(), currentSlip, wantedAcceleration, currentState.getdotPsi());
     } else {
       return null;
     }
