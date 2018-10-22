@@ -12,7 +12,6 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
 public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
-
   private List<MPCControlUpdateListener> listeners = new ArrayList<>();
   MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher gokartStatePublisher = new BinaryBlobPublisher("mpc.forces.gs");

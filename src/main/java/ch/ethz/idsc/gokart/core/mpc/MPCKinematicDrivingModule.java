@@ -83,10 +83,10 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
-      if(braking!=null) {
-      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
-      }return 
-          Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
+      if (braking != null)
+        return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
+      else
+        return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
     }
 
     @Override

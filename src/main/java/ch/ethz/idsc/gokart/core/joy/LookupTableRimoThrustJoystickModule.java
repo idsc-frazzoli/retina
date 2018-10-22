@@ -41,7 +41,7 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // get the wanted acceleration
     Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(pair, meanTangentSpeed);
-    //get current
+    // get current
     Scalar current = powerLookupTable.getNeededCurrent(wantedAcceleration, meanTangentSpeed);
     short arms_raw = Magnitude.ARMS.toShort(current); // confirm that units are correct
     return Optional.of(RimoPutHelper.operationTorque( //
