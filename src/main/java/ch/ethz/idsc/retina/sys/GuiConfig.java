@@ -29,22 +29,26 @@ public class GuiConfig {
   }
 
   public JButton createButton(String string) {
-    return layout(new JButton(string), string);
+    return layout(new JButton(string), string, 20);
   }
 
   public JToggleButton createToggleButton(String string) {
-    return layout(new JToggleButton(string), string);
+    return layout(new JToggleButton(string), string, 20);
   }
 
   public JLabel createLabel(String title) {
-    return layout(new JLabel(title), title);
+    return layout(new JLabel(title), title, 20);
   }
 
-  private <T extends JComponent> T layout(T jComponent, String string) {
+  public JLabel createSubLabel(String title) {
+    return layout(new JLabel(title), title, 0);
+  }
+
+  private <T extends JComponent> T layout(T jComponent, String string, int margin) {
     Font font = getFont();
     jComponent.setFont(font);
     FontMetrics fontMetrics = jComponent.getFontMetrics(font);
-    int stringWidth = fontMetrics.stringWidth(string) + 20;
+    int stringWidth = fontMetrics.stringWidth(string) + margin;
     jComponent.setPreferredSize(new Dimension(stringWidth, getLabelHeight()));
     return jComponent;
   }

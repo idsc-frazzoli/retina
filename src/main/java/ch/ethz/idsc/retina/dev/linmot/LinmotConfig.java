@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeManeuver;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -31,6 +32,10 @@ public class LinmotConfig {
   /** the analysis of log files has yielded a deceleration of -4.5[m*s^-2]
    * to be conservative, we assume a deceleration of -4.3[m*s^-2] */
   public Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);
+  /** steps defines the number of levels at which to test the brake */
+  public Scalar pressTestSteps = RealScalar.of(10);
+  /** duration used in LinmotPressModule for calibration purpose */
+  public Scalar pressTestDuration = Quantity.of(3, SI.SECOND);
 
   /***************************************************/
   public Clip temperatureOperationClip() {
