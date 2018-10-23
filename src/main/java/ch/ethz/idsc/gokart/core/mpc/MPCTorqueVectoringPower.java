@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
 public class MPCTorqueVectoringPower implements MPCPower {
   ControlAndPredictionSteps cns;
   ImprovedNormalizedTorqueVectoring torqueVectoring;
-  MPCStateProvider mpcStateProvider;
+  MPCStateEstimationProvider mpcStateProvider;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   MPCSteering mpcSteering;
   int inext = 0;
@@ -57,7 +57,7 @@ public class MPCTorqueVectoringPower implements MPCPower {
   }
 
   @Override
-  public void setStateProvider(MPCStateProvider mpcstateProvider) {
+  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
 }

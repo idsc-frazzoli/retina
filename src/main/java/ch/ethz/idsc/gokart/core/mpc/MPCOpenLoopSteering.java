@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.Scalars;
 
 public class MPCOpenLoopSteering implements MPCSteering {
   ControlAndPredictionSteps cns = null;
-  MPCStateProvider mpcStateProvider;
+  MPCStateEstimationProvider mpcStateProvider;
   int inext = 0;
 
   @Override
@@ -29,7 +29,7 @@ public class MPCOpenLoopSteering implements MPCSteering {
   }
 
   @Override
-  public void setStateProvider(MPCStateProvider mpcstateProvider) {
+  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
 }

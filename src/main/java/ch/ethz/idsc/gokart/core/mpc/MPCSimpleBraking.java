@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.Scalars;
 
 public class MPCSimpleBraking implements MPCBraking {
   ControlAndPredictionSteps cns;
-  MPCStateProvider mpcStateProvider;
+  MPCStateEstimationProvider mpcStateProvider;
   int inext = 0;
 
   @Override
@@ -30,7 +30,7 @@ public class MPCSimpleBraking implements MPCBraking {
   }
 
   @Override
-  public void setStateProvider(MPCStateProvider mpcstateProvider) {
+  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
 }

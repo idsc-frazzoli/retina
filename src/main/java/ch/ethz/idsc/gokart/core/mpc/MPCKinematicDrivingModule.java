@@ -30,6 +30,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
+  private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started = Stopwatch.started();
 
@@ -39,6 +40,11 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcSteering);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
+    //state estimation provider
+    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
+    mpcBraking.setStateProvider(mpcStateEstimationProvider);
+    mpcPower.setStateProvider(mpcStateEstimationProvider);
+    mpcSteering.setStateProvider(mpcStateEstimationProvider);
   }
 
   public final PutProvider<RimoPutEvent> rimoProvider = new PutProvider<RimoPutEvent>() {
@@ -99,11 +105,13 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   @Override
   protected void first() throws Exception {
     lcmMPCPathFollowingClient.start();
+    mpcStateEstimationProvider.first();
   }
 
   @Override
   protected void last() {
     lcmMPCPathFollowingClient.stop();
+    mpcStateEstimationProvider.last();
   }
 
   @Override
