@@ -953,6 +953,14 @@ public enum GokartLogFile implements LogFile {
   _20181018T134353_a9bf87af, //
   /** trajectory planning with spherical goal region */
   _20181018T140542_1a649e65, //
+  /***************************************************/
+  /* 2018-10-22 */
+  /** testing normalized torque vectoring */
+  _20181022T104121_e2d44216, //
+  /** demo for visitors: figure 8, trajectory planning */
+  _20181022T113943_e2d44216, //
+  /** lookup table rimo rate controller figure 8 */
+  _20181022T143102_f6163877, //
   ;
   // ---
   @Override // from LogFile

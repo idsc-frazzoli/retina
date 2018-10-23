@@ -53,7 +53,7 @@ See [development_guidelines](doc/development_guidelines.md)
 
 Source file size distribution
 
-![retina](https://user-images.githubusercontent.com/4012178/46388749-62ec0e00-c6ce-11e8-91b9-32e23a199f20.png)
+![retina](https://user-images.githubusercontent.com/4012178/47344851-b9cf7c80-d6a9-11e8-940f-94e1512bec52.png)
 
 We use `LCM` for message interchange.
 All messages are encoded using a single type `BinaryBlob`.
@@ -64,7 +64,7 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 ## GOKART
 
-![gokart_operation](https://user-images.githubusercontent.com/4012178/47158699-8036f400-d2ec-11e8-8925-66a4ed559230.png)
+![gokart_operation](https://user-images.githubusercontent.com/4012178/47344898-d5d31e00-d6a9-11e8-99ed-8d54131016c8.png)
 
 ### Actuation
 
