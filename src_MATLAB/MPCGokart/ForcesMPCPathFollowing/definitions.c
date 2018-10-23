@@ -2,6 +2,7 @@
 
 //note: not all values are necessarily known for every type of controller
 struct State {
+	float time;
 	float Ux;
 	float Uy;
 	float dotPsi;
