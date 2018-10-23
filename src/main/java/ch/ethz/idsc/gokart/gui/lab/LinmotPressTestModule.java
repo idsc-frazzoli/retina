@@ -31,7 +31,6 @@ import ch.ethz.idsc.tensor.sca.Round;
  */
 public class LinmotPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
-  private final List<JButton> list = new ArrayList<>();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final LinmotPressTestLinmot linmotPressTestLinmot = new LinmotPressTestLinmot();
@@ -45,6 +44,7 @@ public class LinmotPressTestModule extends AbstractModule {
       final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
       Tensor tensor = Subdivide.of(RationalScalar.of(1, 10), RealScalar.ONE, n - 1);
       JPanel jPanel = new JPanel(new GridLayout(n, 1));
+      List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {
         Scalar scalar = tensor.Get(index);
         JButton jButton = new JButton("" + scalar.map(Round._2));
@@ -56,16 +56,7 @@ public class LinmotPressTestModule extends AbstractModule {
             new Thread(new Runnable() {
               @Override
               public void run() {
-                linmotPressTestRimo.startPress();
-                linmotPressTestLinmot.startPress(scalar);
-                try {
-                  Thread.sleep(Magnitude.MILLI_SECOND.toLong(LinmotConfig.GLOBAL.pressTestDuration));
-                } catch (Exception exception) {
-                  exception.printStackTrace();
-                }
-                linmotPressTestRimo.stopPress();
-                linmotPressTestLinmot.stopPress();
-                // ---
+                pressAt(scalar);
                 list.forEach(button -> button.setEnabled(true));
               }
             }).start();
@@ -78,6 +69,18 @@ public class LinmotPressTestModule extends AbstractModule {
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
+  }
+
+  void pressAt(Scalar scalar) {
+    linmotPressTestRimo.startPress();
+    linmotPressTestLinmot.startPress(scalar);
+    try {
+      Thread.sleep(Magnitude.MILLI_SECOND.toLong(LinmotConfig.GLOBAL.pressTestDuration));
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    linmotPressTestRimo.stopPress();
+    linmotPressTestLinmot.stopPress();
   }
 
   @Override

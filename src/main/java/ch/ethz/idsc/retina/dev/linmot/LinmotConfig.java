@@ -35,7 +35,7 @@ public class LinmotConfig {
   /** steps defines the number of levels at which to test the brake */
   public Scalar pressTestSteps = RealScalar.of(10);
   /** duration used in LinmotPressModule for calibration purpose */
-  public Scalar pressTestDuration = Quantity.of(3, SI.SECOND);
+  public Scalar pressTestDuration = Quantity.of(2.5, SI.SECOND);
 
   /***************************************************/
   public Clip temperatureOperationClip() {
