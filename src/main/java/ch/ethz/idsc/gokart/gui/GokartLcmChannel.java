@@ -19,6 +19,8 @@ public enum GokartLcmChannel {
    * message is self contained: state, time, flow */
   public static final String TRAJECTORY_XYAVT_STATETIME = "gokart.trajectory.xyavt";
   // ---
+  public static final String MPC_FORCES_CNS = "mpc.forces.cns";
+  // ---
   /** for debugging of rimo rate controller */
   public static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";
   /** for debugging of rimo rate controller */

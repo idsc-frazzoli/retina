@@ -3,12 +3,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.qty.Unit;
-
 /* package */ class ControlAndPredictionStep implements MPCNativeInsertable {
-  private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
+  // not used:
+  // private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
   public final GokartState state;
   public final GokartControl control;
 
@@ -33,6 +30,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return control.length() + state.length();
   }
 
+  @Override
   public String toString() {
     return "cns:\n" + control.toString() + state.toString();
   }

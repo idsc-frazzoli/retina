@@ -1,5 +1,5 @@
 // concept by jelavice
-// code by jph
+// code by mh
 package ch.ethz.idsc.retina.dev.rimo;
 
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
@@ -23,13 +23,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   static final Scalar DT = RimoSocket.INSTANCE.getPutPeriod();
   // ---
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.RIMO_CONTROLLER_LT);
+  private final PowerLookupTable lookupTable = PowerLookupTable.getInstance();
   private final RimoConfig rimoConfig;
+
   // ---
   /** pos error initially incorrect in the first iteration */
   // private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
-  // private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
-  private PowerLookupTable lookupTable = PowerLookupTable.getInstance();
-
   public LookupRimoRateController(RimoConfig rimoConfig) {
     this.rimoConfig = rimoConfig;
   }
@@ -40,6 +39,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public void setWheelRate(Scalar abs_vel) {
+    // System.out.println("setWheelRate=" + abs_vel);
     velocity = abs_vel.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
   }
 
@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar acc_value = pPart.add(iPart);
     final Scalar currentValue = lookupTable.getNeededCurrent(acc_value, velocity);
     // get min and max aviable
-    System.out.println("currentValue=" + currentValue);
+    // System.out.println("currentValue=" + currentValue);
     Tensor minmax = lookupTable.getMinMaxAcceleration(velocity);
     // anti windup
     if (Scalars.lessThan(minmax.Get(0), acc_value) && Scalars.lessThan(acc_value, minmax.Get(1))) {

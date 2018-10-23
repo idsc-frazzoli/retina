@@ -3,17 +3,18 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.lcm.BinaryBlobs;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
 public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
-  private List<MPCControlUpdateListener> listeners = new ArrayList<>();
-  MPCNativeSession mpcNativeSession = new MPCNativeSession();
+  private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
+  private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher gokartStatePublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher pathParameterPublisher = new BinaryBlobPublisher("mpc.forces.pp");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
@@ -73,6 +74,6 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
 
   @Override
   protected String channel() {
-    return "mpc.forces.cns";
+    return GokartLcmChannel.MPC_FORCES_CNS;
   }
 }

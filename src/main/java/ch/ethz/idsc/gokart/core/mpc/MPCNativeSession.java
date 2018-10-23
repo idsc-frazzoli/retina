@@ -8,10 +8,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MPCNativeSession {
   private Process process;
-  private HashMap<Integer, Integer> messageCounter = new HashMap<>();
+  private final Map<Integer, Integer> messageCounter = new HashMap<>();
   public BufferedReader is;
 
   void first() {

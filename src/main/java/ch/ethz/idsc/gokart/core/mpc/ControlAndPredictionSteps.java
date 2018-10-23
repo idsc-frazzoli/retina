@@ -7,21 +7,20 @@ import java.nio.ByteBuffer;
   public final ControlAndPredictionStep[] steps;
 
   public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {
-    this.steps = controlAndPredictionSteps;
+    steps = controlAndPredictionSteps;
   }
 
+  // TODO can use byteBuffer.remaining() for adaptive size
   public ControlAndPredictionSteps(ByteBuffer byteBuffer) {
     steps = new ControlAndPredictionStep[MPCNative.PREDICTIONSIZE];
-    for (int i = 0; i < MPCNative.PREDICTIONSIZE; i++) {
+    for (int i = 0; i < MPCNative.PREDICTIONSIZE; ++i)
       steps[i] = new ControlAndPredictionStep(byteBuffer);
-    }
   }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    for (ControlAndPredictionStep step : steps) {
+    for (ControlAndPredictionStep step : steps)
       step.insert(byteBuffer);
-    }
   }
 
   @Override
