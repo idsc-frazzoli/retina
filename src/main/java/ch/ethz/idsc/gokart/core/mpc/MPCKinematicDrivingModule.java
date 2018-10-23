@@ -3,8 +3,11 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 //Not in use yet
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
+import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
@@ -16,6 +19,7 @@ import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -23,25 +27,50 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCKinematicDrivingModule extends AbstractModule implements MPCControlUpdateListener {
+public class MPCKinematicDrivingModule extends AbstractModule {
   public final LcmMPCControlClient lcmMPCPathFollowingClient//
       = new LcmMPCControlClient();
+  private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
-  private final Stopwatch started = Stopwatch.started();
+  private final Stopwatch started;
+  private final Timer timer = new Timer();
 
-  public MPCKinematicDrivingModule() {
+  /** switch to testing binary that send back test data has to be called before first */
+  public void switchToTest() {
+    lcmMPCPathFollowingClient.switchToTest();
+  }
+
+  /** create Module with custom estimator
+   * 
+   * @param estimator the custom estimator
+   * @param started stopwatch that shows the same time that also was used for the custom estimator */
+  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started) {
+    mpcStateEstimationProvider = estimator;
+    this.started = started;
     // link mpc steering
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    initModules();
+  }
+
+  /** create Module with standard estimator */
+  public MPCKinematicDrivingModule() {
+    started = Stopwatch.started();
+    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
+    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    initModules();
+  }
+
+  private void initModules() {
+    // link mpc steering
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcSteering);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
     // state estimation provider
-    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcBraking.setStateProvider(mpcStateEstimationProvider);
     mpcPower.setStateProvider(mpcStateEstimationProvider);
     mpcSteering.setStateProvider(mpcStateEstimationProvider);
@@ -106,15 +135,22 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
   protected void first() throws Exception {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
+    // start update cycle
+    timer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        // send the newest state and start the update state
+        lcmMPCPathFollowingClient.publishGokartState(mpcStateEstimationProvider.getState());
+      }
+    }, (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+    ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
   }
 
   @Override
   protected void last() {
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
-  }
-
-  @Override
-  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    timer.cancel();
+    ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }

@@ -31,6 +31,9 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     stopSubscriptions();
   }
 
+  /** send gokart state which starts the mpc optimization with the newest state
+   * 
+   * @param gokartState the newest available gokart state */
   public void publishGokartState(GokartState gokartState) {
     GokartStateMessage gokartStateMessage = new GokartStateMessage(gokartState, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
@@ -38,6 +41,11 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     gokartStateMessage.insert(byteBuffer);
     gokartStatePublisher.accept(binaryBlob);
+  }
+
+  /** switch to testing binary that send back test data has to be called before first */
+  public void switchToTest() {
+    mpcNativeSession.switchToTest();
   }
 
   public void publishPathParameter(MPCPathParameter mpcPathParameter) {

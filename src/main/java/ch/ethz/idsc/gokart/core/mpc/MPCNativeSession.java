@@ -14,9 +14,18 @@ public class MPCNativeSession {
   private Process process;
   private final Map<Integer, Integer> messageCounter = new HashMap<>();
   public BufferedReader is;
+  private boolean test = false;
+
+  public void switchToTest() {
+    test = true;
+  }
 
   void first() {
-    String fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
+    String fullPath;
+    if (!test)
+      fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
+    else
+      fullPath = MPCNative.lcmTestBinary().get().getAbsolutePath();
     // start server
     List<String> list = Arrays.asList(fullPath
     // String.valueOf(MPCNative.TCP_SERVER_PORT)

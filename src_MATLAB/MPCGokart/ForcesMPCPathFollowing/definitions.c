@@ -11,6 +11,7 @@ struct State {
 	float w2L;
 	float w2R;
 	float s;
+	float btemp;
 };
 
 struct Control {

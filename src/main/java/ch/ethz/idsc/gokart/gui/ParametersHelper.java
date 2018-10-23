@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.mpc.MPCPathFollowingConfig;
+import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.PlanSRConfig;
@@ -35,7 +35,7 @@ enum ParametersHelper {
       JoystickConfig.GLOBAL, //
       PursuitConfig.GLOBAL, //
       TorqueVectoringConfig.GLOBAL, //
-      MPCPathFollowingConfig.GLOBAL, //
+      MPCOptimizationConfig.GLOBAL, //
       ClusterConfig.GLOBAL, //
       TrajectoryConfig.GLOBAL, //
       PlanSRConfig.GLOBAL, //
