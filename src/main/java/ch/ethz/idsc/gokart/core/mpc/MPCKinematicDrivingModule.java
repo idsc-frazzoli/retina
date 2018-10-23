@@ -40,7 +40,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCCont
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcSteering);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
-    //state estimation provider
+    // state estimation provider
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcBraking.setStateProvider(mpcStateEstimationProvider);
     mpcPower.setStateProvider(mpcStateEstimationProvider);
