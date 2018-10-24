@@ -28,18 +28,21 @@ lcm_t * lcm;
 struct ControlAndStateMsg cns [DATASIZE];
 
 /* declare FORCES variables and structures */
+/*
 int i, exitflag;
 MPCPathFollowing_params myparams;
 MPCPathFollowing_output myoutput;
 MPCPathFollowing_info myinfo;
-MPCPathFollowing_float minusA_times_x0[2];
 
+MPCPathFollowing_float minusA_times_x0[2];*/
+
+/*
 extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
                                                 double *f, double *nabla_f, double *c, double *nabla_c,
-                                                double *h, double *nabla_h, double *H, int stage);
+                                                double *h, double *nabla_h, double *H, int stage);*/
 
 
-MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
+//MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
 
 
@@ -66,7 +69,7 @@ void sendEmptyControlAndStates(lcm_t * lcm){
 
 	for (int i = 0; i< 1; i++){
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published test message%d\n",sizeof(struct ControlAndStateMsg)*N);
+			printf("published test message%zu\n",sizeof(struct ControlAndStateMsg)*N);
 		else
 			printf("error while publishing message\n");
 	}
@@ -111,7 +114,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	printf("blob addr: %p\n",&blob);
 	printf("state Ux: %f\n",stateMsg.state.Ux);
 	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-		printf("published message: %d\n",sizeof(struct ControlAndStateMsg)*N);
+		printf("published message: %zu\n",sizeof(struct ControlAndStateMsg)*N);
 	else
 		printf("error while publishing message\n");
 }

@@ -27,7 +27,7 @@ import java.util.Optional;
   /** executable location and name */
   private final static String RELATIVE_BINARY = "src_MATLAB/MPCGokart/ForcesMPCPathFollowing/nativeMPC";
   private final static String RELATIVE_LCM_BINARY = "src_MATLAB/MPCGokart/ForcesMPCPathFollowing/nativeMPCLCM";
-  private final static String RELATIVE_LCM_BINARY_TEST = "src_MATLAB/MPCGokart/ForcesMPCPathFollowing/nativeLCMTest";
+  private final static String RELATIVE_LCM_BINARY_TEST = "src_MATLAB/MPCGokart/ForcesMPCPathFollowing/nativeLCMtest";
 
   public static Optional<File> binary() {
     File file = new File(RELATIVE_BINARY).getAbsoluteFile();
