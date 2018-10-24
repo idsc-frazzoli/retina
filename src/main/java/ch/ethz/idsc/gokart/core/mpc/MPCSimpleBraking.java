@@ -1,32 +1,21 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCSimpleBraking implements MPCBraking {
-  ControlAndPredictionSteps cns;
+public class MPCSimpleBraking extends MPCBraking {
   MPCStateEstimationProvider mpcStateProvider;
   int inext = 0;
 
   @Override
   public Scalar getBraking(Scalar time) {
-    // find at which stage we are
-    while (//
-    Scalars.lessThan(//
-        time, //
-        cns.steps[inext].state.getTime())) {
-      inext++;
-    }
-    if (inext > 0)
-      return cns.steps[inext - 1].control.getuB();
-    return null;
-  }
-
-  @Override
-  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    this.cns = controlAndPredictionSteps;
-    inext = 0;
+    ControlAndPredictionStep cnsStep = getStep(time);
+    if (cnsStep == null)
+      return Quantity.of(0, SI.ONE);
+    else
+      return getStep(time).control.getuB();
   }
 
   @Override

@@ -3,6 +3,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-public interface MPCBraking extends MPCControlUpdateListener, MPCStateProviderClient {
-  Scalar getBraking(Scalar time);
+public abstract class MPCBraking extends MPCControlUpdateListener implements MPCStateProviderClient {
+  public abstract Scalar getBraking(Scalar time);
 }

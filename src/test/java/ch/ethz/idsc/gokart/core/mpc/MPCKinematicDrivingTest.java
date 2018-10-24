@@ -15,7 +15,7 @@ public class MPCKinematicDrivingTest extends TestCase {
     drivingModule.first();
     Thread.sleep(1000);
     System.out.println("target linmot"+drivingModule.linmotProvider.putEvent().get().target_position);
-    System.out.println("target Left power"+drivingModule.rimoProvider.putEvent().get().putTireL);
+    System.out.println("target Left power"+drivingModule.rimoProvider.putEvent().get().putTireL.getTorqueRaw());
     drivingModule.last();
   }
 }
