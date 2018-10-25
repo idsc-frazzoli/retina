@@ -20,14 +20,18 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
+import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -42,22 +46,29 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
+  private static final Clip CLIP_DEG_C = Clip.function( //
+      Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
+      Quantity.of(100, NonSI.DEGREE_CELSIUS));
   private static final Clip CLIP_GYROZ = Clip.function( //
       Quantity.of(-1, SI.PER_SECOND), //
       Quantity.of(+1, SI.PER_SECOND));
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
+  private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Timer timer = new Timer();
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
+  private final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
+  private LinmotGetEvent linmotGetEvent;
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JTextField jTF_rimoRatePair;
+  private final JTextField jTF_linmotTemp;
   private final JTextField jTF_joystick;
   private final JTextField jTF_joystickAhead;
   private final JTextField jTF_davis240c;
@@ -80,6 +91,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
       jToolBar.add(steerInitButton.getComponent());
     }
     jTF_rimoRatePair = createReading("Rimo");
+    jTF_linmotTemp = createReading("Linmot");
     jTF_davis240c = createReading("Davis240C");
     jTF_joystick = createReading("Joystick");
     jTF_joystickAhead = createReading("Ahead");
@@ -115,6 +127,8 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   public void start() {
     rimoGetLcmClient.addListener(rimoGetListener);
     rimoGetLcmClient.startSubscriptions();
+    linmotGetLcmClient.addListener(linmotGetListener);
+    linmotGetLcmClient.startSubscriptions();
     // ---
     joystickLcmProvider.startSubscriptions();
     // ---
@@ -131,6 +145,15 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           if (Objects.nonNull(rimoGetEvent)) {
             String pair = rimoGetEvent.getAngularRate_Y_pair().map(Round._3).toString();
             jTF_rimoRatePair.setText(pair);
+          }
+        }
+        {
+          if (Objects.nonNull(linmotGetEvent)) {
+            Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
+            Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
+            Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
+            jTF_linmotTemp.setText("" + temperatureMax);
+            jTF_linmotTemp.setBackground(color);
           }
         }
         {
@@ -180,6 +203,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   public void stop() {
     timer.cancel();
     joystickLcmProvider.stopSubscriptions();
+    linmotGetLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
   }
