@@ -1,4 +1,5 @@
 clear all
+addpath('..')  
 folder = '../SystemAnalysis/ML_out/';
 file = 'fab.csv';
 M = csvread(strcat(folder,file));
