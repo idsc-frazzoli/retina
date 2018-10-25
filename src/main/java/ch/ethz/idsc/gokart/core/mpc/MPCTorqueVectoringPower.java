@@ -31,18 +31,17 @@ public class MPCTorqueVectoringPower extends MPCPower {
       return Tensors.of(//
           Quantity.of(0, NonSI.ARMS), //
           Quantity.of(0, NonSI.ARMS));
-    } else {
-      Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
-      Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-      Scalar currentSlip = mpcStateProvider.getState().getdotPsi().subtract(expectedRotationPerMeterDriven);
-      Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
-      return torqueVectoring.getMotorCurrentsFromAcceleration(//
-          expectedRotationPerMeterDriven, //
-          mpcStateProvider.getState().getUx(), //
-          currentSlip, //
-          wantedAcceleration, //
-          mpcStateProvider.getState().getdotPsi());
     }
+    Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
+    Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
+    Scalar currentSlip = mpcStateProvider.getState().getdotPsi().subtract(expectedRotationPerMeterDriven);
+    Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
+    return torqueVectoring.getMotorCurrentsFromAcceleration(//
+        expectedRotationPerMeterDriven, //
+        mpcStateProvider.getState().getUx(), //
+        currentSlip, //
+        wantedAcceleration, //
+        mpcStateProvider.getState().getdotPsi());
   }
 
   @Override

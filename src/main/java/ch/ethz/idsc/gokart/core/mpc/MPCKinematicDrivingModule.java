@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
 //Not in use yet
 import java.util.Optional;
 import java.util.Timer;
@@ -81,13 +82,12 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<RimoPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Tensor currents = mpcPower.getPower(time);
-      if (currents != null)
+      if (Objects.nonNull(currents))
         return Optional.of(RimoPutHelper.operationTorque( //
             (short) Magnitude.ARMS.toFloat(currents.Get(0)), // sign left invert
             (short) Magnitude.ARMS.toFloat(currents.Get(1)) // sign right id
         ));
-      else
-        return Optional.empty();
+      return Optional.empty();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<SteerPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
-      if (steering != null) {
+      if (Objects.nonNull(steering)) {
         Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
         Scalar difference = steering.subtract(currAngle);
         Scalar torqueCmd = steerPositionController.iterate(difference);
@@ -119,10 +119,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
-      if (braking != null)
+      if (Objects.nonNull(braking))
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
-      else
-        return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
+      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
     }
 
     @Override

@@ -1,6 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -12,10 +14,9 @@ public class MPCSimpleBraking extends MPCBraking {
   @Override
   public Scalar getBraking(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
-    if (cnsStep == null)
+    if (Objects.isNull(cnsStep))
       return Quantity.of(0, SI.ONE);
-    else
-      return getStep(time).control.getuB();
+    return getStep(time).control.getuB();
   }
 
   @Override

@@ -2,9 +2,8 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 
-public class MPCOpenLoopSteering extends MPCSteering  {
+public class MPCOpenLoopSteering extends MPCSteering {
   MPCStateEstimationProvider mpcStateProvider;
 
   @Override

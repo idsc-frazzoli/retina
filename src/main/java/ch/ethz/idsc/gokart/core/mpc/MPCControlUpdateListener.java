@@ -15,10 +15,9 @@ public abstract class MPCControlUpdateListener {
   /** get the last step before a point int time
    * 
    * @param query time in Unit [s]
-   * @return the control and prediction step before time
-   */
+   * @return the control and prediction step before time */
   ControlAndPredictionStep getStep(Scalar time) {
-    if(cns==null)
+    if (cns == null)
       return null;
     while (//
     istep > 0 && //
@@ -36,14 +35,13 @@ public abstract class MPCControlUpdateListener {
     }
     return null;
   }
-  
+
   /** the time that passed after the last step
    * 
    * @param query time in Unit [s]
-   * @return time passed since that last step in Unit [s]
-   */
+   * @return time passed since that last step in Unit [s] */
   Scalar getTimeSinceLastStep(Scalar time) {
-    if(cns==null)
+    if (cns == null)
       return null;
     return time.subtract(getStep(time).state.getTime());
   }

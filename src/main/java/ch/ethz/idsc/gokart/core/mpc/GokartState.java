@@ -127,7 +127,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param w2R right rear wheelspeed in "1/s"
    * @param s wheel encoder position in "CSE" */
   public GokartState(//
-      Scalar time,//
+      Scalar time, //
       Scalar Ux, //
       Scalar Uy, //
       Scalar dotPsi, //

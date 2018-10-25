@@ -1,9 +1,10 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 
-public class fakeNewsEstimator extends MPCStateEstimationProvider {
-  protected fakeNewsEstimator(Stopwatch stopwatch) {
+class FakeNewsEstimator extends MPCStateEstimationProvider {
+  protected FakeNewsEstimator(Stopwatch stopwatch) {
     super(stopwatch);
   }
 
@@ -27,9 +28,11 @@ public class fakeNewsEstimator extends MPCStateEstimationProvider {
 
   @Override
   void first() {
+    // ---
   }
 
   @Override
   void last() {
+    // ---
   }
 }
