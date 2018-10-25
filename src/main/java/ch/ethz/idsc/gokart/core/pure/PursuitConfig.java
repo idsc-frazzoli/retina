@@ -28,6 +28,7 @@ public class PursuitConfig {
    * 20180531 the rate was increased to 75[rad*s^-1]
    * 20180604 the rate was decreased to 50[rad*s^-1] because of the presence of the tents */
   public Scalar rateFollower = Quantity.of(50.0, "rad*s^-1");
+  /** poseQualityMin is threshold above which a pose quality is considered sufficient */
   public Scalar poseQualityMin = RealScalar.of(0.5);
 
   /***************************************************/
@@ -36,6 +37,8 @@ public class PursuitConfig {
     return Magnitude.METER.apply(lookAhead);
   }
 
+  /** @param quality in the interval [0, 1]
+   * @return if given pose quality is considered sufficient to qualify as valid */
   public boolean isQualitySufficient(Scalar quality) {
     return Scalars.lessThan(poseQualityMin, quality);
   }

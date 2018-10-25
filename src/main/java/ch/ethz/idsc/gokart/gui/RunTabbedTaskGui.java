@@ -43,6 +43,7 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
+import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -122,6 +123,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
       AutoboxTestingModule.class, //
+      LinmotPressTestModule.class, //
       // LocalViewLcmModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
@@ -132,7 +134,8 @@ enum RunTabbedTaskGui {
   );
 
   public static void main(String[] args) {
-    WindowConfiguration wc = AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
+    WindowConfiguration windowConfiguration = //
+        AppCustomization.load(RunTabbedTaskGui.class, new WindowConfiguration());
     TabbedTaskGui tabbedTaskGui = new TabbedTaskGui(PROPERTIES);
     tabbedTaskGui.tab("dev", MODULES_DEV);
     tabbedTaskGui.tab("cfg", MODULES_CFG);
@@ -140,7 +143,7 @@ enum RunTabbedTaskGui {
     tabbedTaskGui.tab("aut", MODULES_AUT);
     tabbedTaskGui.tab("fuse", MODULES_FUSE);
     tabbedTaskGui.tab("lab", MODULES_LAB);
-    wc.attach(RunTabbedTaskGui.class, tabbedTaskGui.jFrame);
+    windowConfiguration.attach(RunTabbedTaskGui.class, tabbedTaskGui.jFrame);
     tabbedTaskGui.jFrame.setVisible(true);
   }
 }

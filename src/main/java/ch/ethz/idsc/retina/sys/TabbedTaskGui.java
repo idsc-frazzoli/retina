@@ -33,6 +33,7 @@ public class TabbedTaskGui {
   public void tab(String title, List<Class<?>> modules) {
     jTabbedPane.addTab(title, new TaskComponent(modules, properties).jScrollPane);
     {
+      // change tab component to modify display size
       int count = jTabbedPane.getTabCount() - 1;
       JLabel jLabel = GuiConfig.GLOBAL.createLabel(title);
       jTabbedPane.setTabComponentAt(count, jLabel);
