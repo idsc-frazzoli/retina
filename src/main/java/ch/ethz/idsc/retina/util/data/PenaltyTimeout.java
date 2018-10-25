@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.data;
 
 import ch.ethz.idsc.retina.sys.SafetyCritical;
 
-/**  */
+/** recoverable triggered time interval */
 @SafetyCritical
 public class PenaltyTimeout {
   private final long timeout_ns;
