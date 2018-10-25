@@ -194,10 +194,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();
         Collection<Flow> controls = flowsInterface.getFlows(resolution);
         // goalRadius.pmul(Tensors.vector(2,2,1));
-        System.out.println(goalRadius);
+        // System.out.println(goalRadius);
         Se2ComboRegion se2ComboRegion = //
-            Se2ComboRegion.spherical(goal, goalRadius.pmul(Tensors.vector(2, 2, 1)));
-        // Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
+            // Se2ComboRegion.spherical(goal, goalRadius.pmul(TrajectoryConfig.GLOBAL.goalRadiusFactor));
+            Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
         // TODO spherical goal region works on gokart but tests fail
         // Se2ComboRegion.spherical(goal, Tensors.vector(2.5, 2.5, goalRadius.Get(2).number().doubleValue()));
         // ---
@@ -219,7 +219,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         return;
       }
     }
+    // TODO set and publish in one function
     purePursuitModule.setCurve(Optional.empty());
+    PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
     System.err.println("no curve because no pose");
   }
 
@@ -257,9 +259,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       purePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
+      System.err.println("use old trajectory");
       // failure to reach goal
-      purePursuitModule.setCurve(Optional.empty());
-      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
+      // purePursuitModule.setCurve(Optional.empty());
+      // PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
     }
   }
 }

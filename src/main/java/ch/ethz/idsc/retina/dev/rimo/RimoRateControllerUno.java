@@ -10,8 +10,9 @@ import ch.ethz.idsc.tensor.red.Mean;
  * the steering wheel angle is not used. */
 public class RimoRateControllerUno extends RimoRateControllerWrap {
   // TODO make configurable
-  private final RimoRateController pi = new LookupRimoRateController(RimoConfig.GLOBAL);
-  // new SimpleRimoRateController(RimoConfig.GLOBAL);
+  private final RimoRateController pi =
+      // new LookupRimoRateController(RimoConfig.GLOBAL);
+      new SimpleRimoRateController(RimoConfig.GLOBAL);
 
   @Override // from RimoRateControllerWrap
   protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {

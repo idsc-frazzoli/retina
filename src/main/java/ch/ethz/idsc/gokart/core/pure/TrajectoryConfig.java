@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
@@ -29,6 +30,7 @@ public class TrajectoryConfig {
   public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
+  public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
