@@ -1,4 +1,5 @@
 // code by mh
+// !!!!!note: this is not used!!!!!
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.File;
@@ -20,12 +21,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
   public static MPCControlClient create() {
     Optional<File> optional = MPCNative.binary();
     if (optional.isPresent())
-      return new SocketMPCPathFollowingClient(MPCPathFollowingConfig.GLOBAL);
+      return new SocketMPCPathFollowingClient(MPCOptimizationConfig.GLOBAL);
     return new VoidMPCPathFollowingClient();
   }
 
   // ---
-  private final MPCPathFollowingConfig mpcPathFollowingConfig;
+  private final MPCOptimizationConfig mpcPathFollowingConfig;
   private InetAddress serverAddress;
   private Socket socket;
   private Scanner scanner;
@@ -104,7 +105,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
     }
   }
 
-  private SocketMPCPathFollowingClient(MPCPathFollowingConfig mpcPathFollowingConfig) {
+  private SocketMPCPathFollowingClient(MPCOptimizationConfig mpcPathFollowingConfig) {
     this.mpcPathFollowingConfig = mpcPathFollowingConfig;
   }
 

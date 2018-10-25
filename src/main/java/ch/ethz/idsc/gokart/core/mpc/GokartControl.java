@@ -76,20 +76,19 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public Tensor asVector() {
-    if (directMotorControl) {
+    if (directMotorControl)
       return Tensors.of(//
           getuL(), //
           getuR(), //
           getudotS(), //
           getuB());
-    } else {
-      return Tensors.of(//
-          getaB(), //
-          getudotS(), //
-          getuB());
-    }
+    return Tensors.of(//
+        getaB(), //
+        getudotS(), //
+        getuB());
   }
 
+  @Override
   public String toString() {
     return "Control:\n" + asVector().toString() + "\n";
   }

@@ -2,6 +2,7 @@
 
 //note: not all values are necessarily known for every type of controller
 struct State {
+	float time;
 	float Ux;
 	float Uy;
 	float dotPsi;
@@ -11,6 +12,7 @@ struct State {
 	float w2L;
 	float w2R;
 	float s;
+	float btemp;
 };
 
 struct Control {

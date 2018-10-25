@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
+  // TODO: full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
   /** time in seconds from synchronized time point */
@@ -39,6 +40,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** brake temperature */
   private final float bTemp;
 
+  /** create GokartState
+   * 
+   * @param time time in "s"
+   * @param Ux forward velocity in "m/s"
+   * @param Uy lateral velocity (left is positive) in "m/s"
+   * @param dotPsi rotation velicity in "1/s"
+   * @param X X-position in "m"
+   * @param Y Y-position in "m"
+   * @param Psi orientation in "1"
+   * @param w2L left rear wheelspeed in "1/s"
+   * @param w2R right rear wheelspeed in "1/s"
+   * @param s wheel encoder position in "CSE" */
   public GokartState(//
       float time, //
       float Ux, //
@@ -63,6 +76,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.bTemp = 0;
   }
 
+  /** create GokartState
+   * 
+   * @param time time in "s"
+   * @param Ux forward velocity in "m/s"
+   * @param Uy lateral velocity (left is positive) in "m/s"
+   * @param dotPsi rotation velicity in "1/s"
+   * @param X X-position in "m"
+   * @param Y Y-position in "m"
+   * @param Psi orientation in "1"
+   * @param w2L left rear wheelspeed in "1/s"
+   * @param w2R right rear wheelspeed in "1/s"
+   * @param s wheel encoder position in "CSE"
+   * @param bTemp brake temperature in "°C" */
   public GokartState(//
       float time, //
       float Ux, //
@@ -88,8 +114,21 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.bTemp = bTemp;
   }
 
+  /** create GokartState
+   * 
+   * @param time time in "s"
+   * @param Ux forward velocity in "m/s"
+   * @param Uy lateral velocity (left is positive) in "m/s"
+   * @param dotPsi rotation velicity in "1/s"
+   * @param X X-position in "m"
+   * @param Y Y-position in "m"
+   * @param Psi orientation in "1"
+   * @param w2L left rear wheelspeed in "1/s"
+   * @param w2R right rear wheelspeed in "1/s"
+   * @param s wheel encoder position in "CSE" */
   public GokartState(//
-      Scalar time, Scalar Ux, //
+      Scalar time, //
+      Scalar Ux, //
       Scalar Uy, //
       Scalar dotPsi, //
       Scalar X, //
@@ -111,6 +150,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.bTemp = 0;
   }
 
+  /** create GokartState
+   * 
+   * @param time time in "s"
+   * @param Ux forward velocity in "m/s"
+   * @param Uy lateral velocity (left is positive) in "m/s"
+   * @param dotPsi rotation velicity in "1/s"
+   * @param X X-position in "m"
+   * @param Y Y-position in "m"
+   * @param Psi orientation in "1"
+   * @param w2L left rear wheelspeed in "1/s"
+   * @param w2R right rear wheelspeed in "1/s"
+   * @param s wheel encoder position in "CSE"
+   * @param bTemp brake temperature in "°C" */
   public GokartState(//
       Scalar time, Scalar Ux, //
       Scalar Uy, //
@@ -134,6 +186,20 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
   }
 
+  /** create GokartState
+   * 
+   * @param GokartStateTensor the tensor in the form:
+   * {time [s],
+   * Ux [m/s],
+   * Uy [m/s],
+   * dotPsi [1/s],
+   * X [m],
+   * Y [m],
+   * Psi [1],
+   * w2L [1/s],
+   * w2R [1/s],
+   * s [CSE],
+   * bTemp [°C]} */
   public GokartState(Tensor GokartStateTensor) {
     time = Magnitude.SECOND.toFloat(GokartStateTensor.Get(0));
     Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
