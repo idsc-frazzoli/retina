@@ -22,6 +22,7 @@ public class MPCNativeSession {
 
   void first() {
     String fullPath;
+    // TODO design, talk to jan
     if (!test)
       fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
     else
