@@ -19,16 +19,15 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.RationalScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/**
+/** linmot press test enables the driver to apply the brake
+ * at a constant value for a certain period of time
  * 
- */
+ * TODO generate a report from the log files about the brake effect */
 public class LinmotPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
@@ -42,7 +41,7 @@ public class LinmotPressTestModule extends AbstractModule {
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {
       final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
-      Tensor tensor = Subdivide.of(RationalScalar.of(1, 10), RealScalar.ONE, n - 1);
+      Tensor tensor = Subdivide.of(0.5, .75, n - 1);
       JPanel jPanel = new JPanel(new GridLayout(n, 1));
       List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {
