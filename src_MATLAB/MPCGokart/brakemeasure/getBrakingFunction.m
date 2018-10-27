@@ -58,7 +58,7 @@ hold off
 subplot(2,2,4)
 hold on
 title('heatup (braking)')
-xlabel('temp [°C]')
+xlabel('brake')
 ylabel('temp change [°C/s]')
-scatter(temp(bselect), dottemp(bselect));
+scatter(bpos(bselect), dottemp(bselect));
 hold off
