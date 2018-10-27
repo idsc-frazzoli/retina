@@ -26,6 +26,7 @@ public class BSplineTrack {
   static int trackSplineOrder = 2;
   static int radiusSplineOrder = 1;
   static Scalar dTol = Quantity.of(0.000001, SI.METER);
+  static Scalar bTol = Quantity.of(0.01, SI.ONE);
   final BSplineFunction xTrackSpline;
   final BSplineFunction yTrackSpline;
   final BSplineFunction xTrackSplineDerivation;
@@ -163,11 +164,13 @@ public class BSplineTrack {
         bestGuess = prog;
       }
     }
-    return getNearestPathProgress(position, bestGuess);
+    return getNearestPathProgress(position, bestGuess, RealScalar.ONE);
   }
 
+  /*
   public Scalar getNearestPathProgress(Tensor position, Scalar guess) {
     // newton derived method
+    // TODO: fancy method for this (I know one)
     Scalar errProj = RealScalar.ONE.multiply(Quantity.of(1, SI.METER));
     while (Scalars.lessThan(dTol, errProj.abs())) {
       Tensor currPos = getPosition(guess);
@@ -185,13 +188,29 @@ public class BSplineTrack {
       guess = guess.subtract(clippedProjError.divide(pathSpd).multiply(Quantity.of(0.1, SI.ONE)));
     }
     return guess;
+  }*/
+  
+  Scalar getDist(Tensor from, Scalar pathProgress) {
+    return Norm._2.of(getPosition(pathProgress).subtract(from));
+  }
+  
+  public Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
+    while(Scalars.lessThan(bTol,precision)) {
+      Scalar bestDist = getDist(position, guess);
+      Scalar lower = guess.subtract(precision);
+      Scalar upper = guess.add(precision);
+      if(Scalars.lessThan(getDist(position, lower),bestDist))
+        guess = lower;
+      else if(Scalars.lessThan(getDist(position, upper),bestDist))
+        guess = upper;
+      else
+        precision = precision.divide(Quantity.of(2, SI.ONE));
+      //System.out.println(getDist(position, guess));
+    }
+    return guess;
   }
 
   public Tensor getNearestPosition(Tensor position) {
     return getPosition(getNearestPathProgress(position));
-  }
-
-  public Tensor getNearestPosition(Tensor position, Scalar guess) {
-    return getPosition(getNearestPathProgress(position, guess));
   }
 }
