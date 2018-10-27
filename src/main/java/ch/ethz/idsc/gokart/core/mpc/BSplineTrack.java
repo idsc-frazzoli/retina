@@ -191,7 +191,7 @@ public class BSplineTrack {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
   }
 
-  public Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
+  private Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
     while (Scalars.lessThan(bTol, precision)) {
       Scalar bestDist = getDist(position, guess);
       Scalar lower = guess.subtract(precision);
@@ -205,6 +205,16 @@ public class BSplineTrack {
       // System.out.println(getDist(position, guess));
     }
     return guess;
+  }
+
+  /** test if the position is inside the track limits
+   * 
+   * @param position in [m]
+   * @return true if within track limits */
+  public boolean isInTrack(Tensor position) {
+    Scalar prog = getNearestPathProgress(position);
+    Scalar dist = getDist(position, prog);
+    return Scalars.lessThan(dist, getRadius(prog));
   }
 
   public Tensor getNearestPosition(Tensor position) {
