@@ -12,10 +12,12 @@ dottemp = M(:,21);
 acc = tireradius*mean(M(:,17:18),2);
 acc = gaussfilter(acc,10);
 spd = tireradius*mean(M(:,15:16),2);
-bpos = -M(:,19);
-bselect = bpos > 250000 & bpos < 390000 & spd>0.2;
+bpos = -M(:,19)/100000;
+brakestart = 2.75;
+brakeend = 3.9;
+bselect = bpos > brakestart & bpos < brakeend & spd>0.2;
 bselect = imerode(bselect,ones(100,1));
-nbselect = bpos < 60000 & bpos > 40000;
+nbselect = bpos < 0.6 & bpos > 0.4;
 nbselect = imerode(nbselect,ones(100,1));
 dottemp(1:1000)=0;
 dottemp(end-1000:end)=0;
@@ -32,13 +34,19 @@ yyaxis right
 ylabel('temp °C]')
 plot(t,M(:,20))
 hold off
+
+pbrake = polyfit(bpos(bselect), acc(bselect),2);
+xb = brakestart:0.01:brakeend;
+yb = polyval(pbrake,xb);
 subplot(2,2,2)
 title('effect of brake')
 hold on
-xlabel('Brakingposition [1]')
-ylabel('Acceleration [m/s²]')
+xlabel('Brakingposition [cm]')
+ylabel('additional Acceleration [m/s²]')
 scatter(bpos(bselect), acc(bselect));
+plot(xb,yb);
 hold off
+
 subplot(2,2,3)
 hold on
 title('cooldown (no braking)')
@@ -46,6 +54,7 @@ xlabel('temp [°C]')
 ylabel('temp change [°C/s]')
 scatter(temp(nbselect), dottemp(nbselect));
 hold off
+
 subplot(2,2,4)
 hold on
 title('heatup (braking)')
