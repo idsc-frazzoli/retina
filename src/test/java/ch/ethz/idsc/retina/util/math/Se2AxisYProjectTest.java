@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
-import ch.ethz.idsc.owl.math.map.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.sample.CircleRandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSample;

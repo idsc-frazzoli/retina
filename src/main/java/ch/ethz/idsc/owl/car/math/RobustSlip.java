@@ -7,7 +7,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Normalize;
+import ch.ethz.idsc.tensor.alg.NormalizeUnlessZero;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Hypot;
 import ch.ethz.idsc.tensor.red.Norm;
 
@@ -17,6 +18,7 @@ import ch.ethz.idsc.tensor.red.Norm;
  * Tensors.vector(0, 1);
  * Tensors.vector(0, 0); */
 public class RobustSlip implements SlipInterface, Serializable {
+  private static final TensorUnaryOperator NORMALIZE = NormalizeUnlessZero.with(Norm._2);
   private final Tensor mu;
 
   /** if U == {rtw, 0} that means no slip
@@ -30,7 +32,7 @@ public class RobustSlip implements SlipInterface, Serializable {
     final Scalar total = Scalars.isZero(rtw) //
         ? pacejka3.limit()
         : pacejka3.apply(Hypot.of(ux, uy).divide(rtw));
-    mu = Normalize.unlessZero(Tensors.of(ux, uy), Norm._2).multiply(total.negate());
+    mu = NORMALIZE.apply(Tensors.of(ux, uy)).multiply(total.negate());
   }
 
   @Override // from SlipInterface

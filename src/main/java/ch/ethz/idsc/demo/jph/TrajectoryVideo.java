@@ -23,6 +23,10 @@ import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.group.LieDifferences;
+import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
+import ch.ethz.idsc.owl.math.group.Se2Geodesic;
+import ch.ethz.idsc.owl.math.group.Se2Group;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
@@ -31,7 +35,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
 import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenter;
 import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenterFilter;
-import ch.ethz.idsc.owl.subdiv.curve.Se2Geodesic;
+import ch.ethz.idsc.owl.symlink.SmoothingKernel;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
@@ -50,15 +54,16 @@ import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.InvertUnlessZero;
 import ch.ethz.idsc.tensor.sca.Round;
-import ch.ethz.idsc.tensor.sig.WindowFunctions;
 
 abstract class TrajectoryVideo implements OfflineLogListener {
   private static final TensorUnaryOperator GEODESIC_CENTER_FILTER = //
-      GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, WindowFunctions.GAUSSIAN), 5);
+      GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._097.cyclic();
   final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.getWaypoints(), 1);
   private static final Tensor ARROW_HEAD = Arrowhead.of(.4);
+  private static final LieDifferences LIE_DIFFERENCES = //
+      new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
   private int count = 0;
   private Tensor trail = Tensors.empty();
@@ -79,7 +84,7 @@ abstract class TrajectoryVideo implements OfflineLogListener {
         Tensor filtered = GEODESIC_CENTER_FILTER.apply(trail);
         Tensor planned = Tensor.of(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state));
         // ---
-        Tensor speeds = Se2SpeedEstimate.FUNCTION.apply(filtered);
+        Tensor speeds = LIE_DIFFERENCES.apply(filtered);
         Tensor dt = Differences.of(times).map(Magnitude.SECOND).map(InvertUnlessZero.FUNCTION);
         final Scalar mean = Mean.of(speeds.get(Tensor.ALL, 0).pmul(dt)).Get();
         // TODO make more elegant

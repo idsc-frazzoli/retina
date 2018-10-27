@@ -1,8 +1,8 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.prc;
 
-import ch.ethz.idsc.owl.math.map.Se2CoveringExponential;
-import ch.ethz.idsc.owl.math.map.Se2CoveringGroupAction;
+import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
+import ch.ethz.idsc.owl.math.group.Se2CoveringGroupElement;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.Tensors;
     curvature = curvature.negate();
     curvature = SlamCurveUtil.limitCurvature(curvature);
     Tensor circleParam = Tensors.vector(1, 0, curvature.number().doubleValue());
-    Se2CoveringGroupAction se2CoveringGroupAction = new Se2CoveringGroupAction(endPose);
+    Se2CoveringGroupElement se2CoveringGroupAction = new Se2CoveringGroupElement(endPose);
     Scalar stepSize = distance.divide(numberOfPoints);
     for (int i = 0; i < numberOfPoints.number().intValue(); ++i) {
       Tensor extrapolatedPoint = se2CoveringGroupAction.combine(Se2CoveringExponential.INSTANCE.exp(circleParam.multiply(stepSize.multiply(RealScalar.of(i)))));
