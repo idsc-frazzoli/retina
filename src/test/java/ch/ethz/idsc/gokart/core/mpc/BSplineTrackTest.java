@@ -127,8 +127,8 @@ public class BSplineTrackTest extends TestCase {
       for (int itest = 0; itest < 400; itest++) {
         Scalar testProg = Quantity.of(itest / 100.0, SI.ONE);
         Scalar testdist = Norm._2.of(bSplineTrack.getPosition(testProg).subtract(queryPos));
-        //System.out.println("dist: "+dist+" test: "+testdist);
-        //we can make it more precise but it costs time
+        // System.out.println("dist: "+dist+" test: "+testdist);
+        // we can make it more precise but it costs time
         assertTrue(Scalars.lessThan(dist, testdist.add(Quantity.of(0.01, SI.METER))));
       }
     }

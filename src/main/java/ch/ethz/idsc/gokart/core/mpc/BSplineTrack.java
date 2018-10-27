@@ -13,7 +13,6 @@ import ch.ethz.idsc.tensor.opt.BSplineFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
@@ -167,45 +166,43 @@ public class BSplineTrack {
     return getNearestPathProgress(position, bestGuess, RealScalar.ONE);
   }
 
-  /*
-  public Scalar getNearestPathProgress(Tensor position, Scalar guess) {
-    // newton derived method
-    // TODO: fancy method for this (I know one)
-    Scalar errProj = RealScalar.ONE.multiply(Quantity.of(1, SI.METER));
-    while (Scalars.lessThan(dTol, errProj.abs())) {
-      Tensor currPos = getPosition(guess);
-      Tensor pathDer = getDerivation(guess);
-      Scalar pathSpd = Norm._2.of(pathDer);
-      Tensor pathDir = pathDer.divide(pathSpd);
-      Tensor error = currPos.subtract(position);
-      Scalar errorNorm = Norm._2.of(error);
-      Tensor errorDir = error.divide(errorNorm);
-      Scalar localLimit = getLocalRadius(guess).multiply(Quantity.of(0.1, SI.ONE));
-      // project error onto path
-      errProj = (Scalar) error.dot(pathDir);
-      Scalar clippedProjError = Clip.function(localLimit.negate(), localLimit).apply(errProj);
-      // System.out.println(errProj);
-      guess = guess.subtract(clippedProjError.divide(pathSpd).multiply(Quantity.of(0.1, SI.ONE)));
-    }
-    return guess;
-  }*/
-  
+  /* public Scalar getNearestPathProgress(Tensor position, Scalar guess) {
+   * // newton derived method
+   * // TODO: fancy method for this (I know one)
+   * Scalar errProj = RealScalar.ONE.multiply(Quantity.of(1, SI.METER));
+   * while (Scalars.lessThan(dTol, errProj.abs())) {
+   * Tensor currPos = getPosition(guess);
+   * Tensor pathDer = getDerivation(guess);
+   * Scalar pathSpd = Norm._2.of(pathDer);
+   * Tensor pathDir = pathDer.divide(pathSpd);
+   * Tensor error = currPos.subtract(position);
+   * Scalar errorNorm = Norm._2.of(error);
+   * Tensor errorDir = error.divide(errorNorm);
+   * Scalar localLimit = getLocalRadius(guess).multiply(Quantity.of(0.1, SI.ONE));
+   * // project error onto path
+   * errProj = (Scalar) error.dot(pathDir);
+   * Scalar clippedProjError = Clip.function(localLimit.negate(), localLimit).apply(errProj);
+   * // System.out.println(errProj);
+   * guess = guess.subtract(clippedProjError.divide(pathSpd).multiply(Quantity.of(0.1, SI.ONE)));
+   * }
+   * return guess;
+   * } */
   Scalar getDist(Tensor from, Scalar pathProgress) {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
   }
-  
+
   public Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
-    while(Scalars.lessThan(bTol,precision)) {
+    while (Scalars.lessThan(bTol, precision)) {
       Scalar bestDist = getDist(position, guess);
       Scalar lower = guess.subtract(precision);
       Scalar upper = guess.add(precision);
-      if(Scalars.lessThan(getDist(position, lower),bestDist))
+      if (Scalars.lessThan(getDist(position, lower), bestDist))
         guess = lower;
-      else if(Scalars.lessThan(getDist(position, upper),bestDist))
+      else if (Scalars.lessThan(getDist(position, upper), bestDist))
         guess = upper;
       else
         precision = precision.divide(Quantity.of(2, SI.ONE));
-      //System.out.println(getDist(position, guess));
+      // System.out.println(getDist(position, guess));
     }
     return guess;
   }
