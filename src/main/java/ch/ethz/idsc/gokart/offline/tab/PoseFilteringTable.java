@@ -10,9 +10,10 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.owl.math.group.Se2Geodesic;
 import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenter;
 import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenterFilter;
-import ch.ethz.idsc.owl.subdiv.curve.Se2Geodesic;
+import ch.ethz.idsc.owl.symlink.SmoothingKernel;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
@@ -21,7 +22,6 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
-import ch.ethz.idsc.tensor.sig.WindowFunctions;
 
 public class PoseFilteringTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
@@ -61,7 +61,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
     Tensor pose = Tensor.of(table.stream().map(r -> r.extract(1, 4)));
     Stopwatch stopwatch = Stopwatch.started();
     TensorUnaryOperator geodesicMeanFilter = //
-        GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, WindowFunctions.GAUSSIAN), 7);
+        GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 7);
     pose = geodesicMeanFilter.apply(pose);
     System.out.println("filter=" + stopwatch.display_seconds());
     table.set(pose.get(Tensor.ALL, 0), Tensor.ALL, 1);

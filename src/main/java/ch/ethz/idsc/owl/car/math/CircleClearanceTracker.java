@@ -4,8 +4,8 @@ package ch.ethz.idsc.owl.car.math;
 import java.io.Serializable;
 import java.util.Optional;
 
+import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
-import ch.ethz.idsc.owl.math.map.Se2CoveringExponential;
 import ch.ethz.idsc.retina.util.math.Se2AxisYProject;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
