@@ -1,8 +1,6 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.util.LinkedList;
-
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -10,7 +8,9 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Normalize;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.opt.BSplineFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
@@ -24,63 +24,39 @@ public class BSplineTrack implements TrackInterface {
   static Scalar dTol = Quantity.of(0.000001, SI.METER);
   static Scalar bTol = RealScalar.of(0.01);
   // ---
-  protected final Tensor controlPointsX;
-  protected final Tensor controlPointsY;
+  protected final Tensor controlPoints;
   protected final Tensor controlPointsR;
   final Scalar length;
   final int numPoints;
-  final BSplineFunction xTrackSpline;
-  final BSplineFunction yTrackSpline;
-  final BSplineFunction xTrackSplineDerivation;
-  final BSplineFunction yTrackSplineDerivation;
-  final BSplineFunction xTrackSpline2ndDerivation;
-  final BSplineFunction yTrackSpline2ndDerivation;
+  final BSplineFunction trackSpline;
+  final BSplineFunction trackSplineDerivation;
+  final BSplineFunction trackSpline2ndDerivation;
   final BSplineFunction radiusTrackSpline;
 
   public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
     // TODO: ensure control points are of same size and [m]
     int toAdd = Max.of(trackSplineOrder, radiusSplineOrder) + 2;
     numPoints = controlPointsX.length();
-    this.controlPointsX = controlPointsX.copy();
-    this.controlPointsY = controlPointsY.copy();
+    this.controlPoints = Transpose.of(Tensors.of(controlPointsX, controlPointsY));
     this.controlPointsR = radiusControlPoints.copy();
     final int pathLength = controlPointsX.length();
-    length = Quantity.of(pathLength, SI.ONE);
+    length = RealScalar.of(pathLength);
     // add points at the end in order to close the loop
     int next = 0;
     while (toAdd > 0) {
       if (next >= pathLength)
         next = 0;
-      this.controlPointsX.append(controlPointsX.get(next));
-      this.controlPointsY.append(controlPointsY.get(next));
+      this.controlPoints.append(Tensors.of(controlPointsX.get(next), controlPointsY.get(next)));
+      // this.controlPointsY.append(controlPointsY.get(next));
       this.controlPointsR.append(radiusControlPoints.get(next));
       next++;
       toAdd--;
     }
-    xTrackSpline = BSplineFunction.of(trackSplineOrder, this.controlPointsX);
-    yTrackSpline = BSplineFunction.of(trackSplineOrder, this.controlPointsY);
-    LinkedList<Integer> dim = new LinkedList<>();
-    dim.add(this.controlPointsX.length() - 1);
-    // first derivation
-    LinkedList<Integer> start0 = new LinkedList<>();
-    start0.add(0);
-    LinkedList<Integer> start1 = new LinkedList<>();
-    start1.add(1);
-    Tensor xDevControl = this.controlPointsX.block(start1, dim)//
-        .subtract(this.controlPointsX.block(start0, dim));
-    xTrackSplineDerivation = BSplineFunction.of(trackSplineOrder - 1, xDevControl);
-    Tensor yDevControl = this.controlPointsY.block(start1, dim)//
-        .subtract(this.controlPointsY.block(start0, dim));
-    yTrackSplineDerivation = BSplineFunction.of(trackSplineOrder - 1, yDevControl);
-    // second derivation
-    LinkedList<Integer> ddim = new LinkedList<>();
-    ddim.add(this.controlPointsX.length() - 2);
-    Tensor xDevDevControl = xDevControl.block(start1, ddim)//
-        .subtract(xDevControl.block(start0, ddim));
-    xTrackSpline2ndDerivation = BSplineFunction.of(trackSplineOrder - 2, xDevDevControl);
-    Tensor yDevDevControl = yDevControl.block(start1, ddim)//
-        .subtract(yDevControl.block(start0, ddim));
-    yTrackSpline2ndDerivation = BSplineFunction.of(trackSplineOrder - 2, yDevDevControl);
+    trackSpline = BSplineFunction.of(trackSplineOrder, controlPoints);
+    Tensor devControl = Differences.of(controlPoints);
+    trackSplineDerivation = BSplineFunction.of(trackSplineOrder - 1, devControl);
+    Tensor devDevControl = Differences.of(devControl);
+    trackSpline2ndDerivation = BSplineFunction.of(trackSplineOrder - 2, devDevControl);
     radiusTrackSpline = BSplineFunction.of(radiusSplineOrder, this.controlPointsR);
   }
 
@@ -97,9 +73,7 @@ public class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return position [m] */
   public Tensor getPosition(Scalar pathProgress) {
-    return Tensors.of(//
-        xTrackSpline.apply(wrap(pathProgress)), //
-        yTrackSpline.apply(wrap(pathProgress)));
+    return trackSpline.apply(wrap(pathProgress));
   }
 
   /** get radius at a certain path value
@@ -119,9 +93,7 @@ public class BSplineTrack implements TrackInterface {
    * @return change rate of position unit [m/1] */
   public Tensor getDerivation(Scalar pathProgress) {
     Scalar devPathProgress = pathProgress.add(Quantity.of(-0.5, SI.ONE));
-    return Tensors.of(//
-        xTrackSplineDerivation.apply(wrap(devPathProgress)), //
-        yTrackSplineDerivation.apply(wrap(devPathProgress)));
+    return trackSplineDerivation.apply(wrap(devPathProgress));
   }
 
   /** get the path direction with respect to path progress
@@ -150,9 +122,7 @@ public class BSplineTrack implements TrackInterface {
    * @return change rate of position unit [m/1^2] */
   public Tensor get2ndDerivation(Scalar pathProgress) {
     Scalar devPathProgress = pathProgress.add(RealScalar.of(-1));
-    return Tensors.of(//
-        xTrackSpline2ndDerivation.apply(wrap(devPathProgress)), //
-        yTrackSpline2ndDerivation.apply(wrap(devPathProgress)));
+    return trackSpline2ndDerivation.apply(wrap(devPathProgress));
   }
 
   /** get the curvature

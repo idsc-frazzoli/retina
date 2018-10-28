@@ -21,8 +21,8 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     Tensor ctrR = Tensors.empty();
     for (int i = 0; i < previewSize; i++) {
       // TODO find out: is this efficient?
-      ctrX.append(controlPointsX.Get(currentIndex));
-      ctrY.append(controlPointsY.Get(currentIndex));
+      ctrX.append(controlPoints.Get(currentIndex, 0));
+      ctrY.append(controlPoints.Get(currentIndex, 1));
       ctrR.append(controlPointsR.Get(currentIndex));
       currentIndex++;
       if (currentIndex >= numPoints)
