@@ -7,7 +7,7 @@ public class PresenterLcmModuleTest extends TestCase {
   public void testSimple() throws Exception {
     PresenterLcmModule plm = new PresenterLcmModule();
     plm.first();
-    Thread.sleep(200);
+    Thread.sleep(2000);
     plm.last();
   }
 }

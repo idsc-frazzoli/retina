@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class MPCOptimizationParameter implements MPCNativeInsertable {
   public final Scalar speedLimit;
 
-  // TODO: actually implement this
+  // at the moment it is only for the speed limit
   public MPCOptimizationParameter(ByteBuffer byteBuffer) {
     // dummy constructor
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);

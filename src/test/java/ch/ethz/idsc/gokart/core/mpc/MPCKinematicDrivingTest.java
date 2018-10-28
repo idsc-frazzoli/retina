@@ -9,7 +9,7 @@ public class MPCKinematicDrivingTest extends TestCase {
     if (MPCNative.lcmTestBinary().isPresent()) {
       Stopwatch start = Stopwatch.started();
       MPCStateEstimationProvider estimationProvider = new FakeNewsEstimator(start);
-      MPCKinematicDrivingModule drivingModule = new MPCKinematicDrivingModule(estimationProvider, start);
+      MPCKinematicDrivingModule drivingModule = new MPCKinematicDrivingModule(estimationProvider, start, DubendorfTrack.HYPERLOOP_EIGHT);
       drivingModule.switchToTest();
       drivingModule.first();
       Thread.sleep(1000);

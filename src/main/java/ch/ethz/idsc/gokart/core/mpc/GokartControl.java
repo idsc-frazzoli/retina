@@ -28,6 +28,15 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = uB;
     this.aB = 0;
+    this.directMotorControl = true;
+  }
+
+  public GokartControl(float aB, float udotS, float uB) {
+    this.uL = 0;
+    this.uR = 0;
+    this.udotS = udotS;
+    this.uB = uB;
+    this.aB = aB;
     this.directMotorControl = false;
   }
 
@@ -40,7 +49,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public Scalar getudotS() {
-    return Quantity.of(uR, SCE_PER_SECOND);
+    return Quantity.of(udotS, SCE_PER_SECOND);
   }
 
   public Scalar getuB() {
