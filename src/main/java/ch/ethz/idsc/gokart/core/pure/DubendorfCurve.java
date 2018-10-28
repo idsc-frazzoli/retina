@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import ch.ethz.idsc.owl.math.group.RnGeodesic;
 import ch.ethz.idsc.owl.subdiv.curve.FourPointCurveSubdivision;
-import ch.ethz.idsc.owl.subdiv.curve.RnGeodesic;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;

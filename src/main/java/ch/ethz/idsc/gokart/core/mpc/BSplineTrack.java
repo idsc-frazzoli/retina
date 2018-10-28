@@ -128,7 +128,7 @@ public class BSplineTrack implements Track {
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
   public Tensor getDirection(Scalar pathProgress) {
-    return Normalize.of(getDerivation(pathProgress));
+    return Normalize.with(Norm._2).apply(getDerivation(pathProgress));
   }
 
   /** get perpendicular vector to the right of the path
@@ -138,7 +138,7 @@ public class BSplineTrack implements Track {
    * @return direction of the path [1] */
   public Tensor getRightDirection(Scalar pathProgress) {
     Tensor direction = getDerivation(pathProgress);
-    return Normalize.of(Tensors.of(direction.Get(1), direction.Get(0).negate()));
+    return Normalize.with(Norm._2).apply(Tensors.of(direction.Get(1), direction.Get(0).negate()));
   }
 
   /** get the 2nd path derivative with respect to path progress

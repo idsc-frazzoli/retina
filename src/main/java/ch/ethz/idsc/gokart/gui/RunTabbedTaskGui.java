@@ -102,6 +102,8 @@ enum RunTabbedTaskGui {
       FigureEightModule.class, //
       FigureEightReverseModule.class, //
       FigureOvalModule.class, //
+      GokartTrajectoryModule.class, //
+      GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //
