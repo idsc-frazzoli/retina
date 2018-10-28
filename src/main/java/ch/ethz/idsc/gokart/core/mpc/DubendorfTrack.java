@@ -19,34 +19,40 @@ public class DubendorfTrack extends BSplineTrack {
   private static Tensor getConstantRadius(int lenght, Scalar radius) {
     Tensor radiusCtrPoints = Tensors.empty();
     for (int i = 0; i < lenght; i++) {
-      radiusCtrPoints.add(radius);
+      radiusCtrPoints.append(radius);
     }
     return radiusCtrPoints;
   }
 
   private static DubendorfTrack hyperloop_eight() {
-    Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv");
+    Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv").multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
     // TODO: do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
-      controlPointsX.add(controlPoints.get(i).Get(0));
-      controlPointsY.add(controlPoints.get(i).Get(1));
+      Tensor iTensor = controlPoints.get(i);
+      Scalar x = iTensor.Get(0);
+      Scalar y = iTensor.Get(1);
+      controlPointsX.append(x);
+      controlPointsY.append(y);
     }
     return new DubendorfTrack(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(4, SI.METER)));
+        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
   }
 
   private static DubendorfTrack hyperloop_eight_reverse() {
-    Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv"));
+    Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
     // TODO: do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
-      controlPointsX.add(controlPoints.get(i).Get(0));
-      controlPointsY.add(controlPoints.get(i).Get(1));
+      Tensor iTensor = controlPoints.get(i);
+      Scalar x = iTensor.Get(0);
+      Scalar y = iTensor.Get(1);
+      controlPointsX.append(x);
+      controlPointsY.append(y);
     }
     return new DubendorfTrack(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(4, SI.METER)));
+        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
   }
 }

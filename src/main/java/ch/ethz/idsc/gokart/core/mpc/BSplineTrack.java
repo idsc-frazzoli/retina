@@ -138,7 +138,7 @@ public class BSplineTrack implements Track {
    * @return direction of the path [1] */
   public Tensor getRightDirection(Scalar pathProgress) {
     Tensor direction = getDerivation(pathProgress);
-    return Tensors.of(direction.Get(1), direction.Get(0).negate());
+    return Normalize.of(Tensors.of(direction.Get(1), direction.Get(0).negate()));
   }
 
   /** get the 2nd path derivative with respect to path progress
@@ -248,7 +248,7 @@ public class BSplineTrack implements Track {
     Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
     for (int i = 0; i < resolution; i++) {
       Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
-      line.add(getPosition(prog));
+      line.append(getPosition(prog));
     }
     return line;
   }
@@ -260,11 +260,14 @@ public class BSplineTrack implements Track {
     Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
     for (int i = 0; i < resolution; i++) {
       Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Scalar rad = getRadius(prog);
+      Tensor right = getRightDirection(prog);
+      Tensor pos = getPosition(prog);
       Tensor linepos = //
           getPosition(prog).//
               add(getRightDirection(prog).//
-                  multiply(getLocalRadius(prog)));
-      line.add(linepos);
+                  multiply(getRadius(prog)));
+      line.append(linepos);
     }
     return line;
   }
@@ -279,8 +282,8 @@ public class BSplineTrack implements Track {
       Tensor linepos = //
           getPosition(prog).//
               subtract(getRightDirection(prog).//
-                  multiply(getLocalRadius(prog)));
-      line.add(linepos);
+                  multiply(getRadius(prog)));
+      line.append(linepos);
     }
     return line;
   }
