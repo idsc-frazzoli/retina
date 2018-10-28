@@ -82,12 +82,12 @@ enum RunTabbedTaskGui {
       AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
-      SeesLcmModule.class, //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
-      ParametersModule.class // configure parameters
+      ParametersModule.class, // configure parameters
+      SeesLcmModule.class //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //

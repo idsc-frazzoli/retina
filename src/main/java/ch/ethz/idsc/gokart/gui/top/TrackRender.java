@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.BasicStroke;
@@ -6,23 +7,22 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 
-import ch.ethz.idsc.gokart.core.mpc.Track;
+import ch.ethz.idsc.gokart.core.mpc.TrackInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class TrackRender implements RenderInterface {
-  // private final Track track;
+  private static final int RESOLUTION = 100;
+  // ---
   private final Tensor leftBoundary;
   private final Tensor rightBoundary;
   private final Tensor middleLine;
-  private static int resolution = 100;
 
-  public TrackRender(Track track) {
-    // this.track = track;
-    this.leftBoundary = track.getLeftLine(resolution);
-    this.rightBoundary = track.getRightLine(resolution);
-    this.middleLine = track.getMiddleLine(resolution);
+  public TrackRender(TrackInterface track) {
+    this.leftBoundary = track.getLeftLine(RESOLUTION);
+    this.rightBoundary = track.getRightLine(RESOLUTION);
+    this.middleLine = track.getMiddleLine(RESOLUTION);
   }
 
   @Override

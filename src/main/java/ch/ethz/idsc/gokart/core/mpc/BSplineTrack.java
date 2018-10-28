@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.LinkedList;
@@ -17,16 +18,17 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
-public class BSplineTrack implements Track {
+public class BSplineTrack implements TrackInterface {
+  static final int trackSplineOrder = 2;
+  static final int radiusSplineOrder = 1;
+  static Scalar dTol = Quantity.of(0.000001, SI.METER);
+  static Scalar bTol = RealScalar.of(0.01);
+  // ---
   protected final Tensor controlPointsX;
   protected final Tensor controlPointsY;
   protected final Tensor controlPointsR;
   final Scalar length;
   final int numPoints;
-  static int trackSplineOrder = 2;
-  static int radiusSplineOrder = 1;
-  static Scalar dTol = Quantity.of(0.000001, SI.METER);
-  static Scalar bTol = Quantity.of(0.01, SI.ONE);
   final BSplineFunction xTrackSpline;
   final BSplineFunction yTrackSpline;
   final BSplineFunction xTrackSplineDerivation;
@@ -147,7 +149,7 @@ public class BSplineTrack implements Track {
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1^2] */
   public Tensor get2ndDerivation(Scalar pathProgress) {
-    Scalar devPathProgress = pathProgress.add(Quantity.of(-1, SI.ONE));
+    Scalar devPathProgress = pathProgress.add(RealScalar.of(-1));
     return Tensors.of(//
         xTrackSpline2ndDerivation.apply(wrap(devPathProgress)), //
         yTrackSpline2ndDerivation.apply(wrap(devPathProgress)));
@@ -176,7 +178,7 @@ public class BSplineTrack implements Track {
     Scalar bestDist = DoubleScalar.POSITIVE_INFINITY.multiply(Quantity.of(1, SI.METER));
     Scalar bestGuess = RealScalar.ZERO;
     for (int i = 0; i < numPoints; i++) {
-      Scalar prog = Quantity.of(i, SI.ONE);
+      Scalar prog = RealScalar.of(i);
       Scalar dist = Norm._2.of(getPosition(prog).subtract(position));
       if (Scalars.lessThan(dist, bestDist)) {
         bestDist = dist;
@@ -218,19 +220,17 @@ public class BSplineTrack implements Track {
       Scalar upper = guess.add(precision);
       if (Scalars.lessThan(getDist(position, lower), bestDist))
         guess = lower;
-      else if (Scalars.lessThan(getDist(position, upper), bestDist))
+      else //
+      if (Scalars.lessThan(getDist(position, upper), bestDist))
         guess = upper;
       else
-        precision = precision.divide(Quantity.of(2, SI.ONE));
+        precision = precision.divide(RealScalar.of(2));
       // System.out.println(getDist(position, guess));
     }
     return guess;
   }
 
-  /** test if the position is inside the track limits
-   * 
-   * @param position in [m]
-   * @return true if within track limits */
+  @Override
   public boolean isInTrack(Tensor position) {
     Scalar prog = getNearestPathProgress(position);
     Scalar dist = getDist(position, prog);
@@ -245,9 +245,9 @@ public class BSplineTrack implements Track {
   @Override
   public Tensor getMiddleLine(int resolution) {
     Tensor line = Tensors.empty();
-    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    Scalar step = length.divide(RealScalar.of(resolution));
     for (int i = 0; i < resolution; i++) {
-      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Scalar prog = RealScalar.of(i).multiply(step);
       line.append(getPosition(prog));
     }
     return line;
@@ -257,9 +257,9 @@ public class BSplineTrack implements Track {
   public Tensor getLeftLine(int resolution) {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
-    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    Scalar step = length.divide(RealScalar.of(resolution));
     for (int i = 0; i < resolution; i++) {
-      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Scalar prog = RealScalar.of(i).multiply(step);
       Tensor linepos = //
           getPosition(prog).//
               add(getRightDirection(prog).//
@@ -269,13 +269,14 @@ public class BSplineTrack implements Track {
     return line;
   }
 
+  // TODO refactor so that left and right reuse code
   @Override
   public Tensor getRightLine(int resolution) {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
-    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    Scalar step = length.divide(RealScalar.of(resolution));
     for (int i = 0; i < resolution; i++) {
-      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Scalar prog = RealScalar.of(i).multiply(step);
       Tensor linepos = //
           getPosition(prog).//
               subtract(getRightDirection(prog).//

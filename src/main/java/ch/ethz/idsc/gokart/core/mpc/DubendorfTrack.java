@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.SI;
@@ -12,15 +13,11 @@ public class DubendorfTrack extends MPCBSplineTrack {
   public static final DubendorfTrack HYPERLOOP_EIGHT = hyperloop_eight();
   public static final DubendorfTrack HYPERLOOP_EIGHT_REVERSE = hyperloop_eight_reverse();
 
-  private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
-    super(controlPointsX, controlPointsY, radiusControlPoints);
-  }
-
-  private static Tensor getConstantRadius(int lenght, Scalar radius) {
+  private static Tensor getConstantRadius(int length, Scalar radius) {
+    // TODO use Tensors.vector(i->radius, length);
     Tensor radiusCtrPoints = Tensors.empty();
-    for (int i = 0; i < lenght; i++) {
+    for (int i = 0; i < length; ++i)
       radiusCtrPoints.append(radius);
-    }
     return radiusCtrPoints;
   }
 
@@ -54,5 +51,10 @@ public class DubendorfTrack extends MPCBSplineTrack {
     }
     return new DubendorfTrack(controlPointsX, controlPointsY, //
         getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
+  }
+
+  // ---
+  private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
+    super(controlPointsX, controlPointsY, radiusControlPoints);
   }
 }
