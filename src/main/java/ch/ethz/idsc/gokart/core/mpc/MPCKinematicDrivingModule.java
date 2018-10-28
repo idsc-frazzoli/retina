@@ -11,8 +11,6 @@ import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -146,14 +144,13 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        //TODO: use joystick for speed limit
-        /*
-        //get joystick
-        Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
-        if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
-          GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
-         gokartJoystickInterface.get
-        }*/
+        // TODO: use joystick for speed limit
+        /* //get joystick
+         * Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+         * if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+         * GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+         * gokartJoystickInterface.get
+         * } */
         // send the newest state and start the update state
         GokartState state = mpcStateEstimationProvider.getState();
         Tensor position = Tensors.of(state.getX(), state.getY());
