@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.opt.BSplineFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
@@ -16,7 +17,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
-public class BSplineTrack {
+public class BSplineTrack implements Track {
   final Tensor controlPointsX;
   final Tensor controlPointsY;
   final Tensor radiusControlPoints;
@@ -121,6 +122,25 @@ public class BSplineTrack {
         yTrackSplineDerivation.apply(wrap(devPathProgress)));
   }
 
+  /** get the path direction with respect to path progress
+   * 
+   * @param pathProgress progress along path
+   * corresponding to control point indices [1]
+   * @return direction of the path [1] */
+  public Tensor getDirection(Scalar pathProgress) {
+    return Normalize.of(getDerivation(pathProgress));
+  }
+
+  /** get perpendicular vector to the right of the path
+   * 
+   * @param pathProgress progress along path
+   * corresponding to control point indices [1]
+   * @return direction of the path [1] */
+  public Tensor getRightDirection(Scalar pathProgress) {
+    Tensor direction = getDerivation(pathProgress);
+    return Tensors.of(direction.Get(1), direction.Get(0).negate());
+  }
+
   /** get the 2nd path derivative with respect to path progress
    * 
    * @param pathProgress progress along path
@@ -187,7 +207,7 @@ public class BSplineTrack {
    * }
    * return guess;
    * } */
-  Scalar getDist(Tensor from, Scalar pathProgress) {
+  private Scalar getDist(Tensor from, Scalar pathProgress) {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
   }
 
@@ -217,7 +237,51 @@ public class BSplineTrack {
     return Scalars.lessThan(dist, getRadius(prog));
   }
 
+  @Override
   public Tensor getNearestPosition(Tensor position) {
     return getPosition(getNearestPathProgress(position));
+  }
+
+  @Override
+  public Tensor getMiddleLine(int resolution) {
+    Tensor line = Tensors.empty();
+    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    for (int i = 0; i < resolution; i++) {
+      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      line.add(getPosition(prog));
+    }
+    return line;
+  }
+
+  @Override
+  public Tensor getLeftLine(int resolution) {
+    // this is not accurate for large changes in radius
+    Tensor line = Tensors.empty();
+    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    for (int i = 0; i < resolution; i++) {
+      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Tensor linepos = //
+          getPosition(prog).//
+              add(getRightDirection(prog).//
+                  multiply(getLocalRadius(prog)));
+      line.add(linepos);
+    }
+    return line;
+  }
+
+  @Override
+  public Tensor getRightLine(int resolution) {
+    // this is not accurate for large changes in radius
+    Tensor line = Tensors.empty();
+    Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
+    for (int i = 0; i < resolution; i++) {
+      Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
+      Tensor linepos = //
+          getPosition(prog).//
+              subtract(getRightDirection(prog).//
+                  multiply(getLocalRadius(prog)));
+      line.add(linepos);
+    }
+    return line;
   }
 }

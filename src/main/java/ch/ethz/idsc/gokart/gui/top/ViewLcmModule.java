@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.mpc.DubendorfTrack;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -112,6 +113,12 @@ abstract class ViewLcmModule extends AbstractModule {
       // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    }
+    {
+      // test simple track
+      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
+      TrackRender trackRender = new TrackRender(track);
+      viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
