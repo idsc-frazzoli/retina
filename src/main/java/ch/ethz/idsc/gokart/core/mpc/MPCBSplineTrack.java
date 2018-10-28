@@ -19,13 +19,13 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     Tensor ctrY = Tensors.empty();
     Tensor ctrR = Tensors.empty();
     for (int i = 0; i < previewSize; i++) {
-      //TODO find out: is this efficient?
+      // TODO find out: is this efficient?
       ctrX.append(controlPointsX.Get(currentIndex));
       ctrY.append(controlPointsY.Get(currentIndex));
       ctrR.append(controlPointsR.Get(currentIndex));
       currentIndex++;
-      if(currentIndex>=numPoints)
-        currentIndex=0;
+      if (currentIndex >= numPoints)
+        currentIndex = 0;
     }
     return new MPCPathParameter(ctrX, ctrY, ctrR);
   }
