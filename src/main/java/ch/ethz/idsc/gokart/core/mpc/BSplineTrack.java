@@ -18,9 +18,9 @@ import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
 public class BSplineTrack implements Track {
-  final Tensor controlPointsX;
-  final Tensor controlPointsY;
-  final Tensor radiusControlPoints;
+  protected final Tensor controlPointsX;
+  protected final Tensor controlPointsY;
+  protected final Tensor controlPointsR;
   final Scalar length;
   final int numPoints;
   static int trackSplineOrder = 2;
@@ -41,7 +41,7 @@ public class BSplineTrack implements Track {
     numPoints = controlPointsX.length();
     this.controlPointsX = controlPointsX.copy();
     this.controlPointsY = controlPointsY.copy();
-    this.radiusControlPoints = radiusControlPoints.copy();
+    this.controlPointsR = radiusControlPoints.copy();
     final int pathLength = controlPointsX.length();
     length = Quantity.of(pathLength, SI.ONE);
     // add points at the end in order to close the loop
@@ -51,7 +51,7 @@ public class BSplineTrack implements Track {
         next = 0;
       this.controlPointsX.append(controlPointsX.get(next));
       this.controlPointsY.append(controlPointsY.get(next));
-      this.radiusControlPoints.append(radiusControlPoints.get(next));
+      this.controlPointsR.append(radiusControlPoints.get(next));
       next++;
       toAdd--;
     }
@@ -79,7 +79,7 @@ public class BSplineTrack implements Track {
     Tensor yDevDevControl = yDevControl.block(start1, ddim)//
         .subtract(yDevControl.block(start0, ddim));
     yTrackSpline2ndDerivation = BSplineFunction.of(trackSplineOrder - 2, yDevDevControl);
-    radiusTrackSpline = BSplineFunction.of(radiusSplineOrder, this.radiusControlPoints);
+    radiusTrackSpline = BSplineFunction.of(radiusSplineOrder, this.controlPointsR);
   }
 
   private Scalar wrap(Scalar pathProgress) {
@@ -211,7 +211,7 @@ public class BSplineTrack implements Track {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
   }
 
-  private Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
+  protected Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
     while (Scalars.lessThan(bTol, precision)) {
       Scalar bestDist = getDist(position, guess);
       Scalar lower = guess.subtract(precision);
@@ -260,9 +260,6 @@ public class BSplineTrack implements Track {
     Scalar step = length.divide(Quantity.of(resolution, SI.ONE));
     for (int i = 0; i < resolution; i++) {
       Scalar prog = Quantity.of(i, SI.ONE).multiply(step);
-      Scalar rad = getRadius(prog);
-      Tensor right = getRightDirection(prog);
-      Tensor pos = getPosition(prog);
       Tensor linepos = //
           getPosition(prog).//
               add(getRightDirection(prog).//
