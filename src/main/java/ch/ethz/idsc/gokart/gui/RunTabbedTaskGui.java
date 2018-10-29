@@ -31,7 +31,6 @@ import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCPathFollowingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
@@ -83,12 +82,12 @@ enum RunTabbedTaskGui {
       AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
-      SeesLcmModule.class, //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
-      ParametersModule.class // configure parameters
+      ParametersModule.class, // configure parameters
+      SeesLcmModule.class //
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
@@ -103,6 +102,8 @@ enum RunTabbedTaskGui {
       FigureEightModule.class, //
       FigureEightReverseModule.class, //
       FigureOvalModule.class, //
+      GokartTrajectoryModule.class, //
+      GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //
@@ -111,8 +112,7 @@ enum RunTabbedTaskGui {
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class, //
-      GokartTrajectorySRModule.class, //
-      MPCPathFollowingModule.class //
+      GokartTrajectorySRModule.class //
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //

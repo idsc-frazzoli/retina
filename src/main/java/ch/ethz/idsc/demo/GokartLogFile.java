@@ -961,6 +961,29 @@ public enum GokartLogFile implements LogFile {
   _20181022T113943_e2d44216, //
   /** lookup table rimo rate controller figure 8 */
   _20181022T143102_f6163877, //
+  /***************************************************/
+  /* 2018-10-25 */
+  /** braking at different press levels */
+  _20181025T112636_34e647c3, //
+  /** braking at different press levels */
+  _20181025T114229_6b1a19b1, //
+  /** braking at different press levels */
+  _20181025T131025_6b1a19b1, //
+  /** braking at different press levels */
+  _20181025T131901_6b1a19b1, //
+  /** braking at different press levels */
+  _20181025T133400_6b1a19b1, //
+  /** demo for student: autonomous figure 8,
+   * manual driving, trajectory planning */
+  _20181025T153139_6b1a19b1, //
+  /** trajectory planning, manual driving */
+  _20181025T160134_6b1a19b1, //
+  /** trajectory planning */
+  _20181025T161638_6b1a19b1, //
+  /** trajectory planning */
+  _20181025T162632_6b1a19b1, //
+  /** trajectory planning */
+  _20181025T165405_6b1a19b1, //
   ;
   // ---
   @Override // from LogFile

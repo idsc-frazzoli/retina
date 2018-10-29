@@ -26,6 +26,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
@@ -40,6 +41,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started;
   private final Timer timer = new Timer();
+  // TODO: make configurable
+  private final int previewSize = 5;
+  private final MPCPreviewableTrack track;
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
@@ -50,7 +54,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
    * 
    * @param estimator the custom estimator
    * @param started stopwatch that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started) {
+  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started, MPCPreviewableTrack track) {
+    this.track = track;
     mpcStateEstimationProvider = estimator;
     this.started = started;
     // link mpc steering
@@ -60,6 +65,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
 
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
+    track = DubendorfTrack.HYPERLOOP_EIGHT;
     started = Stopwatch.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
@@ -138,8 +144,19 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
+        // TODO: use joystick for speed limit
+        /* //get joystick
+         * Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+         * if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
+         * GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+         * gokartJoystickInterface.get
+         * } */
         // send the newest state and start the update state
-        lcmMPCPathFollowingClient.publishGokartState(mpcStateEstimationProvider.getState());
+        GokartState state = mpcStateEstimationProvider.getState();
+        Tensor position = Tensors.of(state.getX(), state.getY());
+        MPCPathParameter mpcPathParameter = track.getPathParameterPreview(previewSize, position);
+        lcmMPCPathFollowingClient.publishPathParameter(mpcPathParameter);
+        lcmMPCPathFollowingClient.publishGokartState(state);
       }
     }, (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
     ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);

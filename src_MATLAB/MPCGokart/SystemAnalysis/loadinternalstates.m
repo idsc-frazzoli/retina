@@ -11,8 +11,11 @@ rimorate = csvread(strcat(folder,'rimorate.csv'));
 linmot = csvread(strcat(folder,'linmot.csv'));
 lt = linmot(:,1);
 lp = linmot(:,4);
-lp = max(0,-lp-100000);
-lp = lp/100000; %data is scaled and truncated (completely arbitrary)
+%lp = max(0,-lp-100000);
+%lp = lp/100000; %data is scaled and truncated (completely arbitrary)
+ltemp = mean(linmot(:,6:7),2);
+ldt = (lt(end)-lt(1))/numel(lt);
+dotltemp = getDerivation(ltemp,50,ldt);
 %plot(lt,lp);
 
 st = powersteer(:,1);
@@ -22,6 +25,7 @@ sa = powersteer(:,9);%steering angle
 %sb = gaussfilter(sa,1000);
 %sa = gaussfilter(sa,10);
 sdota = gaussfilter(sdota,10);
+
 
 %load power
 pt = powerrimo(:,1);
@@ -44,7 +48,7 @@ wrr = gaussfilter(wrr,10);
 cRTSM = convertM(RTSM);
 
 t = cRTSM(:,1);
-% whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp]
+% whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp  ltemp dotltemp]
 
 M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(st,sa,t),...%sa
@@ -55,8 +59,9 @@ M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(wt,wrr,t),...%wrr
     interp1(wt,dotwrl,t),...%dotwrl
     interp1(wt,dotwrr,t),...%dotwrr
-    interp1(lt,lp,t)];%lp
-
+    interp1(lt,lp,t),...%lp
+    interp1(lt,ltemp,t),...%ltemp
+    interp1(lt,dotltemp,t)];%dotltemp
 show = 1;
 
     %if(show)

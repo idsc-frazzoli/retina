@@ -114,6 +114,12 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {
+      /* // test simple track
+       * DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
+       * TrackRender trackRender = new TrackRender(track);
+       * viewLcmFrame.geometricComponent.addRenderInterface(trackRender); */
+    }
+    {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
       trajectoryLcmClients.forEach(trajectoryLcmClient -> trajectoryLcmClient.addListener(trajectoryRender));
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);

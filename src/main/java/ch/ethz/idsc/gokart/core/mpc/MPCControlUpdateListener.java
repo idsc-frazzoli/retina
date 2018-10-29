@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
 public abstract class MPCControlUpdateListener {
-  ControlAndPredictionSteps cns = null;
+  protected ControlAndPredictionSteps cns = null;
   int istep = 0;
 
   void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
@@ -27,13 +27,13 @@ public abstract class MPCControlUpdateListener {
       istep--;
     }
     while (//
-    istep + 1 < cns.length() && //
+    istep + 1 < cns.steps.length && //
         Scalars.lessThan(//
             cns.steps[istep + 1].state.getTime(), //
             time)) {
       istep++;
     }
-    return null;
+    return cns.steps[istep];
   }
 
   /** the time that passed after the last step
