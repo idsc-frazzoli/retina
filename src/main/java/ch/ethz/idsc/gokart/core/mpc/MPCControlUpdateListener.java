@@ -11,7 +11,7 @@ public abstract class MPCControlUpdateListener {
   void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     this.cns = controlAndPredictionSteps;
   }
-
+  
   /** get the last step before a point int time
    * 
    * @param query time in Unit [s]

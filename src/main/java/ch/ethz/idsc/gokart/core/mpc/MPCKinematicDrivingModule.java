@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
+import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
@@ -41,6 +42,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started;
   private final Timer timer = new Timer();
+  private MPCPredictionRender mpcPredictionRender = null;
   // TODO: make configurable
   private final int previewSize = 5;
   private final MPCPreviewableTrack track;
@@ -70,6 +72,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
+  }
+  
+  public void addPredictionRender(MPCPredictionRender mpcPredictionRender) {
+    lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPredictionRender);
   }
 
   private void initModules() {
