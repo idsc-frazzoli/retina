@@ -41,7 +41,7 @@ public class LinmotPressTestModule extends AbstractModule {
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {
       final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
-      Tensor tensor = Subdivide.of(0.5, .75, n - 1);
+      Tensor tensor = Subdivide.of(0.5, 1, n - 1);
       JPanel jPanel = new JPanel(new GridLayout(n, 1));
       List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {

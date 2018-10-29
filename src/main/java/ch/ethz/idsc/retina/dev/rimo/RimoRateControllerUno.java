@@ -10,15 +10,16 @@ import ch.ethz.idsc.tensor.red.Mean;
  * the steering wheel angle is not used. */
 public class RimoRateControllerUno extends RimoRateControllerWrap {
   // TODO make configurable
-  private final RimoRateController pi = new LookupRimoRateController(RimoConfig.GLOBAL);
-  // new SimpleRimoRateController(RimoConfig.GLOBAL);
+  private final RimoRateController rimoRateController = //
+      new SimpleRimoRateController(RimoConfig.GLOBAL);
+  // new LookupRimoRateController(RimoConfig.GLOBAL);
 
   @Override // from RimoRateControllerWrap
   protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {
     Scalar vel_avg = Mean.of(rimoGetEvent.getAngularRate_Y_pair()).Get(); // average of wheel rates
     Scalar vel_error = rate_target.subtract(vel_avg);
-    pi.setWheelRate(vel_avg);
-    Scalar torque = pi.iterate(vel_error);
+    rimoRateController.setWheelRate(vel_avg);
+    Scalar torque = rimoRateController.iterate(vel_error);
     // System.out.println("torque=" + torque);
     short value_Yaxis = Magnitude.ARMS.toShort(torque);
     return RimoPutHelper.operationTorque( //

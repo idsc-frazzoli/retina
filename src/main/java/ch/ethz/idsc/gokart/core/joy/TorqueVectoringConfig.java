@@ -11,7 +11,7 @@ public class TorqueVectoringConfig {
   public static final TorqueVectoringConfig GLOBAL = AppResources.load(new TorqueVectoringConfig());
   /***************************************************/
   /** The Static compensation coefficient */
-  public Scalar staticCompensation = Quantity.of(0.5, SI.ACCELERATION.negate());
+  public Scalar staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
   /** The Dynamic correction coefficient */
   public Scalar dynamicCorrection = Quantity.of(1, SI.SECOND);
   /** TODO document control constant used in ITV */

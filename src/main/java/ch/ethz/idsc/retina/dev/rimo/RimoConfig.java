@@ -21,7 +21,7 @@ public class RimoConfig {
   public Scalar Kp = Quantity.of(35, "ARMS*rad^-1*s"); // 40
   public Scalar Ki = Quantity.of(0, "ARMS*rad^-1"); // 15
   /** used for lookup table */
-  public Scalar lKp = Quantity.of(1, SI.ACCELERATION.add(SI.VELOCITY.negate()));
+  public Scalar lKp = Quantity.of(0, SI.ACCELERATION.add(SI.VELOCITY.negate()));
   public Scalar lKi = Quantity.of(1, SI.ACCELERATION.add(SI.METER.negate()));
   public Scalar lAntiWindupPadding = Quantity.of(0.1, SI.ACCELERATION);
   /** constant for anti wind-up used by revised rimo rate controller */
