@@ -35,7 +35,7 @@ public class SafetyConfig {
   public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
   /** rate limit is used in {@link SpeedLimitSafetyModule} */
-  public Scalar rateLimit = Quantity.of(10, SIDerived.RADIAN_PER_SECOND);
+  public Scalar rateLimit = Quantity.of(30, SIDerived.RADIAN_PER_SECOND);
   public final Scalar penalty = Quantity.of(0.5, SI.SECOND);
 
   /***************************************************/

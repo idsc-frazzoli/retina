@@ -198,8 +198,6 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         Se2ComboRegion se2ComboRegion = //
             // Se2ComboRegion.spherical(goal, goalRadius.pmul(TrajectoryConfig.GLOBAL.goalRadiusFactor));
             Se2ComboRegion.cone(goal, TrajectoryConfig.GLOBAL.coneHalfAngle, goalRadius.Get(2));
-        // TODO spherical goal region works on gokart but tests fail
-        // Se2ComboRegion.spherical(goal, Tensors.vector(2.5, 2.5, goalRadius.Get(2).number().doubleValue()));
         // ---
         // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
         // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
@@ -219,7 +217,6 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         return;
       }
     }
-    // TODO set and publish in one function
     purePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
     System.err.println("no curve because no pose");
@@ -233,11 +230,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private static List<TrajectorySample> getTrajectoryUntil( //
       List<TrajectorySample> trajectory, Tensor pose, Scalar cutoffDistHead) {
     Sign.requirePositiveOrZero(cutoffDistHead);
-    Tensor distances = Tensor.of(trajectory.stream().map(st -> Norm._2.ofVector(SE2WRAP.difference(st.stateTime().state(), pose))));
+    Tensor distances = Tensor.of(trajectory.stream() //
+        .map(trajectorySample -> Norm._2.ofVector(SE2WRAP.difference(trajectorySample.stateTime().state(), pose))));
     int closestIdx = ArgMin.of(distances);
     Tensor closest = trajectory.get(closestIdx).stateTime().state();
     return trajectory.stream() //
-        .skip(Math.max((closestIdx - 5), 0)) // TODO magic const
+        .skip(Math.max(closestIdx - 5, 0)) // TODO magic const
         .filter(trajectorySample -> Scalars.lessEquals( //
             Norm._2.ofVector(SE2WRAP.difference(closest, trajectorySample.stateTime().state())), cutoffDistHead)) //
         .collect(Collectors.toList());
@@ -259,10 +257,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       purePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
-      System.err.println("use old trajectory");
       // failure to reach goal
-      // purePursuitModule.setCurve(Optional.empty());
-      // PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
+      // ante 20181025: previous trajectory was cleared
+      // post 20181025: keep old trajectory
+      System.err.println("use old trajectory");
     }
   }
 }

@@ -19,15 +19,17 @@ public class TrajectoryConfig {
   public Scalar expandFraction = RationalScalar.of(3, 4);
   public Scalar planningOffset = Quantity.of(2.5, SI.METER);
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap
-   * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway */
-  public Scalar horizonDistance = RealScalar.of(8);
+   * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway
+   * post 20181025: changed horizonDistance to 12 */
+  public Scalar horizonDistance = RealScalar.of(12);
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf
-   * 20180517 reduced value to 20[deg/m] to be more conservative and avoid extreme steering */
-  public Scalar maxRotation = Quantity.of(20, "deg*m^-1");
+   * 20180517: reduced value to 20[deg/m] to be more conservative and avoid extreme steering
+   * 20181025: reduced value to 15[deg/m] */
+  public Scalar maxRotation = Quantity.of(15, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
