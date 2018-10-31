@@ -36,29 +36,43 @@ plot(t,M(:,20))
 hold off
 
 pbrake = polyfit(bpos(bselect), acc(bselect),2);
+
+accoffset = polyval(pbrake, brakestart);
+pnormbrake = polyfit(bpos(bselect)-brakestart, -acc(bselect)+accoffset,2);
 xb = brakestart:0.01:brakeend;
-yb = polyval(pbrake,xb);
+yb = polyval(pnormbrake,xb);
 subplot(2,2,2)
 title('effect of brake')
 hold on
 xlabel('Brakingposition [cm]')
-ylabel('additional Acceleration [m/s²]')
-scatter(bpos(bselect), acc(bselect));
+ylabel('braking effect [m/s²]')
+scatter(bpos(bselect)-brakestart, -acc(bselect)+accoffset);
 plot(xb,yb);
 hold off
 
+
+pcooldown = polyfit(temp(nbselect), dottemp(nbselect),1);
 subplot(2,2,3)
+xcd = min(temp(nbselect)):0.01:max(temp(nbselect));
+ycd = polyval(pcooldown,xcd);
 hold on
-title('cooldown (no braking)')
+title('cooldown (no braking) equilibrium at ca. 59° C')
 xlabel('temp [°C]')
 ylabel('temp change [°C/s]')
 scatter(temp(nbselect), dottemp(nbselect));
+plot(xcd,ycd);
 hold off
 
+hu = polyval(pnormbrake, bpos(bselect)-brakestart);
+pnormheatup = polyfit(-hu,dottemp(bselect),3);
 subplot(2,2,4)
+xhu = min(-hu):0.01:max(-hu);
+yhu = polyval(pnormheatup,xhu);
 hold on
 title('heatup (braking)')
-xlabel('brake')
+xlabel('brake [m/s²]')
 ylabel('temp change [°C/s]')
-scatter(bpos(bselect), dottemp(bselect));
+scatter(-hu, dottemp(bselect));
+plot(xhu,yhu);
+%pnormheatup = polyfit()
 hold off
