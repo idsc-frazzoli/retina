@@ -2,12 +2,12 @@
 %
 %   OUTPUT = MPCPathFollowing(PARAMS) solves a multistage problem
 %   subject to the parameters supplied in the following struct:
-%       PARAMS.x0 - column vector of length 341
+%       PARAMS.x0 - column vector of length 310
 %       PARAMS.xinit - column vector of length 7
 %       PARAMS.all_parameters - column vector of length 62
 %
 %   OUTPUT returns the values of the last iteration of the solver where
-%       OUTPUT.alldata - column vector of size 341
+%       OUTPUT.alldata - column vector of size 310
 %
 %   [OUTPUT, EXITFLAG] = MPCPathFollowing(PARAMS) returns additionally
 %   the integer EXITFLAG indicating the state of the solution with 
