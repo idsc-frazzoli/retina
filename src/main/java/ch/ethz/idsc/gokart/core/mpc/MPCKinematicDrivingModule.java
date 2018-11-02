@@ -67,7 +67,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
 
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    track = DubendorfTrack.HYPERLOOP_EIGHT;
+    track = DubendorfTrack.CHICANE;
     started = Stopwatch.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);

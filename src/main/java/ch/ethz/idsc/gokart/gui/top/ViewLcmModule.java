@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.mpc.DubendorfTrack;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -75,7 +76,7 @@ abstract class ViewLcmModule extends AbstractModule {
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
-      viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
+      //viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
       PathRender pathRender = new PathRender(mappedPoseInterface);
@@ -111,13 +112,13 @@ abstract class ViewLcmModule extends AbstractModule {
       Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT_REVERSE;
       // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
-      viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+      //viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {
-      /* // test simple track
-       * DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
-       * TrackRender trackRender = new TrackRender(track);
-       * viewLcmFrame.geometricComponent.addRenderInterface(trackRender); */
+      // test simple track
+      DubendorfTrack track = DubendorfTrack.CHICANE;
+      TrackRender trackRender = new TrackRender(track);
+      viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();

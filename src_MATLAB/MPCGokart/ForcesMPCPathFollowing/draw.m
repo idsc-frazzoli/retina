@@ -1,13 +1,13 @@
 %code by mheim
 figure;
 
-% variables history = [t,ab,dotbeta,x,y,theta,v,beta,s]
+% variables history = [t,ab,dotbeta,ds,brake,x,y,theta,v,beta,s,braketemp]
 %start later in history
 hstart = 1300;
 lhistory = history(hstart:end,:);
 
 m = 2;
-n = 2;
+n = 3;
 subplot(m,n,1)
 hold on
 %plot(ttpos(:,2),ttpos(:,3), 'Color', [0.8 0.8 0.8])
@@ -18,7 +18,7 @@ title('reference trajectory vs actual');
 %legend('reference', 'MPC controlled')
 
 %plot acceleration and deceleration in colors
-p = lhistory(:,5:6);
+p = lhistory(:,6:7);
 acc = lhistory(:,2);
 maxacc = max(abs(acc));
 [nu,~]=size(p);
@@ -35,7 +35,7 @@ hold off
 subplot(m,n,2)
 hold on
 yyaxis left
-plot(lhistory(:,1),lhistory(:,9))
+plot(lhistory(:,1),lhistory(:,10))
 ylabel('steering position [rad]')
 axis([-inf inf -1 1])
 yyaxis right
@@ -53,11 +53,11 @@ hold on
 yyaxis left
 stairs(lhistory(:,1), lhistory(:,2))
 ylabel('acceleration [m/s²]')
-axis([-inf inf -2.5 2.5])
+axis([-inf inf -3 3])
 yyaxis right
-plot(lhistory(:,1),lhistory(:,8))
+plot(lhistory(:,1),lhistory(:,9))
 ylabel('speed [m/s]')
-axis([-inf inf -5 5])
+axis([-inf inf -7 7])
 title('Acceleration/Speed');
 xlabel('[s]')
 %legend('Acceleration','Speed')
@@ -66,7 +66,7 @@ subplot(m,n,4)
 hold on
 %compute lateral acceleration
 l = 1;
-la = tan(lhistory(:,9)).*lhistory(:,8).^2/l;
+la = tan(lhistory(:,10)).*lhistory(:,9).^2/l;
 fa = lhistory(:,2);
 na = (fa.^2+la.^2).^0.5;
 title('accelerations')
@@ -77,3 +77,12 @@ plot(lhistory(:,1),la);
 %plot(history(:,1),fa);
 plot(lhistory(:,1),na);
 legend('lateral acceleration','norm of acceleration');
+
+subplot(m,n,5)
+hold on
+%compute lateral acceleration
+title('braking')
+axis([-inf inf -0.1 2])
+ylabel('[m/s²]')
+xlabel('[s]')
+plot(lhistory(:,1),lhistory(:,5));

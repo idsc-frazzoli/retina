@@ -14,7 +14,7 @@ acc = gaussfilter(acc,10);
 spd = tireradius*mean(M(:,15:16),2);
 bpos = -M(:,19)/100000;
 brakestart = 2.75;
-brakeend = 3.9;
+brakeend = 4.0;
 bselect = bpos > brakestart & bpos < brakeend & spd>0.2;
 bselect = imerode(bselect,ones(100,1));
 nbselect = bpos < 0.6 & bpos > 0.4;
@@ -39,7 +39,7 @@ pbrake = polyfit(bpos(bselect), acc(bselect),2);
 
 accoffset = polyval(pbrake, brakestart);
 pnormbrake = polyfit(bpos(bselect)-brakestart, -acc(bselect)+accoffset,2);
-xb = brakestart:0.01:brakeend;
+xb = 0:0.01:brakeend-brakestart;
 yb = polyval(pnormbrake,xb);
 subplot(2,2,2)
 title('effect of brake')
@@ -64,15 +64,15 @@ plot(xcd,ycd);
 hold off
 
 hu = polyval(pnormbrake, bpos(bselect)-brakestart);
-pnormheatup = polyfit(-hu,dottemp(bselect),3);
+pnormheatup = polyfit(hu,dottemp(bselect),2);
 subplot(2,2,4)
-xhu = min(-hu):0.01:max(-hu);
+xhu = min(hu):0.01:max(hu);
 yhu = polyval(pnormheatup,xhu);
 hold on
 title('heatup (braking)')
 xlabel('brake [m/s²]')
 ylabel('temp change [°C/s]')
-scatter(-hu, dottemp(bselect));
+scatter(hu, dottemp(bselect));
 plot(xhu,yhu);
 %pnormheatup = polyfit()
 hold off
