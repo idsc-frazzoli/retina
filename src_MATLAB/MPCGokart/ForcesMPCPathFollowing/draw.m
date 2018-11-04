@@ -3,7 +3,7 @@ figure;
 
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 %start later in history
-hstart = 1300;
+hstart = 1;
 lhistory = history(hstart:end,:);
 
 m = 2;
@@ -99,3 +99,19 @@ ylabel('temp [°C]')
 axis([-inf inf 50 100])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,11));
+
+subplot(m,n,6)
+% variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
+hold on
+title('path progress')
+yyaxis left
+axis([-inf inf 0 1])
+ylabel('progress rate [1/s]')
+plot(lhistory(:,1),lhistory(:,10));
+
+yyaxis right
+ylabel('progress [1]')
+axis([-inf inf 0 7])
+xlabel('[s]')
+plot(lhistory(:,1), lhistory(:,4));
+

@@ -1,7 +1,8 @@
-function f = objective(z,p,points)
+function f = objective(z,points)
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
-    [splx,sply] = casadiBSPLINE(z(9)+2,points);
+    [splx,sply] = casadiDynamicBSPLINE(z(9),points);
+    %[splx,sply] = casadiBSPLINE(z(9),points);
     realPos = z(4:5);
     %wantedpos = p;
     wantedpos = [splx;sply];

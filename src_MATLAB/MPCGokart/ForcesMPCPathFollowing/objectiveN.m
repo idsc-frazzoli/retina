@@ -1,3 +1,3 @@
-function f = objectiveN(z,p,points)
-    f = 10*objective(z,p,points);
+function f = objectiveN(z,points)
+    f = 10*objective(z,points);
 end
