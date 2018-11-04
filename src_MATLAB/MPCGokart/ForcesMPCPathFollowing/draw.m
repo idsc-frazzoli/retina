@@ -105,13 +105,13 @@ subplot(m,n,6)
 hold on
 title('path progress')
 yyaxis left
-axis([-inf inf 0 1])
+axis([-inf inf 0 0.2])
 ylabel('progress rate [1/s]')
-plot(lhistory(:,1),lhistory(:,10));
+plot(lhistory(:,1),lhistory(:,4));
 
 yyaxis right
 ylabel('progress [1]')
-axis([-inf inf 0 7])
+axis([-inf inf 0 2])
 xlabel('[s]')
-plot(lhistory(:,1), lhistory(:,4));
+plot(lhistory(:,1), lhistory(:,10));
 

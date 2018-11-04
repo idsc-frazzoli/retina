@@ -10,7 +10,7 @@ close all
 
 maxSpeed = 5;
 pointsO = 1;
-pointsN = 10;
+pointsN = 20;
 splinestart = 1;
 nextsplinepoints = 0;
 %parameters: p = [maxspeed, pointsx, pointsy]
@@ -47,7 +47,7 @@ model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO
 
 model.xinitidx = 4:10;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
-model.ub = [inf, +inf, 0.5, +inf, +inf, +inf, +inf,1,pointsN-2,91];  % simple upper bounds 
+model.ub = [inf, +inf, 0.1, +inf, +inf, +inf, 5,1,pointsN-2,91];  % simple upper bounds 
 model.lb = [-inf, -inf, +0.001, -inf, -inf,  -inf, -inf,-1,0,-inf];  % simple lower bounds 
 
 codeoptions = getOptions('MPCPathFollowing');
@@ -61,9 +61,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 800;
+tend = 200;
 eulersteps = 20;
-xs = [20,0,0,0,0,0.1,70];
+xs = [20,0,0,5,0,0.1,70];
 history = zeros(tend*eulersteps,model.nvar+1);
 x0 = [zeros(model.N,3),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 

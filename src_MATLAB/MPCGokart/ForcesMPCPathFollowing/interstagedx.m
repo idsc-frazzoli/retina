@@ -6,10 +6,8 @@ function dx = interstagedx(x,u)
     %ab = 0.5*(maxacc-minacc)*(u(1)+1);
     ab = u(1);
     dotbeta = u(2);
-    %ds = u(3);
-    ds = 0;
-    1;
-    ds = 0.03;
+    ds = u(3);
+    %ds = 0.03;
     theta = x(3);
     v = x(4);
     beta = x(5);
