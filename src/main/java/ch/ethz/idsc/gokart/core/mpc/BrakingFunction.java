@@ -12,13 +12,13 @@ public enum BrakingFunction {
   ;
   // point after which the brake is effective
   private static Scalar brakeStart = Quantity.of(2.75 / 100.0, SI.METER);
-  private static Scalar maxBrake = Quantity.of(2.5, SI.ACCELERATION);
+  // private static Scalar maxBrake = Quantity.of(2.5, SI.ACCELERATION);
   private static Scalar linearFactor = Quantity.of(3.4686 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
   private static Scalar quadraticFactor = Quantity.of(-1.0501 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
   private static Scalar LINMOTSTART = Quantity.of(0.005, SI.METER);
   private static Scalar LINMOTEND = Quantity.of(0.05, SI.METER);
   private static Scalar LINMOTRANGE = LINMOTEND.subtract(LINMOTSTART);
-  
+
   // Note: this is highly innacurate. TODO: do it more precisely
   /** get the induced braking deceleration (added to motor acceleration)
    * 
@@ -51,7 +51,7 @@ public enum BrakingFunction {
       return top.divide(bottom).add(brakeStart);
     }
   }
-  
+
   public static Scalar getRelativePosition(Scalar absolutePosition) {
     Scalar shifted = absolutePosition.subtract(LINMOTSTART);
     Scalar shiftedAndNormalized = shifted.divide(LINMOTRANGE);

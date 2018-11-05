@@ -24,7 +24,6 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -42,9 +41,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started;
   private final Timer timer = new Timer();
-  private MPCPredictionRender mpcPredictionRender = null;
-  // TODO: make configurable
-  private final int previewSize = 5;
+  private final int previewSize = 10;
   private final MPCPreviewableTrack track;
 
   /** switch to testing binary that send back test data has to be called before first */
@@ -131,10 +128,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
-      if (Objects.nonNull(braking))
-      {
+      if (Objects.nonNull(braking)) {
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
       }
+      // this should not happen
       return Optional.of(LinmotPutOperation.INSTANCE.fallback());
     }
 

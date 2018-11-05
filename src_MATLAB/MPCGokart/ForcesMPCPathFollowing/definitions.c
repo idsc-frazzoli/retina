@@ -1,5 +1,7 @@
 #include <byteswap.h>
 
+int POINTSN = 10;
+
 //note: not all values are necessarily known for every type of controller
 struct State {
 	float time;
@@ -24,6 +26,20 @@ struct Control {
 	float udotS;
 	//control: braking
 	float uB;
+	//if we don't have direct motor control
+	float aB;
+};
+
+struct PathParameter {
+	float pointsN;
+	float startingProgress;
+	float [pointsN] controlPointsX;
+	float [pointsN] controlPointsY;
+	float [pointsN] controlPointsR;
+};
+
+struct OptimizationParameter {
+	float speedLimit;
 };
 
 struct ControlAndStateMsg{
@@ -37,4 +53,16 @@ struct StateMsg{
 	int messageType;
 	int sequenceInt;
 	struct State state;
+};
+
+struct PathMsg{
+	int messageType;
+	int sequenceInt;
+	struct PathParameter path;
+};
+
+struct ParaMsg{
+	int messageType;
+	int sequenceInt;
+	struct OptimizationParameter para;
 };

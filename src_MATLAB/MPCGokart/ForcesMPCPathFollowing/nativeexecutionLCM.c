@@ -36,6 +36,10 @@ MPCPathFollowing_output myoutput;
 MPCPathFollowing_info myinfo;
 MPCPathFollowing_float minusA_times_x0[2];
 
+struct StateMsg lastStateMsg;
+struct PathMsg lastPathMsg;
+struct ParaMsg lastParaMsg;
+
 extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
                                                 double *f, double *nabla_f, double *c, double *nabla_c,
                                                 double *h, double *nabla_h, double *H, int stage);
@@ -71,6 +75,19 @@ void sendEmptyControlAndStates(lcm_t * lcm){
 			printf("published test message%d\n",sizeof(struct ControlAndStateMsg)*N);
 		else
 			printf("error while publishing message\n");
+	}
+}
+
+static void path_handler(const lcm_recv_buf_t *rbuf,
+        const char *channel, const idsc_BinaryBlob *msg, void *userdata){
+	printf("received path message\n");
+	struct PathMsg pathMsg;
+	memcpy((int8_t*)&pathMsg, msg->data, msg->data_length);
+	for (int i = 0; i<POINTSN; i++)
+	{
+		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsX[i]);
+		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsY[i]);
+		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsR[i]);
 	}
 }
 
@@ -130,6 +147,8 @@ int main(int argc, char *argv[]) {
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs", &state_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pp", &path_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op", &para_handler, NULL);
 	printf("starting main loop\n");
 	while(1)
 		lcm_handle(lcm);

@@ -30,10 +30,10 @@ public class MPCSimpleBrakingAndPowerTest extends TestCase {
     //System.out.println(braking.getBraking(Quantity.of(0.1, SI.SECOND)));
     // test
     assertTrue(Chop._05.close(//
-        braking.getBraking(Quantity.of(0.1, SI.SECOND)), Quantity.of(0, SI.ACCELERATION)));
+        braking.getBraking(Quantity.of(0.1, SI.SECOND)), Quantity.of(0, SI.ONE)));
     assertTrue(Chop._05.close(//
-        braking.getBraking(Quantity.of(1.1, SI.SECOND)), Quantity.of(0, SI.ACCELERATION)));
-    assertTrue(Scalars.lessThan(Quantity.of(0, SI.ACCELERATION),//
+        braking.getBraking(Quantity.of(1.1, SI.SECOND)), Quantity.of(0, SI.ONE)));
+    assertTrue(Scalars.lessThan(Quantity.of(0, SI.ONE),//
         braking.getBraking(Quantity.of(2.1, SI.SECOND))));
   }
 }

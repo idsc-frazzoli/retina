@@ -25,7 +25,11 @@ public class MPCPathParameter implements MPCNativeInsertable {
     controlPointsR = Tensors.empty();
     for (int i = 0; i < n; i++) {
       controlPointsX.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
+    }
+    for (int i = 0; i < n; i++) {
       controlPointsY.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
+    }
+    for (int i = 0; i < n; i++) {
       controlPointsR.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
     }
   }
@@ -48,7 +52,11 @@ public class MPCPathParameter implements MPCNativeInsertable {
     byteBuffer.putFloat(startingProgress.number().floatValue());
     for (int i = 0; i < n; i++) {
       byteBuffer.putFloat(controlPointsX.Get(i).number().floatValue());
+    }
+    for (int i = 0; i < n; i++) {
       byteBuffer.putFloat(controlPointsY.Get(i).number().floatValue());
+    }
+    for (int i = 0; i < n; i++) {
       byteBuffer.putFloat(controlPointsR.Get(i).number().floatValue());
     }
   }

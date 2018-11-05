@@ -4,11 +4,11 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Min;
 
 public class MPCSimpleBraking extends MPCBraking {
   MPCStateEstimationProvider mpcStateProvider;
@@ -25,9 +25,8 @@ public class MPCSimpleBraking extends MPCBraking {
     Scalar braking = (Scalar) Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     System.out.println(braking);
     Scalar brakePos = BrakingFunction.getNeededBrakeActuation(braking);
-    if(brakePos==null)
-      return
-          null;
+    if (brakePos == null)
+      return RealScalar.ZERO;
     return BrakingFunction.getRelativePosition(brakePos);
   }
 
