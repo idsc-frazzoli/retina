@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -15,7 +16,8 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     // test if this function is fast enough to be called many times (it should be)
     Scalar pathProgress = getNearestPathProgress(position);
     // use java cast because it always rounds down (not that clear in Tensor)
-    int currentIndex = (int) pathProgress.number().floatValue();
+    int currentIndex = (int) pathProgress.subtract(RealScalar.of(0.5)).number().floatValue();
+    Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex));
     Tensor ctrX = Tensors.empty();
     Tensor ctrY = Tensors.empty();
     Tensor ctrR = Tensors.empty();
