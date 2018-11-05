@@ -13,7 +13,7 @@
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
 
-#define N 30
+#define N 31
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
@@ -78,42 +78,41 @@ void sendEmptyControlAndStates(lcm_t * lcm){
 	}
 }
 
+static void para_handler(const lcm_recv_buf_t *rbuf,
+        const char *channel, const idsc_BinaryBlob *msg, void *userdata){
+	printf("received path message\n");
+	memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
+	printf("max speed: %f\n",lastParaMsg.para.speedLimit);
+}
+
 static void path_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 	printf("received path message\n");
-	struct PathMsg pathMsg;
-	memcpy((int8_t*)&pathMsg, msg->data, msg->data_length);
+	memcpy((int8_t*)&lastPathMsg, msg->data, msg->data_length);
 	for (int i = 0; i<POINTSN; i++)
 	{
-		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsX[i]);
-		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsY[i]);
-		printf("i=%d: pointX:%f\n",i,pathMsg.path.controlPointsR[i]);
+		printf("i=%d: pointX:%f\n",i,lastPathMsg.path.controlPointsX[i]);
+		printf("i=%d: pointX:%f\n",i,lastPathMsg.path.controlPointsY[i]);
+		printf("i=%d: pointX:%f\n",i,lastPathMsg.path.controlPointsR[i]);
 	}
 }
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 	printf("received state message\n");
-	struct StateMsg stateMsg;
-	memcpy((int8_t*)&stateMsg, msg->data, msg->data_length);
+	memcpy((int8_t*)&lastStateMsg, msg->data, msg->data_length);
 
-	float *floats = (float*)msg->data+2;
-	int length = msg->data_length/4-2;
-	//integers are LITTLE ENDIAN in C
-	printf("message type: %hxx\n", msg->data[0]);
-	printf("message seq: %hxx\n", msg->data[4]);
-	printf("floats: %d\n",length);
-	for (int i = 0; i<length; i++){
-		printf("i=%d: %f\n",i,floats[i]);
-	}
-	printf("bytes: %d\n", msg->data_length);
-	for(int i = 0; i<msg->data_length; i++){
-		printf("i=%d: %hhx\n",i,msg->data[i]);
-	}
-	printf("copied to state\n");
+	struct MPCPathFollowing_params params;
+
+	params.xinit[0] = lastStateMsg.state.X;
+	params.xinit[1] = lastStateMsg.state.Y;
+	params.xinit[2] = lastStateMsg.state.Psi;
+	params.xinit[3] = lastStateMsg.state.Ux;
+	params.xinit[4] = lastStateMsg.state.s;
+	params.xinit[5] = lastPathMsg.path.startingProgress;
 
 	//sendEmptyControlAndStates(lcm);
-	
+	/*
 	struct _idsc_BinaryBlob blob;
 	for (int i = 0; i<N; i++){
 		cns[i].control.uL = 1;
@@ -132,7 +131,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 		printf("published message: %d\n",sizeof(struct ControlAndStateMsg)*N);
 	else
-		printf("error while publishing message\n");
+		printf("error while publishing message\n");*/
 }
 
 int main(int argc, char *argv[]) {
