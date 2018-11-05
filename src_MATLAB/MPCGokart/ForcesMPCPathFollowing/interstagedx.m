@@ -16,10 +16,12 @@ function dx = interstagedx(x,u)
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
     braking = heatupfunction(-ab-1.5);
     l = 1.19;
+    
+    ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
    
     dx = [v*cos(theta);
     v*sin(theta);
-    v/l*tan(beta);
+    v/l*tan(ackermannAngle);
     ab;
     dotbeta;
     ds;

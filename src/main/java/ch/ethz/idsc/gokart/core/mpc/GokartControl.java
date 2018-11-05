@@ -31,15 +31,15 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.directMotorControl = true;
   }
 
-  public GokartControl(float aB, float udotS, float uB) {
+  public GokartControl(float aB, float udotS) {
     this.uL = 0;
     this.uR = 0;
     this.udotS = udotS;
-    this.uB = uB;
+    this.uB = 0;
     this.aB = aB;
     this.directMotorControl = false;
   }
-
+  
   public Scalar getuL() {
     return Quantity.of(uL, NonSI.ARMS);
   }
@@ -92,9 +92,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
           getudotS(), //
           getuB());
     return Tensors.of(//
-        getaB(), //
         getudotS(), //
-        getuB());
+        getaB());
   }
 
   @Override

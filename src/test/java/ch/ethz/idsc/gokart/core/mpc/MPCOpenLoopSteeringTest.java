@@ -15,8 +15,8 @@ public class MPCOpenLoopSteeringTest extends TestCase {
     steering.setStateProvider(new FakeNewsEstimator(started));
     GokartState state0 = new GokartState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     GokartState state1 = new GokartState(1, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-    GokartControl control0 = new GokartControl(0, 1, 0);
-    GokartControl control1 = new GokartControl(0, -1, 0);
+    GokartControl control0 = new GokartControl(0, 1);
+    GokartControl control1 = new GokartControl(0, -1);
     ControlAndPredictionStep[] steps = new ControlAndPredictionStep[2];
     steps[0] = new ControlAndPredictionStep(control0, state0);
     steps[1] = new ControlAndPredictionStep(control1, state1);

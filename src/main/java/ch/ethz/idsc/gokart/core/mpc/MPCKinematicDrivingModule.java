@@ -132,8 +132,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
       if (Objects.nonNull(braking))
+      {
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
-      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.ZERO));
+      }
+      return Optional.of(LinmotPutOperation.INSTANCE.fallback());
     }
 
     @Override
