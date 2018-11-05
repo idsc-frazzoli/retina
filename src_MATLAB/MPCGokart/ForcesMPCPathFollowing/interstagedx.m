@@ -15,7 +15,7 @@ function dx = interstagedx(x,u)
     temp = x(7);
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
     braking = heatupfunction(-ab-1.5);
-    l = 1;
+    l = 1.19;
    
     dx = [v*cos(theta);
     v*sin(theta);

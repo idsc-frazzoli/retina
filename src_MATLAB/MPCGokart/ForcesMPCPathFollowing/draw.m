@@ -3,7 +3,8 @@ figure;
 
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 %start later in history
-hstart = 1;
+hstart = 3200;
+hend = 2000;
 lhistory = history(hstart:end,:);
 
 m = 2;
@@ -53,11 +54,11 @@ hold on
 yyaxis left
 stairs(lhistory(:,1), lhistory(:,2))
 ylabel('acceleration [m/s²]')
-axis([-inf inf -3 3])
+axis([-inf inf -8 8])
 yyaxis right
 plot(lhistory(:,1),lhistory(:,8))
 ylabel('speed [m/s]')
-axis([-inf inf -7 7])
+axis([-inf inf -12 12])
 title('Acceleration/Speed');
 xlabel('[s]')
 %legend('Acceleration','Speed')
@@ -70,7 +71,7 @@ la = tan(lhistory(:,9)).*lhistory(:,8).^2/l;
 fa = lhistory(:,2);
 na = (fa.^2+la.^2).^0.5;
 title('accelerations')
-axis([-inf inf -4 4])
+axis([-inf inf -10 10])
 ylabel('[m/s²]')
 xlabel('[s]')
 plot(lhistory(:,1),la);
@@ -105,7 +106,7 @@ subplot(m,n,6)
 hold on
 title('path progress')
 yyaxis left
-axis([-inf inf 0 0.2])
+axis([-inf inf 0 1])
 ylabel('progress rate [1/s]')
 plot(lhistory(:,1),lhistory(:,4));
 

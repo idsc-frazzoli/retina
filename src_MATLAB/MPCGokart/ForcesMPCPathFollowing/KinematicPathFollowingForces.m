@@ -10,7 +10,7 @@ close all
 
 maxSpeed = 5;
 pointsO = 1;
-pointsN = 20;
+pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
 %parameters: p = [maxspeed, pointsx, pointsy]
@@ -47,13 +47,13 @@ model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO
 
 model.xinitidx = 4:10;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
-model.ub = [inf, +inf, 0.1, +inf, +inf, +inf, 5,1,pointsN-2,91];  % simple upper bounds 
-model.lb = [-inf, -inf, +0.001, -inf, -inf,  -inf, -inf,-1,0,-inf];  % simple lower bounds 
+model.ub = [inf, +3, 1, +inf, +inf, +inf, +inf,1,pointsN-2,80];  % simple upper bounds 
+model.lb = [-inf, -3, 0, -inf, -inf,  -inf, 0,-1,0,-inf];  % simple lower bounds 
 
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -61,9 +61,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 200;
-eulersteps = 20;
-xs = [20,0,0,5,0,0.1,70];
+tend = 600;
+eulersteps = 10;
+xs = [20,0,0,0.1,0,0.1,70];
 history = zeros(tend*eulersteps,model.nvar+1);
 x0 = [zeros(model.N,3),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
@@ -79,9 +79,9 @@ for i =1:tend
         %spline step forward
         splinestart = splinestart+1;
         xs(6)=xs(6)-1;
-        if(splinestart>pointsN)
-            splinestart = 1;
-        end
+        %if(splinestart>pointsN)
+            %splinestart = splinestart-pointsN;
+        %end
     end
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
@@ -90,8 +90,8 @@ for i =1:tend
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,2);
     for i=1:pointsN
-       if ip>nkp
-            ip = 1;
+       while ip>nkp
+            ip = ip -nkp;
        end
        nextSplinePoints(i,:)=points(ip,:);
        ip = ip + 1;
