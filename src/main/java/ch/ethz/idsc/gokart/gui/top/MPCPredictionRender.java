@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
-import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;

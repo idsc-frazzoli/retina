@@ -73,7 +73,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
   }
-  
+
   public void addPredictionRender(MPCPredictionRender mpcPredictionRender) {
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPredictionRender);
   }

@@ -76,7 +76,7 @@ abstract class ViewLcmModule extends AbstractModule {
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
-      //viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
+      // viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
       PathRender pathRender = new PathRender(mappedPoseInterface);
@@ -112,7 +112,7 @@ abstract class ViewLcmModule extends AbstractModule {
       Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT_REVERSE;
       // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
-      //viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+      // viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {
       // test simple track
