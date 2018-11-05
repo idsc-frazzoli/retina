@@ -1,4 +1,4 @@
-function v = nlconst(z)
+function v = nlconst(z,p)
 %NLCONST Summary of this function goes here
 %   Detailed explanation goes here
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]

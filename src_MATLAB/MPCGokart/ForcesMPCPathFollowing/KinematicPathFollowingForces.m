@@ -8,7 +8,7 @@ clear problem
 clear all
 close all
 
-maxSpeed = 5;
+maxSpeed = 10;
 pointsO = 1;
 pointsN = 10;
 splinestart = 1;
@@ -29,7 +29,7 @@ l = 1;
 
 %limit lateral acceleration
 model.nh = 3; 
-model.ineq = @(z) nlconst(z);
+model.ineq = @(z,p) nlconst(z,p);
 model.hu = [70,0,0];
 model.hl = [-inf,-inf, -inf];
 
@@ -41,15 +41,14 @@ trajectorytimestep = integrator_stepsize;
 
 model.npar = pointsO + 2*pointsN;
 for i=1:model.N-1
-   model.objective{i} = @(z,p)objective(z,getPointsFromParameters(p, pointsO, pointsN));
+   model.objective{i} = @(z,p)objective(z,getPointsFromParameters(p, pointsO, pointsN),p(1));
 end
-model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN));
+model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(1));
 
 model.xinitidx = 4:10;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = [inf, +3, 1, +inf, +inf, +inf, +inf,1,pointsN-2,80];  % simple upper bounds 
 model.lb = [-inf, -3, 0, -inf, -inf,  -inf, 0,-1,0,-inf];  % simple lower bounds 
-
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
