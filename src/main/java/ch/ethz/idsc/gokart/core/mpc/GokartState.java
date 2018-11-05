@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
+/* package */ class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
   // TODO: full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
@@ -39,9 +39,7 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
   private final float s;
   /** brake temperature */
   private final float bTemp;
-  /** spline position */
-  private final float splinePos;
-  
+
   /** create GokartState
    * 
    * @param time time in "s"
@@ -76,7 +74,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     this.w2R = w2R;
     this.s = s;
     this.bTemp = 0;
-    this.splinePos = 0;
   }
 
   /** create GokartState
@@ -115,47 +112,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     this.w2R = w2R;
     this.s = s;
     this.bTemp = bTemp;
-    this.splinePos = 0;
-  }
-  
-  /** create GokartState
-   * 
-   * @param time time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
-   * @param X X-position in "m"
-   * @param Y Y-position in "m"
-   * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE"
-   * @param bTemp brake temperature in "°C" */
-  public GokartState(//
-      float time, //
-      float Ux, //
-      float Uy, //
-      float dotPsi, //
-      float X, //
-      float Y, //
-      float Psi, //
-      float w2L, //
-      float w2R, //
-      float s, //
-      float bTemp, //
-      float splinePos) {
-    this.time = time;
-    this.Ux = Ux;
-    this.Uy = Uy;
-    this.dotPsi = dotPsi;
-    this.X = X;
-    this.Y = Y;
-    this.Psi = Psi;
-    this.w2L = w2L;
-    this.w2R = w2R;
-    this.s = s;
-    this.bTemp = bTemp;
-    this.splinePos = splinePos;
   }
 
   /** create GokartState
@@ -192,7 +148,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = 0;
-    this.splinePos = 0;
   }
 
   /** create GokartState
@@ -229,47 +184,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
-    this.splinePos = 0;
-  }
-  
-  /** create GokartState
-   * 
-   * @param time time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
-   * @param X X-position in "m"
-   * @param Y Y-position in "m"
-   * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE"
-   * @param bTemp brake temperature in "°C"
-  * @param splinePos spline position in "1" */
-  public GokartState(//
-      Scalar time, Scalar Ux, //
-      Scalar Uy, //
-      Scalar dotPsi, //
-      Scalar X, //
-      Scalar Y, //
-      Scalar Psi, //
-      Scalar w2L, //
-      Scalar w2R, //
-      Scalar s,//
-      Scalar bTemp,//
-      Scalar splinePos) {
-    this.time = Magnitude.SECOND.toFloat(time);
-    this.Ux = Magnitude.VELOCITY.toFloat(Ux);
-    this.Uy = Magnitude.VELOCITY.toFloat(Uy);
-    this.dotPsi = Magnitude.PER_SECOND.toFloat(dotPsi);
-    this.X = Magnitude.METER.toFloat(X);
-    this.Y = Magnitude.METER.toFloat(Y);
-    this.Psi = Magnitude.ONE.toFloat(Psi);
-    this.w2L = Magnitude.PER_SECOND.toFloat(w2L);
-    this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
-    this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
-    this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
-    this.splinePos = Magnitude.ONE.toFloat(splinePos);
   }
 
   /** create GokartState
@@ -285,8 +199,7 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
    * w2L [1/s],
    * w2R [1/s],
    * s [CSE],
-   * bTemp [°C],
-   * splinePos [1]} */
+   * bTemp [°C]} */
   public GokartState(Tensor GokartStateTensor) {
     time = Magnitude.SECOND.toFloat(GokartStateTensor.Get(0));
     Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
@@ -299,7 +212,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     w2R = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(8));
     s = SteerPutEvent.ENCODER.apply(GokartStateTensor.Get(9)).number().floatValue();
     bTemp = Magnitude.DEGREE_CELSIUS.toFloat(GokartStateTensor.Get(10));
-    splinePos = Magnitude.ONE.toFloat(GokartStateTensor.Get(11));
   }
 
   // constructor for input stream
@@ -317,7 +229,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     w2R = byteBuffer.getFloat();
     s = byteBuffer.getFloat();
     bTemp = byteBuffer.getFloat();
-    splinePos = byteBuffer.getFloat();
   }
 
   @Override
@@ -341,9 +252,7 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
         getPsi(), //
         getw2L(), //
         getw2R(), //
-        getS(),//
-        getBTemp(),//
-        getSplinePos());
+        getS(), getBTemp());
   }
 
   public Scalar getTime() {
@@ -389,10 +298,6 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
   public Scalar getBTemp() {
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
-  
-  public Scalar getSplinePos() {
-    return Quantity.of(splinePos, SI.ONE);
-  }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
@@ -407,12 +312,11 @@ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable 
     byteBuffer.putFloat(w2R);
     byteBuffer.putFloat(s);
     byteBuffer.putFloat(bTemp);
-    byteBuffer.putFloat(splinePos);
   }
 
   @Override
   public int length() {
-    return 12 * 4;
+    return 11 * 4;
   }
 
   @Override
