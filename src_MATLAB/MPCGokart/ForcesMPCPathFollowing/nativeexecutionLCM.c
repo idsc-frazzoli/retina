@@ -41,7 +41,6 @@ int outC = 0;
 
 MPCPathFollowing_float lastSolution [310];
 struct ControlRequestMsg lastCRMsg;
-struct PathMsg lastPathMsg;
 struct ParaMsg lastParaMsg;
 
 extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
@@ -86,7 +85,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	int pl = 2*POINTSN+1;
 	
 	for(int i = 0; i<N;i++){
-		params.all_parameters[i*pl] = lastCRMsg.para.speedLimit;
+		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+1+ip]=lastCRMsg.path.controlPointsX[ip];
 		for (int ip=0; ip<POINTSN;ip++)
@@ -114,7 +113,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 		cnsmsg.cns[i].control.uB = 0;//not in use
 		cnsmsg.cns[i].control.aB = myoutput.alldata[i*S];
-		cnsmsg.cns[i].state.time = i*ISS+lastStateMsg.state.time;
+		cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 		cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
 		cnsmsg.cns[i].state.Uy = 0;//assumed = 0
 		cnsmsg.cns[i].state.dotPsi = 0; //not in use
