@@ -3,7 +3,7 @@ figure;
 
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 %start later in history
-hstart = 3200;
+hstart = 1;
 hend = 2000;
 lhistory = history(hstart:end,:);
 

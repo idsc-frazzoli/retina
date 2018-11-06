@@ -15,33 +15,40 @@ public class MPCNativeSession {
   private final Map<Integer, Integer> messageCounter = new HashMap<>();
   public BufferedReader is;
   private boolean test = false;
+  private boolean externStart = false;
 
   public void switchToTest() {
     test = true;
   }
 
+  public void switchToExternalStart() {
+    externStart = true;
+  }
+
   void first() {
-    String fullPath;
-    // TODO design, talk to jan
-    if (!test)
-      fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
-    else
-      fullPath = MPCNative.lcmTestBinary().get().getAbsolutePath();
-    // start server
-    List<String> list = Arrays.asList(fullPath
-    // String.valueOf(MPCNative.TCP_SERVER_PORT)
-    );
-    ProcessBuilder processBuilder = new ProcessBuilder(list);
-    try {
-      process = processBuilder.start();
-      is = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-        System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
-        process.destroy();
-      }));
-      System.out.println(new Date() + " mpc-server: started");
-    } catch (Exception exception) {
-      exception.printStackTrace();
+    if (!externStart) {
+      String fullPath;
+      // TODO design, talk to jan
+      if (!test)
+        fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
+      else
+        fullPath = MPCNative.lcmTestBinary().get().getAbsolutePath();
+      // start server
+      List<String> list = Arrays.asList(fullPath
+      // String.valueOf(MPCNative.TCP_SERVER_PORT)
+      );
+      ProcessBuilder processBuilder = new ProcessBuilder(list);
+      try {
+        process = processBuilder.start();
+        is = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+          System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
+          process.destroy();
+        }));
+        System.out.println(new Date() + " mpc-server: started");
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
     }
   }
 
@@ -71,6 +78,7 @@ public class MPCNativeSession {
 
   void last() {
     // stop process
-    process.destroy();
+    if (!externStart)
+      process.destroy();
   }
 }

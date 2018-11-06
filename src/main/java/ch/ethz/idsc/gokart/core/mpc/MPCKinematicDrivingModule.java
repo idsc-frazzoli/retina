@@ -160,8 +160,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
         GokartState state = mpcStateEstimationProvider.getState();
         Tensor position = Tensors.of(state.getX(), state.getY());
         MPCPathParameter mpcPathParameter = track.getPathParameterPreview(previewSize, position);
-        lcmMPCPathFollowingClient.publishPathParameter(mpcPathParameter);
-        lcmMPCPathFollowingClient.publishGokartState(state);
+        lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
       }
     }, (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
     ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);

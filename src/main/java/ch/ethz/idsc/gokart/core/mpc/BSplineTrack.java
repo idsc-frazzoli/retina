@@ -34,8 +34,8 @@ public class BSplineTrack implements TrackInterface {
   final BSplineFunction radiusTrackSpline;
   // for fast lookup
   // using floats
-  final float lookupRes = 0.05f;
-  final int lookupSkip = 20;
+  final float lookupRes = 0.01f;
+  final int lookupSkip = 100;
   final float[] posX;
   final float[] posY;
 

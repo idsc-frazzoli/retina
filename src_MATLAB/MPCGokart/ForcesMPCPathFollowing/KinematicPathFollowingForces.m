@@ -47,8 +47,8 @@ model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO
 
 model.xinitidx = 4:10;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
-model.ub = [inf, +3, 1, +inf, +inf, +inf, +inf,1,pointsN-2,80];  % simple upper bounds 
-model.lb = [-inf, -3, 0, -inf, -inf,  -inf, 0,-1,0,-inf];  % simple lower bounds 
+model.ub = [inf, +3, 2, +inf, +inf, +inf, +inf,1,pointsN-2,80];  % simple upper bounds 
+model.lb = [-inf, -3, -1, -inf, -inf,  -inf, 0,-1,0,-inf];  % simple lower bounds 
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
@@ -60,7 +60,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 600;
+tend = 400;
 eulersteps = 10;
 xs = [20,0,0,0.1,0,0.1,70];
 history = zeros(tend*eulersteps,model.nvar+1);
@@ -82,6 +82,7 @@ for i =1:tend
             %splinestart = splinestart-pointsN;
         %end
     end
+    %xs(6)=xs(6)+normrnd(0,0.04);
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
     %script
@@ -101,7 +102,8 @@ for i =1:tend
     problem.all_parameters = repmat (getParameters(maxSpeed,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
-
+    %problem.x0 = zeros(310,1);
+    
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
     nextSplinePoints

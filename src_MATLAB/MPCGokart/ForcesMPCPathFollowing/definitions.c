@@ -1,6 +1,7 @@
 #include <byteswap.h>
+#define N 31
 
-int POINTSN = 10;
+#define POINTSN 10
 
 //note: not all values are necessarily known for every type of controller
 struct State {
@@ -14,7 +15,7 @@ struct State {
 	float w2L;
 	float w2R;
 	float s;
-	float btemp;
+	float bTemp;
 };
 
 struct Control {
@@ -30,12 +31,18 @@ struct Control {
 	float aB;
 };
 
+struct ControlAndState {
+	struct Control control;
+	struct State state;
+};
+
 struct PathParameter {
 	float pointsN;
 	float startingProgress;
-	float [pointsN] controlPointsX;
-	float [pointsN] controlPointsY;
-	float [pointsN] controlPointsR;
+
+	float controlPointsX [POINTSN];
+	float controlPointsY [POINTSN];
+	float controlPointsR [POINTSN];
 };
 
 struct OptimizationParameter {
@@ -45,21 +52,16 @@ struct OptimizationParameter {
 struct ControlAndStateMsg{
 	int messageType;
 	int sequenceInt;
-	struct Control control;
-	struct State state;
+	struct ControlAndState cns[N];
 };
 
-struct StateMsg{
+struct ControlRequestMsg{
 	int messageType;
 	int sequenceInt;
 	struct State state;
-};
-
-struct PathMsg{
-	int messageType;
-	int sequenceInt;
 	struct PathParameter path;
 };
+
 
 struct ParaMsg{
 	int messageType;

@@ -33,4 +33,15 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
      * exception.printStackTrace();
      * } */
   }
+  
+  public void testRealBinary() throws Exception {
+    LcmMPCControlClient lcmMPCControlClient = new LcmMPCControlClient();
+    
+    //start binary via command line
+    lcmMPCControlClient.switchToExternalStart();
+    lcmMPCControlClient.start();
+    
+    lcmMPCControlClient.stop();
+    
+  }
 }
