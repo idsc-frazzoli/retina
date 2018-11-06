@@ -67,8 +67,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	for (int i = 0; i<POINTSN; i++)
 	{
 		printf("i=%d: pointX:%f\n",i,lastCRMsg.path.controlPointsX[i]);
-		printf("i=%d: pointX:%f\n",i,lastCRMsg.path.controlPointsY[i]);
-		printf("i=%d: pointX:%f\n",i,lastCRMsg.path.controlPointsR[i]);
+		printf("i=%d: pointY:%f\n",i,lastCRMsg.path.controlPointsY[i]);
+		printf("i=%d: pointR:%f\n",i,lastCRMsg.path.controlPointsR[i]);
 	}
 
 	struct MPCPathFollowing_params params;
@@ -81,20 +81,25 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[5] = lastCRMsg.path.startingProgress;
 	params.xinit[6] = lastCRMsg.state.bTemp;
 
+	for(int i = 0; i<7;i++){
+		printf("%i: %f\n",i,params.xinit[i]);
+	}
+
 	//gather parameter data
 	int pl = 2*POINTSN+1;
 	
+	printf("parameters\n");
 	for(int i = 0; i<N;i++){
 		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+1+ip]=lastCRMsg.path.controlPointsX[ip];
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+1+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
-		memcpy(&params.all_parameters[i*pl+1], lastCRMsg.path.controlPointsX, 4*2*POINTSN);
 	}
 	
-	for(int i = 0; i<100;i++)
-		printf("i=%d: %f\n",i,params.all_parameters[i]);
+	//assume that this works
+	//for(int i = 0; i<31*20+1;i++)
+	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,4*10*N);
 
@@ -147,12 +152,6 @@ int main(int argc, char *argv[]) {
 	//return format [state]
 	//exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 	
-	for (int i = 0; i<10*N;i++)
-	{
-		printf("%d\n",i);
-		lastSolution[i]=0;	
-	}
-
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs", &state_handler, NULL);

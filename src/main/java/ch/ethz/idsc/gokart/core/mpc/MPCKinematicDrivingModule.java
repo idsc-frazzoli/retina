@@ -41,7 +41,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started;
   private final Timer timer = new Timer();
-  private final int previewSize = 10;
+  private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
 
   /** switch to testing binary that send back test data has to be called before first */
@@ -64,7 +64,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
 
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    track = DubendorfTrack.CHICANE;
+    track = DubendorfTrack.HYPERLOOP_EIGHT;
     started = Stopwatch.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);

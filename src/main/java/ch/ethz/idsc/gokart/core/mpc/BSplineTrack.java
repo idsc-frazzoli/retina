@@ -34,8 +34,8 @@ public class BSplineTrack implements TrackInterface {
   final BSplineFunction radiusTrackSpline;
   // for fast lookup
   // using floats
-  final float lookupRes = 0.01f;
-  final int lookupSkip = 100;
+  final float lookupRes = 0.005f;
+  final int lookupSkip = 200;
   final float[] posX;
   final float[] posY;
 
@@ -173,7 +173,7 @@ public class BSplineTrack implements TrackInterface {
   }
 
   /** problem: using normal BSpline implementation takes more time than full MPC optimization
-   * solution: fast position lookup: from 45000 micro s -> 15 micro s :) */
+   * solution: fast position lookup: from 45000 micro s -> 15 micro s */
   Scalar getFastNearestPathProgress(Tensor position) {
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();

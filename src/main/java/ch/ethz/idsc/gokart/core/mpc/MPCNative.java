@@ -10,7 +10,8 @@ import java.util.Optional;
   public static final int TCP_SERVER_PORT = 4143;
   public static final int MPC_HORIZON = 10;
   public static final int INITIALMSGSIZE = 100;
-  public static final int PREDICTIONSIZE = 30;
+  public static final int PREDICTIONSIZE = 31;
+  public static final int SPLINEPREVIEWSIZE = 10;
   public static final int GOKART_STATE = 0;
   /** First Byte of message: which kind of message are we sending?
    * control update: send state -> get control and prediction */

@@ -116,7 +116,7 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       // test simple track
-      DubendorfTrack track = DubendorfTrack.CHICANE;
+      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       TrackRender trackRender = new TrackRender(track);
       viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
     }

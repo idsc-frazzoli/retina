@@ -55,4 +55,15 @@ public class MPCBSplineTrackTest extends TestCase {
     assertEquals(mpcPathParameter.controlPointsY, Tensors.vector(5, 3, 4, 5, 3).multiply(Quantity.of(1, SI.METER)));
     assertEquals(mpcPathParameter.controlPointsR, Tensors.vector(8, 6, 7, 8, 6).multiply(Quantity.of(1, SI.METER)));
   }
+  
+  public void testQuery3() {
+    Tensor ctrX = Tensors.vector(0, 1, 2,3,4,5,6,7,8,9,10).multiply(Quantity.of(1, SI.METER));
+    Tensor ctrY = Tensors.vector(3, 4, 5,3,4,5,6,7,8,9,10).multiply(Quantity.of(1, SI.METER));
+    Tensor ctrR = Tensors.vector(6, 7, 8,3,4,5,6,7,8,9,10).multiply(Quantity.of(1, SI.METER));
+    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR);
+    long startTime = System.nanoTime();
+    MPCPathParameter mpcPathParameter = mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)));
+    long endTime = System.nanoTime();
+    System.out.println(" path progress timing: " + (endTime - startTime) + "[ns]");
+  }
 }
