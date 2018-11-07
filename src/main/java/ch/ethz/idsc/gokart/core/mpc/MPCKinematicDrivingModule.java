@@ -31,7 +31,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
@@ -48,7 +47,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
-  
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
 
   /** switch to testing binary that send back test data has to be called before first */
@@ -158,20 +156,18 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       @Override
       public void run() {
         // use joystick for speed limit
-        //get joystick
+        // get joystick
         Scalar maxSpeed = Quantity.of(0, SI.VELOCITY);
-         Optional<JoystickEvent> optionalJoystick = joystickLcmProvider.getJoystick();
-         if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
-           GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
-           Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
-           maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-         }
-         
-         //send message with max speed
-         //optimization parameters will have more values in the future
-         MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
-         lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
-         
+        Optional<JoystickEvent> optionalJoystick = joystickLcmProvider.getJoystick();
+        if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
+          GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
+          Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
+          maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
+        }
+        // send message with max speed
+        // optimization parameters will have more values in the future
+        MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
+        lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
         // send the newest state and start the update state
         GokartState state = mpcStateEstimationProvider.getState();
         Tensor position = Tensors.of(state.getX(), state.getY());
