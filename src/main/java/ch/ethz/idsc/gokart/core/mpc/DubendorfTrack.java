@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DubendorfTrack extends MPCBSplineTrack {
   public static final DubendorfTrack HYPERLOOP_EIGHT = hyperloop_eight();
   public static final DubendorfTrack HYPERLOOP_EIGHT_REVERSE = hyperloop_eight_reverse();
-  //public static final DubendorfTrack CHICANE = chicane_track();
+  // public static final DubendorfTrack CHICANE = chicane_track();
 
   private static Tensor getConstantRadius(int length, Scalar radius) {
     // TODO use Tensors.vector(i->radius, length);

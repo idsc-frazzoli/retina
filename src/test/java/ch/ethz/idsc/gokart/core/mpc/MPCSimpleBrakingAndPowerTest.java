@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;

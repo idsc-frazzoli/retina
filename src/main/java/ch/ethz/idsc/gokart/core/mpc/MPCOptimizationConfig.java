@@ -12,7 +12,7 @@ public class MPCOptimizationConfig {
   /** The limit for the norm of the acceleration */
   public Scalar maxAcceleration = Quantity.of(1, SI.ACCELERATION);
   /** The limit for the Go-kart speed */
-  public Scalar maxSpeed = Quantity.of(2, SI.VELOCITY);
+  public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
   /** The mpc update cycle time */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
 }

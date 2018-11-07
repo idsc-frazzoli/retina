@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.aB = aB;
     this.directMotorControl = false;
   }
-  
+
   public Scalar getuL() {
     return Quantity.of(uL, NonSI.ARMS);
   }
