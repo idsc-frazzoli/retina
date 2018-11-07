@@ -116,9 +116,13 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       // test simple track
-      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
+      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT_REVERSE;
       TrackRender trackRender = new TrackRender(track);
+      MPCPredictionRender predictionRender = new MPCPredictionRender();
+      TrackControlPointsRender controlPointsRender = new TrackControlPointsRender(track);
       viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(predictionRender);
+      //viewLcmFrame.geometricComponent.addRenderInterface(controlPointsRender);
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();

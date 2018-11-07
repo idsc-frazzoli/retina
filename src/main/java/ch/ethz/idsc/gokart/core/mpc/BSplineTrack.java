@@ -74,6 +74,10 @@ public class BSplineTrack implements TrackInterface {
     }
   }
 
+  public Tensor getControlPoints() {
+    return controlPoints.copy();
+  }
+  
   private Scalar wrap(Scalar pathProgress) {
     // TODO: check if there any specialized functions in the tensor library
     Scalar offset = Quantity.of(Max.of(trackSplineOrder, radiusSplineOrder) / 2.0 - 0.5, SI.ONE);

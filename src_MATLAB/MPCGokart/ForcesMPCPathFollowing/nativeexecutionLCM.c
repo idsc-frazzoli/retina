@@ -101,13 +101,13 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//for(int i = 0; i<31*20+1;i++)
 	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
 
-	memcpy(params.x0, lastSolution,4*10*N);
+	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*10*N);
 
 	//do optimization
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
 		
-	memcpy(lastSolution, myoutput.alldata,4*10*N);	
+	memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);	
 
 	struct ControlAndStateMsg cnsmsg;
 	cnsmsg.messageType = 3;
@@ -121,6 +121,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 		cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
 		cnsmsg.cns[i].state.Uy = 0;//assumed = 0
+		printf("pos: %f/%f rot: %f prog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8]);
 		cnsmsg.cns[i].state.dotPsi = 0; //not in use
 		cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
 		cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];

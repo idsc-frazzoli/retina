@@ -29,7 +29,7 @@ l = 1;
 
 %limit lateral acceleration
 model.nh = 3; 
-model.ineq = @(z,p) nlconst(z,p);
+model.ineq =myoutput.alldata[i*S+5] @(z,p) nlconst(z,p);
 model.hu = [70,0,0];
 model.hl = [-inf,-inf, -inf];
 

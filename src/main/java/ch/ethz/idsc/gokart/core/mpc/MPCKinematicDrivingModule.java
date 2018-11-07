@@ -10,7 +10,6 @@ import java.util.TimerTask;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
-import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -76,15 +75,12 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     initModules();
   }
 
-  public void addPredictionRender(MPCPredictionRender mpcPredictionRender) {
-    lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPredictionRender);
-  }
-
   private void initModules() {
     // link mpc steering
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcSteering);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
+    lcmMPCPathFollowingClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     // state estimation provider
     mpcBraking.setStateProvider(mpcStateEstimationProvider);
     mpcPower.setStateProvider(mpcStateEstimationProvider);

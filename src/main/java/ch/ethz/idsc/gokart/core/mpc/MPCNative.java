@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.File;
 import java.util.Optional;
 
-/* package */ enum MPCNative {
+public enum MPCNative {
   ;
   public static final int TCP_PORT = 4142;
   public static final int TCP_SERVER_PORT = 4143;

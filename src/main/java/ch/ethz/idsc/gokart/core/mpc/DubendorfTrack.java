@@ -54,6 +54,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
         getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
   }
 
+  /*
   private static DubendorfTrack chicane_track() {
     Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/chicane/chicane.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
@@ -68,7 +69,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     }
     return new DubendorfTrack(controlPointsX, controlPointsY, //
         getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
-  }
+  }*/
 
   // ---
   private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
