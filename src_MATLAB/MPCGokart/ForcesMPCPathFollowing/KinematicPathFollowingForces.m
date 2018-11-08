@@ -18,7 +18,7 @@ nextsplinepoints = 0;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 integrator_stepsize = 0.1;
 
-model.N = 31;
+model.N = 41;
 model.nvar = 10;
 model.neq = 7;
 
@@ -29,7 +29,7 @@ l = 1;
 
 %limit lateral acceleration
 model.nh = 3; 
-model.ineq =myoutput.alldata[i*S+5] @(z,p) nlconst(z,p);
+model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
 model.hu = [70,0,0];
 model.hl = [-inf,-inf, -inf];
 
@@ -47,8 +47,8 @@ model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO
 
 model.xinitidx = 4:10;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
-model.ub = [inf, +3, 2, +inf, +inf, +inf, +inf,1,pointsN-2,80];  % simple upper bounds 
-model.lb = [-inf, -3, -1, -inf, -inf,  -inf, 0,-1,0,-inf];  % simple lower bounds 
+model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
+model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
@@ -60,9 +60,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 400;
+tend = 100;
 eulersteps = 10;
-xs = [20,0,0,0.1,0,0.1,70];
+xs = [20,0,0,1,0,0.1,70];
 history = zeros(tend*eulersteps,model.nvar+1);
 x0 = [zeros(model.N,3),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 

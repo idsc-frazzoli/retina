@@ -1,5 +1,5 @@
 #include <byteswap.h>
-#define N 31
+#define N 41
 
 #define POINTSN 10
 

@@ -116,7 +116,7 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       // test simple track
-      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT_REVERSE;
+      DubendorfTrack track = DubendorfTrack.CHICANE;
       TrackRender trackRender = new TrackRender(track);
       MPCPredictionRender predictionRender = new MPCPredictionRender();
       TrackControlPointsRender controlPointsRender = new TrackControlPointsRender(track);

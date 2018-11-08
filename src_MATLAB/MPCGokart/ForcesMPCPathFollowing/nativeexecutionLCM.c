@@ -13,7 +13,7 @@
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
 
-#define N 31
+#define N 41
 #define S 10
 #define ISS 0.1
 /**
@@ -39,7 +39,7 @@ MPCPathFollowing_float minusA_times_x0[2];
 
 int outC = 0;
 
-MPCPathFollowing_float lastSolution [310];
+MPCPathFollowing_float lastSolution [410];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
 
@@ -121,7 +121,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 		cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
 		cnsmsg.cns[i].state.Uy = 0;//assumed = 0
-		printf("pos: %f/%f rot: %f prog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8]);
+		printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8],myoutput.alldata[i*S+2]);
 		cnsmsg.cns[i].state.dotPsi = 0; //not in use
 		cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
 		cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
