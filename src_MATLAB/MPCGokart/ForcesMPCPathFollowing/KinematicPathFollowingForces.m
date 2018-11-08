@@ -18,7 +18,7 @@ nextsplinepoints = 0;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 integrator_stepsize = 0.1;
 
-model.N = 41;
+model.N = 31;
 model.nvar = 10;
 model.neq = 7;
 
@@ -30,7 +30,7 @@ l = 1;
 %limit lateral acceleration
 model.nh = 3; 
 model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
-model.hu = [70,0,0];
+model.hu = [36,0,0];
 model.hl = [-inf,-inf, -inf];
 
 

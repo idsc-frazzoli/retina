@@ -17,6 +17,9 @@ public abstract class MPCControlUpdateListener {
    * @param query time in Unit [s]
    * @return the control and prediction step before time */
   ControlAndPredictionStep getStep(Scalar time) {
+    //ensure that old data is not used
+    if(Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].state.getTime())))
+      return null;
     if (cns == null)
       return null;
     while (//

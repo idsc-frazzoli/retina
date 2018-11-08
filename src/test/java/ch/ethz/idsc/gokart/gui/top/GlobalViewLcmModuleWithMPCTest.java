@@ -34,7 +34,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         0, //
         0, //
         0, 60);
-    MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(10, SI.VELOCITY));
+    MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(5, SI.VELOCITY));
     lcmMPCControlClient.publishOptimizationParameter(optimizationParameter);
     lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     DubendorfTrack track = DubendorfTrack.CHICANE;

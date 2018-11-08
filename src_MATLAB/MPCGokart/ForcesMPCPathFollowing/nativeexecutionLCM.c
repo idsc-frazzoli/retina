@@ -13,7 +13,7 @@
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
 
-#define N 41
+#define N 31
 #define S 10
 #define ISS 0.1
 /**
@@ -106,42 +106,45 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//do optimization
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
-		
-	memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);	
+	if(exitflag == 1 || exitflag == 0){
+		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);	
 
-	struct ControlAndStateMsg cnsmsg;
-	cnsmsg.messageType = 3;
-	cnsmsg.sequenceInt = outC++;
-	for(int i = 0; i<N; i++){
-		cnsmsg.cns[i].control.uL = 0;//not in use
-		cnsmsg.cns[i].control.uR = 0;//not in use
-		cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
-		cnsmsg.cns[i].control.uB = 0;//not in use
-		cnsmsg.cns[i].control.aB = myoutput.alldata[i*S];
-		cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
-		cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
-		cnsmsg.cns[i].state.Uy = 0;//assumed = 0
-		printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8],myoutput.alldata[i*S+2]);
-		cnsmsg.cns[i].state.dotPsi = 0; //not in use
-		cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
-		cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
-		cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+5];
-		cnsmsg.cns[i].state.w2L = 0;//not in use
-		cnsmsg.cns[i].state.w2R = 0;//not in use
-		cnsmsg.cns[i].state.s = myoutput.alldata[i*S+7];
-		cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+9];
+		struct ControlAndStateMsg cnsmsg;
+		cnsmsg.messageType = 3;
+		cnsmsg.sequenceInt = outC++;
+		for(int i = 0; i<N; i++){
+			cnsmsg.cns[i].control.uL = 0;//not in use
+			cnsmsg.cns[i].control.uR = 0;//not in use
+			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
+			cnsmsg.cns[i].control.uB = 0;//not in use
+			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S];
+			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
+			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
+			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
+			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8],myoutput.alldata[i*S+2]);
+			cnsmsg.cns[i].state.dotPsi = 0; //not in use
+			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
+			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
+			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+5];
+			cnsmsg.cns[i].state.w2L = 0;//not in use
+			cnsmsg.cns[i].state.w2R = 0;//not in use
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+7];
+			cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+9];
+		}
+
+		printf("prepared blob\n");
+		struct _idsc_BinaryBlob blob;
+		blob.data_length = sizeof(struct ControlAndStateMsg);
+		blob.data = (int8_t*)&cnsmsg;
+		printf("lcm addr: %p\n",lcm);
+		printf("blob addr: %p\n",&blob);
+		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
+			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
+		else
+			printf("error while publishing message\n");
+	}else{
+		printf("exitflag: %d\n",exitflag);
 	}
-
-	printf("prepared blob\n");
-	struct _idsc_BinaryBlob blob;
-	blob.data_length = sizeof(struct ControlAndStateMsg);
-	blob.data = (int8_t*)&cnsmsg;
-	printf("lcm addr: %p\n",lcm);
-	printf("blob addr: %p\n",&blob);
-	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-		printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
-	else
-		printf("error while publishing message\n");
 }
 
 int main(int argc, char *argv[]) {

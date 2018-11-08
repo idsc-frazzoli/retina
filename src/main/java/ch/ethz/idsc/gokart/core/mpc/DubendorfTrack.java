@@ -97,7 +97,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(44.933, SI.METER));
     controlPointsY.append(Quantity.of(58.2, SI.METER));
     controlPointsY.append(Quantity.of(53.8, SI.METER));
-    controlPointsY.append(Quantity.of(48, SI.METER));
+    controlPointsY.append(Quantity.of(49, SI.METER));
     controlPointsY.append(Quantity.of(47, SI.METER));
     controlPointsY.append(Quantity.of(43, SI.METER));
     controlPointsY.append(Quantity.of(38.333, SI.METER));

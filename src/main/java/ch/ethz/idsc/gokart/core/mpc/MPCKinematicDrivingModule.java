@@ -47,6 +47,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private TimerTask controlRequestTask;
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
@@ -68,7 +69,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
 
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    track = DubendorfTrack.HYPERLOOP_EIGHT;
+    track = DubendorfTrack.CHICANE;
     started = Stopwatch.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
@@ -141,37 +142,58 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       return ProviderRank.AUTONOMOUS;
     }
   };
+  
+  private void requestControl() {
+    // use joystick for speed limit
+    // get joystick
+    Scalar maxSpeed = Quantity.of(0, SI.VELOCITY);
+    Optional<JoystickEvent> optionalJoystick = joystickLcmProvider.getJoystick();
+    if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
+      GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
+      Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
+      maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
+    }
+    // send message with max speed
+    // optimization parameters will have more values in the future
+    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
+    lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
+    // send the newest state and start the update state
+    GokartState state = mpcStateEstimationProvider.getState();
+    Tensor position = Tensors.of(state.getX(), state.getY());
+    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(previewSize, position);
+    lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
+  }
 
   @Override
   protected void first() throws Exception {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
     joystickLcmProvider.startSubscriptions();
-    // start update cycle
-    timer.schedule(new TimerTask() {
+    ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
+   
+    controlRequestTask = new TimerTask() {
       @Override
       public void run() {
-        // use joystick for speed limit
-        // get joystick
-        Scalar maxSpeed = Quantity.of(0, SI.VELOCITY);
-        Optional<JoystickEvent> optionalJoystick = joystickLcmProvider.getJoystick();
-        if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
-          GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
-          Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
-          maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-        }
-        // send message with max speed
-        // optimization parameters will have more values in the future
-        MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
-        lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
-        // send the newest state and start the update state
-        GokartState state = mpcStateEstimationProvider.getState();
-        Tensor position = Tensors.of(state.getX(), state.getY());
-        MPCPathParameter mpcPathParameter = track.getPathParameterPreview(previewSize, position);
-        lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
+        requestControl();
       }
-    }, (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
-    ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
+    };
+    
+    timer.schedule(controlRequestTask,//
+        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000),//use update cycle at startup
+        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+    
+    lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
+      @Override
+      void doAction() {
+        //we got an update
+        timer.cancel();
+        timer.schedule(controlRequestTask,//
+            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000),
+            (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+      }
+    });
+    
+
   }
 
   @Override
