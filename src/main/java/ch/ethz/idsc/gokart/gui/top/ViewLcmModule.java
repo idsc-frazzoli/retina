@@ -122,7 +122,7 @@ abstract class ViewLcmModule extends AbstractModule {
       TrackControlPointsRender controlPointsRender = new TrackControlPointsRender(track);
       viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
       viewLcmFrame.geometricComponent.addRenderInterface(predictionRender);
-      //viewLcmFrame.geometricComponent.addRenderInterface(controlPointsRender);
+      // viewLcmFrame.geometricComponent.addRenderInterface(controlPointsRender);
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();

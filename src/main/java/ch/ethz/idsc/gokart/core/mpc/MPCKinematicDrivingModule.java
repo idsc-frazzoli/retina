@@ -142,7 +142,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       return ProviderRank.AUTONOMOUS;
     }
   };
-  
+
   private void requestControl() {
     // use joystick for speed limit
     // get joystick
@@ -152,6 +152,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
+      System.out.println("got joystick speed value: " + maxSpeed);
     }
     // send message with max speed
     // optimization parameters will have more values in the future
@@ -170,30 +171,24 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     mpcStateEstimationProvider.first();
     joystickLcmProvider.startSubscriptions();
     ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
-   
     controlRequestTask = new TimerTask() {
       @Override
       public void run() {
         requestControl();
       }
     };
-    
-    timer.schedule(controlRequestTask,//
-        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000),//use update cycle at startup
+    timer.schedule(controlRequestTask, //
+        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000), // use update cycle at startup
         (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
-    
     lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
       @Override
       void doAction() {
-        //we got an update
+        // we got an update
         timer.cancel();
-        timer.schedule(controlRequestTask,//
-            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000),
-            (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+        timer.schedule(controlRequestTask, //
+            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
       }
     });
-    
-
   }
 
   @Override

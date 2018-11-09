@@ -18,7 +18,7 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
   public ControlAndPredictionSteps lastcns = null;
-  
+
   @Override
   public void start() {
     startSubscriptions();
@@ -78,7 +78,8 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   protected void messageReceived(ByteBuffer byteBuffer) {
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
-    System.out.println(cns.controlAndPredictionSteps.steps[0]);
+    // System.out.println(cns.controlAndPredictionSteps.steps[0]);
+    System.out.println("got answer");
     for (MPCControlUpdateListener listener : listeners) {
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
     }

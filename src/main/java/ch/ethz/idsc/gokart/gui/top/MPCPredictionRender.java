@@ -36,7 +36,7 @@ public class MPCPredictionRender implements RenderInterface {
           graphics.setColor(Color.GREEN);
         }
         Scalar acc = accelerations.Get(i);
-        Tensor start = Tensors.vector(-acc.number().doubleValue()*0.8, acc.number().doubleValue());
+        Tensor start = Tensors.vector(-acc.number().doubleValue() * 0.8, acc.number().doubleValue());
         Tensor mid = Tensors.vector(0, 0);
         Tensor end = Tensors.vector(-acc.number().doubleValue() * 0.8, -acc.number().doubleValue());
         Scalar scale = Quantity.of(0.3, SI.METER);

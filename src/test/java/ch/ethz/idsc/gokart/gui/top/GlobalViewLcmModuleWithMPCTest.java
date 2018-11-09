@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class GlobalViewLcmModuleWithMPCTest extends TestCase {
   GokartState gokartState;
-  
+
   public void testSimple() throws Exception {
     LcmMPCControlClient lcmMPCControlClient = new LcmMPCControlClient();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
@@ -42,9 +42,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
     lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
     Thread.sleep(1000);
-
-    for(int i = 0; i<100; i++)
-    {
+    for (int i = 0; i < 100; i++) {
       System.out.println("send request");
       gokartState = lcmMPCControlClient.lastcns.steps[3].state;
       position = Tensors.of(gokartState.getX(), gokartState.getY());

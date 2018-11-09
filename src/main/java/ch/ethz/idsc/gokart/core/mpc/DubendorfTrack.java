@@ -54,38 +54,35 @@ public class DubendorfTrack extends MPCBSplineTrack {
         getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
   }
 
-  /*
-   * TODO: jph how to update Ephemeral version
+  /* TODO: jph how to update Ephemeral version
    * Can't access data
+   * private static DubendorfTrack chicane_track() {
+   * Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/chicane/chicane.csv")).multiply(Quantity.of(1, SI.METER));
+   * Tensor controlPointsX = Tensors.empty();
+   * Tensor controlPointsY = Tensors.empty();
+   * // TODO: do this smarter
+   * for (int i = 0; i < controlPoints.length(); i++) {
+   * Tensor iTensor = controlPoints.get(i);
+   * Scalar x = iTensor.Get(0);
+   * Scalar y = iTensor.Get(1);
+   * controlPointsX.append(x);
+   * controlPointsY.append(y);
+   * }
+   * return new DubendorfTrack(controlPointsX, controlPointsY, //
+   * getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
+   * } */
   private static DubendorfTrack chicane_track() {
-    Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/chicane/chicane.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO: do this smarter
-    for (int i = 0; i < controlPoints.length(); i++) {
-      Tensor iTensor = controlPoints.get(i);
-      Scalar x = iTensor.Get(0);
-      Scalar y = iTensor.Get(1);
-      controlPointsX.append(x);
-      controlPointsY.append(y);
-    }
-    return new DubendorfTrack(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
-  }*/
-  
-  private static DubendorfTrack chicane_track() {
-    Tensor controlPointsX = Tensors.empty();
-    Tensor controlPointsY = Tensors.empty();
-    //add them in code
-    /*
-    36.2,44.933
-    49.867,58.2
-    57.2,53.8
-    53,48
-    47,47
-    47,43
-    41.8,38.333*/
-    //X
+    // add them in code
+    /* 36.2,44.933
+     * 49.867,58.2
+     * 57.2,53.8
+     * 53,48
+     * 47,47
+     * 47,43
+     * 41.8,38.333 */
+    // X
     controlPointsX.append(Quantity.of(36.2, SI.METER));
     controlPointsX.append(Quantity.of(52, SI.METER));
     controlPointsX.append(Quantity.of(57.2, SI.METER));
@@ -93,7 +90,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsX.append(Quantity.of(52, SI.METER));
     controlPointsX.append(Quantity.of(47, SI.METER));
     controlPointsX.append(Quantity.of(41.8, SI.METER));
-    //Y
+    // Y
     controlPointsY.append(Quantity.of(44.933, SI.METER));
     controlPointsY.append(Quantity.of(58.2, SI.METER));
     controlPointsY.append(Quantity.of(53.8, SI.METER));
