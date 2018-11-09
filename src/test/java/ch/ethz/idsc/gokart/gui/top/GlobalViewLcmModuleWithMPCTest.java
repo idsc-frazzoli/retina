@@ -45,6 +45,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       System.out.println("send request");
       gokartState = lcmMPCControlClient.lastcns.steps[3].state;
+      System.out.println(gokartState.getS());
       position = Tensors.of(gokartState.getX(), gokartState.getY());
       mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);

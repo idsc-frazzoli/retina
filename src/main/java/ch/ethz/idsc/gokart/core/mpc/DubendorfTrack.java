@@ -13,6 +13,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
   public static final DubendorfTrack HYPERLOOP_EIGHT = hyperloop_eight();
   public static final DubendorfTrack HYPERLOOP_EIGHT_REVERSE = hyperloop_eight_reverse();
   public static final DubendorfTrack CHICANE = chicane_track();
+  public static final DubendorfTrack WAYPOINT_TRACK = waypoint_track();
 
   private static Tensor getConstantRadius(int length, Scalar radius) {
     // TODO use Tensors.vector(i->radius, length);
@@ -101,6 +102,38 @@ public class DubendorfTrack extends MPCBSplineTrack {
     return new DubendorfTrack(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)));
   }
 
+  private static DubendorfTrack waypoint_track() {
+    Tensor controlPointsX = Tensors.empty();
+    Tensor controlPointsY = Tensors.empty();
+    // add them in code
+    /*
+    36.82,44.18
+    44.03,51.39
+    51.15,55.33
+    54.17,49.67
+    47.99,42.63
+    40.94,36.45
+    35.45,41.94
+    */
+    // X
+    controlPointsX.append(Quantity.of(36.82, SI.METER));
+    controlPointsX.append(Quantity.of(44.03, SI.METER));
+    controlPointsX.append(Quantity.of(51.15, SI.METER));
+    controlPointsX.append(Quantity.of(54.17, SI.METER));
+    controlPointsX.append(Quantity.of(47.99, SI.METER));
+    controlPointsX.append(Quantity.of(40.94, SI.METER));
+    controlPointsX.append(Quantity.of(35.45, SI.METER));
+    // Y
+    controlPointsY.append(Quantity.of(44.18, SI.METER));
+    controlPointsY.append(Quantity.of(51.39, SI.METER));
+    controlPointsY.append(Quantity.of(55.33, SI.METER));
+    controlPointsY.append(Quantity.of(49.67, SI.METER));
+    controlPointsY.append(Quantity.of(42.63, SI.METER));
+    controlPointsY.append(Quantity.of(36.45, SI.METER));
+    controlPointsY.append(Quantity.of(41.94, SI.METER));
+    return new DubendorfTrack(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)));
+  }
+  
   // ---
   private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
     super(controlPointsX, controlPointsY, radiusControlPoints);
