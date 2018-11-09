@@ -106,6 +106,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//do optimization
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
+	//optimal or maxit (maxit is ok in most cases)
 	if(exitflag == 1 || exitflag == 0){
 		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);	
 

@@ -43,7 +43,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final Stopwatch started;
-  private final Timer timer = new Timer();
+  private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
   private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
@@ -177,6 +177,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
         requestControl();
       }
     };
+    System.out.println("Scheduling Timer: start");
     timer.schedule(controlRequestTask, //
         (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000), // use update cycle at startup
         (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
@@ -184,19 +185,29 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       @Override
       void doAction() {
         // we got an update
+        System.out.println("resheduling timer");
         timer.cancel();
+        timer = new Timer();
+        controlRequestTask = new TimerTask() {
+          @Override
+          public void run() {
+            requestControl();
+          }
+        };
         timer.schedule(controlRequestTask, //
-            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), //
+            (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
       }
     });
   }
 
   @Override
   protected void last() {
+    System.out.println("cancel timer: ending");
+    timer.cancel();
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
     joystickLcmProvider.stopSubscriptions();
-    timer.cancel();
     ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }
