@@ -1,5 +1,5 @@
 %add force path (change that for yourself)
-addpath('/home/marc/Forces')
+addpath('/home/gokart/Forces')
 addpath('..');
 addpath('casadi');
     

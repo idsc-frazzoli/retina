@@ -34,7 +34,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         0, //
         0, //
         0, 60);
-    MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(5, SI.VELOCITY));
+    MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(10, SI.VELOCITY));
     lcmMPCControlClient.publishOptimizationParameter(optimizationParameter);
     lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     DubendorfTrack track = DubendorfTrack.CHICANE;
@@ -48,7 +48,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
       position = Tensors.of(gokartState.getX(), gokartState.getY());
       mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
-      Thread.sleep(3000);
+      Thread.sleep(300);
     }
     globalViewLcmModule.last();
     lcmMPCControlClient.stop();

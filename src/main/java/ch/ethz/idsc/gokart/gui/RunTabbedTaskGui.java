@@ -31,6 +31,7 @@ import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
@@ -112,7 +113,8 @@ enum RunTabbedTaskGui {
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class, //
-      GokartTrajectorySRModule.class //
+      GokartTrajectorySRModule.class, //
+      MPCKinematicDrivingModule.class
   );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
