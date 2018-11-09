@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-/* package */ class GokartControl implements MPCNativeInsertable, OfflineVectorInterface {
+/* package */ public class GokartControl implements MPCNativeInsertable, OfflineVectorInterface {
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
   private final float uL;
   private final float uR;

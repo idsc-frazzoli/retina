@@ -12,8 +12,8 @@ public class MPCOpenLoopSteering extends MPCSteering {
     Scalar timeSinceLastStep = getTimeSinceLastStep(time);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
     //System.out.println("Time: "+ timeSinceLastStep +" Steering value: "+cnpStep.state.getS().add(rampUp));
-    //return cnpStep.state.getS().add(rampUp);
-    return cnpStep.state.getS();
+    System.out.println("Time "+ time);
+    return cnpStep.state.getS().add(rampUp);
   }
 
   @Override

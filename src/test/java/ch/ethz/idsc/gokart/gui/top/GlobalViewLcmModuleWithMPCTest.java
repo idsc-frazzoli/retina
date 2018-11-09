@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCNative;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationParameter;
 import ch.ethz.idsc.gokart.core.mpc.MPCPathParameter;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -45,11 +46,16 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       System.out.println("send request");
       gokartState = lcmMPCControlClient.lastcns.steps[3].state;
-      System.out.println(gokartState.getS());
+      //System.out.println(gokartState.getS());
       position = Tensors.of(gokartState.getX(), gokartState.getY());
+      Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].control.getudotS();
+      Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].state.getS()//
+          .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
+      Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].state.getS().subtract(rampupVale);
+      System.out.println(betaDiff);
       mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
-      Thread.sleep(300);
+      Thread.sleep(2000);
     }
     globalViewLcmModule.last();
     lcmMPCControlClient.stop();
