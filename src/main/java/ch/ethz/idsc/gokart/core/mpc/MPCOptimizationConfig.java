@@ -16,5 +16,9 @@ public class MPCOptimizationConfig {
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
   /** The wait time after a successful optimization */
-  public Scalar updateDelay = Quantity.of(0.05, SI.SECOND);
+  public Scalar updateDelay = Quantity.of(0.0, SI.SECOND);
+  /** Steering anti-lag */
+  public Scalar steerAntiLag = Quantity.of(0.4, SI.SECOND);
+  /** Braking anti-lag */
+  public Scalar brakingAntiLag = Quantity.of(0.3, SI.SECOND);
 }

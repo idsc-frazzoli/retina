@@ -13,11 +13,13 @@ import ch.ethz.idsc.tensor.red.Max;
 public class MPCSimpleBraking extends MPCBraking {
   MPCStateEstimationProvider mpcStateProvider;
   final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
   int inext = 0;
 
   @Override
   public Scalar getBraking(Scalar time) {
-    ControlAndPredictionStep cnsStep = getStep(time);
+    Scalar controlTime = time.add(config.brakingAntiLag);
+    ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
       return Quantity.of(0, SI.ONE);
     Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());

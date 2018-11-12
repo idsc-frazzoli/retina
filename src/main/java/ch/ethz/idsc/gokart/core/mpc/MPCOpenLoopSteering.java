@@ -5,14 +5,16 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public class MPCOpenLoopSteering extends MPCSteering {
   MPCStateEstimationProvider mpcStateProvider;
+  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
   @Override
   public Scalar getSteering(Scalar time) {
-    ControlAndPredictionStep cnpStep = getStep(time);
-    Scalar timeSinceLastStep = getTimeSinceLastStep(time);
+    Scalar controlTime = time.add(config.steerAntiLag);
+    ControlAndPredictionStep cnpStep = getStep(controlTime);
+    Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
     //System.out.println("Time: "+ timeSinceLastStep +" Steering value: "+cnpStep.state.getS().add(rampUp));
-    System.out.println("Time "+ time);
+    //System.out.println("Time "+ time);
     return cnpStep.state.getS().add(rampUp);
   }
 
