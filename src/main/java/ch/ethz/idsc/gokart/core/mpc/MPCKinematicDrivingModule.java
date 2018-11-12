@@ -174,9 +174,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
     joystickLcmProvider.startSubscriptions();
-    SteerSocket.INSTANCE.addPutProvider(steerProvider);
+    //SteerSocket.INSTANCE.addPutProvider(steerProvider);
     //RimoSocket.INSTANCE.addPutProvider(rimoProvider);
-    //LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
+    LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
     //ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
     controlRequestTask = new TimerTask() {
       @Override
@@ -214,9 +214,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     timer.cancel();
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
-    SteerSocket.INSTANCE.removePutProvider(steerProvider);
+    //SteerSocket.INSTANCE.removePutProvider(steerProvider);
     //RimoSocket.INSTANCE.removePutProvider(rimoProvider);
-    //LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
+    LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
     joystickLcmProvider.stopSubscriptions();
     //ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
