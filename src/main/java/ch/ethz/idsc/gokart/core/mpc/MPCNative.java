@@ -27,7 +27,7 @@ public enum MPCNative {
   /** control update: receive this from MPC program */
   public static final int CONTROL_UPDATE = 3;
   /** time that the controller is allowed to operate in open loop control */
-  public static final Scalar OPEN_LOOP_TIME = Quantity.of(0.5, SI.SECOND);
+  public static final Scalar OPEN_LOOP_TIME = Quantity.of(2, SI.SECOND);
   // executable location and name
   public final static String BINARY = "nativeMPC";
   public final static String RELATIVEPATH = "/src_MATLAB/MPCGokart/ForcesMPCPathFollowing/";

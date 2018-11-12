@@ -98,7 +98,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       Tensor currents = mpcPower.getPower(time);
       if (Objects.nonNull(currents))
         return Optional.of(RimoPutHelper.operationTorque( //
-            (short) Magnitude.ARMS.toFloat(currents.Get(0)), // sign left invert
+            (short) -Magnitude.ARMS.toFloat(currents.Get(0)), // sign left invert
             (short) Magnitude.ARMS.toFloat(currents.Get(1)) // sign right id
         ));
       return Optional.empty();
@@ -133,7 +133,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
-      System.out.println("braking: "+braking);
       if (Objects.nonNull(braking)) {
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
       }
@@ -156,7 +155,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-      maxSpeed = Max.of(Quantity.of(3, SI.VELOCITY), maxSpeed);
+      //maxSpeed = Quantity.of(1, SI.VELOCITY);
       //System.out.println("got joystick speed value: " + maxSpeed);
     }
     // send message with max speed
@@ -175,8 +174,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
     joystickLcmProvider.startSubscriptions();
-    //SteerSocket.INSTANCE.addPutProvider(steerProvider);
-    //RimoSocket.INSTANCE.addPutProvider(rimoProvider);
+    SteerSocket.INSTANCE.addPutProvider(steerProvider);
+    RimoSocket.INSTANCE.addPutProvider(rimoProvider);
     System.out.println("add linmot provider");
     System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
     LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
@@ -218,8 +217,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     timer.cancel();
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
-    //SteerSocket.INSTANCE.removePutProvider(steerProvider);
-    //RimoSocket.INSTANCE.removePutProvider(rimoProvider);
+    SteerSocket.INSTANCE.removePutProvider(steerProvider);
+    RimoSocket.INSTANCE.removePutProvider(rimoProvider);
     LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
     joystickLcmProvider.stopSubscriptions();
     //ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
