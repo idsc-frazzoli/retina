@@ -36,7 +36,7 @@ public abstract class MPCControlUpdateListener {
             time)) {
       istep++;
     }
-    System.out.println("time: "+time.subtract(cns.steps[0].state.getTime())+"step: "+istep);
+    //System.out.println("time: "+time.subtract(cns.steps[0].state.getTime())+"step: "+istep);
     return cns.steps[istep];
   }
 
