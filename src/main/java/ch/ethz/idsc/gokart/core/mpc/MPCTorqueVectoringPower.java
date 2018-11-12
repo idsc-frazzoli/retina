@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.NonSI;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -31,6 +32,14 @@ public class MPCTorqueVectoringPower extends MPCPower {
       return Tensors.of(//
           Quantity.of(0, NonSI.ARMS), //
           Quantity.of(0, NonSI.ARMS));
+    }
+    if(mpcStateProvider==null) {
+      return torqueVectoring.getMotorCurrentsFromAcceleration(//
+          Quantity.of(0, SI.SECOND.negate()), //
+          cnsStep.state.getUx(), //
+          Quantity.of(0, SI.SECOND.negate()), //
+          cnsStep.control.getaB(), //
+          Quantity.of(0, SI.SECOND.negate()));
     }
     Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
     Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
