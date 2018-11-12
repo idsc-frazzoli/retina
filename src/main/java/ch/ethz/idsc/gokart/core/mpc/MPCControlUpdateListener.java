@@ -18,9 +18,9 @@ public abstract class MPCControlUpdateListener {
    * @return the control and prediction step before time */
   ControlAndPredictionStep getStep(Scalar time) {
     // ensure that old data is not used
-    if (Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].state.getTime())))
-      return null;
-    if (cns == null)
+    if (cns == null ||
+        Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].state.getTime()))
+        )
       return null;
     while (//
     istep > 0 && //

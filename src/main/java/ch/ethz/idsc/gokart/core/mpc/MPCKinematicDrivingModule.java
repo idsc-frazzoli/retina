@@ -133,6 +133,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
+      System.out.println("braking: "+braking);
       if (Objects.nonNull(braking)) {
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
       }
@@ -176,7 +177,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     joystickLcmProvider.startSubscriptions();
     //SteerSocket.INSTANCE.addPutProvider(steerProvider);
     //RimoSocket.INSTANCE.addPutProvider(rimoProvider);
+    System.out.println("add linmot provider");
+    System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
     LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
+    System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
     //ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
     controlRequestTask = new TimerTask() {
       @Override
