@@ -33,7 +33,7 @@ public class LinmotConfig {
    * to be conservative, we assume a deceleration of -4.3[m*s^-2] */
   public Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);
   /** steps defines the number of levels at which to test the brake */
-  public Scalar pressTestSteps = RealScalar.of(12);
+  public Scalar pressTestSteps = RealScalar.of(20);
   /** duration used in LinmotPressModule for calibration purpose */
   public Scalar pressTestDuration = Quantity.of(2.5, SI.SECOND);
 

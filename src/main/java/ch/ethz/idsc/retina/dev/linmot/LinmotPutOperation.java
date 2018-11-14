@@ -54,6 +54,13 @@ public enum LinmotPutOperation {
         INTERPOLATION_POSITION.At(value).number().shortValue());
   }
 
+  public LinmotPutEvent turnOff() {
+    // just turn it off
+    return toPosition(//
+        LinmotPutHelper.CMD_OFF_MODE, //
+        LinmotPutHelper.TARGETPOS_INIT);
+  }
+
   /** @return command that sets the brake to home position */
   public LinmotPutEvent fallback() {
     return toPosition( //

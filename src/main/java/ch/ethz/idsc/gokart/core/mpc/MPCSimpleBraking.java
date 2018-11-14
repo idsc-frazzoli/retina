@@ -25,7 +25,7 @@ public class MPCSimpleBraking extends MPCBraking {
     Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     Scalar min = minmax.Get(0);
     Scalar braking = (Scalar) Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    //System.out.println(braking);
+    // System.out.println(braking);
     Scalar brakePos = BrakingFunction.getNeededBrakeActuation(braking);
     if (brakePos == null)
       return RealScalar.ZERO;

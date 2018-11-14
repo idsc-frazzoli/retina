@@ -106,15 +106,13 @@ public class DubendorfTrack extends MPCBSplineTrack {
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
     // add them in code
-    /*
-    36.82,44.18
-    44.03,51.39
-    51.15,55.33
-    54.17,49.67
-    47.99,42.63
-    40.94,36.45
-    35.45,41.94
-    */
+    /* 36.82,44.18
+     * 44.03,51.39
+     * 51.15,55.33
+     * 54.17,49.67
+     * 47.99,42.63
+     * 40.94,36.45
+     * 35.45,41.94 */
     // X
     controlPointsX.append(Quantity.of(36.82, SI.METER));
     controlPointsX.append(Quantity.of(44.03, SI.METER));
@@ -133,7 +131,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(41.94, SI.METER));
     return new DubendorfTrack(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)));
   }
-  
+
   // ---
   private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
     super(controlPointsX, controlPointsY, radiusControlPoints);

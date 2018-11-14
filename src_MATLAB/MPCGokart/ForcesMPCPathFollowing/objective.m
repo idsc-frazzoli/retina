@@ -15,6 +15,6 @@ function f = objective(z,points,vmax)
     trackViolation = outsideTrack^2;
     speedcost = speedPunisher(z(7),vmax);
     Q = eye(2)*0.1;
-    P = diag([1,1,0.01,0,0,0,0,0,0,0])*0.01;
+    P = diag([1,1,0.01,0,0,0,0,0,0,0])*0.001;
     f = error'*Q*error+z'*P*z+speedcost+over75d*over75d*0.001+2*trackViolation;
 end

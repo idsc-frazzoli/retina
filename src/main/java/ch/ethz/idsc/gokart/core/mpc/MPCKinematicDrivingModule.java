@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
-import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
@@ -26,14 +25,12 @@ import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
   public final LcmMPCControlClient lcmMPCPathFollowingClient//
@@ -155,8 +152,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-      //maxSpeed = Quantity.of(1, SI.VELOCITY);
-      //System.out.println("got joystick speed value: " + maxSpeed);
+      // maxSpeed = Quantity.of(1, SI.VELOCITY);
+      // System.out.println("got joystick speed value: " + maxSpeed);
     }
     // send message with max speed
     // optimization parameters will have more values in the future
@@ -180,7 +177,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
     LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
     System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
-    //ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
+    // ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
     controlRequestTask = new TimerTask() {
       @Override
       public void run() {
@@ -195,7 +192,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       @Override
       void doAction() {
         // we got an update
-        //System.out.println("resheduling timer");
+        // System.out.println("resheduling timer");
         timer.cancel();
         timer = new Timer();
         controlRequestTask = new TimerTask() {
@@ -221,6 +218,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     RimoSocket.INSTANCE.removePutProvider(rimoProvider);
     LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
     joystickLcmProvider.stopSubscriptions();
-    //ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
+    // ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }
