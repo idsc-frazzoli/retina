@@ -53,6 +53,15 @@ public enum LinmotPutOperation {
         LinmotPutHelper.CMD_OPERATION, //
         INTERPOLATION_POSITION.At(value).number().shortValue());
   }
+  
+  /** @param value in the unit interval [0, 1]
+   * @return
+   * @throws Exception if value is outside */
+  public LinmotPutEvent absolutePosition(short value) {
+    return toPosition( //
+        LinmotPutHelper.CMD_OPERATION, //
+        value);
+  }
 
   public LinmotPutEvent turnOff() {
     // just turn it off

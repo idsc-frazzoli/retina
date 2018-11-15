@@ -27,27 +27,25 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
  * at a constant value for a certain period of time
  * 
  * TODO generate a report from the log files about the brake effect */
-public class LinmotSuccessivePressTestModule extends AbstractModule {
+public class LinmotConstantPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final LinmotPressTestLinmot linmotPressTestLinmot = new LinmotPressTestLinmot();
-  private final LinmotPressTestRimo linmotPressTestRimo = new LinmotPressTestRimo();
-  private int nextTest = 0;
+  private final LinmotConstantPressTestLinmot linmotConstantPressTestLinmot = new LinmotConstantPressTestLinmot();
   private JButton prev;
   private JButton next;
   private JButton test;
-  private Tensor intensities;
+  private JButton setoff;
+  private short position = -50;
 
   @Override
   protected void first() throws Exception {
-    LinmotSocket.INSTANCE.addPutProvider(linmotPressTestLinmot);
-    RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
+    LinmotSocket.INSTANCE.addPutProvider(linmotConstantPressTestLinmot);
     {
       final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
-      intensities = Subdivide.of(0, 1, n - 1);
-      JPanel jPanel = new JPanel(new GridLayout(1, 3));
+      JPanel jPanel = new JPanel(new GridLayout(2, 2));
       List<JButton> list = new ArrayList<>();
+      
       // button for previous test
       prev = new JButton("previous");
       list.add(prev);
@@ -58,23 +56,7 @@ public class LinmotSuccessivePressTestModule extends AbstractModule {
         }
       });
       jPanel.add(prev);
-      // button for test
-      test = new JButton("test: 0");
-      list.add(test);
-      test.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          list.forEach(button -> button.setEnabled(false));
-          new Thread(new Runnable() {
-            @Override
-            public void run() {
-              test();
-              list.forEach(button -> button.setEnabled(true));
-            }
-          }).start();
-        }
-      });
-      jPanel.add(test);
+      
       // button for next test
       next = new JButton("next");
       list.add(next);
@@ -85,6 +67,30 @@ public class LinmotSuccessivePressTestModule extends AbstractModule {
         }
       });
       jPanel.add(next);
+      
+      
+      // button for test
+      test = new JButton("set Active");
+      list.add(test);
+      test.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          switchActive();
+        }
+      });
+      jPanel.add(test);
+      
+      // button for test
+      setoff = new JButton("set off");
+      list.add(setoff);
+      setoff.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          switchOff();
+        }
+      });
+      jPanel.add(setoff);
+
       updateButtons();
       jFrame.setContentPane(jPanel);
     }
@@ -94,57 +100,54 @@ public class LinmotSuccessivePressTestModule extends AbstractModule {
   }
 
   void next() {
-    nextTest++;
-    if (nextTest >= intensities.length())
-      nextTest = 0;
+    position-=10;
+    linmotConstantPressTestLinmot.setPosition(position);
     updateButtons();
   }
 
   void previous() {
-    nextTest--;
-    if (nextTest < 0)
-      nextTest = intensities.length() - 1;
+    position+=10;
+    linmotConstantPressTestLinmot.setPosition(position);
     updateButtons();
   }
-
-  void reset() {
-    nextTest = 0;
+  
+  void switchOff() {
+    linmotConstantPressTestLinmot.setOff(
+        !linmotConstantPressTestLinmot.getIsOff());
+    System.out.println(linmotConstantPressTestLinmot.getIsOff());
     updateButtons();
   }
-
-  void test() {
-    Scalar at = intensities.Get(nextTest);
-    pressAt(at);
-    next();
+  
+  void switchActive() {
+    linmotConstantPressTestLinmot.setPosition(position);
+    linmotConstantPressTestLinmot.setActive(
+        !linmotConstantPressTestLinmot.getIsActive());
+    updateButtons();
   }
 
   void updateButtons() {
-    test.setText("Test [" + (nextTest + 1) + "/" + intensities.length() + "] at " + intensities.Get(nextTest));
-  }
-
-  void pressAt(Scalar scalar) {
-    linmotPressTestRimo.startPress();
-    linmotPressTestLinmot.startPress(scalar);
-    try {
-      Thread.sleep(Magnitude.MILLI_SECOND.toLong(LinmotConfig.GLOBAL.pressTestDuration));
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    linmotPressTestRimo.stopPress();
-    linmotPressTestLinmot.stopPress();
+    String postext = " pos: "+position;
+    if(linmotConstantPressTestLinmot.getIsActive())
+      test.setText("deactivate" + postext);
+    else
+      test.setText("activate"+ postext);
+    
+    if(linmotConstantPressTestLinmot.getIsOff())
+      setoff.setText("turn current on");
+    else
+      setoff.setText("turn current off");
   }
 
   @Override
   protected void last() {
-    RimoSocket.INSTANCE.removePutProvider(linmotPressTestRimo);
-    LinmotSocket.INSTANCE.removePutProvider(linmotPressTestLinmot);
+    LinmotSocket.INSTANCE.removePutProvider(linmotConstantPressTestLinmot);
     // ---
     jFrame.setVisible(false);
     jFrame.dispose();
   }
 
   public static void standalone() throws Exception {
-    LinmotSuccessivePressTestModule linmotPressModule = new LinmotSuccessivePressTestModule();
+    LinmotConstantPressTestModule linmotPressModule = new LinmotConstantPressTestModule();
     linmotPressModule.first();
     linmotPressModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
