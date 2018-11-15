@@ -44,6 +44,7 @@ import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
+import ch.ethz.idsc.gokart.gui.lab.LinmotSuccessivePressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -125,6 +126,7 @@ enum RunTabbedTaskGui {
       SpyModule.class, //
       AutoboxTestingModule.class, //
       LinmotPressTestModule.class, //
+      LinmotSuccessivePressTestModule.class, //
       // LocalViewLcmModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
