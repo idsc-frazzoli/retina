@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.Scalar;
           ? Optional.of(LinmotPutOperation.INSTANCE.turnOff())
           : Optional.empty();
     } else {
+      System.out.println("active:"+ isActive);
       return isActive //
           ? Optional.of(LinmotPutOperation.INSTANCE.absolutePosition(restingPosition))
           : Optional.empty();

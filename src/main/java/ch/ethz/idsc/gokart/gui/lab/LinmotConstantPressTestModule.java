@@ -12,16 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
-import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Subdivide;
 
 /** linmot press test enables the driver to apply the brake
  * at a constant value for a certain period of time
@@ -42,7 +36,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
   protected void first() throws Exception {
     LinmotSocket.INSTANCE.addPutProvider(linmotConstantPressTestLinmot);
     {
-      final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
       JPanel jPanel = new JPanel(new GridLayout(2, 2));
       List<JButton> list = new ArrayList<>();
       
