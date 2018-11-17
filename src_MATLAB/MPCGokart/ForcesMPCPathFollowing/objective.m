@@ -19,5 +19,5 @@ function f = objective(z,points,vmax)
     reg = z(index.dotab).^2*0.1+z(index.dotbeta).^2*0.1+z(index.ds).^2*0.1;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
-    f = error'*Q*error+reg;
+    f = error'*Q*error+reg+trackViolation;
 end
