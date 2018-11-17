@@ -1,5 +1,6 @@
 %code by mheim
 figure;
+global index
 
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 %start later in history
@@ -19,8 +20,8 @@ title('reference trajectory vs actual');
 %legend('reference', 'MPC controlled')
 
 %plot acceleration and deceleration in colors
-p = lhistory(:,5:6);
-acc = lhistory(:,2);
+p = lhistory(:,index.x+1:index.y+1);
+acc = lhistory(:,index.ab+1);
 maxacc = max(abs(acc));
 [nu,~]=size(p);
 for i=1:nu-1
@@ -36,11 +37,11 @@ hold off
 subplot(m,n,2)
 hold on
 yyaxis left
-plot(lhistory(:,1),lhistory(:,9))
+plot(lhistory(:,1),lhistory(:,index.beta+1))
 ylabel('steering position [rad]')
 axis([-inf inf -1 1])
 yyaxis right
-stairs(lhistory(:,1), lhistory(:,3))
+stairs(lhistory(:,1), lhistory(:,index.dotbeta+1))
 %axis([-inf inf -2 2])
 axis([-inf inf -4 4])
 ylabel('steering change rate [rad/s]')
@@ -52,11 +53,11 @@ xlabel('[s]')
 subplot(m,n,3)
 hold on
 yyaxis left
-stairs(lhistory(:,1), lhistory(:,2))
+stairs(lhistory(:,1), lhistory(:,index.ab+1))
 ylabel('acceleration [m/s²]')
 axis([-inf inf -8 8])
 yyaxis right
-plot(lhistory(:,1),lhistory(:,8))
+plot(lhistory(:,1),lhistory(:,index.v+1))
 ylabel('speed [m/s]')
 axis([-inf inf -12 12])
 title('Acceleration/Speed');
@@ -67,8 +68,8 @@ subplot(m,n,4)
 hold on
 %compute lateral acceleration
 l = 1;
-la = tan(lhistory(:,9)).*lhistory(:,8).^2/l;
-fa = lhistory(:,2);
+la = tan(lhistory(:,index.beta+1)).*lhistory(:,index.v+1).^2/l;
+fa = lhistory(:,index.ab+1);
 na = (fa.^2+la.^2).^0.5;
 title('accelerations')
 axis([-inf inf -10 10])
@@ -82,11 +83,11 @@ legend('lateral acceleration','norm of acceleration');
 subplot(m,n,5)
 hold on
 %compute lateral acceleration
-braking = zeros(numel(lhistory(:,2)),1);
+braking = zeros(numel(lhistory(:,1)),1);
 c = 0;
-for sp=lhistory(:,8)'
+for sp=lhistory(:,index.v+1)'
     c = c+1;
-    braking(c) = max(0,-lhistory(c,2)+casadiGetMaxNegAcc(sp));
+    braking(c) = max(0,-lhistory(c,index.ab+1)+casadiGetMaxNegAcc(sp));
     %braking(c) = max(0,-lhistory(c,2));
 end
 title('braking')
@@ -99,7 +100,7 @@ yyaxis right
 ylabel('temp [°C]')
 axis([-inf inf 50 100])
 xlabel('[s]')
-plot(lhistory(:,1), lhistory(:,11));
+plot(lhistory(:,1), lhistory(:,index.braketemp+1));
 
 subplot(m,n,6)
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
@@ -108,11 +109,11 @@ title('path progress')
 yyaxis left
 axis([-inf inf 0 1])
 ylabel('progress rate [1/s]')
-plot(lhistory(:,1),lhistory(:,4));
+plot(lhistory(:,1),lhistory(:,index.ds+1));
 
 yyaxis right
 ylabel('progress [1]')
 axis([-inf inf 0 2])
 xlabel('[s]')
-plot(lhistory(:,1), lhistory(:,10));
+plot(lhistory(:,1), lhistory(:,index.s+1));
 

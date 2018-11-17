@@ -1,10 +1,11 @@
 function f = objective(z,points,vmax)
+    global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
-    [splx,sply] = casadiDynamicBSPLINE(z(9),points);
+    [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
     %[splx,sply] = casadiBSPLINE(z(9),points);
-    realPos = z(4:5);
-    over75d = max(0,z(10)-75);
+    realPos = z(index.x:index.y);
+    over75d = max(0,z(index.braketemp)-75);
     %wantedpos = p;
     wantedpos = [splx;sply];
     %wantedpos = [5;0];
@@ -13,8 +14,9 @@ function f = objective(z,points,vmax)
     outsideTrack = max(0,dist-4);
     %this is cubic test this
     trackViolation = outsideTrack^2;
-    speedcost = speedPunisher(z(7),vmax);
+    speedcost = speedPunisher(z(index.v),vmax);
     Q = eye(2)*0.1;
-    P = diag([1,1,0.01,0,0,0,0,0,0,0])*0.001;
-    f = error'*Q*error+z'*P*z+speedcost+over75d*over75d*0.001+2*trackViolation;
+    reg = z(index.ab).^2*0.01+z(index.dotbeta).^2*0.01+z(index.ds).^2*0.01;
+    
+    f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+2*trackViolation;
 end
