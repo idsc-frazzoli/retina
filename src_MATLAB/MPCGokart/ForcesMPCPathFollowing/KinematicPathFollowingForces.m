@@ -15,19 +15,20 @@ splinestart = 1;
 nextsplinepoints = 0;
 %parameters: p = [maxspeed, pointsx, pointsy]
 
-% variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
+% variables z = [dotab,dotbeta,ds,x,y,theta,v,ab,beta,s,braketemp]
 global index
-index.ab = 1;
+index.dotab = 1;
 index.dotbeta = 2;
 index.ds = 3;
 index.x = 4;
 index.y = 5;
 index.theta = 6;
 index.v = 7;
-index.beta = 8;
-index.s = 9;
-index.braketemp = 10;
-index.ns = 7;
+index.ab = 8;
+index.beta = 9;
+index.s = 10;
+index.braketemp = 11;
+index.ns = 8;
 index.nu = 3;
 index.nv = index.ns+index.nu;
 index.sb = index.nu+1;
@@ -36,20 +37,21 @@ index.ps = 1;
 integrator_stepsize = 0.1;
 
 model.N = 31;
-model.nvar = 10;
-model.neq = 7;
+model.nvar = index.nv;
+model.neq = index.ns;
 
-model.eq = @(z,p) RK4( z(index.sb:end), z([index.ab,index.dotbeta,index.ds]), @(x,u,p)interstagedx(x,u), integrator_stepsize,p);
+model.eq = @(z,p) RK4( z(index.sb:end), z(1:index.nu), @(x,u,p)interstagedx(x,u), integrator_stepsize,p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
 l = 1;
 
 %limit lateral acceleration
-model.nh = 3; 
+model.nh = 1; 
 model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
 model.hu = [36,0,0];
 model.hl = [-inf,-inf, -inf];
-
+model.hu = [36];
+model.hl = [-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
 points = [0,40,40,5,0;0,0,10,9,10]';
@@ -66,10 +68,12 @@ model.xinitidx = index.sb:index.nv;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
-model.ub(index.dotbeta)=5;
-model.lb(index.dotbeta)=-5;
+%model.ub(index.dotbeta)=5;
+%model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=1.6;
 model.lb(index.ds)=-0.1;
+model.ub(index.ab)=1;
+model.lb(index.ab)=-3;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.45;
 model.lb(index.beta)=-0.45;
@@ -93,15 +97,20 @@ FORCES_NLP(model, codeoptions,output);
 tend = 100;
 eulersteps = 10;
 xs = [20,0,0,1,0,0.1,70];
-%[...,x,y,theta,v,beta,s,braketemp]
+%[...,x,y,theta,v,ab,beta,s,braketemp]
 xs(index.x-index.nu)=20;
 xs(index.y-index.nu)=0;
 xs(index.theta-index.nu)=0;
 xs(index.v-index.nu)=1;
+xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
-xs(index.s-index.nu)=0.1;
+xs(index.s-index.nu)=0.01;
 xs(index.braketemp-index.nu)=60;
 history = zeros(tend*eulersteps,model.nvar+1);
+plansx = [];
+plansy = [];
+planss = [];
+planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
@@ -111,14 +120,16 @@ for i =1:tend
     %model.xinit = [0,5,0,0.1,0,0];
 
     %find bspline
-    if xs(6)>1
-        nextSplinePoints
-        %spline step forward
-        splinestart = splinestart+1;
-        xs(index.s-index.nu)=xs(index.s-index.nu)-1;
-        %if(splinestart>pointsN)
-            %splinestart = splinestart-pointsN;
-        %end
+    if(1)
+        if xs(index.s-index.nu)>1
+            nextSplinePoints
+            %spline step forward
+            splinestart = splinestart+1;
+            xs(index.s-index.nu)=xs(index.s-index.nu)-1;
+            %if(splinestart>pointsN)
+                %splinestart = splinestart-pointsN;
+            %end
+        end
     end
     %xs(6)=xs(6)+normrnd(0,0.04);
     problem.xinit = xs';
@@ -153,6 +164,13 @@ for i =1:tend
     xs = xhist(end,:);
     xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
+    planc = planc + 1;
+    if(planc>10)
+       planc = 1; 
+       plansx = [plansx; outputM(:,index.x)'];
+       plansy = [plansy; outputM(:,index.y)'];
+       planss = [planss; outputM(:,index.s)'];
+    end
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
 draw

@@ -5,7 +5,8 @@ function dx = interstagedx(x,u)
     %maxacc = casadiGetMaxAcc(x);
     %minacc = casadiGetMaxNegAcc(x);
     %ab = 0.5*(maxacc-minacc)*(u(1)+1);
-    ab = u(index.ab);
+    dotab = u(index.dotab);
+    ab = x(index.ab-index.nu);
     dotbeta = u(index.dotbeta);
     ds = u(index.ds);
     %ds = 0.03;
@@ -17,7 +18,6 @@ function dx = interstagedx(x,u)
     brakingheatup = heatupfunction(-ab-1.5);
     brakingcooldown = cooldownfunction(temp);
     l = 1.19;
-    
     ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
    
     import casadi.*
@@ -33,6 +33,7 @@ function dx = interstagedx(x,u)
     dx(index.beta-index.nu)=dotbeta;
     dx(index.s-index.nu)=ds;
     dx(index.braketemp-index.nu)=brakingheatup+brakingcooldown;
+    dx(index.ab-index.nu)=dotab;
     
     %dx = [v*cos(theta);
     %v*sin(theta);

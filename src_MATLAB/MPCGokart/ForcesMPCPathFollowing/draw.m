@@ -31,6 +31,11 @@ for i=1:nu-1
    vc = acc(i)/maxacc;
    line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]);
 end
+%draw plan
+[np, ~] = size(plansx);
+for i = 1:np
+   plot(plansx(i,:),plansy(i,:),'--b');
+end
 hold off
 
 

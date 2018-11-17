@@ -15,8 +15,9 @@ function f = objective(z,points,vmax)
     %this is cubic test this
     trackViolation = outsideTrack^2;
     speedcost = speedPunisher(z(index.v),vmax);
-    Q = eye(2)*0.1;
-    reg = z(index.ab).^2*0.01+z(index.dotbeta).^2*0.01+z(index.ds).^2*0.01;
+    Q = eye(2)*0.3;
+    reg = z(index.dotab).^2*0.1+z(index.dotbeta).^2*0.1+z(index.ds).^2*0.1;
     
-    f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+2*trackViolation;
+    %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
+    f = error'*Q*error+reg;
 end
