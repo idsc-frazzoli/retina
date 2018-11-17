@@ -39,7 +39,7 @@ model.N = 31;
 model.nvar = 10;
 model.neq = 7;
 
-model.eq = @(z,p) RK4( z(index.x:end), z([index.ab,index.dotbeta,index.ds]), @(x,u,p)interstagedx(x,u), integrator_stepsize,p);
+model.eq = @(z,p) RK4( z(index.sb:end), z([index.ab,index.dotbeta,index.ds]), @(x,u,p)interstagedx(x,u), integrator_stepsize,p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
 l = 1;
@@ -82,7 +82,7 @@ model.ub(index.braketemp)=85;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 

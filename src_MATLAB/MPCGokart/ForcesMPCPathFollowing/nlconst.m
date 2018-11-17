@@ -5,7 +5,7 @@ global index
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
 wantedpos = [splx;sply];
-realPos = z(4:5);
+realPos = z([index.x,index.y]);
 %not yet used here
 error = realPos-wantedpos;
 l = 1;

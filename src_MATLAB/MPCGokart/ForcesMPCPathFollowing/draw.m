@@ -20,7 +20,7 @@ title('reference trajectory vs actual');
 %legend('reference', 'MPC controlled')
 
 %plot acceleration and deceleration in colors
-p = lhistory(:,index.x+1:index.y+1);
+p = lhistory(:,[index.x+1,index.y+1]);
 acc = lhistory(:,index.ab+1);
 maxacc = max(abs(acc));
 [nu,~]=size(p);

@@ -4,7 +4,7 @@ function f = objective(z,points,vmax)
     %get the fancy spline
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
     %[splx,sply] = casadiBSPLINE(z(9),points);
-    realPos = z(index.x:index.y);
+    realPos = z([index.x,index.y]);
     over75d = max(0,z(index.braketemp)-75);
     %wantedpos = p;
     wantedpos = [splx;sply];
