@@ -35,6 +35,9 @@ end
 [np, ~] = size(plansx);
 for i = 1:np
    plot(plansx(i,:),plansy(i,:),'--b');
+   xx = [plansx(i,end),targets(i,1)];
+   yy = [plansy(i,end),targets(i,2)];
+   plot(xx,yy,'r');
 end
 hold off
 

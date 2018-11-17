@@ -75,8 +75,8 @@ model.lb(index.ds)=-0.1;
 model.ub(index.ab)=1;
 model.lb(index.ab)=-3;
 model.lb(index.v)=0;
-model.ub(index.beta)=0.45;
-model.lb(index.beta)=-0.45;
+model.ub(index.beta)=1;
+model.lb(index.beta)=-1;
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
 model.ub(index.braketemp)=85;
@@ -86,7 +86,7 @@ model.ub(index.braketemp)=85;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -110,6 +110,7 @@ history = zeros(tend*eulersteps,model.nvar+1);
 plansx = [];
 plansy = [];
 planss = [];
+targets = [];
 planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
@@ -170,6 +171,8 @@ for i =1:tend
        plansx = [plansx; outputM(:,index.x)'];
        plansy = [plansy; outputM(:,index.y)'];
        planss = [planss; outputM(:,index.s)'];
+       [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
+       targets = [targets;tx,ty];
     end
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
