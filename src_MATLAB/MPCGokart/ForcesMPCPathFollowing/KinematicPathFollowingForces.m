@@ -59,10 +59,10 @@ trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 
 model.npar = pointsO + 2*pointsN;
-for i=1:model.N-1
+for i=1:model.N
    model.objective{i} = @(z,p)objective(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 end
-model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
+%model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
 model.xinitidx = index.sb:index.nv;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
@@ -70,13 +70,13 @@ model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 %model.ub(index.dotbeta)=5;
 %model.lb(index.dotbeta)=-5;
-model.ub(index.ds)=1.6;
+model.ub(index.ds)=1;
 model.lb(index.ds)=-0.1;
-model.ub(index.ab)=1;
-model.lb(index.ab)=-3;
+model.ub(index.ab)=2;
+model.lb(index.ab)=-4;
 model.lb(index.v)=0;
-model.ub(index.beta)=1;
-model.lb(index.beta)=-1;
+model.ub(index.beta)=0.45;
+model.lb(index.beta)=-0.45;
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
 model.ub(index.braketemp)=85;
@@ -94,7 +94,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 100;
+tend = 150;
 eulersteps = 10;
 xs = [20,0,0,1,0,0.1,70];
 %[...,x,y,theta,v,ab,beta,s,braketemp]
