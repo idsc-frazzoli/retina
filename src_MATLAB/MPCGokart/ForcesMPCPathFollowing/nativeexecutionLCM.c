@@ -7,11 +7,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <byteswap.h>
+#include <math.h>
 
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
+#include "helperFunctions.c"
 
 #define N 31
 #define S 11
@@ -39,7 +41,7 @@ MPCPathFollowing_float minusA_times_x0[2];
 
 int outC = 0;
 
-MPCPathFollowing_float lastSolution [410];
+MPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
 
@@ -50,7 +52,22 @@ extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, doub
 
 MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
-
+static void getLastControls(
+	MPCPathFollowing_float* ab,
+	MPCPathFollowing_float* dotab,
+	MPCPathFollowing_float* beta,
+	MPCPathFollowing_float* dotbeta,
+	double* dStepTime,
+	double time){
+	double lastSolutionTime = lastCRMsg.state.time;
+	double dTime = time-lastSolutionTime;
+	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
+	*dStepTime = dTime - lastStep*ISS;
+	*ab = lastSolution[i*S+7];
+	*dotab = lastSolution[i*S];
+	*beta = lastSolution[i*S+8];
+	*dotbeta = lastSolution[i*S+1];
+}
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
@@ -73,15 +90,32 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 	struct MPCPathFollowing_params params;
 
+	MPCPathFollowing_float lab;
+	MPCPathFollowing_float ldotab;
+	MPCPathFollowing_float lbeta;
+	MPCPathFollowing_float ldotbeta;
+	double dTime;
+	getLastControls(
+		&lab,
+		&ldotab,
+		&lbeta,
+		&ldotbeta,
+		&dTime,
+		lastCRMsg.state.time);
+	
+	MPCPathFollowing_float initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
+	MPCPathFollowing_float initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+
 	params.xinit[0] = lastCRMsg.state.X;
 	params.xinit[1] = lastCRMsg.state.Y;
 	params.xinit[2] = lastCRMsg.state.Psi;
 	params.xinit[3] = lastCRMsg.state.Ux;
-	params.xinit[4] = lastCRMsg.state.s;
-	params.xinit[5] = lastCRMsg.path.startingProgress;
-	params.xinit[6] = lastCRMsg.state.bTemp;
+	params.xinit[4] = initab;
+	params.xinit[5] = initbeta;
+	params.xinit[6] = lastCRMsg.path.startingProgress;
+	params.xinit[7] = lastCRMsg.state.bTemp;
 
-	for(int i = 0; i<7;i++){
+	for(int i = 0; i<8;i++){
 		printf("%i: %f\n",i,params.xinit[i]);
 	}
 
@@ -118,19 +152,19 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].control.uR = 0;//not in use
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 			cnsmsg.cns[i].control.uB = 0;//not in use
-			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S];
+			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S+7];
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
 			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
-			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+8],myoutput.alldata[i*S+2]);
+			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+9],myoutput.alldata[i*S+2]);
 			cnsmsg.cns[i].state.dotPsi = 0; //not in use
 			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
 			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
 			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+5];
 			cnsmsg.cns[i].state.w2L = 0;//not in use
 			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+7];
-			cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+9];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+9];
+			cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+10];
 		}
 
 		printf("prepared blob\n");
@@ -150,6 +184,15 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
+	
+	/*
+	//for testing
+	for(int i = -100; i<100; i++){
+		double v = i/100.0;
+		double maxacc = getMaxAcc(v);
+		printf("%f: %f\n", v, maxacc);
+	}*/
+	
 	lcm = lcm_create(NULL);
 	if(!lcm)
 		return 1;
