@@ -69,6 +69,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
       System.out.println("Braking value: " + mpcSimpleBraking.getBraking(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
       System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
       System.out.println("power value: " + mpcTorqueVectoringPower.getPower(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
+      System.out.println("time value: " + gokartState.getTime());
     }
     globalViewLcmModule.last();
     lcmMPCControlClient.stop();

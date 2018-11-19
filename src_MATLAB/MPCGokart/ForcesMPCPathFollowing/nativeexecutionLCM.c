@@ -41,6 +41,8 @@ MPCPathFollowing_float minusA_times_x0[2];
 
 int outC = 0;
 
+double timeOfLastSolution = -100;
+double timeTolerance = 1;
 MPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
@@ -59,10 +61,12 @@ static void getLastControls(
 	MPCPathFollowing_float* dotbeta,
 	double* dStepTime,
 	double time){
-	double lastSolutionTime = lastCRMsg.state.time;
+	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
 	*dStepTime = dTime - lastStep*ISS;
+	printf("timeval: %f\n",time);
+	printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
 	*ab = lastSolution[i*S+7];
 	*dotab = lastSolution[i*S];
 	*beta = lastSolution[i*S+8];
@@ -95,16 +99,26 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	MPCPathFollowing_float lbeta;
 	MPCPathFollowing_float ldotbeta;
 	double dTime;
-	getLastControls(
-		&lab,
-		&ldotab,
-		&lbeta,
-		&ldotbeta,
-		&dTime,
-		lastCRMsg.state.time);
-	
-	MPCPathFollowing_float initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
-	MPCPathFollowing_float initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+
+	MPCPathFollowing_float initab;
+	MPCPathFollowing_float initbeta;
+
+	if(lastCRMsg.state.time-timeOfLastSolution<timeTolerance){
+		getLastControls(
+			&lab,
+			&ldotab,
+			&lbeta,
+			&ldotbeta,
+			&dTime,
+			lastCRMsg.state.time);
+		
+		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+	}else
+	{
+		initab = 0;
+		initbeta = lastCRMsg.state.s;
+	}
 
 	params.xinit[0] = lastCRMsg.state.X;
 	params.xinit[1] = lastCRMsg.state.Y;
@@ -142,7 +156,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//look at data
 	//optimal or maxit (maxit is ok in most cases)
 	if(exitflag == 1 || exitflag == 0){
-		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);	
+		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);
+		timeOfLastSolution = lastCRMsg.state.time;
 
 		struct ControlAndStateMsg cnsmsg;
 		cnsmsg.messageType = 3;
