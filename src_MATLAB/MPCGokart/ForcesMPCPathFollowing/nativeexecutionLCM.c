@@ -14,7 +14,7 @@
 #include "definitions.c"
 
 #define N 31
-#define S 10
+#define S 11
 #define ISS 0.1
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.

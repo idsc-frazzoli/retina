@@ -22,8 +22,6 @@ function acc = casadiGetMaxAcc(x)
         if(x>st)
             acc = cp(x);
         elseif(x>-st)
-            posval = cp(st);
-            negval = -cn(st);
             acc = (x+st)/(2*st)*(posval-negval)+negval;
         else
             acc = -cn(-x);
