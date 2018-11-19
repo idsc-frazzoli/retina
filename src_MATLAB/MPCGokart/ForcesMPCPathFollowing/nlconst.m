@@ -16,6 +16,6 @@ v3 = -2.5+casadiGetMaxNegAcc(z(index.v))-z(index.ab);
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];
-v = [v1];
+v = [v1;v2];
 end
 

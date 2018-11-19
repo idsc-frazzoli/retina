@@ -46,12 +46,10 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 1; 
+model.nh = 2; 
 model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
-model.hu = [36,0,0];
-model.hl = [-inf,-inf, -inf];
-model.hu = [36];
-model.hl = [-inf];
+model.hu = [36,0];
+model.hl = [-inf,-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
 points = [0,40,40,5,0;0,0,10,9,10]';
@@ -71,9 +69,9 @@ model.lb = -ones(1,index.nv)*inf;
 %model.ub(index.dotbeta)=5;
 %model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=1;
-model.lb(index.ds)=-0.1;
-model.ub(index.ab)=2;
-model.lb(index.ab)=-4;
+model.lb(index.ds)=0;
+%model.ub(index.ab)=2;
+model.lb(index.ab)=-5;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.45;
 model.lb(index.beta)=-0.45;
@@ -94,7 +92,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 150;
+tend = 300;
 eulersteps = 10;
 xs = [20,0,0,1,0,0.1,70];
 %[...,x,y,theta,v,ab,beta,s,braketemp]
@@ -133,6 +131,7 @@ for i =1:tend
         end
     end
     %xs(6)=xs(6)+normrnd(0,0.04);
+    xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
     %script
@@ -156,6 +155,10 @@ for i =1:tend
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
+    if(exitflag~=1 && exitflag ~=0)
+        draw
+       return 
+    end
     nextSplinePoints
     %get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';
