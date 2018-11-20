@@ -20,13 +20,13 @@ function f = objective(z,points,vmax)
     latdist = abs(laterror);
     outsideTrack = max(0,latdist-2);
     trackViolation = outsideTrack^2;
-    speedcost = speedPunisher(z(index.v),vmax);
+    speedcost = speedPunisher(z(index.v),vmax)*0.1;
     accnorm = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
     accviolation = 0.001*max(0,accnorm-25)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;
     prog = -0.2*z(index.ds);
-    reg = z(index.dotab).^2*0.001+z(index.dotbeta).^2*0.001;
+    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.001;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation;
