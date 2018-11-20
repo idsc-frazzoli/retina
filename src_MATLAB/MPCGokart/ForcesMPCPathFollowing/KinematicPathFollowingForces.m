@@ -70,7 +70,7 @@ model.hl = [-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,47,43,38.33]';
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
