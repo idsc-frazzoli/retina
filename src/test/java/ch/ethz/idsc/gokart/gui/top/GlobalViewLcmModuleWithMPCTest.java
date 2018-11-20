@@ -34,7 +34,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         0, //
         37f, //
         44f, //
-        -0.3f, //
+        0.3f, //
         0, //
         0, //
         0, 60);

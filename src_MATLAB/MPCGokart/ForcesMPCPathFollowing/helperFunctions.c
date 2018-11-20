@@ -45,9 +45,9 @@ MPCPathFollowing_float getInitAB(MPCPathFollowing_float ab, MPCPathFollowing_flo
 
 MPCPathFollowing_float getInitSteer(MPCPathFollowing_float beta, MPCPathFollowing_float dotbeta, double time){
 	MPCPathFollowing_float nextvalue=beta+dotbeta*time;
-	if(nextvalue<-0.49)
-		nextvalue = -0.49;
-	if(nextvalue>0.49)
-		nextvalue = 0.49;
+	if(nextvalue<-0.5)
+		nextvalue = -0.5;
+	if(nextvalue>0.5)
+		nextvalue = 0.5;
 	return nextvalue;
 }

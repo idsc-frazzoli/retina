@@ -46,13 +46,32 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 2; 
+model.nh = 1; 
 model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
-model.hu = [36,0];
-model.hl = [-inf,-inf];
+%model.hu = [36,0];
+%model.hl = [-inf,-inf];
+model.hu = [0];
+model.hl = [-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
-points = [0,40,40,5,0;0,0,10,9,10]';
+  %  controlPointsX.append(Quantity.of(36.2, SI.METER));
+  %  controlPointsX.append(Quantity.of(52, SI.METER));
+  %  controlPointsX.append(Quantity.of(57.2, SI.METER));
+  %  controlPointsX.append(Quantity.of(53, SI.METER));
+  %  controlPointsX.append(Quantity.of(52, SI.METER));
+  %  controlPointsX.append(Quantity.of(47, SI.METER));
+  %  controlPointsX.append(Quantity.of(41.8, SI.METER));
+  %  // Y
+  %  controlPointsY.append(Quantity.of(44.933, SI.METER));
+  %  controlPointsY.append(Quantity.of(58.2, SI.METER));
+  %  controlPointsY.append(Quantity.of(53.8, SI.METER));
+  %  controlPointsY.append(Quantity.of(49, SI.METER));
+  %  controlPointsY.append(Quantity.of(47, SI.METER));
+  %  controlPointsY.append(Quantity.of(43, SI.METER));
+  %  controlPointsY.append(Quantity.of(38.333, SI.METER));
+    
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,47,43,38.33]';
+%points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 
@@ -70,8 +89,9 @@ model.lb = -ones(1,index.nv)*inf;
 %model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=2;
 model.lb(index.ds)=0;
-model.ub(index.ab)=inf;
+%model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
+model.lb(index.ab)=-inf;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
@@ -93,11 +113,12 @@ FORCES_NLP(model, codeoptions,output);
 
 tend = 150;
 eulersteps = 10;
-xs = [20,0,0,1,0,0.1,70];
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 xs(index.x-index.nu)=20;
+xs(index.x-index.nu)=37;
 xs(index.y-index.nu)=0;
-xs(index.theta-index.nu)=0;
+xs(index.y-index.nu)=44;
+xs(index.theta-index.nu)=0.3;
 xs(index.v-index.nu)=1;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
@@ -154,6 +175,9 @@ for i =1:tend
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
+    if(exitflag==0)
+       a = 1; 
+    end
     if(exitflag~=1 && exitflag ~=0)
         draw
        return 
