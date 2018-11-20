@@ -8,7 +8,7 @@ clear problem
 clear all
 close all
 
-maxSpeed = 10;
+maxSpeed = 2;
 pointsO = 1;
 pointsN = 10;
 splinestart = 1;
