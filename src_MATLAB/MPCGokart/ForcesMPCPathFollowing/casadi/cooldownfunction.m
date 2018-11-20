@@ -1,4 +1,4 @@
 function dt = cooldownfunction(t)
-dt = -0.0172*t + 1.0099;
+dt = -0.0125*t + 0.4851;
 end
 

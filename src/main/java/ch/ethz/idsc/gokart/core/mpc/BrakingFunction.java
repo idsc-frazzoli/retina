@@ -13,8 +13,8 @@ public enum BrakingFunction {
   // point after which the brake is effective
   private static Scalar brakeStart = Quantity.of(2.5 / 100.0, SI.METER);
   // private static Scalar maxBrake = Quantity.of(2.5, SI.ACCELERATION);
-  private static Scalar linearFactor = Quantity.of(3.4686 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
-  private static Scalar quadraticFactor = Quantity.of(-1.0501 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
+  private static Scalar linearFactor = Quantity.of(4.3996 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
+  private static Scalar quadraticFactor = Quantity.of(-1.3735 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
   private static Scalar LINMOTSTART = Quantity.of(0.005, SI.METER);
   private static Scalar LINMOTEND = Quantity.of(0.05, SI.METER);
   private static Scalar LINMOTRANGE = LINMOTEND.subtract(LINMOTSTART);
