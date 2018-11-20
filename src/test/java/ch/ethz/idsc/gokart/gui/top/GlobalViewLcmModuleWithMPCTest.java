@@ -65,7 +65,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
       // assertTrue(Chop._07.close(betaDiff, "zero");
       mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
-      Thread.sleep(100);
+      Thread.sleep(1000);
       System.out.println("Braking value: " + mpcSimpleBraking.getBraking(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
       System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
       System.out.println("power value: " + mpcTorqueVectoringPower.getPower(lcmMPCControlClient.lastcns.steps[0].state.getTime()));

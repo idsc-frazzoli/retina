@@ -31,6 +31,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
   public final LcmMPCControlClient lcmMPCPathFollowingClient//
@@ -152,6 +153,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
+      maxSpeed = Max.of(Quantity.of(1, SI.VELOCITY), maxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);
       // System.out.println("got joystick speed value: " + maxSpeed);
     }
