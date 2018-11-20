@@ -117,9 +117,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}else
 	{
 		initab = 0;
-		initbeta = lastCRMsg.state.s;
-	}
 
+	}
+	initbeta = lastCRMsg.state.s;
 	params.xinit[0] = lastCRMsg.state.X;
 	params.xinit[1] = lastCRMsg.state.Y;
 	params.xinit[2] = lastCRMsg.state.Psi;
