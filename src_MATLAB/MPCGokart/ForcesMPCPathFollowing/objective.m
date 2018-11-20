@@ -2,6 +2,7 @@ function f = objective(z,points,vmax)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
+    l = 1.19;
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
     [spldx, spldy] = casadiDynamicBSPLINEforward(z(index.s),points);
     [splsx, splsy] = casadiDynamicBSPLINEsidewards(z(index.s),points);
@@ -26,5 +27,5 @@ function f = objective(z,points,vmax)
     reg = z(index.dotab).^2*0.001+z(index.dotbeta).^2*0.001;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
-    f = lagcost+latcost+reg+prog;
+    f = lagcost+latcost+reg+prog+over75d*over75d*0.001
 end

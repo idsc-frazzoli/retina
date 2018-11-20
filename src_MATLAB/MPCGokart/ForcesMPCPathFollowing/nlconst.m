@@ -8,7 +8,7 @@ wantedpos = [splx;sply];
 realPos = z([index.x,index.y]);
 %not yet used here
 error = realPos-wantedpos;
-l = 1;
+l = 1.19;
 v1 = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
 %v1=(tan(z(8))*z(7)^2/l);
 v2 = z(index.ab)-casadiGetSmoothMaxAcc(z(index.v));
