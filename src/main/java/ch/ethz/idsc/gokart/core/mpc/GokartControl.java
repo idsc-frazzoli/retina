@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-/* package */ class GokartControl implements MPCNativeInsertable, OfflineVectorInterface {
+/* package */ public class GokartControl implements MPCNativeInsertable, OfflineVectorInterface {
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
   private final float uL;
   private final float uR;
@@ -31,11 +31,11 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.directMotorControl = true;
   }
 
-  public GokartControl(float aB, float udotS, float uB) {
+  public GokartControl(float aB, float udotS) {
     this.uL = 0;
     this.uR = 0;
     this.udotS = udotS;
-    this.uB = uB;
+    this.uB = 0;
     this.aB = aB;
     this.directMotorControl = false;
   }
@@ -92,9 +92,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
           getudotS(), //
           getuB());
     return Tensors.of(//
-        getaB(), //
         getudotS(), //
-        getuB());
+        getaB());
   }
 
   @Override

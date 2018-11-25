@@ -4,13 +4,18 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.File;
 import java.util.Optional;
 
-/* package */ enum MPCNative {
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
+
+public enum MPCNative {
   ;
   public static final int TCP_PORT = 4142;
   public static final int TCP_SERVER_PORT = 4143;
   public static final int MPC_HORIZON = 10;
   public static final int INITIALMSGSIZE = 100;
-  public static final int PREDICTIONSIZE = 30;
+  public static final int PREDICTIONSIZE = 31;
+  public static final int SPLINEPREVIEWSIZE = 10;
   public static final int GOKART_STATE = 0;
   /** First Byte of message: which kind of message are we sending?
    * control update: send state -> get control and prediction */
@@ -21,6 +26,8 @@ import java.util.Optional;
   public static final int PARAMETER_UPDATE = 2;
   /** control update: receive this from MPC program */
   public static final int CONTROL_UPDATE = 3;
+  /** time that the controller is allowed to operate in open loop control */
+  public static final Scalar OPEN_LOOP_TIME = Quantity.of(2, SI.SECOND);
   // executable location and name
   public final static String BINARY = "nativeMPC";
   public final static String RELATIVEPATH = "/src_MATLAB/MPCGokart/ForcesMPCPathFollowing/";

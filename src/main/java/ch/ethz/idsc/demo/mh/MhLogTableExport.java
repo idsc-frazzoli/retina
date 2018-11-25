@@ -55,7 +55,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
      * files.add(UserHome.file("Racing/0w/20180705T1019442.lcm"));
      * files.add(UserHome.file("Racing/0w/20180705T1019443.lcm"));
      * files.add(UserHome.file("forthandback/fab.lcm")); */
-    files.add(UserHome.file("brakelogs/20181025T1334006b1a19b1.lcm"));
+    files.add(UserHome.file("brakingtest.lcm"));
     for (File inputFile : files)
       try {
         systemAnalysis.process(inputFile);

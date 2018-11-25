@@ -12,7 +12,7 @@ public class MPCKinematicDrivingTest extends TestCase {
       MPCKinematicDrivingModule drivingModule = new MPCKinematicDrivingModule(estimationProvider, start, DubendorfTrack.HYPERLOOP_EIGHT);
       drivingModule.switchToTest();
       drivingModule.first();
-      Thread.sleep(1000);
+      Thread.sleep(3000);
       System.out.println("target linmot" + drivingModule.linmotProvider.putEvent().get().target_position);
       System.out.println("target Left power" + drivingModule.rimoProvider.putEvent().get().putTireL.getTorqueRaw());
       drivingModule.last();

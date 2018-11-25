@@ -1,12 +1,33 @@
-function f = objective(z,p,points)
+function f = objective(z,points,vmax)
+    global index
+%[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
-    [splx,sply] = acadiBSPLINE(z(9)+2,points);
-    realPos = z(4:5);
+    l = 1.19;
+    [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
+    [spldx, spldy] = casadiDynamicBSPLINEforward(z(index.s),points);
+    [splsx, splsy] = casadiDynamicBSPLINEsidewards(z(index.s),points);
+    forward = [spldx;spldy];
+    sidewards = [splsx;splsy];
+    %[splx,sply] = casadiBSPLINE(z(9),points);
+    realPos = z([index.x,index.y]);
+    over75d = max(0,z(index.braketemp)-75);
     %wantedpos = p;
     wantedpos = [splx;sply];
     %wantedpos = [5;0];
     error = realPos-wantedpos;
-    Q = eye(2);
-    P = diag([1,1,1,0,0,0,0,0,0])*0.0001;
-    f = error'*Q*error+z'*P*z-0.1*z(3);
+    lagerror = forward'*error;
+    laterror = sidewards'*error;
+    latdist = abs(laterror);
+    outsideTrack = max(0,latdist-2);
+    trackViolation = outsideTrack^2;
+    speedcost = speedPunisher(z(index.v),vmax)*0.1;
+    accnorm = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
+    accviolation = 0.001*max(0,accnorm-25)^2;
+    lagcost = lagerror^2;
+    latcost = laterror^2;
+    prog = -0.2*z(index.ds);
+    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.001;
+    
+    %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
+    f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation;
 end

@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 /* package */ class LinmotPressTestLinmot implements LinmotPutProvider {
   private boolean isActive = false;
   private Scalar scalar;
+  private Boolean turnOff = false;
 
   @Override
   public ProviderRank getProviderRank() {
@@ -20,14 +21,31 @@ import ch.ethz.idsc.tensor.Scalar;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    return isActive //
-        ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(scalar))
-        : Optional.empty();
+    if (turnOff) {
+      return isActive//
+          ? Optional.of(LinmotPutOperation.INSTANCE.turnOff())
+          : Optional.empty();
+    } else {
+      return isActive //
+          ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(scalar))
+          : Optional.empty();
+    }
   }
 
   public void startPress(Scalar scalar) {
     this.scalar = scalar;
     isActive = true;
+    turnOff = false;
+  }
+
+  public void startTurnOff() {
+    isActive = true;
+    turnOff = true;
+  }
+
+  public void stopTurnOff() {
+    isActive = false;
+    turnOff = false;
   }
 
   public void stopPress() {

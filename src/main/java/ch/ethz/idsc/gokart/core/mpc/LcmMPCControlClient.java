@@ -15,9 +15,9 @@ import idsc.BinaryBlob;
 public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
   private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
-  private final BinaryBlobPublisher gokartStatePublisher = new BinaryBlobPublisher("mpc.forces.gs");
-  private final BinaryBlobPublisher pathParameterPublisher = new BinaryBlobPublisher("mpc.forces.pp");
+  private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
+  public ControlAndPredictionSteps lastcns = null;
 
   @Override
   public void start() {
@@ -34,13 +34,13 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   /** send gokart state which starts the mpc optimization with the newest state
    * 
    * @param gokartState the newest available gokart state */
-  public void publishGokartState(GokartState gokartState) {
-    GokartStateMessage gokartStateMessage = new GokartStateMessage(gokartState, mpcNativeSession);
+  public void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
+    ControlRequestMessage gokartStateMessage = new ControlRequestMessage(gokartState, mpcPathParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     gokartStateMessage.insert(byteBuffer);
-    gokartStatePublisher.accept(binaryBlob);
+    controlRequestPublisher.accept(binaryBlob);
   }
 
   /** switch to testing binary that send back test data has to be called before first */
@@ -48,15 +48,19 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     mpcNativeSession.switchToTest();
   }
 
-  public void publishPathParameter(MPCPathParameter mpcPathParameter) {
-    MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
-    ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    mpcPathParameterMessage.insert(byteBuffer);
-    pathParameterPublisher.accept(binaryBlob);
+  /** switch to mode where binary is no automatically starting */
+  public void switchToExternalStart() {
+    mpcNativeSession.switchToExternalStart();
   }
 
+  /* public void publishPathParameter(MPCPathParameter mpcPathParameter) {
+   * MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
+   * BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
+   * ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+   * byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+   * mpcPathParameterMessage.insert(byteBuffer);
+   * pathParameterPublisher.accept(binaryBlob);
+   * } */
   public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
     MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
@@ -74,10 +78,11 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   protected void messageReceived(ByteBuffer byteBuffer) {
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
-    System.out.println(cns.controlAndPredictionSteps.steps[0]);
+    // System.out.println(cns.controlAndPredictionSteps.steps[0]);
     for (MPCControlUpdateListener listener : listeners) {
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
     }
+    lastcns = cns.controlAndPredictionSteps;
   }
 
   @Override

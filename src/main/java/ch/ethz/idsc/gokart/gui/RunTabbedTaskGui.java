@@ -31,6 +31,7 @@ import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
@@ -43,6 +44,7 @@ import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
+import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -112,8 +114,8 @@ enum RunTabbedTaskGui {
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
       GokartTrajectoryModule.class, //
-      GokartTrajectorySRModule.class //
-  );
+      GokartTrajectorySRModule.class, //
+      MPCKinematicDrivingModule.class);
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
@@ -124,6 +126,7 @@ enum RunTabbedTaskGui {
       SpyModule.class, //
       AutoboxTestingModule.class, //
       LinmotPressTestModule.class, //
+      LinmotConstantPressTestModule.class, //
       // LocalViewLcmModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //

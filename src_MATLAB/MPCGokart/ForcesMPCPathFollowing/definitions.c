@@ -1,4 +1,7 @@
 #include <byteswap.h>
+#define N 31
+
+#define POINTSN 10
 
 //note: not all values are necessarily known for every type of controller
 struct State {
@@ -12,7 +15,7 @@ struct State {
 	float w2L;
 	float w2R;
 	float s;
-	float btemp;
+	float bTemp;
 };
 
 struct Control {
@@ -24,17 +27,44 @@ struct Control {
 	float udotS;
 	//control: braking
 	float uB;
+	//if we don't have direct motor control
+	float aB;
+};
+
+struct ControlAndState {
+	struct Control control;
+	struct State state;
+};
+
+struct PathParameter {
+	float pointsN;
+	float startingProgress;
+
+	float controlPointsX [POINTSN];
+	float controlPointsY [POINTSN];
+	float controlPointsR [POINTSN];
+};
+
+struct OptimizationParameter {
+	float speedLimit;
 };
 
 struct ControlAndStateMsg{
 	int messageType;
 	int sequenceInt;
-	struct Control control;
-	struct State state;
+	struct ControlAndState cns[N];
 };
 
-struct StateMsg{
+struct ControlRequestMsg{
 	int messageType;
 	int sequenceInt;
 	struct State state;
+	struct PathParameter path;
+};
+
+
+struct ParaMsg{
+	int messageType;
+	int sequenceInt;
+	struct OptimizationParameter para;
 };

@@ -47,4 +47,24 @@ public class SteerPositionControl {
     lastTor_value = SteerConfig.GLOBAL.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
     return lastTor_value;
   }
+  
+  /** @param pos_error in "SCE"
+   * @param spd_error in "SCE s^-1"
+   * @return "N*m" */
+  public Scalar iterate(Scalar pos_error, Scalar spd_error) {
+    final Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp); // (e[k]-e[k-1])*Kp
+    // ---
+    final Scalar dPart = spd_error.multiply(SteerConfig.GLOBAL.Kd);
+    // ---
+    final Scalar iPart = lastIPt_value.add(pos_error.multiply(SteerConfig.GLOBAL.Ki).multiply(DT)); // e*Ki*dt
+    // ---
+    lastPos_error = pos_error; // update for next iteration
+    // ---
+    Scalar testValue = pPart.add(dPart).add(iPart);
+    Clip clip = SteerConfig.GLOBAL.torqueLimitClip();
+    if (clip.isInside(testValue))
+      lastIPt_value = iPart;
+    lastTor_value = SteerConfig.GLOBAL.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
+    return lastTor_value;
+  }
 }

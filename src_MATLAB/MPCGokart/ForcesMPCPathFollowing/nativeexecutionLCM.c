@@ -7,13 +7,17 @@
 #include <string.h>
 #include <unistd.h>
 #include <byteswap.h>
+#include <math.h>
 
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
+#include "helperFunctions.c"
 
-#define N 30
+#define N 31
+#define S 11
+#define ISS 0.1
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
@@ -31,10 +35,17 @@ struct ControlAndStateMsg cns [DATASIZE];
 
 /* declare FORCES variables and structures */
 int i, exitflag;
-MPCPathFollowing_params myparams;
 MPCPathFollowing_output myoutput;
 MPCPathFollowing_info myinfo;
 MPCPathFollowing_float minusA_times_x0[2];
+
+int outC = 0;
+
+double timeOfLastSolution = -100;
+double timeTolerance = 1;
+MPCPathFollowing_float lastSolution [S*N];
+struct ControlRequestMsg lastCRMsg;
+struct ParaMsg lastParaMsg;
 
 extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
                                                 double *f, double *nabla_f, double *c, double *nabla_c,
@@ -43,83 +54,160 @@ extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, doub
 
 MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
+static void getLastControls(
+	MPCPathFollowing_float* ab,
+	MPCPathFollowing_float* dotab,
+	MPCPathFollowing_float* beta,
+	MPCPathFollowing_float* dotbeta,
+	double* dStepTime,
+	double time){
+	double lastSolutionTime = timeOfLastSolution;
+	double dTime = time-lastSolutionTime;
+	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
+	*dStepTime = dTime - lastStep*ISS;
+	printf("timeval: %f\n",time);
+	printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
+	*ab = lastSolution[i*S+7];
+	*dotab = lastSolution[i*S];
+	*beta = lastSolution[i*S+8];
+	*dotbeta = lastSolution[i*S+1];
+}
 
-
-void sendEmptyControlAndStates(lcm_t * lcm){
-	struct _idsc_BinaryBlob blob;
-	for (int i = 0; i<N; i++){
-		cns[i].control.uL = 1;
-		cns[i].control.uR = 2;
-		cns[i].control.udotS = 3;
-		cns[i].control.uB = 4;
-		cns[i].state.Ux = 5;
-		cns[i].state.Uy = 6;
-		cns[i].state.dotPsi = 7;
-		cns[i].state.X = 8;
-		cns[i].state.Y = 9;
-		cns[i].state.Psi = 10;
-		cns[i].state.w2L = 11;
-		cns[i].state.w2R = 12;
-		cns[i].state.s = 13;
-	}
-	
-	blob.data_length = sizeof(struct ControlAndStateMsg)*N;
-	blob.data = (int8_t*)&cns;
-
-	for (int i = 0; i< 1; i++){
-		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published test message%d\n",sizeof(struct ControlAndStateMsg)*N);
-		else
-			printf("error while publishing message\n");
-	}
+static void para_handler(const lcm_recv_buf_t *rbuf,
+        const char *channel, const idsc_BinaryBlob *msg, void *userdata){
+	printf("received path message\n");
+	memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
+	printf("max speed: %f\n",lastParaMsg.para.speedLimit);
 }
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
-	printf("received state message\n");
-	struct StateMsg stateMsg;
-	memcpy((int8_t*)&stateMsg, msg->data, msg->data_length);
+	printf("received control message\n");
+	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
 
-	float *floats = (float*)msg->data+2;
-	int length = msg->data_length/4-2;
-	//integers are LITTLE ENDIAN in C
-	printf("message type: %hxx\n", msg->data[0]);
-	printf("message seq: %hxx\n", msg->data[4]);
-	printf("floats: %d\n",length);
-	for (int i = 0; i<length; i++){
-		printf("i=%d: %f\n",i,floats[i]);
+	for (int i = 0; i<POINTSN; i++)
+	{
+		printf("i=%d: pointX:%f\n",i,lastCRMsg.path.controlPointsX[i]);
+		printf("i=%d: pointY:%f\n",i,lastCRMsg.path.controlPointsY[i]);
+		printf("i=%d: pointR:%f\n",i,lastCRMsg.path.controlPointsR[i]);
 	}
-	printf("bytes: %d\n", msg->data_length);
-	for(int i = 0; i<msg->data_length; i++){
-		printf("i=%d: %hhx\n",i,msg->data[i]);
-	}
-	printf("copied to state\n");
 
-	//sendEmptyControlAndStates(lcm);
+	struct MPCPathFollowing_params params;
+
+	MPCPathFollowing_float lab;
+	MPCPathFollowing_float ldotab;
+	MPCPathFollowing_float lbeta;
+	MPCPathFollowing_float ldotbeta;
+	double dTime;
+
+	MPCPathFollowing_float initab;
+	MPCPathFollowing_float initbeta;
+
+	if(lastCRMsg.state.time-timeOfLastSolution<timeTolerance){
+		getLastControls(
+			&lab,
+			&ldotab,
+			&lbeta,
+			&ldotbeta,
+			&dTime,
+			lastCRMsg.state.time);
+		
+		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+	}else
+	{
+		initab = 0;
+
+	}
+	initbeta = lastCRMsg.state.s;
+	params.xinit[0] = lastCRMsg.state.X;
+	params.xinit[1] = lastCRMsg.state.Y;
+	params.xinit[2] = lastCRMsg.state.Psi;
+	params.xinit[3] = lastCRMsg.state.Ux;
+	params.xinit[4] = initab;
+	params.xinit[5] = initbeta;
+	params.xinit[6] = lastCRMsg.path.startingProgress;
+	params.xinit[7] = lastCRMsg.state.bTemp;
+
+	for(int i = 0; i<8;i++){
+		printf("%i: %f\n",i,params.xinit[i]);
+	}
+
+	//gather parameter data
+	int pl = 2*POINTSN+1;
 	
-	struct _idsc_BinaryBlob blob;
-	for (int i = 0; i<N; i++){
-		cns[i].control.uL = 1;
-		cns[i].control.uR = 2;
-		cns[i].control.udotS = 3;
-		cns[i].control.uB = 4;
-		cns[i].state = stateMsg.state;
+	printf("parameters\n");
+	for(int i = 0; i<N;i++){
+		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
+		for (int ip=0; ip<POINTSN;ip++)
+			params.all_parameters[i*pl+1+ip]=lastCRMsg.path.controlPointsX[ip];
+		for (int ip=0; ip<POINTSN;ip++)
+			params.all_parameters[i*pl+1+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
 	}
-	printf("prepared blob\n");
-	blob.data_length = sizeof(struct ControlAndStateMsg)*N;
-	blob.data = (int8_t*)&cns;
-	printf("linked data\n");
-	printf("lcm addr: %p\n",lcm);
-	printf("blob addr: %p\n",&blob);
-	printf("state Ux: %f\n",stateMsg.state.Ux);
-	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-		printf("published message: %d\n",sizeof(struct ControlAndStateMsg)*N);
-	else
-		printf("error while publishing message\n");
+	
+	//assume that this works
+	//for(int i = 0; i<31*20+1;i++)
+	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
+
+	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*10*N);
+
+	//do optimization
+	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
+	//look at data
+	//optimal or maxit (maxit is ok in most cases)
+	if(exitflag == 1 || exitflag == 0){
+		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*10*N);
+		timeOfLastSolution = lastCRMsg.state.time;
+
+		struct ControlAndStateMsg cnsmsg;
+		cnsmsg.messageType = 3;
+		cnsmsg.sequenceInt = outC++;
+		for(int i = 0; i<N; i++){
+			cnsmsg.cns[i].control.uL = 0;//not in use
+			cnsmsg.cns[i].control.uR = 0;//not in use
+			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
+			cnsmsg.cns[i].control.uB = 0;//not in use
+			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S+7];
+			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
+			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
+			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
+			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+9],myoutput.alldata[i*S+2]);
+			cnsmsg.cns[i].state.dotPsi = 0; //not in use
+			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
+			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
+			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+5];
+			cnsmsg.cns[i].state.w2L = 0;//not in use
+			cnsmsg.cns[i].state.w2R = 0;//not in use
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+8];
+			cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+10];
+		}
+
+		printf("prepared blob\n");
+		struct _idsc_BinaryBlob blob;
+		blob.data_length = sizeof(struct ControlAndStateMsg);
+		blob.data = (int8_t*)&cnsmsg;
+		printf("lcm addr: %p\n",lcm);
+		printf("blob addr: %p\n",&blob);
+		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
+			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
+		else
+			printf("error while publishing message\n");
+	}else{
+		printf("exitflag: %d\n",exitflag);
+	}
 }
 
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
+	
+	/*
+	//for testing
+	for(int i = -100; i<100; i++){
+		double v = i/100.0;
+		double maxacc = getMaxAcc(v);
+		printf("%f: %f\n", v, maxacc);
+	}*/
+	
 	lcm = lcm_create(NULL);
 	if(!lcm)
 		return 1;
@@ -130,6 +218,8 @@ int main(int argc, char *argv[]) {
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs", &state_handler, NULL);
+	//idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pp", &path_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op", &para_handler, NULL);
 	printf("starting main loop\n");
 	while(1)
 		lcm_handle(lcm);

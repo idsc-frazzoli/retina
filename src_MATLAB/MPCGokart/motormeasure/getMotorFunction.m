@@ -1,8 +1,9 @@
 clear all
 addpath('..')  
-folder = '../SystemAnalysis/ML_out/';
+userdir = getuserdir
+MLTargetFolder = strcat(userdir,'/Documents/ML_out/');
 file = 'fab.csv';
-M = csvread(strcat(folder,file));
+M = csvread(strcat(MLTargetFolder,file));
 t = M(:,1);
 close all
 if(false)
@@ -93,7 +94,7 @@ negD = fullD(fullD(:,2)<-st,:);
 combD = [posD;negD.*[1,-1,-1,-1]];
 
 %split into positive and negative power
-powerthreshold =0.1;
+powerthreshold =100;
 combPosPowerD = combD(combD(:,3)>powerthreshold,:);
 combNegPowerD = combD(combD(:,3)<-powerthreshold,:);
 
@@ -139,3 +140,26 @@ if(true)
     zlabel('forwardacceleration [m/s^2]')
     title('hand crafted model consisting of 4 fitted quadrants')
 end
+
+%compute max 
+
+[cp0,cp1,cp2,cp3] = getSlice(sfpos,maxpower);
+[cn0,cn1,cn2,cn3] = getSlice(sfneg,-maxpower);
+
+x = -5:0.01:5;
+y = zeros(numel(x),1);
+ys = zeros(numel(x),1);
+for i = 1:numel(x)
+   y(i)=getMaxAcc(x(i)); 
+   ys(i)=getSmoothMaxAcc(x(i)); 
+end
+figure
+title('hardcoded min max')
+hold on
+%plot(x,y)
+%plot(-x,-y)
+plot(x,ys)
+plot(-x,-ys)
+hold off
+xlabel('speed [m/s]');
+ylabel('max acc [m/s^2]');

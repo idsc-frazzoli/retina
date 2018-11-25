@@ -5,13 +5,26 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public class MPCOpenLoopSteering extends MPCSteering {
   MPCStateEstimationProvider mpcStateProvider;
+  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
   @Override
   public Scalar getSteering(Scalar time) {
-    ControlAndPredictionStep cnpStep = getStep(time);
-    Scalar timeSinceLastStep = getTimeSinceLastStep(time);
+    Scalar controlTime = time.add(config.steerAntiLag);
+    ControlAndPredictionStep cnpStep = getStep(controlTime);
+    if (cnpStep == null)
+      return null;
+    Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
     return cnpStep.state.getS().add(rampUp);
+  }
+  
+  @Override
+  public Scalar getDotSteering(Scalar time) {
+    Scalar controlTime = time.add(config.steerAntiLag);
+    ControlAndPredictionStep cnpStep = getStep(controlTime);
+    if (cnpStep == null)
+      return null;
+    return cnpStep.control.getudotS();
   }
 
   @Override
@@ -23,4 +36,5 @@ public class MPCOpenLoopSteering extends MPCSteering {
   public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
+
 }

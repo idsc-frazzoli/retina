@@ -41,8 +41,8 @@ public class LinmotPressTestModule extends AbstractModule {
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {
       final int n = LinmotConfig.GLOBAL.pressTestSteps.number().intValue();
-      Tensor tensor = Subdivide.of(0.5, 1, n - 1);
-      JPanel jPanel = new JPanel(new GridLayout(n, 1));
+      Tensor tensor = Subdivide.of(0, 1, n - 1);
+      JPanel jPanel = new JPanel(new GridLayout(n + 1, 1));
       List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {
         Scalar scalar = tensor.Get(index);
@@ -63,6 +63,23 @@ public class LinmotPressTestModule extends AbstractModule {
         });
         jPanel.add(jButton);
       }
+      // also add turn of button
+      JButton jButton = new JButton("turn off");
+      list.add(jButton);
+      jButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          list.forEach(button -> button.setEnabled(false));
+          new Thread(new Runnable() {
+            @Override
+            public void run() {
+              turnOff();
+              list.forEach(button -> button.setEnabled(true));
+            }
+          }).start();
+        }
+      });
+      jPanel.add(jButton);
       jFrame.setContentPane(jPanel);
     }
     windowConfiguration.attach(getClass(), jFrame);
@@ -80,6 +97,19 @@ public class LinmotPressTestModule extends AbstractModule {
     }
     linmotPressTestRimo.stopPress();
     linmotPressTestLinmot.stopPress();
+  }
+
+  void turnOff() {
+    // use same function (turns motors off)
+    linmotPressTestRimo.startPress();
+    linmotPressTestLinmot.startTurnOff();
+    try {
+      Thread.sleep(Magnitude.MILLI_SECOND.toLong(LinmotConfig.GLOBAL.pressTestDuration));
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    linmotPressTestRimo.stopPress();
+    linmotPressTestLinmot.stopTurnOff();
   }
 
   @Override

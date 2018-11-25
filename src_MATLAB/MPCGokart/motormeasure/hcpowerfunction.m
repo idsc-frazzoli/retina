@@ -20,8 +20,8 @@ function acc = hcpowerfunction(vel,pow,sfpos,sfneg, speedthreshold, powerthresho
     elseif(vel<-speedthreshold)
         acc = backwardacc(vel,pow);
     else
-        forval = forwardacc(vel,pow);
-        bacval = backwardacc(vel,pow);
+        forval = forwardacc(speedthreshold,pow);
+        bacval = backwardacc(-speedthreshold,pow);
         acc = interp1([speedthreshold,-speedthreshold],[forval,bacval],vel);
     end
 end
