@@ -19,10 +19,12 @@ import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
 public class BSplineTrack implements TrackInterface {
-  static final int trackSplineOrder = 2;
-  static final int radiusSplineOrder = 1;
-  static Scalar dTol = Quantity.of(0.000001, SI.METER);
-  static Scalar bTol = RealScalar.of(0.1);
+  private static final int SPLINE_ORDER_TRACK = 2;
+  private static final int SPLINE_ORDER_RADIUS = 1;
+  // ---
+  // TODO MH not used
+  private static final Scalar TOL_D = Quantity.of(0.000001, SI.METER);
+  private static final Scalar TOL_B = RealScalar.of(0.1);
   // ---
   protected final Tensor controlPoints;
   protected final Tensor controlPointsR;
@@ -41,7 +43,7 @@ public class BSplineTrack implements TrackInterface {
 
   public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
     // TODO: ensure control points are of same size and [m]
-    int toAdd = Max.of(trackSplineOrder, radiusSplineOrder) + 2;
+    int toAdd = Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) + 2;
     numPoints = controlPointsX.length();
     this.controlPoints = Transpose.of(Tensors.of(controlPointsX, controlPointsY));
     this.controlPointsR = radiusControlPoints.copy();
@@ -58,12 +60,12 @@ public class BSplineTrack implements TrackInterface {
       next++;
       toAdd--;
     }
-    trackSpline = BSplineFunction.of(trackSplineOrder, controlPoints);
+    trackSpline = BSplineFunction.of(SPLINE_ORDER_TRACK, controlPoints);
     Tensor devControl = Differences.of(controlPoints);
-    trackSplineDerivation = BSplineFunction.of(trackSplineOrder - 1, devControl);
+    trackSplineDerivation = BSplineFunction.of(SPLINE_ORDER_TRACK - 1, devControl);
     Tensor devDevControl = Differences.of(devControl);
-    trackSpline2ndDerivation = BSplineFunction.of(trackSplineOrder - 2, devDevControl);
-    radiusTrackSpline = BSplineFunction.of(radiusSplineOrder, this.controlPointsR);
+    trackSpline2ndDerivation = BSplineFunction.of(SPLINE_ORDER_TRACK - 2, devDevControl);
+    radiusTrackSpline = BSplineFunction.of(SPLINE_ORDER_RADIUS, this.controlPointsR);
     // prepare lookup
     posX = new float[(int) (controlPointsX.length() / lookupRes)];
     posY = new float[(int) (controlPointsY.length() / lookupRes)];
@@ -80,7 +82,7 @@ public class BSplineTrack implements TrackInterface {
 
   private Scalar wrap(Scalar pathProgress) {
     // TODO: check if there any specialized functions in the tensor library
-    Scalar offset = Quantity.of(Max.of(trackSplineOrder, radiusSplineOrder) / 2.0 - 0.5, SI.ONE);
+    Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
     Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);
     return pathProgress.subtract(startPoint);
   }
@@ -236,7 +238,7 @@ public class BSplineTrack implements TrackInterface {
   }
 
   protected Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
-    while (Scalars.lessThan(bTol, precision)) {
+    while (Scalars.lessThan(TOL_B, precision)) {
       Scalar bestDist = getDist(position, guess);
       Scalar lower = guess.subtract(precision);
       Scalar upper = guess.add(precision);
