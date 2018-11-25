@@ -27,10 +27,8 @@ public enum BrakingFunction {
   public static Scalar getBrakingAcceleration(Scalar brakingPosition) {
     if (Scalars.lessThan(brakingPosition, brakeStart))
       return Quantity.of(0, SI.ACCELERATION);
-    else {
-      Scalar relBrake = brakingPosition.subtract(brakeStart);
-      return relBrake.multiply(linearFactor).add(relBrake.multiply(relBrake).multiply(quadraticFactor));
-    }
+    Scalar relBrake = brakingPosition.subtract(brakeStart);
+    return relBrake.multiply(linearFactor).add(relBrake.multiply(relBrake).multiply(quadraticFactor));
   }
 
   /** get the wanted actuation position
@@ -40,16 +38,15 @@ public enum BrakingFunction {
   public static Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
     if (Scalars.lessEquals(wantedAcceleration, Quantity.of(0, SI.ACCELERATION))) {
       return null;
-    } else {
-      Scalar D = Sqrt.of(//
-          Power.of(linearFactor, RealScalar.of(2))//
-              .add(RealScalar.of(4)//
-                  .multiply(quadraticFactor)//
-                  .multiply(wantedAcceleration)));
-      Scalar top = linearFactor.negate().add(D);
-      Scalar bottom = RealScalar.of(2).multiply(quadraticFactor);
-      return top.divide(bottom).add(brakeStart);
     }
+    Scalar D = Sqrt.of(//
+        Power.of(linearFactor, RealScalar.of(2))//
+            .add(RealScalar.of(4)//
+                .multiply(quadraticFactor)//
+                .multiply(wantedAcceleration)));
+    Scalar top = linearFactor.negate().add(D);
+    Scalar bottom = RealScalar.of(2).multiply(quadraticFactor);
+    return top.divide(bottom).add(brakeStart);
   }
 
   public static Scalar getRelativePosition(Scalar absolutePosition) {

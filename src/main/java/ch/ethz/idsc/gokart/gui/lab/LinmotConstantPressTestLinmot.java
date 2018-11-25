@@ -7,7 +7,6 @@ import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class LinmotConstantPressTestLinmot implements LinmotPutProvider {
   private boolean isActive = false;
@@ -25,18 +24,17 @@ import ch.ethz.idsc.tensor.Scalar;
       return isActive//
           ? Optional.of(LinmotPutOperation.INSTANCE.turnOff())
           : Optional.empty();
-    } else {
-      System.out.println("active:"+ isActive);
-      return isActive //
-          ? Optional.of(LinmotPutOperation.INSTANCE.absolutePosition(restingPosition))
-          : Optional.empty();
     }
+    System.out.println("active:" + isActive);
+    return isActive //
+        ? Optional.of(LinmotPutOperation.INSTANCE.absolutePosition(restingPosition))
+        : Optional.empty();
   }
-  
+
   public boolean getIsActive() {
     return isActive;
   }
-  
+
   public boolean getIsOff() {
     return turnOff;
   }
@@ -48,7 +46,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public void setOff(boolean off) {
     turnOff = off;
   }
-  
+
   public void setPosition(short pos) {
     restingPosition = pos;
   }

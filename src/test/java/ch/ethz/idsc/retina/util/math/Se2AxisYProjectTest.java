@@ -4,9 +4,9 @@ package ch.ethz.idsc.retina.util.math;
 import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.sample.CircleRandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSampleInterface;
+import ch.ethz.idsc.owl.math.sample.SphereRandomSample;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -112,7 +112,7 @@ public class Se2AxisYProjectTest extends TestCase {
   }
 
   public void testCheck() {
-    RandomSampleInterface rsi = new CircleRandomSample(Tensors.vector(0, 0), RealScalar.of(10));
+    RandomSampleInterface rsi = SphereRandomSample.of(Tensors.vector(0, 0), RealScalar.of(10));
     for (int index = 0; index < 100; ++index) {
       Tensor u = Tensors.vector(0.9, 0, 0.3);
       Tensor p = RandomSample.of(rsi);
@@ -124,7 +124,7 @@ public class Se2AxisYProjectTest extends TestCase {
   }
 
   public void testCheck2() {
-    RandomSampleInterface rsi = new CircleRandomSample(Tensors.vector(0, 0), RealScalar.of(10));
+    RandomSampleInterface rsi = SphereRandomSample.of(Tensors.vector(0, 0), RealScalar.of(10));
     for (int index = 0; index < 100; ++index) {
       Tensor u = Tensors.vector(1.1, 0, 1.3);
       Tensor p = RandomSample.of(rsi);
@@ -136,7 +136,7 @@ public class Se2AxisYProjectTest extends TestCase {
   }
 
   public void testCheckZero() {
-    RandomSampleInterface rsi = new CircleRandomSample(Tensors.vector(0, 0), RealScalar.of(10));
+    RandomSampleInterface rsi = SphereRandomSample.of(Tensors.vector(0, 0), RealScalar.of(10));
     for (int index = 0; index < 100; ++index) {
       Tensor u = Tensors.vector(2, 0, 0);
       Tensor p = RandomSample.of(rsi);
