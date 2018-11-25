@@ -17,7 +17,7 @@ public class MPCOpenLoopSteering extends MPCSteering {
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
     return cnpStep.state.getS().add(rampUp);
   }
-  
+
   @Override
   public Scalar getDotSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
@@ -36,5 +36,4 @@ public class MPCOpenLoopSteering extends MPCSteering {
   public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
-
 }

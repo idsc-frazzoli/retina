@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MPCNativeSession {
   private Process process;
@@ -78,7 +79,7 @@ public class MPCNativeSession {
 
   void last() {
     // stop process
-    if (!externStart)
+    if (Objects.nonNull(process))
       process.destroy();
   }
 }

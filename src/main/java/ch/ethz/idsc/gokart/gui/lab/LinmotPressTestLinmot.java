@@ -25,11 +25,10 @@ import ch.ethz.idsc.tensor.Scalar;
       return isActive//
           ? Optional.of(LinmotPutOperation.INSTANCE.turnOff())
           : Optional.empty();
-    } else {
-      return isActive //
-          ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(scalar))
-          : Optional.empty();
     }
+    return isActive //
+        ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(scalar))
+        : Optional.empty();
   }
 
   public void startPress(Scalar scalar) {

@@ -38,7 +38,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
     {
       JPanel jPanel = new JPanel(new GridLayout(2, 2));
       List<JButton> list = new ArrayList<>();
-      
       // button for previous test
       prev = new JButton("previous");
       list.add(prev);
@@ -49,7 +48,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
         }
       });
       jPanel.add(prev);
-      
       // button for next test
       next = new JButton("next");
       list.add(next);
@@ -60,8 +58,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
         }
       });
       jPanel.add(next);
-      
-      
       // button for test
       test = new JButton("set Active");
       list.add(test);
@@ -72,7 +68,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
         }
       });
       jPanel.add(test);
-      
       // button for test
       setoff = new JButton("set off");
       list.add(setoff);
@@ -83,7 +78,6 @@ public class LinmotConstantPressTestModule extends AbstractModule {
         }
       });
       jPanel.add(setoff);
-
       updateButtons();
       jFrame.setContentPane(jPanel);
     }
@@ -93,39 +87,36 @@ public class LinmotConstantPressTestModule extends AbstractModule {
   }
 
   void next() {
-    position-=10;
+    position -= 10;
     linmotConstantPressTestLinmot.setPosition(position);
     updateButtons();
   }
 
   void previous() {
-    position+=10;
+    position += 10;
     linmotConstantPressTestLinmot.setPosition(position);
     updateButtons();
   }
-  
+
   void switchOff() {
-    linmotConstantPressTestLinmot.setOff(
-        !linmotConstantPressTestLinmot.getIsOff());
+    linmotConstantPressTestLinmot.setOff(!linmotConstantPressTestLinmot.getIsOff());
     System.out.println(linmotConstantPressTestLinmot.getIsOff());
     updateButtons();
   }
-  
+
   void switchActive() {
     linmotConstantPressTestLinmot.setPosition(position);
-    linmotConstantPressTestLinmot.setActive(
-        !linmotConstantPressTestLinmot.getIsActive());
+    linmotConstantPressTestLinmot.setActive(!linmotConstantPressTestLinmot.getIsActive());
     updateButtons();
   }
 
   void updateButtons() {
-    String postext = " pos: "+position;
-    if(linmotConstantPressTestLinmot.getIsActive())
+    String postext = " pos: " + position;
+    if (linmotConstantPressTestLinmot.getIsActive())
       test.setText("deactivate" + postext);
     else
-      test.setText("activate"+ postext);
-    
-    if(linmotConstantPressTestLinmot.getIsOff())
+      test.setText("activate" + postext);
+    if (linmotConstantPressTestLinmot.getIsOff())
       setoff.setText("turn current on");
     else
       setoff.setText("turn current off");

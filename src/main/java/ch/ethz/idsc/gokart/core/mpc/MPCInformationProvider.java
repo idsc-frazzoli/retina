@@ -27,8 +27,8 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
                 localCNS.steps[i].state.getX(), //
                 localCNS.steps[i].state.getY()));
       return positions;
-    } else
-      return Tensors.empty();
+    }
+    return Tensors.empty();
   }
 
   /** get the acceleration at prediction steps */
@@ -39,8 +39,8 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
       for (int i = 0; i < localCNS.steps.length; i++)
         accelerations.append(localCNS.steps[i].control.getaB());
       return accelerations;
-    } else
-      return Tensors.empty();
+    }
+    return Tensors.empty();
   }
 
   /** get the poses at steps in {x,y,a} */
@@ -59,7 +59,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
             ));
       }
       return orientations;
-    } else
-      return Tensors.empty();
+    }
+    return Tensors.empty();
   }
 }

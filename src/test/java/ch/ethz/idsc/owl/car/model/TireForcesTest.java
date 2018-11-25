@@ -3,7 +3,6 @@ package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.CHatchbackModel;
-import ch.ethz.idsc.owl.math.FrictionCoefficients;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

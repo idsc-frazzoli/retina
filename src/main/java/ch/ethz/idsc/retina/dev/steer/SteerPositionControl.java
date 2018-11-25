@@ -47,7 +47,7 @@ public class SteerPositionControl {
     lastTor_value = SteerConfig.GLOBAL.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
     return lastTor_value;
   }
-  
+
   /** @param pos_error in "SCE"
    * @param spd_error in "SCE s^-1"
    * @return "N*m" */

@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
+import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
@@ -73,7 +74,10 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
     // it's 0.9999999...
-    assertTrue(Chop._04.close(powers, Tensors.vector(1, 1)));
+    // System.out.println(powers);
+    Scalar between = Norm._2.between(powers, Tensors.vector(1, 1));
+    assertTrue(Scalars.lessThan(between, RealScalar.of(0.02)));
+    // assertTrue(Chop._04.close(powers, Tensors.vector(1, 1)));
   }
 
   public void testSaturatedNegative() {
@@ -87,7 +91,10 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    assertTrue(Chop._04.close(powers, Tensors.vector(-1, -1)));
+    // System.out.println(powers);
+    Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
+    assertTrue(Scalars.lessThan(between, RealScalar.of(0.02)));
+    // assertTrue(Chop._04.close(powers, Tensors.vector(-1, -1)));
   }
 
   /* Scalar expectedRotationPerMeterDriven

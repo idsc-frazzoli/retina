@@ -2,7 +2,6 @@
 package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.TrackInterface;
-import ch.ethz.idsc.owl.math.FrictionCoefficients;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 

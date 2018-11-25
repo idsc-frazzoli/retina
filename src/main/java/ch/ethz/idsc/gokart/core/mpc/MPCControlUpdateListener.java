@@ -8,10 +8,6 @@ public abstract class MPCControlUpdateListener {
   protected ControlAndPredictionSteps cns = null;
   int istep = 0;
 
-  void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    this.cns = controlAndPredictionSteps;
-  }
-
   /** get the last step before a point int time
    * 
    * @param query time in Unit [s]
@@ -36,6 +32,10 @@ public abstract class MPCControlUpdateListener {
     }
     // System.out.println("time: "+time.subtract(cns.steps[0].state.getTime())+"step: "+istep);
     return cns.steps[istep];
+  }
+
+  void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    this.cns = controlAndPredictionSteps;
   }
 
   /** the time that passed after the last step

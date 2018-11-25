@@ -17,6 +17,7 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
+  // TODO design no good. lastcns should not be public. use member function instead
   public ControlAndPredictionSteps lastcns = null;
 
   @Override
