@@ -1052,11 +1052,11 @@ public enum GokartLogFile implements LogFile {
   _20181109T140126_c6eb9ac8, //
   /** slow mpc wobbly track */
   _20181109T152146_c04d20dd, //
-  /** mpc wobbly track */
+  /** mpc curvy track */
   _20181109T152823_c04d20dd, //
-  /** mpc wobbly track */
+  /** mpc curvy track */
   _20181109T154810_c04d20dd, //
-  /** mpc wobbly track */
+  /** mpc curvy track */
   _20181109T155424_c04d20dd, //
   /** mpc oval track */
   _20181109T155803_c04d20dd, //
@@ -1064,83 +1064,56 @@ public enum GokartLogFile implements LogFile {
   _20181109T160019_c04d20dd, //
   /***************************************************/
   /* 2018-11-12 */
-  /** */
-  _20181112T140056_6e6f094b, //
-  /** */
+  /** slow manual driving */
   _20181112T140527_6e6f094b, //
-  /** */
-  _20181112T140905_6e6f094b, //
-  /** */
-  _20181112T141407_6e6f094b, //
-  /** */
-  _20181112T141931_6e6f094b, //
-  /** */
-  _20181112T142200_6e6f094b, //
-  /** */
+  /** slow manual driving */
   _20181112T144415_1a22f701, //
-  /** */
+  /** mpc driving narrow circles */
   _20181112T144729_1a22f701, //
-  /** */
+  /** mpc driving medium circles */
   _20181112T145009_1a22f701, //
-  /** */
-  _20181112T145552_1a22f701, //
-  /** */
-  _20181112T145757_1a22f701, //
-  /** */
+  /** mpc oval track */
   _20181112T145912_1a22f701, //
-  /** */
+  /** mpc something */
   _20181112T152435_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T152833_1a22f701, //
-  /** */
-  _20181112T153147_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T153332_1a22f701, //
-  /** */
-  _20181112T153819_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T154058_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T154408_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T164438_1a22f701, //
-  /** */
+  /** mpc curvy track */
   _20181112T164719_1a22f701, //
-  /** */
+  /** mpc curvy track, manual driving */
   _20181112T170810_1a22f701, //
-  /** */
-  _20181112T171357_1a22f701, //
-  /** */
+  /** mpc curvy track up to 5[m/s] */
   _20181112T171453_1a22f701, //
   /***************************************************/
   /* 2018-11-15 */
-  /** */
-  _20181115T120304_2153a293, //
-  /** */
-  _20181115T120611_2153a293, //
-  /** */
-  _20181115T120847_2153a293, //
+  // no driving
   /***************************************************/
   /* 2018-11-20 */
-  /** */
+  /** brief mpc and manual driving */
   _20181120T153650_3e86cf88, //
-  /** */
+  /** mpc curvy track */
   _20181120T160108_1bd00b36, //
-  /** */
+  /** mpc curvy track */
   _20181120T160653_1bd00b36, //
-  /** */
-  _20181120T161256_1bd00b36, //
-  /** */
+  /** brief mpc and manual driving */
   _20181120T161355_1bd00b36, //
-  /** */
+  /** mpc curvy track */
   _20181120T161932_1bd00b36, //
-  /** */
+  /** manual driving */
   _20181120T162403_1bd00b36, //
-  /** */
+  /** mpc curvy track, trajectory planning */
   _20181120T165942_b52778b7, //
-  /** */
+  /** brief mpc and manual driving */
   _20181120T191027_b52778b7, //
-  /** */
+  /** brief mpc and manual driving */
   _20181120T192304_b52778b7, //
   ;
   // ---
