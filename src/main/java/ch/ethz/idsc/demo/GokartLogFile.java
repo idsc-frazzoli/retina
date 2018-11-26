@@ -984,6 +984,137 @@ public enum GokartLogFile implements LogFile {
   _20181025T162632_6b1a19b1, //
   /** trajectory planning */
   _20181025T165405_6b1a19b1, //
+  /** trajectory planning, manual driving */
+  _20181025T183141_bcbf8a93, //
+  /***************************************************/
+  /* 2018-10-29 */
+  /** slow manual driving */
+  _20181029T132801_e004ef97, //
+  /** recording effect of fog machine */
+  _20181029T134619_e004ef97, //
+  /** trajectory planning */
+  _20181029T152509_e004ef97, //
+  /** trajectory planning */
+  _20181029T153536_e004ef97, //
+  /** trajectory planning */
+  _20181029T160947_e004ef97, //
+  /** trajectory planning */
+  _20181029T170443_e004ef97, //
+  /** trajectory planning, figure eight, reverse */
+  _20181029T175711_e004ef97, //
+  /** manual driving */
+  _20181029T191539_e004ef97, //
+  /** manual driving */
+  _20181029T193004_e004ef97, //
+  /** manual driving */
+  _20181029T194801_e004ef97, //
+  /***************************************************/
+  /* 2018-10-30 */
+  /** manual driving */
+  _20181030T171745_e004ef97, //
+  /** trajectory planning */
+  _20181030T173005_e004ef97, //
+  /** trajectory planning */
+  _20181030T173307_e004ef97, //
+  /***************************************************/
+  /* 2018-11-01 */
+  /** trajectory planning */
+  _20181101T115317_e004ef97, //
+  /** trajectory planning */
+  _20181101T122932_e004ef97, //
+  /** trajectory planning */
+  _20181101T123219_e004ef97, //
+  /** trajectory planning */
+  _20181101T150501_e004ef97, //
+  /** trajectory planning */
+  _20181101T161155_e004ef97, //
+  /***************************************************/
+  /* 2018-11-06 */
+  /** trajectory planning */
+  _20181106T144827_e004ef97, //
+  /** trajectory planning */
+  _20181106T165850_e004ef97, //
+  /** trajectory planning */
+  _20181106T173049_e004ef97, //
+  /***************************************************/
+  /* 2018-11-09 */
+  /** slow mpc */
+  _20181109T110020_33c24ec8, //
+  /** slow mpc */
+  _20181109T110837_33c24ec8, //
+  /** slow mpc */
+  _20181109T115340_33c24ec8, //
+  /** slow mpc */
+  _20181109T135439_c6eb9ac8, //
+  /** slow mpc */
+  _20181109T135845_c6eb9ac8, //
+  /** slow mpc */
+  _20181109T140126_c6eb9ac8, //
+  /** slow mpc wobbly track */
+  _20181109T152146_c04d20dd, //
+  /** mpc curvy track */
+  _20181109T152823_c04d20dd, //
+  /** mpc curvy track */
+  _20181109T154810_c04d20dd, //
+  /** mpc curvy track */
+  _20181109T155424_c04d20dd, //
+  /** mpc oval track */
+  _20181109T155803_c04d20dd, //
+  /** mpc oval track */
+  _20181109T160019_c04d20dd, //
+  /***************************************************/
+  /* 2018-11-12 */
+  /** slow manual driving */
+  _20181112T140527_6e6f094b, //
+  /** slow manual driving */
+  _20181112T144415_1a22f701, //
+  /** mpc driving narrow circles */
+  _20181112T144729_1a22f701, //
+  /** mpc driving medium circles */
+  _20181112T145009_1a22f701, //
+  /** mpc oval track */
+  _20181112T145912_1a22f701, //
+  /** mpc something */
+  _20181112T152435_1a22f701, //
+  /** mpc curvy track */
+  _20181112T152833_1a22f701, //
+  /** mpc curvy track */
+  _20181112T153332_1a22f701, //
+  /** mpc curvy track */
+  _20181112T154058_1a22f701, //
+  /** mpc curvy track */
+  _20181112T154408_1a22f701, //
+  /** mpc curvy track */
+  _20181112T164438_1a22f701, //
+  /** mpc curvy track */
+  _20181112T164719_1a22f701, //
+  /** mpc curvy track, manual driving */
+  _20181112T170810_1a22f701, //
+  /** mpc curvy track up to 5[m/s] */
+  _20181112T171453_1a22f701, //
+  /***************************************************/
+  /* 2018-11-15 */
+  // no driving
+  /***************************************************/
+  /* 2018-11-20 */
+  /** brief mpc and manual driving */
+  _20181120T153650_3e86cf88, //
+  /** mpc curvy track */
+  _20181120T160108_1bd00b36, //
+  /** mpc curvy track */
+  _20181120T160653_1bd00b36, //
+  /** brief mpc and manual driving */
+  _20181120T161355_1bd00b36, //
+  /** mpc curvy track */
+  _20181120T161932_1bd00b36, //
+  /** manual driving */
+  _20181120T162403_1bd00b36, //
+  /** mpc curvy track, trajectory planning */
+  _20181120T165942_b52778b7, //
+  /** brief mpc and manual driving */
+  _20181120T191027_b52778b7, //
+  /** brief mpc and manual driving */
+  _20181120T192304_b52778b7, //
   ;
   // ---
   @Override // from LogFile
