@@ -23,7 +23,7 @@ public class GokartLogFileTest extends TestCase {
             File marker = new File(host.getParentFile(), host.getName() + "_");
             if (!marker.isDirectory()) {
               System.err.println("log file missing: " + gokartLogFile);
-              // assertTrue(false);
+              // fail();
             }
           }
         } catch (Exception exception) {
