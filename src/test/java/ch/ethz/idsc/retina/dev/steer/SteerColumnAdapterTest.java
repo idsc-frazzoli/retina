@@ -8,7 +8,7 @@ public class SteerColumnAdapterTest extends TestCase {
   public void testSimple() {
     try {
       new SteerColumnAdapter(false, RealScalar.ZERO);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

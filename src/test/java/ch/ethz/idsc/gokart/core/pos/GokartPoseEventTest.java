@@ -27,7 +27,7 @@ public class GokartPoseEventTest extends TestCase {
     Tensor pose = Tensors.fromString("{1[m],2[m],3[m]}");
     try {
       GokartPoseEvents.getPoseEvent(pose, RealScalar.ONE);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }
@@ -65,7 +65,7 @@ public class GokartPoseEventTest extends TestCase {
     assertEquals(suo.apply(Quantity.of(2, "rad")), RealScalar.of(2));
     try {
       suo.apply(Quantity.of(2, SI.SECOND));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

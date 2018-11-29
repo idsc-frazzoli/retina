@@ -59,7 +59,7 @@ public class GokartPoseOdometryDemoTest extends TestCase {
     GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
     try {
       demo.setPose(Array.zeros(3));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

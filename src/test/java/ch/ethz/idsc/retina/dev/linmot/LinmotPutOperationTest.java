@@ -32,7 +32,7 @@ public class LinmotPutOperationTest extends TestCase {
   public void testException() {
     try {
       LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.of(-.3));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }
