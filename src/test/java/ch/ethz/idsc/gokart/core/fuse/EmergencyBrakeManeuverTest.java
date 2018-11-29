@@ -64,7 +64,7 @@ public class EmergencyBrakeManeuverTest extends TestCase {
     Scalar velocity = Quantity.of(10, "m*s");
     try {
       new EmergencyBrakeManeuver(responseTime, maxDeceleration, velocity);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

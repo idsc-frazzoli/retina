@@ -18,7 +18,7 @@ public class GokartStatusEventTest extends TestCase {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     try {
       steerMapping.getAngleFromSCE(gokartStatusEvent);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

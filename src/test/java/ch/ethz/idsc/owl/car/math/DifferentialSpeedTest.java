@@ -155,7 +155,7 @@ public class DifferentialSpeedTest extends TestCase {
   public void testFail() {
     try {
       DifferentialSpeed.fromSI(RealScalar.of(0.0), RealScalar.of(.5));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

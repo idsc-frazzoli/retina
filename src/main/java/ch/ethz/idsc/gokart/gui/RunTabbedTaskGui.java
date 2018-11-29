@@ -113,8 +113,6 @@ enum RunTabbedTaskGui {
       SEyeSlamOdometryModule.class, //
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class, //
-      GokartTrajectoryModule.class, //
-      GokartTrajectorySRModule.class, //
       MPCKinematicDrivingModule.class);
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //

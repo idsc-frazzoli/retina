@@ -16,7 +16,7 @@ public class SteerColumnTrackerTest extends TestCase {
   public void testSimpleFail() {
     try {
       new SteerColumnTracker().getSteerColumnEncoderCentered();
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }
