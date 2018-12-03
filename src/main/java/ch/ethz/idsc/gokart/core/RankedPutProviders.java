@@ -27,7 +27,7 @@ import ch.ethz.idsc.retina.util.data.DataEvent;
   }
 
   public boolean remove(PutProvider<PE> putProvider) {
-    return map.get(putProvider.getProviderRank()).add(putProvider);
+    return map.get(putProvider.getProviderRank()).remove(putProvider);
   }
 
   public int size() {
