@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCSimpleBraking extends MPCBraking {
   MPCStateEstimationProvider mpcStateProvider;
-  final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
   int inext = 0;
 

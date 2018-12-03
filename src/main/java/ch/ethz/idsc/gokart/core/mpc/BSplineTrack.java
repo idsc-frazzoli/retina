@@ -286,9 +286,9 @@ public class BSplineTrack implements TrackInterface {
     for (int i = 0; i < resolution; i++) {
       Scalar prog = RealScalar.of(i).multiply(step);
       Tensor linepos = //
-          getPosition(prog).//
-              add(getRightDirection(prog).//
-                  multiply(getRadius(prog)));
+          getPosition(prog) //
+              .add(getRightDirection(prog) //
+                  .multiply(getRadius(prog)));
       line.append(linepos);
     }
     return line;

@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.RealScalar;
@@ -7,6 +8,9 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class MPCInformationProvider extends MPCControlUpdateListener {
   private static MPCInformationProvider INSTANCE;
+  // TODO why should this class be a singleton?
+  // if really needs to be singleton then try to directly assign INSTANCE and make it final
+  // = new MPCInformationProvider();
 
   public static MPCInformationProvider getInstance() {
     if (INSTANCE == null)
@@ -20,10 +24,12 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
     // avoid race conditions
     if (cns != null) {
       ControlAndPredictionSteps localCNS = cns;
+      // TODO use stream notation
       Tensor positions = Tensors.empty();
-      for (int i = 0; i < localCNS.steps.length; i++)
+      for (int i = 0; i < localCNS.steps.length; ++i)
+        // TODO make member function in GokartState
         positions.append(//
-            Tensors.of(//
+            Tensors.of( //
                 localCNS.steps[i].state.getX(), //
                 localCNS.steps[i].state.getY()));
       return positions;
@@ -49,6 +55,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
       ControlAndPredictionSteps localCNS = cns;
       Tensor orientations = Tensors.empty();
       for (int i = 0; i < localCNS.steps.length; i++) {
+        // TODO make member function in GokartState
         Scalar X = RealScalar.of(localCNS.steps[i].state.getX().number().doubleValue());
         Scalar Y = RealScalar.of(localCNS.steps[i].state.getY().number().doubleValue());
         orientations.append(//

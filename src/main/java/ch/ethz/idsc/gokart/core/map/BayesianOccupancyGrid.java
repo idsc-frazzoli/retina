@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -43,7 +44,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
+public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, PlanableOccupancyGrid {
   // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
@@ -353,6 +354,27 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     return true;
   }
 
+  // added by mh TODO: decide wether to do that in subclass?
+  /** @return the currently used gridsize */
+  @Override
+  public Tensor getGridSize() {
+    return gridSize;
+  }
+
+  /** return if specific cell is occupied
+   * @param cell
+   * @return true if cell is occupied */
+  @Override
+  public boolean isCellOccupied(Point cell) {
+    int pix = cell.x;
+    if (0 <= pix && pix < dimx) {
+      int piy = cell.y;
+      if (0 <= piy && piy < dimy)
+        return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;
+    }
+    return true;
+  }
+
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor model2pixel = geometricLayer.getMatrix();
@@ -361,5 +383,13 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
     graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
+  }
+
+  @Override
+  public Tensor getTransform() {
+    Tensor translate = IdentityMatrix.of(3);
+    translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
+    translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
+    return IdentityMatrix.of(3).dot(scaling).dot(translate);
   }
 }

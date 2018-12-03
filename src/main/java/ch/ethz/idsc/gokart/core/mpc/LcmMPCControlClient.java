@@ -80,9 +80,8 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
     // System.out.println(cns.controlAndPredictionSteps.steps[0]);
-    for (MPCControlUpdateListener listener : listeners) {
+    for (MPCControlUpdateListener listener : listeners)
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
-    }
     lastcns = cns.controlAndPredictionSteps;
   }
 

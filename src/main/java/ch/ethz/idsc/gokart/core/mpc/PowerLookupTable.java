@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class PowerLookupTable {
+  // TODO class design: directly assign INSTANCE = new PowerLookupTable();
   private static PowerLookupTable INSTANCE;
   // to ensure that the maximum motor torque is actually applied
 
