@@ -26,6 +26,7 @@ public class LidarGyroLocalization {
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final Tensor inverseLidar = Inverse.of(lidar).unmodifiable();
+  /** lidar rate has unit s^-1 */
   private final Scalar lidarRate = SensorsConfig.GLOBAL.vlp16_rate;
   // ---
   private final Tensor model2pixel;
@@ -38,7 +39,7 @@ public class LidarGyroLocalization {
   }
 
   /** @param state {x[m], y[m], angle} */
-  public void setState(Tensor state) {
+  void setState(Tensor state) {
     _model = GokartPoseHelper.toSE2Matrix(state);
   }
 
@@ -46,7 +47,7 @@ public class LidarGyroLocalization {
    * 
    * @param points
    * @return */
-  public Optional<SlamResult> handle(Tensor points) {
+  Optional<SlamResult> handle(Tensor points) {
     Tensor model = _model;
     Scalar rate = DavisImuTracker.INSTANCE.getGyroZ().divide(lidarRate);
     // System.out.println("rate=" + rate);

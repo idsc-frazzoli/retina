@@ -5,14 +5,11 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
@@ -57,8 +54,9 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   };
   // ---
   // TODO JPH due to the special remove logic, the providers data structure should be in a separate class
-  private final Set<PutProvider<PE>> providers = //
-      new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  // private final Set<PutProvider<PE>> providers1 = //
+  // new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
+  private final RankedPutProviders<PE> rankedPutProviders = new RankedPutProviders<>();
   private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
   private Timer timer;
 
@@ -77,22 +75,24 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        synchronized (providers) {
-          for (PutProvider<PE> putProvider : providers) {
-            Optional<PE> optional = putProvider.putEvent();
-            if (optional.isPresent())
-              try {
-                putProviderActive = putProvider;
-                PE putEvent = optional.get();
-                byte[] data = putEvent.asArray();
-                datagramSocketManager.send(getDatagramPacket(data));
-                for (PutListener<PE> putListener : putListeners)
-                  putListener.putEvent(putEvent); // notify put listener
-                return;
-              } catch (Exception exception) {
-                exception.printStackTrace();
-              }
-          }
+        // synchronized (providers2)
+        {
+          for (List<PutProvider<PE>> list : rankedPutProviders.values())
+            for (PutProvider<PE> putProvider : list) {
+              Optional<PE> optional = putProvider.putEvent();
+              if (optional.isPresent())
+                try {
+                  putProviderActive = putProvider;
+                  PE putEvent = optional.get();
+                  byte[] data = putEvent.asArray();
+                  datagramSocketManager.send(getDatagramPacket(data));
+                  for (PutListener<PE> putListener : putListeners)
+                    putListener.putEvent(putEvent); // notify put listener
+                  return;
+                } catch (Exception exception) {
+                  exception.printStackTrace();
+                }
+            }
         }
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
@@ -101,7 +101,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /***************************************************/
   public final int getPutProviderSize() {
-    return providers.size();
+    return rankedPutProviders.size();
   }
 
   public final int getPutListenersSize() {
@@ -150,8 +150,9 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /***************************************************/
   public final void addPutProvider(PutProvider<PE> putProvider) {
-    synchronized (providers) {
-      boolean added = providers.add(putProvider);
+    // synchronized (providers)
+    {
+      boolean added = rankedPutProviders.add(putProvider);
       if (!added) {
         System.err.println(putProvider.getClass().getSimpleName());
         new RuntimeException("put provider not added").printStackTrace();
@@ -160,18 +161,19 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   }
 
   public final void removePutProvider(PutProvider<PE> putProvider) {
-    synchronized (providers) {
-      boolean removed = providers.remove(putProvider);
+    // synchronized (providers)
+    {
+      boolean removed = rankedPutProviders.remove(putProvider);
       if (!removed) {
-        Iterator<PutProvider<PE>> iterator = providers.iterator();
-        while (iterator.hasNext()) {
-          PutProvider<PE> next = iterator.next();
-          if (next == putProvider) {
-            iterator.remove();
-            System.out.println("special remove applied.");
-            return;
-          }
-        }
+        // Iterator<PutProvider<PE>> iterator = providers.iterator();
+        // while (iterator.hasNext()) {
+        // PutProvider<PE> next = iterator.next();
+        // if (next == putProvider) {
+        // iterator.remove();
+        // System.out.println("special remove applied.");
+        // return;
+        // }
+        // }
         // ---
         System.err.println(putProvider.getClass().getSimpleName());
         new RuntimeException("put provider not removed").printStackTrace();
@@ -202,7 +204,8 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   /***************************************************/
   public final void addPutListener(PutListener<PE> putListener) {
-    synchronized (providers) {
+    // synchronized (providers)
+    {
       boolean added = putListeners.add(putListener);
       if (!added) {
         System.err.println(putListener.getClass().getSimpleName());
@@ -212,7 +215,8 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   }
 
   public final void removePutListener(PutListener<PE> putListener) {
-    synchronized (providers) {
+    // synchronized (providers)
+    {
       boolean removed = putListeners.remove(putListener);
       if (!removed) {
         System.err.println(putListener.getClass().getSimpleName());
