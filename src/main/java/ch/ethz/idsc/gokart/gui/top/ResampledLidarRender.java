@@ -44,7 +44,7 @@ public class ResampledLidarRender extends LidarRender {
       graphics.setColor(new Color(0, 128, 0, 128));
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
-    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
+    final List<Tensor> list = LocalizationConfig.GLOBAL.getResample().apply(points).getPoints();
     {
       graphics.setColor(color);
       for (Tensor pnts : list) {
