@@ -87,7 +87,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
     if (lastGokartState == null || !lastGokartState.getTime().equals(lastUpdate))
-      lastGokartState = new GokartState(//
+      lastGokartState = new GokartState( //
           getTime(), //
           Ux, //
           Uy, //

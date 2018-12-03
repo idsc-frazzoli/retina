@@ -197,9 +197,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       }
     };
     System.out.println("Scheduling Timer: start");
-    timer.schedule(controlRequestTask, //
-        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000), // use update cycle at startup
-        (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+    long millis = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle);
+    timer.schedule(controlRequestTask, millis, millis); // use update cycle at startup
     lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
       @Override
       void doAction() {
@@ -213,9 +212,11 @@ public class MPCKinematicDrivingModule extends AbstractModule {
             requestControl();
           }
         };
-        timer.schedule(controlRequestTask, //
-            (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), //
-            (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
+        long delay_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateDelay);
+        long cycle_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle);
+        timer.schedule(controlRequestTask, delay_ms, cycle_ms);
+        // (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), //
+        // (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
       }
     });
   }

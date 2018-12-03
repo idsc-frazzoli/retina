@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.awt.Graphics2D;
@@ -256,12 +257,10 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     if (routePolygon == null) {
       if (route == null)
         return Tensors.empty();
-      else {
-        Tensor grid2model = occupancyGrid.getTransform();
-        for (Cell c : route) {
-          routePolygon.append(grid2model.dot(Tensors.vector(c.x, c.y)));
-        }
-      }
+      // ---
+      Tensor grid2model = occupancyGrid.getTransform();
+      for (Cell c : route)
+        routePolygon.append(grid2model.dot(Tensors.vector(c.x, c.y)));
     }
     return routePolygon;
   }

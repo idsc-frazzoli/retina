@@ -356,6 +356,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
 
   // added by mh TODO: decide wether to do that in subclass?
   /** @return the currently used gridsize */
+  @Override
   public Tensor getGridSize() {
     return gridSize;
   }
@@ -363,6 +364,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
   /** return if specific cell is occupied
    * @param cell
    * @return true if cell is occupied */
+  @Override
   public boolean isCellOccupied(Point cell) {
     int pix = cell.x;
     if (0 <= pix && pix < dimx) {

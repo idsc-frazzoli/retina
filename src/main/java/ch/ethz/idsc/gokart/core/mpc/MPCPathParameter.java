@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -19,19 +20,17 @@ public class MPCPathParameter implements MPCNativeInsertable {
 
   public MPCPathParameter(ByteBuffer byteBuffer) {
     int n = byteBuffer.getInt();
-    startingProgress = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    startingProgress = RealScalar.of(byteBuffer.getFloat());
     controlPointsX = Tensors.empty();
     controlPointsY = Tensors.empty();
     controlPointsR = Tensors.empty();
-    for (int i = 0; i < n; i++) {
+    // controlPointsX = Tensor.of(IntStream.range(0, n).mapToObj(i->Quantity.of(byteBuffer.getFloat(), SI.METER)));
+    for (int i = 0; i < n; ++i)
       controlPointsX.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
-    }
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i)
       controlPointsY.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
-    }
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i)
       controlPointsR.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
-    }
   }
 
   /** @param startingProgress progress on the spline where 0 -> position between the first 2 control points
@@ -50,15 +49,12 @@ public class MPCPathParameter implements MPCNativeInsertable {
     int n = controlPointsX.length();
     byteBuffer.putInt(n);
     byteBuffer.putFloat(startingProgress.number().floatValue());
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i)
       byteBuffer.putFloat(controlPointsX.Get(i).number().floatValue());
-    }
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i)
       byteBuffer.putFloat(controlPointsY.Get(i).number().floatValue());
-    }
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i)
       byteBuffer.putFloat(controlPointsR.Get(i).number().floatValue());
-    }
   }
 
   public Tensor getControlPointsX() {
