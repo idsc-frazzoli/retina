@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.sca.N;
 // TODO add method that provides "delta_pose" for a variable dt
 @SafetyCritical
 public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
-  private static final Scalar HALF = DoubleScalar.of(0.5);
+  static final Scalar HALF = DoubleScalar.of(0.5);
 
   public static GokartPoseOdometry create(Tensor state) {
     return new GokartPoseOdometry(state);
@@ -38,17 +38,17 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   }
 
   // ---
-  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
-  private Tensor state;
+  final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
+  Tensor state;
   /** initial quality value == 0 */
   private Scalar quality = RealScalar.ZERO;
 
-  private GokartPoseOdometry(Tensor state) {
+  GokartPoseOdometry(Tensor state) {
     this.state = state.copy();
   }
 
   @Override // from RimoGetListener
-  public void getEvent(RimoGetEvent rimoGetEvent) {
+  public final void getEvent(RimoGetEvent rimoGetEvent) {
     step(rimoGetEvent.getAngularRate_Y_pair());
   }
 
@@ -77,12 +77,12 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   }
 
   @Override // from GokartPoseInterface
-  public Tensor getPose() {
+  public final Tensor getPose() {
     return state.unmodifiable();
   }
 
   @Override
-  public synchronized void setPose(Tensor pose, Scalar quality) {
+  public final synchronized void setPose(Tensor pose, Scalar quality) {
     // TODO this is not good design: odometry should always be consistent integration of wheels!
     // other entities may track different poses
     state = pose.copy();
@@ -90,7 +90,7 @@ public class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener 
   }
 
   @Override
-  public GokartPoseEvent getPoseEvent() {
+  public final GokartPoseEvent getPoseEvent() {
     return GokartPoseEvents.getPoseEvent(state, quality);
   }
 }

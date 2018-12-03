@@ -11,16 +11,19 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
  * the {@link GokartPoseOdometry} */
 // TODO architecture not ideal: should listen directly to socket?
 /* package */ class OdometryRimoGetLcmClient extends BinaryLcmClient {
-  public final GokartPoseOdometry gokartPoseOdometry;
+  private final GokartPoseOdometry gokartPoseOdometry;
+  public final GokartGyroPoseOdometry gokartGyroPoseOdometry;
 
   public OdometryRimoGetLcmClient() {
     gokartPoseOdometry = GokartPoseOdometry.create();
+    gokartGyroPoseOdometry = GokartGyroPoseOdometry.create();
   }
 
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
     RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
     gokartPoseOdometry.getEvent(rimoGetEvent);
+    gokartGyroPoseOdometry.getEvent(rimoGetEvent);
   }
 
   @Override // from LcmClientAdapter
