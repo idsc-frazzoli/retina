@@ -61,7 +61,7 @@ public class GyroOfflineLocalize extends OfflineLocalize {
     // TODO the sign of rate was changed 2018-09
     Scalar rate = getGyroAndReset().divide(LIDAR_RATE);
     // System.out.println("rate=" + rate);
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample() //
+    List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
         .apply(points).getPointsSpin(rate);
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430

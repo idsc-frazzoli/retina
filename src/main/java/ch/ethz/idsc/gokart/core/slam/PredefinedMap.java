@@ -47,6 +47,8 @@ public enum PredefinedMap implements LocalizationImage {
   DUBILAB_LOCALIZATION_20180904(7.5), //
   /** car and house tents in new positions for tse2 planning */
   DUBILAB_LOCALIZATION_20180912(7.5), //
+  /** tents at parking position */
+  DUBILAB_LOCALIZATION_20181128(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
