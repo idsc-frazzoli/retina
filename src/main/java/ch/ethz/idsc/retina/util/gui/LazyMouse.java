@@ -36,8 +36,8 @@ public class LazyMouse implements MouseListener, MouseMotionListener {
   private boolean shortFromPressed(MouseEvent myMouseEvent) {
     Point myPointC = myMouseEvent.getPoint();
     Point myPointS = myMouseEvent.getLocationOnScreen();
-    return Math.hypot(myPointC.x - myPressedC.x, myPointC.y - myPressedC.y) <= tolerance && //
-        Math.hypot(myPointS.x - myPressedS.x, myPointS.y - myPressedS.y) <= tolerance;
+    return Math.hypot(myPointC.x - myPressedC.x, myPointC.y - myPressedC.y) <= tolerance //
+        && Math.hypot(myPointS.x - myPressedS.x, myPointS.y - myPressedS.y) <= tolerance;
   }
 
   @Override

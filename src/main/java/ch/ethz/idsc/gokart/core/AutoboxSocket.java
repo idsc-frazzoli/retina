@@ -53,9 +53,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
     }
   };
   // ---
-  // TODO JPH due to the special remove logic, the providers data structure should be in a separate class
-  // private final Set<PutProvider<PE>> providers1 = //
-  // new ConcurrentSkipListSet<>(PutProviderComparator.INSTANCE);
   private final RankedPutProviders<PE> rankedPutProviders = new RankedPutProviders<>();
   private final List<PutListener<PE>> putListeners = new CopyOnWriteArrayList<>();
   private Timer timer;
@@ -157,16 +154,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   public final void removePutProvider(PutProvider<PE> putProvider) {
     boolean removed = rankedPutProviders.remove(putProvider);
     if (!removed) {
-      // Iterator<PutProvider<PE>> iterator = providers.iterator();
-      // while (iterator.hasNext()) {
-      // PutProvider<PE> next = iterator.next();
-      // if (next == putProvider) {
-      // iterator.remove();
-      // System.out.println("special remove applied.");
-      // return;
-      // }
-      // }
-      // ---
       System.err.println(putProvider.getClass().getSimpleName());
       new RuntimeException("put provider not removed").printStackTrace();
     }

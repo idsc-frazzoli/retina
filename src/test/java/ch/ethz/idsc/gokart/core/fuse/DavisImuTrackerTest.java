@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 public class DavisImuTrackerTest extends TestCase {
   public void testSimple() {
+    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(1.3, SI.PER_SECOND));
     int framecount = DavisImuTracker.INSTANCE.getFramecount();
     assertTrue(0 <= framecount);
     Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
