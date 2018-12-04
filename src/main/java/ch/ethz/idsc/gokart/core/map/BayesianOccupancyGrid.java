@@ -140,7 +140,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
     // ---
     // PREDEFINED_P
     logOdds = new double[dimx * dimy];
-    Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    //Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
     // ---
     Tensor grid2cell = DiagonalMatrix.of(cellDimInv, cellDimInv, RealScalar.ONE);
     Tensor world2grid = getWorld2grid();
@@ -152,6 +153,8 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
     // ---
     world2cellLayer = GeometricLayer.of(grid2cell);
     world2cellLayer.pushMatrix(world2grid);
+    // by mh: what if P_M > P_Thres
+    setHset();
   }
 
   /** @return matrix */
@@ -298,6 +301,22 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
       logOdds = logOddsNew;
       lidar2cellLayer.pushMatrix(gokart2world); // gokart to world
       lidar2cellLayer.pushMatrix(lidar2gokart); // lidar to gokart
+    }
+  }
+
+  public void setHset() {
+    synchronized (hset) {
+      hset.clear();
+      Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
+      final int ofsx = trans.Get(0).number().intValue();
+      final int ofsy = trans.Get(1).number().intValue();
+      // ---
+      for (int i = 0; i < dimx; i++)
+        for (int j = 0; j < dimy; j++) {
+          double logOdd = logOdds[j * dimx + i];
+          if (logOdd > L_THRESH)
+            hset.add(Tensors.vector(i, j));
+        }
     }
   }
 

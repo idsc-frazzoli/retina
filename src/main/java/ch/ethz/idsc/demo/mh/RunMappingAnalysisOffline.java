@@ -14,6 +14,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum RunMappingAnalysisOffline {
@@ -28,8 +29,8 @@ enum RunMappingAnalysisOffline {
       throw new RuntimeException();
     Consumer<BufferedImage> consumer = new PngImageWriter(folder);
     MappingConfig config = new MappingConfig();
-    config.obsRadius = Quantity.of(0.3, SI.METER);
-    config.alongLine = true;
+    config.obsRadius = Quantity.of(0.7, SI.METER);
+    //MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);
     OfflineLogPlayer.process(file, new MappingAnalysisOfflineMH(config, consumer));
     System.out.print("Done.");
   }
