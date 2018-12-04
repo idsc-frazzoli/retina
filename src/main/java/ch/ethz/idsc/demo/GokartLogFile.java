@@ -1115,6 +1115,49 @@ public enum GokartLogFile implements LogFile {
   _20181120T191027_b52778b7, //
   /** brief mpc and manual driving */
   _20181120T192304_b52778b7, //
+  /***************************************************/
+  /* 2018-11-26 */
+  /** trajectory planning */
+  _20181126T162819_536ef97b, //
+  /** trajectory planning */
+  _20181126T164756_536ef97b, //
+  /** trajectory planning */
+  _20181126T165929_536ef97b, //
+  /** mpc */
+  _20181126T171927_536ef97b, //
+  /***************************************************/
+  /* 2018-11-27 */
+  /** trajectory planning */
+  _20181127T143921_35b19382, //
+  /** autonomous figure 8, manual driving */
+  _20181127T162138_35b19382, //
+  /***************************************************/
+  /* 2018-11-28 demo day */
+  /** trajectory planning */
+  _20181128T112109_35b19382, //
+  /** trajectory planning */
+  _20181128T130954_35b19382, //
+  /** trajectory planning */
+  _20181128T134352_35b19382, //
+  /** trajectory planning, demo */
+  _20181128T145801_35b19382, //
+  /** manual driving, torque vectoring */
+  _20181128T160330_35b19382, //
+  /***************************************************/
+  /* 2018-12-03 old car tires on track */
+  /** manual driving with tires on track */
+  _20181203T135247_70097ce1, //
+  /** manual driving with tires on track
+   * localization mostly intact */
+  _20181203T141504_70097ce1, //
+  /** manual driving with tires on track */
+  _20181203T142514_70097ce1, //
+  /** manual driving, testing ranked put providers */
+  _20181203T165931_1649aef7, //
+  /** manual driving up to 7[m/s], odometry uses gyro */
+  _20181203T184122_3309d8c4, //
+  /** manual driving up to 7[m/s], odometry uses gyro */
+  _20181203T185927_3309d8c4, //
   ;
   // ---
   @Override // from LogFile
