@@ -14,11 +14,11 @@ public enum GokartPoseLcmServer {
   final OdometryRimoGetLcmClient odometryRimoGetLcmClient = new OdometryRimoGetLcmClient();
 
   public GokartPoseOdometry getGokartPoseOdometry() {
-    return odometryRimoGetLcmClient.gokartGyroPoseOdometry;
+    return odometryRimoGetLcmClient.gokartPoseOdometry;
   }
 
   public void publish() {
-    publish(odometryRimoGetLcmClient.gokartGyroPoseOdometry.getPoseEvent());
+    publish(odometryRimoGetLcmClient.gokartPoseOdometry.getPoseEvent());
   }
 
   public void publish(GokartPoseEvent gokartPoseEvent) {
