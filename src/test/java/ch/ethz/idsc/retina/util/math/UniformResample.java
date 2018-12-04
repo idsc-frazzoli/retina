@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.red.Norm;
 
 /** initial implementation for resampling a sequence of irregular spaced points
  * 
- * UniformResample is superseeded by {@link ParametricResample} */
-public class UniformResample implements Serializable {
+ * UniformResample is superseded by {@link ParametricResample} */
+/* package */ class UniformResample implements Serializable {
   /** determines whether points are connected */
   private final Scalar threshold;
   /** distance between samples after re-sampling */

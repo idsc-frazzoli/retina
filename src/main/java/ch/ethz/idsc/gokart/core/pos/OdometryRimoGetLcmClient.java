@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
   public final GokartPoseOdometry gokartPoseOdometry;
 
   public OdometryRimoGetLcmClient() {
-    gokartPoseOdometry = GokartPoseOdometry.create();
+    gokartPoseOdometry = GokartGyroPoseOdometry.create();
   }
 
   @Override // from LcmClientAdapter

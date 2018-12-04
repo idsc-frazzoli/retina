@@ -116,7 +116,7 @@ public class BSplineTrackTest extends TestCase {
   public void testNearestPos() {
     // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
     Scalar meter = Quantity.of(1, SI.METER);
-    Tensor ctrX = Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ONE, RealScalar.ONE).multiply(meter);
+    Tensor ctrX = Tensors.vector(0, 0, 1, 1).multiply(meter);
     Tensor ctrY = Tensors.of(RealScalar.ZERO, RealScalar.ONE, RealScalar.ONE, RealScalar.ZERO).multiply(meter);
     Tensor ctrR = Tensors.of(RealScalar.ONE, RealScalar.ONE, RealScalar.ONE, RealScalar.ONE).multiply(meter);
     BSplineTrack bSplineTrack = new BSplineTrack(ctrX, ctrY, ctrR);

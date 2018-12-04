@@ -8,9 +8,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
-public class GokartOdometryTest extends TestCase {
+public class GokartDiffPoseOdometryTest extends TestCase {
   public void testSimple() {
-    GokartPoseOdometry gokartOdometry = GokartPoseOdometry.create();
+    GokartPoseOdometry gokartOdometry = GokartDiffPoseOdometry.create();
     gokartOdometry.step(Tensors.fromString("{5[rad*s^-1], 10[rad*s^-1]}"));
     Tensor state = gokartOdometry.getPose();
     assertTrue(Sign.isPositive(state.Get(0)));
@@ -21,7 +21,8 @@ public class GokartOdometryTest extends TestCase {
   }
 
   public void testEffective() {
-    Flow flow = GokartPoseOdometry.singleton( //
+    GokartPoseOdometry gokartOdometry = GokartDiffPoseOdometry.create();
+    Flow flow = gokartOdometry.singleton( //
         Quantity.of(3, "m*s^-1"), Quantity.of(5, "m*s^-1"), Quantity.of(0.3, "m*rad^-1"));
     Tensor u = flow.getU();
     assertEquals(u.Get(0), Quantity.of(4, "m*s^-1")); // speed averaged between left and right wheels

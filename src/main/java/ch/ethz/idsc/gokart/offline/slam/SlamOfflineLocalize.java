@@ -43,7 +43,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
+    List<Tensor> list = LocalizationConfig.GLOBAL.getResample().apply(points).getPoints();
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (min_points < sum) {
