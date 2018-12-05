@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import org.bytedeco.javacpp.avformat.AVOutputFormat.Control_message_AVFormatContext_int_Pointer_long;
+
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -30,6 +32,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Boolean processed = false;
     Cell lastCell = null;
     ArrayList<Cell> neighBors = null;
+    ArrayList<Scalar> neighBorCost = null;
 
     // ArrayList<Scalar> neighBorCost;
     public Cell(int x, int y) {
@@ -59,11 +62,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     public void findNeighbors() {
       if (neighBors == null) {
         neighBors = new ArrayList<>();
+        neighBorCost = new ArrayList<>();
         for (Neighbor n : possibleNeighbors) {
           Cell newNeighBor = n.getFrom(this);
           if (newNeighBor != null) {
             this.neighBors.add(newNeighBor);
-            // this.neighBorCost.add(Sqrt.of(RealScalar.of(n.dx^2+n.dy^2)));
+            this.neighBorCost.add(n.cost);
           }
         }
       }
@@ -73,10 +77,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private class Neighbor {
     final int dx;
     final int dy;
+    final Scalar cost;
 
     public Neighbor(int dx, int dy) {
       this.dx = dx;
       this.dy = dy;
+      cost = Norm._2.of(Tensors.of(RealScalar.of(dx), RealScalar.of(dy)));
     }
 
     public Cell getFrom(Cell cell) {
@@ -126,6 +132,10 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     return farthest;
   }
 
+  public boolean isClosed() {
+    return closed;
+  }
+
   void prepareCells(Tensor gridsize, int startx, int starty, double startorientation) {
     m = gridsize.Get(0).number().intValue();
     n = gridsize.Get(1).number().intValue();
@@ -173,7 +183,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     dijkstraStart.inQ = true;
     Q.add(dijkstraStart);
     // add target
-    dijkstraTarget = cellGrid[(int) Math.round(startx - 2 * dirx)][(int) Math.round(starty - 2 * diry)];
+    dijkstraTarget = cellGrid[(int) Math.round(startx - 3 * dirx)][(int) Math.round(starty - 3 * diry)];
     // add neighbors
     /* for (int i = 0; i < gridsize.Get(0).number().intValue(); i++) {
      * System.out.println("row: "+i);
@@ -230,14 +240,10 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   void initialise(int x, int y, double orientation) {
     Tensor gridSize = occupancyGrid.getGridSize();
     possibleNeighbors = new ArrayList<>();
-    possibleNeighbors.add(new Neighbor(-1, -1));
-    possibleNeighbors.add(new Neighbor(-1, 0));
-    possibleNeighbors.add(new Neighbor(-1, 1));
-    possibleNeighbors.add(new Neighbor(0, -1));
-    possibleNeighbors.add(new Neighbor(0, 1));
-    possibleNeighbors.add(new Neighbor(1, -1));
-    possibleNeighbors.add(new Neighbor(1, 0));
-    possibleNeighbors.add(new Neighbor(1, 1));
+    for (int dx = -2; dx <= 2; dx++)
+      for (int dy = -2; dy <= 2; dy++)
+        if (dx != 0 || dy != 0)
+          possibleNeighbors.add(new Neighbor(dx, dy));
     prepareCells(gridSize, x, y, orientation);
   }
 
@@ -257,10 +263,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       currentCell.findNeighbors();
       currentCell.processed = true;
       currentCell.inQ = false;
+      int nCount = 0;
       for (Cell n : currentCell.neighBors) {
         if (!n.processed) {
           // TODO: maybe use neighborcost (not that important)
-          Scalar alternativ = currentCell.cost.add(RealScalar.ONE);
+          Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
+          nCount++;
           if (Scalars.lessThan(alternativ, n.cost)) {
             // this could potentially be too slow
             Q.remove(n);
@@ -275,13 +283,16 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     // check if we can reach target
     if (dijkstraTarget != null && dijkstraTarget.lastCell != null) // we can reach target;
     {
+      System.out.println("target found");
       closed = true;
       actualTarget = dijkstraTarget;
     } else {
+      System.out.println("target not found");
       closed = false;
       actualTarget = getFarthestCell();
     }
     route = actualTarget.getRoute();
+    routePolygon = null;
   }
 
   public Tensor getRoutePolygon() {
@@ -313,20 +324,80 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
     wantedPositionsX.append(route.getLast().getPos().Get(0));
     wantedPositionsY.append(route.getLast().getPos().Get(1));
-    //solve for bspline points
-    //number of bspline query points
+    // solve for bspline points
+    // number of bspline query points
     int m = wantedPositionsX.length();
-    //number of control points
-    int n = (int) (wantedPositionsX.length()*controlPointResolution.number().doubleValue());
-    //first possible value is 0
-    //last possible value is n-2
-    Tensor queryPositions = Tensors.vector((i)->RealScalar.of((n-2.0)*(i/(m-1.0))), m);
-    //query points
-    Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0);
-    //solve for control points: x
+    // number of control points
+    int n = (int) (wantedPositionsX.length() * controlPointResolution.number().doubleValue());
+    // first possible value is 0
+    // last possible value is n-2
+    Tensor splineMatrix;
+    if (closed) {
+      // we found closed solution
+      Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+      // query points
+      splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, true);
+    } else {
+      Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
+      // query points
+      splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, false);
+    }
+    // solve for control points: x
     Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
-    Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY); 
+    Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
     return Tensors.of(controlpointsX, controlpointsY);
+  }
+
+  public MPCBSplineTrack getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, double resolution) {
+    int m = (int) (controlpointsX.length() * resolution);
+    int n = controlpointsX.length();
+    Tensor queryPositions;
+    if (closed)
+      queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+    else
+      queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
+    Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, closed);
+    Tensor splineMatrix1Der = MPCBSpline.getBasisMatrix(n, queryPositions, 1, closed);
+    int iterations = 10;
+    /* for(int it=0;it<iterations;it++) {
+     * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
+     * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
+     * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)),positions.length());
+     * } */
+    return null;
+  }
+
+  public Tensor getSideLimits(Tensor pos, Tensor sidedir) {
+    // find free space
+    Scalar sideStep = RealScalar.of(-0.01);
+    Tensor testPosition = null;
+    Tensor lowPosition;
+    Tensor highPosition;
+    boolean occupied = true;
+    while (occupied) {
+      if (Scalars.lessThan(sideStep, RealScalar.ZERO))
+        sideStep = sideStep.negate();
+      else
+        sideStep = sideStep.add(RealScalar.of(1)).negate();
+      testPosition = pos.add(sidedir.multiply(sideStep));
+      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+    }
+    // search in both directions for occupied cell
+    // negative direction
+    while (!occupied) {
+      sideStep = sideStep.subtract(RealScalar.of(0.5));
+      testPosition = pos.add(sidedir.multiply(sideStep));
+      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+    }
+    lowPosition = testPosition;
+    // negative direction
+    while (!occupied) {
+      sideStep = sideStep.add(RealScalar.of(0.5));
+      testPosition = pos.add(sidedir.multiply(sideStep));
+      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+    }
+    highPosition = testPosition;
+    return Tensors.of(lowPosition, highPosition);
   }
 
   @Override
