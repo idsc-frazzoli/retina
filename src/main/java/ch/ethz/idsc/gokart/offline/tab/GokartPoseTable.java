@@ -19,12 +19,21 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /** table with pose messages
  * 
- * pose messages are typically published at 50[Hz] */
+ * pose messages are typically published at 50[Hz]
+ * 
+ * order to {time, pose_x, pose_y, pose_theta, quality} */
 public class GokartPoseTable implements OfflineTableSupplier {
+  private static final Scalar ZERO_SECOND = Quantity.of(0, SI.SECOND);
+
+  public static OfflineTableSupplier all() {
+    return new GokartPoseTable(ZERO_SECOND);
+  }
+
+  // ---
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   // ---
-  private Scalar time_next = Quantity.of(0, SI.SECOND);
+  private Scalar time_next = ZERO_SECOND;
 
   public GokartPoseTable(Scalar delta) {
     this.delta = Sign.requirePositiveOrZero(delta);
@@ -37,11 +46,10 @@ public class GokartPoseTable implements OfflineTableSupplier {
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       time_next = time.add(delta);
       Tensor pose = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose());
-      // TODO change order to {time, pose, quality}
       tableBuilder.appendRow( //
-          time.map(Magnitude.SECOND).map(Round._6), //
-          gokartPoseEvent.getQuality().map(Round._3), // 1
-          pose.map(Round._6) // 2
+          time.map(Magnitude.SECOND).map(Round._6), // 0
+          pose, // 1, 2, 3
+          gokartPoseEvent.getQuality() // 4
       );
     }
   }
