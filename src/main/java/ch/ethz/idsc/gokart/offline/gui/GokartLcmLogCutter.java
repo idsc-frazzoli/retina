@@ -144,9 +144,19 @@ public class GokartLcmLogCutter {
     }
   };
 
-  public GokartLcmLogCutter(GokartLogFileIndexer gokartLogFileIndexer, File export_root, String title) {
+  /** @param gokartLogFileIndexer
+   * @param export_root
+   * @param title is the first part of the extracted log files
+   * @throws Exception if export_root is not a directory and cannot be created */
+  public GokartLcmLogCutter( //
+      GokartLogFileIndexer gokartLogFileIndexer, //
+      File export_root, //
+      String title) {
     this.gokartLogFileIndexer = gokartLogFileIndexer;
     this.export_root = export_root;
+    export_root.mkdir();
+    if (!export_root.isDirectory())
+      throw new RuntimeException(export_root.toString());
     this.title = title;
     bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
