@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.macro;
 
 import java.io.File;
 import java.nio.ByteBuffer;

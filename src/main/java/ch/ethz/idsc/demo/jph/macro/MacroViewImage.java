@@ -1,8 +1,9 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.macro;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,7 +16,6 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.NumberQ;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -33,29 +33,18 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
-import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
-
-class SpeedClip implements ScalarUnaryOperator {
-  private static final Clip CLIP = Clip.function(0, 6);
-
-  @Override
-  public Scalar apply(Scalar scalar) {
-    return NumberQ.of(scalar) ? CLIP.rescale(scalar) : scalar;
-  }
-}
 
 /** generates an image that lists the operation of the gokart
  * 
  * https://user-images.githubusercontent.com/4012178/44048221-08391a08-9f31-11e8-86ec-df450f4051e6.png */
 /* package */ class MacroViewImage {
-  private static final int FONT_SIZE = 10;
-  private static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, FONT_SIZE);
+  private static final int FONT_SIZE = 11;
+  private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, FONT_SIZE);
   private static final int LENGTH = MacroViewTable.LENGTH;
-  private static final int MARGIN_L = 75;
-  private static final int MARGIN_R = 50;
-  private static final ScalarUnaryOperator SPEED_CLIP = new SpeedClip();
-  private static final ColorDataIndexed COLODATAINDEXED = ColorDataLists._003.cyclic();
+  private static final int MARGIN_TOP = 12;
+  private static final int MARGIN_L = 65;
+  private static final int MARGIN_R = 40;
+  private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._003.cyclic();
   private static final ScalarTensorFunction GRADIENT = ColorDataGradients.AVOCADO;
   // private static final File BACKGROUND = UserHome.Pictures("keyvisual.png");
   private static final TensorUnaryOperator BLACK_TO_YELLOW = rgba -> {
@@ -82,12 +71,12 @@ class SpeedClip implements ScalarUnaryOperator {
     Tensor img1;
     {
       img1 = Tensors.of(table.get(Tensor.ALL, 2));
-      img1 = img1.map(COLODATAINDEXED);
+      img1 = img1.map(COLOR_DATA_INDEXED);
       img1 = ImageResize.nearest(img1, 5, 1); // autonomous bar
     }
     Tensor img0;
     {
-      img0 = Tensors.of(table.get(Tensor.ALL, 1).map(SPEED_CLIP));
+      img0 = Tensors.of(table.get(Tensor.ALL, 1).map(SpeedClip.FUNCTION));
       img0 = img0.map(GRADIENT);
       img0 = ImageResize.nearest(img0, 6, 1); // speed bar
     }
@@ -102,11 +91,14 @@ class SpeedClip implements ScalarUnaryOperator {
       Graphics2D graphics = bufferedImage.createGraphics();
       GraphicsUtil.setQualityHigh(graphics);
       graphics.setFont(FONT);
-      graphics.setColor(Color.BLACK);
+      graphics.setColor(Color.DARK_GRAY);
       graphics.fillRect(0, 0, width(), 1);
-      graphics.drawString("" + dayname, 0, FONT_SIZE);
+      graphics.drawString("" + dayname, 0, FONT_SIZE - 1);
       minutes = (int) table.get(Tensor.ALL, 0).stream().filter(NumberQ::of).count();
-      graphics.drawString(String.format("%3d", minutes), width() - 32, FONT_SIZE);
+      FontMetrics fontMetrics = graphics.getFontMetrics();
+      String string = String.format("%3d", minutes);
+      int width = fontMetrics.stringWidth(string);
+      graphics.drawString(string, width() - width, FONT_SIZE - 1);
       // ---
       image = ImageFormat.from(bufferedImage);
     }
@@ -122,7 +114,7 @@ class SpeedClip implements ScalarUnaryOperator {
         .filter(File::isDirectory) //
         .sorted() //
         .collect(Collectors.toList());
-    Tensor image = Array.zeros(15, width(), 4);
+    Tensor image = Array.zeros(MARGIN_TOP, width(), 4);
     List<MacroViewImage> rows = new LinkedList<>();
     for (File daydir : list) {
       MacroViewImage macroViewImage = new MacroViewImage(daydir);
@@ -141,9 +133,10 @@ class SpeedClip implements ScalarUnaryOperator {
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         graphics.drawImage(background, 0, 0, null);
+        graphics.drawImage(background, 0, background.getHeight(), null);
         graphics.drawImage(ImageFormat.of(image), 0, 0, null);
       }
-      final int piy = 12;
+      final int piy = MARGIN_TOP - 1;
       {
         graphics.setFont(FONT);
         graphics.setColor(Color.DARK_GRAY);
