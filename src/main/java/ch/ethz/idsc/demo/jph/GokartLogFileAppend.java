@@ -20,7 +20,7 @@ enum GokartLogFileAppend {
       if (file.isFile() && 50_000_000 < file.length())
         if (last.getFilename().compareTo(logFile.getFilename()) < 0) {
           System.out.println("/** */");
-          System.out.println("_" + logFile.getFilename().substring(0, 24) + ", //");
+          System.out.println("_" + logFile.getFilename().substring(0, 24) + ",");
         }
     }
   }

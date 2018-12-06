@@ -1134,6 +1134,8 @@ public enum GokartLogFile implements LogFile {
   _20181127T143921_35b19382,
   /** autonomous figure 8, manual driving */
   _20181127T162138_35b19382,
+  /** TODO */
+  _20181127T172938_35b19382,
   /***************************************************/
   /* 2018-11-28 demo day */
   /** trajectory planning */
@@ -1160,7 +1162,19 @@ public enum GokartLogFile implements LogFile {
   /** manual driving up to 7[m/s], odometry uses gyro */
   _20181203T184122_3309d8c4,
   /** manual driving up to 7[m/s], odometry uses gyro */
-  _20181203T185927_3309d8c4, //
+  _20181203T185927_3309d8c4,
+  /***************************************************/
+  /** slow manual driving between tires
+   * trajectory planning */
+  _20181206T110202_3309d8c4,
+  /** fast manual driving between tires */
+  _20181206T122251_3309d8c4,
+  /** slow manual driving between tires
+   * trajectory planning */
+  _20181206T135020_d5c027d3, //
+  /** fast manual driving between tires
+   * with changing topology */
+  _20181206T160846_d5c027d3, //
   ;
   // ---
   @Override // from LogFile

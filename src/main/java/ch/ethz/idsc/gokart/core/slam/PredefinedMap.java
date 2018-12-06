@@ -44,9 +44,9 @@ public enum PredefinedMap implements LocalizationImage {
   /** only front tent, aerotain poster shifted, no balloons */
   DUBILAB_LOCALIZATION_20180901(7.5), //
   /** no tents, aerotain poster shifted, no balloons */
-  DUBILAB_LOCALIZATION_20180904(7.5), //
+  // DUBILAB_LOCALIZATION_20180904(7.5), //
   /** car and house tents in new positions for tse2 planning */
-  DUBILAB_LOCALIZATION_20180912(7.5), //
+  // DUBILAB_LOCALIZATION_20180912(7.5), //
   /** tents at parking position */
   DUBILAB_LOCALIZATION_20181128(7.5), //
   ;
@@ -139,6 +139,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_LOCALIZATION_20180912.bufferedImage, "png", UserHome.file("20180912.png"));
+    ImageIO.write(DUBILAB_LOCALIZATION_20181128.bufferedImage, "png", UserHome.file("20181128.png"));
   }
 }
