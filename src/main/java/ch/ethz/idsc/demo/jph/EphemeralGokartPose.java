@@ -8,16 +8,17 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
+import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 
-/* package */ enum GokartPoseTableExport {
+/* package */ enum EphemeralGokartPose {
   ;
   public static void main(String[] args) throws IOException {
     File root = new File("/media/datahaki/media/ethz/gokart/topic/localization");
-    File dest = new File("/media/datahaki/media/ethz/gokartexport/localization");
+    File dest = UserHome.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/gyro");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         System.out.println(folder);

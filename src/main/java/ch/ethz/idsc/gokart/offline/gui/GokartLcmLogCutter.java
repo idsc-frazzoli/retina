@@ -176,6 +176,7 @@ public class GokartLcmLogCutter {
     jComponent.addMouseListener(mouseListener);
     jComponent.addMouseMotionListener(mouseListener);
     JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    jScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     jPanel.add(jScrollPane, BorderLayout.CENTER);
     jFrame.setContentPane(jPanel);
     // ---

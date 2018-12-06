@@ -21,7 +21,9 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * pose messages are typically published at 50[Hz]
  * 
- * order to {time, pose_x, pose_y, pose_theta, quality} */
+ * order to {time, pose_x, pose_y, pose_theta, quality}
+ * 
+ * @see UniqueTimePoseQualityTable */
 public class GokartPoseTable implements OfflineTableSupplier {
   private static final Scalar ZERO_SECOND = Quantity.of(0, SI.SECOND);
 
@@ -45,10 +47,9 @@ public class GokartPoseTable implements OfflineTableSupplier {
         Scalars.lessThan(time_next, time)) {
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       time_next = time.add(delta);
-      Tensor pose = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose());
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), // 0
-          pose, // 1, 2, 3
+          GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()), // 1, 2, 3
           gokartPoseEvent.getQuality() // 4
       );
     }
