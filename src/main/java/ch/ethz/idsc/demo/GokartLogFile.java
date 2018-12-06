@@ -1172,6 +1172,9 @@ public enum GokartLogFile implements LogFile {
   /** slow manual driving between tires
    * trajectory planning */
   _20181206T135020_d5c027d3, //
+  /** fast manual driving between tires
+   * with changing topology */
+  _20181206T160846_d5c027d3, //
   ;
   // ---
   @Override // from LogFile
