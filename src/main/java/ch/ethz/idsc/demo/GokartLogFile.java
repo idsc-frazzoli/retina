@@ -1164,6 +1164,7 @@ public enum GokartLogFile implements LogFile {
   /** manual driving up to 7[m/s], odometry uses gyro */
   _20181203T185927_3309d8c4,
   /***************************************************/
+  /* 2018-12-06 */
   /** slow manual driving between tires
    * trajectory planning */
   _20181206T110202_3309d8c4,
