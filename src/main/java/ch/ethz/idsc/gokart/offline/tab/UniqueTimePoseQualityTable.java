@@ -18,7 +18,10 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-public class TimePoseQualityTable implements OfflineTableSupplier {
+/** TimePoseQualityTable only exports unique pose messages
+ * 
+ * @see GokartPoseTable */
+public class UniqueTimePoseQualityTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private Tensor last = Tensors.empty();
 
@@ -46,7 +49,7 @@ public class TimePoseQualityTable implements OfflineTableSupplier {
    * @param dest
    * @throws IOException */
   public static void process(File lcmfile, File dest) throws IOException {
-    TimePoseQualityTable timePoseQualityTable = new TimePoseQualityTable();
+    UniqueTimePoseQualityTable timePoseQualityTable = new UniqueTimePoseQualityTable();
     OfflineLogPlayer.process(lcmfile, timePoseQualityTable);
     dest.mkdir();
     String name = lcmfile.getName();

@@ -144,9 +144,19 @@ public class GokartLcmLogCutter {
     }
   };
 
-  public GokartLcmLogCutter(GokartLogFileIndexer gokartLogFileIndexer, File export_root, String title) {
+  /** @param gokartLogFileIndexer
+   * @param export_root
+   * @param title is the first part of the extracted log files
+   * @throws Exception if export_root is not a directory and cannot be created */
+  public GokartLcmLogCutter( //
+      GokartLogFileIndexer gokartLogFileIndexer, //
+      File export_root, //
+      String title) {
     this.gokartLogFileIndexer = gokartLogFileIndexer;
     this.export_root = export_root;
+    export_root.mkdir();
+    if (!export_root.isDirectory())
+      throw new RuntimeException(export_root.toString());
     this.title = title;
     bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
@@ -166,6 +176,7 @@ public class GokartLcmLogCutter {
     jComponent.addMouseListener(mouseListener);
     jComponent.addMouseMotionListener(mouseListener);
     JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    jScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     jPanel.add(jScrollPane, BorderLayout.CENTER);
     jFrame.setContentPane(jPanel);
     // ---
