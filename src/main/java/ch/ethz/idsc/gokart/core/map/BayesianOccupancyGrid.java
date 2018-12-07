@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, PlanableOccupancyGrid {
+public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancyGrid {
   // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
@@ -403,7 +403,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface, P
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
     graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
   }
-
+  
   @Override
   public Tensor getTransform() {
     Tensor translate = IdentityMatrix.of(3);

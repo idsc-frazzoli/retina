@@ -23,7 +23,7 @@ public class InititialGuessTest extends TestCase {
     Scalar spacing = RealScalar.of(0.1);
     Scalar controlPointResolution = RealScalar.of(0.5);//half as many control points
     Tensor ig = initialGuess.getControlPointGuess(spacing, controlPointResolution);
-    initialGuess.getRefinedTrack(ig.get(0), ig.get(1), 2);
+    //initialGuess.getRefinedTrack(ig.get(0), ig.get(1), 2);
     
   }
 }

@@ -10,18 +10,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import org.bytedeco.javacpp.avformat.AVOutputFormat.Control_message_AVFormatContext_int_Pointer_long;
-
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.mat.LeastSquares;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackLayoutInitialGuess implements RenderInterface {
   private class Cell {
@@ -309,7 +313,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public Tensor getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
-    spacing = spacing.multiply(RealScalar.of(m));
     Tensor wantedPositionsX = Tensors.empty();
     Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
@@ -322,34 +325,43 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         wantedPositionsY.append(pos.Get(1));
       }
     }
-    wantedPositionsX.append(route.getLast().getPos().Get(0));
-    wantedPositionsY.append(route.getLast().getPos().Get(1));
-    // solve for bspline points
-    // number of bspline query points
-    int m = wantedPositionsX.length();
-    // number of control points
-    int n = (int) (wantedPositionsX.length() * controlPointResolution.number().doubleValue());
-    // first possible value is 0
-    // last possible value is n-2
-    Tensor splineMatrix;
-    if (closed) {
-      // we found closed solution
-      Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
-      // query points
-      splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, true);
-    } else {
-      Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
-      // query points
-      splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, false);
+    if (wantedPositionsX.length() > 3) {
+      wantedPositionsX.append(route.getLast().getPos().Get(0));
+      wantedPositionsY.append(route.getLast().getPos().Get(1));
+      wantedPositionsX = wantedPositionsX.multiply(Quantity.of(1, SI.METER));
+      wantedPositionsY = wantedPositionsY.multiply(Quantity.of(1, SI.METER));
+      // solve for bspline points
+      // number of bspline query points
+      int m = wantedPositionsX.length();
+      // number of control points
+      int n = (int) (wantedPositionsX.length() * controlPointResolution.number().doubleValue());
+      // first possible value is 0
+      // last possible value is n-2
+      Tensor splineMatrix;
+      if (closed) {
+        // we found closed solution
+        Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+        // query points
+        splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, true);
+      } else {
+        Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
+        // query points
+        splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, false);
+      }
+      // solve for control points: x
+      Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
+      Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
+      return Tensors.of(controlpointsX, controlpointsY);
     }
-    // solve for control points: x
-    Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
-    Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
-    return Tensors.of(controlpointsX, controlpointsY);
+    return null;
   }
 
-  public MPCBSplineTrack getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, double resolution) {
-    int m = (int) (controlpointsX.length() * resolution);
+  public Tensor getRefinedTrack(Tensor controlPoints, Scalar resolution, int iterations) {
+    return getRefinedTrack(controlPoints.get(0), controlPoints.get(1), controlPoints.get(2), resolution, iterations);
+  }
+
+  public Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations) {
+    int m = (int) (controlpointsX.length() * resolution.number().doubleValue());
     int n = controlpointsX.length();
     Tensor queryPositions;
     if (closed)
@@ -357,46 +369,121 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     else
       queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
     Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, closed);
+    Tensor splineMatrixTransp = Transpose.of(splineMatrix);
     Tensor splineMatrix1Der = MPCBSpline.getBasisMatrix(n, queryPositions, 1, closed);
-    int iterations = 10;
     /* for(int it=0;it<iterations;it++) {
      * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
      * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)),positions.length());
      * } */
-    return null;
+    for (int i = 0; i < iterations; i++) {
+      System.out.println("Iterate!");
+      Tensor corr = getCorrectionVectors(controlpointsX, controlpointsY, radiusCtrPoints, queryPositions, splineMatrix, splineMatrix1Der, resolution);
+      if (corr == null)
+        return null;
+      radiusCtrPoints = radiusCtrPoints.add(splineMatrixTransp.dot(corr.get(2)));
+      controlpointsX = controlpointsX.add(splineMatrixTransp.dot(corr.get(0)));
+      controlpointsY = controlpointsY.add(splineMatrixTransp.dot(corr.get(1)));
+      final Tensor fControl = radiusCtrPoints;
+      radiusCtrPoints = Tensors.vector((ii) -> fControl.get(ii).add(gdRadiusGrowth), radiusCtrPoints.length());
+      controlpointsX = controlpointsX.add(getRegularization(controlpointsX, gdRegularizer));
+      controlpointsY = controlpointsY.add(getRegularization(controlpointsY, gdRegularizer));
+      radiusCtrPoints = radiusCtrPoints.add(getRegularization(radiusCtrPoints, gdRegularizer));
+    }
+    // MPCBSplineTrack track = new MPCBSplineTrack(controlpointsX, controlpointsY, radiusCtrPoints);
+    return Tensors.of(controlpointsX, controlpointsY, radiusCtrPoints);
   }
 
-  public Tensor getSideLimits(Tensor pos, Tensor sidedir) {
+  // for debugging
+  ArrayList<Tensor> freeLines = new ArrayList<>();
+  final Scalar gdLimits = RealScalar.of(0.4);
+  final Scalar gdRadius = RealScalar.of(0.8);
+  final Scalar gdRadiusGrowth = Quantity.of(0.1, SI.METER);
+  final Scalar gdRegularizer = RealScalar.of(0.02);
+  final Scalar defaultRadius = Quantity.of(1, SI.METER);
+
+  private Tensor getCorrectionVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints, Tensor queryPositions, Tensor basisMatrix,
+      Tensor basisMatrix1Der, Scalar resolution) {
+    Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix);
+    Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix1Der);
+    Tensor radii = basisMatrix.dot(radiusControlPoints);
+    Scalar stepsSize = Quantity.of(0.1, SI.METER);
+    freeLines = new ArrayList<>();
+    Tensor sideLimits = Tensors.vector((i) -> getSideLimits(positions.get(i), sideVectors.get(i), stepsSize, Quantity.of(1, SI.METER)), positions.length());
+    boolean hasNoSolution = sideLimits.stream().anyMatch(row -> row.get(0).equals(row.get(1)));
+    if (hasNoSolution)
+      return null;
+    // upwardsforce
+    Tensor lowClipping = Tensors.vector((i) -> Max.of(sideLimits.get(i).Get(0).add(radii.Get(i)), Quantity.of(0, SI.METER)), queryPositions.length());
+    Tensor highClipping = Tensors.vector((i) -> Max.of(radii.Get(i).subtract(sideLimits.get(i).Get(1)), Quantity.of(0, SI.METER)), queryPositions.length());
+    Tensor sideCorr = lowClipping.subtract(highClipping).multiply(gdLimits.divide(resolution));
+    Tensor posCorr = Transpose.of(sideCorr.pmul(sideVectors));
+    Tensor radiusCorr = highClipping.add(lowClipping).multiply(gdRadius.divide(resolution)).negate();
+    // Tensor upwardsforce = Tensors.vector(list)
+    return Tensors.of(posCorr.get(0), posCorr.get(1), radiusCorr);
+  }
+
+  private Tensor getRegularization(Tensor controlpoints, Scalar reg) {
+    Tensor regVec = Tensors.empty();
+    if (!closed) {
+      // do we have convolution?
+      regVec.append(Quantity.of(0, SI.METER));
+      for (int i = 1; i < controlpoints.length() - 1; i++) {
+        regVec.append(Mean.of(//
+            Tensors.of(controlpoints.Get(i - 1), controlpoints.Get(i + 1))));
+      }
+    } else {
+      // do we have convolution?
+      regVec.append(Mean.of(//
+          Tensors.of(controlpoints.Get(controlpoints.length() - 1), controlpoints.Get(1))));
+      for (int i = 1; i < controlpoints.length() - 1; i++) {
+        regVec.append(Mean.of(//
+            Tensors.of(controlpoints.Get(i - 1), controlpoints.Get(i + 1))));
+      }
+      regVec.append(Mean.of(//
+          Tensors.of(controlpoints.Get(controlpoints.length() - 2), controlpoints.Get(0))));
+    }
+    return regVec.subtract(controlpoints).multiply(reg);
+  }
+
+  public Tensor getSideLimits(Tensor pos, Tensor sidedir, Scalar stepsSize, Scalar maxSearch) {
     // find free space
-    Scalar sideStep = RealScalar.of(-0.01);
+    Scalar sideStep = Quantity.of(-0.001, SI.METER);
     Tensor testPosition = null;
     Tensor lowPosition;
     Tensor highPosition;
     boolean occupied = true;
     while (occupied) {
-      if (Scalars.lessThan(sideStep, RealScalar.ZERO))
+      if (Scalars.lessThan(sideStep, Quantity.of(0, SI.METER)))
         sideStep = sideStep.negate();
       else
-        sideStep = sideStep.add(RealScalar.of(1)).negate();
+        sideStep = sideStep.add(stepsSize).negate();
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+      occupied = occupancyGrid.isMember(testPosition);
+      if (Scalars.lessThan(maxSearch, Abs.of(sideStep)))
+        return Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
     }
     // search in both directions for occupied cell
+    // only for debugging
+    Tensor freeline = Tensors.empty();
     // negative direction
     while (!occupied) {
-      sideStep = sideStep.subtract(RealScalar.of(0.5));
+      sideStep = sideStep.subtract(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+      occupied = occupancyGrid.isMember(testPosition);
     }
-    lowPosition = testPosition;
+    freeline.append(testPosition);
+    lowPosition = sideStep;
     // negative direction
+    occupied = false;
     while (!occupied) {
-      sideStep = sideStep.add(RealScalar.of(0.5));
+      sideStep = sideStep.add(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isCellOccupied(new Point(testPosition.Get(0).number().intValue(), testPosition.Get(1).number().intValue()));
+      occupied = occupancyGrid.isMember(testPosition);
     }
-    highPosition = testPosition;
+    highPosition = sideStep;
+    freeline.append(testPosition);
+    freeLines.add(freeline);
     return Tensors.of(lowPosition, highPosition);
   }
 
@@ -405,5 +492,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Tensor routePolygon = getRoutePolygon();
     Path2D path2d = geometricLayer.toPath2D(routePolygon);
     graphics.draw(path2d);
+    /* for (Tensor t : freeLines) {
+     * path2d = geometricLayer.toPath2D(t);
+     * graphics.draw(path2d);
+     * } */
   }
 }

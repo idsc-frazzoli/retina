@@ -21,7 +21,7 @@ public class TestOccupancyGrid implements PlanableOccupancyGrid {
 
   public TestOccupancyGrid() {
     try {
-      //grid = Import.of();
+      // grid = Import.of();
       img = ImageIO.read(UserHome.file("Documents/bigOccupancyGrid.png"));
     } catch (IOException e) {
       System.err.println("could not load image");
@@ -38,18 +38,22 @@ public class TestOccupancyGrid implements PlanableOccupancyGrid {
   @Override
   public boolean isCellOccupied(Point points) {
     if (points.x >= 0 && points.x < m && //
-        points.y >= 0 && points.y < n)
-    {
-       int p = img.getRGB(points.x, points.y);
-       int r = (p>>16) & 0xff;
-       return r >100;
-    }
-    else
+        points.y >= 0 && points.y < n) {
+      int p = img.getRGB(points.x, points.y);
+      int r = (p >> 16) & 0xff;
+      return r > 100;
+    } else
       return true;
   }
 
   @Override
   public Tensor getTransform() {
     return IdentityMatrix.of(3);
+  }
+
+  @Override
+  public boolean isMember(Tensor element) {
+    Point point = new Point(element.Get(0).number().intValue(), element.Get(1).number().intValue());
+    return isCellOccupied(point);
   }
 }
