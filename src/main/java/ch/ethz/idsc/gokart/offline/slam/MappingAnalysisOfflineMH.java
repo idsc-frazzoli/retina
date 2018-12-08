@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.BSplineTrack;
+import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.TrackLayoutInitialGuess;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -129,7 +130,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       gr.render(gl, graphics);
       if (true) {
         if (trackData == null) {
-          initialGuess.update(startX, startY, startOrientation);
+          initialGuess.update(startX, startY, startOrientation, gpe.getPose(), track);
           initialGuess.render(gl, graphics);
           if (initialGuess.isClosed()) {
             Scalar spacing = RealScalar.of(1.5);

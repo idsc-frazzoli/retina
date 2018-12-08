@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.mat.LeastSquares;
+import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
@@ -113,12 +114,14 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   // starting point for Dijkstra
   Cell dijkstraStart;
   // goal for dijkstra
+  Cell dijkstraGokartBack;
   Cell dijkstraTarget;
   // actual goal
   Cell actualTarget;
   Cell[][] cellGrid;
   ArrayList<Neighbor> possibleNeighbors;
   LinkedList<Cell> route;
+  LinkedList<Cell> forwardRoute;
   Tensor routePolygon;
   boolean closed = false;
 
@@ -140,7 +143,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     return closed;
   }
 
-  void prepareCells(Tensor gridsize, int startx, int starty, double startorientation) {
+  boolean prepareCells(Tensor gridsize, int startx, int starty, double startorientation, Tensor currPos, boolean searchFromGokart) {
     m = gridsize.Get(0).number().intValue();
     n = gridsize.Get(1).number().intValue();
     cellGrid = new Cell[m][n];
@@ -181,8 +184,16 @@ public class TrackLayoutInitialGuess implements RenderInterface {
      * }
      * }
      * } */
+    // gokart immediate target
+    if (currPos != null)
+      dijkstraGokartBack = cellGrid[currPos.Get(0).number().intValue()][currPos.Get(1).number().intValue()];
     // add start to Q
-    dijkstraStart = cellGrid[sfx][sfy];
+    if (!searchFromGokart)
+      dijkstraStart = cellGrid[sfx][sfy];
+    else
+      dijkstraStart = dijkstraGokartBack;
+    if (dijkstraStart == null)
+      return false;
     dijkstraStart.cost = RealScalar.ZERO;
     dijkstraStart.inQ = true;
     Q.add(dijkstraStart);
@@ -196,6 +207,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
      * cellGrid[i][ii].findNeighbors();
      * }
      * } */
+    return true;
   }
 
   void addStartingLine(int startx, int starty, double startorientation) {
@@ -241,14 +253,14 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
   }
 
-  void initialise(int x, int y, double orientation) {
+  boolean initialise(int x, int y, double orientation, Tensor currPos, boolean searchFromGokart) {
     Tensor gridSize = occupancyGrid.getGridSize();
     possibleNeighbors = new ArrayList<>();
     for (int dx = -2; dx <= 2; dx++)
       for (int dy = -2; dy <= 2; dy++)
         if (dx != 0 || dy != 0)
           possibleNeighbors.add(new Neighbor(dx, dy));
-    prepareCells(gridSize, x, y, orientation);
+    return prepareCells(gridSize, x, y, orientation, currPos, searchFromGokart);
   }
 
   public List<Cell> getWayTo(Cell target) {
@@ -260,8 +272,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     return solution;
   }
 
-  public void update(int startX, int startY, double startorientation) {
-    initialise(startX, startY, startorientation);
+  public void processDijkstra() {
     while (!Q.isEmpty()) {
       Cell currentCell = Q.poll();
       currentCell.findNeighbors();
@@ -284,19 +295,67 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         }
       }
     }
-    // check if we can reach target
-    if (dijkstraTarget != null && dijkstraTarget.lastCell != null) // we can reach target;
-    {
-      System.out.println("target found");
-      closed = true;
-      actualTarget = dijkstraTarget;
+  }
+
+  public Tensor getPixelPosition(Tensor worldPosition) {
+    Tensor transform = occupancyGrid.getTransform();
+    Tensor wp = Tensors.empty();
+    wp.append(worldPosition.Get(0));
+    wp.append(worldPosition.Get(1));
+    wp.append(Quantity.of(1, SI.METER));
+    return LinearSolve.of(transform, wp);
+  }
+
+  public void update(int startX, int startY, double startorientation) {
+    update(startX, startY, startorientation, null, null);
+  }
+
+  public void update(int startX, int startY, double startorientation, Tensor gokartPosition, BSplineTrack oldTrack) {
+    // position if map
+    Tensor curPos = null;
+    if (gokartPosition != null)
+      curPos = getPixelPosition(gokartPosition);
+    if (initialise(startX, startY, startorientation, curPos, false)) {
+      processDijkstra();
+      // check if we can reach target
+      if (reachable(dijkstraTarget)) // we can reach target;
+      {
+        System.out.println("target found");
+        closed = true;
+        route = dijkstraTarget.getRoute();
+      } else {
+        System.out.println("target not found");
+        closed = false;
+        actualTarget = getFarthestCell();
+        LinkedList<Cell> routeFromStart = actualTarget.getRoute();
+        // can we reach gokart?
+        if (reachable(dijkstraGokartBack)) {
+          System.out.println("start->gokart found. Expanding beyond gokart");
+          route = routeFromStart;
+        } else {
+          // search from gokart toward
+          System.out.println("searching from gokart towards starting line");
+          boolean targetAvailable = initialise(startX, startY, startorientation, curPos, true);
+          if(targetAvailable)
+            processDijkstra();
+          if (targetAvailable && reachable(dijkstraTarget)) {
+            // found way from gokart
+            route = dijkstraTarget.getRoute();
+            route.addAll(routeFromStart);
+          } else {
+            System.out.println("no route found to gokart");
+            route = routeFromStart;
+          }
+        }
+      }
     } else {
-      System.out.println("target not found");
-      closed = false;
-      actualTarget = getFarthestCell();
+      System.out.println("Target not available.");
     }
-    route = actualTarget.getRoute();
     routePolygon = null;
+  }
+
+  boolean reachable(Cell target) {
+    return target != null && target.processed;
   }
 
   public Tensor getRoutePolygon() {
