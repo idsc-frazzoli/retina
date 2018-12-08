@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.BSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.TrackLayoutInitialGuess;
+import ch.ethz.idsc.gokart.core.mpc.TrackRefinenement;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
@@ -58,6 +59,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
   private final TrackLayoutInitialGuess initialGuess;
+  private final TrackRefinenement trackRefinenement;
   private final Consumer<BufferedImage> consumer;
   // ---
   private GokartPoseEvent gpe;
@@ -83,6 +85,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     initialGuess = new TrackLayoutInitialGuess(bayesianOccupancyGrid);
+    trackRefinenement = new TrackRefinenement(bayesianOccupancyGrid);
   }
 
   int count = 0;
@@ -141,18 +144,18 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
               for (int i = 0; i < ctrpoints.get(0).length(); i++) {
                 radiusCtrPoints.append(Quantity.of(1, SI.METER));
               }
-              trackData = initialGuess.getRefinedTrack(//
+              trackData = trackRefinenement.getRefinedTrack(//
                   ctrpoints.get(0), //
                   ctrpoints.get(1), //
-                  radiusCtrPoints, RealScalar.of(8), 100);
+                  radiusCtrPoints, RealScalar.of(8), 100, initialGuess.isClosed());
             } else {
               System.out.println("no sensible track found!");
             }
           }
         } else {
           System.out.println("refining old track!");
-          trackData = initialGuess.getRefinedTrack(//
-              trackData, RealScalar.of(8), 1);
+          trackData = trackRefinenement.getRefinedTrack(//
+              trackData, RealScalar.of(8), 1, true);
         }
       }
       if (trackData != null) {
