@@ -69,8 +69,8 @@ public class TrackRefinenement {
 
   private Tensor getCorrectionVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints, Tensor queryPositions, Tensor basisMatrix,
       Tensor basisMatrix1Der, Scalar resolution, boolean closed) {
-    Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix);
-    Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix1Der);
+    Tensor positions = MPCBSplineMap.getPositions(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix);
+    Tensor sideVectors = MPCBSplineMap.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix1Der);
     Tensor radii = basisMatrix.dot(radiusControlPoints);
     Scalar stepsSize = Quantity.of(0.1, SI.METER);
     freeLines = new ArrayList<>();
