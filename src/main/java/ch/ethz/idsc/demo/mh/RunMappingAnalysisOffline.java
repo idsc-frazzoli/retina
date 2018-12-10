@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
 import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOfflineMH;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum RunMappingAnalysisOffline {
@@ -22,8 +20,8 @@ enum RunMappingAnalysisOffline {
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
     File file = UserHome.file("changingtrack.lcm");
-    //File file = UserHome.file("TireTrackDriving.lcm");
-    //File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
+    // File file = UserHome.file("TireTrackDriving.lcm");
+    // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
     File folder = UserHome.Pictures("log/mapper");
     folder.mkdirs();
     if (!folder.isDirectory())
@@ -31,7 +29,7 @@ enum RunMappingAnalysisOffline {
     Consumer<BufferedImage> consumer = new PngImageWriter(folder);
     MappingConfig config = new MappingConfig();
     config.obsRadius = Quantity.of(0.8, SI.METER);
-    //MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);
+    // MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);
     OfflineLogPlayer.process(file, new MappingAnalysisOfflineMH(config, consumer));
     System.out.print("Done.");
   }

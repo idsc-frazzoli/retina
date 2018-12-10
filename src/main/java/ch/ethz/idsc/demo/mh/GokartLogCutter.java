@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -12,14 +11,14 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 enum GokartLogCutter {
   ;
   public static void main(String[] args) throws IOException {
-    //GokartLogFile gokartLogFile = GokartLogFile._20181008T183011_786ab990;
+    // GokartLogFile gokartLogFile = GokartLogFile._20181008T183011_786ab990;
     File file = UserHome.file("changingtrack.lcm");
-    //File file = DatahakiLogFileLocator.file(gokartLogFile);
+    // File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180924T104243_1/log.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        UserHome.file("changingtrack"),//
+        UserHome.file("changingtrack"), //
         "changingtrackcut");
   }
 }

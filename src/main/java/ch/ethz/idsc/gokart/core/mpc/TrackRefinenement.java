@@ -18,41 +18,46 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinenement {
-  public abstract class TrackConstraint{
+  public abstract class TrackConstraint {
     Tensor controlPointsX = null;
     Tensor controlPointsY = null;
     Tensor radiusControlPoints = null;
+
     public abstract void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints);
+
     public Tensor getControlPointsX() {
       return controlPointsX;
     }
+
     public Tensor getControlPointsY() {
       return controlPointsY;
     }
+
     public Tensor getRadiusControlPoints() {
       return radiusControlPoints;
     }
   }
-  
-  public class TrackSplitConstraint extends TrackConstraint{
+
+  public class TrackSplitConstraint extends TrackConstraint {
     final BSplineTrack track;
     Scalar trackProg = null;
     Tensor trackPos = null;
     Tensor trackDirection = null;
+
     public TrackSplitConstraint(BSplineTrack track) {
       this.track = track;
     }
+
     @Override
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      Tensor first = Tensors.of(controlpointsX.Get(0),controlpointsX.Get(0));
-      Tensor second = Tensors.of(controlpointsX.Get(1),controlpointsX.Get(1));
-      Tensor startPos = Mean.of(Tensors.of(first,second));
-      if(trackProg == null || trackPos == null || trackDirection == null) {
-        trackProg =  track.getFastNearestPathProgress(startPos);
+      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsX.Get(0));
+      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsX.Get(1));
+      Tensor startPos = Mean.of(Tensors.of(first, second));
+      if (trackProg == null || trackPos == null || trackDirection == null) {
+        trackProg = track.getFastNearestPathProgress(startPos);
         trackPos = track.getPosition(trackProg);
         trackDirection = track.getDirection(trackProg);
       }
-      
       Tensor realVector = second.subtract(first);
       Scalar projection = (Scalar) Min.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
       Tensor correctedFirst = startPos.subtract(trackDirection.multiply(projection));
@@ -66,18 +71,19 @@ public class TrackRefinenement {
       controlpointsY.set(correctedSecond.Get(1), 1);
     }
   }
-  
+
   public TrackRefinenement(PlanableOccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 
   private final PlanableOccupancyGrid occupancyGrid;
 
-  public Tensor getRefinedTrack(Tensor controlPoints, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
-    return getRefinedTrack(controlPoints.get(0), controlPoints.get(1), controlPoints.get(2), resolution, iterations, closed, constraints);
+  public Tensor getRefinedTrack(Tensor trackData, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
+    return getRefinedTrack(trackData.get(0), trackData.get(1), trackData.get(2), resolution, iterations, closed, constraints);
   }
 
-  public Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
+  public Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations, boolean closed,
+      List<TrackConstraint> constraints) {
     int m = (int) (controlpointsX.length() * resolution.number().doubleValue());
     int n = controlpointsX.length();
     Tensor queryPositions;
@@ -94,8 +100,8 @@ public class TrackRefinenement {
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
      * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)),positions.length());
      * } */
+    System.out.println("Iterate " + iterations + " times!");
     for (int i = 0; i < iterations; i++) {
-      System.out.println("Iterate!");
       Tensor corr = getCorrectionVectors(controlpointsX, controlpointsY, radiusCtrPoints, queryPositions, splineMatrix, splineMatrix1Der, resolution, closed);
       if (corr == null)
         return null;
@@ -107,8 +113,8 @@ public class TrackRefinenement {
       controlpointsX = controlpointsX.add(getRegularization(controlpointsX, gdRegularizer, closed));
       controlpointsY = controlpointsY.add(getRegularization(controlpointsY, gdRegularizer, closed));
       radiusCtrPoints = radiusCtrPoints.add(getRegularization(radiusCtrPoints, gdRegularizer, closed));
-      if(constraints!=null) {
-        for(TrackConstraint constraint: constraints) {
+      if (constraints != null) {
+        for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
           controlpointsX = constraint.getControlPointsX();
           controlpointsY = constraint.getControlPointsY();

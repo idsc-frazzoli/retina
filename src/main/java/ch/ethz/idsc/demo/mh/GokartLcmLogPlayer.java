@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -19,7 +18,7 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    //file = DatahakiLogFileLocator.file(GokartLogFile._20181018T140542_1a649e65);
+    // file = DatahakiLogFileLocator.file(GokartLogFile._20181018T140542_1a649e65);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/track_orange/20181008T183011_10/log.lcm");
     file = UserHome.file("20181203T142514_70097ce1.lcm.00");
     cfg.logFile = file.toString();

@@ -24,24 +24,40 @@ public class TrackIdentificationManagement implements RenderInterface {
   Tensor trackData = null;
   int startX = -1;
   int startY = -1;
+  int width = 0;
+  int heigth = 0;
   double startOrientation = 0;
+  Scalar radiusOffset = Quantity.of(0.8, SI.METER);
   Scalar spacing = RealScalar.of(1.5);// TODO should be meters
   Scalar controlPointResolution = RealScalar.of(0.5);
   MPCBSplineTrack lastTrack;
+  TrackRender trackRender;
   Boolean closedTrack = false;
   Stopwatch lastTrackReset = Stopwatch.started();
+  List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
   long openTrackValid = 1000000000;
   TrackRefinenement.TrackConstraint startConstraint = null;
   TrackRefinenement.TrackConstraint endConstraint = null;
+  boolean startSet = false;
 
   public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {
     this.occupancyGrid = planableOccupancyGrid;
     this.initialGuess = new TrackLayoutInitialGuess(occupancyGrid);
     this.refinenement = new TrackRefinenement(occupancyGrid);
+    Tensor gridSize = occupancyGrid.getGridSize();
+    width = gridSize.Get(0).number().intValue();
+    heigth = gridSize.Get(1).number().intValue();
   }
 
   public boolean setStart(GokartPoseEvent gpe) {
-    return setStart(gpe.getPose());
+    if (gpe != null)
+      return setStart(gpe.getPose());
+    else
+      return false;
+  }
+
+  public boolean isStartSet() {
+    return startSet;
   }
 
   /** set start position
@@ -54,7 +70,11 @@ public class TrackIdentificationManagement implements RenderInterface {
     startX = pixelPos.Get(0).number().intValue();
     startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
-    return true;
+    if (startX >= 0 && startX < width && startY >= 0 && startY < heigth) {
+      startSet = true;
+      return true;
+    } else
+      return false;
   }
 
   public void update(GokartPoseEvent gpe) {
@@ -62,72 +82,59 @@ public class TrackIdentificationManagement implements RenderInterface {
   }
 
   public void update(Tensor pose) {
-    if (trackData == null || //
-        !closedTrack && lastTrackReset.display_nanoSeconds() > openTrackValid) {
-      // current track is not available or no longer valid
-      initialGuess.update(startX, startY, startOrientation, pose);
-      closedTrack = initialGuess.isClosed();
-      Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
-      if (ctrpoints != null && closedTrack) {
-        // we have a guess
-        // TODO: do this more elegantly
-        Tensor radiusCtrPoints = Tensors.empty();
-        for (int i = 0; i < ctrpoints.get(0).length(); i++) {
-          radiusCtrPoints.append(Quantity.of(1, SI.METER));
+    if (startSet) {
+      if (trackData == null || //
+          (!closedTrack && lastTrackReset.display_nanoSeconds() > openTrackValid)) {
+        // current track is not available or no longer valid
+        initialGuess.update(startX, startY, startOrientation, pose);
+        closedTrack = initialGuess.isClosed();
+        Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
+        if (ctrpoints != null && closedTrack) {
+          // we have a guess
+          // TODO: do this more elegantly
+          Tensor radiusCtrPoints = Tensors.empty();
+          for (int i = 0; i < ctrpoints.get(0).length(); i++) {
+            radiusCtrPoints.append(Quantity.of(1, SI.METER));
+          }
+          constraints = new LinkedList<>();
+          if (closedTrack) {
+            // no constraints at the moment
+          } else {
+            // TODO: introduce constraints
+          }
+          trackData = refinenement.getRefinedTrack(//
+              ctrpoints.get(0), //
+              ctrpoints.get(1), //
+              radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+          if (trackData != null) {
+            // valid refinement
+            // create Track
+            // To consider: high startup cost -> maybe don't do this in every step
+            lastTrack = new MPCBSplineTrack(trackData, radiusOffset);
+            trackRender = null;
+          }
         }
-        List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
-        if (closedTrack) {
-          // no constraints at the moment
-        } else {
-          // TODO: introduce constraints
-        }
-        trackData = refinenement.getRefinedTrack(//
-            ctrpoints.get(0), //
-            ctrpoints.get(1), //
-            radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+      } else {
+        // refine
+        System.out.println("refine");
+        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 1, closedTrack, constraints);
+        // consider: slower track update
         if (trackData != null) {
-          // valid refinement
-          
+          lastTrack = new MPCBSplineTrack(trackData, radiusOffset);
+          trackRender = null;
         }
       }
     }
-    /* initialGuess.update(startX, startY, startOrientation, gpe.getPose(), track);
-     * initialGuess.render(gl, graphics);
-     * if (initialGuess.isClosed()) {
-     * Scalar spacing = RealScalar.of(1.5);
-     * Scalar controlPointResolution = RealScalar.of(0.5);
-     * Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
-     * if (ctrpoints != null) {
-     * Tensor radiusCtrPoints = Tensors.empty();
-     * for (int i = 0; i < ctrpoints.get(0).length(); i++) {
-     * radiusCtrPoints.append(Quantity.of(1, SI.METER));
-     * }
-     * trackData = trackRefinenement.getRefinedTrack(//
-     * ctrpoints.get(0), //
-     * ctrpoints.get(1), //
-     * radiusCtrPoints, RealScalar.of(8), 100, initialGuess.isClosed(),null);
-     * } else {
-     * System.out.println("no sensible track found!");
-     * }
-     * }
-     * } else {
-     * System.out.println("refining old track!");
-     * trackData = trackRefinenement.getRefinedTrack(//
-     * trackData, RealScalar.of(8), 1, true, null);
-     * }
-     * }if(trackData!=null)
-     * 
-     * {
-     * Tensor radCtrP = Tensors.vector((i) -> trackData.get(2).Get(i).add(Quantity.of(0.7, SI.METER)), trackData.get(2).length());
-     * track = new BSplineTrack(trackData.get(0), trackData.get(1), radCtrP);
-     * }if(track!=null)
-     * {
-     * TrackRender trackRender = new TrackRender(track);
-     * trackRender.render(gl, graphics); */
   }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    // TODO Auto-generated method stub
+    if (lastTrack != null) {
+      if (trackRender == null)
+        trackRender = new TrackRender(lastTrack);
+      trackRender.render(geometricLayer, graphics);
+    } else {
+      initialGuess.render(geometricLayer, graphics);
+    }
   }
 }

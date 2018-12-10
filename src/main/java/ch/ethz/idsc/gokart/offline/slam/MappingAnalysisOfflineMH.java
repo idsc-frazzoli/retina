@@ -12,9 +12,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.BSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.TrackLayoutInitialGuess;
-import ch.ethz.idsc.gokart.core.mpc.TrackRefinenement;
+import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
@@ -25,7 +23,6 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.TrackRender;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -41,12 +38,10 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO contains redundancies with GokartMappingModule 
@@ -58,8 +53,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
-  private final TrackLayoutInitialGuess initialGuess;
-  private final TrackRefinenement trackRefinenement;
+  private final TrackIdentificationManagement trackIdentificationManagement;
   private final Consumer<BufferedImage> consumer;
   // ---
   private GokartPoseEvent gpe;
@@ -84,8 +78,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
-    initialGuess = new TrackLayoutInitialGuess(bayesianOccupancyGrid);
-    trackRefinenement = new TrackRefinenement(bayesianOccupancyGrid);
+    trackIdentificationManagement = new TrackIdentificationManagement(bayesianOccupancyGrid);
   }
 
   int count = 0;
@@ -101,8 +94,9 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       gpe = new GokartPoseEvent(byteBuffer);
       bayesianOccupancyGrid.setPose(gpe.getPose());
       bayesianOccupancyGridThin.setPose(gpe.getPose());
-      count++;
-
+      if (!trackIdentificationManagement.isStartSet())
+        trackIdentificationManagement.setStart(gpe);
+      trackIdentificationManagement.update(gpe);
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -116,44 +110,10 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      //bayesianOccupancyGrid.render(gl, graphics);
+      // bayesianOccupancyGrid.render(gl, graphics);
       bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
-      if (true) {
-        if (trackData == null) {
-          initialGuess.update(startX, startY, startOrientation, gpe.getPose());
-          initialGuess.render(gl, graphics);
-          if (initialGuess.isClosed()) {
-            Scalar spacing = RealScalar.of(1.5);
-            Scalar controlPointResolution = RealScalar.of(0.5);
-            Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
-            if (ctrpoints != null) {
-              Tensor radiusCtrPoints = Tensors.empty();
-              for (int i = 0; i < ctrpoints.get(0).length(); i++) {
-                radiusCtrPoints.append(Quantity.of(1, SI.METER));
-              }
-              trackData = trackRefinenement.getRefinedTrack(//
-                  ctrpoints.get(0), //
-                  ctrpoints.get(1), //
-                  radiusCtrPoints, RealScalar.of(8), 100, initialGuess.isClosed(),null);
-            } else {
-              System.out.println("no sensible track found!");
-            }
-          }
-        } else {
-          System.out.println("refining old track!");
-          trackData = trackRefinenement.getRefinedTrack(//
-              trackData, RealScalar.of(8), 1, true, null);
-        }
-      }
-      if (trackData != null) {
-        Tensor radCtrP = Tensors.vector((i)-> trackData.get(2).Get(i).add(Quantity.of(0.7,SI.METER)),trackData.get(2).length());
-        track = new BSplineTrack(trackData.get(0), trackData.get(1), radCtrP);
-      }
-      if(track != null) {
-        TrackRender trackRender = new TrackRender(track);
-        trackRender.render(gl, graphics);
-      }
+      trackIdentificationManagement.render(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
       // grid.setNewlBound(Tensors.vector(20, 20));
       // flag = true;

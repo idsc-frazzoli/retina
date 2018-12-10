@@ -72,7 +72,7 @@ public class MappingConfig {
     Tensor GRID_RANGE = Tensors.vector(40, 40);
     return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, obsRadius);
   }
-  
+
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
     // TODO comment on magic const 640/7.5

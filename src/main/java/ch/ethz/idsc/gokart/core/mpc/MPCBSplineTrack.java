@@ -8,6 +8,15 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Floor;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
+  public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset) {
+    super(trackData.get(0), trackData.get(1), //
+        trackData.get(2).map(radius -> radius.add(radiusOffset)));
+  }
+
+  public MPCBSplineTrack(Tensor trackData) {
+    super(trackData.get(0), trackData.get(1), trackData.get(2));
+  }
+
   public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
     super(controlPointsX, controlPointsY, radiusControlPoints);
   }

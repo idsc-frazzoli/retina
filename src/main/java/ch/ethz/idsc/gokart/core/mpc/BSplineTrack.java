@@ -20,14 +20,13 @@ import ch.ethz.idsc.tensor.sca.Power;
 
 public class BSplineTrack implements TrackInterface {
   private static final int SPLINE_ORDER_TRACK = 2;
-  private static final int SPLINE_ORDER_RADIUS = 1;
+  private static final int SPLINE_ORDER_RADIUS = 2;
   // ---
-  // TODO MH not used
-  private static final Scalar TOL_D = Quantity.of(0.000001, SI.METER);
   private static final Scalar TOL_B = RealScalar.of(0.1);
   // ---
   protected final Tensor controlPoints;
   protected final Tensor controlPointsR;
+  protected final Boolean closed = true;
   final Scalar length;
   final int numPoints;
   final BSplineFunction trackSpline;
@@ -67,12 +66,22 @@ public class BSplineTrack implements TrackInterface {
     trackSpline2ndDerivation = BSplineFunction.of(SPLINE_ORDER_TRACK - 2, devDevControl);
     radiusTrackSpline = BSplineFunction.of(SPLINE_ORDER_RADIUS, this.controlPointsR);
     // prepare lookup
-    posX = new float[(int) (controlPointsX.length() / lookupRes)];
-    posY = new float[(int) (controlPointsY.length() / lookupRes)];
-    for (int i = 0; i < controlPointsX.length() / lookupRes; i++) {
-      Tensor pos = getPosition(RealScalar.of(i * lookupRes));
-      posX[i] = pos.Get(0).number().floatValue();
-      posY[i] = pos.Get(1).number().floatValue();
+    if (closed) {
+      posX = new float[(int) (controlPointsX.length() / lookupRes)];
+      posY = new float[(int) (controlPointsY.length() / lookupRes)];
+      for (int i = 0; i < controlPointsX.length() / lookupRes; i++) {
+        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
+        posX[i] = pos.Get(0).number().floatValue();
+        posY[i] = pos.Get(1).number().floatValue();
+      }
+    } else {
+      posX = new float[(int) (controlPointsX.length() / lookupRes)];
+      posY = new float[(int) (controlPointsY.length() / lookupRes)];
+      for (int i = 0; i < controlPointsX.length() / lookupRes; i++) {
+        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
+        posX[i] = pos.Get(0).number().floatValue();
+        posY[i] = pos.Get(1).number().floatValue();
+      }
     }
   }
 
