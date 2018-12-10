@@ -11,6 +11,7 @@ import java.util.Objects;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -24,9 +25,7 @@ import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Increment;
 
 class RotationalHistogram implements LidarRayDataListener {
-  public static final int MOD = 36000;
-  // ---
-  Tensor histogram = Array.zeros(MOD);
+  Tensor histogram = Array.zeros(VelodyneStatics.AZIMUTH_RESOLUTION);
   private Integer rotational_last = null;
 
   @Override
@@ -36,12 +35,8 @@ class RotationalHistogram implements LidarRayDataListener {
 
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
-    if (Objects.nonNull(rotational_last)) {
-      int index = rotational - rotational_last;
-      index += MOD;
-      index %= MOD;
-      histogram.set(Increment.ONE, index);
-    }
+    if (Objects.nonNull(rotational_last))
+      histogram.set(Increment.ONE, VelodyneStatics.lookupAzimuth(rotational - rotational_last));
     rotational_last = rotational;
   }
 }
@@ -73,7 +68,6 @@ class TemporalHistogram implements LidarRayDataListener {
 }
 
 class PlanarHistogram implements LidarRayDataListener {
-  public static final int MOD = 36000;
   public static final int MID = 2000;
   public static final int WID = 4001;
   // ---
@@ -97,9 +91,7 @@ class PlanarHistogram implements LidarRayDataListener {
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (Objects.nonNull(rotational_last)) {
-      int index = rotational - rotational_last;
-      index += MOD;
-      index %= MOD;
+      int index = VelodyneStatics.lookupAzimuth(rotational - rotational_last);
       if (tuple.length() == 1) {
         tuple.append(RealScalar.of(index));
         if (!hash.containsKey(tuple))

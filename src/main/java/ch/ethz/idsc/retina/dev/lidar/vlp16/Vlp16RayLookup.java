@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
    * @param emulation_deg in degree */
   public Vlp16RayLookup(int bits, boolean flip, double angle_offset, double tiltY, double emulation_deg) {
     this.bits = bits;
-    int length = 36000 / (1 << bits);
+    int length = VelodyneStatics.AZIMUTH_RESOLUTION / (1 << bits);
     AngleVectorLookupFloat angleVectorLookupFloat = //
         new AngleVectorLookupFloat(length, flip, angle_offset);
     double tiltY_deg = Math.toDegrees(tiltY);
