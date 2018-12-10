@@ -1,4 +1,4 @@
-//code by mh
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.RealScalar;
@@ -6,16 +6,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
-import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Mod;
-import ch.ethz.idsc.tensor.sca.Power;
 
 /** @author Marc Heim
  * some mathematical utility function for working with splines */
-public class MPCBSpline {
+public enum MPCBSpline {
+  ;
   // based on matlab code:
   /* function [xx,yy] = casadiDynamicBSPLINE(x,points)
    * [n,~] = size(points);
@@ -55,60 +53,67 @@ public class MPCBSpline {
    * xx = b'*points(:,1);
    * yy = b'*points(:,2);
    * end */
-  public static Scalar getBasisFunction(Scalar vv) {
-    if (Scalars.lessThan(vv, RealScalar.ZERO))
-      return RealScalar.ZERO;
-    else if (Scalars.lessThan(vv, RealScalar.ONE))
-      return RealScalar.of(0.5).multiply(Power.of(vv, 2));
-    else if (Scalars.lessThan(vv, RealScalar.of(2)))
-      return RealScalar.of(0.5).multiply(//
-          RealScalar.of(3).negate()//
-              .add(RealScalar.of(6).multiply(vv))//
-              .subtract(RealScalar.of(2).multiply(Power.of(vv, 2))));
-    else if (Scalars.lessThan(vv, RealScalar.of(3)))
-      return RealScalar.of(0.5).multiply(Power.of(RealScalar.of(3).subtract(vv), 2));
-    else
-      return RealScalar.ZERO;
+  private static final Scalar _0 = RealScalar.of(0.0);
+  private static final Scalar _1_2 = RealScalar.of(0.5);
+  private static final Scalar _1 = RealScalar.of(1.0);
+  private static final Scalar _3_2 = RealScalar.of(1.5);
+  private static final Scalar _2 = RealScalar.of(2.0);
+  private static final Scalar MINUS_2 = RealScalar.of(-2.0);
+  private static final Scalar _3 = RealScalar.of(3.0);
+
+  /** quadratic bspline defined over the interval [0, 3]
+   * 
+   * @param value
+   * @return */
+  public static Scalar getBasisFunction(Scalar value) {
+    if (Scalars.lessThan(value, _0))
+      return _0;
+    if (Scalars.lessThan(value, _1))
+      return _1_2.multiply(value).multiply(value);
+    if (Scalars.lessThan(value, _2))
+      return _3.multiply(value).subtract(_3_2).subtract(value.multiply(value));
+    if (Scalars.lessThan(value, _3)) {
+      Scalar factor = _3.subtract(value);
+      return _1_2.multiply(factor).multiply(factor);
+    }
+    return _0;
   }
 
-  public static Scalar getBasisFunction1Der(Scalar vv) {
-    if (Scalars.lessThan(vv, RealScalar.ZERO))
-      return RealScalar.ZERO;
-    else if (Scalars.lessThan(vv, RealScalar.ONE))
-      return vv;
-    else if (Scalars.lessThan(vv, RealScalar.of(2)))
-      return RealScalar.of(3).subtract(RealScalar.of(2).multiply(vv));
-    else if (Scalars.lessThan(vv, RealScalar.of(3)))
-      return RealScalar.of(3).negate().add(vv);
-    else
-      return RealScalar.ZERO;
+  public static Scalar getBasisFunction1Der(Scalar value) {
+    if (Scalars.lessThan(value, _0))
+      return _0;
+    if (Scalars.lessThan(value, _1))
+      return value;
+    if (Scalars.lessThan(value, _2))
+      return _3.subtract(value).subtract(value);
+    if (Scalars.lessThan(value, _3))
+      return value.subtract(_3);
+    return _0;
   }
 
-  public static Scalar getBasisFunction2Der(Scalar vv) {
-    if (Scalars.lessThan(vv, RealScalar.ZERO))
-      return RealScalar.ZERO;
-    else if (Scalars.lessThan(vv, RealScalar.ONE))
-      return RealScalar.ONE;
-    else if (Scalars.lessThan(vv, RealScalar.of(2)))
-      return RealScalar.of(-2);
-    else if (Scalars.lessThan(vv, RealScalar.of(3)))
-      return RealScalar.ONE;
-    else
-      return RealScalar.ZERO;
+  public static Scalar getBasisFunction2Der(Scalar value) {
+    if (Scalars.lessThan(value, _0))
+      return _0;
+    if (Scalars.lessThan(value, _1))
+      return _1;
+    if (Scalars.lessThan(value, _2))
+      return MINUS_2;
+    if (Scalars.lessThan(value, _3))
+      return _1;
+    return _0;
   }
 
   public static Scalar getBasisElement(int n, int i, Scalar x, int der, boolean circle) {
-    Scalar vv = x.subtract(RealScalar.of(i)).add(RealScalar.of(2));
+    Scalar value = x.subtract(RealScalar.of(i)).add(RealScalar.of(2));
     if (circle)
-      vv = Mod.function(n).apply(vv);
+      value = Mod.function(n).apply(value);
     if (der == 0)
-      return getBasisFunction(vv);
-    else if (der == 1)
-      return getBasisFunction1Der(vv);
-    else if (der == 2)
-      return getBasisFunction2Der(vv);
-    else
-      return RealScalar.ZERO;// this is true and not a hack!
+      return getBasisFunction(value);
+    if (der == 1)
+      return getBasisFunction1Der(value);
+    if (der == 2)
+      return getBasisFunction2Der(value);
+    return RealScalar.ZERO;// this is true and not a hack!
   }
 
   public static Tensor getBasisVector(int n, Scalar x, int der, boolean circle) {
@@ -117,37 +122,10 @@ public class MPCBSpline {
       x = Min.of(x, RealScalar.of(n - 2));
     }
     final Scalar xx = x;
-    return Tensors.vector((i) -> getBasisElement(n, i, xx, der, circle), n);
-  }
-
-  public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
-    Tensor bm = getBasisMatrix(controlpointsX.length(), queryPositions, 0, circle);
-    return getPositions(controlpointsX, controlpointsY, queryPositions, circle, bm);
-  }
-
-  public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle, Tensor basisMatrix) {
-    Tensor posX = basisMatrix.dot(controlpointsX);
-    Tensor posY = basisMatrix.dot(controlpointsY);
-    return Transpose.of(Tensors.of(posX, posY));
-  }
-
-  public static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
-    Tensor bm = getBasisMatrix(controlpointsY.length(), queryPositions, 1, circle);
-    return getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, circle, bm);
-  }
-
-  public static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle, Tensor basisMatrix1Der) {
-    // forward vectors
-    Tensor forwardX = basisMatrix1Der.dot(controlpointsX);
-    Tensor forwardY = basisMatrix1Der.dot(controlpointsY);
-    Tensor normVector = Tensors.vector((i) -> RealScalar.ONE.divide(Norm._2.of(Tensors.of(forwardX.Get(i), forwardY.Get(i)))), forwardX.length());
-    Tensor unitSideX = forwardY.pmul(normVector);
-    Tensor unitSideY = forwardX.negate().pmul(normVector);
-    return Transpose.of(Tensors.of(unitSideX, unitSideY));
+    return Tensors.vector(i -> getBasisElement(n, i, xx, der, circle), n);
   }
 
   public static Tensor getBasisMatrix(int n, Tensor queryPositions, int der, boolean circle) {
-    final Tensor queryPositionsFinal = queryPositions;
-    return Tensors.vector((i) -> getBasisVector(n, queryPositionsFinal.Get(i), der, circle), queryPositions.length());
+    return Tensors.vector(i -> getBasisVector(n, queryPositions.Get(i), der, circle), queryPositions.length());
   }
 }
