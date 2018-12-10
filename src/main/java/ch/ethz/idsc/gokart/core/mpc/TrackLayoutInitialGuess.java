@@ -19,14 +19,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.mat.LeastSquares;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackLayoutInitialGuess implements RenderInterface {
   private class Cell {
@@ -50,6 +46,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       return occupancyGrid.getTransform().dot(Tensors.vector(x, y, 1));
     }
 
+    @Override
     public String toString() {
       return x + " / " + y + " : " + cost + (inQ ? " in Q" : "") + (processed ? " is processed" : "");
     }
@@ -71,8 +68,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         for (Neighbor n : possibleNeighbors) {
           Cell newNeighBor = n.getFrom(this);
           if (newNeighBor != null) {
-            this.neighBors.add(newNeighBor);
-            this.neighBorCost.add(n.cost);
+            neighBors.add(newNeighBor);
+            neighBorCost.add(n.cost);
           }
         }
       }
@@ -87,7 +84,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     public Neighbor(int dx, int dy) {
       this.dx = dx;
       this.dy = dy;
-      cost = Norm._2.of(Tensors.of(RealScalar.of(dx), RealScalar.of(dy)));
+      cost = RealScalar.of(Math.hypot(dx, dy));
+      // Norm._2.of(Tensors.of(RealScalar.of(dx), RealScalar.of(dy)));
     }
 
     public Cell getFrom(Cell cell) {
@@ -95,8 +93,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       int ny = cell.y + dy;
       if (!occupancyGrid.isCellOccupied(new Point(nx, ny)))
         return cellGrid[nx][ny];
-      else
-        return null;
+      return null;
     }
   }
 
@@ -299,6 +296,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
 
   public Tensor getPixelPosition(Tensor worldPosition) {
     Tensor transform = occupancyGrid.getTransform();
+    // TODO MH try the following line:
+    // Tensor wp = worldPosition.extract(0, 2).append(Quantity.of(1, SI.METER));
     Tensor wp = Tensors.empty();
     wp.append(worldPosition.Get(0));
     wp.append(worldPosition.Get(1));
@@ -408,6 +407,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, false);
       }
       // solve for control points: x
+      // TODO MH you are doing SVD of the same matrix twice !
       Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
       Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
       return Tensors.of(controlpointsX, controlpointsY);

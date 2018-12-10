@@ -24,7 +24,6 @@ import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.Bresenham;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -140,7 +139,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     // ---
     // PREDEFINED_P
     logOdds = new double[dimx * dimy];
-    //Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    // Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
     Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
     // ---
     Tensor grid2cell = DiagonalMatrix.of(cellDimInv, cellDimInv, RealScalar.ONE);
@@ -308,6 +307,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     synchronized (hset) {
       hset.clear();
       Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
+      // TODO MH or YN ofsx ofsy are not used
       final int ofsx = trans.Get(0).number().intValue();
       final int ofsy = trans.Get(1).number().intValue();
       // ---
@@ -403,7 +403,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
     graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
   }
-  
+
   @Override
   public Tensor getTransform() {
     Tensor translate = IdentityMatrix.of(3);

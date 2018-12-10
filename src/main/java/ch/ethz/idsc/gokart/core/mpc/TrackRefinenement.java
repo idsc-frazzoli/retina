@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class TrackRefinenement {
     if (closed)
       queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
     else
+      // TODO MH try Subdivide.of(0, n-2, m-1) for the below
       queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
     Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, closed);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
@@ -147,10 +149,11 @@ public class TrackRefinenement {
     return Tensors.of(posCorr.get(0), posCorr.get(1), radiusCorr);
   }
 
-  private Tensor getRegularization(Tensor controlpoints, Scalar reg, boolean closed) {
+  private static Tensor getRegularization(Tensor controlpoints, Scalar reg, boolean closed) {
     Tensor regVec = Tensors.empty();
     if (!closed) {
       // do we have convolution?
+      // TODO MH yes: ListConvolve or ListCorrelate
       regVec.append(Quantity.of(0, SI.METER));
       for (int i = 1; i < controlpoints.length() - 1; i++) {
         regVec.append(Mean.of(//
@@ -158,6 +161,7 @@ public class TrackRefinenement {
       }
     } else {
       // do we have convolution?
+      // TODO MH yes: ListConvolve or ListCorrelate
       regVec.append(Mean.of(//
           Tensors.of(controlpoints.Get(controlpoints.length() - 1), controlpoints.Get(1))));
       for (int i = 1; i < controlpoints.length() - 1; i++) {
