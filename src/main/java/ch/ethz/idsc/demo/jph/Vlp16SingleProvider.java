@@ -24,7 +24,6 @@ import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
     byteBuffer.position(position + position_laser);
     int distance = byteBuffer.getShort() & 0xffff;
     byte intensity = byteBuffer.get();
-    // float radius = IR * distance;
     coords[0] = azimuth;
     coords[1] = distance * VelodyneStatics.TO_METER_FLOAT;
     LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
