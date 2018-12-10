@@ -99,7 +99,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
       int az00 = byteBuffer.getShort(offset + 2) & 0xffff;
       int az11 = byteBuffer.getShort(offset + 2 + 1100) & 0xffff;
       // when the sensor operates at 20 revolutions per second, then typically gap == 39
-      final int gap = ((az11 - az00 + VelodyneStatics.AZIMUTH_RESOLUTION) % VelodyneStatics.AZIMUTH_RESOLUTION) / 10; // division by 10 == 5 * 2
+      final int gap = VelodyneStatics.lookupAzimuth(az11 - az00) / 10; // division by 10 == 5 * 2
       for (int firing = 0; firing < FIRINGS; firing += 2) {
         final int azimuth;
         {
