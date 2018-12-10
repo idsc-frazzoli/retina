@@ -307,10 +307,10 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public void update(int startX, int startY, double startorientation) {
-    update(startX, startY, startorientation, null, null);
+    update(startX, startY, startorientation, null);
   }
 
-  public void update(int startX, int startY, double startorientation, Tensor gokartPosition, BSplineTrack oldTrack) {
+  public void update(int startX, int startY, double startorientation, Tensor gokartPosition) {
     // position if map
     Tensor curPos = null;
     if (gokartPosition != null)

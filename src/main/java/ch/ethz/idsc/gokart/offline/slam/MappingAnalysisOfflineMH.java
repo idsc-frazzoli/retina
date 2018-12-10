@@ -102,19 +102,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       bayesianOccupancyGrid.setPose(gpe.getPose());
       bayesianOccupancyGridThin.setPose(gpe.getPose());
       count++;
-      if (startX == -1) {
-        Tensor transform = bayesianOccupancyGrid.getTransform();
-        System.out.println(transform);
-        Tensor startPos = gpe.getPose();
-        Tensor hPos = startPos;
-        hPos.set(Quantity.of(1, SI.METER), 2);
-        Tensor pixelPos = LinearSolve.of(transform, hPos);
-        System.out.println(startPos);
-        System.out.println(pixelPos);
-        startX = pixelPos.Get(0).number().intValue();
-        startY = pixelPos.Get(1).number().intValue();
-        startOrientation = startPos.Get(2).number().doubleValue();
-      }
+
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -133,7 +121,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       gr.render(gl, graphics);
       if (true) {
         if (trackData == null) {
-          initialGuess.update(startX, startY, startOrientation, gpe.getPose(), track);
+          initialGuess.update(startX, startY, startOrientation, gpe.getPose());
           initialGuess.render(gl, graphics);
           if (initialGuess.isClosed()) {
             Scalar spacing = RealScalar.of(1.5);
@@ -147,7 +135,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
               trackData = trackRefinenement.getRefinedTrack(//
                   ctrpoints.get(0), //
                   ctrpoints.get(1), //
-                  radiusCtrPoints, RealScalar.of(8), 100, initialGuess.isClosed());
+                  radiusCtrPoints, RealScalar.of(8), 100, initialGuess.isClosed(),null);
             } else {
               System.out.println("no sensible track found!");
             }
@@ -155,7 +143,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
         } else {
           System.out.println("refining old track!");
           trackData = trackRefinenement.getRefinedTrack(//
-              trackData, RealScalar.of(8), 1, true);
+              trackData, RealScalar.of(8), 1, true, null);
         }
       }
       if (trackData != null) {
