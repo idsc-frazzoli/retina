@@ -54,7 +54,7 @@ public class TrackRefinenement {
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsX.Get(1));
       Tensor startPos = Mean.of(Tensors.of(first, second));
       if (trackProg == null || trackPos == null || trackDirection == null) {
-        trackProg = track.getFastNearestPathProgress(startPos);
+        trackProg = track.getNearestPathProgress(startPos);
         trackPos = track.getPosition(trackProg);
         trackDirection = track.getDirection(trackProg);
       }

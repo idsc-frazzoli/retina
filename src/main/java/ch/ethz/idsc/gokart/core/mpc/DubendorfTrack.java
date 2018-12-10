@@ -134,6 +134,6 @@ public class DubendorfTrack extends MPCBSplineTrack {
 
   // ---
   private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
-    super(controlPointsX, controlPointsY, radiusControlPoints);
+    super(controlPointsX, controlPointsY, radiusControlPoints, true);
   }
 }

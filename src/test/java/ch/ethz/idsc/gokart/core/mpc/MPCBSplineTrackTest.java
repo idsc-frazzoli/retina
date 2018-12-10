@@ -35,7 +35,7 @@ public class MPCBSplineTrackTest extends TestCase {
     Tensor ctrX = Tensors.vector(0, 1, 2).multiply(Quantity.of(1, SI.METER));
     Tensor ctrY = Tensors.vector(3, 4, 5).multiply(Quantity.of(1, SI.METER));
     Tensor ctrR = Tensors.vector(6, 7, 8).multiply(Quantity.of(1, SI.METER));
-    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR);
+    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR, true);
     MPCPathParameter mpcPathParameter = mpcbSplineTrack.getPathParameterPreview(3, Tensors.vector(1.1, 4).multiply(Quantity.of(1, SI.METER)));
     assertEquals(mpcPathParameter.controlPointsX, Tensors.vector(0, 1, 2).multiply(Quantity.of(1, SI.METER)));
     assertEquals(mpcPathParameter.controlPointsY, Tensors.vector(3, 4, 5).multiply(Quantity.of(1, SI.METER)));
@@ -46,7 +46,7 @@ public class MPCBSplineTrackTest extends TestCase {
     Tensor ctrX = Tensors.vector(0, 1, 2).multiply(Quantity.of(1, SI.METER));
     Tensor ctrY = Tensors.vector(3, 4, 5).multiply(Quantity.of(1, SI.METER));
     Tensor ctrR = Tensors.vector(6, 7, 8).multiply(Quantity.of(1, SI.METER));
-    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR);
+    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR, true);
     long startTime = System.nanoTime();
     MPCPathParameter mpcPathParameter = mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)));
     long endTime = System.nanoTime();
@@ -60,7 +60,7 @@ public class MPCBSplineTrackTest extends TestCase {
     Tensor ctrX = Tensors.vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10).multiply(Quantity.of(1, SI.METER));
     Tensor ctrY = Tensors.vector(3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 10).multiply(Quantity.of(1, SI.METER));
     Tensor ctrR = Tensors.vector(6, 7, 8, 3, 4, 5, 6, 7, 8, 9, 10).multiply(Quantity.of(1, SI.METER));
-    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR);
+    MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(ctrX, ctrY, ctrR, true);
     long startTime = System.nanoTime();
     MPCPathParameter mpcPathParameter = mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)));
     long endTime = System.nanoTime();

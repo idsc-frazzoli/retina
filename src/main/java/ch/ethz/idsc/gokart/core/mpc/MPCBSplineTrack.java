@@ -8,17 +8,17 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Floor;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
-  public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset) {
+  public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, Boolean closed) {
     super(trackData.get(0), trackData.get(1), //
-        trackData.get(2).map(radius -> radius.add(radiusOffset)));
+        trackData.get(2).map(radius -> radius.add(radiusOffset)), closed);
   }
 
-  public MPCBSplineTrack(Tensor trackData) {
-    super(trackData.get(0), trackData.get(1), trackData.get(2));
+  public MPCBSplineTrack(Tensor trackData, Boolean closed) {
+    super(trackData.get(0), trackData.get(1), trackData.get(2), closed);
   }
 
-  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
-    super(controlPointsX, controlPointsY, radiusControlPoints);
+  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, Boolean closed) {
+    super(controlPointsX, controlPointsY, radiusControlPoints, closed);
   }
 
   @Override
@@ -28,7 +28,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     // Scalar pathProgress = getNearestPathProgress(position);
     // long endTime = System.nanoTime();
     // long startTimef = System.nanoTime();
-    Scalar pathProgress = getFastNearestPathProgress(position);
+    Scalar pathProgress = getNearestPathProgress(position);
     // long endTimef = System.nanoTime();
     // System.out.println("fast:"+ fastProgress+"/slow: "+pathProgress);
     // System.out.println(" path progress timing: "+(endTime-startTime)/1000+"[micros]");

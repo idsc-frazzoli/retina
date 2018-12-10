@@ -22,7 +22,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = Tensors.vector(0, 1, 2, 3, 4, 5).multiply(meter);
     Tensor ytensor = Tensors.vector(0, 1, 0, 1, 0, 1).multiply(meter);
     Tensor rtensor = Tensors.vector(2, 2, 2, 2, 2, 2).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor);
+    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
     Tensor out = Tensors.empty();
     Tensor devout = Tensors.empty();
     Tensor devdevout = Tensors.empty();
@@ -67,7 +67,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor);
+    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = Quantity.of(rand.nextFloat() * 200 - 100, SI.ONE);
@@ -92,7 +92,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor);
+    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = Quantity.of(rand.nextFloat() * 200 - 100, SI.ONE);
@@ -119,7 +119,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrX = Tensors.vector(0, 0, 1, 1).multiply(meter);
     Tensor ctrY = Tensors.of(RealScalar.ZERO, RealScalar.ONE, RealScalar.ONE, RealScalar.ZERO).multiply(meter);
     Tensor ctrR = Tensors.of(RealScalar.ONE, RealScalar.ONE, RealScalar.ONE, RealScalar.ONE).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(ctrX, ctrY, ctrR);
+    BSplineTrack bSplineTrack = new BSplineTrack(ctrX, ctrY, ctrR, true);
     Random rand = new Random();
     for (int i = 0; i < 10; i++) {
       Tensor queryPos = Tensors.of(Quantity.of(rand.nextFloat() * 3, SI.METER), Quantity.of(rand.nextFloat() * 4, SI.METER));
