@@ -14,8 +14,9 @@ See [development_guidelines](doc/development_guidelines.md)
 
 * interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
 * interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization
+* lidar based localization enhanced with odometry and gyro
 * simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* bayesian occupancy grid
 * offline processing of log data
 
 ## Gallery
@@ -32,7 +33,7 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
 
-Obstacles
+Navigation
 [initial](https://www.youtube.com/watch?v=xLZeKFeAokM),
 [demoday](https://www.youtube.com/watch?v=UnqaZavf3G0)
 
@@ -67,8 +68,8 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 ## Dependencies
 
 * [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning 
-* `elki` for DBSCAN
-* `lwjgl` for joystick readout
+* [`ELKI`](https://elki-project.github.io/) for DBSCAN
+* [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
 ## GOKART
 
@@ -259,10 +260,6 @@ Subsequently, you can use the project on your machine as
       <version>0.0.1</version>
     </dependency>
 
-## Contributors
-
-Valentina Caminato, Mario Gini, Jan Hakenberg, Marc Heim, Noah Isaak, Edo Jelavic, Yannik Nager, Alessandro Zardini
-
 ## Press
 
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
@@ -270,7 +267,7 @@ Valentina Caminato, Mario Gini, Jan Hakenberg, Marc Heim, Noah Isaak, Edo Jelavi
 
 ## References
 
-* [*Simultaneous localization and mapping for event-based vision systems*] by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+* [*Simultaneous localization and mapping for event-based vision systems*](https://mediatum.ub.tum.de/doc/1191908/1191908.pdf) by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
 
 ---
 
