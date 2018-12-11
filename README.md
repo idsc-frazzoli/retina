@@ -56,7 +56,7 @@ Navigation
 
 Source file size distribution
 
-![retina](https://user-images.githubusercontent.com/4012178/47344851-b9cf7c80-d6a9-11e8-940f-94e1512bec52.png)
+![retina](https://user-images.githubusercontent.com/4012178/49820755-09145e00-fd79-11e8-9df2-def72917f8e0.png)
 
 We use `LCM` for message interchange.
 All messages are encoded using a single type `BinaryBlob`.
