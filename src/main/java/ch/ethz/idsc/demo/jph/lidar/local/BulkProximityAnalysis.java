@@ -57,6 +57,7 @@ enum BulkProximityAnalysis {
     // ---
     {
       bulk(new File("/media/datahaki/media/ethz/gokart/topic/localization"));
+      bulk(new File("/media/datahaki/media/ethz/gokart/topic/odometry"));
     }
   }
 }

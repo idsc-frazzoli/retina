@@ -32,7 +32,9 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
 
-[Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
+Obstacles
+[initial](https://www.youtube.com/watch?v=xLZeKFeAokM),
+[demoday](https://www.youtube.com/watch?v=UnqaZavf3G0)
 
 <td>
 
@@ -61,6 +63,12 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
+
+## Dependencies
+
+* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning 
+* `elki` for DBSCAN
+* `lwjgl` for joystick readout
 
 ## GOKART
 
@@ -250,3 +258,20 @@ Subsequently, you can use the project on your machine as
       <artifactId>retina</artifactId>
       <version>0.0.1</version>
     </dependency>
+
+## Contributors
+
+Valentina Caminato, Mario Gini, Jan Hakenberg, Marc Heim, Noah Isaak, Edo Jelavic, Yannik Nager, Alessandro Zardini
+
+## Press
+
+* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
+* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+
+## References
+
+* [*Simultaneous localization and mapping for event-based vision systems*] by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+
+---
+
+![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
