@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
@@ -32,7 +33,7 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
   // ---
 
   private final List<LidarSpacialListener> listeners = new LinkedList<>();
-  /* package for testing */ int limit_lo = VelodyneStatics.DEFAULT_LIMIT_LO;
+  /* package for testing */ int limit_lo = VelodyneSpacialProvider.INITIAL_LIMIT_LO;
   private int usec;
   private final AngleVectorLookupFloat lookup;
   private final int index;

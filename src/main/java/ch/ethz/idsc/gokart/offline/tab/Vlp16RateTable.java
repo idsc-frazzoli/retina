@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
@@ -25,7 +26,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private static final Mod MOD = Mod.function(36000);
+  private static final Mod MOD = Mod.function(VelodyneStatics.AZIMUTH_RESOLUTION);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private final TableBuilder tableBuilder = new TableBuilder();

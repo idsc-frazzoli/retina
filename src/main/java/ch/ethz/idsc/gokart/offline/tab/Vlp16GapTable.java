@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -23,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class Vlp16GapTable implements OfflineTableSupplier, LidarRayDataListener {
   private static final Scalar GAPSIZES = RealScalar.of(200);
-  private static final Mod MOD = Mod.function(36000);
+  private static final Mod MOD = Mod.function(VelodyneStatics.AZIMUTH_RESOLUTION);
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---

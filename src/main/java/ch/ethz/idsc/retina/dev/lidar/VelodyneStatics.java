@@ -20,9 +20,15 @@ public enum VelodyneStatics {
   public static final int POS_DEFAULT_PORT = 8308;
   // ---
   // PROTOCOL CONSTANTS
+  /** resolution of one full rotation */
+  public static final int AZIMUTH_RESOLUTION = 36000;
   /** "report distance to the nearest 0.2 cm" => 2 mm */
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
-  /** TODO choose reasonable value */
-  public static final int DEFAULT_LIMIT_LO = 10;
+
+  /** @param azimuth in the interval [-36000, 36000]
+   * @return [0, 1, ..., 36000) */
+  public static int lookupAzimuth(int azimuth) {
+    return (azimuth + AZIMUTH_RESOLUTION) % AZIMUTH_RESOLUTION;
+  }
 }

@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 
 /** access to a single firing packet containing rotational angle, range,
  * intensity, etc.
@@ -72,7 +73,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
       int az00 = byteBuffer.getShort(offset + 2) & 0xffff;
       int az11 = byteBuffer.getShort(offset + 2 + 1100) & 0xffff;
       // when the sensor operates at 20 revolutions per second, then typically gap == 39
-      final int gap = ((az11 - az00 + 36000) % 36000) / 22; // division by 22 == 11 * 2
+      final int gap = VelodyneStatics.lookupAzimuth(az11 - az00) / 22; // division by 22 == 11 * 2
       // ---
       byteBuffer.position(offset);
       for (int firing = 0; firing < FIRINGS; ++firing) {
@@ -86,7 +87,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
           byteBuffer.position(position);
           listener.scan(azimuth, byteBuffer);
         });
-        int azimuth_hi = (azimuth + gap) % 36000;
+        int azimuth_hi = (azimuth + gap) % VelodyneStatics.AZIMUTH_RESOLUTION;
         final int position_hi = position + 48; // 16 * 3
         rayListeners.forEach(listener -> {
           byteBuffer.position(position_hi);
@@ -98,7 +99,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
       int az00 = byteBuffer.getShort(offset + 2) & 0xffff;
       int az11 = byteBuffer.getShort(offset + 2 + 1100) & 0xffff;
       // when the sensor operates at 20 revolutions per second, then typically gap == 39
-      final int gap = ((az11 - az00 + 36000) % 36000) / 10; // division by 10 == 5 * 2
+      final int gap = VelodyneStatics.lookupAzimuth(az11 - az00) / 10; // division by 10 == 5 * 2
       for (int firing = 0; firing < FIRINGS; firing += 2) {
         final int azimuth;
         {

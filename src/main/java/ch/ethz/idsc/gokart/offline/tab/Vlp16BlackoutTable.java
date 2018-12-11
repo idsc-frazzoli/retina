@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -46,7 +47,7 @@ public class Vlp16BlackoutTable implements OfflineTableSupplier, LidarRayDataLis
   @Override
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (flag) {
-      int delta_angle = (rotational - rota_last + 36000) % 36000;
+      int delta_angle = VelodyneStatics.lookupAzimuth(rotational - rota_last);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
           Tensors.vector(delta_time * 1e-3, delta_angle / 100.));

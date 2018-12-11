@@ -14,8 +14,9 @@ See [development_guidelines](doc/development_guidelines.md)
 
 * interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
 * interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization
+* lidar based localization enhanced with odometry and gyro
 * simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* bayesian occupancy grid
 * offline processing of log data
 
 ## Gallery
@@ -32,7 +33,9 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
 
-[Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
+Navigation
+[initial](https://www.youtube.com/watch?v=xLZeKFeAokM),
+[demoday](https://www.youtube.com/watch?v=UnqaZavf3G0)
 
 <td>
 
@@ -61,6 +64,12 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 * [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
 * [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
+
+## Dependencies
+
+* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning 
+* [`ELKI`](https://elki-project.github.io/) for DBSCAN
+* [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
 ## GOKART
 
@@ -250,3 +259,16 @@ Subsequently, you can use the project on your machine as
       <artifactId>retina</artifactId>
       <version>0.0.1</version>
     </dependency>
+
+## Press
+
+* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
+* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+
+## References
+
+* [*Simultaneous localization and mapping for event-based vision systems*](https://mediatum.ub.tum.de/doc/1191908/1191908.pdf) by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+
+---
+
+![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)

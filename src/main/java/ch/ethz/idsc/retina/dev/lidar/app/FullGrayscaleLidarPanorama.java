@@ -5,9 +5,11 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+
 /** grayscale images visualizing distance and intensity */
 public class FullGrayscaleLidarPanorama implements LidarPanorama {
-  private static final int RESOLUTION = 36000;
+  private static final int RESOLUTION = VelodyneStatics.AZIMUTH_RESOLUTION;
   // ---
   private final int[] offset;
   private final BufferedImage distancesImage;

@@ -45,6 +45,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   private static final SpacialXZObstaclePredicate SPACIAL_XZ = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   // ---
+  private final LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.vlp16SpacialProvider();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private GeometricLayer geometricLayer = new GeometricLayer(IdentityMatrix.of(3), Array.zeros(3));
   private boolean initialized = false;
@@ -52,7 +53,6 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   private final Graphics2D graphics;
 
   public ObstacleAggregation() {
-    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.vlp16SpacialProvider();
     lidarSpacialProvider.addListener(this);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     ImageCopy imageCopy = new ImageCopy();
@@ -76,7 +76,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
     }
   }
 
-  @Override
+  @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     float[] coords = lidarSpacialEvent.coords;
     if (SPACIAL_XZ.isObstacle(coords[0], coords[2]) && initialized) { // x z
