@@ -25,8 +25,6 @@ public enum VelodyneStatics {
   /** "report distance to the nearest 0.2 cm" => 2 mm */
   public static final double TO_METER = 0.002;
   public static final float TO_METER_FLOAT = (float) TO_METER;
-  /** TODO choose reasonable value */
-  public static final int DEFAULT_LIMIT_LO = 10;
 
   /** @param azimuth in the interval [-36000, 36000]
    * @return [0, 1, ..., 36000) */
