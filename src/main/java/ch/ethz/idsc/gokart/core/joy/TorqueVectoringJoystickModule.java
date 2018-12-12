@@ -1,9 +1,11 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
+import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -14,6 +16,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerMapping;
+import ch.ethz.idsc.retina.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -26,11 +29,13 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
+  private final Vlp16PassiveSlowing vlp16PassiveSlowing;
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   TorqueVectoringJoystickModule(TorqueVectoringInterface torqueVectoring) {
     this.torqueVectoringInterface = torqueVectoring;
+    vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   }
 
   @Override // from AbstractModule
@@ -74,6 +79,8 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
 
   @Override // from RimoGetListener
   public final void getEvent(RimoGetEvent getEvent) {
+    if (Objects.nonNull(vlp16PassiveSlowing))
+      vlp16PassiveSlowing.bypassSafety();
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
   }
 }

@@ -7,17 +7,19 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /** ModuleWatchdog runs every PERIOD_S and checks if all the modules that should
  * be running are running as given by their threads. If not it will try to
  * restart the module.
  *
- * The initialisation of this INSTANCE starts the watchdog. checkAlive is called
+ * The initialization of this INSTANCE starts the watchdog. checkAlive is called
  * by the main method and will restart the module if the timeOut is exceeded.
  * This should be reliable as if the main fails... (it will never happen). */
 public enum ModuleAuto {
   INSTANCE;
   /** map for holding the module list */
+  // TODO choose a more threadsafe datastructure
   private Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
 
   /** Methods for launching the modules */
@@ -39,27 +41,50 @@ public enum ModuleAuto {
   }
 
   public void runOne(Class<?> module) {
-    if (moduleMap.containsKey(module)) {
-      System.out.println(new Date() + " Module Auto: Already launched: " + module);
-      return;
+    synchronized (moduleMap) {
+      if (moduleMap.containsKey(module)) {
+        System.out.println(new Date() + " Module Auto: Already launched: " + module);
+        return;
+      }
     }
     try {
       AbstractModule instance = (AbstractModule) module.newInstance();
       System.out.println(new Date() + " Module Auto: Launching: " + module);
       instance.launch();
-      moduleMap.put(module, instance);
+      synchronized (moduleMap) {
+        moduleMap.put(module, instance);
+      }
     } catch (Exception exception) {
       exception.printStackTrace();
     }
   }
 
   public void terminateOne(Class<?> module) {
-    if (moduleMap.containsKey(module)) {
-      AbstractModule abstractModule = moduleMap.get(module);
-      moduleMap.remove(module);
+    AbstractModule instance = null;
+    synchronized (moduleMap) {
+      instance = moduleMap.remove(module);
+    }
+    if (Objects.nonNull(instance)) {
       System.out.println(new Date() + " Module Auto: Terminating: " + module);
-      abstractModule.terminate();
+      instance.terminate();
     } else
       System.err.println("not registered: " + module.getSimpleName());
   }
+
+  /** @param module
+   * @return instance of module if module was started before or null */
+  @SuppressWarnings("unchecked")
+  public <T extends AbstractModule> T getInstance(Class<?> module) {
+    return (T) moduleMap.get(module);
+  }
+  // public AbstractModule getInstanceAlways(Class<?> module) {
+  // synchronized (moduleMap) {
+  // AbstractModule abstractModule = moduleMap.get(module);
+  // if (Objects.isNull(abstractModule)) {
+  // runOne(module);
+  // return moduleMap.get(module);
+  // }
+  // return abstractModule;
+  // }
+  // }
 }
