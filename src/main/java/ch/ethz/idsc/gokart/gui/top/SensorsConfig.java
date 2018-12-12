@@ -52,6 +52,9 @@ public class SensorsConfig {
   public Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
   // TODO the location of the frustum is not final
   public Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
+  /** 20181212: the value for the imu bias was established from
+   * the first 60[s] of the logs from December 6. and 11. */
+  public Scalar davis_imuY_bias = Quantity.of(0.0142, SI.PER_SECOND);
   // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
    * the imuY measurement may have to be scaled.
@@ -90,7 +93,7 @@ public class SensorsConfig {
   /** @param davisImuFrame
    * @return rate of gokart around z-axis derived from imu measurements in "s^-1" */
   public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
-    return davisImuFrame.gyroImageFrame().Get(1) // image - y axis
+    return davisImuFrame.gyroImageFrame().Get(1).subtract(davis_imuY_bias) // image - y axis
         .multiply(davis_imuY_scale);
   }
 }
