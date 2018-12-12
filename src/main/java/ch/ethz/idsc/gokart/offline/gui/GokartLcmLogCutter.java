@@ -96,7 +96,8 @@ public class GokartLcmLogCutter {
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
       synchronized (map) {
-        map.put(pressed.x, mouseEvent.getX());
+        if (Objects.nonNull(pressed))
+          map.put(pressed.x, mouseEvent.getX());
       }
       jComponent.repaint();
     }
