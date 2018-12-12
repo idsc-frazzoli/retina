@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 import junit.framework.TestCase;
 
+// TODO MH reduce printout in tests
 public class LookupTable2DTest extends TestCase {
   public void testConsistency() throws Exception {
     // units not part of this unit test

@@ -25,6 +25,11 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
+/** abstract base class for all torque vectoring modules:
+ * 
+ * {@link SimpleTorqueVectoringJoystickModule}
+ * {@link ImprovedTorqueVectoringJoystickModule}
+ * {@link ImprovedNormalizedTorqueVectoringJoystickModule} */
 abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
@@ -58,7 +63,7 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
     Scalar power = Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
-    // compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
+    // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
     Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1

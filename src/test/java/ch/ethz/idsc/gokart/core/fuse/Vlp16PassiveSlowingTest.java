@@ -65,6 +65,52 @@ public class Vlp16PassiveSlowingTest extends TestCase {
     assertFalse(vcm.putEvent().isPresent());
   }
 
+  public void testEventsBypass() throws Exception {
+    Vlp16PassiveSlowing vlp16PassiveSlowing = new Vlp16PassiveSlowing();
+    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
+    vlp16PassiveSlowing.getEvent(gokartStatusEvent);
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    float[] coords = new float[3];
+    // ---
+    coords[0] = 0;
+    coords[1] = 0;
+    coords[2] = 0;
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    // ---
+    coords[0] = 0;
+    coords[1] = 1;
+    coords[2] = 0;
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    // ---
+    coords[0] = 1;
+    coords[1] = 1;
+    coords[2] = 0;
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    // ---
+    coords[0] = -1; // 1[m] along x axis in the back of the sensor
+    coords[1] = 0;
+    coords[2] = 0;
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    // ---
+    coords[0] = 1; // 1[m] along x axis in front of the sensor
+    coords[1] = 0;
+    coords[2] = 0;
+    vlp16PassiveSlowing.bypassSafety();
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    Thread.sleep(510);
+    coords[0] = 1; // 1[m] along x axis in front of the sensor
+    coords[1] = 0.2f;
+    coords[2] = (float) -0.8;
+    assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
+    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    assertTrue(vlp16PassiveSlowing.putEvent().isPresent());
+  }
+
   public void testCalibrationError() {
     Vlp16ClearanceModule vcm = new Vlp16PassiveSlowing();
     vcm.getEvent(new GokartStatusEvent(0.1f));
