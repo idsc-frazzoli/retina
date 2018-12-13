@@ -32,7 +32,7 @@ public class SafetyConfig {
    * @see Vlp16ClearanceModule */
   public Scalar clearance_XHi = Quantity.of(4.5, SI.METER);
   /** 20180226: changed from -1.0[m] to -0.9[m] because the sensor rack was lowered by ~8[cm] */
-  public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
+  public Scalar vlp16_ZLo = Quantity.of(-1.05, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
   /** rate limit is used in {@link SpeedLimitSafetyModule} */
   public Scalar rateLimit = Quantity.of(30, SIDerived.RADIAN_PER_SECOND);
