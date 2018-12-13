@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.dev;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public class LabjackAdcLcmClient extends BinaryLcmClient {
   private final TimedFuse timedFuse = new TimedFuse(0.3);
+  // TODO initialze with passive default
   private LabjackAdcFrame labjackAdcFrame;
 
   @Override
@@ -28,8 +30,7 @@ public class LabjackAdcLcmClient extends BinaryLcmClient {
   }
 
   public Scalar getAhead() {
-    // System.out.println("get ahead");
-    if (timedFuse.isBlown())
+    if (Objects.isNull(labjackAdcFrame) || timedFuse.isBlown())
       return RealScalar.ZERO;
     return labjackAdcFrame.getAheadSigned();
   }
