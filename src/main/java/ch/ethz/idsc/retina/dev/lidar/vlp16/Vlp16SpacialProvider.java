@@ -18,7 +18,7 @@ public class Vlp16SpacialProvider extends VelodyneSpacialProvider {
   private final float[] IZ = new float[LASERS];
 
   public Vlp16SpacialProvider(double angle_offset) {
-    lookup = new AngleVectorLookupFloat(36000, true, angle_offset);
+    lookup = new AngleVectorLookupFloat(VelodyneStatics.AZIMUTH_RESOLUTION, true, angle_offset);
     for (int laser = 0; laser < LASERS; ++laser) {
       double theta = StaticHelper.degree(laser) * Math.PI / 180;
       IR[laser] = (float) (Math.cos(theta) * VelodyneStatics.TO_METER);

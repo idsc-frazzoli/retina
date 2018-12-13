@@ -28,7 +28,7 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
     NUM_LASERS = laserList.size();
     IR = new float[NUM_LASERS];
     IZ = new float[NUM_LASERS];
-    lookup = new AngleVectorLookupFloat(36000, true, angle_offset);
+    lookup = new AngleVectorLookupFloat(VelodyneStatics.AZIMUTH_RESOLUTION, true, angle_offset);
     System.out.println("Rays processed at theta = ");
     for (int i = 0; i < NUM_LASERS; i++) {
       int laser = laserList.get(i);

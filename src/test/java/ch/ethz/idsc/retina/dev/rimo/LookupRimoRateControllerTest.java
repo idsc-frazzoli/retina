@@ -35,8 +35,9 @@ public class LookupRimoRateControllerTest extends TestCase {
       assertTrue(Scalars.lessEquals(Quantity.of(0, NonSI.ARMS), scalar));
     }
     for (int count = 0; count < 1000; ++count) {
+      @SuppressWarnings("unused")
       Scalar scalar = srrc.iterate(Quantity.of(0.1, "rad*s^-1")); // check integral part
-      System.out.println(scalar);
+      // System.out.println(scalar);
     }
   }
 }
