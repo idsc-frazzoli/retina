@@ -11,7 +11,7 @@ package ch.ethz.idsc.retina.dev.u3;
   public static void main(String[] args) throws InterruptedException {
     LabjackU3LiveProvider labjackU3LiveProvider = new LabjackU3LiveProvider(INSTANCE);
     labjackU3LiveProvider.start();
-    Thread.sleep(10000);
+    Thread.sleep(60000);
     labjackU3LiveProvider.stop();
   }
 }

@@ -27,8 +27,7 @@ public class LabjackU3LcmModule extends AbstractModule implements LabjackAdcList
     byte[] array = labjackAdcFrame.asArray();
     binaryBlobPublisher.accept(array, array.length);
   }
-
-  public static void main(String[] args) throws Exception {
-    new LabjackU3LcmModule().first();
-  }
+  // public static void main(String[] args) throws Exception {
+  // new LabjackU3LcmModule().first();
+  // }
 }
