@@ -18,6 +18,7 @@ public class LabjackAdcLcmClient extends BinaryLcmClient {
   protected void messageReceived(ByteBuffer byteBuffer) {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
     this.labjackAdcFrame = labjackAdcFrame;
+    // System.out.println("recevied");
     timedFuse.pacify();
   }
 
@@ -27,8 +28,9 @@ public class LabjackAdcLcmClient extends BinaryLcmClient {
   }
 
   public Scalar getAhead() {
+    // System.out.println("get ahead");
     if (timedFuse.isBlown())
       return RealScalar.ZERO;
-    return labjackAdcFrame.getAhead();
+    return labjackAdcFrame.getAheadSigned();
   }
 }

@@ -12,7 +12,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class LabjackAdcFrame extends DataEvent implements Serializable {
+  // TODO put magic const into config file
   private static final Clip CLIP = Clip.function(0.1, 5);
+  // ---
   private final float[] array;
 
   public LabjackAdcFrame(float[] array) {
@@ -24,11 +26,6 @@ public class LabjackAdcFrame extends DataEvent implements Serializable {
     array = new float[n];
     for (int index = 0; index < array.length; ++index)
       array[index] = byteBuffer.getFloat();
-  }
-
-  /** @return */
-  public Scalar getAhead() {
-    return CLIP.rescale(RealScalar.of(array[2]));
   }
 
   @Override // from DataEvent
@@ -45,5 +42,21 @@ public class LabjackAdcFrame extends DataEvent implements Serializable {
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
     return Tensors.vectorFloat(array);
+  }
+
+  /** @return value in the interval [-1, 1] */
+  public Scalar getAheadSigned() {
+    Scalar scalar = getThrottle();
+    return isBoostPressed() ? scalar.negate() : scalar;
+  }
+
+  /** @return value in the interval [0, 1] */
+  public Scalar getThrottle() {
+    return CLIP.rescale(RealScalar.of(array[2]));
+  }
+
+  /** @return */
+  public boolean isBoostPressed() {
+    return 1 < array[4]; // 0.3 when not pressed
   }
 }
