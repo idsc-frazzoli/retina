@@ -27,10 +27,10 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   }
 
   @Override
-  public boolean isCellOccupied(Point points) {
-    if (points.x >= 0 && points.x < m && //
-        points.y >= 0 && points.y < n) {
-      int p = img.getRGB(points.x, points.y);
+  public boolean isCellOccupied(int x, int y) {
+    if (x >= 0 && x < m && //
+        y >= 0 && y < n) {
+      int p = img.getRGB(x, y);
       int r = (p >> 16) & 0xff;
       return r > 100;
     }
@@ -45,6 +45,6 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   @Override
   public boolean isMember(Tensor element) {
     Point point = new Point(element.Get(0).number().intValue(), element.Get(1).number().intValue());
-    return isCellOccupied(point);
+    return isCellOccupied(point.x, point.y);
   }
 }

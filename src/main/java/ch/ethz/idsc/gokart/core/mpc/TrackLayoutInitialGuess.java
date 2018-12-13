@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -91,7 +90,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     public Cell getFrom(Cell cell) {
       int nx = cell.x + dx;
       int ny = cell.y + dy;
-      if (!occupancyGrid.isCellOccupied(new Point(nx, ny)))
+      if (!occupancyGrid.isCellOccupied(nx, ny))
         return cellGrid[nx][ny];
       return null;
     }
@@ -165,7 +164,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       for (int ii = 0; ii < gridsize.Get(1).number().intValue(); ii++) {
         Cell newCell = new Cell(i, ii);
         if ((i == sfx && ii == sfy) || !occupancyGrid.isCellOccupied(//
-            new Point(newCell.x, newCell.y)))
+            newCell.x, newCell.y))
           cellGrid[i][ii] = newCell;
       }
     }
@@ -327,7 +326,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         closed = false;
         actualTarget = getFarthestCell();
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
+        route = routeFromStart;
         // can we reach gokart?
+        /*
         if (reachable(dijkstraGokartBack)) {
           System.out.println("start->gokart found. Expanding beyond gokart");
           route = routeFromStart;
@@ -345,7 +346,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
             System.out.println("no route found to gokart");
             route = routeFromStart;
           }
-        }
+        }*/
       }
     } else {
       System.out.println("Target not available.");
@@ -412,6 +413,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
       return Tensors.of(controlpointsX, controlpointsY);
     }
+    System.out.println("no usable track!");
     return null;
   }
 

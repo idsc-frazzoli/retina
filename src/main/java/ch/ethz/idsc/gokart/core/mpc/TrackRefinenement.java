@@ -10,11 +10,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
+import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinenement {
@@ -50,8 +52,8 @@ public class TrackRefinenement {
 
     @Override
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsX.Get(0));
-      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsX.Get(1));
+      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
+      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
       Tensor startPos = Mean.of(Tensors.of(first, second));
       if (trackProg == null || trackPos == null || trackDirection == null) {
         trackProg = track.getNearestPathProgress(startPos);
@@ -59,7 +61,7 @@ public class TrackRefinenement {
         trackDirection = track.getDirection(trackProg);
       }
       Tensor realVector = second.subtract(first);
-      Scalar projection = (Scalar) Min.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
+      Scalar projection = (Scalar) Max.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
       Tensor correctedFirst = startPos.subtract(trackDirection.multiply(projection));
       Tensor correctedSecond = startPos.add(trackDirection.multiply(projection));
       this.controlPointsX = controlpointsX;
@@ -72,6 +74,68 @@ public class TrackRefinenement {
     }
   }
 
+  public class PositionalStartConstraint extends TrackConstraint {
+    
+    Tensor wantedPosition = null;
+    Tensor wantedDirection = null;
+    
+    @Override
+    public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
+      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
+      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
+      Tensor startPos = Mean.of(Tensors.of(first, second));
+      if(wantedPosition == null)
+      {
+        wantedPosition = startPos;
+        wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
+        
+      }
+      Tensor realVector = second.subtract(first);
+      Scalar projection = (Scalar) Max.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
+      Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
+      Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
+      this.controlPointsX = controlpointsX;
+      this.controlPointsY = controlpointsY;
+      this.radiusControlPoints = radiusControlPoints;
+      controlpointsX.set(correctedFirst.Get(0), 0);
+      controlpointsX.set(correctedSecond.Get(0), 1);
+      controlpointsY.set(correctedFirst.Get(1), 0);
+      controlpointsY.set(correctedSecond.Get(1), 1);
+    }
+  }
+  
+  public class PositionalEndConstraint extends TrackConstraint {
+    
+    Tensor wantedPosition = null;
+    Tensor wantedDirection = null;
+    
+    @Override
+    public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
+      int lastIndex = controlpointsX.length()-1;
+      int secondLastIndex = lastIndex-1;
+      Tensor first = Tensors.of(controlpointsX.Get(secondLastIndex), controlpointsY.Get(secondLastIndex));
+      Tensor second = Tensors.of(controlpointsX.Get(lastIndex), controlpointsY.Get(lastIndex));
+      Tensor startPos = Mean.of(Tensors.of(first, second));
+      if(wantedPosition == null)
+      {
+        wantedPosition = startPos;
+        wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
+        
+      }
+      Tensor realVector = second.subtract(first);
+      Scalar projection = (Scalar) Min.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
+      Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
+      Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
+      this.controlPointsX = controlpointsX;
+      this.controlPointsY = controlpointsY;
+      this.radiusControlPoints = radiusControlPoints;
+      controlpointsX.set(correctedFirst.Get(0), secondLastIndex);
+      controlpointsX.set(correctedSecond.Get(0), lastIndex);
+      controlpointsY.set(correctedFirst.Get(1), secondLastIndex);
+      controlpointsY.set(correctedSecond.Get(1), lastIndex);
+    }
+  }
+  
   public TrackRefinenement(PlanableOccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
@@ -91,7 +155,7 @@ public class TrackRefinenement {
       queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
     else
       // TODO MH try Subdivide.of(0, n-2, m-1) for the below
-      queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
+      queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m-1);
     Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, closed);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
     Tensor splineMatrix1Der = MPCBSpline.getBasisMatrix(n, queryPositions, 1, closed);
@@ -165,6 +229,7 @@ public class TrackRefinenement {
         regVec.append(Mean.of(//
             Tensors.of(controlpoints.Get(i - 1), controlpoints.Get(i + 1))));
       }
+      regVec.append(Quantity.of(0, SI.METER));
     } else {
       // do we have convolution?
       // TODO MH yes: ListConvolve or ListCorrelate

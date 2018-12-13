@@ -66,7 +66,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
 
   public MappingAnalysisOfflineMH(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
-    bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
+    bayesianOccupancyGrid = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10000, 3);
@@ -96,7 +96,8 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       bayesianOccupancyGridThin.setPose(gpe.getPose());
       if (!trackIdentificationManagement.isStartSet())
         trackIdentificationManagement.setStart(gpe);
-      trackIdentificationManagement.update(gpe);
+      if(count++>5)
+        trackIdentificationManagement.update(gpe, Quantity.of(0.05, SI.SECOND));
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
@@ -110,7 +111,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      // bayesianOccupancyGrid.render(gl, graphics);
+      bayesianOccupancyGrid.render(gl, graphics);
       bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
       trackIdentificationManagement.render(gl, graphics);

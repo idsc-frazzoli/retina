@@ -26,6 +26,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   int startY = -1;
   int width = 0;
   int heigth = 0;
+  int count = 0;
   double startOrientation = 0;
   Scalar radiusOffset = Quantity.of(0.8, SI.METER);
   Scalar spacing = RealScalar.of(1.5);// TODO should be meters
@@ -33,11 +34,12 @@ public class TrackIdentificationManagement implements RenderInterface {
   MPCBSplineTrack lastTrack;
   TrackRender trackRender;
   Boolean closedTrack = false;
+  Boolean oldWasClosed = false;
   Stopwatch lastTrackReset = Stopwatch.started();
   List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
-  long openTrackValid = 1000000000;
-  TrackRefinenement.TrackConstraint startConstraint = null;
-  TrackRefinenement.TrackConstraint endConstraint = null;
+  Scalar openTrackValid = Quantity.of(1, SI.SECOND);
+  Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
+  List<TrackRefinenement.TrackConstraint> trackConstraints = null;
   boolean startSet = false;
 
   public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {
@@ -77,44 +79,57 @@ public class TrackIdentificationManagement implements RenderInterface {
       return false;
   }
 
-  public void update(GokartPoseEvent gpe) {
-    update(gpe.getPose());
+  public void update(GokartPoseEvent gpe, Scalar dTime) {
+    update(gpe.getPose(), dTime);
   }
 
-  public void update(Tensor pose) {
+  public void update(Tensor pose, Scalar dTime) {
+    System.out.println("update called: " + timeSinceLastTrackUpdate);
+    timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
-      if (trackData == null || //
-          (!closedTrack && lastTrackReset.display_nanoSeconds() > openTrackValid)) {
-        // current track is not available or no longer valid
+      if (trackData == null) {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
+      }
+      if (trackData == null && closedTrack) {
+        // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
-        if (ctrpoints != null && closedTrack) {
+        if (ctrpoints != null) {
           // we have a guess
           // TODO: do this more elegantly
-          Tensor radiusCtrPoints = Tensors.empty();
-          for (int i = 0; i < ctrpoints.get(0).length(); i++) {
-            radiusCtrPoints.append(Quantity.of(1, SI.METER));
-          }
+          Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
           constraints = new LinkedList<>();
+          /*
           if (closedTrack) {
             // no constraints at the moment
           } else {
-            // TODO: introduce constraints
-          }
-          trackData = refinenement.getRefinedTrack(//
-              ctrpoints.get(0), //
-              ctrpoints.get(1), //
-              radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+            constraints.add(refinenement.new PositionalStartConstraint());
+            constraints.add(refinenement.new PositionalEndConstraint());
+          }*/
+          if (closedTrack)
+            trackData = refinenement.getRefinedTrack(//
+                ctrpoints.get(0), //
+                ctrpoints.get(1), //
+                radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+          /*
+          else
+            trackData = refinenement.getRefinedTrack(//
+                ctrpoints.get(0), //
+                ctrpoints.get(1), //
+                radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints);*/
           if (trackData != null) {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
             lastTrack = new MPCBSplineTrack(trackData, radiusOffset, closedTrack);
+            timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
+          } else {
+            System.out.println("no solution found!");
           }
         }
-      } else {
+      } else if (closedTrack) {
+        System.out.println(count++);
         // refine
         System.out.println("refine");
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 1, closedTrack, constraints);
@@ -124,6 +139,7 @@ public class TrackIdentificationManagement implements RenderInterface {
           trackRender = null;
         }
       }
+      oldWasClosed = closedTrack;
     }
   }
 

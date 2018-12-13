@@ -57,15 +57,27 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
    * If not set or below cellDim, only the occupied cell is labeled as an obstacle
    * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
   public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius) {
+    return of(lbounds, range, cellDim, obstacleRadius, false);
+  }
+
+  /** @param lbounds vector of length 2
+   * @param range effective size of grid in coordinate space
+   * @param cellDim non-negative dimension of cell with unit SI.METER
+   * @param obstacleRadius with unit SI.METER
+   * @param fill whether the map should be considered occupied at the beginning
+   * cells within this radius of an occupied cell will also be labeled as occupied.
+   * If not set or below cellDim, only the occupied cell is labeled as an obstacle
+   * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
+  public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius, boolean fill) {
     // sizeCeil is for instance {200[m^-1], 200[m^-1]}
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
     Dimension dimension = new Dimension( //
         Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
         Magnitude.PER_METER.toInt(sizeCeil.Get(1)));
-    return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius);
+    return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius, fill);
   }
-
+  
   // ---
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
   // ---
@@ -114,7 +126,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
   /** @param lbounds vector of length 2
    * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
    * @param dimension of grid in cell space */
-  private BayesianOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius) {
+  private BayesianOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius, boolean fillMap) {
     VectorQ.requireLength(rangeCeil, 2);
     System.out.print("Grid range: " + rangeCeil + "\n");
     System.out.print("Grid size: " + dimension + "\n");
@@ -139,8 +151,12 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     // ---
     // PREDEFINED_P
     logOdds = new double[dimx * dimy];
-    // Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
-    Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
+    if (!fillMap)
+      Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    else {
+      Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
+      setHset();
+    }
     // ---
     Tensor grid2cell = DiagonalMatrix.of(cellDimInv, cellDimInv, RealScalar.ONE);
     Tensor world2grid = getWorld2grid();
@@ -151,9 +167,6 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     lidar2cellLayer.pushMatrix(lidar2gokart); // lidar to gokart
     // ---
     world2cellLayer = GeometricLayer.of(grid2cell);
-    world2cellLayer.pushMatrix(world2grid);
-    // by mh: what if P_M > P_Thres
-    setHset();
   }
 
   /** @return matrix */
@@ -303,14 +316,9 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     }
   }
 
-  public void setHset() {
+  private void setHset() {
     synchronized (hset) {
       hset.clear();
-      Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
-      // TODO MH or YN ofsx ofsy are not used
-      final int ofsx = trans.Get(0).number().intValue();
-      final int ofsy = trans.Get(1).number().intValue();
-      // ---
       for (int i = 0; i < dimx; i++)
         for (int j = 0; j < dimy; j++) {
           double logOdd = logOdds[j * dimx + i];
@@ -373,7 +381,6 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     return true;
   }
 
-  // added by mh TODO: decide wether to do that in subclass?
   /** @return the currently used gridsize */
   @Override
   public Tensor getGridSize() {
@@ -384,10 +391,8 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
    * @param cell
    * @return true if cell is occupied */
   @Override
-  public boolean isCellOccupied(Point cell) {
-    int pix = cell.x;
+  public boolean isCellOccupied(int pix, int piy) {;
     if (0 <= pix && pix < dimx) {
-      int piy = cell.y;
       if (0 <= piy && piy < dimy)
         return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;
     }
