@@ -77,7 +77,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
         Magnitude.PER_METER.toInt(sizeCeil.Get(1)));
     return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius, fill);
   }
-  
+
   // ---
   private final Tensor lidar2gokart = SensorsConfig.GLOBAL.vlp16Gokart(); // from lidar frame to gokart frame
   // ---
@@ -391,7 +391,8 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
    * @param cell
    * @return true if cell is occupied */
   @Override
-  public boolean isCellOccupied(int pix, int piy) {;
+  public boolean isCellOccupied(int pix, int piy) {
+    ;
     if (0 <= pix && pix < dimx) {
       if (0 <= piy && piy < dimy)
         return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;

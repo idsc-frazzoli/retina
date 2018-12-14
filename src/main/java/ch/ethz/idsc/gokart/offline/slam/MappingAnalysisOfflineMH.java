@@ -96,7 +96,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       bayesianOccupancyGridThin.setPose(gpe.getPose());
       if (!trackIdentificationManagement.isStartSet())
         trackIdentificationManagement.setStart(gpe);
-      if(count++>5)
+      if (count++ > 5)
         trackIdentificationManagement.update(gpe, Quantity.of(0.05, SI.SECOND));
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);

@@ -33,8 +33,8 @@ public class GokartSoundCreator {
   public static abstract class Resonator {
     public abstract float getNextValue(float excitementValue, MotorState state, float dt);
   }
-  
-  public static interface SpeedModifier{
+
+  public static interface SpeedModifier {
     float getNextSpeedValue(MotorState defaultState, float dt);
   }
 
@@ -106,7 +106,7 @@ public class GokartSoundCreator {
     MotorState state = this.motorState;
     cBuf.clear();
     for (int i = 0; i < samples; i++) {
-      if(speedModifier!=null) {
+      if (speedModifier != null) {
         float newSpeed = speedModifier.getNextSpeedValue(motorState, 1.f / SAMPLING_RATE);
         state = new MotorState(newSpeed, state.power, state.torquevectoring);
       }

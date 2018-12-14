@@ -17,20 +17,20 @@ public class SimpleResonator extends GokartSoundCreator.Resonator {
 
   @Override
   public float getNextValue(float excitementValue, MotorState state, float dt) {
-    //if(excitementValue>0)
-    //  System.out.println("ping");
+    // if(excitementValue>0)
+    // System.out.println("ping");
     float ddx = excitementValue * excitability - dx * damping - x * spring;
     dx += ddx * dt;
     x += dx * dt;
-    if(x>1) {
-      x=1;
-      if(dx>0)
-        dx=0;
+    if (x > 1) {
+      x = 1;
+      if (dx > 0)
+        dx = 0;
     }
-    if(x<-1) {
-      x=-1;
-      if(dx<0)
-        dx=0;
+    if (x < -1) {
+      x = -1;
+      if (dx < 0)
+        dx = 0;
     }
     return x;
   }

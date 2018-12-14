@@ -99,24 +99,22 @@ public class TrackIdentificationManagement implements RenderInterface {
           // TODO: do this more elegantly
           Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
           constraints = new LinkedList<>();
-          /*
-          if (closedTrack) {
-            // no constraints at the moment
-          } else {
-            constraints.add(refinenement.new PositionalStartConstraint());
-            constraints.add(refinenement.new PositionalEndConstraint());
-          }*/
+          /* if (closedTrack) {
+           * // no constraints at the moment
+           * } else {
+           * constraints.add(refinenement.new PositionalStartConstraint());
+           * constraints.add(refinenement.new PositionalEndConstraint());
+           * } */
           if (closedTrack)
             trackData = refinenement.getRefinedTrack(//
                 ctrpoints.get(0), //
                 ctrpoints.get(1), //
                 radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
-          /*
-          else
-            trackData = refinenement.getRefinedTrack(//
-                ctrpoints.get(0), //
-                ctrpoints.get(1), //
-                radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints);*/
+          /* else
+           * trackData = refinenement.getRefinedTrack(//
+           * ctrpoints.get(0), //
+           * ctrpoints.get(1), //
+           * radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints); */
           if (trackData != null) {
             // valid refinement
             // create Track

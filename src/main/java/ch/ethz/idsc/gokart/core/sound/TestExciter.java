@@ -9,6 +9,7 @@ public class TestExciter extends Exciter {
   final float powerFactor;
   float sinePosition = 0;
   float dsinePosition;
+
   public TestExciter(float absFrequency, float relFrequency, float powerFactor) {
     this.absFrequency = absFrequency;
     this.relFrequency = relFrequency;
@@ -17,13 +18,12 @@ public class TestExciter extends Exciter {
 
   @Override
   public float getNextValue(MotorState state, float dt) {
-    dsinePosition = dt*(state.speed*relFrequency+absFrequency);
-    sinePosition+=dsinePosition;
-    if(sinePosition>Math.PI*2)
-    {
-      sinePosition-=Math.PI*2;
+    dsinePosition = dt * (state.speed * relFrequency + absFrequency);
+    sinePosition += dsinePosition;
+    if (sinePosition > Math.PI * 2) {
+      sinePosition -= Math.PI * 2;
       return 1;
     }
-    return  0;
+    return 0;
   }
 }

@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -49,12 +48,12 @@ public class BSplineTrack implements TrackInterface {
     this.controlPoints = Transpose.of(Tensors.of(controlPointsX, controlPointsY));
     this.controlPointsR = radiusControlPoints.copy();
     final int pathLength = controlPointsX.length();
-    if(closed)
+    if (closed)
       length = RealScalar.of(pathLength);
     else
-      //length = RealScalar.of(pathLength-SPLINE_ORDER_TRACK/2);
-      //TODO: find out exactly how the formula is
-      length = RealScalar.of(pathLength-1);
+      // length = RealScalar.of(pathLength-SPLINE_ORDER_TRACK/2);
+      // TODO: find out exactly how the formula is
+      length = RealScalar.of(pathLength - 1);
     // add points at the end in order to close the loop
     int next = 0;
     while (toAdd > 0) {
@@ -82,16 +81,16 @@ public class BSplineTrack implements TrackInterface {
         posY[i] = pos.Get(1).number().floatValue();
       }
     } else {
-      posX = new float[(int) ((controlPointsX.length()-1) / lookupRes)];
-      posY = new float[(int) ((controlPointsY.length()-1) / lookupRes)];
-      for (int i = 0; i < (controlPointsX.length()-1) / lookupRes; i++) {
+      posX = new float[(int) ((controlPointsX.length() - 1) / lookupRes)];
+      posY = new float[(int) ((controlPointsY.length() - 1) / lookupRes)];
+      for (int i = 0; i < (controlPointsX.length() - 1) / lookupRes; i++) {
         Tensor pos = getPosition(RealScalar.of(i * lookupRes));
         posX[i] = pos.Get(0).number().floatValue();
         posY[i] = pos.Get(1).number().floatValue();
       }
     }
   }
-  
+
   public Boolean isClosed() {
     return closed;
   }
@@ -102,11 +101,11 @@ public class BSplineTrack implements TrackInterface {
 
   private Scalar wrap(Scalar pathProgress) {
     // TODO: check if there any specialized functions in the tensor library
-    if(closed) {
+    if (closed) {
       Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
       Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);
       return pathProgress.subtract(startPoint);
-    }else {
+    } else {
       return Clip.function(RealScalar.ZERO, length).apply(pathProgress);
     }
   }
@@ -188,12 +187,12 @@ public class BSplineTrack implements TrackInterface {
   }
 
   Scalar getNearestPathProgress(Tensor position) {
-    if(closed)
+    if (closed)
       return getFastNearestPathProgress(position);
     else
       return getFastNearestPathProgressOpen(position);
   }
-  
+
   /** problem: using normal BSpline implementation takes more time than full MPC optimization
    * solution: fast position lookup: from 45000 micro s -> 15 micro s */
   private Scalar getFastNearestPathProgress(Tensor position) {
@@ -241,7 +240,7 @@ public class BSplineTrack implements TrackInterface {
     }
     return RealScalar.of(bestGuess * lookupRes);
   }
-  
+
   /** problem: using normal BSpline implementation takes more time than full MPC optimization
    * solution: fast position lookup: from 45000 micro s -> 15 micro s */
   private Scalar getFastNearestPathProgressOpen(Tensor position) {
@@ -251,7 +250,7 @@ public class BSplineTrack implements TrackInterface {
     float bestDist = 10000f;
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < numPoints-SPLINE_ORDER_TRACK; i++) {
+    for (int i = 0; i < numPoints - SPLINE_ORDER_TRACK; i++) {
       int index = i * lookupSkip;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);
@@ -265,13 +264,13 @@ public class BSplineTrack implements TrackInterface {
     while (precision > 1) {
       int upper = bestGuess + precision;
       if (upper >= posX.length)
-        upper = posX.length-1;
+        upper = posX.length - 1;
       if (upper < 0)
         upper = 0;
       float upperDist = getFastQuadraticDistance(upper, gPosX, gPosY);
       int lower = bestGuess - precision;
       if (lower >= posX.length)
-        lower = posX.length-1;
+        lower = posX.length - 1;
       if (lower < 0)
         lower = 0;
       float lowerDist = getFastQuadraticDistance(lower, gPosX, gPosY);
@@ -290,8 +289,6 @@ public class BSplineTrack implements TrackInterface {
     return RealScalar.of(bestGuess * lookupRes);
   }
 
-  
-  
   float getFastQuadraticDistance(int index, float gPosX, float gPosY) {
     float dx = gPosX - posX[index];
     float dy = gPosY - posY[index];

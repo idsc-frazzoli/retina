@@ -75,20 +75,17 @@ public class TrackRefinenement {
   }
 
   public class PositionalStartConstraint extends TrackConstraint {
-    
     Tensor wantedPosition = null;
     Tensor wantedDirection = null;
-    
+
     @Override
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
       Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
       Tensor startPos = Mean.of(Tensors.of(first, second));
-      if(wantedPosition == null)
-      {
+      if (wantedPosition == null) {
         wantedPosition = startPos;
         wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
-        
       }
       Tensor realVector = second.subtract(first);
       Scalar projection = (Scalar) Max.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
@@ -103,24 +100,21 @@ public class TrackRefinenement {
       controlpointsY.set(correctedSecond.Get(1), 1);
     }
   }
-  
+
   public class PositionalEndConstraint extends TrackConstraint {
-    
     Tensor wantedPosition = null;
     Tensor wantedDirection = null;
-    
+
     @Override
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      int lastIndex = controlpointsX.length()-1;
-      int secondLastIndex = lastIndex-1;
+      int lastIndex = controlpointsX.length() - 1;
+      int secondLastIndex = lastIndex - 1;
       Tensor first = Tensors.of(controlpointsX.Get(secondLastIndex), controlpointsY.Get(secondLastIndex));
       Tensor second = Tensors.of(controlpointsX.Get(lastIndex), controlpointsY.Get(lastIndex));
       Tensor startPos = Mean.of(Tensors.of(first, second));
-      if(wantedPosition == null)
-      {
+      if (wantedPosition == null) {
         wantedPosition = startPos;
         wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
-        
       }
       Tensor realVector = second.subtract(first);
       Scalar projection = (Scalar) Min.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
@@ -135,7 +129,7 @@ public class TrackRefinenement {
       controlpointsY.set(correctedSecond.Get(1), lastIndex);
     }
   }
-  
+
   public TrackRefinenement(PlanableOccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
@@ -155,7 +149,7 @@ public class TrackRefinenement {
       queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
     else
       // TODO MH try Subdivide.of(0, n-2, m-1) for the below
-      queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m-1);
+      queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m - 1);
     Tensor splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, closed);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
     Tensor splineMatrix1Der = MPCBSpline.getBasisMatrix(n, queryPositions, 1, closed);

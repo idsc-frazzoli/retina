@@ -328,25 +328,24 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
         route = routeFromStart;
         // can we reach gokart?
-        /*
-        if (reachable(dijkstraGokartBack)) {
-          System.out.println("start->gokart found. Expanding beyond gokart");
-          route = routeFromStart;
-        } else {
-          // search from gokart toward
-          System.out.println("searching from gokart towards starting line");
-          boolean targetAvailable = initialise(startX, startY, startorientation, curPos, true);
-          if (targetAvailable)
-            processDijkstra();
-          if (targetAvailable && reachable(dijkstraTarget)) {
-            // found way from gokart
-            route = dijkstraTarget.getRoute();
-            route.addAll(routeFromStart);
-          } else {
-            System.out.println("no route found to gokart");
-            route = routeFromStart;
-          }
-        }*/
+        /* if (reachable(dijkstraGokartBack)) {
+         * System.out.println("start->gokart found. Expanding beyond gokart");
+         * route = routeFromStart;
+         * } else {
+         * // search from gokart toward
+         * System.out.println("searching from gokart towards starting line");
+         * boolean targetAvailable = initialise(startX, startY, startorientation, curPos, true);
+         * if (targetAvailable)
+         * processDijkstra();
+         * if (targetAvailable && reachable(dijkstraTarget)) {
+         * // found way from gokart
+         * route = dijkstraTarget.getRoute();
+         * route.addAll(routeFromStart);
+         * } else {
+         * System.out.println("no route found to gokart");
+         * route = routeFromStart;
+         * }
+         * } */
       }
     } else {
       System.out.println("Target not available.");
