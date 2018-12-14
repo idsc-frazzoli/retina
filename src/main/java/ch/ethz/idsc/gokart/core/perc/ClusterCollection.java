@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.retina.util.math.Clusters;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class ClusterCollection {
@@ -39,7 +38,7 @@ public class ClusterCollection {
     while (iterator.hasNext()) {
       ClusterDeque x = iterator.next();
       Tensor vertices = Tensor.of(x.vertexStream());
-      Tensor elkiDBSCAN = Clusters.dbscan(vertices, 0.03, 6);
+      Tensor elkiDBSCAN = Dbscan.of(vertices, 0.03, 6);
       switch (elkiDBSCAN.length()) {
       case 0:
         // System.out.println("cluster is all noise");

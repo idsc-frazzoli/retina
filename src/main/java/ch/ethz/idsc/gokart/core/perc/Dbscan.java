@@ -1,6 +1,7 @@
 // code by vc
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.gokart.core.perc;
 
+import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
@@ -17,13 +18,13 @@ import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
 /** initial draft for testing of elki library and DBScan algorithm */
-public enum Clusters {
+/* package */ enum Dbscan {
   ;
   /** @param matrix of points
    * @param eps
    * @param minPoints
    * @return tensor of clusters of points */
-  public static Tensor dbscan(Tensor matrix, double eps, int minPoints) {
+  public static Tensor of(Tensor matrix, double eps, int minPoints) {
     Database database = ElkiDatabase.from(matrix);
     DBSCAN<NumberVector> dbscan = new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
     Clustering<Model> clustering = dbscan.run(database);
