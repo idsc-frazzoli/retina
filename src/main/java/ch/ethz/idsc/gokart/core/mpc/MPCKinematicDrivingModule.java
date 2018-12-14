@@ -13,6 +13,7 @@ import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -23,7 +24,6 @@ import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -47,7 +47,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
 
   /** switch to testing binary that send back test data has to be called before first */
@@ -182,7 +182,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   protected void first() throws Exception {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     SteerSocket.INSTANCE.addPutProvider(steerProvider);
     RimoSocket.INSTANCE.addPutProvider(rimoProvider);
     System.out.println("add linmot provider");
@@ -230,7 +230,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     SteerSocket.INSTANCE.removePutProvider(steerProvider);
     RimoSocket.INSTANCE.removePutProvider(rimoProvider);
     LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
     // ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }

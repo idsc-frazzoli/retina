@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.core.fuse.EmergencyModule;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -15,7 +16,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
+import ch.ethz.idsc.retina.sys.Obsolete;
 import ch.ethz.idsc.retina.util.data.TriggeredTimeInterval;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -37,8 +38,9 @@ class RimoDeadMan implements RimoPutProvider {
 /** module requires the presence of a joystick
  * 
  * action of emergency module is to brake for 2.5[s] */
+@Obsolete
 class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements RimoGetListener {
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Watchdog watchdog_isPresent = new Watchdog(0.2);
   private final Watchdog watchdog_inControl = //
       new Watchdog(JoystickConfig.GLOBAL.deadManPeriodSeconds().number().doubleValue());
@@ -51,12 +53,12 @@ class DeadManSwitchModule extends EmergencyModule<LinmotPutEvent> implements Rim
     RimoSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(rimoDeadMan);
     LinmotSocket.INSTANCE.addPutProvider(this);
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
   }
 
   @Override // from AbstractModule
   protected void last() {
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
     RimoSocket.INSTANCE.removeGetListener(this);
     RimoSocket.INSTANCE.removePutProvider(rimoDeadMan);
     LinmotSocket.INSTANCE.removePutProvider(this);

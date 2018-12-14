@@ -57,7 +57,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.sim.LidarRaytracer;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -106,7 +106,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
       new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private GokartPoseEvent gokartPoseEvent = null;
@@ -178,7 +178,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     rimoGetLcmClient.startSubscriptions();
     // ---
     tse2CurvePurePursuitModule.launch();
@@ -188,7 +188,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   protected void last() {
     tse2CurvePurePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
   }
 
   @Override // from AbstractClockedModule

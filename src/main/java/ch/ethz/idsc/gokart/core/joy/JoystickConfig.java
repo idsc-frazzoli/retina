@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -48,7 +49,7 @@ public class JoystickConfig {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 
-  public JoystickLcmProvider createProvider() {
+  public ManualControlProvider createProvider() {
     // only joystick events aged less equals 200[ms] are provided to the application layer
     return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 200);
   }

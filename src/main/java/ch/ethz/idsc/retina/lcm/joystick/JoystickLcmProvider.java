@@ -6,10 +6,11 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
 /** client to lcm channel with joystick information */
-public final class JoystickLcmProvider extends BinaryLcmClient {
+public final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
   private final String channel;
   private final int timeout_ms;
   // ---
@@ -24,6 +25,7 @@ public final class JoystickLcmProvider extends BinaryLcmClient {
   }
 
   /** @return recent joystick readout, or empty */
+  @Override
   public Optional<JoystickEvent> getJoystick() {
     return Optional.ofNullable(now() < timeStamp + timeout_ms ? joystickEvent : null);
   }
@@ -37,6 +39,16 @@ public final class JoystickLcmProvider extends BinaryLcmClient {
   protected void messageReceived(ByteBuffer byteBuffer) {
     joystickEvent = JoystickDecoder.decode(byteBuffer);
     timeStamp = now();
+  }
+
+  @Override
+  public void start() {
+    startSubscriptions();
+  }
+
+  @Override
+  public void stop() {
+    stopSubscriptions();
   }
 
   // helper function
