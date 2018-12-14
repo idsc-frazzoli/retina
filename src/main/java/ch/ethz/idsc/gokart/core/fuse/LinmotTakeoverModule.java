@@ -8,14 +8,12 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** module detects when human presses the break while the software
  * is controlling the break
  * 
  * module has to be stopped and restarted once fuse is blown */
-@SafetyCritical
 public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> implements LinmotGetListener {
   /** in order for fuse to blow, the position discrepancy
    * has to be maintained for 0.05[s] */

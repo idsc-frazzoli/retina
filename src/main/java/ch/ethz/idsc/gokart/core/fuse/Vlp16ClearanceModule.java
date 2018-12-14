@@ -21,7 +21,6 @@ import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -31,7 +30,6 @@ import ch.ethz.idsc.tensor.red.Min;
  * 
  * prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-@SafetyCritical
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);

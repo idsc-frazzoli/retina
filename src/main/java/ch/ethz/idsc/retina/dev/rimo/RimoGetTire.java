@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.SIDerived;
@@ -19,7 +18,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * LONGTERM NRJ temperature readings non-zero, check allowed ratings
  * LONGTERM NRJ the meaning of the error_code still has to be determined */
-@SafetyCritical
 public class RimoGetTire implements Serializable {
   /* package */ static final int LENGTH = 24;
   public static final double MIN_TO_S = 1 / 60.0;

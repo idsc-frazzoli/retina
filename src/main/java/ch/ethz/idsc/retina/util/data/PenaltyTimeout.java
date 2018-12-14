@@ -1,10 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
-
 /** recoverable triggered time interval */
-@SafetyCritical
 public final class PenaltyTimeout {
   private final long timeout_ns;
   private long lastPenalty_ns;
