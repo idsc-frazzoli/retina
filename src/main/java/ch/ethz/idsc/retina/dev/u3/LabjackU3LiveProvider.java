@@ -12,14 +12,20 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** Labjack U3
  * readout ADC */
-public class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
+public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
   private static final File DIRECTORY = UserHome.file("Public/exodriver/examples/U3");
   private static final File EXECUTABLE = new File(DIRECTORY, "u3adctxt");
+
+  public static boolean isFeasible() {
+    return EXECUTABLE.isFile();
+  }
+
+  // ---
   /** 2 bytes header, 8 bytes timestamp, each point as short */
   private final LabjackAdcListener labjackAdcListener;
   private Process process;
 
-  public LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
+  LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
     this.labjackAdcListener = Objects.requireNonNull(labjackAdcListener);
   }
 
@@ -46,19 +52,22 @@ public class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
     try {
       InputStream inputStream = process.getInputStream();
       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-      // System.out.println("urg_alive2=" + process.isAlive());
       while (process.isAlive()) {
         String line = bufferedReader.readLine();
-        String[] split = line.split(" ");
-        float[] array = new float[split.length];
-        for (int c = 0; c < split.length; ++c)
-          array[c] = Float.parseFloat(split[c]);
+        float[] array = parse(line);
         labjackAdcListener.labjackAdc(new LabjackAdcFrame(array));
       }
     } catch (Exception exception) {
       exception.printStackTrace();
       stop();
     }
-    System.out.println("u3 thread stop.");
+  }
+
+  /* package */ static float[] parse(String line) {
+    String[] split = line.split(" ");
+    float[] array = new float[split.length];
+    for (int index = 0; index < split.length; ++index)
+      array[index] = Float.parseFloat(split[index]);
+    return array;
   }
 }

@@ -16,8 +16,8 @@ import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventComponents;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventLast;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.util.gui.ShapeHelper;
-import ch.ethz.idsc.retina.util.math.Constant;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
@@ -26,8 +26,10 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** visualization of log files from Robotics and Perception Group
  * http://rpg.ifi.uzh.ch/ */
-enum ComponentDemo {
+/* package */ enum ComponentDemo {
   ;
+  private static final Scalar GOLDEN_ANGLE = DoubleScalar.of(2.3999632297286533222);// (3-sqrt(5))/pi
+
   public static void main(String[] args) throws Exception {
     final Dimension dimension = ImageDimensions.UZ;
     DvsEventStatistics stats = new DvsEventStatistics();
@@ -35,7 +37,7 @@ enum ComponentDemo {
     DvsEventComponents dec = new DvsEventComponents(dimension, del);
     final int maxsize = dimension.height * dimension.width;
     Tensor palette = //
-        Tensors.vector(i -> Constant.GOLDEN_ANGLE.value.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
+        Tensors.vector(i -> GOLDEN_ANGLE.multiply(DoubleScalar.of(i / (2 * Math.PI))), maxsize);
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //

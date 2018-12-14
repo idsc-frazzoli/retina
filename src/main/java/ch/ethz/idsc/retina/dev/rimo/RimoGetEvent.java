@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.dev.rimo;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -17,7 +16,6 @@ import ch.ethz.idsc.tensor.alg.Join;
  * Capacity: 100[A*h] == draw 100[A] for 1[h]
  * Maximum continuous load: 3.5[C] => 350 A
  * Peak load: 10[C] => 1[kA] for less than 10[s] */
-@SafetyCritical
 public class RimoGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 2 * RimoGetTire.LENGTH; // == 48
   // ---

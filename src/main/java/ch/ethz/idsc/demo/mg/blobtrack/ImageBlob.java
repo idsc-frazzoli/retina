@@ -36,7 +36,7 @@ public class ImageBlob implements Serializable {
 
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public double getRotAngle() {
-    return covariance2D.rotAngle();
+    return covariance2D.rotAngle().number().doubleValue();
   }
 
   public float getDistanceTo(float[] otherPos) {

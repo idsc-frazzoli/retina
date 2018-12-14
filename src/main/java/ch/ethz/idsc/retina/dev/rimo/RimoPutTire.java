@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -14,7 +13,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-@SafetyCritical
 public class RimoPutTire implements Serializable {
   public static final Word OPERATION = Word.createShort("OPERATION", (short) 0x0009);
   public static final List<Word> COMMANDS = Arrays.asList(OPERATION);

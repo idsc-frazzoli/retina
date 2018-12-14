@@ -10,7 +10,6 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -26,7 +25,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * <li>receives the distance to an obstacle along the x-axis
  * <li>schedules the press of the brake for the estimated duration that is required to stop the vehicle
  * </ul> */
-@SafetyCritical
 public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
   // TODO magic const to filter slip
   private static final Clip CLIP = Clip.function( //

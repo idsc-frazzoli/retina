@@ -20,9 +20,22 @@ public class JoystickLcmClientTest extends TestCase {
     return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
   }
 
+  public static void publishOne() {
+    BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
+    JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
+    byte[] data = new byte[joystickType.encodingSize()];
+    FloatBuffer axes = FloatBuffer.wrap(new float[6]);
+    ByteBuffer buttons = ByteBuffer.wrap(new byte[10]);
+    ByteBuffer hats = ByteBuffer.wrap(new byte[1]);
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    JoystickEncoder.encode(joystickType, axes, buttons, hats, byteBuffer);
+    binaryBlobPublisher.accept(data, data.length);
+  }
+
   /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
-    BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
+    BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
     JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
     byte[] data = new byte[joystickType.encodingSize()];
     FloatBuffer axes = FloatBuffer.wrap(new float[6]);
@@ -33,7 +46,7 @@ public class JoystickLcmClientTest extends TestCase {
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     JoystickEncoder.encode(joystickType, axes, buttons, hats, byteBuffer);
-    bbp.accept(data, data.length);
+    binaryBlobPublisher.accept(data, data.length);
     try {
       Thread.sleep(30);
     } catch (Exception exception) {
@@ -46,18 +59,7 @@ public class JoystickLcmClientTest extends TestCase {
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.start();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
-    {
-      BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
-      JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;
-      byte[] data = new byte[joystickType.encodingSize()];
-      FloatBuffer axes = FloatBuffer.wrap(new float[6]);
-      ByteBuffer buttons = ByteBuffer.wrap(new byte[10]);
-      ByteBuffer hats = ByteBuffer.wrap(new byte[1]);
-      ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-      byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-      JoystickEncoder.encode(joystickType, axes, buttons, hats, byteBuffer);
-      bbp.accept(data, data.length);
-    }
+    publishOne();
     Thread.sleep(40);
     Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
     assertTrue(optional.isPresent());

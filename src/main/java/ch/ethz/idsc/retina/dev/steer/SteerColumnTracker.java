@@ -2,7 +2,6 @@
 package ch.ethz.idsc.retina.dev.steer;
 
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.IntervalTracker;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -16,7 +15,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * cannot be commanded by the hardware.
  * Therefore, the case when the width of the interval tracker exceeds
  * the HARD threshold is considered an emergency */
-@SafetyCritical
 public final class SteerColumnTracker implements SteerGetListener, SteerColumnInterface {
   /** manual moving the steer from left-right leads to a range: 1.45 */
   private static final double SOFT = 1.45;

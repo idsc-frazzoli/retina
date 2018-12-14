@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.alg.Array;

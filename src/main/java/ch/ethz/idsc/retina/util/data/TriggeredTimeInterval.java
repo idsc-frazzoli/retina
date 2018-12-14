@@ -2,10 +2,8 @@
 package ch.ethz.idsc.retina.util.data;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 
 /** represents an interval in time */
-@SafetyCritical
 public final class TriggeredTimeInterval {
   private final double duration_seconds;
   private boolean isBlown = false;

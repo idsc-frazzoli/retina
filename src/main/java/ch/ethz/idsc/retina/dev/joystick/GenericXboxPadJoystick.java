@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.math.Clipzone;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -14,7 +13,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /**
  * 
  */
-@SafetyCritical
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
   private static final Clip PASSIVE = Clip.function(-0.05, 0.05); // TODO magic const
 

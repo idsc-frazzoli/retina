@@ -1,12 +1,9 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
-
 /** digests sequence of double values
  * 
  * tracks min and max of all values */
-@SafetyCritical
 public class IntervalTracker {
   private double min = Double.POSITIVE_INFINITY;
   private double max = Double.NEGATIVE_INFINITY;

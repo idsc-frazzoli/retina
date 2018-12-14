@@ -4,12 +4,10 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-@SafetyCritical
 public final class Vlp16PassiveSlowing extends Vlp16ClearanceModule {
   /** 20181212: flag the vlp16 passive slowing module as disabled for 0.1[s] */
   private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(0.1);

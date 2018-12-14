@@ -1,23 +1,26 @@
 // code by jph
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-/** operator returns RealScalar.ZERO or RealScalar.ONE */
-public class VectorSignal implements ScalarUnaryOperator {
+/** cyclic mapped interpolation of vector that is stretched over a domain of width
+ * vector.length() * width */
+/* package */ class VectorSignal implements ScalarUnaryOperator {
   private final Interpolation interpolation;
 
-  /** @param signal
+  /** @param vector
    * @param width of single bit
    * @param amplitude */
-  public VectorSignal(Tensor signal, Scalar width) {
-    Mod MOD = Mod.function(signal.length());
-    interpolation = MappedInterpolation.of(signal, tensor -> MOD.of(tensor.divide(width)));
+  public VectorSignal(Tensor vector, Scalar width) {
+    VectorQ.require(vector);
+    Mod mod = Mod.function(vector.length());
+    interpolation = MappedInterpolation.of(vector, tensor -> mod.of(tensor.divide(width)));
   }
 
   @Override // from ScalarUnaryOperator

@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public class ResampleResult {
-  // TODO magic constant specific to gokart
+  // TODO JPH magic constant specific to gokart !
   private static final Scalar OFFSET = DoubleScalar.of(0.75);
   // ---
   private final Interpolation interpolation;
@@ -25,7 +25,7 @@ public class ResampleResult {
   public ResampleResult(Tensor points, List<Tensor> list) {
     interpolation = LinearInterpolation.of(points);
     this.list = list;
-    this.numel = points.length();
+    numel = points.length();
   }
 
   public List<Tensor> getParameters() {

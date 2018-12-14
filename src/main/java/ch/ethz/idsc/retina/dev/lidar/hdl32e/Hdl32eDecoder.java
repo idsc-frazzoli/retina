@@ -9,7 +9,6 @@ import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.VelodynePosListener;
-import ch.ethz.idsc.retina.util.math.ShortUtils;
 
 /** information on p.21 of HDL-32E user's manual */
 public final class Hdl32eDecoder implements VelodyneDecoder {
@@ -51,10 +50,10 @@ public final class Hdl32eDecoder implements VelodyneDecoder {
     double[] accx = new double[3];
     double[] accy = new double[3];
     for (int index = 0; index < 3; ++index) {
-      gyro[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.09766;
-      temp[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.1453 + 25;
-      accx[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
-      accy[index] = ShortUtils.signed24bit(byteBuffer.getShort()) * 0.001221;
+      gyro[index] = StaticHelper.signed24bit(byteBuffer.getShort()) * 0.09766;
+      temp[index] = StaticHelper.signed24bit(byteBuffer.getShort()) * 0.1453 + 25;
+      accx[index] = StaticHelper.signed24bit(byteBuffer.getShort()) * 0.001221;
+      accy[index] = StaticHelper.signed24bit(byteBuffer.getShort()) * 0.001221;
     }
     int pos = byteBuffer.position() + 160;
     byteBuffer.position(pos);
