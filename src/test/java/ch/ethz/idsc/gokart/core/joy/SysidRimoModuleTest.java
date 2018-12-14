@@ -35,17 +35,17 @@ public class SysidRimoModuleTest extends TestCase {
 
   public void testJoystickPresent() {
     SysidRimoModule sysidRimoModule = new SysidRimoModule();
-    GokartJoystickInterface gji = //
-        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), true);
-    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gji);
+    GokartJoystickInterface gokartJoystickInterface = //
+        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), true, false);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gokartJoystickInterface);
     assertTrue(optional.isPresent());
   }
 
   public void testJoystickNotPresent() {
     SysidRimoModule sysidRimoModule = new SysidRimoModule();
-    GokartJoystickInterface gji = //
-        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false);
-    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gji);
+    GokartJoystickInterface gokartJoystickInterface = //
+        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gokartJoystickInterface);
     assertFalse(optional.isPresent());
   }
 

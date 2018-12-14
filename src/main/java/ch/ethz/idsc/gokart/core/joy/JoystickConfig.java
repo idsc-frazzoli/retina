@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.dev.LabjackAdcLcmClient;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.dev.HybridControlProvider;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -52,7 +51,8 @@ public class JoystickConfig {
 
   public ManualControlProvider createProvider() {
     // only joystick events aged less equals 200[ms] are provided to the application layer
-    return new LabjackAdcLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
+    return new HybridControlProvider();
+    // return new LabjackAdcLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
     // return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
   }
 }

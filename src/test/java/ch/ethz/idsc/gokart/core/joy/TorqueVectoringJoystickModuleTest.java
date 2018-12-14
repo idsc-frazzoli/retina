@@ -33,7 +33,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent1 = control.get();
     System.out.println(rimoPutEvent1.putTireL.getTorque());
@@ -46,7 +46,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 1), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 1), false, false);
     control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent2 = control.get();
     System.out.println(rimoPutEvent2.putTireL.getTorque());
@@ -69,7 +69,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent3 = control.get();
     System.out.println(rimoPutEvent3.putTireL.getTorque());
@@ -91,7 +91,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent4 = control.get();
     System.out.println(rimoPutEvent4.putTireL.getTorque());
@@ -113,7 +113,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent5 = control.get();
     System.out.println(rimoPutEvent5.putTireL.getTorque());
@@ -135,7 +135,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent6 = control.get();
     System.out.println(rimoPutEvent6.putTireL.getTorque());
@@ -156,7 +156,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     GokartJoystickInterface joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent7 = control.get();
     System.out.println(rimoPutEvent7.putTireL.getTorque());

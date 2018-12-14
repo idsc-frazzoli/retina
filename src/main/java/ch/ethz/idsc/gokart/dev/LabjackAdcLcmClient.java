@@ -11,13 +11,16 @@ import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrames;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensors;
 
 public final class LabjackAdcLcmClient extends BinaryLcmClient implements ManualControlProvider {
   private final String channel;
   /** if no message is received for a period of 0.2[s]
    * the labjack adc frame is set to passive */
-  private final TimedFuse timedFuse; // units in [s]
+  private final TimedFuse timedFuse;
+  // ---
   private LabjackAdcFrame labjackAdcFrame = LabjackAdcFrames.PASSIVE;
 
   /** @param channel
@@ -38,12 +41,6 @@ public final class LabjackAdcLcmClient extends BinaryLcmClient implements Manual
     return channel;
   }
 
-  public Scalar getAheadSigned() {
-    if (timedFuse.isBlown())
-      labjackAdcFrame = LabjackAdcFrames.PASSIVE;
-    return labjackAdcFrame.getAheadSigned();
-  }
-
   @Override
   public void start() {
     startSubscriptions();
@@ -56,6 +53,16 @@ public final class LabjackAdcLcmClient extends BinaryLcmClient implements Manual
 
   @Override
   public Optional<GokartJoystickInterface> getJoystick() {
-    return Optional.of(GokartJoystickAdapter.PASSIVE);
+    if (timedFuse.isBlown())
+      labjackAdcFrame = LabjackAdcFrames.PASSIVE;
+    Scalar aheadSigned = labjackAdcFrame.getAheadSigned();
+    GokartJoystickInterface gokartJoystickInterface = new GokartJoystickAdapter( //
+        RealScalar.ZERO, // steer left
+        RealScalar.ZERO, // break
+        aheadSigned, // ahead average
+        Tensors.of(RealScalar.ZERO, aheadSigned), // ahead left, ahead right
+        false, // autonomous button
+        false); // reset button
+    return Optional.of(gokartJoystickInterface);
   }
 }
