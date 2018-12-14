@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogUzhConvert;
 
-enum RunDavisLcmLogUzhConvert {
+/* package */ enum RunDavisLcmLogUzhConvert {
   ;
   public static void main(String[] args) {
     File file = new File("/home/gio/Downloads/logs/log.lcm");

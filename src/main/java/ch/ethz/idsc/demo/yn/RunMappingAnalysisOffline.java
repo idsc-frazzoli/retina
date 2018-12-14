@@ -13,7 +13,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 
-enum RunMappingAnalysisOffline {
+/* package */ enum RunMappingAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);

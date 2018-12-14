@@ -6,7 +6,7 @@ import java.io.File;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
-public enum YnLogFileLocator implements LogFileLocator {
+/* package */ enum YnLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
   private static final File LOG_ROOT = new File("/home/ynager/gokart/logs");
