@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,8 +11,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-/** operator returns RealScalar.ZERO or RealScalar.ONE */
-public class ToggleSignal implements ScalarUnaryOperator {
+// TODO ToggleSignal seems to be a special case of VectorSignal
+/* package */ class ToggleSignal implements ScalarUnaryOperator {
   private static final Tensor SIGNAL = Tensors.vector(1, 0, 0, -1, 0, 0).unmodifiable();
   private static final Mod MOD = Mod.function(SIGNAL.length());
 

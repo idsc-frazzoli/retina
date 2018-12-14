@@ -1,7 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.retina.dev.lidar.hdl32e;
 
-public enum ShortUtils {
+/* package */ enum StaticHelper {
   ;
   /** Application: decode HDL-32E gyro and accelerometer
    * 

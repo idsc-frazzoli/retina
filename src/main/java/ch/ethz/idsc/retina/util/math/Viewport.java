@@ -1,19 +1,21 @@
 // code by jph
+// http://www.thecodecrate.com/opengl-es/opengl-viewport-matrix/
 package ch.ethz.idsc.retina.util.math;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Optional;
 
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Sign;
 
+/** OpenGL style viewport transformation matrix */
 public class Viewport {
-  private static final Scalar NUM_ONE = DoubleScalar.of(1);
+  private static final Scalar ONE = RealScalar.of(1.0);
+  private static final Scalar HALF = RealScalar.of(0.5);
 
   public static Viewport create(int width, int height) {
     return new Viewport(RealScalar.of(width), RealScalar.of(height));
@@ -37,8 +39,8 @@ public class Viewport {
     this.width = width;
     this.height = height;
     // ---
-    half_width = width.multiply(RealScalar.of(0.5));
-    half_height = height.multiply(RealScalar.of(0.5));
+    half_width = width.multiply(HALF);
+    half_height = height.multiply(HALF);
     // ---
     d_width = width.number().doubleValue();
     d_height = height.number().doubleValue();
@@ -51,21 +53,27 @@ public class Viewport {
   }
 
   public Optional<Tensor> fromProjected(Tensor tensor) {
-    if (Sign.isPositive(tensor.Get(3))) {
-      Scalar xn = tensor.Get(0).divide(tensor.Get(3)).add(NUM_ONE).multiply(half_width);
-      Scalar yn = NUM_ONE.subtract(tensor.Get(1).divide(tensor.Get(3))).multiply(half_height);
-      return Optional.of(Tensors.of(xn, yn));
+    Scalar a = tensor.Get(3);
+    if (Sign.isPositive(a)) {
+      Scalar x = tensor.Get(0);
+      Scalar y = tensor.Get(1);
+      return Optional.of(Tensors.of( //
+          x.divide(a).add(ONE).multiply(half_width), //
+          ONE.subtract(y.divide(a)).multiply(half_height)));
     }
     return Optional.empty();
   }
 
   public Optional<Point> toPixel(Tensor tensor) {
-    if (Sign.isPositive(tensor.Get(3))) {
-      double hx = tensor.Get(0).number().doubleValue();
-      double hz = tensor.Get(3).number().doubleValue();
+    Scalar a = tensor.Get(3);
+    if (Sign.isPositive(a)) {
+      Scalar x = tensor.Get(0);
+      Scalar y = tensor.Get(1);
+      double hx = x.number().doubleValue();
+      double hz = a.number().doubleValue();
       double xn = (hx / hz + 1) * d_half_width;
       if (0 <= xn && xn < d_width) {
-        double hy = tensor.Get(1).number().doubleValue();
+        double hy = y.number().doubleValue();
         double yn = (int) ((1 - hy / hz) * d_half_height);
         if (0 <= yn && yn < d_height)
           return Optional.of(new Point((int) xn, (int) yn));

@@ -5,8 +5,6 @@ import java.util.function.Supplier;
 
 import ch.ethz.idsc.retina.util.math.ChirpSignal;
 import ch.ethz.idsc.retina.util.math.PRBS7SignedSignal;
-import ch.ethz.idsc.retina.util.math.ToggleSignal;
-import ch.ethz.idsc.retina.util.math.VectorSignal;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
