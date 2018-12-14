@@ -16,6 +16,10 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 
 public class JoystickLcmClientTest extends TestCase {
+  public static JoystickLcmProvider createJoystickLcmProvider() {
+    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
+  }
+
   /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
     BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
@@ -38,7 +42,7 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    ManualControlProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
+    ManualControlProvider joystickLcmClient = createJoystickLcmProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     joystickLcmClient.start();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
