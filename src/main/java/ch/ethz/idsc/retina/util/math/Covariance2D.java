@@ -1,7 +1,9 @@
 // code by mg
 package ch.ethz.idsc.retina.util.math;
 
+import ch.ethz.idsc.owl.math.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
@@ -38,13 +40,11 @@ public class Covariance2D {
   }
 
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
-  public double rotAngle() {
-    double xCoord = eigensystem.vectors().Get(0, 0).number().doubleValue();
-    double yCoord = eigensystem.vectors().Get(0, 1).number().doubleValue();
-    return Math.atan2(yCoord, xCoord);
+  public Scalar rotAngle() {
+    return ArcTan2D.of(eigensystem.vectors().get(0));
   }
 
-  /** @return */
+  /** @return vector of length 2 consisting of eigenvalues */
   public Tensor stdDev() {
     return Sqrt.of(eigensystem.values());
   }

@@ -15,8 +15,8 @@ public class BackgroundActivityFilter extends AbstractFilterHandler {
   private final int threshold_us;
 
   public BackgroundActivityFilter(int width, int height, int threshold_us) {
-    this.x_last = width - 1;
-    this.y_last = height - 1;
+    x_last = width - 1;
+    y_last = height - 1;
     timeStamps = new int[width][height];
     this.threshold_us = threshold_us;
   }

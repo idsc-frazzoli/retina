@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.retina.util.math.ChirpSignal;
 import ch.ethz.idsc.retina.util.math.PRBS7SignedSignal;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;

@@ -4,11 +4,12 @@ package ch.ethz.idsc.demo.vc;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
+import ch.ethz.idsc.gokart.core.perc.ElkiDatabase;
 import ch.ethz.idsc.owl.data.Stopwatch;
-import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
@@ -30,7 +31,7 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
   public static Tensor elkiDBSCAN(Tensor scans, double eps, int minPoints) {
     Tensor matrix = Flatten.of(scans, 1);
     int[] array = scans.stream().mapToInt(Tensor::length).toArray();
-    TreeMap<Integer, Integer> origin = new TreeMap<>();
+    NavigableMap<Integer, Integer> origin = new TreeMap<>();
     int sum = 0;
     for (int index = 0; index < array.length; index++) {
       origin.put(sum, index);
@@ -47,7 +48,7 @@ import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanD
     Tensor pi = Tensors.empty();
     for (Cluster<Model> cluster : allClusters)
       if (!cluster.isNoise()) {
-        TreeMap<Integer, Tensor> map = new TreeMap<>();
+        NavigableMap<Integer, Tensor> map = new TreeMap<>();
         sum = 0;
         for (int index = 0; index < array.length; index++) {
           map.put(sum, Tensors.empty());

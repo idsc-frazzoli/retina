@@ -1,7 +1,6 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
-import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
