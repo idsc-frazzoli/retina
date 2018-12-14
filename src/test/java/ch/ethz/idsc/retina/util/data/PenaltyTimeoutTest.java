@@ -12,4 +12,13 @@ public class PenaltyTimeoutTest extends TestCase {
     Thread.sleep(10);
     assertFalse(penaltyTimeout.isPenalty());
   }
+
+  public void testFuse() throws Exception {
+    TimedFuse timedFuse = new TimedFuse(0.01);
+    assertTrue(timedFuse.isBlown());
+    timedFuse.pacify();
+    assertFalse(timedFuse.isBlown());
+    Thread.sleep(10);
+    assertTrue(timedFuse.isBlown());
+  }
 }

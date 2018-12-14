@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.util.data;
 
 /** recoverable triggered time interval */
+// TODO JPH unify with TimedFuse
 public final class PenaltyTimeout {
   private final long timeout_ns;
   private long lastPenalty_ns;

@@ -5,8 +5,8 @@ package ch.ethz.idsc.retina.util.data;
  * 
  * it performs the same as {@link PenaltyTimeout} */
 public final class TimedFuse implements WatchdogInterface {
-  private long lastPacify = System.nanoTime();
   private final long tolerance_ns;
+  private long lastPacify = System.nanoTime();
 
   /** @param tolerance_seconds */
   public TimedFuse(double tolerance_seconds) {
