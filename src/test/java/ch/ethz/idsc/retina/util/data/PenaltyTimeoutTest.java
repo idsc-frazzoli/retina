@@ -15,7 +15,7 @@ public class PenaltyTimeoutTest extends TestCase {
 
   public void testFuse() throws Exception {
     TimedFuse timedFuse = new TimedFuse(0.01);
-    assertTrue(timedFuse.isBlown());
+    assertFalse(timedFuse.isBlown());
     timedFuse.pacify();
     assertFalse(timedFuse.isBlown());
     Thread.sleep(10);
