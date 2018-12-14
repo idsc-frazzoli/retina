@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
@@ -158,9 +157,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     // use joystick for speed limit
     // get joystick
     Scalar maxSpeed = Quantity.of(0, SI.VELOCITY);
-    Optional<JoystickEvent> optionalJoystick = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> optionalJoystick = joystickLcmProvider.getJoystick();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
-      GokartJoystickInterface actualJoystick = (GokartJoystickInterface) optionalJoystick.get();
+      GokartJoystickInterface actualJoystick = optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
       maxSpeed = Max.of(Quantity.of(1, SI.VELOCITY), maxSpeed);

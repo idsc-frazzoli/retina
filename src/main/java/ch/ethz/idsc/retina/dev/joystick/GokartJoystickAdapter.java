@@ -1,20 +1,25 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.retina.dev.joystick;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-/* package */ class GokartJoystickAdapter implements GokartJoystickInterface {
+public class GokartJoystickAdapter implements GokartJoystickInterface {
+  public static final GokartJoystickInterface PASSIVE = new GokartJoystickAdapter( //
+      RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false);
+  // ---
   private final Scalar steerLeft;
   private final Scalar breakStrength;
   private final Scalar ahead;
   private final Tensor pair;
   private final boolean isAutonomousPressed;
+  // TODO JPH make final
   public boolean isResetPressed;
 
   /** see {@link GokartJoystickInterface} for valid range of arguments

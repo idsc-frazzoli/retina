@@ -4,30 +4,33 @@ package ch.ethz.idsc.retina.lcm.joystick;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 /** client to lcm channel with joystick information */
 public final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
   private final String channel;
-  private final int timeout_ms;
+  private final TimedFuse timedFuse;
   // ---
-  private long timeStamp = 0;
-  private JoystickEvent joystickEvent = null;
+  private GokartJoystickInterface joystickEvent = GokartJoystickAdapter.PASSIVE;
 
   /** @param channel for instance "generic_xbox_pad"
    * @param timeout_ms maximum age of joystick information relayed to application layer */
-  public JoystickLcmProvider(String channel, int timeout_ms) {
+  public JoystickLcmProvider(String channel, double timeout) {
     this.channel = channel;
-    this.timeout_ms = timeout_ms;
+    timedFuse = new TimedFuse(timeout);
   }
 
   /** @return recent joystick readout, or empty */
   @Override
-  public Optional<JoystickEvent> getJoystick() {
-    return Optional.ofNullable(now() < timeStamp + timeout_ms ? joystickEvent : null);
+  public Optional<GokartJoystickInterface> getJoystick() {
+    if (timedFuse.isBlown())
+      return Optional.empty();
+    return Optional.of(joystickEvent);
   }
 
   @Override // from LcmClientAdapter
@@ -37,8 +40,8 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
 
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
-    joystickEvent = JoystickDecoder.decode(byteBuffer);
-    timeStamp = now();
+    timedFuse.pacify();
+    joystickEvent = (GokartJoystickInterface) JoystickDecoder.decode(byteBuffer);
   }
 
   @Override
@@ -49,10 +52,5 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
   @Override
   public void stop() {
     stopSubscriptions();
-  }
-
-  // helper function
-  private static long now() {
-    return System.currentTimeMillis();
   }
 }

@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
+// TODO values for dead man switch are no more needed
 public class JoystickConfig {
   public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
   /***************************************************/
@@ -51,6 +52,6 @@ public class JoystickConfig {
 
   public ManualControlProvider createProvider() {
     // only joystick events aged less equals 200[ms] are provided to the application layer
-    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 200);
+    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
   }
 }

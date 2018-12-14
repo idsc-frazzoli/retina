@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
@@ -34,9 +33,9 @@ public final class AutonomySafetyModule extends AbstractModule {
   }
 
   private boolean isAutonomousPressed() {
-    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      GokartJoystickInterface gokartJoystickInterface = joystick.get();
       return gokartJoystickInterface.isAutonomousPressed();
     }
     return false;

@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -40,9 +39,9 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 
   @Override // from PutProvider
   public final Optional<PE> putEvent() {
-    Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
     return optional.isPresent() //
-        ? translate((GokartJoystickInterface) optional.get())
+        ? translate(optional.get())
         : Optional.empty();
   }
 

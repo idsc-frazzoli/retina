@@ -7,7 +7,6 @@ import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
@@ -52,9 +51,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent())
-      return fromJoystick((GokartJoystickInterface) joystick.get());
+      return fromJoystick(joystick.get());
     return Optional.empty();
   }
 

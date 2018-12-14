@@ -8,5 +8,5 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 public interface ManualControlProvider extends StartAndStoppable {
   // TODO rename function
   /** @return */
-  Optional<JoystickEvent> getJoystick();
+  Optional<GokartJoystickInterface> getJoystick();
 }

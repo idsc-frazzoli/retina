@@ -24,7 +24,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
@@ -157,17 +156,17 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           }
         }
         {
-          Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
+          Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
           String string = optional.isPresent() //
               ? optional.get().toString()
               : ToolbarsComponent.UNKNOWN;
           jTF_joystick.setText(string);
         }
         {
-          Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
+          Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
           String string = ToolbarsComponent.UNKNOWN;
           if (optional.isPresent()) {
-            GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+            GokartJoystickInterface gokartJoystickInterface = optional.get();
             string = gokartJoystickInterface.getAheadAverage().map(Round._5).toString();
           }
           jTF_joystickAhead.setText(string);

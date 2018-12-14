@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;

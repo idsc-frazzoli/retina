@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
@@ -56,9 +55,9 @@ public class JoystickLcmClientTest extends TestCase {
       bbp.accept(data, data.length);
     }
     Thread.sleep(40);
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+    GokartJoystickInterface gokartJoystickInterface = optional.get();
     assertFalse(gokartJoystickInterface.isAutonomousPressed());
     joystickLcmClient.stop();
   }
@@ -69,9 +68,9 @@ public class JoystickLcmClientTest extends TestCase {
     joystickLcmClient.start();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     publishAutonomous();
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+    GokartJoystickInterface gokartJoystickInterface = optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
     // System.out.println(gokartJoystickInterface.getAheadAverage());
     joystickLcmClient.stop();

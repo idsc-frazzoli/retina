@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
@@ -49,7 +48,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
-    final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    final Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       purePursuitSteer.setHeading(heading.get());
@@ -57,7 +56,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     final boolean status = joystick.isPresent() && heading.isPresent();
     purePursuitSteer.setOperational(status);
     if (status) {
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      GokartJoystickInterface gokartJoystickInterface = joystick.get();
       // ante 20180604: the ahead average was used in combination with Ramp
       Scalar ratio = gokartJoystickInterface.getAheadAverage(); // in [-1, 1]
       // post 20180604: the forward command is provided by right slider
