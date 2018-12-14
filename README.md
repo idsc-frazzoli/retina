@@ -2,13 +2,12 @@
 
 Sensor and actuator interfaces, Gokart software
 
-The repository was developed with the following objectives in mind
-* interface sensors without loss of precision or temporal resolution
-* interface actuators of gokart using a protocol that is specific to the MicroAutoBox implementation
-
 The code in the repository operates a heavy and fast robot that may endanger living creatures.
 We follow best practices and coding standards to protect from avoidable errors.
 See [development_guidelines](doc/development_guidelines.md)
+
+The performance of the gokart hardware and software are investigated.
+The results are documented in [reports](doc/reports.md).
 
 ## Features
 
@@ -18,8 +17,9 @@ See [development_guidelines](doc/development_guidelines.md)
 * simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
 * bayesian occupancy grid
 * offline processing of log data
+* torque vectoring
 
-## Gallery
+## Gallery Autonomous Driving
 
 <table>
 <tr>
@@ -35,7 +35,7 @@ See [development_guidelines](doc/development_guidelines.md)
 
 Navigation
 [initial](https://www.youtube.com/watch?v=xLZeKFeAokM),
-[demoday](https://www.youtube.com/watch?v=UnqaZavf3G0)
+[demo](https://www.youtube.com/watch?v=UnqaZavf3G0)
 
 <td>
 
@@ -52,24 +52,38 @@ Navigation
 </tr>
 </table>
 
+## Gallery Manual Driving
+
+<table>
+<tr>
+<td>
+
+![torquevectoring](https://user-images.githubusercontent.com/4012178/49995554-c75c0100-ff8c-11e8-8a86-f50b6e6833ad.jpg)
+
+[Torque Vectoring](https://www.youtube.com/watch?v=szKhTCxhPyI)
+
+</tr>
+</table>
+
 ## Architecture
 
 Source file size distribution
 
 ![retina](https://user-images.githubusercontent.com/4012178/49820755-09145e00-fd79-11e8-9df2-def72917f8e0.png)
 
-We use `LCM` for message interchange.
+We use `LCM` for message interchange, logging, and post-processing.
 All messages are encoded using a single type `BinaryBlob`.
-The byte order of the binary data is `little endian` since the encoding is native on most architectures.
-
-* [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
-* [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
+The byte order of the binary data is `little-endian` since the encoding is native on most architectures.
 
 ## Dependencies
 
-* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning 
+* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) for message interchange and logging
+* [`io.humble`](http://www.humble.io/) for video generation
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
 * [`lwjgl`](https://www.lwjgl.org/) for joystick readout
+
+* [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra
+* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
 
 ## GOKART
 
@@ -79,7 +93,6 @@ The byte order of the binary data is `little endian` since the encoding is nativ
 
 <table>
   <tr><th>Priority<th>Module<th>Purpose<th>Rimo<th>Steer<th>Linmot<th>Misc</tr>
-  <tr><td>Hardware<td>SteerBatteryCharger<td>prevent overcharging of battery<th><th>X<th><th></tr>
   <tr><td>Hardware<td>LinmotFireFighter<td>prevent brake hardware damage<th><th><th>X<th></tr>
   <tr><td>Emergency<td>LinmotCoolingModule<td>no acceleration while temperature of linmot critical<th>X<th><th><th></tr>
   <tr><td>Emergency<td>MiscEmergencyModule<td>no acceleration with steering battery low<th>X<th><th><th></tr>
