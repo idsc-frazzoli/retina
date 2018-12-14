@@ -12,12 +12,19 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
+/** communication manager to micro-autobox */
+public final class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   private static final int LOCAL_PORT = 5000;
   private static final int REMOTE_PORT = 5000;
   // ---
   /** the communication rate affects the torque PI control */
   private static final int SEND_PERIOD_MS = 20; // 50[Hz]
+
+  /** @return 0.004[s] */
+  public static Scalar getGetPeriod() {
+    return Quantity.of(250, SI.PER_SECOND).reciprocal();
+  }
+
   // ---
   public static final RimoSocket INSTANCE = new RimoSocket();
 
@@ -37,10 +44,6 @@ public class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> {
   @Override // from AutoboxSocket
   protected long getPutPeriod_ms() {
     return SEND_PERIOD_MS;
-  }
-
-  public Scalar getGetPeriod() {
-    return Quantity.of(250, SI.PER_SECOND).reciprocal();
   }
 
   @Override // from AutoboxSocket

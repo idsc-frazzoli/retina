@@ -31,7 +31,7 @@ public class RimoThrustThrottleModule extends GuideJoystickModule<RimoPutEvent> 
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
-    Scalar pair = labjackAdcLcmClient.getAhead();
+    Scalar pair = labjackAdcLcmClient.getAheadSigned();
     // Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
     pair = pair.multiply(JoystickConfig.GLOBAL.torqueLimit);

@@ -2,25 +2,23 @@
 package ch.ethz.idsc.gokart.dev;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
+import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrames;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class LabjackAdcLcmClient extends BinaryLcmClient {
-  private final TimedFuse timedFuse = new TimedFuse(0.3);
-  // TODO initialze with passive default
-  private LabjackAdcFrame labjackAdcFrame;
+  /** if no message is received for a period of 0.2[s]
+   * the labjack adc frame is set to passive */
+  private final TimedFuse timedFuse = new TimedFuse(0.2); // units in [s]
+  private LabjackAdcFrame labjackAdcFrame = LabjackAdcFrames.PASSIVE;
 
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
-    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
-    this.labjackAdcFrame = labjackAdcFrame;
-    // System.out.println("recevied");
+    labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
     timedFuse.pacify();
   }
 
@@ -29,9 +27,9 @@ public class LabjackAdcLcmClient extends BinaryLcmClient {
     return GokartLcmChannel.LABJACK_U3_ADC;
   }
 
-  public Scalar getAhead() {
-    if (Objects.isNull(labjackAdcFrame) || timedFuse.isBlown())
-      return RealScalar.ZERO;
+  public Scalar getAheadSigned() {
+    if (timedFuse.isBlown())
+      labjackAdcFrame = LabjackAdcFrames.PASSIVE;
     return labjackAdcFrame.getAheadSigned();
   }
 }
