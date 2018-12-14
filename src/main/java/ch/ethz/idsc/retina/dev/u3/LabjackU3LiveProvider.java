@@ -15,12 +15,17 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
   private static final File DIRECTORY = UserHome.file("Public/exodriver/examples/U3");
   private static final File EXECUTABLE = new File(DIRECTORY, "u3adctxt");
+
+  public static boolean isFeasible() {
+    return EXECUTABLE.isFile();
+  }
+
   // ---
   /** 2 bytes header, 8 bytes timestamp, each point as short */
   private final LabjackAdcListener labjackAdcListener;
   private Process process;
 
-  public LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
+  LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
     this.labjackAdcListener = Objects.requireNonNull(labjackAdcListener);
   }
 
