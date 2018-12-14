@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
@@ -16,32 +17,32 @@ import junit.framework.TestCase;
 public class SteerJoystickModuleTest extends TestCase {
   public void testFirstLast() throws Exception {
     int size = SteerSocket.INSTANCE.getPutProviderSize();
-    SteerJoystickModule sjm = new SteerJoystickModule();
-    sjm.first();
+    SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
+    steerJoystickModule.first();
     assertEquals(SteerSocket.INSTANCE.getPutProviderSize(), size + 1);
-    sjm.last();
+    steerJoystickModule.last();
     assertEquals(SteerSocket.INSTANCE.getPutProviderSize(), size);
   }
 
   public void testNonCalib() {
-    SteerJoystickModule sjm = new SteerJoystickModule();
-    Optional<SteerPutEvent> optional = sjm.private_translate( //
+    SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
+    Optional<SteerPutEvent> optional = steerJoystickModule.private_translate( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
         new GokartJoystickAdapter( //
-            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8), false));
+            RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8), false, false));
     assertFalse(optional.isPresent());
-    assertFalse(sjm.putEvent().isPresent()); // joystick missing
+    assertFalse(steerJoystickModule.putEvent().isPresent()); // joystick missing
   }
 
   public void testCalib() {
-    SteerJoystickModule sjm = new SteerJoystickModule();
-    SteerColumnInterface sci = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
-    assertTrue(sci.isSteerColumnCalibrated());
-    GokartJoystickInterface gji = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0), false);
-    Optional<SteerPutEvent> optional = sjm.control(sci, gji);
+    SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
+    SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
+    assertTrue(steerColumnInterface.isSteerColumnCalibrated());
+    GokartJoystickInterface gokartJoystickInterface = new GokartJoystickAdapter( //
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0), false, false);
+    Optional<SteerPutEvent> optional = steerJoystickModule.control(steerColumnInterface, gokartJoystickInterface);
     assertTrue(optional.isPresent());
-    assertFalse(sjm.putEvent().isPresent()); // joystick missing
+    assertFalse(steerJoystickModule.putEvent().isPresent()); // joystick missing
   }
 
   public void testPublic() {

@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeProvider;
 
 /** communication socket to command the brake */
-public class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> {
+public final class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutEvent> {
   private static final int LOCAL_PORT = 5001;
   private static final int REMOTE_PORT = 5001;
   // ---

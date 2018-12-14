@@ -18,7 +18,7 @@ public class RimoSocketTest extends TestCase {
   }
 
   public void testGetPeriod() {
-    Scalar scalar = RimoSocket.INSTANCE.getGetPeriod();
+    Scalar scalar = RimoSocket.getGetPeriod();
     assertTrue(ExactScalarQ.of(scalar));
     assertEquals(scalar, Quantity.of(0.004, "s"));
   }

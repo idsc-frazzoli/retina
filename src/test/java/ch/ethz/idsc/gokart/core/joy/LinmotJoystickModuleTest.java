@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickAdapter;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
@@ -32,7 +33,7 @@ public class LinmotJoystickModuleTest extends TestCase {
   public void testValue() {
     LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
     GokartJoystickAdapter joystick = new GokartJoystickAdapter( //
-        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8), false);
+        RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8), false, false);
     Optional<LinmotPutEvent> optional = linmotJoystickModule.translate(joystick);
     assertTrue(optional.isPresent());
     LinmotPutEvent linmotPutEvent = optional.get();

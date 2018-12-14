@@ -5,23 +5,22 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** overwrites steering and Rimo command if designated joystick button is not pushed
  * 
  * The put providers are implemented as anonymous classes */
 public final class AutonomySafetyModule extends AbstractModule {
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(() -> isAutonomousPressed());
   final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(() -> isAutonomousPressed());
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     SteerSocket.INSTANCE.addPutProvider(autonomySafetySteer);
     RimoSocket.INSTANCE.addPutProvider(autonomySafetyRimo);
   }
@@ -30,13 +29,13 @@ public final class AutonomySafetyModule extends AbstractModule {
   protected void last() {
     SteerSocket.INSTANCE.removePutProvider(autonomySafetySteer);
     RimoSocket.INSTANCE.removePutProvider(autonomySafetyRimo);
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
   }
 
   private boolean isAutonomousPressed() {
-    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent()) { // is joystick button "autonomous" pressed?
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      GokartJoystickInterface gokartJoystickInterface = joystick.get();
       return gokartJoystickInterface.isAutonomousPressed();
     }
     return false;

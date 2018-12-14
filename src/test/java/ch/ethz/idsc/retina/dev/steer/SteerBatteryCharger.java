@@ -6,6 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
+import ch.ethz.idsc.retina.sys.Obsolete;
 import ch.ethz.idsc.tensor.Scalars;
 
 /** the steering battery is charged from time to time.
@@ -14,7 +15,8 @@ import ch.ethz.idsc.tensor.Scalars;
  * 
  * post 2018-06: module obsolete because battery was replaced
  * and charging is not possible during operation. */
-public enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
+@Obsolete
+/* package */ enum SteerBatteryCharger implements MiscGetListener, SteerPutProvider {
   INSTANCE;
   // ---
   private boolean isCharging = true;

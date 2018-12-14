@@ -60,10 +60,9 @@ import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -97,7 +96,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private final GokartMappingModule gokartMappingModule = new GokartMappingModule();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -147,7 +146,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     rimoGetLcmClient.addListener(rimoGetListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     rimoGetLcmClient.startSubscriptions();
     // ---
     purePursuitModule.launch();
@@ -157,7 +156,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   protected void last() {
     purePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
     // ---
     gokartMappingModule.stop();
   }
@@ -170,8 +169,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
-      Optional<JoystickEvent> optional = joystickLcmProvider.getJoystick();
-      boolean isResetPressed = optional.isPresent() && ((GokartJoystickInterface) optional.get()).isResetPressed();
+      Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
+      boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
       if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory?
         // no: plan from current position
         StateTime stateTime = new StateTime(xya, RealScalar.ZERO);

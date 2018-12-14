@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.core.AutoboxSocket;
 
 /** socket for communication with the micro-autobox to
  * send commands and receive readings regarding steering */
-public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
+public final class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   private static final int LOCAL_PORT = 5002;
   private static final int REMOTE_PORT = 5002;
   /** communication rate affects the steering PID controller */
@@ -25,7 +25,6 @@ public class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
     // ---
     addGetListener(steerColumnTracker);
     addPutProvider(SteerPutFallback.INSTANCE);
-    // addPutProvider(SteerBatteryCharger.INSTANCE);
     addPutProvider(SteerCalibrationProvider.INSTANCE);
   }
 

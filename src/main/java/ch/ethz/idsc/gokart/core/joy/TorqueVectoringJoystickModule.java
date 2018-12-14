@@ -62,7 +62,9 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
-    Scalar power = Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
+    Scalar power = // labjackAdcLcmClient.getAheadSigned();
+        // System.out.println("get ahead " + power);
+        Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip

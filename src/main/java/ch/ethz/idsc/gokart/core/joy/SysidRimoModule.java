@@ -7,11 +7,10 @@ import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -24,20 +23,20 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   private static final Scalar MAGNITUDE = Quantity.of(1500, NonSI.ARMS);
   // ---
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
   private final Stopwatch stopwatch = Stopwatch.started();
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
   }
 
   /** @param signal */
@@ -52,9 +51,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
     if (joystick.isPresent())
-      return fromJoystick((GokartJoystickInterface) joystick.get());
+      return fromJoystick(joystick.get());
     return Optional.empty();
   }
 

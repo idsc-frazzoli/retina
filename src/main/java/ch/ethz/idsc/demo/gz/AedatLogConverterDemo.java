@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.dev.davis.app.AedatLogConverter;
 
-enum AedatLogConverterDemo {
+/* package */ enum AedatLogConverterDemo {
   ;
   public static void main(String[] args) throws Exception {
     final File file1 = new File("/tmp", "DAVIS240C-2018-03-19T14-48-29+0100-84010073-0.aedat");

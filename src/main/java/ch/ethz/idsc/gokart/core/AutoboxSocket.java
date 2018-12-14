@@ -65,7 +65,7 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
 
   private PutProvider<PE> putProviderActive = null;
 
-  @Override
+  @Override // from StartAndStoppable
   public final void start() {
     datagramSocketManager.start();
     timer = new Timer();
@@ -91,6 +91,15 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
         System.err.println("no command provided in " + getClass().getSimpleName());
       }
     }, 70, getPutPeriod_ms());
+  }
+
+  @Override // from StartAndStoppable
+  public final void stop() {
+    if (Objects.nonNull(timer)) {
+      timer.cancel();
+      timer = null;
+    }
+    datagramSocketManager.stop();
   }
 
   /***************************************************/
@@ -127,15 +136,6 @@ public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> 
   protected abstract DatagramPacket getDatagramPacket(byte[] data) throws UnknownHostException;
 
   protected abstract GE createGetEvent(ByteBuffer byteBuffer);
-
-  @Override
-  public final void stop() {
-    if (Objects.nonNull(timer)) {
-      timer.cancel();
-      timer = null;
-    }
-    datagramSocketManager.stop();
-  }
 
   /** @return period in unit "s" */
   public final Scalar getPutPeriod() {

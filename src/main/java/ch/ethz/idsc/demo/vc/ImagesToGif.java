@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.img.ImageFilesAnimation;
 
-enum ImagesToGif {
+/* package */ enum ImagesToGif {
   ;
   public static void main(String[] args) throws Exception {
     File dir = ClusterAreaEvaluationListener.DIRECTORY_CLUSTERS;

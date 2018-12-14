@@ -1185,7 +1185,19 @@ public enum GokartLogFile implements LogFile {
   /** torque vectoring */
   _20181211T153939_f8690659,
   /** torque vectoring */
-  _20181211T155230_f8690659, //
+  _20181211T155230_f8690659,
+  /***************************************************/
+  /* 2018-12-13 */
+  /** demo manual driving, trajectory planning */
+  _20181213T100655_add1a7bf,
+  /** demo manual driving, trajectory planning */
+  _20181213T133900_a04ee685,
+  /** manual driving with throttle (short) */
+  _20181213T141826_cc82dcb3,
+  /** manual driving with throttle, localization failure */
+  _20181213T143648_cc82dcb3,
+  /** manual driving with throttle, localization failure */
+  _20181213T154338_6728a721, //
   ;
   // ---
   @Override // from LogFile

@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.sys.SafetyCritical;
 
 /** represents an interval in time */
 @SafetyCritical
-public class TriggeredTimeInterval {
+public final class TriggeredTimeInterval {
   private final double duration_seconds;
   private boolean isBlown = false;
   private final Stopwatch stopwatch = Stopwatch.stopped();

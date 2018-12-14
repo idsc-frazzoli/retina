@@ -21,7 +21,7 @@ abstract class GuideJoystickModule<PE> extends JoystickModule<PE> {
   final Optional<PE> private_translate(SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     if (steerColumnInterface.isSteerColumnCalibrated())
       return control(steerColumnInterface, joystick);
-    return Optional.empty();
+    return Optional.empty(); // steering position evaluates to NaN
   }
 
   /** @param steerColumnInterface guaranteed to be calibrated

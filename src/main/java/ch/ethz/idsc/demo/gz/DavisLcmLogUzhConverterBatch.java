@@ -5,7 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogUzhConvert;
 
-enum DavisLcmLogUzhConverterBatch {
+/* package */ enum DavisLcmLogUzhConverterBatch {
   ;
   public static void process(File file, File destination) {
     DavisLcmLogUzhConvert.of(file, destination);
