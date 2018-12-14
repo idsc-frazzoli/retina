@@ -8,8 +8,13 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 
+/**
+ * 
+ */
+@SafetyCritical
 /* package */ class RankedPutProviders<PE extends DataEvent> {
   private final Map<ProviderRank, List<PutProvider<PE>>> map = new EnumMap<>(ProviderRank.class);
 
@@ -18,18 +23,24 @@ import ch.ethz.idsc.retina.util.data.DataEvent;
       map.put(providerRank, new CopyOnWriteArrayList<PutProvider<PE>>());
   }
 
+  /** @return sorted collection of providers in order of rank */
   public Collection<List<PutProvider<PE>>> values() {
     return map.values();
   }
 
+  /** @param putProvider
+   * @return whether given putProvider was added to collection */
   public boolean add(PutProvider<PE> putProvider) {
     return map.get(putProvider.getProviderRank()).add(putProvider);
   }
 
+  /** @param putProvider
+   * @return whether given putProvider was removed to collection */
   public boolean remove(PutProvider<PE> putProvider) {
     return map.get(putProvider.getProviderRank()).remove(putProvider);
   }
 
+  /** @return number of total providers stored in map */
   public int size() {
     return map.values().stream().mapToInt(List::size).sum();
   }

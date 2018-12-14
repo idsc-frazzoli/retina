@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.dev.LabjackAdcLcmClient;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -22,6 +21,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
@@ -35,8 +35,6 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing;
-  // TODO this is not elegant, but GokartJoystickInterface should be reused
-  private final LabjackAdcLcmClient labjackAdcLcmClient = new LabjackAdcLcmClient();
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -47,7 +45,6 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
 
   @Override // from AbstractModule
   final void protected_first() {
-    labjackAdcLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
   }
@@ -56,7 +53,6 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
   final void protected_last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);
-    labjackAdcLcmClient.stopSubscriptions();
   }
 
   /***************************************************/
@@ -66,9 +62,9 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
-    Scalar power = labjackAdcLcmClient.getAheadSigned();
-    // System.out.println("get ahead " + power);
-    // Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
+    Scalar power = // labjackAdcLcmClient.getAheadSigned();
+        // System.out.println("get ahead " + power);
+        Differences.of(joystick.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
