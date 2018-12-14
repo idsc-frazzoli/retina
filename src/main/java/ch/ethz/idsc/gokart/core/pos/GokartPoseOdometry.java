@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.Tensor;
 public abstract class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
   static final Scalar HALF = DoubleScalar.of(0.5);
   // ---
-  final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s]
+  final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s]
   Tensor state;
   /** initial quality value == 0 */
   private Scalar quality = RealScalar.ZERO;

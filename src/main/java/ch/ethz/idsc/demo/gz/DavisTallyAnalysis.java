@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum DavisTallyAnalysis {
+/* package */ enum DavisTallyAnalysis {
   ;
   public static void main(String[] args) throws IOException {
     // GokartLogFile gokartLogFile = GokartLogFile._20180509T120343_8d5acc24;

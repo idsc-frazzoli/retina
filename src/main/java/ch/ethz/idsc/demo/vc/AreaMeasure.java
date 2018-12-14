@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /** approximates measure of {@link Area} by uniformly sampling points and counting containment */
-enum AreaMeasure {
+/* package */ enum AreaMeasure {
   ;
   /** resolution */
   private static final int RES = 300;

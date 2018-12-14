@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
+import ch.ethz.idsc.gokart.dev.HybridControlProvider;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
+// TODO values for dead man switch are no more needed
 public class JoystickConfig {
   public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
   /***************************************************/
@@ -48,8 +49,10 @@ public class JoystickConfig {
     return Clip.function(torqueLimit.negate(), torqueLimit);
   }
 
-  public JoystickLcmProvider createProvider() {
+  public ManualControlProvider createProvider() {
     // only joystick events aged less equals 200[ms] are provided to the application layer
-    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 200);
+    return new HybridControlProvider();
+    // return new LabjackAdcLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
+    // return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
   }
 }

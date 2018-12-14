@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.vc;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-class PerformanceMeasures {
+/* package */ class PerformanceMeasures {
   public final double precision;
   public final double recall;
 

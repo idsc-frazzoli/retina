@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum GokartLcmLogPlayer {
+/* package */ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();

@@ -8,6 +8,7 @@ public enum GokartLcmChannel {
   public static final String DAVIS_OVERVIEW = "overview";
   public static final String SEYE_OVERVIEW = "overview";
   public static final String JOYSTICK = "joystick.generic_xbox_pad";
+  public static final String LABJACK_U3_ADC = "labjack.u3.adc";
   /** absolute steering column position {@link GokartStatusEvent} */
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */

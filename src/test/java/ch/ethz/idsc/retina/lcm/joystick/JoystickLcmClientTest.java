@@ -10,12 +10,16 @@ import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 
 public class JoystickLcmClientTest extends TestCase {
+  public static JoystickLcmProvider createJoystickLcmProvider() {
+    return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
+  }
+
   /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
     BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
@@ -38,9 +42,9 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
+    ManualControlProvider joystickLcmClient = createJoystickLcmProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
-    joystickLcmClient.startSubscriptions();
+    joystickLcmClient.start();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     {
       BinaryBlobPublisher bbp = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
@@ -55,24 +59,24 @@ public class JoystickLcmClientTest extends TestCase {
       bbp.accept(data, data.length);
     }
     Thread.sleep(40);
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+    GokartJoystickInterface gokartJoystickInterface = optional.get();
     assertFalse(gokartJoystickInterface.isAutonomousPressed());
-    joystickLcmClient.stopSubscriptions();
+    joystickLcmClient.stop();
   }
 
   public void testAutonomous() {
-    JoystickLcmProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
+    ManualControlProvider joystickLcmClient = JoystickConfig.GLOBAL.createProvider();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
-    joystickLcmClient.startSubscriptions();
+    joystickLcmClient.start();
     assertFalse(joystickLcmClient.getJoystick().isPresent());
     publishAutonomous();
-    Optional<JoystickEvent> optional = joystickLcmClient.getJoystick();
+    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) optional.get();
+    GokartJoystickInterface gokartJoystickInterface = optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
     // System.out.println(gokartJoystickInterface.getAheadAverage());
-    joystickLcmClient.stopSubscriptions();
+    joystickLcmClient.stop();
   }
 }

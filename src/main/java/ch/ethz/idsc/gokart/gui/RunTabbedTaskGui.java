@@ -24,12 +24,11 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.ImprovedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.SimpleTorqueVectoringJoystickModule;
+import ch.ethz.idsc.gokart.core.joy.RimoThrustThrottleModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
@@ -40,6 +39,7 @@ import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.dev.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
@@ -81,7 +81,7 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       JoystickResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class //
+      AutonomySafetyModule.class, LabjackU3LcmModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring
@@ -93,9 +93,10 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
-      SimpleTorqueVectoringJoystickModule.class, //
-      ImprovedTorqueVectoringJoystickModule.class, //
+      RimoThrustThrottleModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
+      // SimpleTorqueVectoringJoystickModule.class, //
+      // ImprovedTorqueVectoringJoystickModule.class, //
       LookupTableRimoThrustJoystickModule.class, //
       JoystickGroupModule.class, //
       SysidSignalsModule.class //

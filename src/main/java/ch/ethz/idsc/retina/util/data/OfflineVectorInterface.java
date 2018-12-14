@@ -7,5 +7,6 @@ public interface OfflineVectorInterface {
   /** Careful: function for offline use only
    * 
    * @return vector with entries as close as possible to physical meaningful values */
+  // TODO JAN TOP rather return type Number[]
   Tensor asVector();
 }

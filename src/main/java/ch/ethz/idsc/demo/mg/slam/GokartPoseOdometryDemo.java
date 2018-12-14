@@ -40,7 +40,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   // ---
   private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1],0[m*s^-1],0[s^-1]}").unmodifiable();
   // ---
-  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s] update period
+  private final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s] update period
   // ---
   private Tensor state;
   /** velocity is the tangent of the state {vx[m*s^-1], 0[m*s^-1], angular_rate[s^-1]} */

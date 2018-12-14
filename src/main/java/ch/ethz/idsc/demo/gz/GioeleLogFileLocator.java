@@ -10,7 +10,7 @@ import ch.ethz.idsc.demo.GokartLogFiles;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
 
-enum GioeleLogFileLocator implements LogFileLocator {
+/* package */ enum GioeleLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
   /** the archive of all log files is kept on an external hard-drive */

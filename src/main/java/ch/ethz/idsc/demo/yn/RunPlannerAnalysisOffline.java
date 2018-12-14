@@ -12,7 +12,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 
-enum RunPlannerAnalysisOffline {
+/* package */ enum RunPlannerAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     File file = UserHome.file("gokart/logs");
