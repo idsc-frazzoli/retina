@@ -16,7 +16,7 @@ public class SafetyConfigTest extends TestCase {
   public void testVlp16Lo() {
     Clip clip = SafetyConfig.GLOBAL.vlp16_ZClip();
     Clip.function(-1.1, -0.5).requireInside(clip.min());
-    Clip.function(+0.0, +0.3).requireInside(clip.max());
+    Clip.function(-0.1, +0.3).requireInside(clip.max());
   }
 
   public void testCircleClearanceTracker() {

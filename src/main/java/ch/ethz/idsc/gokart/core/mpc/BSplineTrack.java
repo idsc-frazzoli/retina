@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -15,19 +14,19 @@ import ch.ethz.idsc.tensor.opt.BSplineFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Power;
 
 public class BSplineTrack implements TrackInterface {
   private static final int SPLINE_ORDER_TRACK = 2;
-  private static final int SPLINE_ORDER_RADIUS = 1;
+  private static final int SPLINE_ORDER_RADIUS = 2;
   // ---
-  // TODO MH not used
-  private static final Scalar TOL_D = Quantity.of(0.000001, SI.METER);
   private static final Scalar TOL_B = RealScalar.of(0.1);
   // ---
   protected final Tensor controlPoints;
   protected final Tensor controlPointsR;
+  protected final Boolean closed;
   final Scalar length;
   final int numPoints;
   final BSplineFunction trackSpline;
@@ -41,14 +40,20 @@ public class BSplineTrack implements TrackInterface {
   final float[] posX;
   final float[] posY;
 
-  public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
+  public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, Boolean closed) {
     // TODO: ensure control points are of same size and [m]
+    this.closed = closed;
     int toAdd = Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) + 2;
     numPoints = controlPointsX.length();
     this.controlPoints = Transpose.of(Tensors.of(controlPointsX, controlPointsY));
     this.controlPointsR = radiusControlPoints.copy();
     final int pathLength = controlPointsX.length();
-    length = RealScalar.of(pathLength);
+    if (closed)
+      length = RealScalar.of(pathLength);
+    else
+      // length = RealScalar.of(pathLength-SPLINE_ORDER_TRACK/2);
+      // TODO: find out exactly how the formula is
+      length = RealScalar.of(pathLength - 1);
     // add points at the end in order to close the loop
     int next = 0;
     while (toAdd > 0) {
@@ -67,13 +72,27 @@ public class BSplineTrack implements TrackInterface {
     trackSpline2ndDerivation = BSplineFunction.of(SPLINE_ORDER_TRACK - 2, devDevControl);
     radiusTrackSpline = BSplineFunction.of(SPLINE_ORDER_RADIUS, this.controlPointsR);
     // prepare lookup
-    posX = new float[(int) (controlPointsX.length() / lookupRes)];
-    posY = new float[(int) (controlPointsY.length() / lookupRes)];
-    for (int i = 0; i < controlPointsX.length() / lookupRes; i++) {
-      Tensor pos = getPosition(RealScalar.of(i * lookupRes));
-      posX[i] = pos.Get(0).number().floatValue();
-      posY[i] = pos.Get(1).number().floatValue();
+    if (closed) {
+      posX = new float[(int) (controlPointsX.length() / lookupRes)];
+      posY = new float[(int) (controlPointsY.length() / lookupRes)];
+      for (int i = 0; i < controlPointsX.length() / lookupRes; i++) {
+        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
+        posX[i] = pos.Get(0).number().floatValue();
+        posY[i] = pos.Get(1).number().floatValue();
+      }
+    } else {
+      posX = new float[(int) ((controlPointsX.length() - 1) / lookupRes)];
+      posY = new float[(int) ((controlPointsY.length() - 1) / lookupRes)];
+      for (int i = 0; i < (controlPointsX.length() - 1) / lookupRes; i++) {
+        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
+        posX[i] = pos.Get(0).number().floatValue();
+        posY[i] = pos.Get(1).number().floatValue();
+      }
     }
+  }
+
+  public Boolean isClosed() {
+    return closed;
   }
 
   public Tensor getControlPoints() {
@@ -82,9 +101,13 @@ public class BSplineTrack implements TrackInterface {
 
   private Scalar wrap(Scalar pathProgress) {
     // TODO: check if there any specialized functions in the tensor library
-    Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
-    Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);
-    return pathProgress.subtract(startPoint);
+    if (closed) {
+      Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
+      Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);
+      return pathProgress.subtract(startPoint);
+    } else {
+      return Clip.function(RealScalar.ZERO, length).apply(pathProgress);
+    }
   }
 
   /** get position at a certain path value
@@ -163,24 +186,16 @@ public class BSplineTrack implements TrackInterface {
     return RealScalar.ONE.divide(getCurvature(pathProgress).abs());
   }
 
-  public Scalar getNearestPathProgress(Tensor position) {
-    // initial guesses
-    Scalar bestDist = DoubleScalar.POSITIVE_INFINITY.multiply(Quantity.of(1, SI.METER));
-    Scalar bestGuess = RealScalar.ZERO;
-    for (int i = 0; i < numPoints; i++) {
-      Scalar prog = RealScalar.of(i);
-      Scalar dist = Norm._2.of(getPosition(prog).subtract(position));
-      if (Scalars.lessThan(dist, bestDist)) {
-        bestDist = dist;
-        bestGuess = prog;
-      }
-    }
-    return getNearestPathProgress(position, bestGuess, RealScalar.of(0.4));
+  Scalar getNearestPathProgress(Tensor position) {
+    if (closed)
+      return getFastNearestPathProgress(position);
+    else
+      return getFastNearestPathProgressOpen(position);
   }
 
   /** problem: using normal BSpline implementation takes more time than full MPC optimization
    * solution: fast position lookup: from 45000 micro s -> 15 micro s */
-  Scalar getFastNearestPathProgress(Tensor position) {
+  private Scalar getFastNearestPathProgress(Tensor position) {
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();
     // first control point
@@ -226,6 +241,54 @@ public class BSplineTrack implements TrackInterface {
     return RealScalar.of(bestGuess * lookupRes);
   }
 
+  /** problem: using normal BSpline implementation takes more time than full MPC optimization
+   * solution: fast position lookup: from 45000 micro s -> 15 micro s */
+  private Scalar getFastNearestPathProgressOpen(Tensor position) {
+    float gPosX = position.Get(0).number().floatValue();
+    float gPosY = position.Get(1).number().floatValue();
+    // first control point
+    float bestDist = 10000f;
+    int bestGuess = 0;
+    // initial guesses
+    for (int i = 0; i < numPoints - SPLINE_ORDER_TRACK; i++) {
+      int index = i * lookupSkip;
+      // quadratic distances
+      float dist = getFastQuadraticDistance(index, gPosX, gPosY);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestGuess = index;
+      }
+    }
+    // refinement
+    int precision = 4;
+    while (precision > 1) {
+      int upper = bestGuess + precision;
+      if (upper >= posX.length)
+        upper = posX.length - 1;
+      if (upper < 0)
+        upper = 0;
+      float upperDist = getFastQuadraticDistance(upper, gPosX, gPosY);
+      int lower = bestGuess - precision;
+      if (lower >= posX.length)
+        lower = posX.length - 1;
+      if (lower < 0)
+        lower = 0;
+      float lowerDist = getFastQuadraticDistance(lower, gPosX, gPosY);
+      if (lowerDist < bestDist) {
+        bestGuess = lower;
+        bestDist = lowerDist;
+      } else //
+      if (upperDist < bestDist) {
+        bestGuess = upper;
+        bestDist = upperDist;
+      } else
+        precision = precision / 2;
+      // System.out.println("pos: "+bestGuess*lookupRes);
+      // System.out.println(Math.sqrt(getFastQuadraticDistance(bestGuess, gPosX, gPosY)));
+    }
+    return RealScalar.of(bestGuess * lookupRes);
+  }
+
   float getFastQuadraticDistance(int index, float gPosX, float gPosY) {
     float dx = gPosX - posX[index];
     float dy = gPosY - posY[index];
@@ -235,24 +298,6 @@ public class BSplineTrack implements TrackInterface {
 
   private Scalar getDist(Tensor from, Scalar pathProgress) {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
-  }
-
-  protected Scalar getNearestPathProgress(Tensor position, Scalar guess, Scalar precision) {
-    while (Scalars.lessThan(TOL_B, precision)) {
-      Scalar bestDist = getDist(position, guess);
-      Scalar lower = guess.subtract(precision);
-      Scalar upper = guess.add(precision);
-      if (Scalars.lessThan(getDist(position, lower), bestDist))
-        guess = lower;
-      else //
-      if (Scalars.lessThan(getDist(position, upper), bestDist))
-        guess = upper;
-      else
-        precision = precision.divide(RealScalar.of(2));
-      // System.out.println(guess);
-      // System.out.println(getDist(position, guess));
-    }
-    return guess;
   }
 
   @Override

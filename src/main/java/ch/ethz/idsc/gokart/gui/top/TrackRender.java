@@ -18,11 +18,13 @@ public class TrackRender implements RenderInterface {
   private final Tensor leftBoundary;
   private final Tensor rightBoundary;
   private final Tensor middleLine;
+  private final boolean closed;
 
   public TrackRender(TrackInterface track) {
     this.leftBoundary = track.getLeftLine(RESOLUTION);
     this.rightBoundary = track.getRightLine(RESOLUTION);
     this.middleLine = track.getMiddleLine(RESOLUTION);
+    this.closed = track.isClosed();
   }
 
   @Override
@@ -35,18 +37,21 @@ public class TrackRender implements RenderInterface {
     defaultStroke = graphics.getStroke();
     graphics.setStroke(dashed);
     Path2D path2d = geometricLayer.toPath2D(middleLine);
-    path2d.closePath();
+    if (closed)
+      path2d.closePath();
     graphics.draw(path2d);
     // left line
     // graphics.setStroke(s);
     graphics.setStroke(defaultStroke);
     graphics.setColor(Color.WHITE);
     path2d = geometricLayer.toPath2D(leftBoundary);
-    path2d.closePath();
+    if (closed)
+      path2d.closePath();
     graphics.draw(path2d);
     // right line
     path2d = geometricLayer.toPath2D(rightBoundary);
-    path2d.closePath();
+    if (closed)
+      path2d.closePath();
     graphics.draw(path2d);
   }
 }

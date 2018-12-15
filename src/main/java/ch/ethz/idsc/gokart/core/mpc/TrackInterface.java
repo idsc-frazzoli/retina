@@ -12,6 +12,8 @@ public interface TrackInterface {
 
   Tensor getNearestPosition(Tensor position);
 
+  Boolean isClosed();
+
   /** test if the position is inside the track limits
    * 
    * @param position in [m]
