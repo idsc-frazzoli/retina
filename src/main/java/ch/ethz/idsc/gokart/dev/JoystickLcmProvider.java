@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.lcm.joystick;
+package ch.ethz.idsc.gokart.dev;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -23,14 +23,6 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
     timedFuse = new TimedFuse(timeout);
   }
 
-  /** @return recent joystick readout, or empty */
-  @Override
-  public Optional<GokartJoystickInterface> getJoystick() {
-    return Optional.ofNullable(timedFuse.isBlown() //
-        ? null
-        : gokartJoystickInterface);
-  }
-
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
     timedFuse.pacify();
@@ -45,5 +37,13 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
   @Override
   public void stop() {
     stopSubscriptions();
+  }
+
+  /** @return recent joystick readout, or empty */
+  @Override
+  public Optional<GokartJoystickInterface> getJoystick() {
+    return Optional.ofNullable(timedFuse.isBlown() //
+        ? null
+        : gokartJoystickInterface);
   }
 }

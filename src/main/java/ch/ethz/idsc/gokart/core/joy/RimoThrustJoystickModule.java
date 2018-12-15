@@ -29,7 +29,7 @@ public class RimoThrustJoystickModule extends GuideJoystickModule<RimoPutEvent> 
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
-    pair = pair.multiply(JoystickConfig.GLOBAL.torqueLimit);
+    pair = pair.multiply(ManualConfig.GLOBAL.torqueLimit);
     short arms_raw = Magnitude.ARMS.toShort(pair); // confirm that units are correct
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_raw, // sign left invert

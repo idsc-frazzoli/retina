@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 
@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 enum JoystickLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+    ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
     joystickLcmProvider.start();
     for (int index = 0; index < 50; ++index) {
       Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();

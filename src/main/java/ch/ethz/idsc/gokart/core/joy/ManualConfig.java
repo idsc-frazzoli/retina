@@ -1,7 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.dev.HybridControlProvider;
+import ch.ethz.idsc.gokart.dev.GokartLabjackLcmClient;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -10,9 +11,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
-// TODO JAN rename to ManualConfig
-public class JoystickConfig {
-  public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
+public class ManualConfig {
+  public static final ManualConfig GLOBAL = AppResources.load(new ManualConfig());
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */
@@ -30,8 +30,6 @@ public class JoystickConfig {
    * 
    * @return manual control as configured on the gokart */
   public ManualControlProvider createProvider() {
-    return new HybridControlProvider();
-    // return new LabjackAdcLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
-    // return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
+    return new GokartLabjackLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
   }
 }

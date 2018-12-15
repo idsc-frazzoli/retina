@@ -7,7 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
@@ -32,7 +32,7 @@ enum ParametersHelper {
       RimoConfig.GLOBAL, //
       SafetyConfig.GLOBAL, //
       LocalizationConfig.GLOBAL, //
-      JoystickConfig.GLOBAL, //
+      ManualConfig.GLOBAL, //
       PursuitConfig.GLOBAL, //
       TorqueVectoringConfig.GLOBAL, //
       MPCOptimizationConfig.GLOBAL, //

@@ -73,7 +73,7 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     // ---
     Tensor powers = torqueVectoringInterface.powers( //
         rotationPerMeterDriven, meanTangentSpeed, angularSlip, power, gyroZ);
-    Tensor torquesARMS = powers.multiply(JoystickConfig.GLOBAL.torqueLimit); // vector of length 2
+    Tensor torquesARMS = powers.multiply(ManualConfig.GLOBAL.torqueLimit); // vector of length 2
     // ---
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(torquesARMS.Get(1));

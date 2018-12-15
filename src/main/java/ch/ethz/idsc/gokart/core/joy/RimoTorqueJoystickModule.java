@@ -32,7 +32,7 @@ public class RimoTorqueJoystickModule extends GuideJoystickModule<RimoPutEvent> 
       SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
     Scalar factor = joystick.getAheadAverage(); // [-1, 1]
     Tensor pair = joystick.getAheadPair_Unit(); // entries both in [0, 1]
-    pair = pair.map(s -> s.add(factor)).multiply(HALF).multiply(JoystickConfig.GLOBAL.torqueLimit);
+    pair = pair.map(s -> s.add(factor)).multiply(HALF).multiply(ManualConfig.GLOBAL.torqueLimit);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -Magnitude.ARMS.toShort(pair.Get(0)), // sign left invert
         (short) +Magnitude.ARMS.toShort(pair.Get(1)) // sign right id

@@ -11,11 +11,11 @@ import junit.framework.TestCase;
 
 public class JoystickConfigTest extends TestCase {
   public void testSimple() {
-    JoystickConfig.GLOBAL.createProvider();
+    ManualConfig.GLOBAL.createProvider();
   }
 
   public void testTorqueLimit() {
-    Scalar scalar = JoystickConfig.GLOBAL.torqueLimit;
+    Scalar scalar = ManualConfig.GLOBAL.torqueLimit;
     Sign.requirePositive(scalar);
     Clip clip = Clip.function(Quantity.of(500, NonSI.ARMS), Quantity.of(2315, NonSI.ARMS));
     clip.requireInside(scalar);
@@ -23,7 +23,7 @@ public class JoystickConfigTest extends TestCase {
   }
 
   public void testTorqueLimitClip() {
-    Clip clip = JoystickConfig.GLOBAL.torqueLimitClip();
+    Clip clip = ManualConfig.GLOBAL.torqueLimitClip();
     clip.requireInside(Quantity.of(+234, NonSI.ARMS));
     clip.requireInside(Quantity.of(-198, NonSI.ARMS));
   }

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.sound;
 import java.util.ArrayList;
 
 import ch.ethz.idsc.demo.mh.MotorStateFaker;
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -23,8 +23,8 @@ public class SoundModule extends AbstractModule implements RimoGetListener {
   @Override
   public void getEvent(RimoGetEvent getEvent) {
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
-    Scalar leftPower = getEvent.getTireL.getRmsMotorCurrent().divide(JoystickConfig.GLOBAL.torqueLimit);
-    Scalar rightPower = getEvent.getTireR.getRmsMotorCurrent().divide(JoystickConfig.GLOBAL.torqueLimit);
+    Scalar leftPower = getEvent.getTireL.getRmsMotorCurrent().divide(ManualConfig.GLOBAL.torqueLimit);
+    Scalar rightPower = getEvent.getTireR.getRmsMotorCurrent().divide(ManualConfig.GLOBAL.torqueLimit);
     power = (Scalar) Mean.of(Tensors.of(leftPower, rightPower));
     torqueVectoring = Abs.of(leftPower.subtract(rightPower)).divide(RealScalar.of(2));
   }

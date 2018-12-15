@@ -13,7 +13,7 @@ public class LabjackAdcLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    LabjackAdcLcmClient labjackAdcLcmClient = new LabjackAdcLcmClient("asd", 0.2);
+    GokartLabjackLcmClient labjackAdcLcmClient = new GokartLabjackLcmClient("asd", 0.2);
     labjackAdcLcmClient.start();
     publishOne();
     labjackAdcLcmClient.stop();

@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.dev.AllGunsBlazing;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProviderTest;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -61,7 +61,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
-    JoystickLcmProviderTest.publishAutonomous();
+    AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
@@ -114,7 +114,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
-    JoystickLcmProviderTest.publishAutonomous();
+    AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
@@ -134,7 +134,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
-    JoystickLcmProviderTest.publishAutonomous();
+    AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
@@ -153,7 +153,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.getPoseEvent(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
     purePursuitModule.getEvent(gokartPoseEvent);
-    JoystickLcmProviderTest.publishAutonomous();
+    AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());

@@ -4,39 +4,33 @@ package ch.ethz.idsc.retina.dev.u3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.tensor.RationalScalar;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import junit.framework.TestCase;
 
 public class LabjackAdcFrameTest extends TestCase {
   public void testBPFalse() {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 0f, 0f });
-    assertFalse(labjackAdcFrame.isBoostPressed());
+    assertEquals(labjackAdcFrame.getADC_V(0), 0f);
   }
 
   public void testBPTrue() {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 0f, 2.4f });
-    assertTrue(labjackAdcFrame.isBoostPressed());
+    assertEquals(labjackAdcFrame.getADC_V(4), 2.4f);
   }
 
   public void testThrottle() {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 2.5f, 0f, 0f });
-    Scalar scalar = labjackAdcFrame.getAheadSigned();
-    assertTrue(Scalars.lessThan(scalar.subtract(RationalScalar.HALF).abs(), RealScalar.of(.05)));
+    assertEquals(labjackAdcFrame.getADC_V(2), 2.5f);
   }
 
   public void testThrottleMax() {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 5.3f, 0f, 0f });
-    Scalar scalar = labjackAdcFrame.getAheadSigned();
-    assertEquals(scalar, RealScalar.ONE);
+    assertEquals(labjackAdcFrame.getADC_V(2), 5.3f);
   }
 
   public void testThrottleNegative() {
     LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 2.5f, 0f, 2f });
-    Scalar scalar = labjackAdcFrame.getAheadSigned();
-    assertTrue(Scalars.lessThan(scalar.subtract(RationalScalar.HALF.negate()).abs(), RealScalar.of(.05)));
+    assertEquals(labjackAdcFrame.getADC_V(2), 2.5f);
+    assertEquals(labjackAdcFrame.getADC_V(4), 2f);
   }
 
   public void testEncoding() {
@@ -51,6 +45,10 @@ public class LabjackAdcFrameTest extends TestCase {
     assertEquals(byteBuffer.getFloat(), -5.23f);
     byteBuffer.rewind();
     labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
-    assertFalse(labjackAdcFrame.isBoostPressed());
+    assertEquals(labjackAdcFrame.getADC_V(0), 1.2f);
+    assertEquals(labjackAdcFrame.getADC_V(1), 2.9f);
+    assertEquals(labjackAdcFrame.getADC_V(2), 3.0f);
+    assertEquals(labjackAdcFrame.getADC_V(3), 4.0f);
+    assertEquals(labjackAdcFrame.getADC_V(4), -5.23f);
   }
 }

@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   private static final Scalar MAGNITUDE = Quantity.of(1500, NonSI.ARMS);
   // ---
-  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
   private final Stopwatch stopwatch = Stopwatch.started();
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 

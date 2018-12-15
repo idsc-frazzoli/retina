@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.joystick;
+package ch.ethz.idsc.gokart.dev;
 
+import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
