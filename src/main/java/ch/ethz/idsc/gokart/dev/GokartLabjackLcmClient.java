@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.dev;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
@@ -14,7 +14,7 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
    * the labjack adc frame is set to passive */
   private final TimedFuse timedFuse;
   // ---
-  private GokartJoystickInterface gokartJoystickInterface = null;
+  private ManualControlInterface manualControlInterface = null;
 
   /** @param channel
    * @param timeout in [s] */
@@ -25,7 +25,7 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
 
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
-    gokartJoystickInterface = new GokartLabjackFrame(byteBuffer);
+    manualControlInterface = new GokartLabjackFrame(byteBuffer);
     timedFuse.pacify();
   }
 
@@ -40,9 +40,9 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
   }
 
   @Override
-  public Optional<GokartJoystickInterface> getJoystick() {
+  public Optional<ManualControlInterface> getManualControl() {
     return Optional.ofNullable(timedFuse.isBlown() //
         ? null
-        : gokartJoystickInterface);
+        : manualControlInterface);
   }
 }

@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
-import ch.ethz.idsc.retina.util.meta.Refactor;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -11,8 +10,7 @@ import ch.ethz.idsc.tensor.Tensor;
  * two modes are supported:
  * 1) simple drive
  * 2) full control */
-@Refactor // TODO JAN rename function ManualControlInterface
-public interface GokartJoystickInterface {
+public interface ManualControlInterface {
   /** positive value is interpreted as ccw rotation
    * 
    * @return real scalar in the interval [-1, 1] */

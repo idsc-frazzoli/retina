@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -12,8 +12,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public final class GokartLabjackFrame implements GokartJoystickInterface {
-  public static final GokartJoystickInterface PASSIVE = //
+public final class GokartLabjackFrame implements ManualControlInterface {
+  public static final ManualControlInterface PASSIVE = //
       new GokartLabjackFrame(new LabjackAdcFrame(new float[5]));
   /** 0.3[V] when not pressed, 2.45[V]
    * 1.1[V] when not pressed, 5.11[V] */

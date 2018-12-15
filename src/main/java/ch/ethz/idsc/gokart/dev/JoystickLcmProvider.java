@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.dev;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
 /* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
   private final TimedFuse timedFuse;
   // ---
-  private GokartJoystickInterface gokartJoystickInterface = null;
+  private ManualControlInterface manualControlInterface = null;
 
   /** @param channel for instance "generic_xbox_pad"
    * @param timeout_ms maximum age of joystick information relayed to application layer */
@@ -26,7 +26,7 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
     timedFuse.pacify();
-    gokartJoystickInterface = (GokartJoystickInterface) JoystickDecoder.decode(byteBuffer);
+    manualControlInterface = (ManualControlInterface) JoystickDecoder.decode(byteBuffer);
   }
 
   @Override
@@ -41,9 +41,9 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
 
   /** @return recent joystick readout, or empty */
   @Override
-  public Optional<GokartJoystickInterface> getJoystick() {
+  public Optional<ManualControlInterface> getManualControl() {
     return Optional.ofNullable(timedFuse.isBlown() //
         ? null
-        : gokartJoystickInterface);
+        : manualControlInterface);
   }
 }

@@ -8,9 +8,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
@@ -36,28 +36,28 @@ public class JoystickLcmProviderTest extends TestCase {
 
   public void testSimple() throws Exception {
     ManualControlProvider manualControlProvider = createJoystickLcmProvider();
-    assertFalse(manualControlProvider.getJoystick().isPresent());
+    assertFalse(manualControlProvider.getManualControl().isPresent());
     manualControlProvider.start();
-    assertFalse(manualControlProvider.getJoystick().isPresent());
+    assertFalse(manualControlProvider.getManualControl().isPresent());
     publishOne();
     Thread.sleep(40);
-    Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
+    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = optional.get();
+    ManualControlInterface gokartJoystickInterface = optional.get();
     assertFalse(gokartJoystickInterface.isAutonomousPressed());
     manualControlProvider.stop();
   }
 
   public void testAutonomous() {
     ManualControlProvider joystickLcmClient = ManualConfig.GLOBAL.createProvider();
-    assertFalse(joystickLcmClient.getJoystick().isPresent());
+    assertFalse(joystickLcmClient.getManualControl().isPresent());
     joystickLcmClient.start();
-    assertFalse(joystickLcmClient.getJoystick().isPresent());
+    assertFalse(joystickLcmClient.getManualControl().isPresent());
     LabjackU3LcmModule.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
     AllGunsBlazing.publishAutonomous();
-    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
+    Optional<ManualControlInterface> optional = joystickLcmClient.getManualControl();
     assertTrue(optional.isPresent());
-    GokartJoystickInterface gokartJoystickInterface = optional.get();
+    ManualControlInterface gokartJoystickInterface = optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
     // System.out.println(gokartJoystickInterface.getAheadAverage());
     joystickLcmClient.stop();

@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
@@ -38,7 +38,7 @@ public class SteerJoystickModuleTest extends TestCase {
     SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
     SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-    GokartJoystickInterface gokartJoystickInterface = new GokartJoystickAdapter( //
+    ManualControlInterface gokartJoystickInterface = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0), false, false);
     Optional<SteerPutEvent> optional = steerJoystickModule.control(steerColumnInterface, gokartJoystickInterface);
     assertTrue(optional.isPresent());

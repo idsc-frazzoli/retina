@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -13,8 +13,8 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public final class GokartJoystickAdapter implements GokartJoystickInterface {
-  public static final GokartJoystickInterface PASSIVE = new GokartJoystickAdapter( //
+public final class GokartJoystickAdapter implements ManualControlInterface {
+  public static final ManualControlInterface PASSIVE = new GokartJoystickAdapter( //
       RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
   // ---
   private final Scalar steerLeft;
@@ -24,7 +24,7 @@ public final class GokartJoystickAdapter implements GokartJoystickInterface {
   private final boolean isAutonomousPressed;
   private final boolean isResetPressed;
 
-  /** see {@link GokartJoystickInterface} for valid range of arguments
+  /** see {@link ManualControlInterface} for valid range of arguments
    * 
    * @param steerLeft in the interval [-1, 1]
    * @param breakStrength in the unit interval [0, 1]

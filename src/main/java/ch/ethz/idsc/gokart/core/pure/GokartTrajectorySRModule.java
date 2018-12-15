@@ -55,7 +55,7 @@ import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.sim.LidarRaytracer;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -195,7 +195,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     if (Objects.nonNull(gokartPoseEvent)) {
       Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
       xya.append(RealScalar.of(INIT_VEL)); // Zero init velocity
-      Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
+      Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
       // ---
       if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory or reset pressed?

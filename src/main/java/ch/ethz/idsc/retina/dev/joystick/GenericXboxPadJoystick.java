@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-/* package */ final class GenericXboxPadJoystick extends JoystickEvent implements GokartJoystickInterface {
+/* package */ final class GenericXboxPadJoystick extends JoystickEvent implements ManualControlInterface {
   /** experimentally determined threshold for knobs when in passive configuration */
   private static final Clip KNOB_PASSIVE_CLIP = Clip.function(-0.05, 0.05);
 

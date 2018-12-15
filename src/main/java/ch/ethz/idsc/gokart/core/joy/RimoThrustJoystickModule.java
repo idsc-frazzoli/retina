@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
@@ -26,7 +26,7 @@ public class RimoThrustJoystickModule extends GuideJoystickModule<RimoPutEvent> 
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
     pair = pair.multiply(ManualConfig.GLOBAL.torqueLimit);

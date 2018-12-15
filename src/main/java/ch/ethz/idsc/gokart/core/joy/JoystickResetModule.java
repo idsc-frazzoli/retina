@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.dev.GokartActuatorCalibration;
 import ch.ethz.idsc.gokart.dev.ManualControlSingleton;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlListener;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
@@ -23,8 +23,8 @@ public class JoystickResetModule extends AbstractModule implements ManualControl
   }
 
   @Override
-  public void manualControl(GokartJoystickInterface gokartJoystickInterface) {
-    if (gokartJoystickInterface.isResetPressed())
+  public void manualControl(ManualControlInterface manualControlInterface) {
+    if (manualControlInterface.isResetPressed())
       GokartActuatorCalibration.all();
   }
 }

@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
@@ -157,7 +157,7 @@ import ch.ethz.idsc.tensor.sca.Round;
           }
         }
         {
-          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
+          Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
           {
             String string = optional.isPresent() //
                 ? optional.get().toString()
@@ -167,8 +167,8 @@ import ch.ethz.idsc.tensor.sca.Round;
           {
             String string = ToolbarsComponent.UNKNOWN;
             if (optional.isPresent()) {
-              GokartJoystickInterface gokartJoystickInterface = optional.get();
-              Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
+              ManualControlInterface manualControlInterface = optional.get();
+              Scalar aheadAverage = manualControlInterface.getAheadAverage();
               Scalar rescaled = CLIP_AHEAD.rescale(aheadAverage);
               Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
               jTF_linmotTemp.setBackground(color);

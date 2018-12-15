@@ -7,7 +7,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -58,7 +58,7 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
   /***************************************************/
   @Override // from GuideJoystickModule
   final Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?

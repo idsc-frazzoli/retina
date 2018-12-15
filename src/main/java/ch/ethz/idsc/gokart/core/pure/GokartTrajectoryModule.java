@@ -59,7 +59,7 @@ import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
@@ -169,7 +169,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       System.out.println("setup planner");
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
-      Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
+      Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
       if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory?
         // no: plan from current position

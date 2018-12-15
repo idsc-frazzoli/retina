@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.Scalar;
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface);
     return rimoRateControllerWrap.iterate(speed, theta);
