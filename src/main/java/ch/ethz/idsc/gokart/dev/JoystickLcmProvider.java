@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 /** client to lcm channel with joystick information */
-public final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
+/* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
   private final TimedFuse timedFuse;
   // ---
   private GokartJoystickInterface gokartJoystickInterface = null;

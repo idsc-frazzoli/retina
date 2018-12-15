@@ -51,6 +51,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Clip CLIP_GYROZ = Clip.function( //
       Quantity.of(-1, SI.PER_SECOND), //
       Quantity.of(+1, SI.PER_SECOND));
+  private static final Clip CLIP_AHEAD = Clip.absoluteOne();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
@@ -157,19 +158,24 @@ import ch.ethz.idsc.tensor.sca.Round;
         }
         {
           Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
-          String string = optional.isPresent() //
-              ? optional.get().toString()
-              : ToolbarsComponent.UNKNOWN;
-          jTF_joystick.setText(string);
-        }
-        {
-          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
-          String string = ToolbarsComponent.UNKNOWN;
-          if (optional.isPresent()) {
-            GokartJoystickInterface gokartJoystickInterface = optional.get();
-            string = gokartJoystickInterface.getAheadAverage().map(Round._5).toString();
+          {
+            String string = optional.isPresent() //
+                ? optional.get().toString()
+                : ToolbarsComponent.UNKNOWN;
+            jTF_joystick.setText(string);
           }
-          jTF_joystickAhead.setText(string);
+          {
+            String string = ToolbarsComponent.UNKNOWN;
+            if (optional.isPresent()) {
+              GokartJoystickInterface gokartJoystickInterface = optional.get();
+              Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
+              Scalar rescaled = CLIP_AHEAD.rescale(aheadAverage);
+              Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
+              jTF_linmotTemp.setBackground(color);
+              string = aheadAverage.map(Round._5).toString();
+            }
+            jTF_joystickAhead.setText(string);
+          }
         }
         {
           Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();

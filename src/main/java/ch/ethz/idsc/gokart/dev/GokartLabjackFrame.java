@@ -10,9 +10,11 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Round;
 
-public class GokartLabjackFrame implements GokartJoystickInterface {
-  public static final GokartJoystickInterface PASSIVE = new GokartLabjackFrame(new LabjackAdcFrame(new float[5]));
+public final class GokartLabjackFrame implements GokartJoystickInterface {
+  public static final GokartJoystickInterface PASSIVE = //
+      new GokartLabjackFrame(new LabjackAdcFrame(new float[5]));
   /** 0.3[V] when not pressed, 2.45[V]
    * 1.1[V] when not pressed, 5.11[V] */
   private static final float BOOST_BUTTON_TRESHOLD = 2f;
@@ -24,7 +26,7 @@ public class GokartLabjackFrame implements GokartJoystickInterface {
    * ranges from {-0.075455[V], 5.11837[V]}.
    * the lower bound is deliberately increased so that the lower bound
    * is insensitive to noise or minor activations of the throttle foot pedal. */
-  private static final Clip THROTTLE_CLIP = Clip.function(0.1, 5.11);
+  private static final Clip THROTTLE_CLIP = Clip.function(0.1, 5);
   private static final int THROTTLE_INDEX = 2;
   private static final float AUTONOMOUS_BUTTON_TRESHOLD = 2f;
   private static final int AUTONOMOUS_BUTTON_INDEX = 3;
@@ -84,5 +86,13 @@ public class GokartLabjackFrame implements GokartJoystickInterface {
   @Override
   public boolean isPassive() {
     return false;
+  }
+
+  @Override
+  public String toString() {
+    String b = isResetPressed() ? " B" : ""; // B for boost
+    String r = isReversePressed() ? " R" : ""; // B for boost
+    String a = isAutonomousPressed() ? " A" : "";
+    return "t=" + getAheadAverage().map(Round._2) + b + r + a;
   }
 }
