@@ -15,15 +15,9 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
  * 3) call startSubscriptions() */
 public class Urg04lxLcmClient extends BinaryLcmClient {
   public final Urg04lxDecoder urg04lxDecoder = new Urg04lxDecoder();
-  private final String lidarId;
 
   public Urg04lxLcmClient(String lidarId) {
-    this.lidarId = lidarId;
-  }
-
-  @Override
-  protected String channel() {
-    return Urg04lxDevice.channel(lidarId);
+    super(Urg04lxDevice.channel(lidarId));
   }
 
   @Override

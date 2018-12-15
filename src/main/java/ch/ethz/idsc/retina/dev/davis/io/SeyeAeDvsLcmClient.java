@@ -13,7 +13,7 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient implements DvsLcmC
   private final List<DavisDvsListener> aedat31PolarityListeners = new CopyOnWriteArrayList<>();
 
   public SeyeAeDvsLcmClient(String channel) {
-    super(channel);
+    super(channel, "aedvs");
   }
 
   @Override // from BinaryLcmClient
@@ -24,11 +24,6 @@ public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient implements DvsLcmC
       Aedat31PolarityEvent aedat31PolarityEvent = Aedat31PolarityEvent.create(byteBuffer);
       aedat31PolarityListeners.forEach(listener -> listener.davisDvs(aedat31PolarityEvent));
     }
-  }
-
-  @Override
-  protected String type() {
-    return "aedvs";
   }
 
   @Override

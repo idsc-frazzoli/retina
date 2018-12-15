@@ -12,7 +12,6 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 /** client to lcm channel with joystick information */
 public final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
-  private final String channel;
   private final TimedFuse timedFuse;
   // ---
   private GokartJoystickInterface gokartJoystickInterface = null;
@@ -20,7 +19,7 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
   /** @param channel for instance "generic_xbox_pad"
    * @param timeout_ms maximum age of joystick information relayed to application layer */
   public JoystickLcmProvider(String channel, double timeout) {
-    this.channel = channel;
+    super(channel);
     timedFuse = new TimedFuse(timeout);
   }
 
@@ -30,11 +29,6 @@ public final class JoystickLcmProvider extends BinaryLcmClient implements Manual
     return Optional.ofNullable(timedFuse.isBlown() //
         ? null
         : gokartJoystickInterface);
-  }
-
-  @Override // from LcmClientAdapter
-  protected String channel() {
-    return channel;
   }
 
   @Override // from LcmClientAdapter

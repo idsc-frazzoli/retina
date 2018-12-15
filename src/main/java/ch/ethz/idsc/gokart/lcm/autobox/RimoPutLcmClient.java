@@ -9,14 +9,13 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 
 public class RimoPutLcmClient extends SimpleLcmClient<RimoPutListener> {
+  public RimoPutLcmClient() {
+    super(RimoLcmServer.CHANNEL_PUT);
+  }
+
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     RimoPutEvent event = RimoPutHelper.from(byteBuffer);
     listeners.forEach(listener -> listener.putEvent(event));
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return RimoLcmServer.CHANNEL_PUT;
   }
 }

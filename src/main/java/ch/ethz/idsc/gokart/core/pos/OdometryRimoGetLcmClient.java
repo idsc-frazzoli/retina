@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
   public final GokartPoseOdometry gokartPoseOdometry;
 
   public OdometryRimoGetLcmClient() {
+    super(RimoLcmServer.CHANNEL_GET);
     gokartPoseOdometry = GokartGyroPoseOdometry.create();
   }
 
@@ -21,10 +22,5 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
   protected void messageReceived(ByteBuffer byteBuffer) {
     RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
     gokartPoseOdometry.getEvent(rimoGetEvent);
-  }
-
-  @Override // from LcmClientAdapter
-  protected String channel() {
-    return RimoLcmServer.CHANNEL_GET;
   }
 }
