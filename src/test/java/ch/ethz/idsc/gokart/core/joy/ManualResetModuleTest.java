@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import junit.framework.TestCase;
 
-public class JoystickResetModuleTest extends TestCase {
+public class ManualResetModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    JoystickResetModule joystickResetModule = new JoystickResetModule();
+    ManualResetModule joystickResetModule = new ManualResetModule();
     joystickResetModule.first();
     joystickResetModule.last();
   }

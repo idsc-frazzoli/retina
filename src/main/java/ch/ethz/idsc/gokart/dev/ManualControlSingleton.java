@@ -8,8 +8,10 @@ import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlListener;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.meta.Refactor;
 
-public enum ManualControlSingleton implements StartAndStoppable {
+@Refactor // TODO JAN implement listener architecture
+enum ManualControlSingleton implements StartAndStoppable {
   INSTANCE;
   // ---
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
@@ -18,7 +20,6 @@ public enum ManualControlSingleton implements StartAndStoppable {
   @Override
   public void start() {
     manualControlProvider.start();
-    // manualControlProvider.
   }
 
   @Override

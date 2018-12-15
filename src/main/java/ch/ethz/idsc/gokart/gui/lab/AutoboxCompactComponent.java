@@ -69,8 +69,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JTextField jTF_rimoRatePair;
   private final JTextField jTF_linmotTemp;
-  private final JTextField jTF_joystick;
-  private final JTextField jTF_joystickAhead;
+  private final JTextField jTF_manualControl;
+  private final JTextField jTF_ahead;
   private final JTextField jTF_davis240c;
   private final JTextField jTF_localPose;
   private final JButton jButtonAppend;
@@ -93,8 +93,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_rimoRatePair = createReading("Rimo");
     jTF_linmotTemp = createReading("Linmot");
     jTF_davis240c = createReading("Davis240C");
-    jTF_joystick = createReading("Joystick");
-    jTF_joystickAhead = createReading("Ahead");
+    jTF_manualControl = createReading("Manual");
+    jTF_ahead = createReading("Ahead");
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     {
@@ -152,7 +152,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
             Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
             Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
-            jTF_linmotTemp.setText("" + temperatureMax);
+            jTF_linmotTemp.setText("" + temperatureMax.map(Round._1));
             jTF_linmotTemp.setBackground(color);
           }
         }
@@ -162,7 +162,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             String string = optional.isPresent() //
                 ? optional.get().toString()
                 : ToolbarsComponent.UNKNOWN;
-            jTF_joystick.setText(string);
+            jTF_manualControl.setText(string);
           }
           {
             String string = ToolbarsComponent.UNKNOWN;
@@ -171,10 +171,10 @@ import ch.ethz.idsc.tensor.sca.Round;
               Scalar aheadAverage = manualControlInterface.getAheadAverage();
               Scalar rescaled = CLIP_AHEAD.rescale(aheadAverage);
               Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
-              jTF_linmotTemp.setBackground(color);
-              string = aheadAverage.map(Round._5).toString();
+              jTF_ahead.setBackground(color);
+              string = aheadAverage.map(Round._4).toString();
             }
-            jTF_joystickAhead.setText(string);
+            jTF_ahead.setText(string);
           }
         }
         {
