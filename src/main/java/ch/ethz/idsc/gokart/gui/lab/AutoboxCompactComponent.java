@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
+/* package */ class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
   private static final Clip CLIP_DEG_C = Clip.function( //
       Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
       Quantity.of(100, NonSI.DEGREE_CELSIUS));
@@ -54,7 +54,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = JoystickConfig.GLOBAL.createProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Timer timer = new Timer();
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
@@ -129,7 +129,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
     linmotGetLcmClient.addListener(linmotGetListener);
     linmotGetLcmClient.startSubscriptions();
     // ---
-    joystickLcmProvider.start();
+    manualControlProvider.start();
     // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
@@ -156,14 +156,14 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
           }
         }
         {
-          Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
+          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
           String string = optional.isPresent() //
               ? optional.get().toString()
               : ToolbarsComponent.UNKNOWN;
           jTF_joystick.setText(string);
         }
         {
-          Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
+          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
           String string = ToolbarsComponent.UNKNOWN;
           if (optional.isPresent()) {
             GokartJoystickInterface gokartJoystickInterface = optional.get();
@@ -201,7 +201,7 @@ public class AutoboxCompactComponent extends ToolbarsComponent implements StartA
   @Override // from StartAndStoppable
   public void stop() {
     timer.cancel();
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
     linmotGetLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();

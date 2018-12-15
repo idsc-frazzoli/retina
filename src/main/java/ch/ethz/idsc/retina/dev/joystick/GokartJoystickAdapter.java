@@ -7,10 +7,12 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Round;
 
-public class GokartJoystickAdapter implements GokartJoystickInterface {
+public final class GokartJoystickAdapter implements GokartJoystickInterface {
   public static final GokartJoystickInterface PASSIVE = new GokartJoystickAdapter( //
       RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
   // ---
@@ -86,5 +88,17 @@ public class GokartJoystickAdapter implements GokartJoystickInterface {
   @Override
   public boolean isResetPressed() {
     return isResetPressed;
+  }
+
+  @Override
+  public String toString() {
+    return Tensors.of( //
+        steerLeft, //
+        breakStrength, //
+        aheadAverage, //
+        pair, //
+        Boole.of(isAutonomousPressed), //
+        Boole.of(isResetPressed) //
+    ).map(Round._2).toString();
   }
 }
