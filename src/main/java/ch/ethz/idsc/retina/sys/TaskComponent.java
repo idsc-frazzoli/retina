@@ -15,7 +15,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
-class TaskComponent {
+/** used in tabbed task gui */
+/* package */ class TaskComponent {
   private final Map<Class<?>, JToggleButton> map = new HashMap<>();
   private final JPanel jpanel = new JPanel();
   private final JPanel top = new JPanel(new BorderLayout());

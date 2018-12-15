@@ -1,11 +1,11 @@
 // code by swisstrolley+ and jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.lcm;
 
 import java.util.Date;
 import java.util.Objects;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.lcm.LcmLogProcess;
+import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** invokes lcm logger binary as Process that records all lcm-messages
  * into binary files for later playback */

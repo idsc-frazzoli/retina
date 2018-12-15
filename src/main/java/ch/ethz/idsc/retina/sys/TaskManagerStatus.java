@@ -2,22 +2,15 @@
 // modified by jph
 package ch.ethz.idsc.retina.sys;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.Set;
 
 import javax.swing.JButton;
 
 /** Class to return the individual thread status currently running in the JVM. */
-public class TaskManagerStatus {
-  public final JButton jButton = new JButton("Status");
-
-  public TaskManagerStatus() {
-    jButton.addActionListener(e -> {
-      countThreads();
-      getThreadStatus();
-    });
-  }
-
+public class TaskManagerStatus implements ActionListener {
   public static String countThreads() {
     StringBuilder msg = new StringBuilder();
     msg.append("Total threads: " + Thread.activeCount() + "\n");
@@ -38,5 +31,18 @@ public class TaskManagerStatus {
     }
     System.out.println(new Date() + msg.toString());
     return msg.toString();
+  }
+
+  // ---
+  public final JButton jButton = new JButton("Status");
+
+  public TaskManagerStatus() {
+    jButton.addActionListener(this);
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    countThreads();
+    getThreadStatus();
   }
 }

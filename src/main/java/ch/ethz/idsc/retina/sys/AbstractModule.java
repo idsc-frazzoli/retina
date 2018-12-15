@@ -8,6 +8,7 @@ import java.util.Date;
  * {@link AbstractClockedModule}. After a successful launch, this thread would
  * automatically terminate. Should there be an exception thrown while starting
  * the modules, this class would try to restart it again. */
+// TODO JAN rename package to util.sys
 public abstract class AbstractModule {
   private static final long RETRY_PERIOD = 5000;
   /** this thread is only used to call launch() thread will terminate once launch()
@@ -45,14 +46,16 @@ public abstract class AbstractModule {
     last();
   }
 
-  /** function launch() should init everything quickly and then return. If launch
-   * procedure encounters problems (such as hardware failure, files missing, ...)
-   * an exception is thrown.
+  /** function should initialize everything quickly and then return.
+   * If the procedure encounters problems (such as hardware failure,
+   * files missing, ...) an exception is thrown.
    *
-   * In particular, launch() should not block indefinitely.
+   * In particular, the function should not block indefinitely.
    *
    * @throws Exception */
   protected abstract void first() throws Exception;
 
+  /** function undoes the initialization of function first().
+   * Typically the de-initialization is done in reverse order. */
   protected abstract void last();
 }
