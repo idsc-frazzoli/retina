@@ -4,7 +4,8 @@ package ch.ethz.idsc.retina.sys;
 import java.io.InputStream;
 import java.util.List;
 
-public class SystemShellCommand {
+/* package */ enum SystemShellCommand {
+  ;
   public static String exec(List<String> list) {
     Process process;
     ProcessBuilder processBuilder = new ProcessBuilder(list);

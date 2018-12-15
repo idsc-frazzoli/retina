@@ -12,12 +12,17 @@ import lcm.lcm.LCMSubscriber;
 import lcm.lcm.SubscriptionRecord;
 
 public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscriber {
+  private final String channel;
   private SubscriptionRecord subscriptionRecord = null;
+
+  public BinaryLcmClient(String channel) {
+    this.channel = channel;
+  }
 
   @Override // from LcmClientInterface
   public final void startSubscriptions() {
     if (Objects.isNull(subscriptionRecord))
-      subscriptionRecord = LCM.getSingleton().subscribe(channel(), this);
+      subscriptionRecord = LCM.getSingleton().subscribe(channel, this);
     else
       System.err.println("already started subscription");
   }
@@ -43,6 +48,4 @@ public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscrib
   }
 
   protected abstract void messageReceived(ByteBuffer byteBuffer);
-
-  protected abstract String channel();
 }

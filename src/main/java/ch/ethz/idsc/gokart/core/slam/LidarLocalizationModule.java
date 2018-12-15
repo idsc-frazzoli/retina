@@ -28,10 +28,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   public static boolean TRACKING = false;
   public static boolean FLAGSNAP = false;
   // ---
-  private final GokartPoseOdometry gokartPoseOdometry = //
-      GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  // private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   public final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
@@ -53,10 +51,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    // davisImuLcmClient.addListener(lidarGyroLocalization);
     // ---
     vlp16LcmHandler.startSubscriptions();
-    // davisImuLcmClient.startSubscriptions();
     thread.start();
   }
 
@@ -65,7 +61,6 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     isLaunched = false;
     thread.interrupt();
     vlp16LcmHandler.stopSubscriptions();
-    // davisImuLcmClient.stopSubscriptions();
   }
 
   @Override // from LidarRayBlockListener
@@ -107,8 +102,9 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
           gokartPoseOdometry.setPose(state, RealScalar.ZERO);
       } else
         try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
+          // sleep is interrupted once data arrives
+          Thread.sleep(2000);
+        } catch (Exception exception) {
           // ---
         }
     }

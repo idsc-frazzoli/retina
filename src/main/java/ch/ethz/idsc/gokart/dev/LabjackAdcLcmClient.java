@@ -16,7 +16,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
 public final class LabjackAdcLcmClient extends BinaryLcmClient implements ManualControlProvider {
-  private final String channel;
   /** if no message is received for a period of 0.2[s]
    * the labjack adc frame is set to passive */
   private final TimedFuse timedFuse;
@@ -26,7 +25,7 @@ public final class LabjackAdcLcmClient extends BinaryLcmClient implements Manual
   /** @param channel
    * @param timeout in [s] */
   public LabjackAdcLcmClient(String channel, double timeout) {
-    this.channel = channel;
+    super(channel);
     timedFuse = new TimedFuse(timeout);
   }
 
@@ -34,11 +33,6 @@ public final class LabjackAdcLcmClient extends BinaryLcmClient implements Manual
   protected void messageReceived(ByteBuffer byteBuffer) {
     labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
     timedFuse.pacify();
-  }
-
-  @Override
-  protected String channel() {
-    return channel;
   }
 
   @Override

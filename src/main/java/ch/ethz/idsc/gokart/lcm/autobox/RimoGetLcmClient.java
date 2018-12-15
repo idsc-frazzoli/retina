@@ -10,6 +10,10 @@ import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   private static boolean notify_flag = true;
 
+  public RimoGetLcmClient() {
+    super(RimoLcmServer.CHANNEL_GET);
+  }
+
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     try {
@@ -23,10 +27,5 @@ public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
         System.err.println("RimoGetLcmClient protocol change");
       }
     }
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return RimoLcmServer.CHANNEL_GET;
   }
 }

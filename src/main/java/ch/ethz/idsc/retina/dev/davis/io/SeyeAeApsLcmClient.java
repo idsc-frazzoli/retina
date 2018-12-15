@@ -13,7 +13,7 @@ public class SeyeAeApsLcmClient extends SeyeAbstractLcmClient {
   int count = 0;
 
   public SeyeAeApsLcmClient(String channel) {
-    super(channel);
+    super(channel, "aeaps");
   }
 
   @Override
@@ -26,10 +26,5 @@ public class SeyeAeApsLcmClient extends SeyeAbstractLcmClient {
     // Aedat31FrameEvent aedat31FrameEvent = new Aedat31FrameEvent(byteBuffer);
     // aedat31FrameListeners.forEach(listener -> listener.frameEvent(aedat31FrameEvent));
     // }
-  }
-
-  @Override
-  protected String type() {
-    return "aeaps";
   }
 }

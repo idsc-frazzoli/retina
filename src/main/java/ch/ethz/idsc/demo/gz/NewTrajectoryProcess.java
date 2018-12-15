@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.yt.prc;
+package ch.ethz.idsc.demo.gz;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** class adapted for gioele
  * extract all dvs events */
-class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
+/* package */ class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   int[] polairty_count = new int[2];
 
@@ -25,15 +25,13 @@ class NewTrajectoryProcess implements OfflineLogListener, DavisDvsListener {
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    // System.out.println(channel);
-    if (channel.equals("davis240c.overview.dvs")) {
+    if (channel.equals("davis240c.overview.dvs"))
       davisDvsDatagramDecoder.decode(byteBuffer);
-    }
   }
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
-    // TODO GZ determine polairty_count for every 1[s]
+    // LONGTERM GZ determine polairty_count for every 1[s]
     // ... and after 1[s] you can reset the polairty_count
     // ... we can export this to a table and then make a plot
     // System.out.println(davisDvsEvent.toString());

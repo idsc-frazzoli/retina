@@ -13,7 +13,7 @@ public class SeyeAeImuLcmClient extends SeyeAbstractLcmClient {
   public final List<Aedat31Imu6Listener> aedat31Imu6Listeners = new CopyOnWriteArrayList<>();
 
   public SeyeAeImuLcmClient(String channel) {
-    super(channel);
+    super(channel, "aeimu");
   }
 
   @Override // from BinaryLcmClient
@@ -24,10 +24,5 @@ public class SeyeAeImuLcmClient extends SeyeAbstractLcmClient {
       Aedat31Imu6Event aedat31ImuEvent = new Aedat31Imu6Event(byteBuffer);
       aedat31Imu6Listeners.forEach(listener -> listener.imu6Event(aedat31ImuEvent));
     }
-  }
-
-  @Override
-  protected String type() {
-    return "aeimu";
   }
 }

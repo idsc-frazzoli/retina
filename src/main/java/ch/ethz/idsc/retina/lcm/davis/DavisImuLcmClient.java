@@ -8,15 +8,8 @@ import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 
 public class DavisImuLcmClient extends SimpleLcmClient<DavisImuFrameListener> {
-  private final String cameraId;
-
   public DavisImuLcmClient(String cameraId) {
-    this.cameraId = cameraId;
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return DavisImuFramePublisher.channel(cameraId);
+    super(DavisImuFramePublisher.channel(cameraId));
   }
 
   @Override // from BinaryLcmClient

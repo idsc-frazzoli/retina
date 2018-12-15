@@ -5,14 +5,18 @@ import java.io.File;
 
 import ch.ethz.idsc.tensor.io.TensorProperties;
 
-/** user specific customization
- * for instance location of windows */
+/** user specific customization encoded in ASCII files
+ * managed by {@link TensorProperties}.
+ * 
+ * Example: store location of windows */
 public enum AppCustomization {
   ;
   private static File file(Class<?> cls) {
     return file(cls.getSimpleName() + ".properties");
   }
 
+  /** @param filename
+   * @return file of the form "resources/custom/username/filename" */
   public static File file(String filename) {
     File dir1 = new File("resources", "custom");
     dir1.mkdir();

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.retina.util.meta.Refactor;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -12,11 +13,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** immutable */
+@Refactor // TODO JAN class contains gokart specific stuff
 public final class LabjackAdcFrame extends DataEvent implements Serializable {
   /** log file analysis shows that the throttle signal at AIN2
    * ranges from {-0.075455[V], 5.11837[V]}.
    * the lower bound is deliberately increased so that the lower bound
-   * is insensitive to noise. */
+   * is insensitive to noise or minor activations of the throttle foot pedal. */
   private static final Clip THROTTLE_CLIP = Clip.function(0.1, 5.11);
   private static final int THROTTLE_INDEX = 2;
   /** 0.3[V] when not pressed, 2.45[V] */

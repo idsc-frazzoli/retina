@@ -55,7 +55,7 @@ public class DavisViewerFrame implements TimedImageListener {
       });
   boolean recording = false;
   private int counter = 0;
-  private final File directory = UserHome.Pictures(SystemTimestamp.file());
+  private final File directory = UserHome.Pictures(SystemTimestamp.asString());
 
   public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
     Component component = jFrame.getContentPane();

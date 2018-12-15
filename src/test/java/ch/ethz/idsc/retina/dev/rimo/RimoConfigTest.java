@@ -12,5 +12,7 @@ public class RimoConfigTest extends TestCase {
     Chop chop = rimoConfig.speedChop();
     assertEquals(chop.apply(Quantity.of(+0.01, SI.VELOCITY)), Quantity.of(0, SI.VELOCITY));
     assertEquals(chop.apply(Quantity.of(-0.01, SI.VELOCITY)), Quantity.of(0, SI.VELOCITY));
+    assertEquals(chop.apply(Quantity.of(+0.05, SI.VELOCITY)), Quantity.of(+0.05, SI.VELOCITY));
+    assertEquals(chop.apply(Quantity.of(-0.05, SI.VELOCITY)), Quantity.of(-0.05, SI.VELOCITY));
   }
 }

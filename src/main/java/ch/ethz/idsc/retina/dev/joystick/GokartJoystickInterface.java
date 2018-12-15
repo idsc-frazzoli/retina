@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.joystick;
 
+import ch.ethz.idsc.retina.util.meta.Refactor;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -10,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
  * two modes are supported:
  * 1) simple drive
  * 2) full control */
-// TODO JAN rename function ManualControlInterface
+@Refactor // TODO JAN rename function ManualControlInterface
 public interface GokartJoystickInterface {
   /** positive value is interpreted as ccw rotation
    * 
@@ -27,12 +28,13 @@ public interface GokartJoystickInterface {
   /** @return vector of length 2 with each entry in unit interval [0, 1] */
   Tensor getAheadPair_Unit();
 
-  /** @return true if none of the manipulators on the joystick are pressed by user */
-  boolean isPassive();
-
   /** @return true when operator authorizes autonomous mode */
   boolean isAutonomousPressed();
 
   /** @return true when operator authorizes calibration, or reset */
   boolean isResetPressed();
+
+  /** @return true if none of the manipulators on the joystick are pressed by user */
+  @Deprecated
+  boolean isPassive();
 }

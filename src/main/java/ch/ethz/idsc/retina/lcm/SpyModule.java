@@ -1,8 +1,9 @@
 // code by niam jen wei and jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.lcm;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.sys.AbstractModule;
 import lcm.spy.Spy;
 
 public class SpyModule extends AbstractModule {

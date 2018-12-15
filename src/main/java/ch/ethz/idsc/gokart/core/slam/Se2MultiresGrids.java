@@ -31,7 +31,7 @@ public class Se2MultiresGrids {
     return list.get(level);
   }
 
-  public int grids() {
+  public int levels() {
     return list.size();
   }
 }
