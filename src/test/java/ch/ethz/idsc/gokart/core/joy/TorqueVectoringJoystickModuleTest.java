@@ -54,8 +54,8 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     // JoystickConfig.GLOBAL;
     // assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
     // assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
-    assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit.negate());
-    assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
+    assertEquals(rimoPutEvent2.putTireL.getTorque(), ManualConfig.GLOBAL.torqueLimit.negate());
+    assertEquals(rimoPutEvent2.putTireR.getTorque(), ManualConfig.GLOBAL.torqueLimit);
     // half forward slip right
     tvjm.last();
   }
@@ -77,7 +77,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent3.putTireL.getTorque().negate(), rimoPutEvent3.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent3.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent3.putTireL.getTorque().negate().add(rimoPutEvent3.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = JoystickConfig.GLOBAL.torqueLimit.multiply(slip);
+    Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
     tvjm.last();
   }
@@ -99,7 +99,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent4.putTireL.getTorque().negate(), rimoPutEvent4.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent4.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent4.putTireL.getTorque().negate().add(rimoPutEvent4.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = JoystickConfig.GLOBAL.torqueLimit.multiply(slip);
+    Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
     tvjm.last();
   }
@@ -121,7 +121,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     assertTrue(Scalars.lessThan(rimoPutEvent5.putTireR.getTorque(), rimoPutEvent5.putTireL.getTorque().negate()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent5.putTireL.getTorque().negate()));
     Scalar meanPower = rimoPutEvent5.putTireL.getTorque().negate().add(rimoPutEvent5.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = JoystickConfig.GLOBAL.torqueLimit.multiply(slip);
+    Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
     tvjm.last();
   }
@@ -142,7 +142,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     System.out.println(rimoPutEvent6.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent6.putTireL.getTorque().negate(), rimoPutEvent6.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent6.putTireL.getTorque().negate().add(rimoPutEvent6.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = JoystickConfig.GLOBAL.torqueLimit.multiply(slip);
+    Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
     tvjm.last();
   }
@@ -163,7 +163,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     System.out.println(rimoPutEvent7.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent7.putTireR.getTorque(), rimoPutEvent7.putTireL.getTorque().negate()));
     Scalar meanPower = rimoPutEvent7.putTireL.getTorque().negate().add(rimoPutEvent7.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
-    Scalar wantedPower = JoystickConfig.GLOBAL.torqueLimit.multiply(slip);
+    Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
     tvjm.last();
   }

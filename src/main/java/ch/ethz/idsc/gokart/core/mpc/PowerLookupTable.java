@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -49,8 +49,8 @@ public class PowerLookupTable {
   // TODO magic const in config class
   private final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
   private final Scalar vMax = Quantity.of(+10, SI.VELOCITY);
-  private final Scalar cMin = JoystickConfig.GLOBAL.torqueLimit.negate();
-  private final Scalar cMax = JoystickConfig.GLOBAL.torqueLimit;
+  private final Scalar cMin = ManualConfig.GLOBAL.torqueLimit.negate();
+  private final Scalar cMax = ManualConfig.GLOBAL.torqueLimit;
   private final Scalar aMin = Quantity.of(-2, SI.ACCELERATION);
   private final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
   private final int DimN = 1000;

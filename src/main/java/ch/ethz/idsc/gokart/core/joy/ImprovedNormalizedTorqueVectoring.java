@@ -25,7 +25,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
         angularSlip, //
         wantedAcceleration, //
         realRotation);
-    return motorCurrents.divide(JoystickConfig.GLOBAL.torqueLimit);
+    return motorCurrents.divide(ManualConfig.GLOBAL.torqueLimit);
   }
 
   /** get torque vectoring motor currents corresponding to the wanted rotation speed

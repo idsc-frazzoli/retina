@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final ManualControlProvider manualControlProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Timer timer = new Timer();
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;

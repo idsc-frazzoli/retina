@@ -54,7 +54,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(0, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
     // more complicated test
-    Scalar maxcurr = JoystickConfig.GLOBAL.torqueLimit;
+    Scalar maxcurr = ManualConfig.GLOBAL.torqueLimit;
     Scalar noPowerAcceleration = POWER_LOOKUP_TABLE.getAcceleration(Quantity.of(0, NonSI.ARMS), Quantity.of(1, "m*s^-1"));
     Scalar leftAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(0).multiply(maxcurr), velocity);
     Scalar rightAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(1).multiply(maxcurr), velocity);

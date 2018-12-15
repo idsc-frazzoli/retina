@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
+import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
@@ -46,7 +46,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
-  private final ManualControlProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
 
   /** switch to testing binary that send back test data has to be called before first */

@@ -11,9 +11,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
-// TODO JAN rename to ManualConfig
-public class JoystickConfig {
-  public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
+public class ManualConfig {
+  public static final ManualConfig GLOBAL = AppResources.load(new ManualConfig());
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */

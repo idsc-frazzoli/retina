@@ -37,14 +37,14 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
     RimoPutTire rptR = rimoPutEvent.putTireR;
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
     assertTrue(rptL_raw < 0);
     assertEquals(rptL_raw, -rptR_raw);
-    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue() / 4;
+    int expected = ManualConfig.GLOBAL.torqueLimit.number().intValue() / 4;
     assertEquals(rptR_raw, expected);
   }
 
@@ -59,14 +59,14 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
     RimoPutTire rptR = rimoPutEvent.putTireR;
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
     assertTrue(rptL_raw < 0);
     assertEquals(rptL_raw, -rptR_raw);
-    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue();
+    int expected = ManualConfig.GLOBAL.torqueLimit.number().intValue();
     assertEquals(rptR_raw, expected);
   }
 
@@ -81,14 +81,14 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
     RimoPutTire rptR = rimoPutEvent.putTireR;
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
     assertTrue(rptL_raw > 0);
     assertEquals(rptL_raw, -rptR_raw);
-    int expected = JoystickConfig.GLOBAL.torqueLimit.number().intValue() / 2;
+    int expected = ManualConfig.GLOBAL.torqueLimit.number().intValue() / 2;
     assertEquals(rptR_raw, -expected);
   }
 
@@ -103,8 +103,8 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
     RimoPutTire rptR = rimoPutEvent.putTireR;
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
-    JoystickConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptL.getTorque());
+    ManualConfig.GLOBAL.torqueLimitClip().isInside(rptR.getTorque());
     // ---
     short rptL_raw = rptL.getTorqueRaw();
     short rptR_raw = rptR.getTorqueRaw();
