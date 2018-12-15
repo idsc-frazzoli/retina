@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+/** TabbedTaskGui is several TaskGui in one window */
 public class TabbedTaskGui {
   public final JFrame jFrame = new JFrame();
   private final JTabbedPane jTabbedPane = new JTabbedPane();
@@ -22,8 +23,7 @@ public class TabbedTaskGui {
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosed(WindowEvent e) {
-        System.out.println("closed");
+      public void windowClosed(WindowEvent windowEvent) {
         ModuleAuto.INSTANCE.terminateAll();
       }
     });

@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Tensor;
  * two modes are supported:
  * 1) simple drive
  * 2) full control */
+// TODO JAN rename function ManualControlInterface
 public interface GokartJoystickInterface {
   /** positive value is interpreted as ccw rotation
    * 

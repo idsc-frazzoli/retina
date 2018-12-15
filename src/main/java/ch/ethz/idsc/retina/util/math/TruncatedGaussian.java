@@ -15,8 +15,8 @@ public class TruncatedGaussian {
   private final double lowerBound;
   private final double upperBound;
 
-  /** truncated Gaussian distribution obtained with rejection sampling. Returned random values will lie
-   * between lowerBound and upperBound
+  /** truncated Gaussian distribution obtained with rejection sampling.
+   * Returned random values will lie between lowerBound and upperBound.
    * 
    * @param mean
    * @param standardDeviation
@@ -29,7 +29,7 @@ public class TruncatedGaussian {
     this.upperBound = upperBound;
   }
 
-  /** @return
+  /** @return value in the interval [lowerBound, upperBound]
    * @throws Exception */
   public double nextValue() {
     for (int count = 0; count < LIMIT; ++count) {

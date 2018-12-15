@@ -132,7 +132,7 @@ public class BlobTrackObj {
 
   public void setToActiveLayer(int blobID) {
     this.blobID = blobID;
-    this.layerID = true;
+    layerID = true;
   }
 
   public boolean getLayerID() {

@@ -8,13 +8,9 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 
-/**
- * 
- */
-@SafetyCritical
+/** thread-safe data structure to maintain collection of put providers of various ranks */
 /* package */ class RankedPutProviders<PE extends DataEvent> {
   private final Map<ProviderRank, List<PutProvider<PE>>> map = new EnumMap<>(ProviderRank.class);
 

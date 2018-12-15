@@ -1,12 +1,21 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev;
 
+import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
 
 public class LabjackAdcLcmClientTest extends TestCase {
-  public void testSimple() {
+  public static void publishOne() throws Exception {
+    LabjackU3LcmModule labjackU3LcmModule = new LabjackU3LcmModule();
+    labjackU3LcmModule.first();
+    labjackU3LcmModule.labjackAdc(new LabjackAdcFrame(new float[] { 1f, 2f, 3f, 4f, 5f }));
+    labjackU3LcmModule.last();
+  }
+
+  public void testSimple() throws Exception {
     LabjackAdcLcmClient labjackAdcLcmClient = new LabjackAdcLcmClient("asd", 0.2);
-    labjackAdcLcmClient.startSubscriptions();
-    labjackAdcLcmClient.stopSubscriptions();
+    labjackAdcLcmClient.start();
+    publishOne();
+    labjackAdcLcmClient.stop();
   }
 }

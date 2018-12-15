@@ -1,5 +1,5 @@
 // code by az
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 /** https://en.wikipedia.org/wiki/Chirp */
-public class ChirpSignal implements ScalarUnaryOperator {
+/* package */ class ChirpSignal implements ScalarUnaryOperator {
   private final Mod mod;
   private final ScalarUnaryOperator series;
 

@@ -4,10 +4,8 @@ package ch.ethz.idsc.retina.dev.linmot;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 import ch.ethz.idsc.retina.util.data.Word;
 
-@SafetyCritical
 public enum LinmotPutHelper {
   ;
   /* package */ static final Word CMD_HOME = Word.createShort("HOME", (short) 0x083f);

@@ -13,9 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-/** is invoked from {@link RunGuiMain} */
+/** single pane of TabbedTaskGui */
 public class TaskGui {
   private static final Properties EMPTY = new Properties();
+  // ---
   public final JFrame jFrame = new JFrame();
 
   public TaskGui(List<Class<?>> modules) {
