@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.fuse.TrackDetectionLidarConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.BSplineTrack;
@@ -19,6 +20,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
@@ -62,7 +64,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
-  private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private SpacialXZObstaclePredicate predicate = TrackDetectionLidarConfig.GLOBAL.createSpacialXZObstaclePredicate();
 
   public MappingAnalysisOfflineMH(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
