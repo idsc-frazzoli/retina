@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
@@ -51,13 +51,13 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<GokartJoystickInterface> joystick = joystickLcmProvider.getJoystick();
+    Optional<ManualControlInterface> joystick = joystickLcmProvider.getManualControl();
     if (joystick.isPresent())
       return fromJoystick(joystick.get());
     return Optional.empty();
   }
 
-  /* package */ Optional<RimoPutEvent> fromJoystick(GokartJoystickInterface gokartJoystickInterface) {
+  /* package */ Optional<RimoPutEvent> fromJoystick(ManualControlInterface gokartJoystickInterface) {
     if (gokartJoystickInterface.isAutonomousPressed()) {
       Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
       Scalar timestamp = DoubleScalar.of(stopwatch.display_seconds());

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
@@ -37,7 +37,7 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
     Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
     // get the wanted acceleration
     Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(pair, meanTangentSpeed);

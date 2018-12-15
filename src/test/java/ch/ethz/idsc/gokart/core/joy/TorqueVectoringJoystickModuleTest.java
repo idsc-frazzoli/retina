@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
@@ -32,7 +32,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent1 = control.get();
@@ -68,7 +68,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.2, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent3 = control.get();
@@ -90,7 +90,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent4 = control.get();
@@ -112,7 +112,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent5 = control.get();
@@ -134,7 +134,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent6 = control.get();
@@ -155,7 +155,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
-    GokartJoystickInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface joystick = new GokartJoystickAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent7 = control.get();

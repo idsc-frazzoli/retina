@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public final class LogitechGamepadF710 extends JoystickEvent implements GokartJoystickInterface {
+public final class LogitechGamepadF710 extends JoystickEvent implements ManualControlInterface {
   @Override
   public JoystickType type() {
     // return JoystickType.LOGITECH_GAMEPAD_F710;

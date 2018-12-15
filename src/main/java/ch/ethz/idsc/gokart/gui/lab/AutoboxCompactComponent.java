@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
@@ -51,6 +51,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Clip CLIP_GYROZ = Clip.function( //
       Quantity.of(-1, SI.PER_SECOND), //
       Quantity.of(+1, SI.PER_SECOND));
+  private static final Clip CLIP_AHEAD = Clip.absoluteOne();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
@@ -68,8 +69,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JTextField jTF_rimoRatePair;
   private final JTextField jTF_linmotTemp;
-  private final JTextField jTF_joystick;
-  private final JTextField jTF_joystickAhead;
+  private final JTextField jTF_manualControl;
+  private final JTextField jTF_ahead;
   private final JTextField jTF_davis240c;
   private final JTextField jTF_localPose;
   private final JButton jButtonAppend;
@@ -92,8 +93,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_rimoRatePair = createReading("Rimo");
     jTF_linmotTemp = createReading("Linmot");
     jTF_davis240c = createReading("Davis240C");
-    jTF_joystick = createReading("Joystick");
-    jTF_joystickAhead = createReading("Ahead");
+    jTF_manualControl = createReading("Manual");
+    jTF_ahead = createReading("Ahead");
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     {
@@ -151,25 +152,30 @@ import ch.ethz.idsc.tensor.sca.Round;
             Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
             Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
             Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
-            jTF_linmotTemp.setText("" + temperatureMax);
+            jTF_linmotTemp.setText("" + temperatureMax.map(Round._1));
             jTF_linmotTemp.setBackground(color);
           }
         }
         {
-          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
-          String string = optional.isPresent() //
-              ? optional.get().toString()
-              : ToolbarsComponent.UNKNOWN;
-          jTF_joystick.setText(string);
-        }
-        {
-          Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
-          String string = ToolbarsComponent.UNKNOWN;
-          if (optional.isPresent()) {
-            GokartJoystickInterface gokartJoystickInterface = optional.get();
-            string = gokartJoystickInterface.getAheadAverage().map(Round._5).toString();
+          Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+          {
+            String string = optional.isPresent() //
+                ? optional.get().toString()
+                : ToolbarsComponent.UNKNOWN;
+            jTF_manualControl.setText(string);
           }
-          jTF_joystickAhead.setText(string);
+          {
+            String string = ToolbarsComponent.UNKNOWN;
+            if (optional.isPresent()) {
+              ManualControlInterface manualControlInterface = optional.get();
+              Scalar aheadAverage = manualControlInterface.getAheadAverage();
+              Scalar rescaled = CLIP_AHEAD.rescale(aheadAverage);
+              Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
+              jTF_ahead.setBackground(color);
+              string = aheadAverage.map(Round._4).toString();
+            }
+            jTF_ahead.setText(string);
+          }
         }
         {
           Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();

@@ -22,11 +22,10 @@ import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.joy.GenericXboxPadLcmServerModule;
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
-import ch.ethz.idsc.gokart.core.joy.JoystickResetModule;
 import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
+import ch.ethz.idsc.gokart.core.joy.ManualResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
@@ -39,7 +38,6 @@ import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.LabjackU3LcmModule;
-import ch.ethz.idsc.gokart.dev.ManualControlModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
@@ -73,16 +71,15 @@ enum RunTabbedTaskGui {
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, // publishes pose
       LoggerModule.class, //
-      GenericXboxPadLcmServerModule.class, //
+      LabjackU3LcmModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       LinmotSafetyModule.class, //
-      JoystickResetModule.class, //
+      ManualResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class, //
-      LabjackU3LcmModule.class, ManualControlModule.class //
+      AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring

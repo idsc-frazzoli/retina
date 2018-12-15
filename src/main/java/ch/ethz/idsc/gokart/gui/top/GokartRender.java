@@ -16,9 +16,9 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
@@ -81,8 +81,8 @@ public class GokartRender extends AbstractGokartRender {
     {
       Color color = new Color(192, 192, 192, 64);
       if (Objects.nonNull(joystickEvent)) {
-        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
-        if (gokartJoystickInterface.isAutonomousPressed())
+        ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
+        if (manualControlInterface.isAutonomousPressed())
           color = new Color(255, 128, 128, 64);
       }
       graphics.setColor(color);

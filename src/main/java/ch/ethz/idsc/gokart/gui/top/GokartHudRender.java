@@ -9,9 +9,9 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.tensor.Scalar;
@@ -50,11 +50,11 @@ class GokartHudRender implements RenderInterface, RimoGetListener, JoystickListe
     }
     {
       if (Objects.nonNull(joystickEvent)) {
-        GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystickEvent;
+        ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
         graphics.setFont(FONT_LARGE);
         graphics.setColor(Color.BLUE);
         graphics.drawString("Autonomous", 0, 40 + 60);
-        boolean isAutonomousPressed = gokartJoystickInterface.isAutonomousPressed();
+        boolean isAutonomousPressed = manualControlInterface.isAutonomousPressed();
         graphics.setColor(isAutonomousPressed ? Color.RED : Color.BLUE);
         graphics.drawString("" + isAutonomousPressed, SEPX, 40 + 60);
       }

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
@@ -27,7 +27,7 @@ public class SteerJoystickModule extends GuideJoystickModule<SteerPutEvent> {
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<SteerPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, GokartJoystickInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
     Scalar difference = desPos.subtract(currAngle);

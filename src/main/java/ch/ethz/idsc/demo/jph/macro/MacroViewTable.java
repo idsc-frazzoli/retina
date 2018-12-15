@@ -11,9 +11,9 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
@@ -68,8 +68,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       } else //
       if (channel.equals(JOYSTICK)) {
         JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-        GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
-        if (gji.isAutonomousPressed())
+        ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
+        if (manualControlInterface.isAutonomousPressed())
           table.set(MAX, index, INDEX_AUTO);
       } else //
       if (channel.equals(MiscLcmServer.CHANNEL_GET)) {

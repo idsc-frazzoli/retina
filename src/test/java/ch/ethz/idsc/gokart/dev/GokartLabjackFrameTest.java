@@ -13,6 +13,7 @@ public class GokartLabjackFrameTest extends TestCase {
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.toString(), "t=0.00");
   }
 
   public void testResetTrue() {
@@ -22,6 +23,7 @@ public class GokartLabjackFrameTest extends TestCase {
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.toString(), "t=0.00 B");
   }
 
   public void testReverseTrue() {
@@ -31,6 +33,7 @@ public class GokartLabjackFrameTest extends TestCase {
     assertTrue(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.toString(), "t=0.00 R");
   }
 
   public void testAutonomousTrue() {
@@ -40,6 +43,7 @@ public class GokartLabjackFrameTest extends TestCase {
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertTrue(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.toString(), "t=0.00 A");
   }
 
   public void testThrottleForward() {
@@ -49,6 +53,7 @@ public class GokartLabjackFrameTest extends TestCase {
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ONE);
+    assertEquals(gokartLabjackFrame.toString(), "t=1.00");
   }
 
   public void testThrottleReverse() {
