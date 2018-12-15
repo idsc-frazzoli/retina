@@ -12,12 +12,12 @@ import ch.ethz.idsc.retina.sys.AbstractModule;
 public final class LoggerModule extends AbstractModule {
   private LcmLogProcess lcmLogProcess;
 
-  @Override
+  @Override // from AbstractModule
   protected void first() throws Exception {
     lcmLogProcess = LcmLogProcess.createDefault(UserHome.file(""));
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     if (Objects.nonNull(lcmLogProcess))
       try {

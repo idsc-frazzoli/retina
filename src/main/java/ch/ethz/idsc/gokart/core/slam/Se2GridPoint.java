@@ -6,17 +6,16 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ class Se2GridPoint {
-  private final int x;
-  private final int y;
-  private final int t;
+  private final Tensor mask;
   private final Tensor tangent;
   private final Tensor coord;
 
-  public Se2GridPoint(Scalar shift, Scalar angle, int x, int y, int t) {
-    this.x = x;
-    this.y = y;
-    this.t = t;
-    tangent = Tensors.of(shift, shift, angle).pmul(index());
+  /** @param shift
+   * @param angle
+   * @param mask */
+  public Se2GridPoint(Tensor mask, Scalar shift, Scalar angle) {
+    this.mask = mask;
+    tangent = Tensors.of(shift, shift, angle).pmul(mask);
     coord = Se2Exp.of(tangent);
   }
 
@@ -30,6 +29,6 @@ import ch.ethz.idsc.tensor.Tensors;
   }
 
   public Tensor index() {
-    return Tensors.vector(x, y, t);
+    return mask;
   }
 }

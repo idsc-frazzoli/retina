@@ -31,7 +31,7 @@ public enum SlamDunk {
       Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, Tensor points, SlamScore slamScore) {
     Tensor result = IdentityMatrix.of(3);
     int score = -1;
-    for (int level = 0; level < se2MultiresGrids.grids(); ++level) {
+    for (int level = 0; level < se2MultiresGrids.levels(); ++level) {
       score = -1;
       Se2GridPoint best = null;
       Se2Grid se2grid = se2MultiresGrids.grid(level);
@@ -49,7 +49,7 @@ public enum SlamDunk {
       geometricLayer.pushMatrix(best.matrix()); // manifest for next level
       result = result.dot(best.matrix());
     }
-    IntStream.range(0, se2MultiresGrids.grids()) //
+    IntStream.range(0, se2MultiresGrids.levels()) //
         .forEach(index -> geometricLayer.popMatrix());
     return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
   }
