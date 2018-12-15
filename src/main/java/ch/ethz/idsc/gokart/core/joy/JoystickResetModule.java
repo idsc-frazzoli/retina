@@ -2,11 +2,10 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.dev.GokartActuatorCalibration;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClient;
+import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** the module monitors the reset button of the joystick.
@@ -17,18 +16,21 @@ public class JoystickResetModule extends AbstractModule implements JoystickListe
   /** use of joystick lcm client is sufficient over joystick lcm provider since the
    * JoystickEvent is processed in the callback function which ensures the message
    * is not outdated. */
-  private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  // private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final ManualControlProvider manualControlProvider = JoystickConfig.GLOBAL.createProvider();
 
   @Override // from AbstractModule
   protected void first() throws Exception {
-    joystickLcmClient.addListener(this);
-    joystickLcmClient.startSubscriptions();
+    // joystickLcmClient.addListener(this);
+    // joystickLcmClient.startSubscriptions();
+    manualControlProvider.start();
   }
 
   @Override // from AbstractModule
   protected void last() {
-    joystickLcmClient.stopSubscriptions();
-    joystickLcmClient.removeListener(this);
+    // joystickLcmClient.stopSubscriptions();
+    // joystickLcmClient.removeListener(this);
+    manualControlProvider.stop();
   }
 
   @Override // from JoystickListener

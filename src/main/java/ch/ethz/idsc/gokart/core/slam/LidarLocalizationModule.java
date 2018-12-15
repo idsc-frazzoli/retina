@@ -102,8 +102,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
           gokartPoseOdometry.setPose(state, RealScalar.ZERO);
       } else
         try {
-          System.out.println("localization: awaiting data");
-          Thread.sleep(30);
+          // sleep is interrupted once data arrives
+          Thread.sleep(2000);
         } catch (Exception exception) {
           // ---
         }

@@ -29,13 +29,17 @@ public class HybridControlProvider implements ManualControlProvider {
 
   @Override
   public Optional<GokartJoystickInterface> getJoystick() {
+    System.out.println("here");
     Optional<GokartJoystickInterface> optional = joystickLcmProvider.getJoystick();
     if (optional.isPresent()) {
+      System.out.println("  has joystick");
       GokartJoystickInterface joystick = optional.get();
       Optional<GokartJoystickInterface> optional_labjack = labjackAdcLcmClient.getJoystick();
       if (optional_labjack.isPresent()) {
+        System.out.println("  has labjack adc");
         GokartJoystickInterface labjack = optional.get();
         Scalar ahead = labjack.getAheadAverage();
+        System.out.println("   -> " + ahead);
         return Optional.of(new GokartJoystickAdapter( //
             joystick.getSteerLeft(), //
             joystick.getBreakStrength(), //
