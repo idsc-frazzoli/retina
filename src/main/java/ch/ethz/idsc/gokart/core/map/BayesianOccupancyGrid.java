@@ -167,6 +167,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
     lidar2cellLayer.pushMatrix(lidar2gokart); // lidar to gokart
     // ---
     world2cellLayer = GeometricLayer.of(grid2cell);
+    world2cellLayer.pushMatrix(world2grid);
   }
 
   /** @return matrix */

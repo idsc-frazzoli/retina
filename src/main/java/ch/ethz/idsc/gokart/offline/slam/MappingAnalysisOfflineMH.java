@@ -111,7 +111,7 @@ public class MappingAnalysisOfflineMH implements OfflineLogListener, LidarRayBlo
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      bayesianOccupancyGrid.render(gl, graphics);
+      // bayesianOccupancyGrid.render(gl, graphics);
       bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
       trackIdentificationManagement.render(gl, graphics);
