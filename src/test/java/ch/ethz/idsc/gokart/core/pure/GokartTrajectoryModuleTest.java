@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClientTest;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProviderTest;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -56,7 +56,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     }
     assertFalse(gtm.purePursuitModule.purePursuitRimo.private_isOperational());
     assertFalse(gtm.purePursuitModule.purePursuitSteer.private_isOperational());
-    JoystickLcmClientTest.publishAutonomous();
+    JoystickLcmProviderTest.publishAutonomous();
     gtm.purePursuitModule.runAlgo();
     assertTrue(gtm.purePursuitModule.purePursuitRimo.private_isOperational());
     assertTrue(gtm.purePursuitModule.purePursuitSteer.private_isOperational());

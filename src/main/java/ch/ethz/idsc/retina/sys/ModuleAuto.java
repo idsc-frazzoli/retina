@@ -20,7 +20,7 @@ public enum ModuleAuto {
   INSTANCE;
   /** map for holding the module list */
   // TODO choose a more threadsafe datastructure
-  private Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
+  private final Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
 
   /** Methods for launching the modules */
   public void runAll(List<Class<?>> modules) {

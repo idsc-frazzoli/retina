@@ -20,6 +20,10 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
   // TODO design no good. lastcns should not be public. use member function instead
   public ControlAndPredictionSteps lastcns = null;
 
+  public LcmMPCControlClient() {
+    super(GokartLcmChannel.MPC_FORCES_CNS);
+  }
+
   @Override
   public void start() {
     startSubscriptions();
@@ -83,10 +87,5 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     for (MPCControlUpdateListener listener : listeners)
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
     lastcns = cns.controlAndPredictionSteps;
-  }
-
-  @Override
-  protected String channel() {
-    return GokartLcmChannel.MPC_FORCES_CNS;
   }
 }

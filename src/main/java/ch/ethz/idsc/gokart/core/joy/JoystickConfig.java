@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** parameters for PI controller of torque control */
+// TODO JAN rename to ManualConfig
 public class JoystickConfig {
   public static final JoystickConfig GLOBAL = AppResources.load(new JoystickConfig());
   /***************************************************/

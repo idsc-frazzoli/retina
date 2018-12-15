@@ -11,10 +11,10 @@ import ch.ethz.idsc.tensor.Tensor;
    * [0 -be vx]
    * [+be 0 vy]
    * [+0 +0 +0]
-   * to the corresponding 3x3 matrix in SE2.
+   * to the corresponding matrix in SE2 with dimensions 3 x 3.
    * 
    * @param x vector of length 3
-   * @return matrix with dimensions 3x3 */
+   * @return matrix with dimensions 3 x 3 */
   public static Tensor of(Tensor x) {
     return Se2Utils.toSE2Matrix(Se2CoveringExponential.INSTANCE.exp(x));
   }

@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
+/** reads out labjack u3 device and publishes status of adc to lcm */
 public class LabjackU3LcmModule extends AbstractModule implements LabjackAdcListener {
   private final StartAndStoppable labjackU3LiveProvider = LabjackU3LiveProviders.create(this);
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LABJACK_U3_ADC);

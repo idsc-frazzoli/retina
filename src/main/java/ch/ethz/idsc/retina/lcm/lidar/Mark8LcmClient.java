@@ -13,19 +13,13 @@ import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class Mark8LcmClient extends BinaryLcmClient {
   public final Mark8Decoder mark8Decoder = new Mark8Decoder();
-  private final String lidarId;
 
   public Mark8LcmClient(String lidarId) {
-    this.lidarId = lidarId;
+    super(Mark8Device.channel(lidarId));
   }
 
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
     mark8Decoder.lasers(byteBuffer);
-  }
-
-  @Override
-  protected String channel() {
-    return Mark8Device.channel(lidarId);
   }
 }

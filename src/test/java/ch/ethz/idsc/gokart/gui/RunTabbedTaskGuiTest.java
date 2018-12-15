@@ -17,7 +17,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
-import ch.ethz.idsc.retina.sys.LoggerModule;
+import ch.ethz.idsc.retina.lcm.LoggerModule;
 import ch.ethz.idsc.retina.sys.ModuleAuto;
 import junit.framework.TestCase;
 

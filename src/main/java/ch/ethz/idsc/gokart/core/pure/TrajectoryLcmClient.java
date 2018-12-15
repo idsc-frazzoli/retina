@@ -31,20 +31,13 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
   }
 
   // ---
-  private final String channel;
-
   private TrajectoryLcmClient(String channel) {
-    this.channel = channel;
+    super(channel);
   }
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     List<TrajectorySample> trajectory = trajectory(byteBuffer);
     listeners.forEach(listener -> listener.trajectory(trajectory));
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return channel;
   }
 }

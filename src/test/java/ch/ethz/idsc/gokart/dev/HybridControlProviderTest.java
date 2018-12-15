@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev;
 
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmClientTest;
+import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProviderTest;
 import junit.framework.TestCase;
 
 public class HybridControlProviderTest extends TestCase {
@@ -10,7 +10,7 @@ public class HybridControlProviderTest extends TestCase {
     assertFalse(hybridControlProvider.getJoystick().isPresent());
     hybridControlProvider.start();
     assertFalse(hybridControlProvider.getJoystick().isPresent());
-    JoystickLcmClientTest.publishOne();
+    JoystickLcmProviderTest.publishOne();
     Thread.sleep(20);
     assertTrue(hybridControlProvider.getJoystick().isPresent());
     hybridControlProvider.stop();

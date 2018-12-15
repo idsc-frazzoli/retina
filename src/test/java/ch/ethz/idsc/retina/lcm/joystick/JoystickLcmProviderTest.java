@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
 import junit.framework.TestCase;
 
-public class JoystickLcmClientTest extends TestCase {
+public class JoystickLcmProviderTest extends TestCase {
   public static JoystickLcmProvider createJoystickLcmProvider() {
     return new JoystickLcmProvider(GokartLcmChannel.JOYSTICK, 0.2);
   }
@@ -55,17 +55,17 @@ public class JoystickLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    ManualControlProvider joystickLcmClient = createJoystickLcmProvider();
-    assertFalse(joystickLcmClient.getJoystick().isPresent());
-    joystickLcmClient.start();
-    assertFalse(joystickLcmClient.getJoystick().isPresent());
+    ManualControlProvider manualControlProvider = createJoystickLcmProvider();
+    assertFalse(manualControlProvider.getJoystick().isPresent());
+    manualControlProvider.start();
+    assertFalse(manualControlProvider.getJoystick().isPresent());
     publishOne();
     Thread.sleep(40);
-    Optional<GokartJoystickInterface> optional = joystickLcmClient.getJoystick();
+    Optional<GokartJoystickInterface> optional = manualControlProvider.getJoystick();
     assertTrue(optional.isPresent());
     GokartJoystickInterface gokartJoystickInterface = optional.get();
     assertFalse(gokartJoystickInterface.isAutonomousPressed());
-    joystickLcmClient.stop();
+    manualControlProvider.stop();
   }
 
   public void testAutonomous() {

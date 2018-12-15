@@ -17,7 +17,7 @@ public class Se2MultiresSamplesTest extends TestCase {
     Se2Grid se2Grid = se2MultiresGrids.grid(2);
     assertEquals(se2Grid.gridPoints().size(), 27);
     assertEquals(Dimensions.of(se2Grid.gridPoints().get(12).matrix()), Arrays.asList(3, 3));
-    assertEquals(se2MultiresGrids.grids(), 3);
+    assertEquals(se2MultiresGrids.levels(), 3);
   }
 
   public void testFan2() {
@@ -28,7 +28,7 @@ public class Se2MultiresSamplesTest extends TestCase {
     Se2Grid se2Grid = se2MultiresGrids.grid(2);
     assertEquals(se2Grid.gridPoints().size(), 125);
     assertEquals(Dimensions.of(se2Grid.gridPoints().get(124).matrix()), Arrays.asList(3, 3));
-    assertEquals(se2MultiresGrids.grids(), 3);
+    assertEquals(se2MultiresGrids.levels(), 3);
   }
 
   public void testPixelSpace() {
@@ -36,6 +36,6 @@ public class Se2MultiresSamplesTest extends TestCase {
     Se2Grid se2Grid = se2MultiresGrids.grid(3);
     assertEquals(se2Grid.gridPoints().size(), 27);
     assertEquals(Dimensions.of(se2Grid.gridPoints().get(26).matrix()), Arrays.asList(3, 3));
-    assertEquals(se2MultiresGrids.grids(), 4);
+    assertEquals(se2MultiresGrids.levels(), 4);
   }
 }

@@ -26,7 +26,7 @@ public class LcmLogProcess implements AutoCloseable {
   private static String defaultFilename() {
     String gitHash = GitRevHead.getHash();
     gitHash = gitHash.substring(0, Math.min(gitHash.length(), 8));
-    return String.join("_", SystemTimestamp.file(), gitHash) + ".lcm";
+    return String.join("_", SystemTimestamp.asString(), gitHash) + ".lcm";
   }
 
   // ---
