@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util;
 
-public enum VoidStartAndStoppable implements StartAndStoppable {
+public enum EmptyStartAndStoppable implements StartAndStoppable {
   INSTANCE;
   // ---
   @Override

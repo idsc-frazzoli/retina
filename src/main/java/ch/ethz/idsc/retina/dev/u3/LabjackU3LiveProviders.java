@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.u3;
 
+import ch.ethz.idsc.retina.util.EmptyStartAndStoppable;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.VoidStartAndStoppable;
 
 public enum LabjackU3LiveProviders {
   ;
@@ -11,6 +11,6 @@ public enum LabjackU3LiveProviders {
   public static StartAndStoppable create(LabjackAdcListener labjackAdcListener) {
     return LabjackU3LiveProvider.isFeasible() //
         ? new LabjackU3LiveProvider(labjackAdcListener)
-        : VoidStartAndStoppable.INSTANCE;
+        : EmptyStartAndStoppable.INSTANCE;
   }
 }

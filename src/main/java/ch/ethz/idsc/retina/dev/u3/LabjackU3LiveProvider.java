@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 /** Labjack U3
  * readout ADC */
 public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
+  // TODO retrieve executable from properties file resources/custom/...
   private static final File DIRECTORY = UserHome.file("Public/exodriver/examples/U3");
   private static final File EXECUTABLE = new File(DIRECTORY, "u3adctxt");
 
@@ -25,14 +26,14 @@ public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable 
   private final LabjackAdcListener labjackAdcListener;
   private Process process;
 
-  LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
+  /* package */ LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
     this.labjackAdcListener = Objects.requireNonNull(labjackAdcListener);
   }
 
   @Override // from StartAndStoppable
   public void start() { // non-blocking
     ProcessBuilder processBuilder = new ProcessBuilder(EXECUTABLE.toString());
-    processBuilder.directory(DIRECTORY);
+    processBuilder.directory(DIRECTORY); // <- not required
     try {
       process = processBuilder.start();
       Thread thread = new Thread(this);
