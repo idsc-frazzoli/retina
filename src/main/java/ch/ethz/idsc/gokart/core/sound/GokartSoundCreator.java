@@ -28,7 +28,7 @@ public class GokartSoundCreator {
   }
 
   public static abstract class Exciter {
-    public abstract float getNextValue(MotorState state, float dt);
+    public abstract float getNextValue(MotorState motorState, float dt);
   }
 
   public static abstract class Resonator {

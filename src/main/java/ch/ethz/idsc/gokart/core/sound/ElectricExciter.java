@@ -5,6 +5,8 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 
 public class ElectricExciter extends Exciter {
+  private static final float TWO_PI = (float) (2 * Math.PI);
+  // ---
   private final float baseAmplitude;
   private final float amplitudeFactor;
   private final float relAmpFrequency;
@@ -35,12 +37,12 @@ public class ElectricExciter extends Exciter {
   public float getNextValue(MotorState state, float dt) {
     dSinePosition = dt * (state.speed * relFrequency + baseFrequency);
     dAmpSinePosition = dt * (state.speed * relAmpFrequency + baseAmpFrequency);
-    sinePosition += dSinePosition * Math.PI * 2;
-    ampSinePosition += dAmpSinePosition * Math.PI * 2;
-    if (sinePosition > Math.PI * 2)
-      sinePosition -= Math.PI * 2;
-    if (ampSinePosition > Math.PI * 2)
-      ampSinePosition -= Math.PI * 2;
+    sinePosition += dSinePosition * TWO_PI;
+    ampSinePosition += dAmpSinePosition * TWO_PI;
+    if (sinePosition > TWO_PI)
+      sinePosition -= TWO_PI;
+    if (ampSinePosition > TWO_PI)
+      ampSinePosition -= TWO_PI;
     float sineVal = (float) Math.sin(sinePosition);
     float ampSineVal = (float) Math.sin(ampSinePosition);
     float ampFac = powerFactor * state.power + (1 - powerFactor);
