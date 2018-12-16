@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetHelper;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class LinmotCoolingModuleTest extends TestCase {

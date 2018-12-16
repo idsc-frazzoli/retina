@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.event.ActionEvent;
 
-import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerCalibrationProvider;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 
 /** GUI element to initiate calibration procedure of steering wheel */
 /* package */ class SteerInitButton extends AutoboxInitButton {

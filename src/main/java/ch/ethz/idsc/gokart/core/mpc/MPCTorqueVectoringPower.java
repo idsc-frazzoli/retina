@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;

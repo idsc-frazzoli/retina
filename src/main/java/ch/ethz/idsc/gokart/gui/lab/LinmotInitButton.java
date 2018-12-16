@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.event.ActionEvent;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotCalibrationProvider;
 
 /** gui element to initiate calibration procedure of linmot break
  * 

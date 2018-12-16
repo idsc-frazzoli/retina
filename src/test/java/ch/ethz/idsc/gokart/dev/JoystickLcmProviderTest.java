@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;

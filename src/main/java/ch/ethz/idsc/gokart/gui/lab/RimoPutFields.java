@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.gui.lab;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;

@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import javax.swing.JTextField;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoEmergencyError;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetTire;
+import ch.ethz.idsc.gokart.dev.rimo.RimoEmergencyError;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetTire;
 import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

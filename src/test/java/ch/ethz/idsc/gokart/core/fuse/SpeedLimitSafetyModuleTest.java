@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import junit.framework.TestCase;
 
 public class SpeedLimitSafetyModuleTest extends TestCase {

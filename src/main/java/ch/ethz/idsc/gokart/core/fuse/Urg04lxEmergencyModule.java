@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 

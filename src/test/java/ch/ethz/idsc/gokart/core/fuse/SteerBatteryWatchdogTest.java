@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscGetEventSimulator;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetEventSimulator;
 import junit.framework.TestCase;
 
 public class SteerBatteryWatchdogTest extends TestCase {

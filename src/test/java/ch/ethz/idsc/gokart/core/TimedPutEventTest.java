@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class TimedPutEventTest extends TestCase {
