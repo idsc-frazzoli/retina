@@ -5,11 +5,11 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 
 public class TestExciter extends Exciter {
-  final float absFrequency;
-  final float relFrequency;
-  final float powerFactor;
-  float sinePosition = 0;
-  float dsinePosition;
+  private final float absFrequency;
+  private final float relFrequency;
+  private final float powerFactor; // TODO MH not used
+  private float sinePosition = 0;
+  private float dsinePosition;
 
   public TestExciter(float absFrequency, float relFrequency, float powerFactor) {
     this.absFrequency = absFrequency;

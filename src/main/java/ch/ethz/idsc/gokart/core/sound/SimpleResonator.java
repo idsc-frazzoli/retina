@@ -4,11 +4,11 @@ package ch.ethz.idsc.gokart.core.sound;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 
 public class SimpleResonator extends GokartSoundCreator.Resonator {
-  float x = 0;
-  float dx = 0;
-  final float spring;
-  final float damping;
-  final float excitability;
+  private float x = 0;
+  private float dx = 0;
+  private final float spring;
+  private final float damping;
+  private final float excitability;
 
   public SimpleResonator(float spring, float damping, float excitability) {
     this.spring = spring;

@@ -5,19 +5,22 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 
 public class ElectricExciter extends Exciter {
-  final float baseAmplitude;
-  final float amplitudeFactor;
-  final float relAmpFrequency;
-  final float baseAmpFrequency;
-  final float baseFrequency;
-  final float relFrequency;
-  final float powerFactor;
-  float sinePosition = 0;
-  float ampSinePosition = 0;
-  float dSinePosition;
-  float dAmpSinePosition;
+  private final float baseAmplitude;
+  private final float amplitudeFactor;
+  private final float relAmpFrequency;
+  private final float baseAmpFrequency;
+  private final float baseFrequency;
+  private final float relFrequency;
+  private final float powerFactor;
+  // ---
+  private float sinePosition = 0;
+  private float ampSinePosition = 0;
+  private float dSinePosition;
+  private float dAmpSinePosition;
 
-  public ElectricExciter(float relFrequency, float baseFrequency, float relAmpFrequency, float baseAmpFrequency, float baseAmplitude, float amplitudeFactor,
+  public ElectricExciter( //
+      float relFrequency, float baseFrequency, float relAmpFrequency, //
+      float baseAmpFrequency, float baseAmplitude, float amplitudeFactor, //
       float powerFactor) {
     this.relFrequency = relFrequency;
     this.relAmpFrequency = relAmpFrequency;
