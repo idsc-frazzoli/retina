@@ -15,16 +15,16 @@ import ch.ethz.idsc.owl.data.Stopwatch;
 
 public class GokartSoundCreator {
   public static class MotorState {
+    public final float speed;
+    public final float power;
+    public final float torquevectoring;
+
     public MotorState(float speed, float power, float torquevectoring) {
       this.speed = speed;
       this.power = power;
       // System.out.println("sp: "+speed+"power: "+power);
       this.torquevectoring = torquevectoring;
     }
-
-    public final float speed;
-    public final float power;
-    public final float torquevectoring;
   }
 
   public static abstract class Exciter {

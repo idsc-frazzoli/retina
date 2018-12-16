@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.sound;
 
 import java.util.ArrayList;
 
-import ch.ethz.idsc.demo.mh.MotorStateFaker;
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -61,9 +60,9 @@ public class SoundModule extends AbstractModule implements RimoGetListener {
     resonators.add(resonator1);
     resonators.add(resonator2);
     // resonators.add(resonator3);
-    MotorStateFaker faker = new MotorStateFaker();
+    // MotorStateFaker faker = new MotorStateFaker();
     ChirpSpeedModifier chirping = new ChirpSpeedModifier(5, 0.4f);
-    GokartSoundCreator creator = new GokartSoundCreator(exciters, resonators, chirping, faker);
+    GokartSoundCreator creator = new GokartSoundCreator(exciters, resonators, chirping, null);
     creator.setState(new MotorState(5, 1f, 0));
     creator.playSimple(10f);
   }
