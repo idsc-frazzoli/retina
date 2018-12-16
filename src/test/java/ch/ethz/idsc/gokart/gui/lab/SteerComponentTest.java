@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.gui.lab;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 

@@ -4,11 +4,11 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
 import ch.ethz.idsc.retina.util.math.Magnitude;

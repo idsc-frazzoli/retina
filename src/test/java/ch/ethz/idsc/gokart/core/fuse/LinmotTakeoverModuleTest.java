@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetHelper;
 import junit.framework.TestCase;
 
 public class LinmotTakeoverModuleTest extends TestCase {

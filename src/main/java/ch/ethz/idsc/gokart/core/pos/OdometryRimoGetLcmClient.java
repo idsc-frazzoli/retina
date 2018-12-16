@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
 
 /** listens to {@link RimoGetEvent}s and passes them to

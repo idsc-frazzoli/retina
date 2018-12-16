@@ -4,11 +4,11 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;

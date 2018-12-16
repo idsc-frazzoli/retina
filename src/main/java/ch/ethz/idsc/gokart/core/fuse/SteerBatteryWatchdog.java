@@ -3,12 +3,12 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetListener;
+import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.data.WatchdogInterface;
 

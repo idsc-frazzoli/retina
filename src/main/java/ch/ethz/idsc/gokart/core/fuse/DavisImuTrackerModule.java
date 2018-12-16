@@ -3,11 +3,11 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
 import ch.ethz.idsc.retina.util.data.WatchdogInterface;

@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class RimoComponentTest extends TestCase {

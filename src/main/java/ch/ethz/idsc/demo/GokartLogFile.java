@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotFireFighter;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
-import ch.ethz.idsc.retina.dev.linmot.LinmotFireFighter;
 
 /** enumeration of all significant gokart log files */
 public enum GokartLogFile implements LogFile {

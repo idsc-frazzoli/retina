@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.lcm.autobox;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 
 public class LinmotGetLcmClient extends SimpleLcmClient<LinmotGetListener> {

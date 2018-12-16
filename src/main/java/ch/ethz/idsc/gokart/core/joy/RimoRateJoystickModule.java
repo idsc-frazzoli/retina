@@ -3,15 +3,15 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
-import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerMapping;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** DO NOT USE THIS IMPLEMENTATION.

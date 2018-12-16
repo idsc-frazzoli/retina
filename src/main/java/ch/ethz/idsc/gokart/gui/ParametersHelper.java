@@ -16,11 +16,11 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.PlanSRConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.rimo.RimoConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 
 enum ParametersHelper {
   ;

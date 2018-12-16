@@ -3,12 +3,12 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerPositionControl;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class SteerJoystickModule extends GuideJoystickModule<SteerPutEvent> {

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;

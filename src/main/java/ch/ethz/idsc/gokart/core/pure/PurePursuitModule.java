@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;

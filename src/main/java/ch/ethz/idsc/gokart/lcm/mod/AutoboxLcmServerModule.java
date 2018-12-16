@@ -1,14 +1,14 @@
 // code by jph
 package ch.ethz.idsc.gokart.lcm.mod;
 
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.sys.AbstractModule;
 
 /** module subscribes and unsubscribes to all micro-autobox channels

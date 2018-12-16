@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;

@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
 
 /** conversion of joystick event to brake command */
 public class LinmotJoystickModule extends JoystickModule<LinmotPutEvent> {

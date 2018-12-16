@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core;
 
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class RankedPutProvidersTest extends TestCase {
