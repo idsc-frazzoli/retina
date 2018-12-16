@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.sound;
 import java.util.ArrayList;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -43,7 +42,7 @@ public class SoundModule extends AbstractModule implements RimoGetListener {
     ElectricExciter exciter7 = new ElectricExciter(//
         30, 1, -10, 248, 0.03f, 5, 0.8f);
     // NoiseExciter exciter8 = new NoiseExciter(0.04f);
-    ArrayList<GokartSoundCreator.Exciter> exciters = new ArrayList<>();
+    ArrayList<SoundExciter> exciters = new ArrayList<>();
     // exciters.add(exciter1);
     // exciters.add(exciter2);
     exciters.add(exciter3);
@@ -53,17 +52,17 @@ public class SoundModule extends AbstractModule implements RimoGetListener {
     exciters.add(exciter7);
     // exciters.add(exciter8);
     // GokartSoundCreator.Exciter exciter = new TestExciter(30000, 0,10);
-    GokartSoundCreator.Resonator resonator1 = new SimpleResonator(1300000f, 30f, 100000f);
-    GokartSoundCreator.Resonator resonator2 = new SimpleResonator(1310000f, 20f, 100000f);
+    SoundResonator resonator1 = new SimpleResonator(1300000f, 30f, 100000f);
+    SoundResonator resonator2 = new SimpleResonator(1310000f, 20f, 100000f);
     // GokartSoundCreator.Resonator resonator3 = new SimpleResonator(10010000f, 10f, 20000f);
-    ArrayList<GokartSoundCreator.Resonator> resonators = new ArrayList<>();
+    ArrayList<SoundResonator> resonators = new ArrayList<>();
     resonators.add(resonator1);
     resonators.add(resonator2);
     // resonators.add(resonator3);
     // MotorStateFaker faker = new MotorStateFaker();
     ChirpSpeedModifier chirping = new ChirpSpeedModifier(5, 0.4f);
     GokartSoundCreator creator = new GokartSoundCreator(exciters, resonators, chirping, null);
-    creator.setState(new MotorState(5, 1f, 0));
+    creator.setState(new GokartSoundState(5, 1f, 0));
     creator.playSimple(10f);
   }
 
