@@ -31,7 +31,7 @@ public enum ModuleAuto {
   }
 
   /** terminates modules non-parallel and in reverse order of launching */
-  public void terminateAll() {
+  public void endAll() {
     System.out.println(new Date() + " Module Auto: Terminate all");
     List<AbstractModule> list = new ArrayList<>(moduleMap.values());
     Collections.reverse(list);
@@ -59,7 +59,7 @@ public enum ModuleAuto {
     }
   }
 
-  public void terminateOne(Class<?> module) {
+  public void endOne(Class<?> module) {
     AbstractModule instance = null;
     synchronized (moduleMap) {
       instance = moduleMap.remove(module);

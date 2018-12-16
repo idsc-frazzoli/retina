@@ -28,7 +28,7 @@ public class GokartSoundCreator {
   }
 
   public static abstract class Exciter {
-    public abstract float getNextValue(MotorState state, float dt);
+    public abstract float getNextValue(MotorState motorState, float dt);
   }
 
   public static abstract class Resonator {
@@ -39,23 +39,23 @@ public class GokartSoundCreator {
     float getNextSpeedValue(MotorState defaultState, float dt);
   }
 
-  AudioInputStream audioInputStream;
-  AudioFormat audioFormat;
+  private AudioInputStream audioInputStream;
+  private AudioFormat audioFormat;
   protected final int SAMPLING_RATE = 44100;
-  final int SAMPLE_SIZE = 2;
-  final int FRAME_SIZE = 2;
-  SourceDataLine sourceDataLine;
-  DataLine.Info info;
-  ByteBuffer cBuf;
-  Stopwatch started = Stopwatch.stopped();
-  float speed = 10000;
-  float sinPosition = 0;
-  boolean written = false;
-  MotorState motorState = new MotorState(0, 0, 0);
-  final List<Exciter> exciters;
-  final List<Resonator> resonators;
-  final SpeedModifier speedModifier;
-  MotorStateProvider motorStateProvider;
+  private final int SAMPLE_SIZE = 2;
+  private final int FRAME_SIZE = 2;
+  private SourceDataLine sourceDataLine;
+  private DataLine.Info info;
+  private ByteBuffer cBuf;
+  private Stopwatch started = Stopwatch.stopped();
+  private float speed = 10000;
+  private float sinPosition = 0;
+  private boolean written = false;
+  private MotorState motorState = new MotorState(0, 0, 0);
+  private final List<Exciter> exciters;
+  private final List<Resonator> resonators;
+  private final SpeedModifier speedModifier;
+  private MotorStateProvider motorStateProvider;
 
   public GokartSoundCreator(List<Exciter> exciters, List<Resonator> resonators, SpeedModifier speedModifier, MotorStateProvider provider) {
     this.exciters = exciters;

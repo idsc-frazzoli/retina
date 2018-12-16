@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.sys;
+package ch.ethz.idsc.retina.util.time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,9 +11,5 @@ public enum SystemTimestamp {
 
   public static String asString() {
     return FILE_FORMAT.format(new Date());
-  }
-
-  public static void main(String[] args) {
-    System.out.println(asString());
   }
 }

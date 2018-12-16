@@ -10,7 +10,7 @@ public class LocalViewLcmModuleTest extends TestCase {
   public void testSimple() throws InterruptedException {
     ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
     Thread.sleep(200);
-    ModuleAuto.INSTANCE.terminateOne(LocalViewLcmModule.class);
+    ModuleAuto.INSTANCE.endOne(LocalViewLcmModule.class);
   }
 
   public void testDeterminant() {

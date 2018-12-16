@@ -5,11 +5,13 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 
 public class TestExciter extends Exciter {
-  final float absFrequency;
-  final float relFrequency;
-  final float powerFactor;
-  float sinePosition = 0;
-  float dsinePosition;
+  private static final float TWO_PI = (float) (2 * Math.PI);
+  // ---
+  private final float absFrequency;
+  private final float relFrequency;
+  private final float powerFactor; // TODO MH not used
+  private float sinePosition = 0;
+  private float dsinePosition;
 
   public TestExciter(float absFrequency, float relFrequency, float powerFactor) {
     this.absFrequency = absFrequency;
@@ -21,8 +23,8 @@ public class TestExciter extends Exciter {
   public float getNextValue(MotorState state, float dt) {
     dsinePosition = dt * (state.speed * relFrequency + absFrequency);
     sinePosition += dsinePosition;
-    if (sinePosition > Math.PI * 2) {
-      sinePosition -= Math.PI * 2;
+    if (sinePosition > TWO_PI) {
+      sinePosition -= TWO_PI;
       return 1;
     }
     return 0;

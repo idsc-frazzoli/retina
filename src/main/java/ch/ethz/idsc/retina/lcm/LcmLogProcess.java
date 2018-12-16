@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.sys.GitRevHead;
-import ch.ethz.idsc.retina.util.sys.SystemTimestamp;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 
 /** process to log lcm traffic */
 public class LcmLogProcess implements AutoCloseable {

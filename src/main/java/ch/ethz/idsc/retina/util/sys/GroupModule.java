@@ -11,7 +11,7 @@ public abstract class GroupModule extends AbstractModule {
 
   @Override
   protected final void last() {
-    modules().forEach(ModuleAuto.INSTANCE::terminateOne);
+    modules().forEach(ModuleAuto.INSTANCE::endOne);
   }
 
   /** @return list of classes that constitute group */

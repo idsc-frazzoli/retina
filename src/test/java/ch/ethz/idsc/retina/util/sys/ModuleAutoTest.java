@@ -24,12 +24,12 @@ public class ModuleAutoTest extends TestCase {
   public void testOne() throws Exception {
     ModuleAuto.INSTANCE.runOne(LinmotTakeoverModule.class);
     Thread.sleep(50); // needs time to start thread that invokes first()
-    ModuleAuto.INSTANCE.terminateOne(LinmotTakeoverModule.class);
+    ModuleAuto.INSTANCE.endOne(LinmotTakeoverModule.class);
   }
 
   public void testAll() throws Exception {
     ModuleAuto.INSTANCE.runAll(Arrays.asList(LinmotTakeoverModule.class));
     Thread.sleep(100);
-    ModuleAuto.INSTANCE.terminateAll();
+    ModuleAuto.INSTANCE.endAll();
   }
 }

@@ -31,7 +31,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
     for (Class<?> module : RunTabbedTaskGui.MODULES_AUT) {
       ModuleAuto.INSTANCE.runOne(module);
       Thread.sleep(100);
-      ModuleAuto.INSTANCE.terminateOne(module);
+      ModuleAuto.INSTANCE.endOne(module);
     }
   }
 

@@ -12,6 +12,6 @@ public class JoystickGroupModuleTest extends TestCase {
   public void testSimple() throws Exception {
     ModuleAuto.INSTANCE.runOne(JoystickGroupModule.class);
     Thread.sleep(50);
-    ModuleAuto.INSTANCE.terminateOne(JoystickGroupModule.class);
+    ModuleAuto.INSTANCE.endOne(JoystickGroupModule.class);
   }
 }

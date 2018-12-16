@@ -36,7 +36,7 @@ import javax.swing.JToggleButton;
         if (jToggleButton.isSelected())
           ModuleAuto.INSTANCE.runOne(module);
         else
-          ModuleAuto.INSTANCE.terminateOne(module);
+          ModuleAuto.INSTANCE.endOne(module);
       });
       if (properties.containsKey(key)) {
         String value = properties.getProperty(key);
@@ -54,13 +54,13 @@ import javax.swing.JToggleButton;
 
   public void terminateAll() {
     for (Entry<Class<?>, JToggleButton> entry : map.entrySet()) {
-      ModuleAuto.INSTANCE.terminateOne(entry.getKey());
+      ModuleAuto.INSTANCE.endOne(entry.getKey());
       entry.getValue().setSelected(false);
     }
   }
 
   private static String getName(Class<?> module) {
-    String name = StringBrew.putSpaceBefCaps(module.getSimpleName());
+    String name = StaticHelper.putSpaceBefCaps(module.getSimpleName());
     return name.endsWith(" Module") //
         ? name.substring(0, name.length() - 7)
         : name;

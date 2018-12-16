@@ -17,9 +17,10 @@ import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class SoundModule extends AbstractModule implements RimoGetListener {
-  Scalar meanTangentSpeed;
-  Scalar power;
-  Scalar torqueVectoring;
+  // TODO MH not used
+  private Scalar meanTangentSpeed;
+  private Scalar power;
+  private Scalar torqueVectoring;
 
   @Override
   public void getEvent(RimoGetEvent getEvent) {

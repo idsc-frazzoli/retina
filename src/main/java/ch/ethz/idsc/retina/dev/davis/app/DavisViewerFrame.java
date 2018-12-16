@@ -30,7 +30,7 @@ import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
-import ch.ethz.idsc.retina.util.sys.SystemTimestamp;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame implements TimedImageListener {

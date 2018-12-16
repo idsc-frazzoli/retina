@@ -37,6 +37,7 @@ import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
@@ -70,6 +71,7 @@ enum RunTabbedTaskGui {
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, // publishes pose
+      GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3LcmModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
