@@ -28,7 +28,7 @@ public class GlobalViewLcmModule extends ViewLcmModule {
     globalViewLcmModule.viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        ModuleAuto.INSTANCE.terminateOne(LidarLocalizationModule.class);
+        ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
       }
     });
   }

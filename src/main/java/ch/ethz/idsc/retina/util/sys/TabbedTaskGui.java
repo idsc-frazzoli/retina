@@ -24,7 +24,7 @@ public class TabbedTaskGui {
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        ModuleAuto.INSTANCE.terminateAll();
+        ModuleAuto.INSTANCE.endAll();
       }
     });
     jFrame.setContentPane(jTabbedPane);

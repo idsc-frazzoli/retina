@@ -9,7 +9,7 @@ public class AutonomousModuleTest extends TestCase {
     for (Class<?> cls : RunTabbedTaskGui.MODULES_AUT) {
       ModuleAuto.INSTANCE.runOne(cls);
       Thread.sleep(150); // needs time to start thread that invokes first()
-      ModuleAuto.INSTANCE.terminateOne(cls);
+      ModuleAuto.INSTANCE.endOne(cls);
     }
   }
 }

@@ -11,7 +11,7 @@ public class JoystickModuleTest extends TestCase {
       if (!cls.equals(SysidSignalsModule.class)) {
         ModuleAuto.INSTANCE.runOne(cls);
         Thread.sleep(50); // needs time to start thread that invokes first()
-        ModuleAuto.INSTANCE.terminateOne(cls);
+        ModuleAuto.INSTANCE.endOne(cls);
       } else
         System.out.println("skip " + cls);
   }
