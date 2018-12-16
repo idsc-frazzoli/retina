@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.retina.dev.davis.DavisStatics;
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 
 public class DavisApsDatagramDecoder {
   private final BufferedImage bufferedImage;

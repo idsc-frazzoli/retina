@@ -14,7 +14,7 @@ import java.util.Objects;
 import javax.swing.JFrame;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
-import ch.ethz.idsc.retina.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

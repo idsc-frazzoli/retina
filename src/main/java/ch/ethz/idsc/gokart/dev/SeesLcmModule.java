@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.dev;
 import java.util.Date;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public final class SeesLcmModule extends AbstractModule {
   private SeesLcmProcess seesLcmProcess;

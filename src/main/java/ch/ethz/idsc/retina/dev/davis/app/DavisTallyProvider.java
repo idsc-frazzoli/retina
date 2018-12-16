@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.dev.davis.app;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 
 /** in the presence of APS images, one period is defined as the frame rate reciprocal */
 public class DavisTallyProvider {

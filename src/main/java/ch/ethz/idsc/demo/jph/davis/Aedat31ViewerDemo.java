@@ -5,8 +5,8 @@ import java.awt.Color;
 
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31FileSupplier;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.io.AnimatedGifWriter;
 
 enum Aedat31ViewerDemo {

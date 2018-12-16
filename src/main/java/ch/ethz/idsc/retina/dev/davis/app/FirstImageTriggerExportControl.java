@@ -3,8 +3,8 @@ package ch.ethz.idsc.retina.dev.davis.app;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.io.DavisExportControl;
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 
 /** export control that is enabled from the 2nd image onwards */
 public class FirstImageTriggerExportControl implements DavisExportControl, ColumnTimedImageListener {

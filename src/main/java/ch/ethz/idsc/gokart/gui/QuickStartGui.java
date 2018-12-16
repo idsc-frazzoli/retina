@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
-import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
 
 /** Important: QuickStartGui only works when connected to the real gokart hardware.
  * 

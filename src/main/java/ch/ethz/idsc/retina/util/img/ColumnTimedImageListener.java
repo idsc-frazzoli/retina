@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.img;
 
 /** the aps images are read column wise from left to right. each column is
  * assigned a separate timestamp in [us]. typically the intervals between the

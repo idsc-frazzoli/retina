@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.lidar.urg04lx;
 
-import ch.ethz.idsc.retina.util.RealtimeSleeper;
+import ch.ethz.idsc.retina.util.time.RealtimeSleeper;
 
 /** slows down playback of urg04lx recording to factor of real-time */
 public class Urg04lxRealtimeListener implements Urg04lxRangeListener {

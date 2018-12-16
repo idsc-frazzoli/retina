@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.time;
 
-// TODO JPH move all image related classes to util.time
 public class IntervalClock {
   private long tic = System.nanoTime(); // started upon construction
 

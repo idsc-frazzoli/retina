@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

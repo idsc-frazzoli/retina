@@ -1,8 +1,8 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

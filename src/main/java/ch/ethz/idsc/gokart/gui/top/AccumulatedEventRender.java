@@ -19,9 +19,9 @@ import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
 import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 

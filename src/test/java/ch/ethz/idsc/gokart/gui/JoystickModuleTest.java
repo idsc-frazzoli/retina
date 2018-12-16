@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.gui;
 
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
 public class JoystickModuleTest extends TestCase {

@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.StringScalarQ;

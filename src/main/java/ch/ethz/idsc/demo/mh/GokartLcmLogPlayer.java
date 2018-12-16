@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
 import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 

@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;

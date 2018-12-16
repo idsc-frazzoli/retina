@@ -1,5 +1,5 @@
 // code by swisstrolley+ and jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 import java.io.InputStream;
 import java.util.List;

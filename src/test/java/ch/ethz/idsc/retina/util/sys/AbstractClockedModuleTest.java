@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;

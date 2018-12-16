@@ -1,5 +1,5 @@
 // code by swisstrolley+ and jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 import java.util.Date;
 
@@ -8,7 +8,6 @@ import java.util.Date;
  * {@link AbstractClockedModule}. After a successful launch, this thread would
  * automatically terminate. Should there be an exception thrown while starting
  * the modules, this class would try to restart it again. */
-// TODO JAN rename package to util.sys
 public abstract class AbstractModule {
   private static final long RETRY_PERIOD = 5000;
   /** this thread is only used to call launch() thread will terminate once launch()

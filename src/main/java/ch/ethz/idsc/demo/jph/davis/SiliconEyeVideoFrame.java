@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 
 class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
   static final int WIDTH = 320;

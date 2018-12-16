@@ -20,9 +20,9 @@ import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
 import ch.ethz.idsc.retina.dev.davis.app.SAEGaussDecayImage;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
 class UdpPythonPublisher implements TimedImageListener {

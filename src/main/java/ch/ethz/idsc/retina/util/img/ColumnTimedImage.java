@@ -1,9 +1,8 @@
 // code by jph
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.img;
 
 import java.awt.image.BufferedImage;
 
-// TODO JPH move all image related classes to util.img
 public class ColumnTimedImage {
   /** array of timestamps in [us] with time.length == bufferedImage.getWidth() */
   public final int[] time;

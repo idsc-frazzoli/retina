@@ -7,9 +7,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
 
 /** module tested on 20180427 */
 public class SysidSignalsModule extends AbstractModule {
