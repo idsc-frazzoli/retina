@@ -1,10 +1,10 @@
 // code by jph
-package ch.ethz.idsc.gokart.dev;
+package ch.ethz.idsc.gokart.dev.u3;
 
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
 
-public class LabjackAdcLcmClientTest extends TestCase {
+public class GokartLabjackLcmClientTest extends TestCase {
   public static void publishOne() throws Exception {
     LabjackU3LcmModule labjackU3LcmModule = new LabjackU3LcmModule();
     labjackU3LcmModule.first();

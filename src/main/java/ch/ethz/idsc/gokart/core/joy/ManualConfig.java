@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.gokart.dev.GokartLabjackLcmClient;
+import ch.ethz.idsc.gokart.dev.u3.GokartLabjackLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.sys.AppResources;

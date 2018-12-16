@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.dev;
+package ch.ethz.idsc.gokart.dev.u3;
 
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
