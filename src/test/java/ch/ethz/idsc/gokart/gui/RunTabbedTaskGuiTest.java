@@ -18,7 +18,7 @@ import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.lcm.LoggerModule;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
 public class RunTabbedTaskGuiTest extends TestCase {

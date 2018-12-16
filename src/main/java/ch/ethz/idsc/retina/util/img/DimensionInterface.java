@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.img;
 
 import java.awt.Dimension;
 

@@ -1,6 +1,6 @@
 // code by niam jen wei
 // modified by jph
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

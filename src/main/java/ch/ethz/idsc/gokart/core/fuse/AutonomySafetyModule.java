@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** overwrites steering and Rimo command if designated joystick button is not pushed
  * 

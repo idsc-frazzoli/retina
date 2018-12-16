@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** module subscribes and unsubscribes to all micro-autobox channels
  * and publishes the traffic via lcm.

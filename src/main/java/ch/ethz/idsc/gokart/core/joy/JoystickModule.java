@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.owl.math.state.ProviderRank;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** abstract base class for modules that convert joystick events into actuation */
 /* package */ abstract class JoystickModule<PE> extends AbstractModule implements PutProvider<PE> {

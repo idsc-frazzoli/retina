@@ -1,5 +1,5 @@
 // code by niam jen wei
-package ch.ethz.idsc.retina.sys;
+package ch.ethz.idsc.retina.util.sys;
 
 /** string manipulation functions */
 /* package */ enum StringBrew {

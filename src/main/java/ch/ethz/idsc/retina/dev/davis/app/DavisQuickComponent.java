@@ -10,12 +10,12 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.util.IntervalClock;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.retina.util.time.IntervalClock;
 
 public class DavisQuickComponent {
   private BufferedImage difImage = null;

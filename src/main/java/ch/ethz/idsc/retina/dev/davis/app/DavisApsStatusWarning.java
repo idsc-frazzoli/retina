@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.dev.davis.app;
 
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 
 // TODO implementation seems incomplete
 /* package */ class DavisApsStatusWarning implements ColumnTimedImageListener {

@@ -18,9 +18,9 @@ import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16PanoramaProvider;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
 
 /** and zoom into sectors */
 public class PanoramaViewModule extends AbstractModule {

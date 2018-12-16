@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.joystick.JoystickType;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public class GenericXboxPadLcmServerModule extends AbstractModule {
   /** refresh period in [ms] for joystick events */

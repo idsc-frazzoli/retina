@@ -10,9 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
 
 public class AutoboxTestingModule extends AbstractModule {
   private final List<AutoboxTestingComponent<?, ?>> list = new LinkedList<>();

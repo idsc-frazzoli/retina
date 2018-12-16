@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
 public class JoystickGroupModuleTest extends TestCase {

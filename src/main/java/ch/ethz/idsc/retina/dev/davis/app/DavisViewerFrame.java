@@ -26,11 +26,11 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.sys.SystemTimestamp;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
 import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.retina.util.sys.SystemTimestamp;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame implements TimedImageListener {

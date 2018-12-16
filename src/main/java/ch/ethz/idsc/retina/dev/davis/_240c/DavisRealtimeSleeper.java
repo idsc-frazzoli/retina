@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.dev.davis._240c;
 
 import ch.ethz.idsc.retina.dev.davis.DavisImuListener;
-import ch.ethz.idsc.retina.util.IntRealtimeSleeper;
+import ch.ethz.idsc.retina.util.time.IntRealtimeSleeper;
 
 /** slows down playback to realtime
  * 

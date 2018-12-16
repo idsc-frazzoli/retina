@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmServer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** intended to run on gokart */
 public class Urg04lxLcmServerModule extends AbstractModule {

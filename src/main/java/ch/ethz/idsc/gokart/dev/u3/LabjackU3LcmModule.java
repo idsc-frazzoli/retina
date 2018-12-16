@@ -6,8 +6,8 @@ import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcListener;
 import ch.ethz.idsc.retina.dev.u3.LabjackU3LiveProviders;
 import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
-import ch.ethz.idsc.retina.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** reads out labjack u3 device and publishes status of ADC to lcm */
 public class LabjackU3LcmModule extends AbstractModule implements LabjackAdcListener {

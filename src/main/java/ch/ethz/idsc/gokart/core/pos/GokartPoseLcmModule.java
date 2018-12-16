@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
-import ch.ethz.idsc.retina.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 

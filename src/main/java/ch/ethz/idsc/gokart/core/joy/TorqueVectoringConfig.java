@@ -1,8 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.joy;
 
-import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 

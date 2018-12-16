@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lcm;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import lcm.spy.Spy;
 
 public class SpyModule extends AbstractModule {

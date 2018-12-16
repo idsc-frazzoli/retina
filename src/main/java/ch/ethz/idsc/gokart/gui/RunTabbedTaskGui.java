@@ -51,9 +51,9 @@ import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.lcm.LoggerModule;
 import ch.ethz.idsc.retina.lcm.SpyModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** RunTabbedTaskGui is a program that is typically for offline processing.

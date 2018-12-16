@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.meta;
+package ch.ethz.idsc.retina.util;
 
 import static java.lang.annotation.ElementType.TYPE;
 

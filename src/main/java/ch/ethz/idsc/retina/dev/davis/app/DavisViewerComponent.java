@@ -10,14 +10,14 @@ import javax.swing.JComponent;
 
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.IntRange;
-import ch.ethz.idsc.retina.util.IntervalClock;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageHistogram;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class DavisViewerComponent implements DavisImuFrameListener {

@@ -6,7 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8DeflateDigest;
 import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Digest;
 import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmServer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public class Mark8LcmServerModule extends AbstractModule {
   private static final String IP = "192.168.1.3";

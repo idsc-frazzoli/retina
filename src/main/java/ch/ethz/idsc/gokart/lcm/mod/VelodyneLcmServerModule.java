@@ -6,7 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmServer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 abstract class VelodyneLcmServerModule extends AbstractModule {
   private VelodyneLcmServer velodyneLcmServer = null;

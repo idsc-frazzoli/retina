@@ -8,9 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.dev.davis.DavisApsListener;
-import ch.ethz.idsc.retina.util.ColumnTimedImage;
-import ch.ethz.idsc.retina.util.ColumnTimedImageListener;
-import ch.ethz.idsc.retina.util.DimensionInterface;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
+import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
+import ch.ethz.idsc.retina.util.img.DimensionInterface;
 
 /** for davis240c the raw image data arrives in the order (0,0), (0,1), ...,
  * (0,179), (1,0), (1,1), ..., (239,179) */

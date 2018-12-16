@@ -1,9 +1,7 @@
 // code by jph, mg
-package ch.ethz.idsc.retina.util;
+package ch.ethz.idsc.retina.util.img;
 
 import java.awt.image.BufferedImage;
-
-import ch.ethz.idsc.retina.util.img.ImageRotate;
 
 public class TimedImageEvent {
   public final int time;

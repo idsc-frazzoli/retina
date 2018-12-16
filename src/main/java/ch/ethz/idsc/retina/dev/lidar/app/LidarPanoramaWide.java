@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
-import ch.ethz.idsc.retina.util.IntervalClock;
+import ch.ethz.idsc.retina.util.time.IntervalClock;
 
 public class LidarPanoramaWide {
   public static final int SCALE_Y = 3;

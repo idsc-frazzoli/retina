@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
-import ch.ethz.idsc.retina.util.IntervalClock;
+import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.sca.Ceiling;
 
