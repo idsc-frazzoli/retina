@@ -5,7 +5,7 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
 import ch.ethz.idsc.gokart.core.sound.MotorStateProvider;
 
-public class MotorStateFaker implements MotorStateProvider {
+/* package */ class MotorStateFaker implements MotorStateProvider {
   private float t;
 
   GokartSoundCreator.MotorState getNextMotorState(float dt) {
