@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
+import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
 import ch.ethz.idsc.owl.bot.util.UserHome;
@@ -32,5 +33,6 @@ import lcm.logging.LogPlayerConfig;
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(GokartTrackIdentificationModule.class);
     ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
+    ModuleAuto.INSTANCE.runOne(TrackIdentificationButtons.class);
   }
 }

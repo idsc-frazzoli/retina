@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -34,20 +35,21 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
     TRACKIDENTIFICATIONRENDER = trackIDManagement;
   }
 
-  public void resetStart() {
-    trackIDManagement.resetStart();
-  }
-
   @Override
   protected void runAlgo() {
-    System.out.println("Run Algo!");
-    trackMappingModule.prepareMap();
-    if (!trackIDManagement.isStartSet()) {
+    if (!trackIDManagement.isStartSet() || TrackIdentificationButtons.SETTINGSTART) {
       trackIDManagement.setStart(gpe);
       if (trackIDManagement.isStartSet())
+      {
         System.out.println("start set!");
+        TrackIdentificationButtons.SETTINGSTART = false;
+      }
     }
-    trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
+    
+    if(TrackIdentificationButtons.RECORDING) {
+      trackMappingModule.prepareMap();
+      trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
+    }
     lastExecution = Stopwatch.started();
   }
 

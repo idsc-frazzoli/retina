@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -106,23 +107,25 @@ public class GokartTrackMappingModule implements //
   @Override
   public void run() {
     while (isLaunched) {
-      Tensor points = points3d_ferry;
-      if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
-        points3d_ferry = null;
-        // TODO pose quality is not considered yet
-        bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
-        for (Tensor point : points) {
-          boolean isObstacle = predicate.isObstacle(point); // only x and z are used
-          bayesianOccupancyGrid.processObservation( //
-              point.extract(0, 2), // planar point x y
-              isObstacle ? 1 : 0);
-        }
-      } else
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
-          // ---
-        }
+      if (TrackIdentificationButtons.RECORDING) {
+        Tensor points = points3d_ferry;
+        if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
+          points3d_ferry = null;
+          // TODO pose quality is not considered yet
+          bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
+          for (Tensor point : points) {
+            boolean isObstacle = predicate.isObstacle(point); // only x and z are used
+            bayesianOccupancyGrid.processObservation( //
+                point.extract(0, 2), // planar point x y
+                isObstacle ? 1 : 0);
+          }
+        } else
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            // ---
+          }
+      }
     }
   }
 

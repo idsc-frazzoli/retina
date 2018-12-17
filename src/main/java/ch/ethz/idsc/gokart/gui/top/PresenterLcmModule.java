@@ -22,7 +22,6 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -33,10 +32,7 @@ import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.gui.RenderInterface;
-import ch.ethz.idsc.owl.gui.ren.Se2WaypointRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
-import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
@@ -110,8 +106,8 @@ public class PresenterLcmModule extends AbstractModule {
     // timerFrame.geometricComponent.addRenderInterface(curveRender);
     // }
     {
-      final Tensor waypoints = TrajectoryConfig.getWaypoints();
-      RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.6), new Color(64, 192, 64, 128));
+      // final Tensor waypoints = TrajectoryConfig.getWaypoints();
+      // RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.6), new Color(64, 192, 64, 128));
       // timerFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
