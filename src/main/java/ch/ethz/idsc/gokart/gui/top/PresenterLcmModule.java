@@ -15,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackMappingModule;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
@@ -73,6 +75,12 @@ public class PresenterLcmModule extends AbstractModule {
     {
       if (Objects.nonNull(GokartMappingModule.GRID_RENDER))
         timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.GRID_RENDER);
+    }
+    {
+      if (Objects.nonNull(GokartTrackMappingModule.GRID_RENDER))
+        timerFrame.geometricComponent.addRenderInterface(GokartTrackMappingModule.GRID_RENDER);
+      if (Objects.nonNull(GokartTrackIdentificationModule.TRACKIDENTIFICATIONRENDER))
+        timerFrame.geometricComponent.addRenderInterface(GokartTrackIdentificationModule.TRACKIDENTIFICATIONRENDER);
     }
     {
       PathRender pathRender = new PathRender(gokartPoseInterface);

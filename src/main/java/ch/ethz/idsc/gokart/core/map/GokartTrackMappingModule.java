@@ -5,9 +5,7 @@ import java.awt.Graphics2D;
 import java.nio.FloatBuffer;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.fuse.TrackDetectionLidarConfig;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
