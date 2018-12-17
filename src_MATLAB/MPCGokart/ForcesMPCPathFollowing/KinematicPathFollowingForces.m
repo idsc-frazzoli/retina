@@ -1,5 +1,5 @@
 %add force path (change that for yourself)
-addpath('/home/gokart/Forces')
+addpath('/home/marc/Forces')
 addpath('..');
 addpath('casadi');
     
@@ -87,7 +87,7 @@ model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 %model.ub(index.dotbeta)=5;
 %model.lb(index.dotbeta)=-5;
-model.ub(index.ds)=2;
+model.ub(index.ds)=3;
 model.lb(index.ds)=0;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
@@ -111,7 +111,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 150;
+tend = 300;
 eulersteps = 10;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 xs(index.x-index.nu)=20;
