@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
@@ -35,6 +34,6 @@ import lcm.logging.LogPlayerConfig;
     ModuleAuto.INSTANCE.runOne(GokartTrackIdentificationModule.class);
     ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
     ModuleAuto.INSTANCE.runOne(TrackIdentificationButtons.class);
-    ModuleAuto.INSTANCE.runOne(MPCKinematicDrivingModule.class);
+    // ModuleAuto.INSTANCE.runOne(MPCKinematicDrivingModule.class);
   }
 }

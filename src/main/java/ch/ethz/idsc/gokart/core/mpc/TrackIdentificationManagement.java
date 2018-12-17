@@ -62,6 +62,11 @@ public class TrackIdentificationManagement implements RenderInterface {
     startSet = false;
   }
 
+  public void resetTrack() {
+    lastTrack = null;
+    trackRender = null;
+  }
+
   public boolean isStartSet() {
     return startSet;
   }

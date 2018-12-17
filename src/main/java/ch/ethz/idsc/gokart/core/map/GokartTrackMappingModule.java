@@ -107,25 +107,26 @@ public class GokartTrackMappingModule implements //
   @Override
   public void run() {
     while (isLaunched) {
-      if (TrackIdentificationButtons.RECORDING) {
-        Tensor points = points3d_ferry;
-        if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
-          points3d_ferry = null;
-          // TODO pose quality is not considered yet
-          bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
-          for (Tensor point : points) {
-            boolean isObstacle = predicate.isObstacle(point); // only x and z are used
-            bayesianOccupancyGrid.processObservation( //
-                point.extract(0, 2), // planar point x y
-                isObstacle ? 1 : 0);
-          }
-        } else
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            // ---
-          }
-      }
+      Tensor points = points3d_ferry;
+      if (//
+      TrackIdentificationButtons.RECORDING//
+          && Objects.nonNull(points)//
+          && Objects.nonNull(gokartPoseEvent)) {
+        points3d_ferry = null;
+        // TODO pose quality is not considered yet
+        bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
+        for (Tensor point : points) {
+          boolean isObstacle = predicate.isObstacle(point); // only x and z are used
+          bayesianOccupancyGrid.processObservation( //
+              point.extract(0, 2), // planar point x y
+              isObstacle ? 1 : 0);
+        }
+      } else
+        try {
+          Thread.sleep(200);
+        } catch (InterruptedException e) {
+          // ---
+        }
     }
   }
 

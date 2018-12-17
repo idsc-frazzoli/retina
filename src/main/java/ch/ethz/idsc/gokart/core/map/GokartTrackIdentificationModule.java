@@ -1,7 +1,6 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
-import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
@@ -9,7 +8,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
-import ch.ethz.idsc.gokart.gui.top.TrackRender;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -23,16 +21,18 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   GokartTrackMappingModule trackMappingModule;
   GokartPoseEvent gpe = null;
   Stopwatch lastExecution = Stopwatch.started();
-  private MPCBSplineTrack oldTrack = null;
   public static MPCBSplineTrack TRACK = null;
-  public static RenderInterface TRACKIDENTIFICATIONRENDER = null;
-  public static TrackRender TRACKRENDER = null;
+  public static GokartTrackIdentificationModule TRACKIDENTIFICATION = null;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
   public GokartTrackIdentificationModule() {
     trackMappingModule = new GokartTrackMappingModule();
     trackIDManagement = new TrackIdentificationManagement(trackMappingModule);
-    TRACKIDENTIFICATIONRENDER = trackIDManagement;
+    TRACKIDENTIFICATION = this;
+  }
+
+  public void resetTrack() {
+    trackIDManagement.resetTrack();
   }
 
   @Override
@@ -66,7 +66,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
 
   @Override
   protected Scalar getPeriod() {
-    return Quantity.of(3, SI.SECOND);
+    return Quantity.of(1, SI.SECOND);
   }
 
   @Override
@@ -76,11 +76,6 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (TRACK != oldTrack) {
-      TRACKRENDER = new TrackRender(TRACK);
-      oldTrack = TRACK;
-    }
-    if (Objects.nonNull(TRACK))
-      TRACKRENDER.render(geometricLayer, graphics);
+    trackIDManagement.render(geometricLayer, graphics);
   }
 }

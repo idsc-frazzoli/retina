@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -22,6 +23,7 @@ public class TrackIdentificationButtons extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
   private JButton recordTrack;
   private JButton setStart;
+  private JButton resetTrack;
   public static boolean RECORDING = true;
   public static boolean SETTINGSTART = true;
 
@@ -39,13 +41,23 @@ public class TrackIdentificationButtons extends AbstractModule {
         @Override
         public void actionPerformed(ActionEvent e) {
           RECORDING = !RECORDING;
-          if (RECORDING)
+          if (!RECORDING)
             recordTrack.setText("not sensing track");
           else
             recordTrack.setText("sensing track");
         }
       });
       jPanel.add(recordTrack);
+      resetTrack = new JButton("reset track");
+      list.add(resetTrack);
+      resetTrack.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (GokartTrackIdentificationModule.TRACKIDENTIFICATION != null)
+            GokartTrackIdentificationModule.TRACKIDENTIFICATION.resetTrack();
+        }
+      });
+      jPanel.add(resetTrack);
       // button for test
       setStart = new JButton("set Start");
       list.add(setStart);
