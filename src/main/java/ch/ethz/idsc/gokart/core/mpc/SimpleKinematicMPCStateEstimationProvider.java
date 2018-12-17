@@ -32,8 +32,8 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
   private Scalar XPosition = Quantity.of(0, SI.METER);
   private Scalar YPosition = Quantity.of(0, SI.METER);
-  private Scalar w2L = Quantity.of(0, SI.VELOCITY);
-  private Scalar w2R = Quantity.of(0, SI.VELOCITY);
+  private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
+  private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar bTemp = Quantity.of(0, NonSI.DEGREE_CELSIUS);
   private Scalar lastUpdate = Quantity.of(0, SI.SECOND);

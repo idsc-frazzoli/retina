@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
@@ -67,9 +68,23 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     initModules();
   }
 
+  /** create Module with custom estimator and with life track
+   * 
+   * @param estimator the custom estimator
+   * @param started stopwatch that shows the same time that also was used for the custom estimator */
+  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started) {
+    this.track = null;
+    mpcStateEstimationProvider = estimator;
+    this.started = started;
+    // link mpc steering
+    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    initModules();
+  }
+
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    track = DubendorfTrack.CHICANE;
+    // track = DubendorfTrack.CHICANE;
+    track = null;
     started = Stopwatch.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
@@ -173,8 +188,14 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor position = Tensors.of(state.getX(), state.getY());
-    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(previewSize, position);
-    lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
+    MPCPathParameter mpcPathParameter = null;
+    MPCPreviewableTrack liveTrack = GokartTrackIdentificationModule.TRACK;
+    if (track != null)
+      mpcPathParameter = track.getPathParameterPreview(previewSize, position);
+    else if (liveTrack != null)
+      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position);
+    if (mpcPathParameter != null)
+      lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
   }
 
   @Override

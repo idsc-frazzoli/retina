@@ -22,14 +22,13 @@ public class TrackIdentificationButtons extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
   private JButton recordTrack;
   private JButton setStart;
-  
   public static boolean RECORDING = true;
   public static boolean SETTINGSTART = true;
 
   @Override
   protected void first() throws Exception {
     {
-      //if this is used set it do default == false;
+      // if this is used set it do default == false;
       RECORDING = false;
       JPanel jPanel = new JPanel(new GridLayout(1, 2));
       List<JButton> list = new ArrayList<>();
@@ -39,8 +38,8 @@ public class TrackIdentificationButtons extends AbstractModule {
       recordTrack.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          RECORDING=!RECORDING;
-          if(RECORDING)
+          RECORDING = !RECORDING;
+          if (RECORDING)
             recordTrack.setText("not sensing track");
           else
             recordTrack.setText("sensing track");

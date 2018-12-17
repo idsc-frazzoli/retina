@@ -39,14 +39,12 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   protected void runAlgo() {
     if (!trackIDManagement.isStartSet() || TrackIdentificationButtons.SETTINGSTART) {
       trackIDManagement.setStart(gpe);
-      if (trackIDManagement.isStartSet())
-      {
+      if (trackIDManagement.isStartSet()) {
         System.out.println("start set!");
         TrackIdentificationButtons.SETTINGSTART = false;
       }
     }
-    
-    if(TrackIdentificationButtons.RECORDING) {
+    if (TrackIdentificationButtons.RECORDING) {
       trackMappingModule.prepareMap();
       trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
     }

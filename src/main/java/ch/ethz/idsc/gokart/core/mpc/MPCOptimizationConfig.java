@@ -20,5 +20,5 @@ public class MPCOptimizationConfig {
   /** Steering anti-lag */
   public Scalar steerAntiLag = Quantity.of(0.4, SI.SECOND);
   /** Braking anti-lag */
-  public Scalar brakingAntiLag = Quantity.of(0.3, SI.SECOND);
+  public Scalar brakingAntiLag = Quantity.of(0.1, SI.SECOND);
 }
