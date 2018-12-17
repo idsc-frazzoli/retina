@@ -191,9 +191,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     MPCPathParameter mpcPathParameter = null;
     MPCPreviewableTrack liveTrack = GokartTrackIdentificationModule.TRACK;
     if (track != null)
-      mpcPathParameter = track.getPathParameterPreview(previewSize, position);
+      mpcPathParameter = track.getPathParameterPreview(previewSize, position, mpcPathFollowingConfig.padding);
     else if (liveTrack != null)
-      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position);
+      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position, mpcPathFollowingConfig.padding);
     if (mpcPathParameter != null)
       lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
     else
