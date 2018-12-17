@@ -1,4 +1,4 @@
-//code by ynager
+//code by ynager modified by mheim
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
@@ -6,6 +6,9 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.fuse.TrackDetectionLidarConfig;
+import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
+import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -29,9 +32,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-// TODO since this class does not (yet) extend from AbstractModule, the class name is not good
-public class GokartMappingModule implements //
-    StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, Runnable, RenderInterface {
+public class GokartTrackMappingModule implements //
+    StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
   /** ferry for visualizing grid in presenter lcm module */
@@ -40,12 +42,12 @@ public class GokartMappingModule implements //
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-  private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
+  private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -6);
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
+  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate predicate = TrackDetectionLidarConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   /** tear down flag to stop thread */
@@ -56,7 +58,7 @@ public class GokartMappingModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
 
-  public GokartMappingModule() {
+  public GokartTrackMappingModule() {
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
@@ -139,5 +141,20 @@ public class GokartMappingModule implements //
   @Override //  from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     bayesianOccupancyGrid.render(geometricLayer, graphics);
+  }
+
+  @Override
+  public Tensor getGridSize() {
+    return bayesianOccupancyGrid.getGridSize();
+  }
+
+  @Override
+  public boolean isCellOccupied(int x, int y) {
+    return isCellOccupied(x, y);
+  }
+
+  @Override
+  public Tensor getTransform() {
+    return bayesianOccupancyGrid.getTransform();
   }
 }

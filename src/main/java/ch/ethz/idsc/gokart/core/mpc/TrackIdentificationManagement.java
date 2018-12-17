@@ -79,11 +79,11 @@ public class TrackIdentificationManagement implements RenderInterface {
       return false;
   }
 
-  public void update(GokartPoseEvent gpe, Scalar dTime) {
-    update(gpe.getPose(), dTime);
+  public MPCBSplineTrack update(GokartPoseEvent gpe, Scalar dTime) {
+    return update(gpe.getPose(), dTime);
   }
 
-  public void update(Tensor pose, Scalar dTime) {
+  public MPCBSplineTrack update(Tensor pose, Scalar dTime) {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
@@ -139,6 +139,7 @@ public class TrackIdentificationManagement implements RenderInterface {
       }
       oldWasClosed = closedTrack;
     }
+    return lastTrack;
   }
 
   @Override
