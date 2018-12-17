@@ -22,8 +22,6 @@ public class BSplineTrack implements TrackInterface {
   private static final int SPLINE_ORDER_TRACK = 2;
   private static final int SPLINE_ORDER_RADIUS = 2;
   // ---
-  private static final Scalar TOL_B = RealScalar.of(0.1);
-  // ---
   protected final Tensor controlPoints;
   protected final Tensor controlPointsR;
   protected final Boolean closed;
