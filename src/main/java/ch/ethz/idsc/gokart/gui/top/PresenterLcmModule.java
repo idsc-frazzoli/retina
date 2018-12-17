@@ -77,6 +77,8 @@ public class PresenterLcmModule extends AbstractModule {
         timerFrame.geometricComponent.addRenderInterface(GokartTrackMappingModule.GRID_RENDER);
       if (Objects.nonNull(GokartTrackIdentificationModule.TRACKIDENTIFICATION))
         timerFrame.geometricComponent.addRenderInterface(GokartTrackIdentificationModule.TRACKIDENTIFICATION);
+      MPCPredictionRender predictionRender = new MPCPredictionRender();
+      timerFrame.geometricComponent.addRenderInterface(predictionRender);
     }
     {
       PathRender pathRender = new PathRender(gokartPoseInterface);

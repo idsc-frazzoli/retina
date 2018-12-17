@@ -46,7 +46,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
     }
     if (TrackIdentificationButtons.RECORDING) {
       trackMappingModule.prepareMap();
-      trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
+      TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
     }
     lastExecution = Stopwatch.started();
   }

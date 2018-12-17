@@ -171,7 +171,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private void requestControl() {
     // use joystick for speed limit
     // get joystick
-    Scalar maxSpeed = Quantity.of(0, SI.VELOCITY);
+    Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
     Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
@@ -196,6 +196,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position);
     if (mpcPathParameter != null)
       lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
+    else
+      System.out.println("no Track to drive on! :O");
   }
 
   @Override
