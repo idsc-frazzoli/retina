@@ -42,7 +42,7 @@ public class GokartTrackMappingModule implements //
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
   private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -6);
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createBayesianOccupancyGrid();
+  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate = TrackDetectionLidarConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -68,7 +68,7 @@ public class GokartTrackMappingModule implements //
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
-    GRID_RENDER = bayesianOccupancyGrid;
+    GRID_RENDER = this;
   }
 
   @Override // from StartAndStoppable
@@ -148,7 +148,7 @@ public class GokartTrackMappingModule implements //
 
   @Override
   public boolean isCellOccupied(int x, int y) {
-    return isCellOccupied(x, y);
+    return bayesianOccupancyGrid.isCellOccupied(x, y);
   }
 
   @Override

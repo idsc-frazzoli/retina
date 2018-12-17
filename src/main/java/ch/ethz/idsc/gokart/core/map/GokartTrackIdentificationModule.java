@@ -6,6 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
 import ch.ethz.idsc.owl.data.Stopwatch;
@@ -25,6 +26,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   public static MPCBSplineTrack TRACK = null;
   public static RenderInterface TRACKIDENTIFICATIONRENDER = null;
   public static TrackRender TRACKRENDER = null;
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
   public GokartTrackIdentificationModule() {
     trackMappingModule = new GokartTrackMappingModule();
@@ -38,27 +40,33 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
 
   @Override
   protected void runAlgo() {
-    while (!trackIDManagement.isStartSet()) {
-      trackIDManagement.setStart(gpe);
-    }
+    System.out.println("Run Algo!");
     trackMappingModule.prepareMap();
-    TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
+    if (!trackIDManagement.isStartSet()) {
+      trackIDManagement.setStart(gpe);
+      if (trackIDManagement.isStartSet())
+        System.out.println("start set!");
+    }
+    trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
     lastExecution = Stopwatch.started();
   }
 
   @Override
   protected void first() throws Exception {
+    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.startSubscriptions();
     trackMappingModule.start();
   }
 
   @Override
   protected void last() {
     trackMappingModule.stop();
+    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override
   protected Scalar getPeriod() {
-    return Quantity.of(0.5, SI.SECOND);
+    return Quantity.of(3, SI.SECOND);
   }
 
   @Override

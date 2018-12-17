@@ -112,7 +112,7 @@ public class PresenterLcmModule extends AbstractModule {
     {
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.6), new Color(64, 192, 64, 128));
-      timerFrame.geometricComponent.addRenderInterface(waypointRender);
+      // timerFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
       TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);

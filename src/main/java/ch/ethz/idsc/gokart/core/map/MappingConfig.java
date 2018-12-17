@@ -37,6 +37,7 @@ public class MappingConfig {
    * the safety margin accounts not only for the half-width of the gokart
    * but also the corner cutting behavior of the pure pursuit */
   public Scalar obsRadius = Quantity.of(1.3, SI.METER);
+  public Scalar trackDrivingObsRadius = Quantity.of(1, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public Scalar cellDim = Quantity.of(0.2, SI.METER);
   public Boolean alongLine = false;
@@ -77,7 +78,7 @@ public class MappingConfig {
     // TODO comment on magic const 640/7.5
     Tensor LOWER_BOUND = Tensors.vector(30, 30);
     Tensor GRID_RANGE = Tensors.vector(40, 40);
-    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, obsRadius, true);
+    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, trackDrivingObsRadius, true);
   }
 
   /** @return Dubilab specific BayesianOccupancyGrid */

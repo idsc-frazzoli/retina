@@ -134,7 +134,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         System.out.println(count++);
         // refine
         System.out.println("refine");
-        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 1, closedTrack, constraints);
+        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
         if (trackData != null) {
           lastTrack = new MPCBSplineTrack(trackData, radiusOffset, closedTrack);
