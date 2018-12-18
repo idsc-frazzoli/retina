@@ -3,10 +3,7 @@ package ch.ethz.idsc.gokart.core.sound;
 
 import java.util.Random;
 
-import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
-import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
-
-public class NoiseExciter extends Exciter {
+public class NoiseExciter implements SoundExciter {
   private final float amplitude;
   private final Random random = new Random();
 
@@ -15,7 +12,7 @@ public class NoiseExciter extends Exciter {
   }
 
   @Override
-  public float getNextValue(MotorState state, float dt) {
+  public float getNextValue(GokartSoundState state, float dt) {
     return amplitude * (random.nextFloat() - 0.5f) * state.power;
   }
 }
