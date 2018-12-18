@@ -126,22 +126,21 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<SteerPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
-      if (true) {
+      Scalar dSteering = mpcSteering.getDotSteering(time);
+      if (false) {
         if (Objects.nonNull(steering)) {
           Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
           Scalar difference = steering.subtract(currAngle);
           Scalar torqueCmd = steerPositionController.iterate(difference);
           return Optional.of(SteerPutEvent.createOn(torqueCmd));
         }
-      } /* else {
-         * if (Objects.nonNull(steering)) {
-         * Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-         * Scalar currAngularSpeed = steerColumnInterface.getSteerColumnEncoderCentered();
-         * Scalar difference = steering.subtract(currAngle);
-         * Scalar torqueCmd = steerPositionController.iterate(difference);
-         * return Optional.of(SteerPutEvent.createOn(torqueCmd));
-         * }
-         * } */
+      } else {
+        if (Objects.nonNull(steering)) {
+          Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+          Scalar torqueCmd = steerPositionController.iterate(currAngle, steering, dSteering);
+          return Optional.of(SteerPutEvent.createOn(torqueCmd));
+        }
+      }
       return Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0);
     }
 

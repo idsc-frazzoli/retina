@@ -1,6 +1,7 @@
 // code by edo and jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -48,17 +49,24 @@ public class SteerPositionControl {
     return lastTor_value;
   }
 
-  /** @param pos_error in "SCE"
-   * @param spd_error in "SCE s^-1"
+  /** estimate steering speed */
+  private Scalar lastPos_value = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
+
+  /** @param currentPos E"
+   * @param wantedPos in "SCE"
+   * @param wantedSpeed in "SCE s^-1"
    * @return "N*m" */
-  public Scalar iterate(Scalar pos_error, Scalar spd_error) {
+  public Scalar iterate(Scalar currentPos, Scalar wantedPos, Scalar wantedSpeed) {
+    final Scalar pos_error = wantedPos.subtract(currentPos);
     final Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp); // (e[k]-e[k-1])*Kp
     // ---
-    final Scalar dPart = spd_error.multiply(SteerConfig.GLOBAL.Kd);
+    final Scalar currentSpd = currentPos.subtract(lastPos_value).divide(DT);
+    final Scalar vel_error = wantedSpeed.subtract(currentSpd);
+    final Scalar dPart = vel_error.multiply(SteerConfig.GLOBAL.Kd);
     // ---
     final Scalar iPart = lastIPt_value.add(pos_error.multiply(SteerConfig.GLOBAL.Ki).multiply(DT)); // e*Ki*dt
     // ---
-    lastPos_error = pos_error; // update for next iteration
+    lastPos_value = currentPos;
     // ---
     Scalar testValue = pPart.add(dPart).add(iPart);
     Clip clip = SteerConfig.GLOBAL.torqueLimitClip();
