@@ -39,9 +39,8 @@ public abstract class AbstractModule {
   /** Used by task manager to terminate the modules. */
   protected void terminate() {
     // order of launch() reversed
-    if (thread != null) {
+    if (thread != null)
       thread.interrupt();
-    }
     last();
   }
 

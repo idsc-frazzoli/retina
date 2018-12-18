@@ -3,129 +3,110 @@ package ch.ethz.idsc.gokart.core.sound;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Objects;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
-public class GokartSoundCreator {
-  public static class MotorState {
-    public final float speed;
-    public final float power;
-    public final float torquevectoring;
-
-    public MotorState(float speed, float power, float torquevectoring) {
-      this.speed = speed;
-      this.power = power;
-      // System.out.println("sp: "+speed+"power: "+power);
-      this.torquevectoring = torquevectoring;
-    }
-  }
-
-  public static abstract class Exciter {
-    public abstract float getNextValue(MotorState motorState, float dt);
-  }
-
-  public static abstract class Resonator {
-    public abstract float getNextValue(float excitementValue, MotorState state, float dt);
-  }
-
-  public static interface SpeedModifier {
-    float getNextSpeedValue(MotorState defaultState, float dt);
-  }
-
-  private AudioInputStream audioInputStream;
+public class GokartSoundCreator implements StartAndStoppable, Runnable {
+  private static final int SAMPLING_RATE = 44100;
+  private static final float DT = 1f / SAMPLING_RATE;
+  private static final int SAMPLE_SIZE = 2;
+  // ---
   private AudioFormat audioFormat;
-  protected final int SAMPLING_RATE = 44100;
-  private final int SAMPLE_SIZE = 2;
-  private final int FRAME_SIZE = 2;
   private SourceDataLine sourceDataLine;
   private DataLine.Info info;
-  private ByteBuffer cBuf;
-  private Stopwatch started = Stopwatch.stopped();
-  private float speed = 10000;
-  private float sinPosition = 0;
-  private boolean written = false;
-  private MotorState motorState = new MotorState(0, 0, 0);
-  private final List<Exciter> exciters;
-  private final List<Resonator> resonators;
+  private ByteBuffer byteBuffer;
+  private Stopwatch stopwatch = Stopwatch.stopped();
+  private GokartSoundState gokartSoundState = new GokartSoundState(0, 0, 0);
+  private final List<SoundExciter> exciters;
+  private final List<SoundResonator> resonators;
   private final SpeedModifier speedModifier;
   private MotorStateProvider motorStateProvider;
+  private boolean isLaunched = true;
+  private Thread thread;
 
-  public GokartSoundCreator(List<Exciter> exciters, List<Resonator> resonators, SpeedModifier speedModifier, MotorStateProvider provider) {
-    this.exciters = exciters;
-    this.resonators = resonators;
-    this.motorStateProvider = provider;
-    this.speedModifier = speedModifier;
+  public GokartSoundCreator( //
+      List<SoundExciter> exciters, //
+      List<SoundResonator> resonators, //
+      SpeedModifier speedModifier, //
+      MotorStateProvider motorStateProvider) {
+    this.exciters = Objects.requireNonNull(exciters);
+    this.resonators = Objects.requireNonNull(resonators);
+    this.motorStateProvider = Objects.requireNonNull(motorStateProvider);
+    this.speedModifier = Objects.requireNonNull(speedModifier);
   }
 
-  public int getSamplingRate() {
-    return SAMPLING_RATE;
-  }
-
-  public void playSimple(float seconds) throws InterruptedException, LineUnavailableException {
-    first();
-    started.start();
-    while (started.display_seconds() < seconds) {
-      motorState = motorStateProvider.getMotorState((float) started.display_seconds());
-      fillBuffer((int) (0.97 * sourceDataLine.available() / SAMPLE_SIZE));
-      while (sourceDataLine.getBufferSize() * 0.8 < sourceDataLine.available())
-        Thread.sleep(1);
-    }
-    last();
-  }
-
-  void first() throws LineUnavailableException {
-    audioFormat = new AudioFormat(SAMPLING_RATE, 16, 1, true, true);
-    // audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SAMPLING_RATE, 16, 1, FRAME_SIZE, SAMPLING_RATE, true);
+  @Override // from StartAndStoppable
+  public void start() {
+    audioFormat = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE * 8, 1, true, true);
     info = new DataLine.Info(SourceDataLine.class, audioFormat);
     if (!AudioSystem.isLineSupported(info)) {
       System.out.println("Line matching " + info + " is not supported.");
-      throw new LineUnavailableException();
+      throw new RuntimeException();
     }
-    sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-    sourceDataLine.open(audioFormat);
-    sourceDataLine.start();
-    cBuf = ByteBuffer.allocate(sourceDataLine.getBufferSize());
+    try {
+      sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
+      sourceDataLine.open(audioFormat);
+      sourceDataLine.start();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    byteBuffer = ByteBuffer.allocate(sourceDataLine.getBufferSize());
+    stopwatch.start();
+    Thread thread = new Thread(this);
+    thread.start();
   }
 
-  void last() {
+  @Override // from Runnable
+  public void run() {
+    while (isLaunched) {
+      gokartSoundState = motorStateProvider.getMotorState((float) stopwatch.display_seconds());
+      fillBuffer((int) (0.97f * sourceDataLine.available() / SAMPLE_SIZE));
+      while (sourceDataLine.getBufferSize() * 0.8 < sourceDataLine.available())
+        try {
+          Thread.sleep(5);
+        } catch (Exception exception) {
+          // ---
+        }
+    }
+  }
+
+  public void setState(GokartSoundState motorState) {
+    this.gokartSoundState = motorState;
+  }
+
+  private void fillBuffer(int samples) {
+    GokartSoundState state = this.gokartSoundState;
+    byteBuffer.clear();
+    for (int i = 0; i < samples; ++i) {
+      // FIXME not consistent logic
+      float newSpeed = speedModifier.getNextSpeedValue(gokartSoundState, DT);
+      state = new GokartSoundState(newSpeed, state.power, state.torquevectoring);
+      float excitementValue = 0;
+      for (SoundExciter exciter : exciters)
+        excitementValue += exciter.getNextValue(state, DT);
+      // System.out.println("exc: "+excitementValue);
+      float value = 0f;
+      for (SoundResonator resonator : resonators)
+        value += resonator.getNextValue(excitementValue, state, DT);
+      value += excitementValue;
+      byteBuffer.putShort((short) (Short.MAX_VALUE * value));
+    }
+    sourceDataLine.write(byteBuffer.array(), 0, byteBuffer.position());
+  }
+
+  @Override // from StartAndStoppable
+  public void stop() {
+    isLaunched = false;
+    if (thread != null)
+      thread.interrupt();
     sourceDataLine.drain();
     sourceDataLine.close();
-  }
-
-  public void setState(MotorState motorState) {
-    this.motorState = motorState;
-  }
-
-  public void fillBuffer(int samples) {
-    MotorState state = this.motorState;
-    cBuf.clear();
-    for (int i = 0; i < samples; i++) {
-      if (speedModifier != null) {
-        float newSpeed = speedModifier.getNextSpeedValue(motorState, 1.f / SAMPLING_RATE);
-        state = new MotorState(newSpeed, state.power, state.torquevectoring);
-      }
-      float excitementValue = 0;
-      for (Exciter e : exciters) {
-        excitementValue += e.getNextValue(state, 1.f / SAMPLING_RATE);
-      }
-      // System.out.println("exc: "+excitementValue);
-      short value = 0;
-      if (resonators != null) {
-        for (Resonator r : resonators) {
-          value += Short.MAX_VALUE * r.getNextValue(excitementValue, state, 1.f / SAMPLING_RATE);
-        }
-      }
-      // value = 10000;
-      value += (Short.MAX_VALUE * excitementValue);
-      cBuf.putShort(value);
-    }
-    sourceDataLine.write(cBuf.array(), 0, cBuf.position());
   }
 }

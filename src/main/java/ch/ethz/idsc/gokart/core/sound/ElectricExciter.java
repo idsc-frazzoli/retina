@@ -1,10 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.sound;
 
-import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.Exciter;
-import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator.MotorState;
-
-public class ElectricExciter extends Exciter {
+public class ElectricExciter implements SoundExciter {
   private static final float TWO_PI = (float) (2 * Math.PI);
   // ---
   private final float baseAmplitude;
@@ -34,7 +31,7 @@ public class ElectricExciter extends Exciter {
   }
 
   @Override
-  public float getNextValue(MotorState state, float dt) {
+  public float getNextValue(GokartSoundState state, float dt) {
     dSinePosition = dt * (state.speed * relFrequency + baseFrequency);
     dAmpSinePosition = dt * (state.speed * relAmpFrequency + baseAmpFrequency);
     sinePosition += dSinePosition * TWO_PI;
