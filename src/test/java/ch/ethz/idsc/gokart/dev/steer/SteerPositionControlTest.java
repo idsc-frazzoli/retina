@@ -1,6 +1,7 @@
 // code by rvmoos and jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.pdf.Distribution;
@@ -29,6 +30,25 @@ public class SteerPositionControlTest extends TestCase {
       Scalar err_pos = Quantity.of(RandomVariate.of(distribution), SteerPutEvent.UNIT_ENCODER);
       Scalar value = test.iterate(err_pos.multiply(RealScalar.of(0.01)));
       SteerPutEvent.RTORQUE.apply(value);
+    }
+  }
+
+  public void testSimple3() {
+    SteerPositionControl test = new SteerPositionControl();
+    Distribution distribution = NormalDistribution.standard();
+    Scalar toAcc = Quantity.of(1, SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND).add(SI.PER_SECOND));
+    Scalar fromTorque = Quantity.of(1, SteerPutEvent.UNIT_RTORQUE.negate());
+    Scalar torque2Acc = toAcc.multiply(fromTorque);
+    Scalar wantedPos = Quantity.of(1, SteerPutEvent.UNIT_ENCODER);
+    Scalar currentPos = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
+    Scalar currentSpd = Quantity.of(0, SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND));
+    for (int i = 0; i < 10000; i++) {
+      Scalar Torque = test.iterate(currentPos, wantedPos, Quantity.of(0, SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND)));
+      SteerPutEvent.RTORQUE.apply(Torque);
+      currentSpd = currentSpd.add(Torque.multiply(torque2Acc).multiply(SteerPositionControl.DT));
+      currentPos = currentSpd.multiply(SteerPositionControl.DT);
+      System.out.println("current Speed: " + currentSpd);
+      System.out.println("current Position " + currentPos);
     }
   }
 
