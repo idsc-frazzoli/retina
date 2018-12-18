@@ -118,8 +118,6 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       // test simple track
-      if (Objects.nonNull(GokartTrackMappingModule.GRID_RENDER))
-        viewLcmFrame.geometricComponent.addRenderInterface(GokartTrackMappingModule.GRID_RENDER);
       if (Objects.nonNull(GokartTrackIdentificationModule.TRACKIDENTIFICATION))
         viewLcmFrame.geometricComponent.addRenderInterface(GokartTrackIdentificationModule.TRACKIDENTIFICATION);
       MPCPredictionRender predictionRender = new MPCPredictionRender();

@@ -17,6 +17,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
   private static final int SAMPLING_RATE = 44100;
   private static final float DT = 1f / SAMPLING_RATE;
   private static final int SAMPLE_SIZE = 2;
+  private static final float MAGIC = 1.0f * Short.MAX_VALUE;
   // ---
   private AudioFormat audioFormat;
   private SourceDataLine sourceDataLine;
@@ -68,7 +69,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
     while (isLaunched) {
       gokartSoundState = motorStateProvider.getMotorState((float) stopwatch.display_seconds());
       fillBuffer((int) (0.97f * sourceDataLine.available() / SAMPLE_SIZE));
-      while (sourceDataLine.getBufferSize() * 0.8 < sourceDataLine.available())
+      while (sourceDataLine.getBufferSize() * 0.98 < sourceDataLine.available())
         try {
           Thread.sleep(5);
         } catch (Exception exception) {
@@ -96,7 +97,8 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
       for (SoundResonator resonator : resonators)
         value += resonator.getNextValue(excitementValue, state, DT);
       value += excitementValue;
-      byteBuffer.putShort((short) (Short.MAX_VALUE * value));
+      // maxValue = Math.max(maxValue, value);
+      byteBuffer.putShort((short) (MAGIC * value));
     }
     sourceDataLine.write(byteBuffer.array(), 0, byteBuffer.position());
   }

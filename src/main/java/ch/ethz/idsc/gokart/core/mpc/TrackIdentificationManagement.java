@@ -130,6 +130,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackRender = null;
           } else {
             System.out.println("no solution found!");
+            lastTrack = null;
           }
         }
       } else if (closedTrack) {

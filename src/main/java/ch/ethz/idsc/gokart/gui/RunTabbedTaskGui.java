@@ -28,6 +28,7 @@ import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.ManualResetModule;
 import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
@@ -45,6 +46,7 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
+import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -130,7 +132,9 @@ enum RunTabbedTaskGui {
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
-      PresenterLcmModule.class
+      PresenterLcmModule.class,//
+      TrackIdentificationButtons.class,//
+      GokartTrackIdentificationModule.class
   // DavisOverviewModule.class //
   );
 
