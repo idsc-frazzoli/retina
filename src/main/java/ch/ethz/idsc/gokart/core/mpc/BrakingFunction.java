@@ -6,12 +6,14 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 public enum BrakingFunction {
   ;
   // point after which the brake is effective
   private static final Scalar brakeStart = Quantity.of(2.5 / 100.0, SI.METER);
+  private static final Scalar ZEROROOTOF = Quantity.of(0, "s^-4");
   // private static Scalar maxBrake = Quantity.of(2.5, SI.ACCELERATION);
   private static final Scalar linearFactor = Quantity.of(4.3996 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
   private static final Scalar quadraticFactor = Quantity.of(-1.3735 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
@@ -41,12 +43,13 @@ public enum BrakingFunction {
   public static Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
     if (Scalars.lessEquals(wantedAcceleration, ACCELERATION_ZERO))
       return null;
-    Scalar D = Sqrt.of(//
-        linearFactor.multiply(linearFactor)
-            // Power.of(linearFactor, RealScalar.of(2)) //
-            .add(RealScalar.of(4)//
-                .multiply(quadraticFactor)//
-                .multiply(wantedAcceleration)));
+    Scalar rootOf = linearFactor.multiply(linearFactor)
+        // Power.of(linearFactor, RealScalar.of(2)) //
+        .add(RealScalar.of(4)//
+            .multiply(quadraticFactor)//
+            .multiply(wantedAcceleration));
+    // this can happen in some rare cases
+    Scalar D = Sqrt.of(Max.of(rootOf, ZEROROOTOF));
     Scalar top = linearFactor.negate().add(D);
     Scalar bottom = quadraticFactor.add(quadraticFactor);
     // RealScalar.of(2).multiply(quadraticFactor);

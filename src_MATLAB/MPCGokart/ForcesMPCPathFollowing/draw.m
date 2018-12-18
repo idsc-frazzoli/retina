@@ -32,13 +32,15 @@ for i=1:nu-1
    line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]);
 end
 %draw plan
-%[np, ~] = size(plansx);
-%for i = 1:np
-%   plot(plansx(i,:),plansy(i,:),'--b');
-%   xx = [plansx(i,end),targets(i,1)];
-%   yy = [plansy(i,end),targets(i,2)];
-%   plot(xx,yy,'r');
-%end
+if(0)
+    [np, ~] = size(plansx);
+    for i = 1:np
+       plot(plansx(i,:),plansy(i,:),'--b');
+       xx = [plansx(i,end),targets(i,1)];
+       yy = [plansy(i,end),targets(i,2)];
+       plot(xx,yy,'r');
+    end
+end
 hold off
 
 

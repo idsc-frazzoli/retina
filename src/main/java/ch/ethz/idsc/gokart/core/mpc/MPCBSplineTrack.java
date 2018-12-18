@@ -1,13 +1,18 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Floor;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
+  private static final Scalar ZEROMETERS = Quantity.of(0, SI.METER);
+
   public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, Boolean closed) {
     super(trackData.get(0), trackData.get(1), //
         trackData.get(2).map(radius -> radius.add(radiusOffset)), closed);
@@ -22,7 +27,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
   }
 
   @Override
-  public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position) {
+  public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding) {
     // test if this function is fast enough to be called many times (it should be)
     // long startTime = System.nanoTime();
     // Scalar pathProgress = getNearestPathProgress(position);
@@ -47,7 +52,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
       // TODO find out: is this efficient?
       ctrX.append(controlPoints.Get(currentIndex, 0));
       ctrY.append(controlPoints.Get(currentIndex, 1));
-      ctrR.append(controlPointsR.Get(currentIndex));
+      ctrR.append(Max.of(controlPointsR.Get(currentIndex).subtract(padding), ZEROMETERS));
       currentIndex++;
       if (currentIndex >= numPoints)
         currentIndex = 0;

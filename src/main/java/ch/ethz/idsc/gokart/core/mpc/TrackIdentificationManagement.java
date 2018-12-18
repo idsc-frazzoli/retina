@@ -58,6 +58,15 @@ public class TrackIdentificationManagement implements RenderInterface {
       return false;
   }
 
+  public void resetStart() {
+    startSet = false;
+  }
+
+  public void resetTrack() {
+    lastTrack = null;
+    trackRender = null;
+  }
+
   public boolean isStartSet() {
     return startSet;
   }
@@ -79,11 +88,11 @@ public class TrackIdentificationManagement implements RenderInterface {
       return false;
   }
 
-  public void update(GokartPoseEvent gpe, Scalar dTime) {
-    update(gpe.getPose(), dTime);
+  public MPCBSplineTrack update(GokartPoseEvent gpe, Scalar dTime) {
+    return update(gpe.getPose(), dTime);
   }
 
-  public void update(Tensor pose, Scalar dTime) {
+  public MPCBSplineTrack update(Tensor pose, Scalar dTime) {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
@@ -130,7 +139,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         System.out.println(count++);
         // refine
         System.out.println("refine");
-        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 1, closedTrack, constraints);
+        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
         if (trackData != null) {
           lastTrack = new MPCBSplineTrack(trackData, radiusOffset, closedTrack);
@@ -139,6 +148,7 @@ public class TrackIdentificationManagement implements RenderInterface {
       }
       oldWasClosed = closedTrack;
     }
+    return lastTrack;
   }
 
   @Override

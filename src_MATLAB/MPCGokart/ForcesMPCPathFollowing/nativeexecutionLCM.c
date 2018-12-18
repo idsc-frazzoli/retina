@@ -134,7 +134,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 
 	//gather parameter data
-	int pl = 2*POINTSN+1;
+	int pl = 3*POINTSN+1;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
@@ -143,6 +143,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			params.all_parameters[i*pl+1+ip]=lastCRMsg.path.controlPointsX[ip];
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+1+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
+		for (int ip=0; ip<POINTSN;ip++)
+			params.all_parameters[i*pl+1+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
 	}
 	
 	//assume that this works
