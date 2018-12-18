@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.sound;
 
+/** mutable */
 public class ChirpSpeedModifier implements SpeedModifier {
   private final float overSpeedRate;
   private final float overSpeedFactor;

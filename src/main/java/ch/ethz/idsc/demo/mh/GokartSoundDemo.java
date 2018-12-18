@@ -4,8 +4,6 @@ package ch.ethz.idsc.demo.mh;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.sound.sampled.LineUnavailableException;
-
 import ch.ethz.idsc.gokart.core.sound.ChirpSpeedModifier;
 import ch.ethz.idsc.gokart.core.sound.ElectricExciter;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundCreator;
@@ -39,9 +37,11 @@ import ch.ethz.idsc.gokart.core.sound.SoundResonator;
       ChirpSpeedModifier chirping = new ChirpSpeedModifier(5, 0.4f);
       GokartSoundCreator creator = new GokartSoundCreator(exciters, resonators, chirping, faker);
       creator.setState(new GokartSoundState(5, 1f, 0));
-      creator.playSimple(10f);
-    } catch (LineUnavailableException | InterruptedException e) {
-      System.out.println("no sound! " + e.getMessage());
+      creator.start();
+      Thread.sleep(10000);
+      creator.stop();
+    } catch (Exception exception) {
+      System.out.println("no sound! " + exception.getMessage());
     }
     System.out.println("finished");
   }
