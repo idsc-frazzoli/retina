@@ -42,8 +42,12 @@ public class LocalViewLcmModule extends AbstractModule {
     // ---
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
-    timerFrame.geometricComponent.setZoomable(false);
-    timerFrame.geometricComponent.setButtonDrag(-1);
+    timerFrame.geometricComponent.addRenderInterface(gokartRender);
+    TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
+    rimoGetLcmClient.addListener(tachometerMustangDash);
+    timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
+    // timerFrame.geometricComponent.setZoomable(false);
+    // timerFrame.geometricComponent.setButtonDrag(-1);
     // ---
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
