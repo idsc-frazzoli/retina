@@ -15,7 +15,6 @@ import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
@@ -32,7 +31,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
 public class GokartTrackMappingModule implements //
-    StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
+    StartAndStoppable, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
   /** ferry for visualizing grid in presenter lcm module */

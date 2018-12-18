@@ -12,7 +12,7 @@ public interface TrackInterface {
 
   Tensor getNearestPosition(Tensor position);
 
-  Boolean isClosed();
+  boolean isClosed();
 
   /** test if the position is inside the track limits
    * 

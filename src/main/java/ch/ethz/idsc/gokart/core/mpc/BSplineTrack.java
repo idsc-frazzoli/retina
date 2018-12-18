@@ -89,7 +89,8 @@ public class BSplineTrack implements TrackInterface {
     }
   }
 
-  public Boolean isClosed() {
+  @Override
+  public boolean isClosed() {
     return closed;
   }
 
@@ -103,9 +104,8 @@ public class BSplineTrack implements TrackInterface {
       Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
       Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);
       return pathProgress.subtract(startPoint);
-    } else {
-      return Clip.function(RealScalar.ZERO, length).apply(pathProgress);
     }
+    return Clip.function(RealScalar.ZERO, length).apply(pathProgress);
   }
 
   /** get position at a certain path value
@@ -187,8 +187,7 @@ public class BSplineTrack implements TrackInterface {
   Scalar getNearestPathProgress(Tensor position) {
     if (closed)
       return getFastNearestPathProgress(position);
-    else
-      return getFastNearestPathProgressOpen(position);
+    return getFastNearestPathProgressOpen(position);
   }
 
   /** problem: using normal BSpline implementation takes more time than full MPC optimization

@@ -51,11 +51,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     heigth = gridSize.Get(1).number().intValue();
   }
 
-  public boolean setStart(GokartPoseEvent gpe) {
-    if (gpe != null)
-      return setStart(gpe.getPose());
-    else
-      return false;
+  public boolean setStart(GokartPoseEvent gokartPoseEvent) {
+    return gokartPoseEvent != null && setStart(gokartPoseEvent.getPose());
   }
 
   public void resetStart() {
@@ -84,8 +81,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     if (startX >= 0 && startX < width && startY >= 0 && startY < heigth) {
       startSet = true;
       return true;
-    } else
-      return false;
+    }
+    return false;
   }
 
   public MPCBSplineTrack update(GokartPoseEvent gpe, Scalar dTime) {

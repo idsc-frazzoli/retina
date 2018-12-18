@@ -393,11 +393,9 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
    * @return true if cell is occupied */
   @Override
   public boolean isCellOccupied(int pix, int piy) {
-    ;
-    if (0 <= pix && pix < dimx) {
+    if (0 <= pix && pix < dimx)
       if (0 <= piy && piy < dimy)
         return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;
-    }
     return true;
   }
 
