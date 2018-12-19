@@ -1197,7 +1197,29 @@ public enum GokartLogFile implements LogFile {
   /** manual driving with throttle, localization failure */
   _20181213T143648_cc82dcb3,
   /** manual driving with throttle, localization failure */
-  _20181213T154338_6728a721, //
+  _20181213T154338_6728a721,
+  /***************************************************/
+  /* 2018-12-15 */
+  /** manual driving */
+  _20181215T081653_9ca96533,
+  /***************************************************/
+  /* 2018-12-18 */
+  /** manual driving */
+  _20181218T114300_3161d85d,
+  /** manual driving */
+  _20181218T120906_b554b6a9,
+  /** manual driving */
+  _20181218T122901_b554b6a9,
+  /** manual driving slow */
+  _20181218T141322_b554b6a9,
+  /** manual driving slow */
+  _20181218T142316_b554b6a9,
+  /** manual driving slow */
+  _20181218T144337_b554b6a9,
+  /** manual driving, trajectory planning */
+  _20181218T150139_b554b6a9,
+  /** manual driving */
+  _20181218T172046_7d7bfcfb, //
   ;
   // ---
   @Override // from LogFile
