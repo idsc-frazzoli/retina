@@ -48,19 +48,19 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
-    final Optional<ManualControlInterface> joystick = joystickLcmProvider.getManualControl();
+    final Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       purePursuitSteer.setHeading(heading.get());
     // ---
-    final boolean status = joystick.isPresent() && heading.isPresent();
+    final boolean status = optional.isPresent() && heading.isPresent();
     purePursuitSteer.setOperational(status);
     if (status) {
-      ManualControlInterface gokartJoystickInterface = joystick.get();
+      ManualControlInterface manualControlInterface = optional.get();
       // ante 20180604: the ahead average was used in combination with Ramp
-      Scalar ratio = gokartJoystickInterface.getAheadAverage(); // in [-1, 1]
+      Scalar ratio = manualControlInterface.getAheadAverage(); // in [-1, 1]
       // post 20180604: the forward command is provided by right slider
-      Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
+      Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(Times.of( //
