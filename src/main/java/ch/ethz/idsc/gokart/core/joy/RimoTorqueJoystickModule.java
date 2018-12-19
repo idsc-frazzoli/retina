@@ -29,9 +29,9 @@ public class RimoTorqueJoystickModule extends GuideJoystickModule<RimoPutEvent> 
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
-    Scalar factor = joystick.getAheadAverage(); // [-1, 1]
-    Tensor pair = joystick.getAheadPair_Unit(); // entries both in [0, 1]
+      SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    Scalar factor = manualControlInterface.getAheadAverage(); // [-1, 1]
+    Tensor pair = manualControlInterface.getAheadPair_Unit(); // entries both in [0, 1]
     pair = pair.map(s -> s.add(factor)).multiply(HALF).multiply(ManualConfig.GLOBAL.torqueLimit);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -Magnitude.ARMS.toShort(pair.Get(0)), // sign left invert

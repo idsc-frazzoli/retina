@@ -51,15 +51,15 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<ManualControlInterface> joystick = joystickLcmProvider.getManualControl();
-    if (joystick.isPresent())
-      return fromJoystick(joystick.get());
+    Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
+    if (optional.isPresent())
+      return fromJoystick(optional.get());
     return Optional.empty();
   }
 
-  /* package */ Optional<RimoPutEvent> fromJoystick(ManualControlInterface gokartJoystickInterface) {
-    if (gokartJoystickInterface.isAutonomousPressed()) {
-      Scalar aheadAverage = gokartJoystickInterface.getAheadAverage();
+  /* package */ Optional<RimoPutEvent> fromJoystick(ManualControlInterface manualControlInterface) {
+    if (manualControlInterface.isAutonomousPressed()) {
+      Scalar aheadAverage = manualControlInterface.getAheadAverage();
       Scalar timestamp = DoubleScalar.of(stopwatch.display_seconds());
       return Optional.of(create(aheadAverage, timestamp));
     }

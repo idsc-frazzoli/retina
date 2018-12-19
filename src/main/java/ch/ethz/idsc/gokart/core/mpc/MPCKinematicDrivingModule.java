@@ -172,10 +172,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     // use joystick for speed limit
     // get joystick
     Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
-    Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
-    if (optionalJoystick.isPresent()) { // is joystick button "autonomous" pressed?
-      ManualControlInterface actualJoystick = optionalJoystick.get();
-      Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
+    Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
+    if (optional.isPresent()) { // is joystick button "autonomous" pressed?
+      ManualControlInterface manualControlInterface = optional.get();
+      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
       maxSpeed = Max.of(Quantity.of(1, SI.VELOCITY), maxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);

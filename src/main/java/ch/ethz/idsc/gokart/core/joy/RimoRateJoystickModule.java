@@ -46,8 +46,8 @@ import ch.ethz.idsc.tensor.Scalar;
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
-    Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(joystick.getAheadAverage());
+      SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(manualControlInterface.getAheadAverage());
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface);
     return rimoRateControllerWrap.iterate(speed, theta);
   }

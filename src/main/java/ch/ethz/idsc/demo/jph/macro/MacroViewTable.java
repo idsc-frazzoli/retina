@@ -66,6 +66,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
         Scalar rate = Magnitude.VELOCITY.apply(speed).abs();
         table.set(Max.function(rate), index, INDEX_RATE);
       } else //
+      // TODO not universally valid anymore!
       if (channel.equals(JOYSTICK)) {
         JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
         ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
