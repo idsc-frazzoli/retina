@@ -39,6 +39,7 @@ import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
+import ch.ethz.idsc.gokart.core.sound.GokartVoiceOutputs;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
@@ -93,7 +94,8 @@ enum RunTabbedTaskGui {
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
-      GokartSoundLcmModule.class //
+      GokartSoundLcmModule.class, //
+      GokartVoiceOutputs.class
   );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
