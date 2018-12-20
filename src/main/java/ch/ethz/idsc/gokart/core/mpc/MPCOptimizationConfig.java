@@ -22,5 +22,5 @@ public class MPCOptimizationConfig {
   /** Braking anti-lag */
   public Scalar brakingAntiLag = Quantity.of(0.1, SI.SECOND);
   /** Padding */
-  public Scalar padding = Quantity.of(0.7, SI.METER);
+  public Scalar padding = Quantity.of(1, SI.METER);
 }
