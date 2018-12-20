@@ -28,7 +28,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   int heigth = 0;
   int count = 0;
   double startOrientation = 0;
-  Scalar radiusOffset = Quantity.of(0.8, SI.METER);
+  Scalar radiusOffset = Quantity.of(0.4, SI.METER);
   Scalar spacing = RealScalar.of(1.5);// TODO should be meters
   Scalar controlPointResolution = RealScalar.of(0.5);
   MPCBSplineTrack lastTrack;
@@ -51,11 +51,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     heigth = gridSize.Get(1).number().intValue();
   }
 
-  public boolean setStart(GokartPoseEvent gpe) {
-    if (gpe != null)
-      return setStart(gpe.getPose());
-    else
-      return false;
+  public boolean setStart(GokartPoseEvent gokartPoseEvent) {
+    return gokartPoseEvent != null && setStart(gokartPoseEvent.getPose());
   }
 
   public void resetStart() {
@@ -84,8 +81,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     if (startX >= 0 && startX < width && startY >= 0 && startY < heigth) {
       startSet = true;
       return true;
-    } else
-      return false;
+    }
+    return false;
   }
 
   public MPCBSplineTrack update(GokartPoseEvent gpe, Scalar dTime) {
@@ -133,6 +130,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackRender = null;
           } else {
             System.out.println("no solution found!");
+            lastTrack = null;
           }
         }
       } else if (closedTrack) {
