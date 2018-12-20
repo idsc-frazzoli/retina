@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
@@ -28,8 +27,8 @@ import lcm.logging.LogPlayerConfig;
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 1;
     LogPlayer.create(cfg);
-    GokartMappingModule gokartMappingModule = new GokartMappingModule();
-    gokartMappingModule.start();
+    //GokartMappingModule gokartMappingModule = new GokartMappingModule();
+    //gokartMappingModule.start();
     ModuleAuto.INSTANCE.runOne(GyroOfflineLocalize.class);
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(GokartTrackIdentificationModule.class);
