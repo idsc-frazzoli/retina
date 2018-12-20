@@ -7,12 +7,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackMappingModule;
 import ch.ethz.idsc.gokart.core.mpc.LiveTrackRenderProvider;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;

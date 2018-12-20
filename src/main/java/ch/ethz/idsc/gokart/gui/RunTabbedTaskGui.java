@@ -95,8 +95,7 @@ enum RunTabbedTaskGui {
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      GokartVoiceOutputs.class
-  );
+      GokartVoiceOutputs.class);
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
@@ -134,8 +133,8 @@ enum RunTabbedTaskGui {
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
-      PresenterLcmModule.class,//
-      TrackIdentificationButtons.class,//
+      PresenterLcmModule.class, //
+      TrackIdentificationButtons.class, //
       GokartTrackIdentificationModule.class
   // DavisOverviewModule.class //
   );

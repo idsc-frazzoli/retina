@@ -56,32 +56,31 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
     File file = UserHome.file("Documents/CalibrationSignal.wav");
     playFile(file);
   }
-  
+
   void sayEmergenyBraking() {
     // TODO: put it in resources
     File file = UserHome.file("Documents/ObstacleDetectedWarning.wav");
     playFile(file);
   }
-  
+
   void sayHumanDriving() {
     File file = UserHome.file("Documents/humanSignal.wav");
     playFile(file);
   }
-  
+
   void sayAIDriving() {
     File file = UserHome.file("Documents/AISignal.wav");
     playFile(file);
   }
-  
 
   @Override
   protected void first() throws Exception {
     columnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
     manualControlProvider.start();
   }
-  
+
   private boolean isAutonomousPressed() {
-    //TODO: remove duplicated code
+    // TODO: remove duplicated code
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) { // is joystick button "autonomous" pressed?
       ManualControlInterface gokartJoystickInterface = optional.get();
@@ -97,29 +96,28 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
 
   @Override
   protected void runAlgo() {
-    if(!calibrationSaid && columnTracker.isCalibratedAndHealthy()) {
+    if (!calibrationSaid && columnTracker.isCalibratedAndHealthy()) {
       sayCalibrated();
       calibrationSaid = true;
     }
-    if(!emergencyBrakingSaid && LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class)) {
+    if (!emergencyBrakingSaid && LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class)) {
       sayEmergenyBraking();
-      timeSinceEmergenyCallout= Stopwatch.started();
+      timeSinceEmergenyCallout = Stopwatch.started();
     }
-    if(emergencyBrakingSaid && //
-        timeSinceEmergenyCallout.display_seconds()>durationBetweenEmergenyCallouts && //
+    if (emergencyBrakingSaid && //
+        timeSinceEmergenyCallout.display_seconds() > durationBetweenEmergenyCallouts && //
         !LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class))
       emergencyBrakingSaid = false;
-    
     boolean humanDriving = !isAutonomousPressed();
-    if(humanDriving&&!HumanDrivingSaid) {
+    if (humanDriving && !HumanDrivingSaid) {
       HumanDrivingSaid = humanDriving;
-      if(timeSinceDriverCallout.display_seconds()>durationBetweenDriverCallouts){
+      if (timeSinceDriverCallout.display_seconds() > durationBetweenDriverCallouts) {
         sayHumanDriving();
         timeSinceDriverCallout = Stopwatch.started();
       }
-    }else if(!humanDriving&&HumanDrivingSaid) {
+    } else if (!humanDriving && HumanDrivingSaid) {
       HumanDrivingSaid = humanDriving;
-      if(timeSinceDriverCallout.display_seconds()>durationBetweenDriverCallouts){
+      if (timeSinceDriverCallout.display_seconds() > durationBetweenDriverCallouts) {
         sayAIDriving();
         timeSinceDriverCallout = Stopwatch.started();
       }
