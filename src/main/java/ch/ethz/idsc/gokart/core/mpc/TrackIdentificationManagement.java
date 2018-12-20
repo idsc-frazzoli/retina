@@ -28,7 +28,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   int heigth = 0;
   int count = 0;
   double startOrientation = 0;
-  Scalar radiusOffset = Quantity.of(0.8, SI.METER);
+  Scalar radiusOffset = Quantity.of(0.6, SI.METER);
   Scalar spacing = RealScalar.of(1.5);// TODO should be meters
   Scalar controlPointResolution = RealScalar.of(0.5);
   MPCBSplineTrack lastTrack;
