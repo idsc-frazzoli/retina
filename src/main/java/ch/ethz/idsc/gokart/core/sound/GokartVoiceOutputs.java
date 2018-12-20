@@ -29,9 +29,9 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
   SteerColumnTracker columnTracker;
   boolean emergencyBrakingSaid = false;
   Stopwatch timeSinceEmergenyCallout = Stopwatch.started();
-  double durationBetweenEmergenyCallouts = 5;
+  double durationBetweenEmergenyCallouts = 3;
   Stopwatch timeSinceDriverCallout = Stopwatch.started();
-  double durationBetweenDriverCallouts = 5;
+  double durationBetweenDriverCallouts = 3;
   boolean HumanDrivingSaid = true;
 
   void playFile(File file) {
@@ -99,10 +99,11 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
   protected void runAlgo() {
     if(!calibrationSaid && columnTracker.isCalibratedAndHealthy()) {
       sayCalibrated();
+      calibrationSaid = true;
     }
     if(!emergencyBrakingSaid && LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class)) {
       sayEmergenyBraking();
-      timeSinceEmergenyCallout.start();
+      timeSinceEmergenyCallout= Stopwatch.started();
     }
     if(emergencyBrakingSaid && //
         timeSinceEmergenyCallout.display_seconds()>durationBetweenEmergenyCallouts && //
@@ -114,11 +115,13 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
       HumanDrivingSaid = humanDriving;
       if(timeSinceDriverCallout.display_seconds()>durationBetweenDriverCallouts){
         sayHumanDriving();
+        timeSinceDriverCallout = Stopwatch.started();
       }
     }else if(!humanDriving&&HumanDrivingSaid) {
       HumanDrivingSaid = humanDriving;
       if(timeSinceDriverCallout.display_seconds()>durationBetweenDriverCallouts){
         sayAIDriving();
+        timeSinceDriverCallout = Stopwatch.started();
       }
     }
   }
