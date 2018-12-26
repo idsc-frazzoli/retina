@@ -20,6 +20,39 @@ import ch.ethz.idsc.tensor.sca.Clip;
 //TODO: document this properly (to be done after the whole thing works)
 public class LookupTable2D {
   private static final float TOLERANCE = 0.001f;
+
+  public static LookupTable2D from(BufferedReader csvReader) throws IOException {
+    String line;
+    // read dimensions
+    int firstDimN = Integer.parseInt(csvReader.readLine());
+    int secondDimN = Integer.parseInt(csvReader.readLine());
+    float[][] table = new float[firstDimN][secondDimN];
+    line = csvReader.readLine();
+    // read limits
+    String[] firstLimits = line.split(",");
+    float firstDimMin = Float.parseFloat(firstLimits[0]);
+    float firstDimMax = Float.parseFloat(firstLimits[1]);
+    line = csvReader.readLine();
+    String[] secondLimits = line.split(",");
+    float secondDimMin = Float.parseFloat(secondLimits[0]);
+    float secondDimMax = Float.parseFloat(secondLimits[1]);
+    // read units
+    Unit firstDimUnit = Unit.of(csvReader.readLine());
+    Unit secondDimUnit = Unit.of(csvReader.readLine());
+    Unit outputUnit = Unit.of(csvReader.readLine());
+    for (int i1 = 0; i1 < firstDimN; ++i1) {
+      line = csvReader.readLine();
+      String[] linevals = line.split(",");
+      for (int i2 = 0; i2 < secondDimN; ++i2)
+        table[i1][i2] = Float.parseFloat(linevals[i2]);
+    }
+    return new LookupTable2D(table, //
+        firstDimMin, firstDimMax, //
+        secondDimMin, secondDimMax, //
+        firstDimUnit, secondDimUnit, //
+        outputUnit);
+  }
+
   // ---
   final float table[][];
   private final float firstDimMin;
@@ -36,41 +69,6 @@ public class LookupTable2D {
   // ---
   private final Unit outputUnit;
   private LookupFunction originalFunction = null;
-
-  public LookupTable2D(BufferedReader csvReader) throws IOException {
-    String line;
-    // read dimensions
-    int firstDimN = Integer.parseInt(csvReader.readLine());
-    int secondDimN = Integer.parseInt(csvReader.readLine());
-    table = new float[firstDimN][secondDimN];
-    line = csvReader.readLine();
-    // read limits
-    String[] firstLimits = line.split(",");
-    firstDimMin = Float.parseFloat(firstLimits[0]);
-    firstDimMax = Float.parseFloat(firstLimits[1]);
-    line = csvReader.readLine();
-    String[] secondLimits = line.split(",");
-    secondDimMin = Float.parseFloat(secondLimits[0]);
-    secondDimMax = Float.parseFloat(secondLimits[1]);
-    // read units
-    firstDimUnit = Unit.of(csvReader.readLine());
-    clip0 = Clip.function( //
-        Quantity.of(firstDimMin, firstDimUnit), //
-        Quantity.of(firstDimMax, firstDimUnit));
-    secondDimUnit = Unit.of(csvReader.readLine());
-    clip1 = Clip.function( //
-        Quantity.of(secondDimMin, secondDimUnit), //
-        Quantity.of(secondDimMax, secondDimUnit));
-    outputUnit = Unit.of(csvReader.readLine());
-    for (int i1 = 0; i1 < firstDimN; i1++) {
-      line = csvReader.readLine();
-      String[] linevals = line.split(",");
-      for (int i2 = 0; i2 < secondDimN; i2++) {
-        table[i1][i2] = Float.parseFloat(linevals[i2]);
-      }
-    }
-    interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
-  }
 
   public void saveTable(BufferedWriter csvWriter) throws IOException {
     // read dimensions
@@ -102,30 +100,6 @@ public class LookupTable2D {
     this.firstDimMax = firstDimMax;
     this.secondDimMin = secondDimMin;
     this.secondDimMax = secondDimMax;
-    this.firstDimUnit = firstDimUnit;
-    clip0 = Clip.function( //
-        Quantity.of(firstDimMin, firstDimUnit), //
-        Quantity.of(firstDimMax, firstDimUnit));
-    this.secondDimUnit = secondDimUnit;
-    clip1 = Clip.function( //
-        Quantity.of(secondDimMin, secondDimUnit), //
-        Quantity.of(secondDimMax, secondDimUnit));
-    this.outputUnit = outputUnit;
-    interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
-  }
-
-  @Deprecated // TODO MH not used. can remove?
-  LookupTable2D( //
-      float table[][], //
-      Scalar firstDimMin, Scalar firstDimMax, //
-      Scalar secondDimMin, Scalar secondDimMax, //
-      Unit firstDimUnit, Unit secondDimUnit, //
-      Unit outputUnit) {
-    this.table = table;
-    this.firstDimMin = firstDimMin.number().floatValue();
-    this.firstDimMax = firstDimMax.number().floatValue();
-    this.secondDimMin = secondDimMin.number().floatValue();
-    this.secondDimMax = secondDimMax.number().floatValue();
     this.firstDimUnit = firstDimUnit;
     clip0 = Clip.function( //
         Quantity.of(firstDimMin, firstDimUnit), //

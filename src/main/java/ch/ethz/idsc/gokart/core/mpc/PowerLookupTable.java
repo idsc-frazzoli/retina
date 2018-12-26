@@ -98,11 +98,11 @@ public class PowerLookupTable {
     } else {
       // load lookup table
       try (BufferedReader lookupBufferedReader = new BufferedReader(new FileReader(lookupfile))) {
-        powerLookupTable = new LookupTable2D(lookupBufferedReader);
+        powerLookupTable = LookupTable2D.from(lookupBufferedReader);
       }
       // load inverse table
       try (BufferedReader inverseLookupBufferedReader = new BufferedReader(new FileReader(invlookupfile))) {
-        inverseLookupTable = new LookupTable2D(inverseLookupBufferedReader);
+        inverseLookupTable = LookupTable2D.from(inverseLookupBufferedReader);
       }
     }
   }

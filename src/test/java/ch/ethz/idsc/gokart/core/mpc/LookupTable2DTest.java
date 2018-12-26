@@ -37,7 +37,7 @@ public class LookupTable2DTest extends TestCase {
     }
     LookupTable2D lookUpTable2 = null;
     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-      lookUpTable2 = new LookupTable2D(br);
+      lookUpTable2 = LookupTable2D.from(br);
     }
     for (int i1 = 0; i1 < 10; i1++)
       for (int i2 = 0; i2 < 10; i2++)
