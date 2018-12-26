@@ -48,8 +48,6 @@ public class PowerLookupTable {
   // TODO magic const in config class
   private final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
   private final Scalar vMax = Quantity.of(+10, SI.VELOCITY);
-  private final Scalar cMin = ManualConfig.GLOBAL.torqueLimit.negate();
-  private final Scalar cMax = ManualConfig.GLOBAL.torqueLimit;
   private final Scalar aMin = Quantity.of(-2, SI.ACCELERATION);
   private final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
   private final int DimN = 1000;
@@ -66,10 +64,8 @@ public class PowerLookupTable {
           MotorFunction::getAccelerationEstimation, //
           DimN, //
           DimN, //
-          cMin, //
-          cMax, //
-          vMin, //
-          vMax, //
+          ManualConfig.GLOBAL.torqueLimitClip(), //
+          Clip.function(vMin, vMax), //
           SI.ACCELERATION);
       // save
       try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(lookupfile))) {

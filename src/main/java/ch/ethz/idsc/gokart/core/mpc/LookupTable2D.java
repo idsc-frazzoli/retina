@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.function.BinaryOperator;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -47,15 +46,17 @@ public class LookupTable2D {
     Unit firstDimUnit = Unit.of(csvReader.readLine());
     Unit secondDimUnit = Unit.of(csvReader.readLine());
     Unit outputUnit = Unit.of(csvReader.readLine());
-    for (int i1 = 0; i1 < firstDimN; ++i1) {
+    for (int i0 = 0; i0 < firstDimN; ++i0) {
       line = csvReader.readLine();
       String[] linevals = line.split(",");
-      for (int i2 = 0; i2 < secondDimN; ++i2)
-        table[i1][i2] = Float.parseFloat(linevals[i2]);
+      for (int i1 = 0; i1 < secondDimN; ++i1)
+        table[i0][i1] = Float.parseFloat(linevals[i1]);
     }
-    return new LookupTable2D(table, //
-        Quantity.of(firstDimMin, firstDimUnit), Quantity.of(firstDimMax, firstDimUnit), //
-        Quantity.of(secondDimMin, secondDimUnit), Quantity.of(secondDimMax, secondDimUnit), //
+    return new LookupTable2D(Tensors.matrixFloat(table), //
+        Clip.function( //
+            Quantity.of(firstDimMin, firstDimUnit), Quantity.of(firstDimMax, firstDimUnit)), //
+        Clip.function( //
+            Quantity.of(secondDimMin, secondDimUnit), Quantity.of(secondDimMax, secondDimUnit)), //
         outputUnit);
   }
 
@@ -63,38 +64,34 @@ public class LookupTable2D {
       LookupFunction function, //
       int firstDimN, //
       int secondDimN, //
-      Scalar firstDimMin, Scalar firstDimMax, //
-      Scalar secondDimMin, Scalar secondDimMax, //
+      Clip firstDimClip, //
+      Clip secondDimClip, //
       Unit outputUnit) {
-    float firstDimMinf = firstDimMin.number().floatValue();
-    float firstDimMaxf = firstDimMax.number().floatValue();
-    float secondDimMinf = secondDimMin.number().floatValue();
-    float secondDimMaxf = secondDimMax.number().floatValue();
     float[][] table = new float[firstDimN][secondDimN];
-    for (int i1 = 0; i1 < firstDimN; ++i1) {
-      for (int i2 = 0; i2 < secondDimN; ++i2) {
-        float firstValuef = firstDimMinf + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
-        float secondValuef = secondDimMinf + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
-        table[i1][i2] = function.apply( //
-            Quantity.of(firstValuef, Units.of(firstDimMin)), //
-            Quantity.of(secondValuef, Units.of(secondDimMin))).number().floatValue();
-      }
-    }
-    return new LookupTable2D(table, firstDimMin, firstDimMax, secondDimMin, secondDimMax, outputUnit);
+    Tensor s0 = Subdivide.of(firstDimClip.min(), firstDimClip.max(), firstDimN - 1);
+    Tensor s1 = Subdivide.of(secondDimClip.min(), secondDimClip.max(), secondDimN - 1);
+    for (int i0 = 0; i0 < firstDimN; ++i0)
+      for (int i1 = 0; i1 < secondDimN; ++i1)
+        table[i0][i1] = function.apply(s0.Get(i0), s1.Get(i1)).number().floatValue();
+    return new LookupTable2D( //
+        Tensors.matrixFloat(table), //
+        firstDimClip, //
+        secondDimClip, //
+        outputUnit);
   }
 
   // ---
   private final Clip clip0;
   private final Clip clip1;
-  final float table[][];
-  // ---
+  private final Tensor scale;
+  final Tensor tensor;
   private final Interpolation interpolation;
   private final Unit outputUnit;
 
   public void saveTable(BufferedWriter csvWriter) throws IOException {
     // read dimensions
-    int firstDimN = table.length;
-    int secondDimN = table[0].length;
+    int firstDimN = tensor.length();
+    int secondDimN = tensor.get(0).length();
     csvWriter.write(firstDimN + "\n");
     csvWriter.write(secondDimN + "\n");
     csvWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
@@ -103,24 +100,25 @@ public class LookupTable2D {
     csvWriter.write(Units.of(clip0.min()) + "\n");
     csvWriter.write(Units.of(clip1.min()) + "\n");
     csvWriter.write(outputUnit + "\n");
-    for (int i1 = 0; i1 < firstDimN; i1++) {
+    for (int i0 = 0; i0 < firstDimN; i0++) {
       String[] linevals = new String[secondDimN];
-      for (int i2 = 0; i2 < secondDimN; ++i2)
-        linevals[i2] = String.valueOf(table[i1][i2]);
+      for (int i1 = 0; i1 < secondDimN; ++i1)
+        linevals[i1] = String.valueOf(tensor.Get(i0, i1));
       csvWriter.write(String.join(",", linevals) + "\n");
     }
   }
 
-  public LookupTable2D( //
-      float table[][], //
-      Scalar firstDimMin, Scalar firstDimMax, //
-      Scalar secondDimMin, Scalar secondDimMax, //
+  /* package */ LookupTable2D( //
+      Tensor tensor, //
+      Clip clip0, //
+      Clip clip1, //
       Unit outputUnit) {
-    this.table = table;
-    clip0 = Clip.function(firstDimMin, firstDimMax);
-    clip1 = Clip.function(secondDimMin, secondDimMax);
+    this.tensor = tensor;
+    this.clip0 = clip0;
+    this.clip1 = clip1;
+    scale = Tensors.vector(tensor.length() - 1, tensor.get(0).length() - 1);
     this.outputUnit = outputUnit;
-    interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
+    interpolation = LinearInterpolation.of(tensor);
   }
 
   /** get inverted lookup table target specifies which of the arguments gets to be
@@ -154,21 +152,19 @@ public class LookupTable2D {
     } else
       return null;
     // switch x and out
-    float table[][] = new float[firstDimN][secondDimN];
+    float[][] table = new float[firstDimN][secondDimN];
     Tensor s0 = Subdivide.of(firstDimMinf, firstDimMaxf, firstDimN - 1);
     Tensor s1 = Subdivide.of(secondDimMinf, secondDimMaxf, secondDimN - 1);
     for (int i0 = 0; i0 < firstDimN; ++i0) {
       final float firstValuef = s0.Get(i0).number().floatValue();
       for (int i1 = 0; i1 < secondDimN; ++i1) {
-        float secondValuef = s1.Get(i1).number().floatValue();
+        final float secondValuef = s1.Get(i1).number().floatValue();
         // find appropriate value
         // use approximative gradient descent
-        float lower;
-        float upper;
         float mid = 0;
         if (target == 0) {
-          lower = clip0.min().number().floatValue(); // firstDimMin;
-          upper = clip0.max().number().floatValue(); // firstDimMax;
+          float lower = clip0.min().number().floatValue(); // firstDimMin;
+          float upper = clip0.max().number().floatValue(); // firstDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) * 0.5f;
             final float midValue = getFunctionValue(function, mid, secondValuef);
@@ -179,8 +175,8 @@ public class LookupTable2D {
           }
         } else //
         if (target == 1) {
-          lower = clip1.min().number().floatValue(); // secondDimMin;
-          upper = clip1.max().number().floatValue(); // secondDimMax;
+          float lower = clip1.min().number().floatValue(); // secondDimMin;
+          float upper = clip1.max().number().floatValue(); // secondDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) * 0.5f;
             final float midValue = getFunctionValue(function, firstValuef, mid);
@@ -195,31 +191,33 @@ public class LookupTable2D {
     }
     if (target == 0)
       return new LookupTable2D( //
-          table, //
-          Quantity.of(firstDimMinf, outputUnit), //
-          Quantity.of(firstDimMaxf, outputUnit), //
-          Quantity.of(secondDimMinf, Units.of(clip1.min())), // secondDimUnit), //
-          Quantity.of(secondDimMaxf, Units.of(clip1.min())), // secondDimUnit), //
+          Tensors.matrixFloat(table), //
+          Clip.function( //
+              Quantity.of(firstDimMinf, outputUnit), //
+              Quantity.of(firstDimMaxf, outputUnit)), //
+          Clip.function( //
+              Quantity.of(secondDimMinf, Units.of(clip1.min())), // secondDimUnit), //
+              Quantity.of(secondDimMaxf, Units.of(clip1.min()))), // secondDimUnit), //
           Units.of(clip0.min()) // firstDimUnit
       );
     if (target == 1)
       return new LookupTable2D(//
-          table, //
-          Quantity.of(firstDimMinf, Units.of(clip0.min())), // firstDimUnit
-          Quantity.of(firstDimMaxf, Units.of(clip0.min())), // firstDimUnit
-          Quantity.of(secondDimMinf, outputUnit), //
-          Quantity.of(secondDimMaxf, outputUnit), //
+          Tensors.matrixFloat(table), //
+          Clip.function( //
+              Quantity.of(firstDimMinf, Units.of(clip0.min())), // firstDimUnit
+              Quantity.of(firstDimMaxf, Units.of(clip0.min()))), // firstDimUnit
+          Clip.function( //
+              Quantity.of(secondDimMinf, outputUnit), //
+              Quantity.of(secondDimMaxf, outputUnit)), //
           Units.of(clip1.min()) // secondDimUnit
       );
     return null;
   }
 
   public Scalar lookup(Scalar x, Scalar y) {
-    int firstDimN = table.length;
-    int secondDimN = table[0].length;
     return Quantity.of(interpolation.Get(Tensors.of( //
-        clip0.rescale(x).multiply(RealScalar.of(firstDimN - 1)), //
-        clip1.rescale(y).multiply(RealScalar.of(secondDimN - 1)))), outputUnit);
+        clip0.rescale(x), //
+        clip1.rescale(y)).pmul(scale)), outputUnit);
   }
 
   /** delivers the extremal values in the specified direction
