@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -53,7 +54,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public Scalar getuB() {
-    return Quantity.of(uB, SI.ONE);
+    return RealScalar.of(uB);
   }
 
   public Scalar getaB() {

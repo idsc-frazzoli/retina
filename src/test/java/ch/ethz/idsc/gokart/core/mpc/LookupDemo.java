@@ -2,12 +2,11 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.IOException;
-import java.util.function.BinaryOperator;
+import java.util.function.BiFunction;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
@@ -21,8 +20,9 @@ enum LookupDemo {
   ;
   private static final int RES = 500 - 1;
 
-  private static Tensor build(BinaryOperator<Scalar> function, Tensor vi, Tensor vj) {
-    return Tensors.matrix((i, j) -> function.apply(vi.Get(i), vj.Get(j)), vi.length(), vj.length());
+  @SuppressWarnings("unchecked")
+  private static <T extends Tensor> Tensor build(BiFunction<T, T, ? extends Tensor> function, Tensor vi, Tensor vj) {
+    return Tensors.matrix((i, j) -> function.apply((T) vi.get(i), (T) vj.get(j)), vi.length(), vj.length());
   }
 
   public static void main(String[] args) throws IOException {
@@ -36,9 +36,12 @@ enum LookupDemo {
     final Tensor speeds = Subdivide.of( //
         clip_speeds.min(), //
         clip_speeds.max(), RES);
-    final Tensor accelerations = Subdivide.of( //
+    Clip clip_accels = Clip.function( //
         Quantity.of(-2, SI.ACCELERATION), //
-        Quantity.of(+2, SI.ACCELERATION), RES);
+        Quantity.of(+2, SI.ACCELERATION));
+    final Tensor accelerations = Subdivide.of( //
+        clip_accels.min(), //
+        clip_accels.max(), RES);
     {
       Tensor matrix = build(MotorFunction::getAccelerationEstimation, powers.negate(), speeds);
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
@@ -50,10 +53,6 @@ enum LookupDemo {
     // float[][] array = Primitives.toFloatArray2D(tensor);4
     {
       final int DimN = 250;
-      // final Scalar xMin = ManualConfig.GLOBAL.torqueLimit.negate();
-      // final Scalar xMax = ManualConfig.GLOBAL.torqueLimit;
-      final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
-      final Scalar yMax = Quantity.of(+10, SI.VELOCITY);
       LookupTable2D lookUpTable2D = LookupTable2D.build(//
           MotorFunction::getAccelerationEstimation, //
           DimN, //
@@ -64,10 +63,8 @@ enum LookupDemo {
       LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch( //
           MotorFunction::getAccelerationEstimation, //
           0, //
-          DimN, //
-          DimN, //
-          Quantity.of(-2, SI.ACCELERATION), //
-          Quantity.of(+2, SI.ACCELERATION));
+          DimN, DimN, //
+          clip_accels);
       System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("set up inverse table");

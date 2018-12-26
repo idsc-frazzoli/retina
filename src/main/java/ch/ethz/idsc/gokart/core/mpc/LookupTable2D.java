@@ -1,7 +1,6 @@
 // code by mheim
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,50 +19,12 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
 // TODO switch the whole thing to Tensor variables (this will not change any interactions)
 // TODO document this properly (to be done after the whole thing works)
-public class LookupTable2D {
+public class LookupTable2D implements Serializable {
   private static final float TOLERANCE = 0.001f;
 
-  static interface LookupFunction extends BinaryOperator<Scalar>, Serializable {
-    // ---
-  }
-
-  public static LookupTable2D from(BufferedReader csvReader) throws IOException {
-    String line;
-    // read dimensions
-    int firstDimN = Integer.parseInt(csvReader.readLine());
-    int secondDimN = Integer.parseInt(csvReader.readLine());
-    float[][] table = new float[firstDimN][secondDimN];
-    line = csvReader.readLine();
-    // read limits
-    String[] firstLimits = line.split(",");
-    float firstDimMin = Float.parseFloat(firstLimits[0]);
-    float firstDimMax = Float.parseFloat(firstLimits[1]);
-    line = csvReader.readLine();
-    String[] secondLimits = line.split(",");
-    float secondDimMin = Float.parseFloat(secondLimits[0]);
-    float secondDimMax = Float.parseFloat(secondLimits[1]);
-    // read units
-    Unit firstDimUnit = Unit.of(csvReader.readLine());
-    Unit secondDimUnit = Unit.of(csvReader.readLine());
-    Unit outputUnit = Unit.of(csvReader.readLine());
-    for (int i0 = 0; i0 < firstDimN; ++i0) {
-      line = csvReader.readLine();
-      String[] linevals = line.split(",");
-      for (int i1 = 0; i1 < secondDimN; ++i1)
-        table[i0][i1] = Float.parseFloat(linevals[i1]);
-    }
-    return new LookupTable2D(Tensors.matrixFloat(table), //
-        Clip.function( //
-            Quantity.of(firstDimMin, firstDimUnit), Quantity.of(firstDimMax, firstDimUnit)), //
-        Clip.function( //
-            Quantity.of(secondDimMin, secondDimUnit), Quantity.of(secondDimMax, secondDimUnit)), //
-        outputUnit);
-  }
-
   public static LookupTable2D build( //
-      LookupFunction function, //
-      int firstDimN, //
-      int secondDimN, //
+      BinaryOperator<Scalar> function, //
+      int firstDimN, int secondDimN, //
       Clip firstDimClip, //
       Clip secondDimClip, //
       Unit outputUnit) {
@@ -81,32 +42,12 @@ public class LookupTable2D {
   }
 
   // ---
+  final Tensor tensor;
   private final Clip clip0;
   private final Clip clip1;
-  private final Tensor scale;
-  final Tensor tensor;
-  private final Interpolation interpolation;
   private final Unit outputUnit;
-
-  public void saveTable(BufferedWriter csvWriter) throws IOException {
-    // read dimensions
-    int firstDimN = tensor.length();
-    int secondDimN = tensor.get(0).length();
-    csvWriter.write(firstDimN + "\n");
-    csvWriter.write(secondDimN + "\n");
-    csvWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
-    csvWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
-    // read units
-    csvWriter.write(Units.of(clip0.min()) + "\n");
-    csvWriter.write(Units.of(clip1.min()) + "\n");
-    csvWriter.write(outputUnit + "\n");
-    for (int i0 = 0; i0 < firstDimN; i0++) {
-      String[] linevals = new String[secondDimN];
-      for (int i1 = 0; i1 < secondDimN; ++i1)
-        linevals[i1] = String.valueOf(tensor.Get(i0, i1));
-      csvWriter.write(String.join(",", linevals) + "\n");
-    }
-  }
+  private final Tensor scale;
+  private final Interpolation interpolation;
 
   /* package */ LookupTable2D( //
       Tensor tensor, //
@@ -116,39 +57,39 @@ public class LookupTable2D {
     this.tensor = tensor;
     this.clip0 = clip0;
     this.clip1 = clip1;
-    scale = Tensors.vector(tensor.length() - 1, tensor.get(0).length() - 1);
     this.outputUnit = outputUnit;
+    scale = Tensors.vector(tensor.length() - 1, tensor.get(0).length() - 1);
     interpolation = LinearInterpolation.of(tensor);
   }
 
   /** get inverted lookup table target specifies which of the arguments gets to be
    * the the output: function should be monotone */
-  private float getFunctionValue(LookupFunction function, float x, float y) {
+  private float getFunctionValue(BinaryOperator<Scalar> function, float x, float y) {
     return function.apply( //
         Quantity.of(x, Units.of(clip0.min())), //
         Quantity.of(y, Units.of(clip1.min()))).number().floatValue();
   }
 
   public LookupTable2D getInverseLookupTableBinarySearch( //
-      LookupFunction function, //
+      BinaryOperator<Scalar> function, //
       int target, //
       int firstDimN, int secondDimN, //
-      Scalar newDimMin, Scalar newDimMax) {
+      Clip newDimClip) {
     float firstDimMinf;
     float firstDimMaxf;
     float secondDimMinf;
     float secondDimMaxf;
     if (target == 0) {
-      firstDimMinf = newDimMin.number().floatValue();
-      firstDimMaxf = newDimMax.number().floatValue();
+      firstDimMinf = newDimClip.min().number().floatValue();
+      firstDimMaxf = newDimClip.max().number().floatValue();
       secondDimMinf = clip1.min().number().floatValue(); // secondDimMin;
       secondDimMaxf = clip1.max().number().floatValue();
     } else //
     if (target == 1) {
       firstDimMinf = clip0.min().number().floatValue();
       firstDimMaxf = clip0.max().number().floatValue();
-      secondDimMinf = newDimMin.number().floatValue();
-      secondDimMaxf = newDimMax.number().floatValue();
+      secondDimMinf = newDimClip.min().number().floatValue();
+      secondDimMaxf = newDimClip.max().number().floatValue();
     } else
       return null;
     // switch x and out
@@ -196,21 +137,19 @@ public class LookupTable2D {
               Quantity.of(firstDimMinf, outputUnit), //
               Quantity.of(firstDimMaxf, outputUnit)), //
           Clip.function( //
-              Quantity.of(secondDimMinf, Units.of(clip1.min())), // secondDimUnit), //
-              Quantity.of(secondDimMaxf, Units.of(clip1.min()))), // secondDimUnit), //
-          Units.of(clip0.min()) // firstDimUnit
-      );
+              Quantity.of(secondDimMinf, Units.of(clip1.min())), //
+              Quantity.of(secondDimMaxf, Units.of(clip1.min()))), //
+          Units.of(clip0.min()));
     if (target == 1)
       return new LookupTable2D(//
           Tensors.matrixFloat(table), //
           Clip.function( //
-              Quantity.of(firstDimMinf, Units.of(clip0.min())), // firstDimUnit
-              Quantity.of(firstDimMaxf, Units.of(clip0.min()))), // firstDimUnit
+              Quantity.of(firstDimMinf, Units.of(clip0.min())), //
+              Quantity.of(firstDimMaxf, Units.of(clip0.min()))), //
           Clip.function( //
               Quantity.of(secondDimMinf, outputUnit), //
               Quantity.of(secondDimMaxf, outputUnit)), //
-          Units.of(clip1.min()) // secondDimUnit
-      );
+          Units.of(clip1.min()));
     return null;
   }
 
@@ -235,5 +174,25 @@ public class LookupTable2D {
           lookup(otherValue, clip1.min()), //
           lookup(otherValue, clip1.max()));
     return null;
+  }
+
+  public void exportToMatlab(BufferedWriter bufferedWriter) throws IOException {
+    // read dimensions
+    int firstDimN = tensor.length();
+    int secondDimN = tensor.get(0).length();
+    bufferedWriter.write(firstDimN + "\n");
+    bufferedWriter.write(secondDimN + "\n");
+    bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
+    bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
+    // read units
+    bufferedWriter.write(Units.of(clip0.min()) + "\n");
+    bufferedWriter.write(Units.of(clip1.min()) + "\n");
+    bufferedWriter.write(outputUnit + "\n");
+    for (int i0 = 0; i0 < firstDimN; ++i0) {
+      String[] linevals = new String[secondDimN];
+      for (int i1 = 0; i1 < secondDimN; ++i1)
+        linevals[i1] = String.valueOf(tensor.Get(i0, i1));
+      bufferedWriter.write(String.join(",", linevals) + "\n");
+    }
   }
 }

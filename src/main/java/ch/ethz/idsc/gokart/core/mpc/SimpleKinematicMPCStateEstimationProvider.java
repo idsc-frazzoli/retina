@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -28,7 +29,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
-  private Scalar orientation = Quantity.of(0, SI.ONE);
+  private Scalar orientation = RealScalar.of(0);
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
   private Scalar XPosition = Quantity.of(0, SI.METER);
   private Scalar YPosition = Quantity.of(0, SI.METER);

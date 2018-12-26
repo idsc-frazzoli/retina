@@ -1,12 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.zip.DataFormatException;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -15,6 +11,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -31,67 +29,84 @@ public class PowerLookupTable {
     try {
       if (INSTANCE == null)
         INSTANCE = new PowerLookupTable();
-    } catch (IOException e) {
+    } catch (Exception exception) {
       System.err.println("Power lookup table not available");
-      e.printStackTrace();
+      exception.printStackTrace();
     }
     return INSTANCE;
   }
 
-  private final String lookupTableLocation = "powerlookuptable.csv";
-  private final String inverseLookupTableLocation = "inversepowerlookuptable.csv";
+  private static final File DIRECTORY = new File("resources/lookup");
+  private static final File FILE_LOOKUP = new File(DIRECTORY, "powerlookuptable.object");
+  private static final File FILE_INVERSE = new File(DIRECTORY, "inversepowerlookuptable.object");
+  // ---
+  private static final Clip CLIP_VEL = Clip.function( //
+      Quantity.of(-10, SI.VELOCITY), //
+      Quantity.of(+10, SI.VELOCITY));
+  private static final Clip CLIP_ACC = Clip.function( //
+      Quantity.of(-2, SI.ACCELERATION), //
+      Quantity.of(+2, SI.ACCELERATION));
+  private static final int RES = 1000;
+  // ---
   /** maps from (current, speed)->(acceleration) */
   private final LookupTable2D powerLookupTable;
   /** maps from (acceleration, speed)->(current) */
   private final LookupTable2D inverseLookupTable;
   // min and max values for lookup tables
   // TODO magic const in config class
-  private final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
-  private final Scalar vMax = Quantity.of(+10, SI.VELOCITY);
-  private final Scalar aMin = Quantity.of(-2, SI.ACCELERATION);
-  private final Scalar aMax = Quantity.of(2, SI.ACCELERATION);
-  private final int DimN = 1000;
 
-  /** create or load Power Lookup Table */
-  private PowerLookupTable() throws IOException {
-    // TODO: save this in ephemeral
-    File lookupfile = new File(lookupTableLocation);
-    File invlookupfile = new File(inverseLookupTableLocation);
-    if (!lookupfile.exists() || !invlookupfile.exists()) {
-      // create lookup tables
-      // maps from (current, speed)->(acceleration)
-      powerLookupTable = LookupTable2D.build( //
-          MotorFunction::getAccelerationEstimation, //
-          DimN, //
-          DimN, //
-          ManualConfig.GLOBAL.torqueLimitClip(), //
-          Clip.function(vMin, vMax), //
-          SI.ACCELERATION);
-      // save
-      try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(lookupfile))) {
-        powerLookupTable.saveTable(bufferedWriter);
-      }
-      // maps from (acceleration, speed)->(acceleration)
-      inverseLookupTable = powerLookupTable.getInverseLookupTableBinarySearch( //
-          MotorFunction::getAccelerationEstimation, //
-          0, //
-          DimN, //
-          DimN, //
-          aMin, aMax);
-      // Save
-      try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(invlookupfile))) {
-        inverseLookupTable.saveTable(bufferedWriter);
-      }
-    } else {
-      // load lookup table
-      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(lookupfile))) {
-        powerLookupTable = LookupTable2D.from(bufferedReader);
-      }
-      // load inverse table
-      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(invlookupfile))) {
-        inverseLookupTable = LookupTable2D.from(bufferedReader);
-      }
+  private static LookupTable2D forward() {
+    try {
+      return Import.object(FILE_LOOKUP); // load inverse table
+    } catch (Exception exception) {
+      // ---
     }
+    System.out.println("compute power lookup table forward...");
+    // create lookup tables
+    // maps from (current, speed) -> (acceleration)
+    LookupTable2D lookupTable2D = LookupTable2D.build( //
+        MotorFunction::getAccelerationEstimation, //
+        RES, RES, //
+        ManualConfig.GLOBAL.torqueLimitClip(), //
+        CLIP_VEL, //
+        SI.ACCELERATION);
+    try {
+      Export.object(FILE_LOOKUP, lookupTable2D);
+    } catch (Exception exception) {
+      // ---
+    }
+    return lookupTable2D;
+  }
+
+  private static LookupTable2D inverse(LookupTable2D forward) {
+    try {
+      return Import.object(FILE_INVERSE); // load inverse table
+    } catch (Exception exception) {
+      // ---
+    }
+    System.out.println("compute power lookup table inverse...");
+    // create lookup tables
+    // maps from (acceleration, speed)->(acceleration)
+    LookupTable2D lookupTable2D = forward.getInverseLookupTableBinarySearch( //
+        MotorFunction::getAccelerationEstimation, //
+        0, //
+        RES, RES, //
+        CLIP_ACC);
+    try {
+      Export.object(FILE_INVERSE, lookupTable2D);
+    } catch (Exception exception) {
+      // ---
+    }
+    return lookupTable2D;
+  }
+
+  /** create or load power lookup table
+   * @throws DataFormatException
+   * @throws ClassNotFoundException */
+  private PowerLookupTable() {
+    DIRECTORY.mkdir();
+    powerLookupTable = forward();
+    inverseLookupTable = inverse(powerLookupTable);
   }
 
   /** get min and max possible acceleration
@@ -100,7 +115,7 @@ public class PowerLookupTable {
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     // the min and max values are multiplied by 1.02
     // in order to ensure that the maximum value can be outputted
-    return powerLookupTable.getExtremalValues(0, velocity).multiply(Quantity.of(1.02, SI.ONE));
+    return powerLookupTable.getExtremalValues(0, velocity).multiply(RealScalar.of(1.02));
   }
 
   /** get acceleration for a given current and velocity

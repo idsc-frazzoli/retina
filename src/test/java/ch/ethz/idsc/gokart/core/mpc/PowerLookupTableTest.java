@@ -28,7 +28,7 @@ public class PowerLookupTableTest extends TestCase {
     System.out.println(maxcurr);
     System.out.println(mincurr);
     Scalar torquelessAcc = powerLookupTable.getNormalizedAccelerationTorqueCentered(//
-        Quantity.of(0, SI.ONE), velocity);
+        RealScalar.of(0), velocity);
     Scalar torquelessCurr = powerLookupTable.getNeededCurrent(torquelessAcc, velocity);
     System.out.println(torquelessAcc);
     System.out.println(torquelessCurr);
