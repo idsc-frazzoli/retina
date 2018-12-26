@@ -31,16 +31,18 @@ public class LookupTable2DTest extends TestCase {
         table[i1][i2] = random.nextFloat();
       }
     }
-    LookupTable2D lookUpTable = new LookupTable2D(table, RealScalar.ONE.negate(), RealScalar.ONE, RealScalar.ONE.negate(), RealScalar.ONE,
-        // testUnit, testUnit,
+    LookupTable2D lookupTable = new LookupTable2D( //
+        table, //
+        RealScalar.ONE.negate(), RealScalar.ONE, //
+        RealScalar.ONE.negate(), RealScalar.ONE, //
         testUnit);
     final File file = new File("testLookupTable.csv");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-      lookUpTable.saveTable(bw);
+    try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+      lookupTable.saveTable(bufferedWriter);
     }
     LookupTable2D lookUpTable2 = null;
-    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-      lookUpTable2 = LookupTable2D.from(br);
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+      lookUpTable2 = LookupTable2D.from(bufferedReader);
     }
     for (int i1 = 0; i1 < 10; i1++)
       for (int i2 = 0; i2 < 10; i2++)
@@ -62,7 +64,7 @@ public class LookupTable2DTest extends TestCase {
     final int DimN = 1000;
     final Scalar fidelityLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = LookupTable2D.build(//
+    LookupTable2D lookupTable2D = LookupTable2D.build(//
         function, //
         DimN, //
         DimN, //
@@ -75,7 +77,7 @@ public class LookupTable2DTest extends TestCase {
     for (int i = 0; i < testN; i++) {
       Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
       Scalar y = Quantity.of(rand.nextFloat(), SI.ONE);
-      Scalar out = lookUpTable2D.lookup(x, y);
+      Scalar out = lookupTable2D.lookup(x, y);
       Scalar refOut = function.apply(x, y);
       Scalar diff = out.subtract(refOut).abs();
       // System.out.println("For X="+ x + " and Y="+y+": "+diff);
@@ -101,14 +103,14 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMax = Quantity.of(3.1, SI.ONE);
     final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = LookupTable2D.build(//
+    LookupTable2D lookupTable2D = LookupTable2D.build(//
         function, //
         DimN, //
         DimN, //
         xMin, xMax, //
         yMin, yMax, //
         SI.ONE);
-    LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+    LookupTable2D inverseLookupTable = lookupTable2D.getInverseLookupTableBinarySearch(//
         function, //
         0, DimN, //
         DimN, //
@@ -118,7 +120,7 @@ public class LookupTable2DTest extends TestCase {
     for (int i = 0; i < testN; i++) {
       Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
       Scalar y = Quantity.of(rand.nextFloat(), SI.ONE);
-      Scalar out = lookUpTable2D.lookup(x, y);
+      Scalar out = lookupTable2D.lookup(x, y);
       Scalar xb = inverseLookupTable.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
       // System.out.println("For X="+ x + " and Y="+y+": "+diff);
@@ -190,7 +192,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
     final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = LookupTable2D.build(//
+    LookupTable2D lookupTable2D = LookupTable2D.build(//
         MotorFunction::getAccelerationEstimation, //
         DimN, //
         DimN, //
@@ -199,7 +201,7 @@ public class LookupTable2DTest extends TestCase {
         yMin, //
         yMax, //
         SI.ACCELERATION);
-    LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+    LookupTable2D inverseLookupTable = lookupTable2D.getInverseLookupTableBinarySearch(//
         MotorFunction::getAccelerationEstimation, //
         0, //
         DimN, //
@@ -210,7 +212,7 @@ public class LookupTable2DTest extends TestCase {
     for (int i = 0; i < testN; i++) {
       Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);
       Scalar y = Quantity.of(rand.nextFloat(), SI.VELOCITY);
-      Scalar out = lookUpTable2D.lookup(x, y);
+      Scalar out = lookupTable2D.lookup(x, y);
       Scalar xb = inverseLookupTable.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
       System.out.println("For X=" + x + " and Y=" + y + ": " + diff);

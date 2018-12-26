@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -132,7 +133,9 @@ public class LookupTable2D {
 
   public LookupTable2D getInverseLookupTableBinarySearch( //
       LookupFunction function, //
-      int target, int firstDimN, int secondDimN, Scalar newDimMin, Scalar newDimMax) {
+      int target, //
+      int firstDimN, int secondDimN, //
+      Scalar newDimMin, Scalar newDimMax) {
     float firstDimMinf;
     float firstDimMaxf;
     float secondDimMinf;
@@ -152,12 +155,12 @@ public class LookupTable2D {
       return null;
     // switch x and out
     float table[][] = new float[firstDimN][secondDimN];
-    for (int i1 = 0; i1 < firstDimN; i1++) {
-      for (int i2 = 0; i2 < secondDimN; i2++) {
-        float firstValuef = firstDimMinf//
-            + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
-        float secondValuef = secondDimMinf//
-            + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
+    Tensor s0 = Subdivide.of(firstDimMinf, firstDimMaxf, firstDimN - 1);
+    Tensor s1 = Subdivide.of(secondDimMinf, secondDimMaxf, secondDimN - 1);
+    for (int i0 = 0; i0 < firstDimN; ++i0) {
+      final float firstValuef = s0.Get(i0).number().floatValue();
+      for (int i1 = 0; i1 < secondDimN; ++i1) {
+        float secondValuef = s1.Get(i1).number().floatValue();
         // find appropriate value
         // use approximative gradient descent
         float lower;
@@ -167,7 +170,7 @@ public class LookupTable2D {
           lower = clip0.min().number().floatValue(); // firstDimMin;
           upper = clip0.max().number().floatValue(); // firstDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
-            mid = (lower + upper) / 2.0f;
+            mid = (lower + upper) * 0.5f;
             final float midValue = getFunctionValue(function, mid, secondValuef);
             if (midValue > firstValuef)
               upper = mid;
@@ -179,7 +182,7 @@ public class LookupTable2D {
           lower = clip1.min().number().floatValue(); // secondDimMin;
           upper = clip1.max().number().floatValue(); // secondDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
-            mid = (lower + upper) / 2.0f;
+            mid = (lower + upper) * 0.5f;
             final float midValue = getFunctionValue(function, firstValuef, mid);
             if (midValue > secondValuef)
               upper = mid;
@@ -187,7 +190,7 @@ public class LookupTable2D {
               lower = mid;
           }
         }
-        table[i1][i2] = mid;
+        table[i0][i1] = mid;
       }
     }
     if (target == 0)
@@ -211,16 +214,12 @@ public class LookupTable2D {
     return null;
   }
 
-  private Scalar getLookupValue(Scalar x, Scalar y) {
+  public Scalar lookup(Scalar x, Scalar y) {
     int firstDimN = table.length;
     int secondDimN = table[0].length;
-    return interpolation.Get(Tensors.of( //
+    return Quantity.of(interpolation.Get(Tensors.of( //
         clip0.rescale(x).multiply(RealScalar.of(firstDimN - 1)), //
-        clip1.rescale(y).multiply(RealScalar.of(secondDimN - 1))));
-  }
-
-  public Scalar lookup(Scalar x, Scalar y) {
-    return Quantity.of(getLookupValue(x, y), outputUnit);
+        clip1.rescale(y).multiply(RealScalar.of(secondDimN - 1)))), outputUnit);
   }
 
   /** delivers the extremal values in the specified direction
