@@ -62,7 +62,7 @@ public class PowerLookupTable {
     if (!lookupfile.exists() || !invlookupfile.exists()) {
       // create lookup tables
       // maps from (current, speed)->(acceleration)
-      powerLookupTable = new LookupTable2D( //
+      powerLookupTable = LookupTable2D.build( //
           MotorFunction::getAccelerationEstimation, //
           DimN, //
           DimN, //

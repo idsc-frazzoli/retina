@@ -23,6 +23,10 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LookupTable2D {
   private static final float TOLERANCE = 0.001f;
 
+  static interface LookupFunction extends BinaryOperator<Scalar>, Serializable {
+    // ---
+  }
+
   public static LookupTable2D from(BufferedReader csvReader) throws IOException {
     String line;
     // read dimensions
@@ -52,6 +56,30 @@ public class LookupTable2D {
         Quantity.of(firstDimMin, firstDimUnit), Quantity.of(firstDimMax, firstDimUnit), //
         Quantity.of(secondDimMin, secondDimUnit), Quantity.of(secondDimMax, secondDimUnit), //
         outputUnit);
+  }
+
+  public static LookupTable2D build( //
+      LookupFunction function, //
+      int firstDimN, //
+      int secondDimN, //
+      Scalar firstDimMin, Scalar firstDimMax, //
+      Scalar secondDimMin, Scalar secondDimMax, //
+      Unit outputUnit) {
+    float firstDimMinf = firstDimMin.number().floatValue();
+    float firstDimMaxf = firstDimMax.number().floatValue();
+    float secondDimMinf = secondDimMin.number().floatValue();
+    float secondDimMaxf = secondDimMax.number().floatValue();
+    float[][] table = new float[firstDimN][secondDimN];
+    for (int i1 = 0; i1 < firstDimN; ++i1) {
+      for (int i2 = 0; i2 < secondDimN; ++i2) {
+        float firstValuef = firstDimMinf + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
+        float secondValuef = secondDimMinf + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
+        table[i1][i2] = function.apply( //
+            Quantity.of(firstValuef, Units.of(firstDimMin)), //
+            Quantity.of(secondValuef, Units.of(secondDimMin))).number().floatValue();
+      }
+    }
+    return new LookupTable2D(table, firstDimMin, firstDimMax, secondDimMin, secondDimMax, outputUnit);
   }
 
   // ---
@@ -90,37 +118,6 @@ public class LookupTable2D {
     this.table = table;
     clip0 = Clip.function(firstDimMin, firstDimMax);
     clip1 = Clip.function(secondDimMin, secondDimMax);
-    this.outputUnit = outputUnit;
-    interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
-  }
-
-  static interface LookupFunction extends BinaryOperator<Scalar>, Serializable {
-    // ---
-  }
-
-  public LookupTable2D( //
-      LookupFunction function, //
-      int firstDimN, //
-      int secondDimN, //
-      Scalar firstDimMin, Scalar firstDimMax, //
-      Scalar secondDimMin, Scalar secondDimMax, //
-      Unit outputUnit) {
-    float firstDimMinf = firstDimMin.number().floatValue();
-    float firstDimMaxf = firstDimMax.number().floatValue();
-    float secondDimMinf = secondDimMin.number().floatValue();
-    float secondDimMaxf = secondDimMax.number().floatValue();
-    clip0 = Clip.function(firstDimMin, firstDimMax);
-    clip1 = Clip.function(secondDimMin, secondDimMax);
-    table = new float[firstDimN][secondDimN];
-    for (int i1 = 0; i1 < firstDimN; ++i1) {
-      for (int i2 = 0; i2 < secondDimN; ++i2) {
-        float firstValuef = firstDimMinf + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
-        Scalar firstValue = Quantity.of(firstValuef, Units.of(firstDimMin));
-        float secondValuef = secondDimMinf + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
-        Scalar secondValue = Quantity.of(secondValuef, Units.of(secondDimMin));
-        table[i1][i2] = function.apply(firstValue, secondValue).number().floatValue();
-      }
-    }
     this.outputUnit = outputUnit;
     interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
   }

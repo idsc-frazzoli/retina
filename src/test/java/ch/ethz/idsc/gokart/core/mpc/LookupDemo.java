@@ -36,7 +36,7 @@ enum LookupDemo {
       final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
       final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
       final Scalar yMax = Quantity.of(10, SI.VELOCITY);
-      LookupTable2D lookUpTable2D = new LookupTable2D(//
+      LookupTable2D lookUpTable2D = LookupTable2D.build(//
           MotorFunction::getAccelerationEstimation, //
           DimN, //
           DimN, //

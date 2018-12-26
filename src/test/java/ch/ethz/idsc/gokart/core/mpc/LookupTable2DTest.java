@@ -62,7 +62,7 @@ public class LookupTable2DTest extends TestCase {
     final int DimN = 1000;
     final Scalar fidelityLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = new LookupTable2D(//
+    LookupTable2D lookUpTable2D = LookupTable2D.build(//
         function, //
         DimN, //
         DimN, //
@@ -101,7 +101,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMax = Quantity.of(3.1, SI.ONE);
     final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = new LookupTable2D(//
+    LookupTable2D lookUpTable2D = LookupTable2D.build(//
         function, //
         DimN, //
         DimN, //
@@ -149,7 +149,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMin = Quantity.of(-0.7, SI.ONE);
     final Scalar yMax = Quantity.of(3.1, SI.ONE);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = new LookupTable2D(//
+    LookupTable2D lookUpTable2D = LookupTable2D.build(//
         function, //
         DimN, //
         DimN, //
@@ -190,7 +190,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
     final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
-    LookupTable2D lookUpTable2D = new LookupTable2D(//
+    LookupTable2D lookUpTable2D = LookupTable2D.build(//
         MotorFunction::getAccelerationEstimation, //
         DimN, //
         DimN, //
