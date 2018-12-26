@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -30,8 +31,7 @@ public class LookupTable2DTest extends TestCase {
     LookupTable2D lookupTable = new LookupTable2D( //
         Tensors.matrixFloat(table), //
         Clip.absoluteOne(), //
-        Clip.absoluteOne(), //
-        SI.METER);
+        Clip.absoluteOne());
     final File file = new File("testLookupTable.object");
     Export.object(file, lookupTable);
     LookupTable2D lookupTable2 = Import.object(file);
@@ -49,8 +49,7 @@ public class LookupTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1), //
-        SI.ONE);
+        Clip.function(-0.7, 3.1));
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -75,8 +74,7 @@ public class LookupTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1), //
-        SI.ONE);
+        Clip.function(-0.7, 3.1));
     LookupTable2D inverseLookupTable = lookupTable2D.getInverseLookupTableBinarySearch(//
         Scalar::add, //
         0, DimN, //
@@ -111,8 +109,7 @@ public class LookupTable2DTest extends TestCase {
         DimN, //
         DimN, //
         Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1), //
-        SI.ONE);
+        Clip.function(-0.7, 3.1));
     LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
         Scalar::add, //
         1, //
@@ -141,18 +138,20 @@ public class LookupTable2DTest extends TestCase {
     final int DimN = 250;
     // higher limit because of scaling of output [-2300, 2300]
     final Scalar inversionLimit = Quantity.of(2, NonSI.ARMS);
-    Clip clip = Clip.function(Quantity.of(-2300, NonSI.ARMS), Quantity.of(+2300, NonSI.ARMS));
-    final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
-    final Scalar yMax = Quantity.of(+10, SI.VELOCITY);
+    final Clip pClip = Clip.function( //
+        Quantity.of(-2300, NonSI.ARMS), //
+        Quantity.of(+2300, NonSI.ARMS));
+    final Clip vClip = Clip.function( //
+        Quantity.of(-10, SI.VELOCITY), //
+        Quantity.of(+10, SI.VELOCITY));
     final int testN = 100;
-    LookupTable2D lookupTable2D = LookupTable2D.build(//
+    LookupTable2D forward = LookupTable2D.build( //
         MotorFunction::getAccelerationEstimation, //
         DimN, //
         DimN, //
-        clip, //
-        Clip.function(yMin, yMax), //
-        SI.ACCELERATION);
-    LookupTable2D inverseLookupTable = lookupTable2D.getInverseLookupTableBinarySearch(//
+        pClip, //
+        vClip);
+    LookupTable2D inverse = forward.getInverseLookupTableBinarySearch(//
         MotorFunction::getAccelerationEstimation, //
         0, //
         DimN, //
@@ -164,8 +163,9 @@ public class LookupTable2DTest extends TestCase {
     for (int count = 0; count < testN; ++count) {
       Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);
       Scalar y = Quantity.of(rand.nextFloat(), SI.VELOCITY);
-      Scalar out = lookupTable2D.lookup(x, y);
-      Scalar xb = inverseLookupTable.lookup(out, y);
+      Scalar out = forward.lookup(x, y);
+      assertEquals(Units.of(out), SI.ACCELERATION);
+      Scalar xb = inverse.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
       if (Scalars.lessThan(inversionLimit, diff)) {
         System.out.println("For X=" + x + " and Y=" + y + ": " + diff);

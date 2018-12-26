@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum MotorFunction {
+/* package */ enum MotorFunction {
   ;
   private static final CubicBiPolynomial SF_POS = new CubicBiPolynomial( //
       -0.321f, //
@@ -57,10 +57,10 @@ enum MotorFunction {
 
   /** @param power with unit "ARMS"
    * @param speed with unit velocity e.g. "m/s"
-   * @return */
+   * @return "m*s^-2" */
   public static Scalar getAccelerationEstimation(Scalar power, Scalar speed) {
-    float fpow = Magnitude.ARMS.toFloat(power);
     float fspd = Magnitude.VELOCITY.toFloat(speed);
+    float fpow = Magnitude.ARMS.toFloat(power);
     return Quantity.of(fullFunction(fspd, fpow), SI.ACCELERATION);
   }
 }

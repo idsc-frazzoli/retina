@@ -6,6 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -15,9 +16,12 @@ public class PowerLookupTableTest extends TestCase {
     Scalar correctMaxCurr = Quantity.of(2300, NonSI.ARMS);
     PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
     Scalar velocity = Quantity.of(3, SI.VELOCITY);
-    Scalar maxpower = RealScalar.ONE;
+    Tensor minMax = powerLookupTable.getMinMaxAcceleration(velocity);
+    System.out.println("minMax=" + minMax);
     Scalar minpower = RealScalar.ONE.negate();
+    Scalar maxpower = RealScalar.ONE;
     Scalar maxacc = powerLookupTable.getNormalizedAcceleration(maxpower, velocity);
+    System.out.println(maxacc);
     Scalar maxcurr = powerLookupTable.getNeededCurrent(maxacc, velocity);
     Scalar minacc = powerLookupTable.getNormalizedAcceleration(minpower, velocity);
     Scalar mincurr = powerLookupTable.getNeededCurrent(minacc, velocity);

@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-enum LookupDemo {
+/* package */ enum LookupDemo {
   ;
   private static final int RES = 500 - 1;
 
@@ -47,10 +47,6 @@ enum LookupDemo {
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
       Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
     }
-    // Export.of(UserHome.Pictures("linearinterplook2d.csv"), rgba);
-    // Tensor tensor = Import.of(UserHome.Pictures("linearinterplook2d.csv"));
-    // @SuppressWarnings("unused")
-    // float[][] array = Primitives.toFloatArray2D(tensor);4
     {
       final int DimN = 250;
       LookupTable2D lookUpTable2D = LookupTable2D.build(//
@@ -58,8 +54,7 @@ enum LookupDemo {
           DimN, //
           DimN, //
           clip_powers, //
-          clip_speeds, //
-          SI.ACCELERATION);
+          clip_speeds);
       LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch( //
           MotorFunction::getAccelerationEstimation, //
           0, //
