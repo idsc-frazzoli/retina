@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.function.BinaryOperator;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,8 +18,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-//TODO: switch the whole thing to Tensor variables (this will not change any interactions)
-//TODO: document this properly (to be done after the whole thing works)
+// TODO switch the whole thing to Tensor variables (this will not change any interactions)
+// TODO document this properly (to be done after the whole thing works)
 public class LookupTable2D {
   private static final float TOLERANCE = 0.001f;
 
@@ -53,14 +55,12 @@ public class LookupTable2D {
   }
 
   // ---
-  final float table[][];
   private final Clip clip0;
   private final Clip clip1;
+  final float table[][];
   // ---
   private final Interpolation interpolation;
-  // ---
   private final Unit outputUnit;
-  private LookupFunction originalFunction = null;
 
   public void saveTable(BufferedWriter csvWriter) throws IOException {
     // read dimensions
@@ -94,17 +94,17 @@ public class LookupTable2D {
     interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
   }
 
-  static interface LookupFunction {
-    Scalar getValue(Scalar firstValue, Scalar secondValue);
+  static interface LookupFunction extends BinaryOperator<Scalar>, Serializable {
+    // ---
   }
 
   public LookupTable2D( //
       LookupFunction function, //
-      int firstDimN, int secondDimN, //
+      int firstDimN, //
+      int secondDimN, //
       Scalar firstDimMin, Scalar firstDimMax, //
       Scalar secondDimMin, Scalar secondDimMax, //
       Unit outputUnit) {
-    this.originalFunction = function;
     float firstDimMinf = firstDimMin.number().floatValue();
     float firstDimMaxf = firstDimMax.number().floatValue();
     float secondDimMinf = secondDimMin.number().floatValue();
@@ -115,13 +115,10 @@ public class LookupTable2D {
     for (int i1 = 0; i1 < firstDimN; ++i1) {
       for (int i2 = 0; i2 < secondDimN; ++i2) {
         float firstValuef = firstDimMinf + (firstDimMaxf - firstDimMinf) * i1 / (firstDimN - 1);
-        Scalar firstValue = Quantity.of(//
-            firstValuef, //
-            Units.of(firstDimMin));
+        Scalar firstValue = Quantity.of(firstValuef, Units.of(firstDimMin));
         float secondValuef = secondDimMinf + (secondDimMaxf - secondDimMinf) * i2 / (secondDimN - 1);
-        Scalar secondValue = Quantity.of(// ,
-            secondValuef, Units.of(secondDimMin));
-        table[i1][i2] = function.getValue(firstValue, secondValue).number().floatValue();
+        Scalar secondValue = Quantity.of(secondValuef, Units.of(secondDimMin));
+        table[i1][i2] = function.apply(firstValue, secondValue).number().floatValue();
       }
     }
     this.outputUnit = outputUnit;
@@ -130,16 +127,14 @@ public class LookupTable2D {
 
   /** get inverted lookup table target specifies which of the arguments gets to be
    * the the output: function should be monotone */
-  private float getFunctionValue(float x, float y) {
-    if (originalFunction != null)
-      return originalFunction.getValue( //
-          Quantity.of(x, Units.of(clip0.min())), //
-          Quantity.of(y, Units.of(clip1.min()))).number().floatValue();
-    throw new UnsupportedOperationException("not tested yet!");
-    // return getValue(x, y);
+  private float getFunctionValue(LookupFunction function, float x, float y) {
+    return function.apply( //
+        Quantity.of(x, Units.of(clip0.min())), //
+        Quantity.of(y, Units.of(clip1.min()))).number().floatValue();
   }
 
   public LookupTable2D getInverseLookupTableBinarySearch( //
+      LookupFunction function, //
       int target, int firstDimN, int secondDimN, Scalar newDimMin, Scalar newDimMax) {
     float firstDimMinf;
     float firstDimMaxf;
@@ -176,7 +171,7 @@ public class LookupTable2D {
           upper = clip0.max().number().floatValue(); // firstDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) / 2.0f;
-            final float midValue = getFunctionValue(mid, secondValuef);
+            final float midValue = getFunctionValue(function, mid, secondValuef);
             if (midValue > firstValuef)
               upper = mid;
             else
@@ -188,7 +183,7 @@ public class LookupTable2D {
           upper = clip1.max().number().floatValue(); // secondDimMax;
           while (Math.abs(upper - lower) > TOLERANCE) {
             mid = (lower + upper) / 2.0f;
-            final float midValue = getFunctionValue(firstValuef, mid);
+            final float midValue = getFunctionValue(function, firstValuef, mid);
             if (midValue > secondValuef)
               upper = mid;
             else

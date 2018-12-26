@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -32,20 +31,13 @@ enum LookupDemo {
     // @SuppressWarnings("unused")
     // float[][] array = Primitives.toFloatArray2D(tensor);4
     {
-      LookupFunction function = new LookupFunction() {
-        @Override
-        public Scalar getValue(Scalar firstValue, Scalar secondValue) {
-          // power, Speed
-          return MotorFunction.getAccelerationEstimation(firstValue, secondValue);
-        }
-      };
       final int DimN = 250;
       final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
       final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
       final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
       final Scalar yMax = Quantity.of(10, SI.VELOCITY);
       LookupTable2D lookUpTable2D = new LookupTable2D(//
-          function, //
+          MotorFunction::getAccelerationEstimation, //
           DimN, //
           DimN, //
           xMin, //
@@ -53,7 +45,8 @@ enum LookupDemo {
           yMin, //
           yMax, //
           SI.ACCELERATION);
-      LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+      LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch( //
+          MotorFunction::getAccelerationEstimation, //
           0, //
           DimN, //
           DimN, //

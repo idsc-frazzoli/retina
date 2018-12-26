@@ -51,7 +51,7 @@ public class LookupTable2DTest extends TestCase {
   public void testFidelity() throws Exception {
     LookupFunction function = new LookupFunction() {
       @Override
-      public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+      public Scalar apply(Scalar firstValue, Scalar secondValue) {
         // TODO find sine in Tensor
         return Quantity.of(
             // Math.sin(firstValue.number().floatValue()) +
@@ -76,7 +76,7 @@ public class LookupTable2DTest extends TestCase {
       Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
       Scalar y = Quantity.of(rand.nextFloat(), SI.ONE);
       Scalar out = lookUpTable2D.lookup(x, y);
-      Scalar refOut = function.getValue(x, y);
+      Scalar refOut = function.apply(x, y);
       Scalar diff = out.subtract(refOut).abs();
       // System.out.println("For X="+ x + " and Y="+y+": "+diff);
       // System.out.println("out="+out+ " /ref="+refOut);
@@ -87,7 +87,7 @@ public class LookupTable2DTest extends TestCase {
   public void testInversion() throws Exception {
     LookupFunction function = new LookupFunction() {
       @Override
-      public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+      public Scalar apply(Scalar firstValue, Scalar secondValue) {
         // TODO find sine in Tensor
         return Quantity.of(firstValue.number().floatValue() + secondValue.number().floatValue(),
             // firstValue.number().floatValue(),
@@ -105,12 +105,11 @@ public class LookupTable2DTest extends TestCase {
         function, //
         DimN, //
         DimN, //
-        xMin, //
-        xMax, //
-        yMin, //
-        yMax, //
+        xMin, xMax, //
+        yMin, yMax, //
         SI.ONE);
     LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        function, //
         0, DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
@@ -136,7 +135,7 @@ public class LookupTable2DTest extends TestCase {
   public void testInversion2() throws Exception {
     LookupFunction function = new LookupFunction() {
       @Override
-      public Scalar getValue(Scalar firstValue, Scalar secondValue) {
+      public Scalar apply(Scalar firstValue, Scalar secondValue) {
         // TODO find sine in Tensor
         return Quantity.of(firstValue.number().floatValue() + secondValue.number().floatValue(),
             // firstValue.number().floatValue(),
@@ -154,12 +153,11 @@ public class LookupTable2DTest extends TestCase {
         function, //
         DimN, //
         DimN, //
-        xMin, //
-        xMax, //
-        yMin, //
-        yMax, //
+        xMin, xMax, //
+        yMin, yMax, //
         SI.ONE);
     LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        function, //
         1, //
         DimN, //
         DimN, //
@@ -184,13 +182,6 @@ public class LookupTable2DTest extends TestCase {
   }
 
   public void testWithPowerFunction() {
-    LookupFunction function = new LookupFunction() {
-      @Override
-      public Scalar getValue(Scalar current, Scalar velocity) {
-        // power, Speed
-        return MotorFunction.getAccelerationEstimation(current, velocity);
-      }
-    };
     final int DimN = 250;
     // higher limit because of scaling of output [-2300, 2300]
     final Scalar inversionLimit = Quantity.of(2, NonSI.ARMS);
@@ -200,7 +191,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
     LookupTable2D lookUpTable2D = new LookupTable2D(//
-        function, //
+        MotorFunction::getAccelerationEstimation, //
         DimN, //
         DimN, //
         xMin, //
@@ -209,6 +200,7 @@ public class LookupTable2DTest extends TestCase {
         yMax, //
         SI.ACCELERATION);
     LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        MotorFunction::getAccelerationEstimation, //
         0, //
         DimN, //
         DimN, //
@@ -223,7 +215,7 @@ public class LookupTable2DTest extends TestCase {
       Scalar diff = x.subtract(xb).abs();
       System.out.println("For X=" + x + " and Y=" + y + ": " + diff);
       System.out.println("out: " + out);
-      System.out.println("fun out: " + function.getValue(x, y));
+      System.out.println("fun out: " + MotorFunction.getAccelerationEstimation(x, y));
       System.out.println("x=" + x + " /xb=" + xb);
       assertTrue(Scalars.lessThan(diff, inversionLimit));
     }

@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -62,16 +61,9 @@ public class PowerLookupTable {
     File invlookupfile = new File(inverseLookupTableLocation);
     if (!lookupfile.exists() || !invlookupfile.exists()) {
       // create lookup tables
-      LookupFunction function = new LookupFunction() {
-        @Override
-        public Scalar getValue(Scalar firstValue, Scalar secondValue) {
-          // power, Speed
-          return MotorFunction.getAccelerationEstimation(firstValue, secondValue);
-        }
-      };
       // maps from (current, speed)->(acceleration)
-      powerLookupTable = new LookupTable2D(//
-          function, //
+      powerLookupTable = new LookupTable2D( //
+          MotorFunction::getAccelerationEstimation, //
           DimN, //
           DimN, //
           cMin, //
@@ -84,12 +76,12 @@ public class PowerLookupTable {
         powerLookupTable.saveTable(bufferedWriter);
       }
       // maps from (acceleration, speed)->(acceleration)
-      inverseLookupTable = powerLookupTable.getInverseLookupTableBinarySearch(//
+      inverseLookupTable = powerLookupTable.getInverseLookupTableBinarySearch( //
+          MotorFunction::getAccelerationEstimation, //
           0, //
           DimN, //
           DimN, //
-          aMin, //
-          aMax);
+          aMin, aMax);
       // Save
       try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(invlookupfile))) {
         inverseLookupTable.saveTable(bufferedWriter);
