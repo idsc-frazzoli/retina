@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Random;
 
-import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
+import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -30,14 +30,14 @@ public class LookupTable2DTest extends TestCase {
         table[i1][i2] = random.nextFloat();
       }
     }
-    LookUpTable2D lookUpTable = new LookUpTable2D(table, -1f, 1f, -1f, 1f, testUnit, testUnit, testUnit);
+    LookupTable2D lookUpTable = new LookupTable2D(table, -1f, 1f, -1f, 1f, testUnit, testUnit, testUnit);
     final File file = new File("testLookupTable.csv");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
       lookUpTable.saveTable(bw);
     }
-    LookUpTable2D lookUpTable2 = null;
+    LookupTable2D lookUpTable2 = null;
     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-      lookUpTable2 = new LookUpTable2D(br);
+      lookUpTable2 = new LookupTable2D(br);
     }
     for (int i1 = 0; i1 < 10; i1++)
       for (int i2 = 0; i2 < 10; i2++)
@@ -59,7 +59,7 @@ public class LookupTable2DTest extends TestCase {
     final int DimN = 1000;
     final Scalar fidelityLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+    LookupTable2D lookUpTable2D = new LookupTable2D(//
         function, //
         DimN, //
         DimN, //
@@ -67,7 +67,7 @@ public class LookupTable2DTest extends TestCase {
         Quantity.of(1.2, SI.ONE), //
         Quantity.of(-0.7, SI.ONE), //
         Quantity.of(3.1, SI.ONE), //
-        SI.ONE, SI.ONE, SI.ONE);
+        SI.ONE);
     Random rand = new Random(0);
     for (int i = 0; i < testN; i++) {
       Scalar x = Quantity.of(rand.nextFloat(), SI.ONE);
@@ -98,7 +98,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMax = Quantity.of(3.1, SI.ONE);
     final Scalar inversionLimit = Quantity.of(0.001, SI.ONE);
     final int testN = 100;
-    LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+    LookupTable2D lookUpTable2D = new LookupTable2D(//
         function, //
         DimN, //
         DimN, //
@@ -106,8 +106,8 @@ public class LookupTable2DTest extends TestCase {
         xMax, //
         yMin, //
         yMax, //
-        SI.ONE, SI.ONE, SI.ONE);
-    LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        SI.ONE);
+    LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
         0, DimN, //
         DimN, //
         Quantity.of(-5, SI.ONE), //
@@ -147,7 +147,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMin = Quantity.of(-0.7, SI.ONE);
     final Scalar yMax = Quantity.of(3.1, SI.ONE);
     final int testN = 100;
-    LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+    LookupTable2D lookUpTable2D = new LookupTable2D(//
         function, //
         DimN, //
         DimN, //
@@ -155,8 +155,8 @@ public class LookupTable2DTest extends TestCase {
         xMax, //
         yMin, //
         yMax, //
-        SI.ONE, SI.ONE, SI.ONE);
-    LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        SI.ONE);
+    LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
         1, //
         DimN, //
         DimN, //
@@ -196,7 +196,7 @@ public class LookupTable2DTest extends TestCase {
     final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
     final Scalar yMax = Quantity.of(10, SI.VELOCITY);
     final int testN = 100;
-    LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+    LookupTable2D lookUpTable2D = new LookupTable2D(//
         function, //
         DimN, //
         DimN, //
@@ -204,8 +204,8 @@ public class LookupTable2DTest extends TestCase {
         xMax, //
         yMin, //
         yMax, //
-        NonSI.ARMS, SI.VELOCITY, SI.ACCELERATION);
-    LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+        SI.ACCELERATION);
+    LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
         0, //
         DimN, //
         DimN, //

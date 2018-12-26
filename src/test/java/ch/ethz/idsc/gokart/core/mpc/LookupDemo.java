@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
+import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -40,11 +40,11 @@ enum LookupDemo {
         }
       };
       final int DimN = 250;
-      final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
-      final Scalar yMax = Quantity.of(10, SI.VELOCITY);
       final Scalar xMin = Quantity.of(-2300, NonSI.ARMS);
       final Scalar xMax = Quantity.of(2300, NonSI.ARMS);
-      LookUpTable2D lookUpTable2D = new LookUpTable2D(//
+      final Scalar yMin = Quantity.of(-10, SI.VELOCITY);
+      final Scalar yMax = Quantity.of(10, SI.VELOCITY);
+      LookupTable2D lookUpTable2D = new LookupTable2D(//
           function, //
           DimN, //
           DimN, //
@@ -52,8 +52,8 @@ enum LookupDemo {
           xMax, //
           yMin, //
           yMax, //
-          NonSI.ARMS, SI.VELOCITY, SI.ACCELERATION);
-      LookUpTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
+          SI.ACCELERATION);
+      LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
           0, //
           DimN, //
           DimN, //
@@ -63,7 +63,7 @@ enum LookupDemo {
       System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("set up inverse table");
       {
-        Tensor accelerations = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, SI.ACCELERATION));
+        Tensor accelerations = Subdivide.of(-2300, 2300, 500).map(s -> Quantity.of(s, NonSI.ARMS));
         Tensor speeds = Subdivide.of(-8, 8, 500).map(s -> Quantity.of(s, SI.VELOCITY));
         Tensor matrix = Tensors.matrix((i, j) -> lookUpTable2D.lookup(accelerations.Get(i).negate(), speeds.Get(j)), accelerations.length(), speeds.length());
         Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);

@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.gokart.core.mpc.LookUpTable2D.LookupFunction;
+import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -42,9 +42,9 @@ public class PowerLookupTable {
   private final String lookupTableLocation = "powerlookuptable.csv";
   private final String inverseLookupTableLocation = "inversepowerlookuptable.csv";
   /** maps from (current, speed)->(acceleration) */
-  private final LookUpTable2D powerLookupTable;
+  private final LookupTable2D powerLookupTable;
   /** maps from (acceleration, speed)->(current) */
-  private final LookUpTable2D inverseLookupTable;
+  private final LookupTable2D inverseLookupTable;
   // min and max values for lookup tables
   // TODO magic const in config class
   private final Scalar vMin = Quantity.of(-10, SI.VELOCITY);
@@ -70,7 +70,7 @@ public class PowerLookupTable {
         }
       };
       // maps from (current, speed)->(acceleration)
-      powerLookupTable = new LookUpTable2D(//
+      powerLookupTable = new LookupTable2D(//
           function, //
           DimN, //
           DimN, //
@@ -78,7 +78,7 @@ public class PowerLookupTable {
           cMax, //
           vMin, //
           vMax, //
-          NonSI.ARMS, SI.VELOCITY, SI.ACCELERATION);
+          SI.ACCELERATION);
       // save
       // FileWriter lookupFileWriter = ;
       try (BufferedWriter lookupBufferedWriter = new BufferedWriter(new FileWriter(lookupfile))) {
@@ -98,11 +98,11 @@ public class PowerLookupTable {
     } else {
       // load lookup table
       try (BufferedReader lookupBufferedReader = new BufferedReader(new FileReader(lookupfile))) {
-        powerLookupTable = new LookUpTable2D(lookupBufferedReader);
+        powerLookupTable = new LookupTable2D(lookupBufferedReader);
       }
       // load inverse table
       try (BufferedReader inverseLookupBufferedReader = new BufferedReader(new FileReader(invlookupfile))) {
-        inverseLookupTable = new LookUpTable2D(inverseLookupBufferedReader);
+        inverseLookupTable = new LookupTable2D(inverseLookupBufferedReader);
       }
     }
   }
@@ -117,7 +117,7 @@ public class PowerLookupTable {
   }
 
   /** get acceleration for a given current and velocity
-   * @param current the applied motor current [Arms]
+   * @param current the applied motor current [ARMS]
    * @param velocity the velocity [m/s]
    * @return the resulting acceleration [m/s^2] */
   public Scalar getAcceleration(Scalar current, Scalar velocity) {
@@ -129,7 +129,7 @@ public class PowerLookupTable {
    * the motor current corresponding to the nearest possible acceleration value is returned
    * @param wantedAcceleration the wanted acceleration [m/s^2]
    * @param velocity the velocity [m/s]
-   * @return the needed motor current [Arms] */
+   * @return the needed motor current [ARMS] */
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return inverseLookupTable.lookup(wantedAcceleration, velocity);
   }
@@ -158,7 +158,7 @@ public class PowerLookupTable {
    * @return the resulting acceleration [m/s^2] */
   public Scalar getNormalizedAccelerationTorqueCentered(Scalar power, Scalar velocity) {
     Tensor minMaxAcc = getMinMaxAcceleration(velocity);
-    Scalar torqueFreeAcc = getAcceleration(RealScalar.ZERO, velocity);
+    Scalar torqueFreeAcc = getAcceleration(Quantity.of(0, NonSI.ARMS), velocity);
     Scalar clippedPower = Clip.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), torqueFreeAcc, minMaxAcc.Get(1));
     Interpolation powerInterpolation = LinearInterpolation.of(keypoints);
