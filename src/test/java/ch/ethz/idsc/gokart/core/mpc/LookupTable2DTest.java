@@ -11,6 +11,7 @@ import java.util.Random;
 import ch.ethz.idsc.gokart.core.mpc.LookupTable2D.LookupFunction;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -30,7 +31,9 @@ public class LookupTable2DTest extends TestCase {
         table[i1][i2] = random.nextFloat();
       }
     }
-    LookupTable2D lookUpTable = new LookupTable2D(table, -1f, 1f, -1f, 1f, testUnit, testUnit, testUnit);
+    LookupTable2D lookUpTable = new LookupTable2D(table, RealScalar.ONE.negate(), RealScalar.ONE, RealScalar.ONE.negate(), RealScalar.ONE,
+        // testUnit, testUnit,
+        testUnit);
     final File file = new File("testLookupTable.csv");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
       lookUpTable.saveTable(bw);

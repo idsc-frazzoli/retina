@@ -80,9 +80,8 @@ public class PowerLookupTable {
           vMax, //
           SI.ACCELERATION);
       // save
-      // FileWriter lookupFileWriter = ;
-      try (BufferedWriter lookupBufferedWriter = new BufferedWriter(new FileWriter(lookupfile))) {
-        powerLookupTable.saveTable(lookupBufferedWriter);
+      try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(lookupfile))) {
+        powerLookupTable.saveTable(bufferedWriter);
       }
       // maps from (acceleration, speed)->(acceleration)
       inverseLookupTable = powerLookupTable.getInverseLookupTableBinarySearch(//
@@ -92,17 +91,17 @@ public class PowerLookupTable {
           aMin, //
           aMax);
       // Save
-      try (BufferedWriter inverseLookupBufferedWriter = new BufferedWriter(new FileWriter(invlookupfile))) {
-        inverseLookupTable.saveTable(inverseLookupBufferedWriter);
+      try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(invlookupfile))) {
+        inverseLookupTable.saveTable(bufferedWriter);
       }
     } else {
       // load lookup table
-      try (BufferedReader lookupBufferedReader = new BufferedReader(new FileReader(lookupfile))) {
-        powerLookupTable = LookupTable2D.from(lookupBufferedReader);
+      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(lookupfile))) {
+        powerLookupTable = LookupTable2D.from(bufferedReader);
       }
       // load inverse table
-      try (BufferedReader inverseLookupBufferedReader = new BufferedReader(new FileReader(invlookupfile))) {
-        inverseLookupTable = LookupTable2D.from(inverseLookupBufferedReader);
+      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(invlookupfile))) {
+        inverseLookupTable = LookupTable2D.from(bufferedReader);
       }
     }
   }

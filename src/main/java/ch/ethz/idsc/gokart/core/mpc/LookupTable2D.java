@@ -47,9 +47,8 @@ public class LookupTable2D {
         table[i1][i2] = Float.parseFloat(linevals[i2]);
     }
     return new LookupTable2D(table, //
-        firstDimMin, firstDimMax, //
-        secondDimMin, secondDimMax, //
-        firstDimUnit, secondDimUnit, //
+        Quantity.of(firstDimMin, firstDimUnit), Quantity.of(firstDimMax, firstDimUnit), //
+        Quantity.of(secondDimMin, secondDimUnit), Quantity.of(secondDimMax, secondDimUnit), //
         outputUnit);
   }
 
@@ -92,22 +91,18 @@ public class LookupTable2D {
 
   public LookupTable2D( //
       float table[][], //
-      float firstDimMin, float firstDimMax, //
-      float secondDimMin, float secondDimMax, //
-      Unit firstDimUnit, Unit secondDimUnit, Unit outputUnit) {
+      Scalar firstDimMin, Scalar firstDimMax, //
+      Scalar secondDimMin, Scalar secondDimMax, //
+      Unit outputUnit) {
     this.table = table;
-    this.firstDimMin = firstDimMin;
-    this.firstDimMax = firstDimMax;
-    this.secondDimMin = secondDimMin;
-    this.secondDimMax = secondDimMax;
-    this.firstDimUnit = firstDimUnit;
-    clip0 = Clip.function( //
-        Quantity.of(firstDimMin, firstDimUnit), //
-        Quantity.of(firstDimMax, firstDimUnit));
-    this.secondDimUnit = secondDimUnit;
-    clip1 = Clip.function( //
-        Quantity.of(secondDimMin, secondDimUnit), //
-        Quantity.of(secondDimMax, secondDimUnit));
+    this.firstDimMin = firstDimMin.number().floatValue();
+    this.firstDimMax = firstDimMax.number().floatValue();
+    this.secondDimMin = secondDimMin.number().floatValue();
+    this.secondDimMax = secondDimMax.number().floatValue();
+    this.firstDimUnit = Units.of(firstDimMin);
+    clip0 = Clip.function(firstDimMin, firstDimMax);
+    this.secondDimUnit = Units.of(secondDimMin);
+    clip1 = Clip.function(secondDimMin, secondDimMax);
     this.outputUnit = outputUnit;
     interpolation = LinearInterpolation.of(Tensors.matrixFloat(table));
   }
@@ -121,7 +116,6 @@ public class LookupTable2D {
       int firstDimN, int secondDimN, //
       Scalar firstDimMin, Scalar firstDimMax, //
       Scalar secondDimMin, Scalar secondDimMax, //
-      // Unit firstDimUnit, Unit secondDimUnit, //
       Unit outputUnit) {
     this.originalFunction = function;
     this.firstDimMin = firstDimMin.number().floatValue();
@@ -224,22 +218,22 @@ public class LookupTable2D {
     if (target == 0)
       return new LookupTable2D( //
           table, //
-          firstDimMinf, //
-          firstDimMaxf, //
-          secondDimMinf, //
-          secondDimMaxf, //
-          outputUnit, //
-          secondDimUnit, //
+          Quantity.of(firstDimMinf, outputUnit), //
+          Quantity.of(firstDimMaxf, outputUnit), //
+          Quantity.of(secondDimMinf, secondDimUnit), //
+          Quantity.of(secondDimMaxf, secondDimUnit), //
+          // outputUnit, //
+          // secondDimUnit, //
           firstDimUnit);
     if (target == 1)
       return new LookupTable2D(//
           table, //
-          firstDimMinf, //
-          firstDimMaxf, //
-          secondDimMinf, //
-          secondDimMaxf, //
-          firstDimUnit, //
-          outputUnit, //
+          Quantity.of(firstDimMinf, firstDimUnit), //
+          Quantity.of(firstDimMaxf, firstDimUnit), //
+          Quantity.of(secondDimMinf, outputUnit), //
+          Quantity.of(secondDimMaxf, outputUnit), //
+          // firstDimUnit, //
+          // outputUnit, //
           secondDimUnit);
     return null;
   }
