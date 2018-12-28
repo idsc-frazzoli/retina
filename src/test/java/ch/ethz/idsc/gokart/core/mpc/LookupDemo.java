@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.img.ArrayPlot;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /* package */ enum LookupDemo {
@@ -59,7 +60,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
           MotorFunction::getAccelerationEstimation, //
           0, //
           DimN, DimN, //
-          clip_accels);
+          clip_accels, Chop._03);
       System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("set up inverse table");

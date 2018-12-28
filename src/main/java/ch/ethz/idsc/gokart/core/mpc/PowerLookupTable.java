@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** to ensure that the maximum motor torque is actually applied */
@@ -85,7 +86,7 @@ public class PowerLookupTable {
         MotorFunction::getAccelerationEstimation, //
         0, //
         RES, RES, //
-        CLIP_ACC);
+        CLIP_ACC, Chop._03);
     try {
       Export.object(FILE_INVERSE, Objects.requireNonNull(lookupTable2D));
     } catch (Exception exception) {

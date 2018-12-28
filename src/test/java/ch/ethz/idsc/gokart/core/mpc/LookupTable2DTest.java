@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -24,19 +25,16 @@ public class LookupTable2DTest extends TestCase {
     // save to file and reload again
     Random random = new Random();
     final int n = 30;
-    float table[][] = new float[n][n];
+    Scalar[][] table = new Scalar[n][n];
     for (int i0 = 0; i0 < n; ++i0)
       for (int i1 = 0; i1 < n; ++i1)
-        table[i0][i1] = random.nextFloat();
-    LookupTable2D lookupTable = new LookupTable2D( //
-        Tensors.matrixFloat(table), //
-        Clip.absoluteOne(), //
-        Clip.absoluteOne());
+        table[i0][i1] = RealScalar.of(random.nextFloat());
+    LookupTable2D lookupTable = new LookupTable2D(table, Clip.absoluteOne(), Clip.absoluteOne());
     final File file = new File("testLookupTable.object");
     Export.object(file, lookupTable);
     LookupTable2D lookupTable2 = Import.object(file);
     file.delete();
-    assertEquals(Tensors.matrixFloat(table), lookupTable2.tensor);
+    assertEquals(Tensors.matrix(table), lookupTable2.tensor);
   }
 
   public void testFidelity() throws Exception {
@@ -79,7 +77,7 @@ public class LookupTable2DTest extends TestCase {
         Scalar::add, //
         0, DimN, //
         DimN, //
-        Clip.function(-5, 5));
+        Clip.function(-5, 5), Chop._03);
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -115,7 +113,7 @@ public class LookupTable2DTest extends TestCase {
         1, //
         DimN, //
         DimN, //
-        Clip.function(-5, 5));
+        Clip.function(-5, 5), Chop._03);
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -158,7 +156,8 @@ public class LookupTable2DTest extends TestCase {
         DimN, //
         Clip.function( //
             Quantity.of(-2, SI.ACCELERATION), //
-            Quantity.of(+2, SI.ACCELERATION)));
+            Quantity.of(+2, SI.ACCELERATION)),
+        Chop._03);
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);

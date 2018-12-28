@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 
 import ch.ethz.idsc.tensor.RealScalar;
@@ -14,48 +15,48 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-// TODO switch the whole thing to Tensor variables (this will not change any interactions)
 // TODO document this properly (to be done after the whole thing works)
 public class LookupTable2D implements Serializable {
-  private static final float TOLERANCE = 0.001f;
   private static final Scalar HALF = RealScalar.of(0.5);
+
+  private static Scalar dropUnit(Scalar scalar) {
+    return scalar instanceof Quantity //
+        ? ((Quantity) scalar).value()
+        : scalar;
+  }
 
   public static LookupTable2D build( //
       BinaryOperator<Scalar> function, //
       int firstDimN, int secondDimN, //
-      Clip firstDimClip, //
-      Clip secondDimClip) {
+      Clip clip0, Clip clip1) {
     Scalar[][] table = new Scalar[firstDimN][secondDimN];
-    Tensor s0 = Subdivide.of(firstDimClip.min(), firstDimClip.max(), firstDimN - 1);
-    Tensor s1 = Subdivide.of(secondDimClip.min(), secondDimClip.max(), secondDimN - 1);
+    Tensor s0 = Subdivide.of(clip0.min(), clip0.max(), firstDimN - 1);
+    Tensor s1 = Subdivide.of(clip1.min(), clip1.max(), secondDimN - 1);
     for (int i0 = 0; i0 < firstDimN; ++i0)
       for (int i1 = 0; i1 < secondDimN; ++i1)
         table[i0][i1] = function.apply(s0.Get(i0), s1.Get(i1));
-    return new LookupTable2D( //
-        Tensors.matrix(table), //
-        firstDimClip, //
-        secondDimClip);
+    return new LookupTable2D(table, clip0, clip1);
   }
 
   // ---
   final Tensor tensor;
   private final Clip clip0;
   private final Clip clip1;
-  // private final Unit outputUnit;
   private final Tensor scale;
   private final Interpolation interpolation;
+  private final Unit unit;
 
-  /* package */ LookupTable2D( //
-      Tensor tensor, //
-      Clip clip0, //
-      Clip clip1) {
-    this.tensor = tensor;
+  /* package */ LookupTable2D(Scalar[][] table, Clip clip0, Clip clip1) {
+    unit = Units.of(table[0][0]);
+    this.tensor = Tensors.matrix(table).map(LookupTable2D::dropUnit);
     this.clip0 = clip0;
     this.clip1 = clip1;
-    // this.outputUnit = outputUnit;
     scale = Tensors.vector(tensor.length() - 1, tensor.get(0).length() - 1);
     interpolation = LinearInterpolation.of(tensor);
   }
@@ -65,48 +66,31 @@ public class LookupTable2D implements Serializable {
    * 
    * @param function monotone
    * @param target
-   * @param firstDimN
-   * @param secondDimN
-   * @param newDimClip
+   * @param dimN0
+   * @param dimN1
+   * @param clipT
+   * @param chop
    * @return */
   public LookupTable2D getInverseLookupTableBinarySearch( //
-      BinaryOperator<Scalar> function, //
-      int target, //
-      int firstDimN, int secondDimN, //
-      Clip newDimClip) {
-    Scalar firstDimMin;
-    Scalar firstDimMax;
-    Scalar secondDimMin;
-    Scalar secondDimMax;
-    if (target == 0) {
-      firstDimMin = newDimClip.min();
-      firstDimMax = newDimClip.max();
-      secondDimMin = clip1.min(); // secondDimMin;
-      secondDimMax = clip1.max();
-    } else //
-    if (target == 1) {
-      firstDimMin = clip0.min();
-      firstDimMax = clip0.max();
-      secondDimMin = newDimClip.min();
-      secondDimMax = newDimClip.max();
-    } else
-      return null;
+      BinaryOperator<Scalar> function, int target, //
+      int dimN0, int dimN1, Clip clipT, Chop chop) {
+    Clip clipN0 = target == 0 ? clipT : clip0;
+    Clip clipN1 = target == 0 ? clip1 : clipT;
     // switch x and out
-    Scalar[][] table = new Scalar[firstDimN][secondDimN];
-    Tensor s0 = Subdivide.of(firstDimMin, firstDimMax, firstDimN - 1);
-    Tensor s1 = Subdivide.of(secondDimMin, secondDimMax, secondDimN - 1);
-    for (int i0 = 0; i0 < firstDimN; ++i0) {
+    Scalar[][] table = new Scalar[dimN0][dimN1];
+    Tensor s0 = Subdivide.of(clipN0.min(), clipN0.max(), dimN0 - 1);
+    Tensor s1 = Subdivide.of(clipN1.min(), clipN1.max(), dimN1 - 1);
+    for (int i0 = 0; i0 < dimN0; ++i0) {
       final Scalar value0 = s0.Get(i0);
-      for (int i1 = 0; i1 < secondDimN; ++i1) {
+      for (int i1 = 0; i1 < dimN1; ++i1) {
         final Scalar value1 = s1.Get(i1);
         // find appropriate value
         // use approximative gradient descent
         Scalar mid = null;
         if (target == 0) {
-          mid = clip0.min().zero();
-          Scalar lower = clip0.min(); // firstDimMin;
-          Scalar upper = clip0.max(); // firstDimMax;
-          while (upper.subtract(lower).abs().number().floatValue() > TOLERANCE) {
+          Scalar lower = clip0.min();
+          Scalar upper = clip0.max();
+          while (!chop.close(lower, upper)) {
             mid = lower.add(upper).multiply(HALF);
             final Scalar midValue = function.apply(mid, value1);
             if (Scalars.lessThan(value0, midValue))
@@ -116,10 +100,9 @@ public class LookupTable2D implements Serializable {
           }
         } else //
         if (target == 1) {
-          mid = clip1.min().zero();
-          Scalar lower = clip1.min(); // secondDimMin;
-          Scalar upper = clip1.max(); // secondDimMax;
-          while (upper.subtract(lower).abs().number().floatValue() > TOLERANCE) {
+          Scalar lower = clip1.min();
+          Scalar upper = clip1.max();
+          while (!chop.close(lower, upper)) {
             mid = lower.add(upper).multiply(HALF);
             final Scalar midValue = function.apply(value0, mid);
             if (Scalars.lessThan(value1, midValue))
@@ -128,27 +111,16 @@ public class LookupTable2D implements Serializable {
               lower = mid;
           }
         }
-        table[i0][i1] = mid;
+        table[i0][i1] = Objects.requireNonNull(mid);
       }
     }
-    if (target == 0)
-      return new LookupTable2D( //
-          Tensors.matrix(table), //
-          newDimClip, //
-          clip1);
-    if (target == 1)
-      return new LookupTable2D(//
-          Tensors.matrix(table), //
-          clip0, //
-          newDimClip);
-    return null;
+    return new LookupTable2D(table, clipN0, clipN1);
   }
 
   public Scalar lookup(Scalar x, Scalar y) {
-    return // Quantity.of(
-    interpolation.Get(Tensors.of( //
+    return Quantity.of(interpolation.Get(Tensors.of( //
         clip0.rescale(x), //
-        clip1.rescale(y)).pmul(scale));// , outputUnit);
+        clip1.rescale(y)).pmul(scale)), unit);
   }
 
   /** delivers the extremal values in the specified direction
@@ -173,21 +145,21 @@ public class LookupTable2D implements Serializable {
    * @param bufferedWriter
    * @throws IOException */
   public void exportToMatlab(BufferedWriter bufferedWriter) throws IOException {
-    // read dimensions
+    // write dimensions
     int firstDimN = tensor.length();
     int secondDimN = tensor.get(0).length();
     bufferedWriter.write(firstDimN + "\n");
     bufferedWriter.write(secondDimN + "\n");
     bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
     bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
-    // read units
+    // write units
     bufferedWriter.write(Units.of(clip0.min()) + "\n");
     bufferedWriter.write(Units.of(clip1.min()) + "\n");
     bufferedWriter.write(Units.of(tensor.Get(0, 0)) + "\n");
     for (int i0 = 0; i0 < firstDimN; ++i0) {
       String[] linevals = new String[secondDimN];
       for (int i1 = 0; i1 < secondDimN; ++i1)
-        linevals[i1] = String.valueOf(tensor.Get(i0, i1));
+        linevals[i1] = tensor.Get(i0, i1).toString();
       bufferedWriter.write(String.join(",", linevals) + "\n");
     }
   }
