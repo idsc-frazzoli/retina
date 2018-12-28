@@ -173,6 +173,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     // use joystick for speed limit
     // get joystick
     Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
+    Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
+    Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
     Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
@@ -184,7 +186,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
     // send message with max speed
     // optimization parameters will have more values in the future
-    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
+    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

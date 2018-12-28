@@ -13,6 +13,10 @@ public class MPCOptimizationConfig {
   public Scalar maxAcceleration = Quantity.of(1, SI.ACCELERATION);
   /** The limit for the Go-kart speed */
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
+  /** The limit for the Go-kart longitudonal acceleration */
+  public Scalar maxLatAcc = Quantity.of(8, SI.ACCELERATION);
+  /** The limit for the Go-kart lateral acceleration */
+  public Scalar maxLonAcc = Quantity.of(5, SI.VELOCITY);
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
   /** The wait time after a successful optimization */

@@ -1,4 +1,4 @@
-function f = objective(z,points,radii,vmax)
+function f = objective(z,points,radii,vmax, maxxacc, maxyacc)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
@@ -22,8 +22,8 @@ function f = objective(z,points,radii,vmax)
     outsideTrack = max(0,latdist-r);
     trackViolation = outsideTrack^2;
     speedcost = speedPunisher(z(index.v),vmax)*0.1;
-    accnorm = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
-    accviolation = 0.001*max(0,accnorm-25)^2;
+    accnorm = ((tan(z(index.beta))*z(index.v)^2)/(l*maxyacc))^2+(z(index.ab)/maxxacc)^2;
+    accviolation = max(0,accnorm-1)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;
     prog = -0.2*z(index.ds);
