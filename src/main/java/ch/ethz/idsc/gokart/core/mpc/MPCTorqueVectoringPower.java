@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -44,14 +45,18 @@ public class MPCTorqueVectoringPower extends MPCPower {
     }
     Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
     Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-    Scalar currentSlip = mpcStateProvider.getState().getdotPsi().subtract(expectedRotationPerMeterDriven);
+    Scalar tangentialSpeed = mpcStateProvider.getState().getUx();
+    Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
+    // compute (negative) angular slip
+    Scalar gyroZ = mpcStateProvider.getState().getdotPsi(); // unit s^-1
+    Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
     return torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
-        mpcStateProvider.getState().getUx(), //
-        currentSlip, //
+        tangentialSpeed, //
+        angularSlip, //
         wantedAcceleration, //
-        mpcStateProvider.getState().getdotPsi());
+        gyroZ);
   }
 
   @Override
