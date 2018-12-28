@@ -27,9 +27,9 @@ public class SteerJoystickModule extends GuideJoystickModule<SteerPutEvent> {
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<SteerPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
+      SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    Scalar desPos = joystick.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
+    Scalar desPos = manualControlInterface.getSteerLeft().multiply(SteerConfig.GLOBAL.columnMax);
     Scalar difference = desPos.subtract(currAngle);
     Scalar torqueCmd = steerPositionController.iterate(difference);
     return Optional.of(SteerPutEvent.createOn(torqueCmd));

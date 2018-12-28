@@ -37,8 +37,8 @@ public class LookupTableRimoThrustJoystickModule extends GuideJoystickModule<Rim
   /***************************************************/
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, ManualControlInterface joystick) {
-    Scalar pair = Differences.of(joystick.getAheadPair_Unit()).Get(0);
+      SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0);
     // get the wanted acceleration
     Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(pair, meanTangentSpeed);
     // get current
