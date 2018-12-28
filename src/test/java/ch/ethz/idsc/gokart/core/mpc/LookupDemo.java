@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
     return Tensors.matrix((i, j) -> function.apply((T) vi.get(i), (T) vj.get(j)), vi.length(), vj.length());
   }
 
+  // TODO TENSOR V065 simplify, also other places
   public static void main(String[] args) throws IOException {
     Clip clip_powers = ManualConfig.GLOBAL.torqueLimitClip();
     final Tensor powers = Subdivide.of( //
@@ -49,17 +50,16 @@ import ch.ethz.idsc.tensor.sca.Clip;
       Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
     }
     {
-      final int DimN = 250;
+      final int dimN = 250;
       LookupTable2D lookUpTable2D = LookupTable2D.build(//
           MotorFunction::getAccelerationEstimation, //
-          DimN, //
-          DimN, //
+          dimN, //
+          dimN, //
           clip_powers, //
           clip_speeds);
       LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch( //
-          MotorFunction::getAccelerationEstimation, //
-          0, //
-          DimN, DimN, //
+          MotorFunction::getAccelerationEstimation, 0, //
+          dimN, dimN, //
           clip_accels, Chop._03);
       System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
       System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));

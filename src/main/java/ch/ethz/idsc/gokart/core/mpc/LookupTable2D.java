@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 // TODO document this properly (to be done after the whole thing works)
+/** implementation is not a strict lookup but uses {@link LinearInterpolation} */
 public class LookupTable2D implements Serializable {
   private static final Scalar HALF = RealScalar.of(0.5);
 
@@ -45,20 +46,21 @@ public class LookupTable2D implements Serializable {
   }
 
   // ---
-  final Tensor tensor;
   private final Clip clip0;
   private final Clip clip1;
-  private final Tensor scale;
+  /** linear interpolation */
   private final Interpolation interpolation;
+  /** multiplier used in {@link #lookup(Scalar, Scalar)} */
+  private final Tensor scale;
+  /** output unit */
   private final Unit unit;
 
   /* package */ LookupTable2D(Scalar[][] table, Clip clip0, Clip clip1) {
-    unit = Units.of(table[0][0]);
-    this.tensor = Tensors.matrix(table).map(LookupTable2D::dropUnit);
     this.clip0 = clip0;
     this.clip1 = clip1;
-    scale = Tensors.vector(tensor.length() - 1, tensor.get(0).length() - 1);
-    interpolation = LinearInterpolation.of(tensor);
+    interpolation = LinearInterpolation.of(Tensors.matrix(table).map(LookupTable2D::dropUnit));
+    scale = Tensors.vector(table.length - 1, table[0].length - 1);
+    unit = Units.of(table[0][0]);
   }
 
   /** get inverted lookup table target specifies which of
@@ -76,40 +78,30 @@ public class LookupTable2D implements Serializable {
       int dimN0, int dimN1, Clip clipT, Chop chop) {
     Clip clipN0 = target == 0 ? clipT : clip0;
     Clip clipN1 = target == 0 ? clip1 : clipT;
+    Clip clipNT = target == 0 ? clip0 : clip1;
     // switch x and out
     Scalar[][] table = new Scalar[dimN0][dimN1];
     Tensor s0 = Subdivide.of(clipN0.min(), clipN0.max(), dimN0 - 1);
     Tensor s1 = Subdivide.of(clipN1.min(), clipN1.max(), dimN1 - 1);
     for (int i0 = 0; i0 < dimN0; ++i0) {
-      final Scalar value0 = s0.Get(i0);
+      Scalar value0 = s0.Get(i0);
       for (int i1 = 0; i1 < dimN1; ++i1) {
-        final Scalar value1 = s1.Get(i1);
+        Scalar value1 = s1.Get(i1);
         // find appropriate value
         // use approximative gradient descent
         Scalar mid = null;
-        if (target == 0) {
-          Scalar lower = clip0.min();
-          Scalar upper = clip0.max();
-          while (!chop.close(lower, upper)) {
-            mid = lower.add(upper).multiply(HALF);
-            final Scalar midValue = function.apply(mid, value1);
-            if (Scalars.lessThan(value0, midValue))
-              upper = mid;
-            else
-              lower = mid;
-          }
-        } else //
-        if (target == 1) {
-          Scalar lower = clip1.min();
-          Scalar upper = clip1.max();
-          while (!chop.close(lower, upper)) {
-            mid = lower.add(upper).multiply(HALF);
-            final Scalar midValue = function.apply(value0, mid);
-            if (Scalars.lessThan(value1, midValue))
-              upper = mid;
-            else
-              lower = mid;
-          }
+        Scalar lower = clipNT.min();
+        Scalar upper = clipNT.max();
+        Scalar value = target == 0 ? value0 : value1;
+        while (!chop.close(lower, upper)) {
+          mid = lower.add(upper).multiply(HALF);
+          Scalar midValue = target == 0 //
+              ? function.apply(mid, value1)
+              : function.apply(value0, mid);
+          if (Scalars.lessThan(value, midValue))
+            upper = mid;
+          else
+            lower = mid;
         }
         table[i0][i1] = Objects.requireNonNull(mid);
       }
@@ -146,20 +138,20 @@ public class LookupTable2D implements Serializable {
    * @throws IOException */
   public void exportToMatlab(BufferedWriter bufferedWriter) throws IOException {
     // write dimensions
-    int firstDimN = tensor.length();
-    int secondDimN = tensor.get(0).length();
-    bufferedWriter.write(firstDimN + "\n");
-    bufferedWriter.write(secondDimN + "\n");
+    int dimN0 = scale.Get(0).number().intValue() + 1;
+    int dimN1 = scale.Get(1).number().intValue() + 1;
+    bufferedWriter.write(dimN0 + "\n");
+    bufferedWriter.write(dimN1 + "\n");
     bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
     bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
     // write units
     bufferedWriter.write(Units.of(clip0.min()) + "\n");
     bufferedWriter.write(Units.of(clip1.min()) + "\n");
-    bufferedWriter.write(Units.of(tensor.Get(0, 0)) + "\n");
-    for (int i0 = 0; i0 < firstDimN; ++i0) {
-      String[] linevals = new String[secondDimN];
-      for (int i1 = 0; i1 < secondDimN; ++i1)
-        linevals[i1] = tensor.Get(i0, i1).toString();
+    bufferedWriter.write(unit + "\n");
+    for (int i0 = 0; i0 < dimN0; ++i0) {
+      String[] linevals = new String[dimN1];
+      for (int i1 = 0; i1 < dimN1; ++i1)
+        linevals[i1] = interpolation.get(Tensors.vector(i0, i1)).toString();
       bufferedWriter.write(String.join(",", linevals) + "\n");
     }
   }
