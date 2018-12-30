@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
@@ -26,7 +26,7 @@ public class MotorFunctionTest extends TestCase {
         Quantity.of(+1000, NonSI.ARMS), //
         Quantity.of(5, SI.VELOCITY));
     // System.out.println(epos);
-    assertEquals(Units.of(epos), SI.ACCELERATION);
+    assertEquals(QuantityUnit.of(epos), SI.ACCELERATION);
     assertTrue(Chop._10.close(epos, Scalars.fromString("1.0026400089263916[m*s^-2]")));
     // TODO expected accel to be "less" ?
     MotorFunction.getAccelerationEstimation( //

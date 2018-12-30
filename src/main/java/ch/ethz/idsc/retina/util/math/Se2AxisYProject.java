@@ -8,8 +8,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.SignInterface;
@@ -42,7 +42,7 @@ public class Se2AxisYProject implements TensorScalarFunction {
     Scalar be = u.Get(2);
     if (Scalars.isZero(be)) { // prevent division by 0 after arc tan
       if (Scalars.isZero(vx)) // prevent division by 0 of px
-        return new MapSingular(Units.of(be).negate());
+        return new MapSingular(QuantityUnit.of(be).negate());
       return p -> p.Get(0).divide(vx);
     }
     return new Se2AxisYProject(vx, be);

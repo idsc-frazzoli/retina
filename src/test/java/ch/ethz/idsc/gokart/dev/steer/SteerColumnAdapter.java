@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
-import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 
 public class SteerColumnAdapter implements SteerColumnInterface {
   private final boolean isCalibrated;
@@ -12,7 +12,7 @@ public class SteerColumnAdapter implements SteerColumnInterface {
   /** @param isCalibrated
    * @param centered Quantity with unit "SCE" */
   public SteerColumnAdapter(boolean isCalibrated, Scalar centered) {
-    if (!Units.of(centered).equals(SteerPutEvent.UNIT_ENCODER))
+    if (!QuantityUnit.of(centered).equals(SteerPutEvent.UNIT_ENCODER))
       throw TensorRuntimeException.of(centered);
     this.isCalibrated = isCalibrated;
     this.centered = centered;

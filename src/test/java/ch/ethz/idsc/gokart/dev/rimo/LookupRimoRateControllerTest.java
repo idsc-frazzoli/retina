@@ -7,8 +7,8 @@ import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import junit.framework.TestCase;
 
 public class LookupRimoRateControllerTest extends TestCase {
@@ -17,7 +17,7 @@ public class LookupRimoRateControllerTest extends TestCase {
     Scalar vel_error = Quantity.of(31, SIDerived.RADIAN_PER_SECOND); // rad*s^-1
     rimoRateController.setWheelRate(Quantity.of(2, "rad*s^-1"));
     Scalar arms = rimoRateController.iterate(vel_error);
-    assertEquals(Units.of(arms), Unit.of("ARMS"));
+    assertEquals(QuantityUnit.of(arms), Unit.of("ARMS"));
   }
 
   public void testDt() {

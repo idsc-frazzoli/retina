@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
@@ -154,7 +154,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Scalar t = Se2AxisYProject.of(u).apply(p);
     Scalar magnitude = Magnitude.SECOND.apply(t);
     assertTrue(Chop._10.close(magnitude, DoubleScalar.of(1.154854847741819)));
-    assertEquals(Units.of(t), Unit.of("s"));
+    assertEquals(QuantityUnit.of(t), Unit.of("s"));
     assertTrue(Scalars.nonZero(t));
   }
 
@@ -163,7 +163,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor u = Tensors.fromString("{1.1[m*s^-1],0,0[s^-1]}"); // SI
     Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
-    assertEquals(Units.of(t), Unit.of("s"));
+    assertEquals(QuantityUnit.of(t), Unit.of("s"));
     assertTrue(Scalars.nonZero(t));
   }
 
@@ -172,7 +172,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor u = Tensors.fromString("{0.0[m*s^-1],0,0[s^-1]}"); // SI
     Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
-    assertEquals(Units.of(t), SI.SECOND);
+    assertEquals(QuantityUnit.of(t), SI.SECOND);
     assertTrue(Scalars.nonZero(t));
   }
 
@@ -181,7 +181,7 @@ public class Se2AxisYProjectTest extends TestCase {
     Tensor u = Tensors.fromString("{0.0[m*s^-1],0,0[s^-1]}"); // SI
     Tensor p = Tensors.fromString("{0.0[m],0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
-    assertEquals(Units.of(t), Unit.of("s"));
+    assertEquals(QuantityUnit.of(t), Unit.of("s"));
     assertTrue(Scalars.isZero(t));
   }
 }

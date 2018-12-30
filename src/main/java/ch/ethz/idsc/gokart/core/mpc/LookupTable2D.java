@@ -16,8 +16,8 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -60,7 +60,7 @@ public class LookupTable2D implements Serializable {
     this.clip1 = clip1;
     interpolation = LinearInterpolation.of(Tensors.matrix(table).map(LookupTable2D::dropUnit));
     scale = Tensors.vector(table.length - 1, table[0].length - 1);
-    unit = Units.of(table[0][0]);
+    unit = QuantityUnit.of(table[0][0]);
   }
 
   /** get inverted lookup table target specifies which of
@@ -145,8 +145,8 @@ public class LookupTable2D implements Serializable {
     bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
     bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
     // write units
-    bufferedWriter.write(Units.of(clip0.min()) + "\n");
-    bufferedWriter.write(Units.of(clip1.min()) + "\n");
+    bufferedWriter.write(QuantityUnit.of(clip0.min()) + "\n");
+    bufferedWriter.write(QuantityUnit.of(clip1.min()) + "\n");
     bufferedWriter.write(unit + "\n");
     for (int i0 = 0; i0 < dimN0; ++i0) {
       String[] linevals = new String[dimN1];

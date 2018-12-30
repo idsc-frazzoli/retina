@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import junit.framework.TestCase;
 
 public class PowerLookupTableTest extends TestCase {
@@ -18,7 +18,7 @@ public class PowerLookupTableTest extends TestCase {
     PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
     Scalar velocity = Quantity.of(3, SI.VELOCITY);
     Tensor minMax = powerLookupTable.getMinMaxAcceleration(velocity);
-    assertEquals(Units.of(minMax.Get(0)), SI.ACCELERATION);
+    assertEquals(QuantityUnit.of(minMax.Get(0)), SI.ACCELERATION);
     assertTrue(Scalars.lessThan(minMax.Get(0).negate(), minMax.Get(1)));
     // System.out.println("minMax=" + minMax);
     Scalar minpower = RealScalar.ONE.negate();

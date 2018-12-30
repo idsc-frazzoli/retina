@@ -9,9 +9,9 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -23,13 +23,13 @@ public class SteerConfigTest extends TestCase {
   }
 
   public void testSCE() {
-    assertEquals(Units.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
+    assertEquals(QuantityUnit.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
   }
 
   public void testSCEfromAngle() {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, "rad"));
-    assertEquals(Units.of(q), Unit.of("SCE"));
+    assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
     assertTrue(1.1 < q.number().doubleValue());
   }
 
