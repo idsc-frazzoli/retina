@@ -29,21 +29,15 @@ import ch.ethz.idsc.tensor.sca.Clip;
   // TODO TENSOR V065 simplify, also other places
   public static void main(String[] args) throws IOException {
     Clip clip_powers = ManualConfig.GLOBAL.torqueLimitClip();
-    final Tensor powers = Subdivide.of( //
-        clip_powers.min(), //
-        clip_powers.max(), RES);
+    final Tensor powers = Subdivide.of(clip_powers, RES);
     Clip clip_speeds = Clip.function( //
         Quantity.of(-10, SI.VELOCITY), //
         Quantity.of(+10, SI.VELOCITY));
-    final Tensor speeds = Subdivide.of( //
-        clip_speeds.min(), //
-        clip_speeds.max(), RES);
+    final Tensor speeds = Subdivide.of(clip_speeds, RES);
     Clip clip_accels = Clip.function( //
         Quantity.of(-2, SI.ACCELERATION), //
         Quantity.of(+2, SI.ACCELERATION));
-    final Tensor accelerations = Subdivide.of( //
-        clip_accels.min(), //
-        clip_accels.max(), RES);
+    final Tensor accelerations = Subdivide.of(clip_accels, RES);
     {
       Tensor matrix = build(MotorFunction::getAccelerationEstimation, powers.negate(), speeds);
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);

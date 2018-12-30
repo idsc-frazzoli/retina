@@ -1,12 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.owl.math.sample.RandomSample;
 import ch.ethz.idsc.owl.math.sample.RandomSampleInterface;
 import ch.ethz.idsc.owl.math.sample.SphereRandomSample;
+import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
