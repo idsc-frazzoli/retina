@@ -21,13 +21,13 @@ public class MPCSimpleBraking extends MPCBraking {
     Scalar controlTime = time.add(config.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
-      return Quantity.of(0, SI.ONE);
+      return RealScalar.ZERO;
     Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     Scalar min = minmax.Get(0);
     Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     // System.out.println(braking);
     Scalar brakePos = BrakingFunction.getNeededBrakeActuation(braking);
-    if (brakePos == null)
+    if (Objects.isNull(brakePos))
       return RealScalar.ZERO;
     return BrakingFunction.getRelativePosition(brakePos);
   }

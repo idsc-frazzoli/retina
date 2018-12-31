@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -286,7 +287,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public Scalar getPsi() {
-    return Quantity.of(Psi, SI.ONE);
+    return RealScalar.of(Psi);
   }
 
   public Scalar getw2L() {
