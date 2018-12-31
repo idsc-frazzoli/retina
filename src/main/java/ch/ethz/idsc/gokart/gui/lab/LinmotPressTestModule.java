@@ -46,7 +46,7 @@ public class LinmotPressTestModule extends AbstractModule {
       List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {
         Scalar scalar = tensor.Get(index);
-        JButton jButton = new JButton("" + scalar.map(Round._2));
+        JButton jButton = new JButton(scalar.map(Round._2).toString());
         list.add(jButton);
         jButton.addActionListener(new ActionListener() {
           @Override

@@ -75,7 +75,7 @@ import ch.ethz.idsc.tensor.io.TensorProperties;
         Object value = field.get(object);
         JTextField jTextField = createEditing(field.getName());
         jTextField.setFont(FONT);
-        jTextField.setText("" + value);
+        jTextField.setText(value.toString());
         jTextField.addKeyListener(new KeyAdapter() {
           @Override
           public void keyReleased(KeyEvent keyEvent) {

@@ -93,7 +93,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       graphics.setFont(FONT);
       graphics.setColor(Color.DARK_GRAY);
       graphics.fillRect(0, 0, width(), 1);
-      graphics.drawString("" + dayname, 0, FONT_SIZE - 1);
+      graphics.drawString(dayname, 0, FONT_SIZE - 1);
       minutes = (int) table.get(Tensor.ALL, 0).stream().filter(NumberQ::of).count();
       FontMetrics fontMetrics = graphics.getFontMetrics();
       String string = String.format("%3d", minutes);

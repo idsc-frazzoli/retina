@@ -152,7 +152,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
             Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
             Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
-            jTF_linmotTemp.setText("" + temperatureMax.map(Round._1));
+            jTF_linmotTemp.setText(temperatureMax.map(Round._1).toString());
             jTF_linmotTemp.setBackground(color);
           }
         }

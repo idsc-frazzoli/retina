@@ -141,7 +141,7 @@ public class OfflineHud implements OfflineLogListener {
         String string = String.format("%+3.1f[m/s]", vel.map(Round._1).Get().number().doubleValue());
         // System.out.println(string);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-        graphics.drawString("" + time.map(Round._6), 0, 10);
+        graphics.drawString(time.map(Round._6).toString(), 0, 10);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 50));
         graphics.drawString(string, 0, 60);
         callback(bufferedImage);

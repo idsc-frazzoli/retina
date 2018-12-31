@@ -38,7 +38,7 @@ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
     graphics.fillRect(WIDTH, 0, WIDTH, HEIGHT);
     // graphics.drawImage(timedImageEvent.bufferedImage, WIDTH, 0, null);
     graphics.drawImage(timedImageEvent.bufferedImage, WIDTH, 0, null);
-    String string = "" + timedImageEvent.time + "[us]";
+    String string = Integer.toString(timedImageEvent.time) + "[us]";
     graphics.setColor(Color.BLACK);
     graphics.drawString(string, WIDTH + 1, 12);
     graphics.setColor(Color.WHITE);
