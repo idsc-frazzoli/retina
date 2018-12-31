@@ -54,4 +54,35 @@ public class TrackRender implements RenderInterface {
       path2d.closePath();
     graphics.draw(path2d);
   }
+
+  public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
+    // middle line
+    float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue()/7.5f;
+    
+    float dash1[] = { width*10.0f };
+    Stroke defaultStroke;
+    BasicStroke dashed = new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+    graphics.setColor(Color.RED);
+    defaultStroke = graphics.getStroke();
+    graphics.setStroke(dashed);
+    Path2D path2d = geometricLayer.toPath2D(middleLine);
+    if (closed)
+      path2d.closePath();
+    graphics.draw(path2d);
+    // left line
+    // graphics.setStroke(s);
+    BasicStroke thick = new BasicStroke(width);
+    graphics.setStroke(thick);
+    graphics.setColor(Color.WHITE);
+    path2d = geometricLayer.toPath2D(leftBoundary);
+    if (closed)
+      path2d.closePath();
+    graphics.draw(path2d);
+    // right line
+    path2d = geometricLayer.toPath2D(rightBoundary);
+    if (closed)
+      path2d.closePath();
+    graphics.draw(path2d);
+    graphics.setStroke(defaultStroke);
+  }
 }

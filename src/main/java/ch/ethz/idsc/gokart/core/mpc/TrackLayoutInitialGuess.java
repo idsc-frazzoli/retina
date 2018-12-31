@@ -1,7 +1,10 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -421,6 +424,24 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Tensor routePolygon = getRoutePolygon();
     Path2D path2d = geometricLayer.toPath2D(routePolygon);
     graphics.draw(path2d);
+    /* for (Tensor t : freeLines) {
+     * path2d = geometricLayer.toPath2D(t);
+     * graphics.draw(path2d);
+     * } */
+  }
+
+  public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
+    float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue()/7.5f;
+    Stroke defaultStroke;
+    BasicStroke thick = new BasicStroke(width);
+    graphics.setColor(Color.RED);
+    defaultStroke = graphics.getStroke();
+    graphics.setStroke(thick);
+    Tensor routePolygon = getRoutePolygon();
+    Path2D path2d = geometricLayer.toPath2D(routePolygon);
+    graphics.draw(path2d);
+    graphics.setColor(Color.WHITE);
+    graphics.setStroke(defaultStroke);
     /* for (Tensor t : freeLines) {
      * path2d = geometricLayer.toPath2D(t);
      * graphics.draw(path2d);

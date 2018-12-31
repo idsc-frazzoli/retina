@@ -186,9 +186,9 @@ public class TrackRefinenement {
 
   // for debugging
   ArrayList<Tensor> freeLines = new ArrayList<>();
-  final Scalar gdLimits = RealScalar.of(0.8);
+  final Scalar gdLimits = RealScalar.of(0.4);
   final Scalar gdRadius = RealScalar.of(0.8);
-  final Scalar gdRadiusGrowth = Quantity.of(0.1, SI.METER);
+  final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
   final Scalar gdRegularizer = RealScalar.of(0.02);
   final Scalar defaultRadius = Quantity.of(1, SI.METER);
 
