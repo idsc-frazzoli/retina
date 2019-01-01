@@ -123,6 +123,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   LinkedList<Cell> forwardRoute;
   Tensor routePolygon;
   boolean closed = false;
+  List<Tensor> positionalSupports = new LinkedList<>();
 
   // this is potentially slow
   Cell getFarthestCell() {
@@ -282,7 +283,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         if (!n.processed) {
           // TODO: maybe use neighborcost (not that important)
           Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
-          nCount++;
           if (Scalars.lessThan(alternativ, n.cost)) {
             // this could potentially be too slow
             Q.remove(n);
@@ -292,6 +292,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
             Q.add(n);
           }
         }
+        nCount++;
       }
     }
   }
@@ -384,6 +385,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         lastPosition = pos;
         wantedPositionsX.append(pos.Get(0));
         wantedPositionsY.append(pos.Get(1));
+        positionalSupports.add(pos.copy());
       }
     }
     if (wantedPositionsX.length() > 3) {
@@ -440,11 +442,17 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Tensor routePolygon = getRoutePolygon();
     Path2D path2d = geometricLayer.toPath2D(routePolygon);
     graphics.draw(path2d);
-    graphics.setColor(Color.WHITE);
+    if(true) {
+      graphics.setColor(Color.YELLOW);
+      for(Tensor t: positionalSupports) {
+        Tensor pos = geometricLayer.toVector(t);
+        int r = (int) (width*2.5f);
+        int X = pos.Get(0).number().intValue();
+        int Y = pos.Get(1).number().intValue();
+        graphics.drawOval(X - r, Y - r, 2*r, 2*r);
+      }
+    }
     graphics.setStroke(defaultStroke);
-    /* for (Tensor t : freeLines) {
-     * path2d = geometricLayer.toPath2D(t);
-     * graphics.draw(path2d);
-     * } */
+    graphics.setColor(Color.WHITE);
   }
 }

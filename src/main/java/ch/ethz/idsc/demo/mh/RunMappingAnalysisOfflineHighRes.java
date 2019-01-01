@@ -19,8 +19,8 @@ enum RunMappingAnalysisOfflineHighRes {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
-    File file = UserHome.file("changingtrack.lcm");
-    // File file = UserHome.file("TireTrackDriving.lcm");
+    //File file = UserHome.file("changingtrack.lcm");
+    File file = UserHome.file("TireTrackDriving.lcm");
     // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
     File folder = UserHome.Pictures("log/mapperHR");
     folder.mkdirs();

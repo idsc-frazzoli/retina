@@ -116,8 +116,8 @@ public class MappingAnalysisOfflineHighResMH implements OfflineLogListener, Lida
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
-      // bayesianOccupancyGrid.render(gl, graphics);
-      bayesianOccupancyGridThin.render(gl, graphics);
+      bayesianOccupancyGrid.render(gl, graphics);
+      //bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
       trackIdentificationManagement.renderHR(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
